@@ -306,14 +306,14 @@ namespace DOL.GS
 
 				if (npcEquip == null)
 				{
-					if (log.IsWarnEnabled)
-						log.Warn(string.Format("Failed loading NULL NPC inventory template: {0}", templateID));
+					//if (log.IsWarnEnabled)
+					//	log.Warn(string.Format("Failed loading NULL NPC inventory template: {0}", templateID));
 					return false;
 				}
 				if (npcEquip.Count == 0)
 				{
-					if (log.IsWarnEnabled)
-						log.Warn(string.Format("Failed loading EMPTY NPC inventory template: {0}", templateID));
+					//if (log.IsWarnEnabled)
+					//	log.Warn(string.Format("Failed loading EMPTY NPC inventory template: {0}", templateID));
 					return false;
 				}
 				
@@ -321,8 +321,8 @@ namespace DOL.GS
 				{
 					if (!AddNPCEquipment((eInventorySlot) npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
 					{
-						if (log.IsWarnEnabled) 
-							log.Warn("Error adding NPC equipment for Template=" + templateID + "; ModelID=" + npcItem.Model + "; Slot=" + npcItem.Slot);
+						//if (log.IsWarnEnabled) 
+						//	log.Warn("Error adding NPC equipment for Template=" + templateID + "; ModelID=" + npcItem.Model + "; Slot=" + npcItem.Slot);
 					}
 				}
 			}

@@ -250,170 +250,131 @@ namespace DOL.GS
 				return;
 			
 			Mob mob = dbMob;
-			if (dbMob != null)
-			    NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
-			
+			if (mob == null && !string.IsNullOrEmpty(InternalID))
+				// This should only happen when a GM command changes level on a mob with no npcTemplate,
+				mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+			if (mob != null && mob.NPCTemplateID != -1)
+			    NPCTemplate = NpcTemplateMgr.GetTemplate(mob.NPCTemplateID);
+
 			double regular = 1.5; // Based on (GameNPC)ScaleFactor = 15
 			double epic = 6; // Based on (GameEpicNPC)ScaleFactor = 60
+			double mobScale = regular; // Base stat multiplier for mobs
+			short regularBase = 30;
+			short epicBase = 60;
+			short baseStat = regularBase;
 			
-			// Base stat multiplier for mobs
-			double mobScale = regular;
-
 			// Stat multiplier for epic mobs (not bosses)
-			if (dbMob != null && NPCTemplate.ClassType == "DOL.GS.GameEpicNPC" || ClassType == "DOL.GS.GameEpicNPC")
-			{ 
+			if (dbMob != null && (NPCTemplate.ClassType == "DOL.GS.GameEpicNPC" || ClassType == "DOL.GS.GameEpicNPC" ||  NPCTemplate.ClassType == "DOL.GS.GameEpicBoss" || ClassType == "DOL.GS.GameEpicBoss"))
+			{
 				mobScale = epic;
+				baseStat = epicBase;
 			}
+			
 			// We have to check both the DB and template values to account for mobs changing levels.
 			// Otherwise, high level mobs retain their stats when their level is lowered by a GM.
-			if (dbMob != null && NPCTemplate != null && NPCTemplate.ReplaceMobValues)
+			if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
 			{
-				/*Strength = NPCTemplate.Strength;
-				Constitution = NPCTemplate.Constitution;
-				Quickness = NPCTemplate.Quickness;
-				Dexterity = NPCTemplate.Dexterity;
-				Intelligence = NPCTemplate.Intelligence;
-				Empathy = NPCTemplate.Empathy;
-				Piety = NPCTemplate.Piety;
-				Charisma = NPCTemplate.Strength;*/
+				// Compare mob's existing stats against the NPC template
+				// If template stats are lower than the mob's, then use mob stats
+				// This is a precaution in case the template is not current (so we don't accidentally break all the mobs)
+				if (mob != null)
+				{
+					Strength = (mob.Strength <= NPCTemplate.Strength) ? NPCTemplate.Strength : mob.Strength;
+					Constitution = (mob.Constitution <= NPCTemplate.Constitution) ? NPCTemplate.Constitution : mob.Constitution;
+					Dexterity = (mob.Dexterity <= NPCTemplate.Dexterity) ? NPCTemplate.Dexterity : mob.Dexterity;
+					Quickness = (mob.Quickness <= NPCTemplate.Quickness) ? NPCTemplate.Quickness : mob.Quickness;
+					Empathy = (mob.Empathy <= NPCTemplate.Empathy) ? NPCTemplate.Empathy : mob.Empathy;
+					Intelligence = (mob.Intelligence <= NPCTemplate.Intelligence) ? NPCTemplate.Intelligence : mob.Intelligence;
+					Charisma = (mob.Charisma <= NPCTemplate.Charisma) ? NPCTemplate.Charisma : mob.Charisma;
+					Piety = (mob.Piety <= NPCTemplate.Piety) ? NPCTemplate.Piety : mob.Piety;
+				}
+				// If mob is null (i.e., just created using '/mob create'), then use the NPC template where possible
+				else
+				{
+					Strength = NPCTemplate.Strength;
+					Constitution = NPCTemplate.Constitution;
+					Dexterity = NPCTemplate.Dexterity;
+					Quickness = NPCTemplate.Quickness;
+					Empathy = NPCTemplate.Empathy;
+					Intelligence = NPCTemplate.Intelligence;
+					Charisma = NPCTemplate.Charisma;
+					Piety = NPCTemplate.Piety;
+				}
 
-				string minLevel = NPCTemplate.Level;
-				
+				string minLevel = NPCTemplate.Level; // Starting variable to determine base (lowest) level assigned to a template
+			
+				// Figure out what the lowest level is in NPCTemplate.Level
 				if (NPCTemplate.Level.Contains(';') || NPCTemplate.Level.Contains('-'))
 				{
-					// Create a list of each level entry, remove any separators
 					var split = Util.SplitCSV(NPCTemplate.Level, true);
-					// Grab the lowest value
-					minLevel = split.AsQueryable().Min();
-				}
 				
+					minLevel = split.AsQueryable().Min(); // Grab the lowest value
+				}
+
 				// This determines how to handle stat scaling for regular and epic NPCs with existing NPCTemplates.
 				// Stats are scaled based on the lowest level parsed from NPCTemplate.Level rather than assuming level 1.
-				// For example, mob.Level is "12-15;20-25". AutoSetStats would then treat the current stats for the
-				// NPCTemplate as the base values for the lowest level in the range, which is 12. It then uses the
-				// multiplier to increase the stat based on the mob's level, if it is above the base level (12).
-				// A level 13 mob with this template would have the multiplier applied once (1 x mulitplier), whereas a level 25 mob
-				// would have it applied 13 times (13 x mulitplier).
-				if (minLevel != null)
+				// For example, NPCTemplate.Level is "12-15;20-25". AutoSetStats would then treat the current stats for the
+				// NPCTemplate as the base values for the lowest level in this range, which is 12. It then uses the
+				// multiplier (mobScale) to increase the stat based on the mob's level, if it is above the base level (12),
+				// using the 'difference' variable.
+				// A level 13 mob with this template has a difference of 1 level from the base level, and as such would have
+				// the multiplier applied once (1 x mulitplier) to all stats. A level 25 mob has a difference of 13 from the
+				// base level (Level - baseLevel) and thus applies the multiplier 13 times (13 x mulitplier).
+				if (minLevel != null || minLevel != "0")
 				{
 					// Convert string to short
 					short.TryParse(minLevel, out var baseLevel);
 
-					// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
-					if (dbMob.Strength < NPCTemplate.Strength)
-					{
-						Strength = NPCTemplate.Strength;
-						if (NPCTemplate.Strength <= 1 || NPCTemplate.Strength == 30)
-						{
-							Strength += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Strength = dbMob.Strength;
-					if (dbMob.Constitution < NPCTemplate.Constitution)
-					{
-						Constitution = NPCTemplate.Constitution;
-						if (NPCTemplate.Constitution <= 1 || NPCTemplate.Constitution == 30)
-						{
-							Constitution += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Constitution = dbMob.Constitution;
-					if (dbMob.Dexterity < NPCTemplate.Dexterity)
-					{
-						Dexterity = NPCTemplate.Dexterity;
-						if (NPCTemplate.Dexterity <= 1 || NPCTemplate.Dexterity == 30)
-						{
-							Dexterity += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Dexterity = dbMob.Dexterity;
-					if (dbMob.Quickness < NPCTemplate.Quickness)
-					{
-						Quickness = NPCTemplate.Quickness;
-						if (NPCTemplate.Quickness <= 1 || NPCTemplate.Quickness == 30)
-						{
-							Quickness += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Quickness = dbMob.Quickness;
-					if (dbMob.Empathy < NPCTemplate.Empathy)
-					{
-						Empathy = NPCTemplate.Empathy;
-						if (NPCTemplate.Empathy <= 1 || NPCTemplate.Empathy == 30)
-						{
-							Empathy += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Empathy = dbMob.Empathy;
-					if (dbMob.Intelligence < NPCTemplate.Intelligence)
-					{
-						Intelligence = NPCTemplate.Quickness;
-						if (NPCTemplate.Intelligence <= 1 || NPCTemplate.Intelligence == 30)
-						{
-							Intelligence += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Intelligence = dbMob.Intelligence;
-					if (dbMob.Charisma < NPCTemplate.Charisma)
-					{
-						Charisma = NPCTemplate.Charisma;
-						if (NPCTemplate.Charisma <= 1 || NPCTemplate.Charisma == 30)
-						{
-							Charisma += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Charisma = dbMob.Charisma;
-					if (dbMob.Piety < NPCTemplate.Piety)
-					{
-						Piety = NPCTemplate.Piety;
-						if (NPCTemplate.Piety <= 1 || NPCTemplate.Piety == 30)
-						{
-							Piety += (short) (baseLevel * mobScale);
-						}
-					}
-					else
-						Piety = dbMob.Piety;
+					if (baseLevel == Level)
+						baseLevel = Level;
+					
+					// If stat is 0 or 1, then use multiplier against base level to bring it up to a "minimum" value
+					Strength += (Strength <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Constitution += (Constitution <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Dexterity += (Dexterity <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Quickness += (Quickness <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Empathy += (Empathy <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Intelligence += (Intelligence <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Charisma += (Charisma <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
+					Piety += (Piety <= 1) ? (short) (baseLevel * mobScale) : (short) 0;
 
-					if (Level > baseLevel && baseLevel >= 0)
+					// Check mob's current level against the base level before we multiply again
+					// If the mob is higher level than baseLevel, we scale again
+					if (Level - baseLevel > 0)
 					{
-						var difference = Level - baseLevel;
+						// Subtract level difference and multiply stats against multiplier
+						var difference = (short) ((Level - baseLevel) * mobScale);
 						
-						// If mob.Level is one or more levels higher than the base level, apply the multiplier
-						if (difference >= 1)
-						{
-							if (NPCTemplate.Strength > 1)
-								Strength += (short)(difference * mobScale);
-							if (NPCTemplate.Constitution > 1)
-								Constitution += (short)(difference * mobScale);
-							if (NPCTemplate.Dexterity > 1)
-								Dexterity += (short)(difference * mobScale);
-							if (NPCTemplate.Quickness > 1)
-								Quickness += (short)(difference * mobScale);
-							if (NPCTemplate.Empathy > 1)
-								Empathy += (short)(difference * mobScale);
-							if (NPCTemplate.Intelligence > 1)
-								Intelligence += (short)(difference * mobScale);
-							if (NPCTemplate.Charisma > 1)
-								Charisma += (short)(difference * mobScale);
-							if (NPCTemplate.Piety > 1)
-								Piety += (short)(difference * mobScale);
-						}
+						Strength += difference;
+						Constitution += difference;
+						Dexterity += difference;
+						Quickness += difference;
+						Empathy += difference;
+						Intelligence += difference;
+						Charisma += difference;
+						Piety += difference;
 					}
+				}
+				// If NPCTemplate.Level cannot be parsed, then just use mob.Level
+				else
+				{
+					var scale = (short) (Level * mobScale);
+
+					if (scale == 0)
+						scale = 1;
+					// If any stat has not been set, multiply difference between base and current level level against muliplier
+					Strength += scale;
+					Constitution += scale;
+					Dexterity += scale;
+					Quickness += scale;
+					Empathy += scale;
+					Intelligence += scale;
+					Charisma += scale;
+					Piety += scale;
 				}
 			}
 			else
 			{
-				if (mob == null && !string.IsNullOrEmpty(InternalID))
-					// This should only happen when a GM command changes level on a mob with no npcTemplate,
-					mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
-
 				if (mob != null)
 				{
 					Strength = mob.Strength;
@@ -428,7 +389,7 @@ namespace DOL.GS
 				else
 				{
 					// This is usually a mob about to be loaded from its DB entry,
-					// but it could also be a new mob created by a GM command, so we need to assign stats.
+					//	but it could also be a new mob created by a GM command, so we need to assign stats.
 					Strength = 0;
 					Constitution = 0;
 					Quickness = 0;
@@ -438,26 +399,18 @@ namespace DOL.GS
 					Piety = 0;
 					Charisma = 0;
 				}
-
-				// If any stat has not been set, multiply base level and muliplier to determine starting stat levels
-				if (Strength <= 1 || Strength == 30)
-					Strength += (short)(Level * mobScale);
-				if (Constitution <= 1 || Constitution == 30)
-					Constitution += (short)(Level * mobScale);
-				if (Dexterity <= 1 || Dexterity == 30)
-					Dexterity += (short)(Level * mobScale);
-				if (Quickness <= 1 || Quickness == 30)
-					Quickness += (short)(Level * mobScale);
-				if (Empathy <= 1 || Empathy == 30)
-					Empathy += (short)(Level * mobScale);
-				if (Intelligence <= 1 || Intelligence == 30)
-					Intelligence += (short)(Level * mobScale);
-				if (Charisma <= 1 || Charisma == 30)
-					Charisma += (short)(Level * mobScale);
-				if (Piety <= 1 || Piety == 30)
-					Piety += (short)(Level * mobScale);
+				
+				// Mob stats must be set above 0 in order to scale with level
+				Strength += (Strength >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Constitution += (Constitution >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Dexterity += (Dexterity >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Quickness += (Quickness >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Empathy += (Empathy >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Intelligence += (Intelligence >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Charisma += (Charisma >= 1) ? (short) (Level * mobScale) : (short) 1;
+				Piety += (Piety >= 1) ? (short) (Level * mobScale) : (short) 1;
 			}
-			
+
 			// Base for all stats is 30 and multiplier is 1
 			/*Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
 			if (Level > 1)
@@ -2225,8 +2178,8 @@ namespace DOL.GS
 							SwitchWeapon(eActiveWeaponSlot.Standard);
 					}
 				}
-				else
-					log.Error("Inventory for " + this.Name + " is empty.");
+				//else
+					//log.Error("Inventory for " + this.Name + " is empty.");
 			}
 		}
 
@@ -2390,16 +2343,16 @@ namespace DOL.GS
 			else
 			{
 				//log.Error("Couldn't fetch NPCTemplate for " + dbMob.Name + ".");
+				ClassType = dbMob.ClassType;
+				Level = dbMob.Level;
 				TranslationId = dbMob.TranslationId;
 				Name = dbMob.Name;
 				Suffix = dbMob.Suffix;
-				ClassType = dbMob.ClassType;
 				GuildName = dbMob.Guild;
 				ExamineArticle = dbMob.ExamineArticle;
 				MessageArticle = dbMob.MessageArticle;
 				Model = dbMob.Model;
 				Gender = (eGender)dbMob.Gender;
-				Level = dbMob.Level;
 				Realm = (eRealm)dbMob.Realm;
 				Size = dbMob.Size;
 				EquipmentTemplateID = dbMob.EquipmentTemplateID;
@@ -2419,6 +2372,7 @@ namespace DOL.GS
 				Styles = m_styles;
 				RespawnInterval = dbMob.RespawnInterval;
 
+				/* Set with AutoSetStats
 				Strength = dbMob.Strength;
 				Constitution = dbMob.Constitution; 
 				Dexterity = dbMob.Dexterity;
@@ -2427,6 +2381,7 @@ namespace DOL.GS
 				Empathy = dbMob.Empathy;
 				Charisma = dbMob.Charisma;
 				Piety = dbMob.Piety;
+				*/
 
 				AggroLevel = dbMob.AggroLevel;
 				AggroRange = dbMob.AggroRange;
@@ -2710,7 +2665,7 @@ namespace DOL.GS
 				//	1) If the NPC template stats are set to <= 1
 				//	2) The mob's stats exceed the NPC template values
 				// If either condition is met, then the NPC template stat values will be ignored.
-				if (template.Strength > 1 && template.Strength > Strength)
+				/*if (template.Strength > 1 && template.Strength > Strength)
 					Strength = template.Strength;
 				if (template.Constitution > 1 && template.Constitution > Constitution)
 					Constitution = template.Constitution;
@@ -2725,7 +2680,7 @@ namespace DOL.GS
 				if (template.Charisma > 1 && template.Charisma > Charisma)
 					Charisma = template.Charisma;
 				if (template.Piety > 1 && template.Piety > Piety)
-					Piety = template.Piety;
+					Piety = template.Piety;*/
 				#endregion Stats
 				
 				#region Level
@@ -6605,5 +6560,5 @@ namespace DOL.GS
         public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
         
         public int OrbsReward { get => orbsReward; set => orbsReward = value; }
-    }
+	}
 }
