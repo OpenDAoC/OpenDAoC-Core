@@ -221,15 +221,18 @@ namespace DOL.AI.Brain
 								if (Body.IsMoving && Body.TargetObject.IsWithinRadius(Body.TargetObject, spells.Range) && Body.IsCasting)
 									Body.StopFollowing();
 
-								PickRandomTarget();
+								if(Body.GetSkillDisabledDuration(RoesiaDot) == 0)
+									PickRandomTarget();
+
+								GameLiving oldTarget = Body.TargetObject as GameLiving;
 								if (RandomTarget != null && RandomTarget.IsAlive && CanCast)
-								{
-									GameLiving oldTarget = Body.TargetObject as GameLiving;
+								{								
 									Body.TargetObject = RandomTarget;
-									Body.TurnTo(RandomTarget);
-									Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-									if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
+									if (Body.GetSkillDisabledDuration(RoesiaDot) == 0 && !Body.IsCasting)
+										Body.TurnTo(RandomTarget);
+									Body.CastSpell(RoesiaDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);								
 								}
+								if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
 							}
 						}
 					}
@@ -264,7 +267,7 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 15000);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 3000);
 					CanCast = true;
 				}				
 			}
