@@ -218,11 +218,13 @@ namespace DOL.GS
 				if (scaleLevel <= 0)
 					scaleLevel = Level;
 
+				
 				if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER || 
-					(this is BDSubPet && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC))
+					(this is BDSubPet && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
+					this.Name.Contains("underhill") || this.Name.Contains("simulacrum") || this.Name.Contains("spirit") || this is TheurgistPet )
 				{
-					// We'll need to be able to scale spells for this pet multiple times, so we
-					//	need to keep the original spells in Spells and only scale sorted copies.
+					//Need to make copies of spells to scale or else it will effect every other pet with the same spell on server.
+					//Enchanter, Cabalist, Spiritmaster & Theurgist Pets need to have pet's spells scaled.
 
 					base.SortSpells();
 					
@@ -270,10 +272,14 @@ namespace DOL.GS
 				}
 				else
 				{
-					// We don't need to keep the original spells, so don't waste memory keeping separate copies.
-					foreach (Spell spell in Spells)
-						ScalePetSpell(spell, scaleLevel);
+					//Don't need to scale here
 
+					// We don't need to keep the original spells, so don't waste memory keeping separate copies.
+					// foreach (Spell spell in Spells)
+					// 	ScalePetSpell(spell, scaleLevel);
+
+
+					
 					base.SortSpells();
 				}
 			}

@@ -64,3 +64,8 @@ GamePlayer.CommandNpcAttack.Denfensive:			You command {0} to defend you!
 ## Pet Control
 GamePlayer.SetControlledNpc.ReleaseTarget:		You release control of your controlled target.
 GamePlayer.SetControlledNpc.ReleaseTarget2:		You lose control of the {0}.
+GamePlayer.GamePet.StartSpell.UnderControl:             {0} is now under your control.
+GamePlayer.GamePet.Target.CantSeeTarget:                Your controlled {0} can't see {1} target!
+GamePlayer.GamePet.Movement.TooFarAway:                 Your controlled creature is too far away!
+GamePlayer.GamePet.SpellEnd.YouLoseControl:             You lose control of {0}!
+GamePlayer.GamePet.SpellEnd.YouReleaseControl:          You release control of your controlled target.

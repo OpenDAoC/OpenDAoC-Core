@@ -132,7 +132,7 @@ namespace DOL.GS.PropertyCalc
 				
 				if (!living.InCombat)
 				{
-					if (brain != null)
+					if (brain != null && brain.Body != null)
 					{
                         GameLiving owner = brain.GetLivingOwner();
                         int distance = brain.Body.GetDistanceTo(owner);

@@ -43,6 +43,8 @@ namespace DOL.GS.RealmAbilities
 					case 3: heal = 100; break;
 				}				
 			}
+			
+			
 
 			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, living.MaxHealth * heal / 100);
 
@@ -63,6 +65,21 @@ namespace DOL.GS.RealmAbilities
 		public override int GetReUseDelay(int level)
 		{
 			return 180;
+		}
+		
+		public override int CostForUpgrade(int level)
+		{
+			switch (level)
+			{
+				case 1:
+					return 3;
+				case 2:
+					return 6;
+				case 3:
+					return 10;
+				default:	// default must return value for lvl 1
+					return 3;
+			}
 		}
 
 		public override void AddEffectsInfo(IList<string> list)

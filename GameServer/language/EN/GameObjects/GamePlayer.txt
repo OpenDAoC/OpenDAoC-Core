@@ -115,6 +115,7 @@ GamePlayer.Die.CorpseLies:						{0} just died. {1} corpse lies on the ground.
 ## Environmental
 GamePlayer.DrowningTimerCallback.CannotBreath:	You cannot breathe underwater and take damage!
 GamePlayer.DrowningTimerCallback.Take5%Damage:	You take 5% of your max hits in damage.
+GamePlayer.DrowningTimerCallback.Take20%Damage:	You take 20% of your max hits in damage.
 GamePlayer.LavaBurnTimerCallback.YourInLava:	You are in Lava and take damage!			
 GamePlayer.LavaBurnTimerCallback.Take34%Damage:	You take 34% of your max hits in damage.
 PlayerPositionUpdateHandler.Endurance:			        You lose endurance!
@@ -197,6 +198,7 @@ GamePlayer.StartAttack.TargetInRange:			, target is in range
 GamePlayer.StartAttack.TargetOutOfRange:		, target is out of range
 GamePlayer.StartAttack.TiredShot:				You're too tired to perform a critical shot!
 GamePlayer.StartAttack.TiredUse:				You're too tired to use your {0}!
+GamePlayer.StartAttack.YouPrepare.Volley:		You prepare your {0} ({1}.{2}s to fire)
 GamePlayer.SwitchQuiver.NoMoreAmmo:				You have no more ammo in your quiver!
 GamePlayer.SwitchQuiver.NotUseQuiver:			You will not use your quiver.
 GamePlayer.SwitchQuiver.ShootWith:				You will shoot with: {0}.
@@ -234,6 +236,8 @@ GamePlayer.GainCraftingSkill.ReachedSkill:		{0} reached 1000 skill in {1}
 GamePlayer.OnLevelUp.Reached:				{0} reached level {1} in {2}!
 
 ## Targeting/Line of Sight
+GamePlayer.Target.Fail.IsDead:                      {0} is dead!
+GamePlayer.Target.Spell.SelectATarget:              You must select a target for this spell!
 GamePlayer.Attack.CantBeAttacked:			This can't be attacked!
 GamePlayer.Attack.CantSeeTarget:			You can't see your target!
 System.MustSelectTarget:					You must select a target!

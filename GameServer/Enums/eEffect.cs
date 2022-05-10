@@ -153,5 +153,6 @@ namespace DOL.GS
         MasteryOfConcentration,
         Juggernaut,
         ForestheartAmbusher,
+        Volley,
     }
 }

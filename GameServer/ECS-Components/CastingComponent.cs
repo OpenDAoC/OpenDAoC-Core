@@ -148,10 +148,10 @@ namespace DOL.GS
 
             if (m_newSpellHandler.Spell.IsInstantCast)
                 instantSpellHandler.Tick(GameLoop.GameLoopTime);
-            else 
-                spellHandler.Tick(GameLoop.GameLoopTime);
-
-
+            // Commenting out the spellHandler.Tick as the CastingService should call that for every server tick. 
+            // We were having the occasional issue of double spell casts when both Ticks happened at same time
+            // else 
+            //     spellHandler.Tick(GameLoop.GameLoopTime);
 
             return true;
         }
@@ -165,7 +165,11 @@ namespace DOL.GS
                 p.Out.SendMessage("You are already casting a spell.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return false;
             }*/
-
+            if (p.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//Volley check, players can't cast spells under volley effect
+            {
+                p.Out.SendMessage("You can't cast spells while Volley is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
             if (p != null && p.IsCrafting)
             {
                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

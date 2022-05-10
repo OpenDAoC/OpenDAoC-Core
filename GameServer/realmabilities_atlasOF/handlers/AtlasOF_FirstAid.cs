@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 	/// <summary>
 	/// Minor % based Self Heal -  30 / lvl
 	/// </summary>
-	public class AtlasOF_FirstAid : TimedRealmAbility
+	public class AtlasOF_FirstAid : XFirstAidAbility
 	{
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -32,8 +32,6 @@ namespace DOL.GS.RealmAbilities
 					return 3;
             }
         }
-
-		
 		
         /// <summary>
         /// Action
@@ -46,17 +44,23 @@ namespace DOL.GS.RealmAbilities
 			int healAmount = 0;
 
 			int currentLevelAbility = living.GetAbility<AtlasOF_FirstAid>().Level;
-			int currentCharMaxHealth = living.MaxHealth;
 			
+			// int currentCharMaxHealth = living.MaxHealth;
 			// Minor % based Self Heal -  30 / lvl
-			healAmount = ((currentLevelAbility * 30) * currentCharMaxHealth) / 100;
+			// healAmount = ((currentLevelAbility * 30) * currentCharMaxHealth) / 100;
+			
+			// 300hp at Lv50 per ability level https://www.atlasfreeshard.com/tickets/first-aid-cost-too-low.3947/
+			// scaled to player level
+			GamePlayer player = living as GamePlayer;
+			var scaleLevel = (double)player.Level / 50;
+			healAmount = (int)(currentLevelAbility * 300 * scaleLevel);
+
 			log.InfoFormat("healAmount is {0}", healAmount);
 
 			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
 
 			SendCasterSpellEffectAndCastMessage(living, 7001, healed > 0);
 
-			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
 				if (healed > 0) player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.HealYourself", healed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
@@ -82,9 +86,7 @@ namespace DOL.GS.RealmAbilities
 			list.Add("");
 			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
 			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
-			list.Add("");
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info6"));
-			
+
 		}
 	}
 }

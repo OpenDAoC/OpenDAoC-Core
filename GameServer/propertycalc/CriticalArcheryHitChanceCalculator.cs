@@ -21,6 +21,14 @@ namespace DOL.GS.PropertyCalc
 		{
 			int chance = living.BuffBonusCategory4[(int)property] + living.AbilityBonus[(int)property];
 
+			//Volley effect apply crit chance during volley effect
+			ECSGameEffect volley = EffectListService.GetEffectOnTarget(living, eEffect.Volley);
+			if (living is GamePlayer archer && volley != null)
+			{
+				chance += 10;
+				if (archer.GetAbility<RealmAbilities.AtlasOF_FalconsEye>() is RealmAbilities.AtlasOF_FalconsEye falcon_eye)
+					chance += falcon_eye.Amount;
+			}
 			if (living is GamePet gamePet)
 			{
 				if (ServerProperties.Properties.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain

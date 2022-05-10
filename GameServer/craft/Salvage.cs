@@ -257,7 +257,7 @@ namespace DOL.GS
 				return 0;
 			}
 
-			player.CraftTimer.Stop();
+			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
 
 			if (!player.Inventory.RemoveItem(itemToSalvage)) // clean the free of the item to salvage
