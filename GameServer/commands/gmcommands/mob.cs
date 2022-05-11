@@ -2552,7 +2552,7 @@ namespace DOL.GS.Commands
 
 			// Load NPCTemplate before overriding NPCTemplate's variables
 			//Kataract : Added a control to avoid an ingame error while copying reloaded mobs
-			if (targetMob.NPCTemplate != null && targetMob.NPCTemplate.TemplateId != 0 && targetMob.NPCTemplate.TemplateId != -1)
+			if (targetMob.NPCTemplate != null && targetMob.NPCTemplate.TemplateId != 0)
 			{
 				mob.LoadTemplate(targetMob.NPCTemplate);
 			}
@@ -2563,41 +2563,40 @@ namespace DOL.GS.Commands
 			mob.Z = client.Player.Z;
 			mob.CurrentRegion = client.Player.CurrentRegion;
 			mob.Heading = client.Player.Heading;
-			//mob.Level = targetMob.Level;
+			mob.Level = targetMob.Level;
 			mob.Realm = targetMob.Realm;
-			//mob.Name = targetMob.Name;
-			//mob.Model = targetMob.Model;
-			//mob.Flags = targetMob.Flags;
+			mob.Name = targetMob.Name;
+			mob.Model = targetMob.Model;
+			mob.Flags = targetMob.Flags;
 			mob.MeleeDamageType = targetMob.MeleeDamageType;
 			mob.RespawnInterval = targetMob.RespawnInterval;
 			mob.RoamingRange = targetMob.RoamingRange;
 			mob.MaxDistance = targetMob.MaxDistance;
 			mob.BodyType = targetMob.BodyType;
-			mob.CurrentSpeed = 0;
 
 			// also copies the stats
 
-			//mob.Strength = targetMob.Strength;
-			//mob.Constitution = targetMob.Constitution;
-			//mob.Dexterity = targetMob.Dexterity;
-			//mob.Quickness = targetMob.Quickness;
-			//mob.Intelligence = targetMob.Intelligence;
-			//mob.Empathy = targetMob.Empathy;
-			//mob.Piety = targetMob.Piety;
-			//mob.Charisma = targetMob.Charisma;
+			mob.Strength = targetMob.Strength;
+			mob.Constitution = targetMob.Constitution;
+			mob.Dexterity = targetMob.Dexterity;
+			mob.Quickness = targetMob.Quickness;
+			mob.Intelligence = targetMob.Intelligence;
+			mob.Empathy = targetMob.Empathy;
+			mob.Piety = targetMob.Piety;
+			mob.Charisma = targetMob.Charisma;
 
 			//Fill the living variables
-			//mob.CurrentSpeed = 0;
-			//mob.MaxSpeedBase = targetMob.MaxSpeedBase;
-			//mob.GuildName = targetMob.GuildName;
-			//mob.Size = targetMob.Size;
-			//mob.Race = targetMob.Race;
+			mob.CurrentSpeed = 0;
+			mob.MaxSpeedBase = targetMob.MaxSpeedBase;
+			mob.GuildName = targetMob.GuildName;
+			mob.Size = targetMob.Size;
+			mob.Race = targetMob.Race;
 
-			//mob.Inventory = targetMob.Inventory;
-			//if (mob.Inventory != null)
-			//	mob.SwitchWeapon(targetMob.ActiveWeaponSlot);
+			mob.Inventory = targetMob.Inventory;
+			if (mob.Inventory != null)
+				mob.SwitchWeapon(targetMob.ActiveWeaponSlot);
 
-			//mob.EquipmentTemplateID = targetMob.EquipmentTemplateID;
+			mob.EquipmentTemplateID = targetMob.EquipmentTemplateID;
 
 			if (mob is GameMerchant)
 			{
@@ -2702,7 +2701,7 @@ namespace DOL.GS.Commands
 				targetMob.BroadcastLivingEquipmentUpdate();
 				targetMob.NPCTemplate = template as NpcTemplate;
 				targetMob.SaveIntoDatabase();
-				DisplayMessage(client, "Updated NPC based on the template " + id + ".", new object[] { });
+				DisplayMessage(client, "Updated npc based on template " + id, new object[] { });
 			}
 		}
 

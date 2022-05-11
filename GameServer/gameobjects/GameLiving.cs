@@ -433,7 +433,6 @@ namespace DOL.GS
         public virtual eActiveWeaponSlot ActiveWeaponSlot
 		{
 			get { return m_activeWeaponSlot; }
-			set { m_activeWeaponSlot = value; }
 		}
 
 		public object _xpGainersLock = new object();

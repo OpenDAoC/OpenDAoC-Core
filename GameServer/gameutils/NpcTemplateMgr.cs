@@ -163,7 +163,6 @@ namespace DOL.GS
 				{
 					ArrayList array = (ArrayList)entry;
 					array.Add(template);
-					m_mobTemplates[template.TemplateId] = array;
 				}
 				else
 				{
@@ -192,9 +191,9 @@ namespace DOL.GS
 					ArrayList array = (ArrayList)entry;
 					return (NpcTemplate)array[Util.Random(array.Count - 1)];
 				}
-				if (entry == null)
+				else if (entry == null)
 				{
-					//log.Error("No NPCTemplateID " + templateId + " exists.");
+					log.Error("No npctemplate with ID " + templateId + " found.");
 					return null;
 				}
 				return (NpcTemplate)entry;
