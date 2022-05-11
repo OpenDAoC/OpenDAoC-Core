@@ -9911,6 +9911,181 @@ public override bool WhisperReceive(GameLiving source, string str)
             price = champion;
             modelIDToAssign = 2984;
             break;
+        
+        case "hibernia dragonslayer sword 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Slash 
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3895;
+            break;
+        case "hibernia dragonslayer hammer 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Crush 
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3897;
+            break;
+        case "hibernia dragonslayer dagger 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Thrust 
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3899;
+            break;
+        
+        case "midgard dragonslayer sword 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Object_Type != (int) eObjectType.Sword 
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3936;
+            break;
+        case "midgard dragonslayer hammer 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Object_Type != (int) eObjectType.Hammer 
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3938;
+            break;
+        case "midgard dragonslayer axe 1h":
+            
+        case "albion dragonslayer sword 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3972;
+            break;
+        case "albion dragonslayer axe 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3978;
+            break;
+        case "albion dragonslayer hammer 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3974;
+            break;
+        case "albion dragonslayer dagger 1h":
+            if ((item.Item_Type != Slot.RIGHTHAND &&
+                 item.Item_Type != Slot.LEFTHAND) 
+                || item.Type_Damage != (int) eDamageType.Thrust
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills) < 25)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3976;
+            break;
 
         //hand to hand
         case "snakecharmer's fist":
@@ -10667,6 +10842,120 @@ public override bool WhisperReceive(GameLiving source, string str)
 
             price = toageneric;
             modelIDToAssign = 1032;
+            break;
+        case "midgard dragonslayer sword 2h":
+            if (item.Object_Type != (int) eObjectType.Sword
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3919;
+            break;
+        case "midgard dragonslayer hammer 2h":
+            if (item.Object_Type != (int) eObjectType.Hammer
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3922;
+            break;
+        case "midgard dragonslayer axe 2h":
+            if (item.Object_Type != (int) eObjectType.Axe
+                || item.Hand != 1
+                || player.Realm != eRealm.Midgard)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3923;
+            break;
+        case "albion dragonslayer thrust 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Thrust
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3954;
+            break;
+        case "albion dragonslayer slash 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3955;
+            break;
+        case "albion dragonslayer crush 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3958;
+            break;
+        case "albion dragonslayer axe 2h":
+            if (item.Object_Type != (int) eObjectType.TwoHandedWeapon
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Albion)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3959;
+            break;
+        case "hibernia dragonslayer slash 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Slash
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3878;
+            break;
+        case "hibernia dragonslayer crush 2h":
+            if (item.Object_Type != (int) eObjectType.LargeWeapons
+                || item.Hand != 1
+                || item.Type_Damage != (int)eDamageType.Crush
+                || player.Realm != eRealm.Hibernia)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            price = dragonCost * 2;
+            modelIDToAssign = 3881;
             break;
 
         #endregion
