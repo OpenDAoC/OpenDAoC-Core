@@ -3883,9 +3883,9 @@ namespace DOL.GS
 			if( blockChance > 0 && IsObjectInFront( ad.Attacker, 120 ) && !ad.Target.IsStunned && !ad.Target.IsSitting )
 			{
 				// Reduce block chance if the shield used is too small (valable only for player because npc inventory does not store the shield size but only the model of item)
-				int shieldSize = 0;
+				double shieldSize = 0.0;
 				if( lefthand != null )
-					shieldSize = lefthand.Type_Damage;
+					shieldSize = (double)lefthand.Type_Damage;
 				if( player != null && attackerCount > shieldSize )
 					blockChance *= (shieldSize / attackerCount);
 
