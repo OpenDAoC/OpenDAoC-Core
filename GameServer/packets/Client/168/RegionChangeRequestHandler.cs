@@ -166,7 +166,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player region change requests
 		/// </summary>
-		protected class RegionChangeRequestHandler : RegionAction
+		protected class RegionChangeRequestHandler : RegionECSAction
 		{
 			/// <summary>
 			/// Checks whether player is allowed to jump
@@ -197,7 +197,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer)m_actionSource;
 
@@ -206,7 +206,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					player.Out.SendMessage("Destination region (" + reg.Description + ") is not supported by your client type.",
 					                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return;
+					return 0;
 				}
 
 				try
@@ -235,7 +235,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					try
 					{
 						if (!m_checkHandler.IsAllowedToJump(m_zonePoint, player))
-							return;
+							return 0;
 					}
 					catch (Exception e)
 					{
@@ -244,12 +244,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						player.Out.SendMessage("exception in jump point (" + m_zonePoint.Id + ") handler...", eChatType.CT_System,
 						                       eChatLoc.CL_SystemWindow);
-						return;
+						return 0;
 					}
 				}
 
 				//move the player
 				player.MoveTo(m_zonePoint.TargetRegion, m_zonePoint.TargetX, m_zonePoint.TargetY, m_zonePoint.TargetZ, m_zonePoint.TargetHeading);
+				return 0;
 			}
 		}
 	}
