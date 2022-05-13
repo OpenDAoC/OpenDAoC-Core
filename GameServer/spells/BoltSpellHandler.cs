@@ -109,7 +109,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Delayed action when bolt reach the target
 		/// </summary>
-		protected class BoltOnTargetAction : RegionAction
+		protected class BoltOnTargetAction : RegionECSAction
 		{
 			/// <summary>
 			/// The bolt target
@@ -140,14 +140,14 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_boltTarget;
 				GameLiving caster = (GameLiving)m_actionSource;
-				if (target == null) return;
-				if (target.CurrentRegionID != caster.CurrentRegionID) return;
-				if (target.ObjectState != GameObject.eObjectState.Active) return;
-				if (!target.IsAlive) return;
+				if (target == null) return 0;
+				if (target.CurrentRegionID != caster.CurrentRegionID) return 0;
+				if (target.ObjectState != GameObject.eObjectState.Active) return 0;
+				if (!target.IsAlive) return 0;
 
 				// Related to PvP hitchance
 				// http://www.camelotherald.com/news/news_article.php?storyid=2444
@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 						if (aggroBrain != null)
 							aggroBrain.AddToAggroList(caster, 1);
 					}
-					return;
+					return 0;
 				}
 
 				ad.Damage = (int)((double)ad.Damage * (1.0 + caster.GetModified(eProperty.SpellDamage) * 0.01));
@@ -333,6 +333,8 @@ namespace DOL.GS.Spells
 				m_handler.DamageTarget(ad, false, (blocked ? 0x02 : 0x14));
 
                 target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
+
+                return 0;
 			}
 		}
     }
