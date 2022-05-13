@@ -227,7 +227,7 @@ namespace DOL.AI.Brain
 					Enemys_To_DD.Clear();
                 }
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (HasAggro)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{
@@ -237,9 +237,11 @@ namespace DOL.AI.Brain
 							AddAggroListTo(npc.Brain as StandardMobBrain);
 					}
 				}
-				if(!Body.IsCasting)
-					Body.CastSpell(Boss_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-
+				if (!Body.IsCasting)
+				{
+					Body.SetGroundTarget(Body.X, Body.Y, Body.Z);
+					Body.CastSpell(Boss_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+				}
 				PickRandomTarget();
 				TeleportRandomTarget();
 			}
@@ -289,10 +291,10 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 1695;
 					spell.Name = "Thunder Stomp";
 					spell.Damage = 250;
-					spell.Range = 0;
+					spell.Range = 500;
 					spell.Radius = 1000;
 					spell.SpellID = 11836;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.Area.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

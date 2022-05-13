@@ -14,7 +14,6 @@ namespace DOL.GS
         public Birghir() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
@@ -25,42 +24,35 @@ namespace DOL.GS
                 default: return 60; // dmg reduction for rest resists
             }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.55;
         }
-
         public override int MaxHealth
         {
             get { return 20000; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160391);
@@ -74,8 +66,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -114,9 +105,7 @@ namespace DOL.GS
                 TG.Size = 65;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
                 TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
@@ -152,7 +141,6 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -160,15 +148,12 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         public static GamePlayer randomtarget = null;
-
         public static GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-
         public int PickPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive)
@@ -181,17 +166,12 @@ namespace DOL.AI.Brain
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                         {
                             if (!m_aggroTable.ContainsKey(player))
-                            {
                                 m_aggroTable.Add(player, 1);
-                            }
                         }
                     }
                 }
-
                 if (enemies.Count == 0)
-                {
-                    /*do nothing*/
-                }
+                {/*do nothing*/}
                 else
                 {
                     List<GameLiving> damage_enemies = new List<GameLiving>();
@@ -210,7 +190,6 @@ namespace DOL.AI.Brain
                             damage_enemies.Add(enemies[i] as GameLiving);
                         }
                     }
-
                     if (damage_enemies.Count > 0)
                     {
                         GamePlayer Target = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
@@ -224,14 +203,12 @@ namespace DOL.AI.Brain
                             {
                                 case 1:
                                     {
-                                        Body.CastSpell(Icelord_Bolt,
-                                            SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //bolt
+                                        Body.CastSpell(Icelord_Bolt,SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //bolt
                                     }
                                     break;
                                 case 2:
                                     {
-                                        Body.CastSpell(Icelord_dd,
-                                            SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //dd cold
+                                        Body.CastSpell(Icelord_dd,SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); //dd cold
                                     }
                                     break;
                             }
@@ -244,14 +221,11 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             return 0;
         }
-
         public static bool IsTargetPicked = false;
         public static bool message1 = false;
         public static bool IsPulled = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -268,31 +242,26 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 message1 = false;
                 IsTargetPicked = false;
                 IsPulled = false;
             }
-
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-            }
+                Body.Health = Body.MaxHealth;
 
             if (Body.InCombat && HasAggro)
             {
@@ -303,19 +272,15 @@ namespace DOL.AI.Brain
                         " We should have destroyed you all, all your people, before you could invade us! We should have... killed you all!'"));
                     message1 = true;
                 }
-
                 if (IsTargetPicked == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(20000, 35000));
                     IsTargetPicked = true;
                 }
             }
-
             base.Think();
         }
-
         private Spell m_Icelord_Bolt;
-
         private Spell Icelord_Bolt
         {
             get
@@ -324,12 +289,12 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
+                    spell.CastTime = 3;
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 4559;
                     spell.Icon = 4559;
                     spell.TooltipId = 4559;
-                    spell.Damage = 650;
+                    spell.Damage = 350;
                     spell.Name = "Frost Sphere";
                     spell.Range = 1800;
                     spell.SpellID = 11749;
@@ -341,13 +306,10 @@ namespace DOL.AI.Brain
                     m_Icelord_Bolt = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_Bolt);
                 }
-
                 return m_Icelord_Bolt;
             }
         }
-
         private Spell m_Icelord_dd;
-
         private Spell Icelord_dd
         {
             get
@@ -356,7 +318,7 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
+                    spell.CastTime = 3;
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 161;
                     spell.Icon = 161;
@@ -373,7 +335,6 @@ namespace DOL.AI.Brain
                     m_Icelord_dd = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_dd);
                 }
-
                 return m_Icelord_dd;
             }
         }
@@ -388,7 +349,6 @@ namespace DOL.GS
         public Guthlac() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
@@ -399,42 +359,35 @@ namespace DOL.GS
                 default: return 60; // dmg reduction for rest resists
             }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 800;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.55;
         }
-
         public override int MaxHealth
         {
             get { return 20000; }
         }
-
         public override void Die(GameObject killer) //on kill generate orbs
         {
             foreach (GameNPC npc in this.GetNPCsInRadius(5000))
@@ -442,12 +395,9 @@ namespace DOL.GS
                 if (npc != null)
                 {
                     if (npc.IsAlive && npc.Brain is FrozenBombBrain)
-                    {
                         npc.Die(this);
-                    }
                 }
             }
-
             base.Die(killer);
         }
 
@@ -464,8 +414,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -506,9 +455,7 @@ namespace DOL.GS
                 TG.Size = 65;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
                 TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
@@ -524,8 +471,7 @@ namespace DOL.GS
                 TG.Brain.Start();
             }
             else
-                log.Warn(
-                    "Elder Council Guthlac exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn("Elder Council Guthlac exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -534,9 +480,7 @@ namespace DOL.AI.Brain
 {
     public class GuthlacBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public GuthlacBrain()
             : base()
         {
@@ -544,7 +488,6 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -552,20 +495,16 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         public static bool message1 = false;
         public static bool IsBombUp = false;
         public static GameLiving randomtarget = null;
-
         public static GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-
         List<GamePlayer> PlayersToDD = new List<GamePlayer>();
         public static bool IsPulled2 = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)
@@ -582,7 +521,6 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
 
@@ -592,7 +530,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
                 RandomTarget = null;
                 FrozenBomb.FrozenBombCount = 0;
@@ -603,22 +541,18 @@ namespace DOL.AI.Brain
                     if (npc != null)
                     {
                         if (npc.IsAlive && npc.Brain is FrozenBombBrain)
-                        {
                             npc.Die(Body);
-                        }
                     }
                 }
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-            }
+                Body.Health = Body.MaxHealth;
 
             if (Body.InCombat && HasAggro)
             {
@@ -628,12 +562,9 @@ namespace DOL.AI.Brain
                     if (player.IsAlive)
                     {
                         if (!PlayersToDD.Contains(player))
-                        {
                             PlayersToDD.Add(player);
-                        }
                     }
                 }
-
                 if (IsBombUp == false && FrozenBomb.FrozenBombCount == 0)
                 {
                     if (PlayersToDD.Count > 0)
@@ -641,12 +572,9 @@ namespace DOL.AI.Brain
                         GamePlayer ptarget = PlayersToDD[Util.Random(0, PlayersToDD.Count - 1)];
                         RandomTarget = ptarget;
                     }
-
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBombTimer),
-                        Util.Random(35000, 60000)); //spawn frozen bomb every 35s-60s
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBombTimer), Util.Random(35000, 60000)); //spawn frozen bomb every 35s-60s
                     IsBombUp = true;
                 }
-
                 if (message1 == false)
                 {
                     BroadcastMessage(String.Format(
@@ -663,21 +591,17 @@ namespace DOL.AI.Brain
         public int SpawnBombTimer(ECSGameTimer timer)
         {
             if (FrozenBomb.FrozenBombCount == 0)
-            {
                 SpawnFrozenBomb();
-            }
 
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBomb), 5000);
             return 0;
         }
-
         public int ResetBomb(ECSGameTimer timer)
         {
             RandomTarget = null;
             IsBombUp = false;
             return 0;
         }
-
         public void SpawnFrozenBomb()
         {
             FrozenBomb npc = new FrozenBomb();
@@ -687,8 +611,7 @@ namespace DOL.AI.Brain
                 npc.X = RandomTarget.X;
                 npc.Y = RandomTarget.Y;
                 npc.Z = RandomTarget.Z;
-                BroadcastMessage(String.Format(npc.Name + " appears on " + RandomTarget.Name +
-                                               ", It's unstable form will soon errupt."));
+                BroadcastMessage(String.Format(npc.Name + " appears on " + RandomTarget.Name +", It's unstable form will soon errupt."));
             }
             else
             {
@@ -721,96 +644,74 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                case eDamageType.Slash: return 15; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 15; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
                 case eDamageType.Cold: return 99; // almost immune to cold dmg
-                default: return 25; // dmg reduction for rest resists
+                default: return 15; // dmg reduction for rest resists
             }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         protected int Show_Effect(ECSGameTimer timer)
         {
-            if (this.IsAlive)
+            if (IsAlive)
             {
-                foreach (GamePlayer player in this.GetPlayersInRadius(8000))
+                foreach (GamePlayer player in GetPlayersInRadius(8000))
                 {
                     if (player != null)
-                    {
                         player.Out.SendSpellEffectAnimation(this, this, 177, 0, false, 0x01);
-                    }
                 }
-
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
-
             return 0;
         }
-
         protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
-            {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-            }
-
             return 0;
         }
-
         protected int Explode(ECSGameTimer timer)
         {
-            if (IsAlive)
+            if (IsAlive && TargetObject != null)
             {
-                SetGroundTarget(X, Y, Z);
-                this.CastSpell(IceSpike_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 500);
+                //SetGroundTarget(X, Y, Z);
+                CastSpell(GuthlacIceSpike_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 1000);
             }
-
             return 0;
         }
-
         public int KillBomb(ECSGameTimer timer)
         {
             if (IsAlive)
-            {
-                this.Die(this);
-            }
-
+                Die(this);
             return 0;
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
-
         public static int FrozenBombCount = 0;
-
         public override void Die(GameObject killer)
         {
             FrozenBombCount = 0;
             base.Die(null);
         }
-
         public override int MaxHealth
         {
-            get { return 8000; }
+            get { return 4000; }
         }
-
         public override bool AddToWorld()
         {
             Model = 665;
@@ -831,20 +732,17 @@ namespace DOL.GS
             if (success)
             {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode),
-                    20000); //20 seconds until this will explode and deal heavy cold dmg
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode), 20000); //20 seconds until this will explode and deal heavy cold dmg
             }
-
             return success;
         }
 
-        private Spell m_IceSpike_aoe;
-
-        private Spell IceSpike_aoe
+        private Spell m_GuthlacIceSpike_aoe;
+        private Spell GuthlacIceSpike_aoe
         {
             get
             {
-                if (m_IceSpike_aoe == null)
+                if (m_GuthlacIceSpike_aoe == null)
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
@@ -855,19 +753,18 @@ namespace DOL.GS
                     spell.TooltipId = 208;
                     spell.Damage = 2000;
                     spell.Name = "Ice Bomb";
-                    spell.Radius = 2000; //very big radius to make them feel pain lol
+                    spell.Radius = 0; //very big radius to make them feel pain lol
                     spell.Range = 2000;
                     spell.SpellID = 11751;
-                    spell.Target = eSpellTarget.Area.ToString();
+                    spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
-                    m_IceSpike_aoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IceSpike_aoe);
+                    m_GuthlacIceSpike_aoe = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GuthlacIceSpike_aoe);
                 }
-
-                return m_IceSpike_aoe;
+                return m_GuthlacIceSpike_aoe;
             }
         }
     }
@@ -899,9 +796,7 @@ namespace DOL.AI.Brain
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                         {
                             if (!AggroTable.ContainsKey(player))
-                            {
                                 AggroTable.Add(player, 100);
-                            }
                         }
                     }
                 }
