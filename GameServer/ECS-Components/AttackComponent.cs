@@ -2767,41 +2767,57 @@ namespace DOL.GS
             {
                 missrate >>= 1; //halved
             }
+            
+            //check for dirty trick fumbles before misses
+            DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
+            if (dt != null && ad.IsRandomFumble)
+                return eAttackResult.Fumbled;
 
             ad.MissRate = missrate;
-            int rando = 0;
+            double rando = 0;
             bool skipDeckUsage = ServerProperties.Properties.OVERRIDE_DECK_RNG;
             if (missrate > 0)
             {
                 if (ad.Attacker is GamePlayer atkkr && !skipDeckUsage)
                 {
-                    rando = atkkr.RandomNumberDeck.GetInt();
+                    rando = atkkr.RandomNumberDeck.GetPseudoDouble();
                 }
                 else
                 {
-                    rando = Util.CryptoNextInt(100);
+                    rando = Util.CryptoNextDouble();
                 }
 
 
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
+                {
                     misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rando}", eChatType.CT_DamageAdd,
                         eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"Your chance to fumble: {(100 * ad.Attacker.ChanceToFumble).ToString("0.##")}% rand: {(100 * rando).ToString("0.##")} Fumble? {ad.Attacker.ChanceToFumble > rando}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                
                 if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
-                    missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando}", eChatType.CT_DamageAdd,
+                    missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rando * 100}", eChatType.CT_DamageAdd,
                         eChatLoc.CL_SystemWindow);
 
+                //check for normal fumbles
+                //NOTE: fumbles are a subset of misses, and a player can only fumble if the attack would have
+                //been a miss anyways
+                if (ad.Attacker.ChanceToFumble > rando)
+                    return eAttackResult.Fumbled;
 
-                if (missrate > rando)
+                if (missrate > rando * 100)
                 {
                     return eAttackResult.Missed;
                 }
             }
 
+            /*
             if (ad.IsRandomFumble)
                 return eAttackResult.Fumbled;
 
             if (ad.IsRandomMiss)
-                return eAttackResult.Missed;
+                return eAttackResult.Missed;*/
 
 
             // Bladeturn
