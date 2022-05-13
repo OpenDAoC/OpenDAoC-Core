@@ -213,16 +213,16 @@ namespace DOL.GS.Spells
 		        // If the mob is "friendly"
 		        if (charmMob.Realm != 0)
 		        {
-			        // Message: This spell does not charm that type of monster!
-			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
+			        // Message: {0) can't be charmed!
+			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
 			        return false;
 		        }
 	                
 		        // To make a mob uncharmable, give it a BodyType of 0
 		        if (charmMob.BodyType is < 1 or > 11)
 		        {
-			        // Message: This spell does not charm that type of monster!
-			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
+			        // Message: {0) can't be charmed!
+			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
 			        return false;
 		        }
 	                
@@ -267,8 +267,8 @@ namespace DOL.GS.Spells
 			        // If the mob's ClassType matches any of the above, it cannot be charmed
 			        if (isCharmable == false)
 			        {
-				        // Message: This spell does not charm that type of monster!
-				        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
+				        // Message: {0) can't be charmed!
+				        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
 				        return false;
 			        }
 		        }
@@ -276,8 +276,8 @@ namespace DOL.GS.Spells
 		        // If the target has an uppercase first letter in the name
 		        if (ServerProperties.Properties.SPELL_CHARM_NAMED_CHECK != 0 && char.IsUpper(charmMob.Name[0]))
 		        {
-			        // Message: This spell does not charm that type of monster!
-			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
+			        // Message: {0) can't be charmed!
+			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
 			        return false;
 		        }
 
