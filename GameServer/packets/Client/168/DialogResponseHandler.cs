@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles dialog responses from players
 		/// </summary>
-		protected class DialogBoxResponseAction : RegionAction
+		protected class DialogBoxResponseAction : RegionECSAction
 		{
 			/// <summary>
 			/// The general data field
@@ -91,12 +91,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
 				if (player == null)
-					return;
+					return 0;
 
 				// log.DebugFormat("Dialog - response: {0}, messageType: {1}, data1: {2}, data2: {3}, data3: {4}", m_response, m_messageType, m_data1, m_data2, m_data3);
 
@@ -114,7 +114,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								}
 
 								if (callback == null)
-									return;
+									return Interval;
 
 								callback(player, m_response);
 							}
@@ -129,23 +129,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 								{
 									player.Out.SendMessage("You need to be in the same region as the guild leader to accept an invitation.",
 									                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 								if (player.Guild != null)
 								{
 									player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", eChatType.CT_System,
 									                       eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 								if (guildLeader.Guild != null)
 								{
 									guildLeader.Guild.AddPlayer(player);
-									return;
+									return Interval;
 								}
 
 								player.Out.SendMessage("Player doing the invite is not in a guild!", eChatType.CT_System,
 								                       eChatLoc.CL_SystemWindow);
-								return;
+								return Interval;
 							}
 
 							if (guildLeader != null)
@@ -153,7 +153,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								guildLeader.Out.SendMessage(player.Name + " declined your invite.", eChatType.CT_System,
 								                            eChatLoc.CL_SystemWindow);
 							}
-							return;
+							return Interval;
 						}
 					case eDialogCode.GuildLeave:
 						{
@@ -162,7 +162,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (player.Guild == null)
 								{
 									player.Out.SendMessage("You are not in a guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 
 								player.Guild.RemovePlayer(player.Name, player);
@@ -170,7 +170,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							else
 							{
 								player.Out.SendMessage("You decline to quit your guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
+								return Interval;
 							}
 							break;
 						}
@@ -178,7 +178,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							var questNPC = (GameLiving)WorldMgr.GetObjectByIDFromRegion(player.CurrentRegionID, (ushort) m_data2);
 							if (questNPC == null)
-								return;
+								return Interval;
 
 							var args = new QuestEventArgs(questNPC, player, (ushort) m_data1);
 							if (m_response == 0x01) // accept
@@ -187,10 +187,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 								// Note: This is done withing quest code since we have to check requirements, etc for each quest individually
 								// i'm reusing the questsubscribe command for quest abort since its 99% the same, only different event dets fired
 								player.Notify(m_data3 == 0x01 ? GamePlayerEvent.AbortQuest : GamePlayerEvent.AcceptQuest, player, args);
-								return;
+								return Interval;
 							}
 							player.Notify(m_data3 == 0x01 ? GamePlayerEvent.ContinueQuest : GamePlayerEvent.DeclineQuest, player, args);
-							return;
+							return Interval;
 						}
 					case eDialogCode.GroupInvite:
 						{
@@ -198,37 +198,37 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								GameClient cln = WorldMgr.GetClientFromID(m_data1);
 								if (cln == null)
-									return;
+									return Interval;
 
 								GamePlayer groupLeader = cln.Player;
 								if (groupLeader == null)
-									return;
+									return Interval;
 
 								if (player.Group != null)
 								{
 									player.Out.SendMessage("You are still in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 								if (!GameServer.ServerRules.IsAllowedToGroup(groupLeader, player, false))
 								{
-									return;
+									return Interval;
 								}
 								if (player.InCombatPvE)
 								{
 									player.Out.SendMessage("You can't join a group while in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 								if (groupLeader.Group != null)
 								{
-									if (groupLeader.Group.Leader != groupLeader) return;
+									if (groupLeader.Group.Leader != groupLeader) return 0;
                                     if (groupLeader.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
 									{
 										player.Out.SendMessage("The group is full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-										return;
+										return Interval;
 									}
 									groupLeader.Group.AddMember(player);
 									GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
-									return;
+									return Interval;
 								}
 
 								var group = new Group(groupLeader);
@@ -239,7 +239,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
 
-								return;
+								return Interval;
 							}
 							break;
 						}
@@ -251,7 +251,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								{
 									player.Out.SendMessage("You have to be a member of a guild, before you can use any of the commands!",
 									                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 
 								AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
@@ -259,7 +259,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								{
 									player.Out.SendMessage("You have to be near the keep to claim it.", eChatType.CT_System,
 									                       eChatLoc.CL_SystemWindow);
-									return;
+									return Interval;
 								}
 
 								if (keep.CheckForClaim(player))
@@ -286,7 +286,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								player.TempProperties.removeProperty(HousingConstants.HouseForHouseRent);
 
-								return;
+								return Interval;
 							}
 
 							var house = player.TempProperties.getProperty<House>(HousingConstants.HouseForHouseRent, null);
@@ -302,7 +302,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								// take the money from the player
 								if (!player.RemoveMoney(moneyToAdd))
-									return;
+									return Interval;
 								InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", eInventoryActionType.Other, moneyToAdd);
 
 								// add the money to the lockbox
@@ -328,7 +328,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									bpsToMoney = (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS) - house.KeptMoney;
 
 								if (!player.RemoveBountyPoints(Money.GetGold(bpsToMoney)))
-									return;
+									return Interval;
 
 								// add the bps to the lockbox
 								house.KeptMoney += bpsToMoney;
@@ -358,6 +358,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 							break;
 						}
 				}
+
+				return Interval;
 			}
 		}
 
