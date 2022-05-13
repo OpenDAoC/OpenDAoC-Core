@@ -549,20 +549,21 @@ namespace DOL.GS
             // Luhz Crafting Update:
             // All items have MP level imbue points
             //return itemMaxBonusLevel[item.Level - 1, 100 - 94];
-            if (item.Quality == 100)
-	            return 32;
-            if (item.Quality == 99)
-	            return 28;
-            if (item.Quality == 98)
-	            return 24;
-            if (item.Quality == 97)
-	            return 21;
-            if (item.Quality == 96)
-	            return 18;
-            if (item.Quality == 95)
-	            return 15;
             
-			return 10;
+            if (item.Quality == 100)
+	            return (int)Math.Round(0.625 * item.Level);
+            if (item.Quality == 99)
+	            return (int)Math.Round(0.55 * item.Level);
+            if (item.Quality == 98)
+	            return (int)Math.Round(0.475 * item.Level);
+            if (item.Quality == 97)
+	            return (int)Math.Round(0.42 * item.Level);
+            if (item.Quality == 96)
+	            return (int)Math.Round(0.353 * item.Level);
+            if (item.Quality == 95)
+	            return (int)Math.Round(0.295 * item.Level);
+            
+            return (int)Math.Round(0.2 * item.Level);
             
 		}
 
