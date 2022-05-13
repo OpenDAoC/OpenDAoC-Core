@@ -30,7 +30,7 @@ namespace DOL.GS
 	/// <summary>
 	/// Calls delegate on every tick
 	/// </summary>
-	public sealed class RegionTimer : GameTimer
+	public sealed class RegionTimer : ECSGameTimer
 	{
 		/// <summary>
 		/// The timer callback
@@ -89,7 +89,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="timerOwner">The game object that is starting the timer</param>
 		public RegionTimer(GameObject timerOwner)
-			: base(timerOwner.CurrentRegion.TimeManager)
+			: base(timerOwner)
 		{
 			m_owner = timerOwner;
 		}
@@ -123,19 +123,20 @@ namespace DOL.GS
 		/// Constructs a new region timer
 		/// </summary>
 		/// <param name="time"></param>
-		public RegionTimer(TimeManager time)
-			: base(time)
+		public RegionTimer(GameTimer.TimeManager time)
+			: base(new GameNPC())
 		{
 		}
 
+		/*
 		/// <summary>
 		/// Called on every timer tick
 		/// </summary>
-		protected override void OnTick()
+		protected override void Tick()
 		{
 			if (m_callback != null)
 				Interval = m_callback(this);
-		}
+		}*/
 
 		/// <summary>
 		/// Returns short information about the timer
