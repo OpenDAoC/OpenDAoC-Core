@@ -9029,7 +9029,6 @@ namespace DOL.GS {
                     if (Level > 40)
                     {
                         validModels.Add(957);
-                        validModels.Add(660);
                     }
                     if (Level > 50)
                     {
@@ -9124,7 +9123,6 @@ namespace DOL.GS {
                     }
                     if (Level > 50)
                     {
-                        validModels.Add(654);
                         validModels.Add(655);
                         validModels.Add(1017);
                         validModels.Add(1015);
