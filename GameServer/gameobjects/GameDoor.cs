@@ -54,11 +54,11 @@ namespace DOL.GS
 		/// The time interval after which door will be closed, in milliseconds
 		/// On live this is usually 5 seconds
 		/// </summary>
-		protected const int CLOSE_DOOR_TIME = 8000;
+		protected const int CLOSE_DOOR_TIME = 5000;
 		/// <summary>
 		/// The timed action that will close the door
 		/// </summary>
-		protected GameTimer m_closeDoorAction;
+		protected ECSGameTimer m_closeDoorAction;
 
 		/// <summary>
 		/// Creates a new GameDoor object
@@ -253,6 +253,7 @@ namespace DOL.GS
 		{
 			if (!m_openDead)
 				this.State = eDoorState.Closed;
+			m_closeDoorAction.Stop();
 			m_closeDoorAction = null;
 		}
 
@@ -419,7 +420,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The action that closes the door after specified duration
 		/// </summary>
-		protected class CloseDoorAction : RegionAction
+		protected class CloseDoorAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new close door action
@@ -433,10 +434,11 @@ namespace DOL.GS
 			/// <summary>
 			/// This function is called to close the door 10 seconds after it was opened
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameDoor door = (GameDoor)m_actionSource;
 				door.Close();
+				return 0;
 			}
 		}
 	}
