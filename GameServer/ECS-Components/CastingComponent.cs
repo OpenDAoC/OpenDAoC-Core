@@ -148,10 +148,10 @@ namespace DOL.GS
 
             if (m_newSpellHandler.Spell.IsInstantCast)
                 instantSpellHandler.Tick(GameLoop.GameLoopTime);
-            else 
-                spellHandler.Tick(GameLoop.GameLoopTime);
-
-
+            // Commenting out the spellHandler.Tick as the CastingService should call that for every server tick. 
+            // We were having the occasional issue of double spell casts when both Ticks happened at same time
+            // else 
+            //     spellHandler.Tick(GameLoop.GameLoopTime);
 
             return true;
         }
