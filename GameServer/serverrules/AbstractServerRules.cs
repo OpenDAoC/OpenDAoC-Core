@@ -2376,7 +2376,21 @@ namespace DOL.GS.ServerRules
 					player.Out.SendMerchantWindow(HouseTemplateMgr.OutdoorShopItems, merchantType);
 					break;
 				case eMerchantWindowType.HousingBindstoneHookpoint:
-					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItems, merchantType);
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsAlb, merchantType);
+							break;
+						case eRealm.Midgard:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsMid, merchantType);
+							break;
+						case eRealm.Hibernia:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsHib, merchantType);
+							break;
+						default:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItems, merchantType);
+							break;
+					}
 					break;
 				case eMerchantWindowType.HousingCraftingHookpoint:
 					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorCraftShopItems, merchantType);
@@ -2385,7 +2399,21 @@ namespace DOL.GS.ServerRules
 					player.Out.SendMerchantWindow(HouseTemplateMgr.GetNpcShopItems(player), merchantType);
 					break;
 				case eMerchantWindowType.HousingVaultHookpoint:
-					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItems, merchantType);
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsAlb, merchantType);
+							break;
+						case eRealm.Midgard:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsMid, merchantType);
+							break;
+						case eRealm.Hibernia:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsHib, merchantType);
+							break;
+						default:
+							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItems, merchantType);
+							break;
+					}
 					break;
 				case eMerchantWindowType.HousingDeedMenu:
 					player.Out.SendMerchantWindow(/* TODO */HouseTemplateMgr.OutdoorMenuItems, eMerchantWindowType.HousingDeedMenu);
