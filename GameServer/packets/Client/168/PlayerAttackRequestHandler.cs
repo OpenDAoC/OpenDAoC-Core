@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles change attack mode requests
 		/// </summary>
-		protected class AttackRequestHandler : RegionAction
+		protected class AttackRequestHandler : RegionECSAction
 		{
 			/// <summary>
 			/// True if attack should be started
@@ -61,7 +61,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
@@ -70,7 +70,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (m_userAction)
 						player.Out.SendMessage("You can't enter melee combat mode with a fired weapon!", eChatType.CT_YouHit,
 						                       eChatLoc.CL_SystemWindow);
-					return;
+					return 0;
 				}
 
 				if (m_start || EffectListService.GetEffectOnTarget(player, eEffect.Engage) != null)
@@ -79,11 +79,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// unstealth right after entering combat mode if anything is targeted
 					if (player.attackComponent.AttackState && player.TargetObject != null)
 						player.Stealth(false);
+					return 0;
 				}
 				else
 				{
 					player.attackComponent.StopAttack(false);
+					return 0;
 				}
+
+				return Interval;
 			}
 		}
 	}
