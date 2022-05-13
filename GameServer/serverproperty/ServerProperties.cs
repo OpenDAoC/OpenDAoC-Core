@@ -2714,6 +2714,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("predator", "out_of_bounds_timeout", "Time a player is allowed to leave a valid hunting zone before disqualification, in seconds", 180)]
 		public static long OUT_OF_BOUNDS_TIMEOUT;
 		
+		[ServerProperty("beta", "orbs_fire_sale", "All items at the orbs merchant will be free if set to true", false)]
+		public static bool ORBS_FIRE_SALE;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
