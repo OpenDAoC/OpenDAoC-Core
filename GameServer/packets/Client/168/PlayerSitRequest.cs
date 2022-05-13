@@ -31,7 +31,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player sit requests
 		/// </summary>
-		protected class SitRequestHandler : RegionAction
+		protected class SitRequestHandler : RegionECSAction
 		{
 			/// <summary>
 			/// The new sit state
@@ -51,10 +51,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 				player.Sit(m_sit);
+				return 0;
 			}
 		}
 	}
