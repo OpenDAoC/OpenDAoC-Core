@@ -270,8 +270,8 @@ namespace DOL.GS.Spells
 		        // If the target has an uppercase first letter in the name
 		        if (ServerProperties.Properties.SPELL_CHARM_NAMED_CHECK != 0 && char.IsUpper(charmMob.Name[0]))
 		        {
-			        // Message: {0} is too strong for you to charm!
-			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+			        // Message: This spell does not charm that type of monster!
+			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
 			        return false;
 		        }
 
