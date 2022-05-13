@@ -2505,6 +2505,7 @@ namespace DOL.GS
                 guard.GuardSource.ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
                 //				guard.GuardSource.AttackState &&
                 guard.GuardSource.IsAlive &&
+                !guard.GuardSource.IsSitting &&
                 !stealthStyle)
             {
                 // check distance
