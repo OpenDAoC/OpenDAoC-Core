@@ -30,7 +30,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player dismount requests
 		/// </summary>
-		protected class DismountRequestHandler : RegionAction
+		protected class DismountRequestHandler : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new DismountRequestHandler
@@ -43,17 +43,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
 				if (!player.IsRiding)
 				{
 					ChatUtil.SendSystemMessage(player, "You are not riding any steed!");
-					return;
+					return 0;
 				}
 
 				player.DismountSteed(false);
+				return 0;
 			}
 		}
 	}
