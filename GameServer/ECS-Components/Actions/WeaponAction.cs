@@ -112,9 +112,11 @@ namespace DOL.GS
             //- Pets will no longer continue to attack a character after the character has stealthed.
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
+            /*
             if (owner is GameNPC
                 && m_target is GamePlayer
-                && ((GamePlayer)m_target).IsStealthed)
+                && ((GamePlayer)m_target).IsStealthed 
+                && !(owner is GamePet))
             {
                 // note due to the 2 lines above all npcs stop attacking
                 GameNPC npc = (GameNPC)owner;
@@ -128,7 +130,7 @@ namespace DOL.GS
                     npc.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
                     npc.SwitchWeapon(eActiveWeaponSlot.Distance);
                 return;
-            }
+            }*/
 
             bool usingOH = false;
             if (leftHandSwingCount > 0)
