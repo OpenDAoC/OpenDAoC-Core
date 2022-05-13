@@ -16,7 +16,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetReUseDelay(int level) { return 1800; } // 900 = 15 min / 1800 = 30 min
 
-		public override int CostForUpgrade(int level) { return 8; }
+		public override int CostForUpgrade(int level) { return 14; }
 
 		public override bool CheckRequirement(GamePlayer player) { 
 				return AtlasRAHelpers.HasFirstAidLevel(player, 2);
@@ -56,6 +56,19 @@ namespace DOL.GS.RealmAbilities
 				list.Add("Pre-Requisit : First Aid lvl 2");
 			}
 		}
+	}
+	
+	public class AtlasOF_IgnorePainTank : AtlasOF_IgnorePain
+	{
+		public AtlasOF_IgnorePainTank(DBAbility dba, int level) : base(dba, level) { }
+		public override int CostForUpgrade(int level)
+		{
+			return 8;
+		}
 
-    }
+		public override string Name
+		{
+			get {return "Ignore Pain";}
+		}
+	}
 }
