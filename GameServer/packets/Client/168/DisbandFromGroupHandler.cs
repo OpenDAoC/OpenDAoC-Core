@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles players disband actions
 		/// </summary>
-		protected class PlayerDisbandAction : RegionAction
+		protected class PlayerDisbandAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new PlayerDisbandAction
@@ -45,12 +45,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
 				if (player.Group == null)
-					return;
+					return 0;
 
 				GameLiving disbandMember = player;
 
@@ -61,9 +61,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 					disbandMember = player.TargetObject as GameLiving;
 
 				if (disbandMember != player && player != player.Group.Leader)
-					return;
+					return 0;
 
 				player.Group.RemoveMember(disbandMember);
+				return 0;
 			}
 		}
 	}
