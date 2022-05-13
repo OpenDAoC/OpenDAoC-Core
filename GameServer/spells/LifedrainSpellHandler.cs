@@ -52,11 +52,12 @@ namespace DOL.GS.Spells
             if (!m_caster.IsAlive) return;
 
             int heal = (ad.Damage + ad.CriticalDamage) * m_spell.LifeDrainReturn / 100;
+            /*
             if (m_caster.IsDiseased)
             {
                 MessageToCaster("You are diseased!", eChatType.CT_SpellResisted);
                 heal >>= 1;
-            }
+            }*/
             if (heal <= 0) return;
             heal = m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, heal);
 
