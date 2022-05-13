@@ -94,7 +94,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 			}
 
-			if (client.Player.TargetObject is GameDoor target && !client.Player.IsWithinRadius(target, radius))
+			if (!client.Player.IsWithinRadius(client.Player.TargetObject, radius))
 			{
 				client.Player.Out.SendMessage("You are too far to open this door", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return;
@@ -205,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles the door state change actions
 		/// </summary>
-		protected class ChangeDoorAction : RegionAction
+		protected class ChangeDoorAction : RegionECSAction
 		{
 			/// <summary>
 			/// The target door Id
@@ -239,7 +239,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 				List<IDoor> doorList = DoorMgr.getDoorByID(m_doorId);
@@ -281,7 +281,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					//new frontiers we don't want this, i.e. relic gates etc
 					if (player.CurrentRegionID == 163 && player.Client.Account.PrivLevel == 1)
-						return;
+						return 0;
 					/*
 					//create a bug report
 					BugReport report = new BugReport();
@@ -302,8 +302,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 					door.Z = player.Z;
 					door.Realm = eRealm.Door;
 					door.CurrentRegion = player.CurrentRegion;
-					door.Open(player);
+					
+					if (player.IsWithinRadius(door, m_radius))
+					{
+						door.Open(player);
+					}
+					else
+					{
+						player.Out.SendMessage(
+							LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", doorList[0].Name),
+							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
 				}
+
+				return 0;
 			}
 		}
 	}
