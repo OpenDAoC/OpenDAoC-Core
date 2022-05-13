@@ -54,4 +54,41 @@ namespace DOL.GS
 				.ToString();
 		}
 	}
+
+	public abstract class RegionECSAction : ECSGameTimer
+	{
+		/// <summary>
+		/// The source of the action
+		/// </summary>
+		protected readonly GameObject m_actionSource;
+
+		/// <summary>
+		/// Constructs a new region action
+		/// </summary>
+		/// <param name="actionSource">The action source</param>
+		public RegionECSAction(GameObject actionSource) : base(actionSource)
+		{
+			if (actionSource == null)
+				throw new ArgumentNullException("actionSource");
+			m_actionSource = actionSource;
+
+			TimerOwner = actionSource;
+			Callback = new ECSTimerCallback(OnTick);
+		}
+
+		protected abstract int OnTick(ECSGameTimer timer);
+
+
+		/// <summary>
+		/// Returns short information about the timer
+		/// </summary>
+		/// <returns>Short info about the timer</returns>
+		public override string ToString()
+		{
+			return new StringBuilder(base.ToString(), 128)
+				.Append(" actionSource: (").Append(m_actionSource.ToString())
+				.Append(')')
+				.ToString();
+		}
+	}
 }
