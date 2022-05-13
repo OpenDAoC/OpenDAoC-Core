@@ -15613,7 +15613,7 @@ namespace DOL.GS
         /// <summary>
         /// The timer to call invulnerability expired callbacks
         /// </summary>
-        protected class InvulnerabilityTimer : RegionAction
+        protected class InvulnerabilityTimer : RegionECSAction
         {
             /// <summary>
             /// Defines a logger for this class.
@@ -15641,7 +15641,7 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 try
                 {
@@ -15651,6 +15651,8 @@ namespace DOL.GS
                 {
                     log.Error("InvulnerabilityTimer callback", e);
                 }
+
+                return 0;
             }
         }
 
