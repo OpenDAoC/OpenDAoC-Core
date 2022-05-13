@@ -203,6 +203,12 @@ namespace DOL.GS.Spells
 			        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.Target.Fail.IsDead", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
 			        return false;
 		        }
+		        
+		        // Make sure the pet is in the same zone
+		        if (charmMob.CurrentRegion != Caster.CurrentRegion)
+		        {
+			        return false;
+		        }
 	                
 		        // If the mob is "friendly"
 		        if (charmMob.Realm != 0)
@@ -462,6 +468,16 @@ namespace DOL.GS.Spells
                 var resistString = String.Format("{0:0.##}", spellResistChance);
                 var rollString = String.Format("{0:0.##}", resistResult);
 
+                // Make sure the pet is in the same zone
+                if (target.CurrentRegion != Caster.CurrentRegion)
+                {
+	                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster as GamePlayer);
+	                if (song != null && song.SpellHandler.Spell.InstrumentRequirement == 0 && song.SpellHandler.Spell.CastTime == 0)
+	                {
+		                EffectService.RequestImmediateCancelConcEffect(song);
+	                }
+	                return;
+                }
                 if (target.IsWithinRadius(charmCaster, 2000))
                 {
 	                if (charmCaster.Client.Account.PrivLevel > 1)
