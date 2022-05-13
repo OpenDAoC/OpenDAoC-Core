@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player init requests
 		/// </summary>
-		protected class PlayerInitRequestAction : RegionAction
+		protected class PlayerInitRequestAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new PlayerInitRequestHandler
@@ -59,7 +59,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
@@ -114,18 +114,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 					SendGuildMessagesToPlayer(player);
 				}
 				SendHouseRentRemindersToPlayer(player);
-				if (player.Level > 1 && Properties.MOTD != "")
+				if (player.Level > 1 && ServerProperties.Properties.MOTD != "")
 				{
-					player.Out.SendMessage(Properties.MOTD, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(ServerProperties.Properties.MOTD, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 				else if (player.Level == 1)
 				{
 					player.Out.SendStarterHelp();
-					if (Properties.STARTING_MSG != "")
-						player.Out.SendMessage(Properties.STARTING_MSG, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					if (ServerProperties.Properties.STARTING_MSG != "")
+						player.Out.SendMessage(ServerProperties.Properties.STARTING_MSG, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				}
 
-				if (Properties.ENABLE_DEBUG)
+				if (ServerProperties.Properties.ENABLE_DEBUG)
 					player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				// player.Out.SendPlayerFreeLevelUpdate();
@@ -140,12 +140,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 				//                        eChatLoc.CL_SystemWindow);
 
 
-				if (Properties.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
+				if (ServerProperties.Properties.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
 				{
 					CheckIfPlayerLogsNearEnemyKeepAndMoveIfNecessary(player);
 				}
 
-				if (Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
+				if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
 				{
 					CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 				}
@@ -196,6 +196,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				#endregion TempPropertiesManager LookUp
+
+				return 0;
 			}
 
 			private static void CheckBGLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)
@@ -235,7 +237,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				int gracePeriodInMinutes = 0;
-				Int32.TryParse(Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
+				Int32.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
 				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 				if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
 				{
@@ -278,8 +280,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (house != null)
 				{
-					TimeSpan due = (house.LastPaid.AddDays(Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
-					if ((due.Days <= 0 || due.Days < Properties.RENT_DUE_DAYS) && house.KeptMoney < HouseMgr.GetRentByModel(house.Model))
+					TimeSpan due = (house.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+					if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && house.KeptMoney < HouseMgr.GetRentByModel(house.Model))
 						player.Out.SendRentReminder(house);
 				}
 
@@ -288,8 +290,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					House ghouse = HouseMgr.GetGuildHouseByPlayer(player);
 					if (ghouse != null)
 					{
-						TimeSpan due = (ghouse.LastPaid.AddDays(Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
-						if ((due.Days <= 0 || due.Days < Properties.RENT_DUE_DAYS) && ghouse.KeptMoney < HouseMgr.GetRentByModel(ghouse.Model))
+						TimeSpan due = (ghouse.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+						if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && ghouse.KeptMoney < HouseMgr.GetRentByModel(ghouse.Model))
 							player.Out.SendRentReminder(ghouse);
 					}
 				}
