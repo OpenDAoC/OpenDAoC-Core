@@ -32,6 +32,8 @@ public class ConquestObjective
     {
         if (!ConquestService.ConquestManager.ConquestIsActive) return;
         
+        if (contributor is null) return;
+
         if (PlayerToContributionDict.Keys.Contains(contributor))
         {
             int existing = PlayerToContributionDict[contributor];
