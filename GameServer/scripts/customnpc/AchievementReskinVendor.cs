@@ -1074,85 +1074,101 @@ public class AchievementReskinVendor : GameNPC
     
     public void DisplayTwoHandWeaponOption(GamePlayer player, InventoryItem item)
     {
-        return;
         StringBuilder sb = new StringBuilder();
         int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
-
-        //add all basic options
-        sb.Append($"Free\n" +
-                  $"[Crafted Gloves 1] ({freebie} {currencyName})\n");
-        sb.Append($"[Crafted Gloves 2] ({freebie} {currencyName})\n");
-        sb.Append($"[Crafted Gloves 3] ({freebie} {currencyName})\n");
-
-        if (RR > 1)
-        {
-            sb.Append($"Realm Rank 2+\n" +
-                      $"[Crafted Gloves 4] ({lowbie} {currencyName})\n" +
-                      $"[Crafted Gloves 5] ({lowbie} {currencyName})\n");
-        }
-
-        if (RR > 3)
-        {
-            sb.Append("Realm Rank 4+\n" +
-                      "[Oceanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                      "[Stygia Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                      "[Volcanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                      "[Aerus Gloves] (" + toageneric + " " + currencyName + ")\n");
-        }
-
-        if (RR > 4)
-        {
-            sb.Append("Realm Rank 5+\n" +
-                      "[Class Epic Gloves](" + epic + " " + currencyName + ")\n");
-        }
-
-        if (RR > 5)
-        {
-            sb.Append("Realm Rank 6+\n" +
-                      "[Maddening Scalars] (" + artifact + " " + currencyName + ")\n" +
-                      "[Sharkskin Gloves] (" + artifact + " " + currencyName + ")\n");
-        }
-
         int dragon = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
 
-        if (dragon > 0)
+        switch (player.Realm)
         {
-            sb.Append($"1 Dragon Kill\n" +
-                      $"[Dragonsworn Gloves] (" + dragonCost + " " + currencyName + ") | Catacombs Models Only\n");
+            case eRealm.Albion:
+                sb.Append($"Free\n" +
+                          $"[Battle Axe 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[War Mattock 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Albion War Axe 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Albion Great Hammer 2h] ({freebie} {currencyName})\n");
+
+                if (RR > 1)
+                {
+                    sb.Append($"Realm Rank 2+\n" +
+                              $"[Briton Arch Mace 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Briton Scimitar 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Briton War Pick 2h] ({lowbie} {currencyName})\n");
+                }
+                
+                if (RR > 3)
+                {
+                    sb.Append($"Realm Rank 4+\n" +
+                              $"[Zweihander 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Claymore 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Great Mace 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Dire Hammer 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Dire Axe 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Great Mattock 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Great Scimitar 2h] ({toageneric} {currencyName})\n");
+                }
+                break;
+            case eRealm.Midgard:
+                sb.Append($"Free\n" +
+                          $"[Norse Sword 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Norse Great Axe 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Norse Large Axe 2h] ({freebie} {currencyName})\n");
+                
+                if (RR > 1)
+                {
+                    sb.Append($"Realm Rank 2+\n" +
+                              $"[Norse Greatsword 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Norse Hammer 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Norse Warhammer 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Norse Greathammer 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Norse Battleaxe 2h] ({lowbie} {currencyName})\n");
+                }
+                
+                if (RR > 3)
+                {
+                    sb.Append($"Realm Rank 4+\n" +
+                              $"[Dwarven Sword 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Dwarven Greataxe 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Dwarven Great Hammer 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[War Cleaver 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Spiked Hammer 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Troll Greatsword 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Kobold Greataxe 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Kobold Great Club 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Kobold Great Sword 2h] ({toageneric} {currencyName})\n");
+                }
+                break;
+            case eRealm.Hibernia:
+                sb.Append($"Free\n" +
+                          $"[Celtic Greatsword 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Celtic Sword 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Celtic Great Hammer 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Celtic Spiked Mace 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Celtic Shillelagh 2h] ({freebie} {currencyName})\n");
+                
+                if (RR > 1)
+                {
+                    sb.Append($"Realm Rank 2+\n" +
+                              $"[Celtic Falcata 2h] ({lowbie} {currencyName})\n");
+                    sb.Append($"[Celtic Sledgehammer 2h] ({lowbie} {currencyName})\n");
+                }
+                
+                if (RR > 3)
+                {
+                    sb.Append($"Realm Rank 4+\n" +
+                              $"[Celtic Hammer 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Celtic Great Mace 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Celtic Dire Club 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Elven Greatsword 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Firbolg Hammer 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Firbolg Mace 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Firbolg Trollsplitter 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Leaf Point 2h] ({toageneric} {currencyName})\n");
+                    sb.Append($"[Shod Shillelagh 2h] ({toageneric} {currencyName})\n");
+                }
+                break;
         }
 
-        if (dragon > 24)
-        {
-            sb.Append($"25 Dragon Kills\n" +
-                      $"[Dragonslayer Gloves] (" + dragonCost * 1.5 + " " + currencyName +
-                      ") | Catacombs Models Only\n");
-        }
-
-        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Epic_Boss_Kills) >= 1)
-        {
-            sb.Append("1 Epic Boss Kill\n" +
-                      "[Possessed Realm Gloves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
-        }
-
-        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Mastered_Crafts) >= 1)
-        {
-            sb.Append("1 Craft Above 1000\n" +
-                      "[Good Realm Gloves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
-        }
-
-        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 100000)
-        {
-            sb.Append("100k Orbs Earned\n" +
-                      "[Good Shar Gloves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
-        }
-
-        if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned) > 250000)
-        {
-            sb.Append("250k Orbs Earned\n" +
-                      "[Good Inconnu Gloves](" + festive + " " + currencyName + ")\n | Catacombs Models Only\n");
-        }
-
-        sb.Append("\nI can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options.");
+        
 
         SendReply(player, sb.ToString());
     }
