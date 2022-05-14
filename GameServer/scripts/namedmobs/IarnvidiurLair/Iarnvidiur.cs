@@ -119,9 +119,7 @@ namespace DOL.AI.Brain
 							if (!Port_Enemys.Contains(player))
 							{
 								if (player != Body.TargetObject)
-								{
 									Port_Enemys.Add(player);
-								}
 							}
 						}
 					}
@@ -140,8 +138,9 @@ namespace DOL.AI.Brain
 						if (TeleportTarget.IsAlive && TeleportTarget != null)
 						{							
 							Body.TargetObject = TeleportTarget; //set target to randomly picked
-							Body.TurnTo(TeleportTarget);
-							Body.CastSpell(Iarnvidiur_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+							Body.TurnTo(TeleportTarget,4000);
+							if(!Body.IsCasting && Body.GetSkillDisabledDuration(Iarnvidiur_Bolt) == 0)
+								Body.CastSpell(Iarnvidiur_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
 						}
 					}
@@ -190,9 +189,7 @@ namespace DOL.AI.Brain
 						if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 						{
 							if (!m_aggroTable.ContainsKey(player))
-							{
 								m_aggroTable.Add(player, 1);
-							}
 						}
 					}
 				}
@@ -284,7 +281,7 @@ namespace DOL.AI.Brain
                 {
 					if (IsTargetTeleported == false)
 					{
-						ECSGameTimer _PickTeleportPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
 						IsTargetTeleported = true;
 					}
 				}
@@ -344,7 +341,7 @@ namespace DOL.AI.Brain
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
-					spell.RecastDelay = 0;
+					spell.RecastDelay = 120;
 					spell.ClientEffect = 4375;
 					spell.Icon = 4375;
 					spell.Name = "Black Plague";
@@ -378,7 +375,7 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3;
+					spell.CastTime = 2;
 					spell.RecastDelay = 0;
 					spell.ClientEffect = 4559;
 					spell.Icon = 4559;
@@ -414,7 +411,7 @@ namespace DOL.AI.Brain
 					spell.Icon = 479;
 					spell.Name = "Iarnvidiur's Strike";
 					spell.TooltipId = 479;
-					spell.Damage = 250;
+					spell.Damage = 400;
 					spell.Range = 1500;
 					spell.SpellID = 11831;
 					spell.Target = "Enemy";
