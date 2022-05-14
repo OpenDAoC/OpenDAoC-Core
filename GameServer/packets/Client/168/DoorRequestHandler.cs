@@ -41,7 +41,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			var doorState = (byte) packet.ReadByte();
 			int doorType = doorID / 100000000;
 
-			int radius = Properties.WORLD_PICKUP_DISTANCE * 2;
+			int radius = Properties.WORLD_PICKUP_DISTANCE * 4;
 			int zoneDoor = doorID / 1000000;
 
 			string debugText = "";
