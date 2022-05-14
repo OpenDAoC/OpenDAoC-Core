@@ -599,6 +599,60 @@ namespace DOL.GS
 				}
 			}
         }
+		
+		public bool IsPoisonEffect
+		{
+			get
+			{
+				switch (ID)
+				{
+					case 30000: // Minor Lethal Poison
+					case 30001: // Minor Weakening Poison
+					case 30002: // Minor Imbalancing Poison
+					case 30003: // Minor Infectious Serum
+					case 30004: // Lesser Lethal Poison
+					case 30005: // Lesser Weakening Poison
+					// case 30006: // Lethal Strike
+					case 30007: // Lesser Imbalancing Poison
+					case 30008: // Lethal Poison
+					case 30009: // Major Weakening Poison
+					case 30010: // Major Imbalancing Poison
+					case 30012: // Major Lethal Poison
+					case 30014: // Lesser Infectious Serum
+					case 30015: // Greater Weakening Poison
+					case 30016: // Greater Imbalancing Poison
+					case 30017: // Greater Lethal Poison
+					case 30019: // Minor Enervating Poison
+					case 30022: // Minor Crippling Poison
+					case 30024: // Minor Lethal Venom
+					case 30025: // Infectious Serum
+					case 30026: // Lesser Crippling Poison
+					case 30028: // Lesser Enervating Poison
+					case 30029: // Lesser Lethal Venom
+					case 30030: // Major Crippling Poison
+					case 30034: // Major Lethal Venom
+					case 30036: // Major Enervating Poison
+					case 30037: // Major Infectious Serum
+					case 30039: // Greater Lethal Venom
+					case 30041: // Greater Crippling Poison
+					case 30044: // Insidious Lethal Venom
+					case 30046: // Greater Enervating Poison
+					case 30047: // Greater Infectious Serum
+					case 30049: // Lifebane
+					case 30050: // Weak Essence of Lethargy
+					case 30051: // Essence of Lethargy
+					case 30052: // Weak Essence of Weariness
+					case 30053: // Essence of Weariness
+					case 300211: // Greater Enervating Poison
+					case 300281: // Major Enervating Poison
+					case 300411: // Lesser Enervating Poison
+					case 300461: // Minor Enervating Poison
+						return true;
+					default:
+						return false;
+				}
+			}
+		}
 
         /// <summary>
         /// Whether or not the spell is instant cast.

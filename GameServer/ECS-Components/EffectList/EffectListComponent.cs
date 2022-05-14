@@ -79,7 +79,7 @@ namespace DOL.GS
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
                         // Effects contains this effect already so refresh it
-                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID || e.SpellHandler.Spell.EffectGroup == spellEffect.SpellHandler.Spell.EffectGroup).FirstOrDefault() != null)
+                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID || (e.SpellHandler.Spell.EffectGroup == spellEffect.SpellHandler.Spell.EffectGroup && spellEffect.SpellHandler.Spell.IsPoisonEffect)).FirstOrDefault() != null)
                         {
                             if (spellEffect.IsConcentrationEffect() && !spellEffect.RenewEffect) 
                                 return false;
