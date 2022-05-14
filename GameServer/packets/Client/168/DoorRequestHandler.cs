@@ -94,7 +94,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 			}
 
-			if (!client.Player.IsWithinRadius(client.Player.TargetObject, radius))
+			if (client.Player.TargetObject is GameDoor && !client.Player.IsWithinRadius(client.Player.TargetObject, radius))
 			{
 				client.Player.Out.SendMessage("You are too far to open this door", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return;
