@@ -335,7 +335,7 @@ namespace DOL.GS
 
                         if (owner is GamePlayer)
                         {
-                            owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, 0L);
+                            owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
                         }
 
                         int speed = owner.attackComponent.AttackSpeed(attackWeapon);

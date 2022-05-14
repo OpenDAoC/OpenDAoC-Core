@@ -2114,6 +2114,16 @@ namespace DOL.GS
 					    && attackType != AttackData.eAttackType.MeleeDualWield)
 						return false;
 				}
+				long elapsedTime = GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
+				long halfwayPoint = this.attackComponent.AttackSpeed(this.attackComponent.AttackWeapon) / 2;
+				
+				if (rangeAttackComponent.RangedAttackState != eRangedAttackState.ReadyToFire &&
+				    rangeAttackComponent.RangedAttackState != eRangedAttackState.None &&
+				    elapsedTime > halfwayPoint)
+				{
+					return false;
+				}
+
 				double mod = GetConLevel(attacker);
 				double interruptChance = BaseInterruptChance;
 				interruptChance += mod * 10;
