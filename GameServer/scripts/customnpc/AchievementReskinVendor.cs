@@ -1074,6 +1074,7 @@ public class AchievementReskinVendor : GameNPC
     
     public void DisplayTwoHandWeaponOption(GamePlayer player, InventoryItem item)
     {
+        return;
         StringBuilder sb = new StringBuilder();
         int RR = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
 
