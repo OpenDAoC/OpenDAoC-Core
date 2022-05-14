@@ -141,7 +141,8 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 400;
         }
-        public void SpawnAdd()
+        private bool CanSpawnAdds = false;
+        private int SpawnAdd(ECSGameTimer timer)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -157,13 +158,15 @@ namespace DOL.AI.Brain
                     add.AddToWorld();
                 }
             }
+            CanSpawnAdds = false;
+            return 0;
         }
         public override void Think()
         {
             if (Body.IsOutOfTetherRange)
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                Body.Health = Body.MaxHealth;
+                Body.Health = Body.MaxHealth;               
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc.Brain is SpecialInnocentBrain)
@@ -177,6 +180,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 SpecialInnocent.InnocentCount = 0;
+                CanSpawnAdds = false;
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc.Brain is SpecialInnocentBrain)
@@ -187,9 +191,10 @@ namespace DOL.AI.Brain
             }
             if (HasAggro && Body.InCombat)
             {
-                if(SpecialInnocent.InnocentCount<9)
+                if(SpecialInnocent.InnocentCount<9 && CanSpawnAdds == false)
                 {
-                    SpawnAdd();
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdd), Util.Random(20000, 30000));
+                    CanSpawnAdds=true;
                 }
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
@@ -200,7 +205,6 @@ namespace DOL.AI.Brain
                 }
                 Body.CastSpell(RedLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             base.Think();
         }
         public Spell m_RedLady_DD;
@@ -254,7 +258,7 @@ namespace DOL.GS
         }
         public override void OnAttackEnemy(AttackData ad)
         {
-            if (Util.Chance(35))
+            if (Util.Chance(5))
             {
                 if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
                 {
@@ -313,7 +317,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 1500; }
+            get { return 1000; }
         }
         public Spell m_Innocent_Disease;
         public Spell Innocent_Disease
@@ -331,7 +335,7 @@ namespace DOL.GS
                     spell.TooltipId = 4375;
                     spell.Duration = 120;
                     spell.Name = "Disease";
-                    spell.Radius = 400;
+                    spell.Radius = 100;
                     spell.Range = 1500;
                     spell.SpellID = 11789;
                     spell.Target = eSpellTarget.Enemy.ToString();

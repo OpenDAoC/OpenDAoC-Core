@@ -39,10 +39,16 @@ namespace DOL.GS.Housing
         private static MerchantTradeItems _indoorNpcShopItemsMid;
 
         public static MerchantTradeItems IndoorBindstoneShopItems { get; private set; }
+        public static MerchantTradeItems IndoorBindstoneShopItemsMid { get; private set; }
+        public static MerchantTradeItems IndoorBindstoneShopItemsAlb { get; private set; }
+        public static MerchantTradeItems IndoorBindstoneShopItemsHib { get; private set; }
         public static MerchantTradeItems IndoorCraftShopItems { get; private set; }
         public static MerchantTradeItems IndoorMenuItems { get; private set; }
         public static MerchantTradeItems IndoorShopItems { get; private set; }
         public static MerchantTradeItems IndoorVaultShopItems { get; private set; }
+        public static MerchantTradeItems IndoorVaultShopItemsMid { get; private set; }
+        public static MerchantTradeItems IndoorVaultShopItemsAlb { get; private set; }
+        public static MerchantTradeItems IndoorVaultShopItemsHib { get; private set; }
         public static MerchantTradeItems OutdoorMenuItems { get; private set; }
         public static MerchantTradeItems OutdoorShopItems { get; private set; }
 
@@ -114,8 +120,14 @@ namespace DOL.GS.Housing
             OutdoorShopItems = new MerchantTradeItems("housing_outdoor_shop");
 
             IndoorVaultShopItems = new MerchantTradeItems("housing_indoor_vault");
+            IndoorVaultShopItemsMid = new MerchantTradeItems("housing_indoor_vault_mid");
+            IndoorVaultShopItemsAlb = new MerchantTradeItems("housing_indoor_vault_alb");
+            IndoorVaultShopItemsHib = new MerchantTradeItems("housing_indoor_vault_hib");
             IndoorCraftShopItems = new MerchantTradeItems("housing_indoor_craft");
             IndoorBindstoneShopItems = new MerchantTradeItems("housing_indoor_bindstone");
+            IndoorBindstoneShopItemsMid = new MerchantTradeItems("housing_indoor_bindstone_mid");
+            IndoorBindstoneShopItemsAlb = new MerchantTradeItems("housing_indoor_bindstone_alb");
+            IndoorBindstoneShopItemsHib = new MerchantTradeItems("housing_indoor_bindstone_hib");
 
             _indoorNpcShopItemsAll = new MerchantTradeItems("housing_indoor_npc");
             _indoorNpcShopItemsAlb = new MerchantTradeItems("housing_indoor_alb_npc");
@@ -283,12 +295,27 @@ namespace DOL.GS.Housing
 
             string[] indoorbindstone = { "housing_hib_bindstone", "housing_mid_bindstone", "housing_alb_bindstone" };
             CheckMerchantItems("housing_indoor_bindstone", indoorbindstone);
+            
+            string[] indoorbindstonemid = { "housing_mid_bindstone" };
+            CheckMerchantItems("housing_indoor_bindstone_mid", indoorbindstonemid);
+            
+            string[] indoorbindstonealb = { "housing_alb_bindstone" };
+            CheckMerchantItems("housing_indoor_bindstone_alb", indoorbindstonealb);
+            
+            string[] indoorbindstonehib = { "housing_hib_bindstone" };
+            CheckMerchantItems("housing_indoor_bindstone_hib", indoorbindstonehib);
 
             string[] indoorcraft = { "housing_alchemy_table", "housing_forge", "housing_lathe" };
             CheckMerchantItems("housing_indoor_craft", indoorcraft);
 
             string[] indoorvault = { "housing_hib_vault", "housing_mid_vault", "housing_alb_vault" };
             CheckMerchantItems("housing_indoor_vault", indoorvault);
+            string[] indoorvaultmid = { "housing_mid_vault" };
+            CheckMerchantItems("housing_indoor_vault_mid", indoorvaultmid);
+            string[] indoorvaultalb = { "housing_alb_vault" };
+            CheckMerchantItems("housing_indoor_vault_alb", indoorvaultalb);
+            string[] indoorvaulthib = { "housing_hib_vault" };
+            CheckMerchantItems("housing_indoor_vault_hib", indoorvaulthib);
         }
 
         private static void CheckMerchantItems(string merchantid, ICollection<string> itemids)

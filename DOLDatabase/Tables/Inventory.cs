@@ -81,6 +81,13 @@ namespace DOL.Database
 			set { Dirty = true; m_iscrafted = value; }
 		}
 		
+		protected bool m_isROG;			// iscrafted or looted ?
+		[DataElement(AllowDbNull = false)]
+		public virtual bool IsROG {
+			get { return m_isROG; }
+			set { Dirty = true; m_isROG = value; }
+		}
+		
 		protected string m_creator;			// crafter or mob dropping it, but also quest, etc...
 		[DataElement(AllowDbNull = true)]
 		public virtual string Creator

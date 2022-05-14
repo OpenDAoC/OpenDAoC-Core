@@ -414,9 +414,9 @@ namespace DOL.AI.Brain
 					spell.CastTime = 3;
 					spell.ClientEffect = 2958;
 					spell.Icon = 2958;
-					spell.Damage = 450 * MistressDifficulty / 100;
+					spell.Damage = 550;
 					spell.Name = "Odin's Hatred";
-					spell.Range = 1000;
+					spell.Range = 1500;
 					spell.Radius = 450;
 					spell.SpellID = 2958;
 					spell.RecastDelay = SpearRecastInterval;

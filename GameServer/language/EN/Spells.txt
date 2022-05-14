@@ -82,6 +82,7 @@ CharmSpell.EndCast.Fail.TooStrong:                               {0} is too stro
 CharmSpell.EndCast.Fail.CurrentlyControlled:                     {0} is currently being controlled.
 CharmSpell.EndCast.Fail.AlreadyOwnCharmed:                       You already have a charmed creature, release it first!
 CharmSpell.EndCast.Fail.InCombat:                               You can't charm {0} while {1} is in combat!
+CharmSpell.EndCast.Fail.CantBeCharmed:                          {0} can't be charmed!
 
 ## Damage Add & Damage Shield
 DamageAddAndShield.EventHandlerDA.DamageToYou:		{0} does {1} extra damage to you!

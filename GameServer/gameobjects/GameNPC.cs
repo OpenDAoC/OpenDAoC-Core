@@ -3476,7 +3476,7 @@ namespace DOL.GS
 			int aggroLevel;
 			IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
 			//Calculate Faction aggro - base AggroLevel needs to be greater tha 0 for Faction aggro calc to work.
-			if (Faction != null && aggroBrain != null && aggroBrain.AggroLevel > 0)
+			if (Faction != null && aggroBrain != null && aggroBrain.AggroLevel > 0 && aggroBrain.AggroRange > 0)
 			{
 				aggroLevel = Faction.GetAggroToFaction(player);
 				
@@ -4910,6 +4910,11 @@ namespace DOL.GS
 						}
 						else
 							invitem = GameInventoryItem.Create(lootTemplate);
+
+						if (lootTemplate is GeneratedUniqueItem)
+						{
+							invitem.IsROG = true;
+						}
 
 						loot = new WorldInventoryItem(invitem);
 						loot.X = X;

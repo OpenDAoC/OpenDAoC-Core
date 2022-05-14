@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnAdds()
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				if (QunilariaAdd.MinionCount < 4)
 				{
@@ -247,6 +247,10 @@ namespace DOL.GS
 		}
 
 		public static int MinionCount = 0;
+		public override void DropLoot(GameObject killer) //no loot
+		{
+		}
+		public override long ExperienceValue => 0;
 		public override void Die(GameObject killer)
 		{
 			--MinionCount;
@@ -301,9 +305,12 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 800; }
+			get { return 1200; }
 		}
-
+		public override void DropLoot(GameObject killer) //no loot
+		{
+		}
+		public override long ExperienceValue => 0;
 		public override bool AddToWorld()
 		{
 			Model = 764;
@@ -316,7 +323,7 @@ namespace DOL.GS
 			MaxSpeedBase = 200;
 
 			Size = 60;
-			Level = (byte)Util.Random(48, 50);
+			Level = (byte)Util.Random(52, 55);
 			Faction = FactionMgr.GetFactionByID(93);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));//minions of balor
 			QunilariaAddBrain add = new QunilariaAddBrain();
