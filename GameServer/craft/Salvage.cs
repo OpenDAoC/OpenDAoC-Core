@@ -563,6 +563,9 @@ namespace DOL.GS
                 maxCount = usureoverall;
             }
 
+            if (item.IsROG)
+	            maxCount = (long)Math.Round(maxCount / 10d);
+
             if (maxCount < 1)
                 maxCount = 1;
             else if (maxCount > 500)
