@@ -6231,7 +6231,14 @@ namespace DOL.GS
         {
             //When switching weapons, attackmode is removed!
             if (attackComponent.AttackState)
+            {
+                if (attackComponent.AttackWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon && rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
+                {
+                    attackComponent.attackAction.StartTime = 1;
+                }
                 attackComponent.LivingStopAttack();
+            }
+                
 
             if (CurrentSpellHandler != null)
             {
