@@ -6,6 +6,7 @@ using DOL.Events;
 using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using DOL.GS.Scripts;
 using log4net;
 
 namespace DOL.GS
@@ -29,7 +30,7 @@ namespace DOL.GS
 		private int RealmPointsEarned = 0;
 		private const int PLAYER_KILL_GOAL = 200;
 		private const int KEEP_TAKE_GOAL = 25;
-		private const int RELIC_CAPTURE_GOAL = 5;
+		private const int RELIC_CAPTURE_GOAL = 4;
 		private const int REALM_POINT_GOAL = 100000;
 		
 		// prevent grey killing
@@ -310,7 +311,7 @@ namespace DOL.GS
 							sb.Append("\nRelics Taken: ("+ RelicsTaken +" | "+ RELIC_CAPTURE_GOAL +")");
 						
 						if (RealmPointsEarned < REALM_POINT_GOAL)
-							sb.Append("\nRealm Points Earned: ("+ RealmPointsEarned +" | "+ REALM_POINT_GOAL +")");
+							sb.Append("\nRealm Points Earned From Kills: ("+ RealmPointsEarned +" | "+ REALM_POINT_GOAL +")");
 						
 						return sb.ToString();
 					case 2:
@@ -338,17 +339,10 @@ namespace DOL.GS
 				    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
 				if(PlayersKilled < PLAYER_KILL_GOAL)
 					PlayersKilled++;
+				if (RealmPointsEarned < REALM_POINT_GOAL)
+					RealmPointsEarned += gArgs.Target.RealmPointsValue;
 				
 				player.Out.SendMessage("[Event] Enemy Killed: (" + PlayersKilled + " | " + PLAYER_KILL_GOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				player.Out.SendQuestUpdate(this);
-			}
-
-			if (e == GameLivingEvent.GainedRealmPoints)
-			{
-				GainedRealmPointsEventArgs gArgs = (GainedRealmPointsEventArgs) args;
-				if (RealmPointsEarned < REALM_POINT_GOAL)
-					RealmPointsEarned += (int)gArgs.RealmPoints;
-				player.Out.SendMessage("[Event] Realm Points Earned: (" + RealmPointsEarned + " | " + REALM_POINT_GOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 
