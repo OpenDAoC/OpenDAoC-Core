@@ -1483,7 +1483,8 @@ public class AchievementReskinVendor : GameNPC
 
                 if (RR > 3)
                 {
-                    sb.Append($"[Oceanus Large Shield] ({toageneric} {currencyName})\n");
+                    sb.Append($"Realm Rank 4+\n" +
+                              $"[Oceanus Large Shield] ({toageneric} {currencyName})\n");
                     sb.Append($"[Aerus Large Shield] ({toageneric} {currencyName})\n");
                     sb.Append($"[Magma Large Shield] ({toageneric} {currencyName})\n");
                     sb.Append($"[Stygia Large Shield] ({toageneric} {currencyName})\n");
@@ -1495,7 +1496,8 @@ public class AchievementReskinVendor : GameNPC
 
         if (RR > 5)
         {
-            sb.Append($"[Aten's Shield] ({toageneric} {currencyName})\n");
+            sb.Append($"Realm Rank 6+\n" +
+                      $"[Aten's Shield] ({toageneric} {currencyName})\n");
             sb.Append($"[Cyclop's Eye] ({toageneric} {currencyName})\n");
             sb.Append($"[Shield Of Khaos] ({toageneric} {currencyName})\n");
         }
