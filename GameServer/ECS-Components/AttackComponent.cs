@@ -3433,6 +3433,8 @@ namespace DOL.GS
                         result += p.GetModified(eProperty.MeleeDamage) * 0.01;
                     }
 
+                    if (result <= 0) //Checking if 0 or negative
+                        result = 1;
                     return result;
                 }
                 else
