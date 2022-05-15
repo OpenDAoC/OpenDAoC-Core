@@ -311,7 +311,7 @@ namespace DOL.GS
 							sb.Append("\nRelics Taken: ("+ RelicsTaken +" | "+ RELIC_CAPTURE_GOAL +")");
 						
 						if (RealmPointsEarned < REALM_POINT_GOAL)
-							sb.Append("\nRealm Points Earned From Kills: ("+ RealmPointsEarned +" | "+ REALM_POINT_GOAL +")");
+							sb.Append("\nRealm Points Earned From Kills: ("+ RealmPointsEarned.ToString("N0") +" | "+ REALM_POINT_GOAL.ToString("N0") +")");
 						
 						return sb.ToString();
 					case 2:
@@ -343,6 +343,7 @@ namespace DOL.GS
 					RealmPointsEarned += gArgs.Target.RealmPointsValue;
 				
 				player.Out.SendMessage("[Event] Enemy Killed: (" + PlayersKilled + " | " + PLAYER_KILL_GOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Event] Realm Points Gained: (" + RealmPointsEarned + " | " + REALM_POINT_GOAL.ToString("N0") + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 
