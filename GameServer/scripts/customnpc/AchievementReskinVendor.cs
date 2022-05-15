@@ -1112,12 +1112,12 @@ public class AchievementReskinVendor : GameNPC
                           $"[Norse Sword 2h] ({freebie} {currencyName})\n");
                 sb.Append($"[Norse Great Axe 2h] ({freebie} {currencyName})\n");
                 sb.Append($"[Norse Large Axe 2h] ({freebie} {currencyName})\n");
+                sb.Append($"[Norse Hammer 2h] ({freebie} {currencyName})\n");
                 
                 if (RR > 1)
                 {
                     sb.Append($"Realm Rank 2+\n" +
                               $"[Norse Greatsword 2h] ({lowbie} {currencyName})\n");
-                    sb.Append($"[Norse Hammer 2h] ({lowbie} {currencyName})\n");
                     sb.Append($"[Norse Warhammer 2h] ({lowbie} {currencyName})\n");
                     sb.Append($"[Norse Greathammer 2h] ({lowbie} {currencyName})\n");
                     sb.Append($"[Norse Battleaxe 2h] ({lowbie} {currencyName})\n");
@@ -1660,7 +1660,17 @@ private void DisplayReskinPreviewTo(GamePlayer player, InventoryItem item)
     var tempAd = new AttackData();
     tempAd.Attacker = display;
     tempAd.Target = display;
-    tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+    if (item.Hand == 1)
+    {
+        tempAd.AttackType = AttackData.eAttackType.MeleeTwoHand; 
+        display.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+    }
+    else
+    {
+        tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+        display.SwitchWeapon(eActiveWeaponSlot.Standard);
+    }
+    
     tempAd.AttackResult = eAttackResult.HitUnstyled;
     display.AttackState = true;
     display.TargetObject = display;
@@ -10689,7 +10699,7 @@ public override bool WhisperReceive(GameLiving source, string str)
                 break;
             }
 
-            price = lowbie;
+            price = freebie;
             modelIDToAssign = 574;
             break;
         case "norse warhammer 2h":
