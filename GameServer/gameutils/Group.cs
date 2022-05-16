@@ -404,9 +404,10 @@ namespace DOL.GS
 
 				return player;
 			});
-			if (player == null)
+			if (player != null)
 			{
-				SendMessageToGroupMembers($"Cannot find group member with index {index}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// all went ok
+				UpdateGroupWindow(); 
 			}
 
 			return player;
