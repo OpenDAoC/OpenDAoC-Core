@@ -12,10 +12,11 @@ namespace DOL.GS.Commands
 {
 	[Cmd("&groupsort",
 		 ePrivLevel.Player,
-		 "Sort players in the group by classes.",
-		 "/groupsort manual classnames - sorts the group in the order of classes entered.",
-		 "Example: /groupsort manual bard druid druid hero",
+		 "Sort players in the group",
 		 "'/groupsort switch <#> <#>' - switches two group members.")]
+	// "Example: /groupsort manual bard druid druid hero",
+	// "/groupsort manual classnames - sorts the group in the order of classes entered.",
+
 	public class GroupSortCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
