@@ -8,6 +8,7 @@ using DOL.Database;
 using DOL.AI.Brain;
 using DOL.GS.Spells;
 using System.Collections.Generic;
+using DOL.GS.Commands;
 
 namespace DOL.GS.Effects
 {
@@ -28,7 +29,7 @@ namespace DOL.GS.Effects
         public override ushort Icon { get { return 4281; } }        //3083,7080,3079(icons)
         public override string Name { get { return "Volley"; } }
         public override bool HasPositiveEffect { get { return true; } }
-
+        private bool IsReadyToFire = false;
         public override void OnStartEffect()
         {
             if (OwnerPlayer == null)
@@ -38,17 +39,98 @@ namespace DOL.GS.Effects
             {
                 nbShoot = 5;
 
+                if (m_player.IsStealthed)//cancel stealth if player use Volley
+                    m_player.Stealth(false);
+
                 base.OnStartEffect();
-                m_player.Out.SendMessage("Your " + Name + " is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                InventoryItem attackWeapon = m_player.attackComponent.AttackWeapon;
+                byte HoldAttack = 0x1E;//30 seconds
+                int speed = attackWeapon.SPD_ABS * 100;//weapon speed used to timer
+                new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(ReadyToFire), speed);//timer to prepare bow
+                new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(TooTired1stShoot), 30500);//timer too tired
+                m_player.Out.SendMessage("You prepare to unleash a volley of arrows!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                int model = (m_player.attackComponent.AttackWeapon == null ? 0 : m_player.attackComponent.AttackWeapon.Model);
+
                 m_player.attackComponent.LivingStopAttack();    //stop all attacks
                 m_player.StopCurrentSpellcast();                //stop all casts
 
+                foreach (GamePlayer player in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Out.SendCombatAnimation(m_player, null, (ushort)model, 0x00, player.Out.BowPrepare, HoldAttack, 0x00, 0x00);//bow animation
+                }
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
                 GameEventMgr.AddHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             }
         }
+        #region Timers for each volley shoot && ReadyToFire
+        private protected int TooTired1stShoot(ECSGameTimer timer)//1st shot
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+
+            if (volley != null && nbShoot == 5 && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Cancel(false);
+            }
+            return 0;
+        }
+        private protected int TooTired2ndShoot(ECSGameTimer timer)//2nd shot
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+
+            if (volley != null && nbShoot == 4 && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Cancel(false);
+            }
+            return 0;
+        }
+        private protected int TooTired3thShoot(ECSGameTimer timer)//3th shot
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+
+            if (volley != null && nbShoot == 3 && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Cancel(false);
+            }
+            return 0;
+        }
+        private protected int TooTired4thShoot(ECSGameTimer timer)//4th shot
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+
+            if (volley != null && nbShoot == 2 && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Cancel(false);
+            }
+            return 0;
+        }
+        private protected int TooTired5thShoot(ECSGameTimer timer)//5th shot
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+
+            if (volley != null && nbShoot == 1 && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Cancel(false);
+            }
+            return 0;
+        }
+        private int ReadyToFire(ECSGameTimer timer)//Can shot now, is ready to fire
+        {
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+            if (volley != null && m_player.IsAlive)
+            {
+                m_player.Out.SendMessage("You are ready to fire!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                IsReadyToFire = true;
+            }
+            return 0;
+        }
+        #endregion
         public override void OnStopEffect()
         {
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
@@ -71,7 +153,7 @@ namespace DOL.GS.Effects
             {
                 if (VolleePlayerTarget != null)
                 {
-                    if (VolleePlayerTarget.IsAlive && VolleePlayerTarget.Client.Account.PrivLevel == 1 && !list.Contains(VolleePlayerTarget))
+                    if (VolleePlayerTarget.IsAlive && VolleePlayerTarget.Client.Account.PrivLevel == 1 && !list.Contains(VolleePlayerTarget) && VolleePlayerTarget.Realm != m_player.Realm)
                     {
                         if (Util.Chance(50))
                             list.Add(VolleePlayerTarget);//add player to list of potentional targets
@@ -90,7 +172,7 @@ namespace DOL.GS.Effects
             return list;
         }
         public void decNbShoot()
-        {
+        {           
             nbShoot -= 1;
             if (nbShoot == 0)
             {
@@ -112,7 +194,7 @@ namespace DOL.GS.Effects
                 InventoryItem ammo = player.rangeAttackComponent.RangeAttackAmmo;
                 sol = new Point3D(player.GroundTarget.X, player.GroundTarget.Y, player.GroundTarget.Z);
                 double attackrangeMin = player.AttackRange * 0.66;//minimum attack range
-                double attackrangeMax = player.AttackRange / 0.66;//maximum attack range
+                double attackrangeMax = player.AttackRange * 2.2;//maximum attack range
 
                 m_player.attackComponent.LivingStopAttack();
                 m_player.StopCurrentSpellcast();
@@ -148,33 +230,57 @@ namespace DOL.GS.Effects
                     player.Out.SendMessage("You ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
-                int speedtodisplay = m_player.AttackSpeed(m_player.AttackWeapon) / 100;
-                m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare.Volley", Name, speedtodisplay / 10, speedtodisplay % 10), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer playerS in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                //int speedtodisplay = m_player.AttackSpeed(m_player.AttackWeapon) / 100;
+                //m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare.Volley", Name, speedtodisplay / 10, speedtodisplay % 10), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                /* foreach (GamePlayer playerS in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                 {
+                     int weaponspeed = m_player.AttackSpeed(m_player.AttackWeapon);
+                     byte prepareTime = (byte)(weaponspeed / 100);
+                     playerS.Out.SendSpellCastAnimation(m_player, 7454, prepareTime);
+                 }*/
+                int model = (m_player.attackComponent.AttackWeapon == null ? 0 : m_player.attackComponent.AttackWeapon.Model);
+                foreach (GamePlayer players in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
-                    int weaponspeed = m_player.AttackSpeed(m_player.AttackWeapon);
-                    byte prepareTime = (byte)(weaponspeed / 100);
-                    playerS.Out.SendSpellCastAnimation(m_player, 7454, prepareTime);
+                    if (players == null) continue;                   
+                    players.Out.SendCombatAnimation(m_player, null, (ushort)model, 0x00, players.Out.BowShoot, 0, 0x00, 0x00);
                 }
                 if (CanLaunch == false)
                 {
-                    new ECSGameTimer(OwnerPlayer, new ECSGameTimer.ECSTimerCallback(MakeAnimation), 2500);
+                    new ECSGameTimer(OwnerPlayer, new ECSGameTimer.ECSTimerCallback(MakeAnimation), 1000);
                     CanLaunch = true;
                 }
                 return;
             }
         }
         #endregion
-
         #region DamageTarget
         private void DamageTarget(GameLiving target, GamePlayer archer)
         {
             InventoryItem attackWeapon = archer.attackComponent.AttackWeapon;
             eDamageType damagetype = archer.attackComponent.AttackDamageType(attackWeapon);
             int modifier = archer.RealmLevel;
+
             double weaponspeed = attackWeapon.SPD_ABS * 0.1;
-            double baseDamage = (modifier + archer.WeaponDamage(attackWeapon) + archer.WeaponSpecLevel(attackWeapon)) * weaponspeed * 0.40;
-            double damageResisted = baseDamage * target.GetResist(damagetype) * -0.01;
+            double ClampedDamage = 1.2 + archer.Level * 0.3;
+            double WeaponBonus2H = 1.1 + (0.005 * archer.WeaponSpecLevel(attackWeapon));
+            double SlowWeaponBonus = 1 + ((weaponspeed - 2) * 0.03);
+            double meleeRelicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(archer.Realm, eRelicType.Strength);
+            double WeaponDPS = attackWeapon.DPS_AF * 0.1;
+            double TargetAF = 1;
+            if (target is GamePlayer)
+                TargetAF = target.EffectiveOverallAF;//get player AF
+            else
+            {
+                if (target.GetModified(eProperty.ArmorFactor) > 0)
+                    TargetAF = target.GetModified(eProperty.ArmorFactor) * 6;//calculate AF for NPc
+                else
+                    TargetAF = 750;//set af if npc somehow got AF = 0
+            }
+
+            double TargetABS = 0.10;
+            double AcherWeaponSkill = archer.DisplayedWeaponSkill;
+            double baseDamage = WeaponDPS * (AcherWeaponSkill / TargetAF) * meleeRelicBonus  * SlowWeaponBonus * WeaponBonus2H * weaponspeed;//calculate dmg
+
             switch ((archer.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)//switch dmg based of arrow type
             {
                 case 0:
@@ -202,16 +308,55 @@ namespace DOL.GS.Effects
             ad.Target = target;
             ad.Weapon= attackWeapon;
             ad.DamageType = damagetype;
-            ad.AttackType = AttackData.eAttackType.Ranged;
-            ad.Damage = (int)(baseDamage + damageResisted + ad.CriticalDamage);
-            ad.Modifier = (int)damageResisted;
+            ad.AttackType = AttackData.eAttackType.Ranged;                   
             ad.CriticalDamage = archer.attackComponent.GetMeleeCriticalDamage(ad, attackWeapon);
             ad.Attacker.GetModified(eProperty.CriticalArcheryHitChance);
-            ad.CausesCombat = true;           
-            //ad.AnimationId = 10;
-            //target.OnAttackedByEnemy(ad);
+            ad.CausesCombat = true;
+
+            if (target is GamePlayer)
+                ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
+
+            InventoryItem armor = null;
+            if (target.Inventory != null)
+                armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
+
+            if (target is GamePlayer)
+            {
+                TargetABS = 1.0 - Math.Min(0.85, target.GetArmorAbsorb(ad.ArmorHitLocation));//set player abs
+                baseDamage *= TargetABS;
+            }
+            else
+            {
+                TargetABS = 1.0 - 0.10;//set mob abs
+                baseDamage *= TargetABS;
+            }
+
+            if (baseDamage > 550)
+                baseDamage = 550;//cap dmg for volley just incase we see weird numbers
+            if (baseDamage < 50)
+                baseDamage = 50;//minimum volley damage;
+
+            if (target is GamePlayer)
+                baseDamage += (int)(baseDamage * (target.GetResist(damagetype) + SkillBase.GetArmorResist(armor, damagetype)) * -0.007);//calculate dmg based on armor resists
+            else
+                baseDamage += (int)(baseDamage * (target.GetResist(damagetype) * -0.009));
+
+            ad.Damage = (int)(baseDamage + ad.CriticalDamage);
+
             target.TakeDamage(ad);
-            //archer.DealDamage(ad);
+            /* archer.Out.SendMessage("weaponspeed = " + weaponspeed + //For testing purpose only, we dont want show this to player
+                 "WeaponDPS = " + WeaponDPS +
+                 " ad.Modifier = " + ((int)(baseDamage * (target.GetResist(damagetype) + SkillBase.GetArmorResist(armor, damagetype)) * -0.007)) +
+                 " TargetABS = " + TargetABS +
+                 " ArcherSpec = "+ archer.WeaponSpecLevel(attackWeapon) +
+                 " TargetAF = " + TargetAF +
+                 " DisplayedWeaponSkill = " + archer.DisplayedWeaponSkill +
+                 " meleeRelicBonus = " + meleeRelicBonus +
+                 " WeaponBonus2H = " + WeaponBonus2H +
+                 " SlowWeaponBonus = "+ SlowWeaponBonus+
+                 " ArmorHitLocation = " + ad.ArmorHitLocation +
+                 " DamageResistReduct = "+ (baseDamage * target.GetResist(damagetype) * 0.01), eChatType.CT_Important, eChatLoc.CL_SystemWindow);*/
+
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);//being attacked animation
@@ -256,19 +401,27 @@ namespace DOL.GS.Effects
             mob.AddToWorld();
         }
         private bool CanLaunch = false;
-        private void PlayerUseVolley(DOLEvent e, object sender, EventArgs args)
+        private void PlayerUseVolley(DOLEvent e, object sender, EventArgs args)//player click bow slow/arrow
         {
             UseSlotEventArgs useArgs = args as UseSlotEventArgs;
             GamePlayer player = sender as GamePlayer;
             if (player == null) return;
             int slot = useArgs.Slot;
             int type = useArgs.Type;
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
-            if (CanLaunch == false && volley != null)//make sure player does have volley effect
-                LaunchVolley(player, slot, type);
+            if (IsReadyToFire)
+            {
+                ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+                if (CanLaunch == false && volley != null)//make sure player does have volley effect
+                    LaunchVolley(player, slot, type);
+                else
+                {
+                    player.Out.SendMessage("You can't fire your arrow yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+            }
             else
             {
-                player.Out.SendMessage("You can't fire your arrow yet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Your volley is not yet ready!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
             }
         }
@@ -285,7 +438,7 @@ namespace DOL.GS.Effects
                 eDamageType damagetype = player.attackComponent.AttackDamageType(attackWeapon);
                 int speed = player.AttackSpeed(attackWeapon);
                 byte attackSpeed = (byte)(speed / 1000);
-                player.Out.SendMessage("You launch a " + Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Your shot arcs into the sky!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                 AtlasOF_ArrowSalvaging abArrowSalv = player.GetAbility<AtlasOF_ArrowSalvaging>();
                 Boolean remove = true;
@@ -319,7 +472,7 @@ namespace DOL.GS.Effects
 
                 if (targets.Count > 0)
                 {
-                    foreach (GameLiving livingaffected in targets)
+                    /*foreach (GameLiving livingaffected in targets)//has chance to hit all targets in list
                     {
                         if (livingaffected != null)
                         {
@@ -330,11 +483,21 @@ namespace DOL.GS.Effects
                                     ((GamePlayer)livingaffected).Stealth(false);
                             }
                         }
-                        else
+                    }*/
+                    GameLiving Target = (GameLiving)targets[Util.Random(0, targets.Count - 1)];//pick only 1 target from list
+                    if (Target != null && Target.IsAlive)
+                    {
+                        DamageTarget(Target, player);
+                        if (Target is GamePlayer)
                         {
-                            player.Out.SendMessage("You do not touch any target!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            if (Target.IsStealthed)
+                                ((GamePlayer)Target).Stealth(false);
                         }
                     }
+                }
+                if (targets.Count == 0)//0 targets 
+                {
+                    player.Out.SendMessage("Your shot sails clear of all targets!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
                 if (nbShoot >= 1)
@@ -343,6 +506,30 @@ namespace DOL.GS.Effects
                 }
                 targets.Clear();
                 CanLaunch = false;
+                IsReadyToFire = false;
+                int model = (player.attackComponent.AttackWeapon == null ? 0 : player.attackComponent.AttackWeapon.Model);
+
+                new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(ReadyToFire), 1500);
+                if(nbShoot == 4 && volley != null)
+                    new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(TooTired2ndShoot), 32500);
+                if (nbShoot == 3 && volley != null)
+                    new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(TooTired3thShoot), 32500);
+                if (nbShoot == 2 && volley != null)
+                    new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(TooTired4thShoot), 32500);
+                if (nbShoot == 1 && volley != null)
+                    new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(TooTired5thShoot), 32500);
+
+                byte HoldAttack = 0x1E;//30 seconds
+                player.attackComponent.LivingStopAttack();    //stop all attacks
+                player.StopCurrentSpellcast();                //stop all casts
+
+                if (nbShoot >= 1)
+                {
+                    foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        players.Out.SendCombatAnimation(player, null, (ushort)model, 0x00, players.Out.BowPrepare, HoldAttack, 0x00, 0x00);
+                    }
+                }
             }
             return 0;
         }

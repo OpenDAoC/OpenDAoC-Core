@@ -45,7 +45,12 @@ namespace DOL.GS.SkillHandler
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
-
+			ECSGameEffect volley = EffectListService.GetEffectOnTarget(player, eEffect.Volley);
+			if (volley != null)
+			{
+				player.Out.SendMessage("You can't stealth while you have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
 			long stealthChangeTick = player.TempProperties.getProperty<long>(GamePlayer.STEALTH_CHANGE_TICK);
 			long changeTime = player.CurrentRegion.Time - stealthChangeTick;
 			if(changeTime < 2000)
