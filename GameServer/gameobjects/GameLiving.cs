@@ -3722,7 +3722,8 @@ namespace DOL.GS
 					evadeChance = 0.01;
 				else if (IsObjectInFront( ad.Attacker, 180 ) 
 				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
-				         && evadeChance < 0.05)
+				         && evadeChance < 0.05
+				         && ad.AttackType != AttackData.eAttackType.Ranged)
 				{
 					//if player has a hard evade source, 5% miniumum evade chance
 					evadeChance = 0.05;
