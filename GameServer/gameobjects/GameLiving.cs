@@ -3720,6 +3720,13 @@ namespace DOL.GS
 
 				if( evadeChance < 0.01 )
 					evadeChance = 0.01;
+				else if (IsObjectInFront( ad.Attacker, 180 ) 
+				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
+				         && evadeChance < 0.05)
+				{
+					//if player has a hard evade source, 5% miniumum evade chance
+					evadeChance = 0.05;
+				}
 				else if( evadeChance > ServerProperties.Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
 					evadeChance = ServerProperties.Properties.EVADE_CAP; //50% evade cap RvR only; http://www.camelotherald.com/more/664.shtml
 				else if( evadeChance > 0.995 )
@@ -4000,22 +4007,25 @@ namespace DOL.GS
 		}
 
 		public double GetAttackerDefensePenetration(GameLiving living, InventoryItem weapon)
-        {            
-			//double statBasedReduction = (living.GetWeaponStat(living.attackComponent?.AttackWeapon) - 50) / 25.0;
-			//double weaponskillBasedReduction = living.GetWeaponSkill(living.attackComponent?.AttackWeapon) / 100;
-			double skillBasedReduction = living.WeaponSpecLevel(weapon) * 0.15;
-
-			//double combinedReduction = statBasedReduction + skillBasedReduction;
+		{
+			double totalReduction = 0.0;
 
 			if (living is GamePlayer p)
             {
+	            double skillBasedReduction = living.WeaponSpecLevel(weapon) * 0.15;
 				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
 				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
 				//divide by final 2 to use the 2.0 damage table as our anchor. classes below 2.0 damage table will have slightly reduced penetration, above 2.0 will have increased penetration
 				skillBasedReduction *= p.CharacterClass.WeaponSkillBase / 200.0 / 1.8;
+				totalReduction = skillBasedReduction;
+            }
+			else
+			{
+				double NPCReduction = 15.0 * (living.Level / 50.0); //15% penetration at level 50
+				totalReduction = NPCReduction;
 			}
 				
-			return skillBasedReduction;
+			return totalReduction;
 		}
 
 		/// <summary>
