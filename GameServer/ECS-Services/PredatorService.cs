@@ -38,8 +38,8 @@ public class PredatorService
                     .FirstOrDefault() as AbstractArea;
                 
                 //if user is not in an RvR zone, or is in DF
-                if ((activePlayer != null && 
-                     activePlayer.CurrentZone != null && 
+                if (activePlayer != null && 
+                     (activePlayer.CurrentZone != null && 
                      !activePlayer.CurrentZone.IsRvR 
                      && (area == null || (area != null && !area.Description.Equals("Druim Ligen")))) 
                      || activePlayer.CurrentZone.ID == 249)
