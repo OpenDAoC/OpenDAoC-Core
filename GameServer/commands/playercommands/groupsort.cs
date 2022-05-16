@@ -91,9 +91,6 @@ namespace DOL.GS.Commands
 						
 						var player1 = client.Player.Group.GetMemberByIndex(switchSource);
 						var player2 = client.Player.Group.GetMemberByIndex(switchTarget);
-						
-						Console.WriteLine($"switchX: {switchX} switchY: {switchY} player1: {player1.Name} player2: {player2.Name}");
-						
 
 						client.Player.Group.SwitchPlayers(player1, player2);
 

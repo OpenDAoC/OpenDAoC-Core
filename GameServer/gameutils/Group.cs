@@ -312,7 +312,7 @@ namespace DOL.GS
 			m_groupMembers.FreezeWhile(l => {
 			                           	for (byte ind = 0; ind < l.Count; ind++)
 			                           		l[ind].GroupIndex = ind;
-			                           });
+			});
 		}
 		
 		/// <summary>
@@ -404,11 +404,9 @@ namespace DOL.GS
 
 				return player;
 			});
-			if (player != null)
+			if (player == null)
 			{
-				// all went ok
-				UpdateGroupWindow();
-				SendMessageToGroupMembers(string.Format("Target player is " + player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				SendMessageToGroupMembers($"Cannot find group member with index {index}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 
 			return player;
