@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
 				}
 				return;
 			}
-			//if nothing matched, then they tried to invent thier own commands -- show syntax
+			//if nothing matched, then they tried to invent their own commands -- show syntax
 			DisplaySyntax(client);
 		}
 	}
