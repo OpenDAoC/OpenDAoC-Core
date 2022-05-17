@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using DOL.Language;
 
 
@@ -37,6 +38,14 @@ namespace DOL.GS.Commands
 
 			string switchX = string.Empty;
 			string switchY = string.Empty;
+			string switchPlayerOne = string.Empty;
+			string switchPlayerTwo = string.Empty;
+			string switchPlayerThree = string.Empty;
+			string switchPlayerFour = string.Empty;
+			string switchPlayerFive = string.Empty;
+			string switchPlayerSix = string.Empty;
+			string switchPlayerSeven = string.Empty;
+			string switchPlayerEight = string.Empty;
 
 			// /groupsort for leaders -- Make sue it is the group leader using this command, if it is, execute it.
 			if (command == "manual" || command == "switch")
@@ -47,20 +56,63 @@ namespace DOL.GS.Commands
 					return;
 				}
 
+				var groupMembersCount = client.Player.Group.MemberCount;
+				
 				switch (command)
 				{
+					
 					case "manual":
 						{
-							
-							Console.WriteLine(client.Player.GroupIndex);
-							if (client.Player.Group != null)
+							if (args.Length >= 4)
 							{
-								foreach (GamePlayer player in client.Player.Group.GetMembersInTheGroup())
-								{
-									Console.WriteLine($"Player {player.Name} has index {player.GroupIndex}");
-								}
+								switchPlayerOne = args[2];
+								switchPlayerTwo = args[3];
+								switchPlayerThree = args[4];
+								switchPlayerFour = args[5];
+								switchPlayerFive = args[6];
+								switchPlayerSix = args[7];
+								switchPlayerSeven = args[8];
+								switchPlayerEight = args[9];
 							}
 
+							List<string> playerlist = new List<string>();
+							playerlist.Add(switchPlayerOne);
+							playerlist.Add(switchPlayerTwo);
+							playerlist.Add(switchPlayerThree);
+							playerlist.Add(switchPlayerFour);
+							playerlist.Add(switchPlayerFive);
+							playerlist.Add(switchPlayerSix);
+							playerlist.Add(switchPlayerSeven);
+							playerlist.Add(switchPlayerEight);
+							
+							int switchOneIndex = Convert.ToInt32(switchPlayerOne);
+							int switchTwoIndex = Convert.ToInt32(switchPlayerTwo);
+							int switchThreeIndex = Convert.ToInt32(switchPlayerThree);
+							int switchFourIndex = Convert.ToInt32(switchPlayerFour);
+							int switchFiveIndex = Convert.ToInt32(switchPlayerFive);
+							int switchSixIndex = Convert.ToInt32(switchPlayerSix);
+							int switchSevenIndex = Convert.ToInt32(switchPlayerSeven);
+							int switchEightIndex = Convert.ToInt32(switchPlayerEight);
+							
+							if (switchPlayerOne == string.Empty || switchPlayerTwo == string.Empty || switchPlayerThree == string.Empty 
+							    || switchPlayerFour == string.Empty || switchPlayerFive == string.Empty || switchPlayerSix == string.Empty 
+							    || switchPlayerSeven == string.Empty || switchPlayerEight == string.Empty)
+							{
+								DisplayMessage(client, "Use '/groupsort manual <classname> <classname> - sorts the group in the order of classes entered.");
+								return;
+							}
+
+							//var groupList = client.Player.Group.GetMembersInTheGroup();
+							
+							List<String> classlist = new List<String>();
+							foreach (GamePlayer player in client.Player.Group.GetMembersInTheGroup())
+							{
+								classlist.Add(player.CharacterClass.Name);
+								Console.WriteLine(""+ classlist);
+							}
+							
+							playerlist.Clear();
+							classlist.Clear();
 							break;
 						}
 					
@@ -87,9 +139,7 @@ namespace DOL.GS.Commands
 						
 						var switchSource = Convert.ToByte(switchXIndex - 1);
 						var switchTarget = Convert.ToByte(switchYIndex - 1);
-
-						var groupMembersCount = client.Player.Group.MemberCount;
-
+						
 						if (groupMembersCount < switchSource || groupMembersCount < switchTarget)
 						{
 							DisplayMessage(client, "Use '/groupsort switch <#> <#>' - switches two group members.");
