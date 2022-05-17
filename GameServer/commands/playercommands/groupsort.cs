@@ -78,6 +78,13 @@ namespace DOL.GS.Commands
 						
 						int switchXIndex = Convert.ToInt32(switchX);
 						int switchYIndex = Convert.ToInt32(switchY);
+						
+						if (switchXIndex == 1 || switchYIndex == 1)
+						{
+							DisplayMessage(client, "You can't switch the group leader, use /makeleader instead.");
+							return;
+						}
+						
 						var switchSource = Convert.ToByte(switchXIndex - 1);
 						var switchTarget = Convert.ToByte(switchYIndex - 1);
 

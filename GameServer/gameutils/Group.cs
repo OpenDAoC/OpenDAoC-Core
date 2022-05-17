@@ -368,18 +368,6 @@ namespace DOL.GS
 				target.GroupIndex = sourceInd;
 				l[sourceInd] = target;
 
-				if (source.GroupIndex == 0)
-				{
-					LivingLeader = source;
-					SendMessageToGroupMembers(string.Format("{0} is the new group leader.", LivingLeader.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-				}
-				if (target.GroupIndex == 0)
-				{
-					LivingLeader = target;
-					SendMessageToGroupMembers(string.Format("{0} is the new group leader.", LivingLeader.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
-				
 				return true;
 			});
 			if (allOk)
