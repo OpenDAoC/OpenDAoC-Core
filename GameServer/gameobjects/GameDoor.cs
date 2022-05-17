@@ -253,7 +253,7 @@ namespace DOL.GS
 		{
 			if (!m_openDead)
 				this.State = eDoorState.Closed;
-			m_closeDoorAction.Stop();
+			m_closeDoorAction?.Stop();
 			m_closeDoorAction = null;
 		}
 
