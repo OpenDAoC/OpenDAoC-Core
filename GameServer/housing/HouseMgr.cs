@@ -596,6 +596,15 @@ namespace DOL.GS.Housing
 		/// <returns>The house object</returns>
 		public static House GetHouseByPlayer(GamePlayer p)
 		{
+			List<String> acctObjectIds = new List<string>();
+			foreach (var character in p.Client.Account.Characters)
+			{
+				if (character.Realm == (int)p.Realm)
+				{
+					acctObjectIds.Add(character.ObjectId);	
+				}
+			}
+			
 			// check every house in every region until we find
 			// a house that belongs to this player
 			foreach (var regs in _houseList)
@@ -604,7 +613,7 @@ namespace DOL.GS.Housing
 				{
 					var house = entry.Value;
 
-					if (house.OwnerID == p.ObjectId)
+					if (acctObjectIds.Contains(house.OwnerID))
 						return house;
 				}
 			}
