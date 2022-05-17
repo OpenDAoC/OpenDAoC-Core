@@ -40,7 +40,7 @@ namespace DOL.GS.Housing
 		private static ECSGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
-		private static int TimerInterval = 30000;//Properties.RENT_CHECK_INTERVAL * 60 * 1000;
+		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
 
 		protected enum eLotSpawnType
 		{
@@ -112,7 +112,7 @@ namespace DOL.GS.Housing
 			if (CheckRentTimer == null)
 			{
 				CheckRentTimer =
-					new ECSGameTimer(null, CheckRents, 30000); //Properties.RENT_CHECK_INTERVAL * 60 * 1000);
+					new ECSGameTimer(null, CheckRents, TimerInterval);
 			}
 
 			return true;
