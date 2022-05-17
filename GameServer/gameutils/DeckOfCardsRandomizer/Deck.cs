@@ -11,7 +11,7 @@ namespace DOL.GS.Utils;
 
 public class PlayerDeck
 {
-    private const int NUM_BONUS_DECKS = 1;
+    private const int NUM_BONUS_DECKS = 2;
     private const int NUM_NORMAL_DECKS = 2;
     private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * 50;
 
