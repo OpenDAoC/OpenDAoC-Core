@@ -12353,7 +12353,7 @@ namespace DOL.GS
             
             
             //max 2 charges
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
                 if(ActiveBuffCharges < 2)
                     UseItemCharge(item, (int)eUseType.use1);
@@ -12363,9 +12363,15 @@ namespace DOL.GS
                 }
             }
 
-            if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1)&& ActiveBuffCharges < 2)
+            //max 2 charges
+            if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
-                UseItemCharge(item, (int)eUseType.use2);
+                if(ActiveBuffCharges < 2)
+                    UseItemCharge(item, (int)eUseType.use2);
+                else
+                {
+                    Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
             }
 
             if (ObjectState == eObjectState.Active)
