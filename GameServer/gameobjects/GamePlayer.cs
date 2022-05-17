@@ -10158,7 +10158,7 @@ namespace DOL.GS
             {
                 spell = SkillBase.FindSpell(useItem.SpellID1, chargeEffectLine);
             }
-
+            
             if (spell != null)
             {
                 if (ActiveBuffCharges >= 2 && SelfBuffChargeIDs.Contains(spell.ID))
@@ -10167,6 +10167,11 @@ namespace DOL.GS
                     return;
                 }
                 
+                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
+                {
+                    spell.Duration = 30 * 60 * 1000;
+                }
+
                 ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
                 if (spellHandler != null)
                 {
