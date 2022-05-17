@@ -10161,6 +10161,12 @@ namespace DOL.GS
 
             if (spell != null)
             {
+                if (ActiveBuffCharges >= 2 && SelfBuffChargeIDs.Contains(spell.ID))
+                {
+                    Out.SendMessage("You may only use two buff charge effects.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+                
                 ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
                 if (spellHandler != null)
                 {
@@ -10185,6 +10191,7 @@ namespace DOL.GS
                                 }
                             }
                         }
+
                         if (useItem.MaxCharges > 0)
                         {
                             useItem.Charges--;
@@ -12343,6 +12350,23 @@ namespace DOL.GS
             if (Client.Account.PrivLevel == (uint)ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
                 if (item.SpellID > 0 || item.SpellID1 > 0)
                     TempProperties.setProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
+            
+            
+            //max 2 charges
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
+            {
+                if(ActiveBuffCharges < 2)
+                    UseItemCharge(item, (int)eUseType.use1);
+                else
+                {
+                    Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
+
+            if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1)&& ActiveBuffCharges < 2)
+            {
+                UseItemCharge(item, (int)eUseType.use2);
+            }
 
             if (ObjectState == eObjectState.Active)
             {
@@ -12367,6 +12391,38 @@ namespace DOL.GS
                     if (Endurance < MaxEndurance) StartEnduranceRegeneration();
                     else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
                 }
+            }
+        }
+
+        private int m_activeBuffCharges = 0;
+
+        public int ActiveBuffCharges
+        {
+            get
+            {
+                return m_activeBuffCharges;
+            }
+            set
+            {
+                m_activeBuffCharges = value;
+            }
+        }
+
+        private List<int> m_selfBuffIds;
+        public List<int> SelfBuffChargeIDs {
+            get
+            {
+                if (m_selfBuffIds == null)
+                {
+                    m_selfBuffIds = new List<int>();
+                    m_selfBuffIds.Add(31133); //str/con charge
+                    m_selfBuffIds.Add(31132); //dex/qui charge
+                    m_selfBuffIds.Add(31131); //acuity charge
+                    m_selfBuffIds.Add(31130); //AF charge
+                    m_selfBuffIds.Add(33512); //haste charge
+                }
+
+                return m_selfBuffIds;
             }
         }
 
@@ -12505,6 +12561,12 @@ namespace DOL.GS
             {
                 (item as IGameInventoryItem).OnUnEquipped(this);
             }
+            
+            //max 2 charges
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
+            {
+                CancelChargeBuff(item.SpellID);
+            }
 
             if (ObjectState == eObjectState.Active)
             {
@@ -12529,6 +12591,11 @@ namespace DOL.GS
                     else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
                 }
             }
+        }
+
+        private void CancelChargeBuff(int spellID)
+        {
+            EffectService.RequestCancelEffect(effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spellID));
         }
 
         public virtual void RefreshItemBonuses()
