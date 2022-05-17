@@ -41,8 +41,8 @@ public class PredatorService
                 if (activePlayer != null && 
                      (activePlayer.CurrentZone != null && 
                      !activePlayer.CurrentZone.IsRvR 
-                     && (area == null || (area != null && !area.Description.Equals("Druim Ligen")))) 
-                     || activePlayer.CurrentZone.ID == 249)
+                     && (area == null || (area != null && !area.Description.Equals("Druim Ligen"))) 
+                     || activePlayer.CurrentZone?.ID == 249))
                 {
                     if(!activePlayer.PredatorTimeoutTimer.IsAlive)
                         PredatorManager.StartTimeoutCountdownFor(activePlayer);
