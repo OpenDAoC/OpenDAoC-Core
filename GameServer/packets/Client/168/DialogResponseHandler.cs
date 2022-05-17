@@ -350,11 +350,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// clean up
 							player.TempProperties.removeProperty(HousingConstants.MoneyForHouseRent);
+							Interval = 0;
 							break;
 						}
 					case eDialogCode.MasterLevelWindow:
 						{
 							player.Out.SendMasterLevelWindow(m_response);
+							Interval = 0;
 							break;
 						}
 				}
