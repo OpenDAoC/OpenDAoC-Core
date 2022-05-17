@@ -897,8 +897,8 @@ namespace DOL.GS
 			double afPerAbsorptionPercent = 6;
 			double liveBaseAFcap = 150 * 1.25 * 1.25;
 			double afBuffBonus = Math.Min(liveBaseAFcap, BaseBuffBonusCategory[eProperty.ArmorFactor] + SpecBuffBonusCategory[eProperty.ArmorFactor]);
-			double afDebuffMalus = Math.Abs(DebuffCategory[eProperty.ArmorFactor] + SpecDebuffCategory[eProperty.ArmorFactor]);
-			double afBuffAbsorb = (afBuffBonus - afDebuffMalus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
+			//double afDebuffMalus = Math.Abs(DebuffCategory[eProperty.ArmorFactor] + SpecDebuffCategory[eProperty.ArmorFactor]);
+			double afBuffAbsorb = (afBuffBonus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
 
 			double baseAbsorb = 0;
 
