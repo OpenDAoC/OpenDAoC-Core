@@ -1864,6 +1864,8 @@ namespace DOL.GS
             //Update health&sit state first!
             m_isDead = false;
             Health = MaxHealth;
+            Endurance = MaxEndurance;
+            Mana = MaxMana;
             StartPowerRegeneration();
             StartEnduranceRegeneration();
             UpdatePlayerStatus();
