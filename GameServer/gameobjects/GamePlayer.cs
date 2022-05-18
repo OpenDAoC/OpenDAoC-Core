@@ -14356,44 +14356,44 @@ namespace DOL.GS
 			*/
             range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
 
-            //Buff (Stealth Detection)
-            //Increases the target's ability to detect stealthed players and monsters.
-            GameSpellEffect iVampiirEffect = SpellHandler.FindEffectOnTarget((GameLiving)this, "VampiirStealthDetection");
-            if (iVampiirEffect != null)
-                range += (int)iVampiirEffect.Spell.Value;
-			
-            //Infill Only - Greater Chance to Detect Stealthed Enemies for 1 minute
-            //after executing a klling blow on a realm opponent.
-            GameSpellEffect HeightenedAwareness = SpellHandler.FindEffectOnTarget((GameLiving)this, "HeightenedAwareness");
-            if (HeightenedAwareness != null)
-                range += (int)HeightenedAwareness.Spell.Value;
-
-            //Nightshade Only - Greater chance of remaining hidden while stealthed for 1 minute
-            //after executing a killing blow on a realm opponent.
-            GameSpellEffect SubtleKills = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "SubtleKills");
-            if (SubtleKills != null)
-            {
-                range -= (int)SubtleKills.Spell.Value;
-                if (range < 0) range = 0;
-            }
-
-            // Apply Blanket of camouflage effect
-            GameSpellEffect iSpymasterEffect1 = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "BlanketOfCamouflage");
-            if (iSpymasterEffect1 != null)
-            {
-                range -= (int)iSpymasterEffect1.Spell.Value;
-                if (range < 0) range = 0;
-            }
-
-            // Apply Lookout effect
-            GameSpellEffect iSpymasterEffect2 = SpellHandler.FindEffectOnTarget((GameLiving)this, "Loockout");
-            if (iSpymasterEffect2 != null)
-                range += (int)iSpymasterEffect2.Spell.Value;
-
-            // Apply Prescience node effect
-            GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
-            if (iConvokerEffect != null)
-                range += (int)iConvokerEffect.Spell.Value;
+            // //Buff (Stealth Detection)
+            // //Increases the target's ability to detect stealthed players and monsters.
+            // GameSpellEffect iVampiirEffect = SpellHandler.FindEffectOnTarget((GameLiving)this, "VampiirStealthDetection");
+            // if (iVampiirEffect != null)
+            //     range += (int)iVampiirEffect.Spell.Value;
+			         //
+            // //Infill Only - Greater Chance to Detect Stealthed Enemies for 1 minute
+            // //after executing a klling blow on a realm opponent.
+            // GameSpellEffect HeightenedAwareness = SpellHandler.FindEffectOnTarget((GameLiving)this, "HeightenedAwareness");
+            // if (HeightenedAwareness != null)
+            //     range += (int)HeightenedAwareness.Spell.Value;
+            //
+            // //Nightshade Only - Greater chance of remaining hidden while stealthed for 1 minute
+            // //after executing a killing blow on a realm opponent.
+            // GameSpellEffect SubtleKills = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "SubtleKills");
+            // if (SubtleKills != null)
+            // {
+            //     range -= (int)SubtleKills.Spell.Value;
+            //     if (range < 0) range = 0;
+            // }
+            //
+            // // Apply Blanket of camouflage effect
+            // GameSpellEffect iSpymasterEffect1 = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "BlanketOfCamouflage");
+            // if (iSpymasterEffect1 != null)
+            // {
+            //     range -= (int)iSpymasterEffect1.Spell.Value;
+            //     if (range < 0) range = 0;
+            // }
+            //
+            // // Apply Lookout effect
+            // GameSpellEffect iSpymasterEffect2 = SpellHandler.FindEffectOnTarget((GameLiving)this, "Loockout");
+            // if (iSpymasterEffect2 != null)
+            //     range += (int)iSpymasterEffect2.Spell.Value;
+            //
+            // // Apply Prescience node effect
+            // GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
+            // if (iConvokerEffect != null)
+            //     range += (int)iConvokerEffect.Spell.Value;
 
             //Hard cap is 1900
             if (range > 1900)
