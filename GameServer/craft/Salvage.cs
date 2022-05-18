@@ -50,6 +50,8 @@ namespace DOL.GS
 		/// The item being salvaged
 		/// </summary>
 		protected const string SALVAGED_ITEM = "SALVAGED_ITEM";
+		
+		protected const string SALVAGE_QUEUE = "SALVAGE_QUEUE";
 
 		#endregion
 
@@ -157,6 +159,14 @@ namespace DOL.GS
 			player.CraftTimer.Start(yield.Count * 1000);
 			return 1;
 		}
+		
+		public static int BeginWorkList(GamePlayer player, IList<InventoryItem> itemList)
+		{
+			player.TempProperties.setProperty(SALVAGE_QUEUE,itemList);
+			player.CraftTimer?.Stop();
+			player.Out.SendCloseTimerWindow();
+			return BeginWork(player, itemList[0]);
+		}
 
 		/// <summary>
 		/// Begin salvaging a siege weapon
@@ -234,6 +244,7 @@ namespace DOL.GS
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
 			InventoryItem itemToSalvage = timer.Properties.getProperty<InventoryItem>(SALVAGED_ITEM, null);
 			SalvageYield yield = timer.Properties.getProperty<SalvageYield>(SALVAGE_YIELD, null);
+			IList<InventoryItem> itemList = player.TempProperties.getProperty<IList<InventoryItem>>(SALVAGE_QUEUE, null);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
@@ -325,8 +336,12 @@ namespace DOL.GS
 
 			player.Inventory.CommitChanges();
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+			if (itemList == null) return 0;
+			itemList.RemoveAt(0);
+			BeginWorkList(player, itemList);
 			
-			return 0;
+			return 1;
 		}
 		
 		#endregion

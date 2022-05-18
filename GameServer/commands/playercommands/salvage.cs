@@ -17,7 +17,10 @@
  *
  */
 
-namespace DOL.GS.Commands
+ using System.Collections.Generic;
+ using DOL.Database;
+
+ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&salvage",
@@ -31,10 +34,34 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "salvage"))
 				return;
 
-			WorldInventoryItem item = client.Player.TargetObject as WorldInventoryItem;
-			if (item == null)
-				return;
-			client.Player.SalvageItem(item.Item);
+			if (args.Length >= 2)
+			{
+				if (args[1] == "all")
+				{
+					int firstItem = 0, lastItem = 40;
+					IList<InventoryItem> items = new List<InventoryItem>();
+					foreach (var item in client.Player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					{
+						items.Add(item);
+					}
+					// for (int i = firstItem; i <= lastItem; i++)
+					// {
+					// 	InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)i);
+					// 	if (item != null)
+					// 		merchant.OnPlayerSell(player, item);
+					// }
+					// client.Player.SalvageAllItems();
+					client.Player.SalvageItemList(items);
+					return;
+				}
+			}
+			else
+			{
+				WorldInventoryItem item = client.Player.TargetObject as WorldInventoryItem;
+				if (item == null)
+					return;
+				client.Player.SalvageItem(item.Item);
+			}
 		}
 	}
 }
