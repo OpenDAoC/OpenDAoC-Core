@@ -1,4 +1,6 @@
+using System;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
@@ -187,5 +189,23 @@ namespace DOL.GS
 			}
 		}
 		#endregion Effect End Messages
+
+		public override PlayerXEffect getSavedEffect()
+		{
+			if (SpellHandler == null || SpellHandler.Spell == null) return null;
+			
+			PlayerXEffect eff = new PlayerXEffect();
+			eff.Var1 = SpellHandler.Spell.ID;
+			
+			if (Duration > 0)
+				eff.Duration = (int)(ExpireTick - GameLoop.GameLoopTime);
+			else
+				eff.Duration = 30 * 60 * 1000;
+			
+			eff.IsHandler = true;
+			eff.SpellLine = SpellHandler.SpellLine.KeyName;
+			Console.WriteLine($"new effect created: {eff}");
+			return eff;
+		}
     }
 }

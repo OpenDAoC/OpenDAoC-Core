@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -13,11 +15,13 @@ using DOL.GS.SpellEffects;
 using DOL.GS.Spells;
 using DOL.Language;
 using ECS.Debug;
+using log4net;
 
 namespace DOL.GS
 {
     public static class EffectService
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         static int _segmentsize = 100;
         static List<Task> _tasks = new List<Task>();
 
@@ -869,8 +873,101 @@ namespace DOL.GS
 
 
         }
-
         
+        public static void RestoreAllEffects(GamePlayer p)
+        {
+            GamePlayer player = p;
+			
+            if (player == null || player.DBCharacter == null || GameServer.Database == null)
+                return;
+
+            var effs = DOLDB<PlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+            if (effs == null)
+                return;
+
+            foreach (PlayerXEffect eff in effs)
+                GameServer.Database.DeleteObject(eff);
+
+            foreach (PlayerXEffect eff in effs.GroupBy(e => e.Var1).Select(e => e.First()))
+            {
+                if (eff.SpellLine == GlobalSpellsLines.Reserved_Spells)
+                    continue;
+
+                bool good = true;
+                Spell spell = SkillBase.GetSpellByID(eff.Var1);
+
+                if (spell == null)
+                    good = false;
+
+                SpellLine line = null;
+
+                if (!Util.IsEmpty(eff.SpellLine))
+                {
+                    line = SkillBase.GetSpellLine(eff.SpellLine, false);
+                    if (line == null)
+                    {
+                        good = false;
+                    }
+                }
+                else
+                {
+                    good = false;
+                }
+
+                if (good)
+                {
+                    ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
+                    ECSGameEffect e;
+                    e = new ECSGameSpellEffect(new ECSGameEffectInitParams(p, eff.Duration, eff.Var3, handler));
+                    EffectService.RequestStartEffect(e);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Save All Effect to PlayerXEffect Data Table
+        /// </summary>
+        public static void SaveAllEffects(GamePlayer p)
+        {
+            GamePlayer player = p;
+			
+            if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
+                return;
+
+            lock (player.effectListComponent._effectsLock)
+            {
+                foreach (var eff in player.effectListComponent.GetAllEffects())
+                {
+                    try
+                    {
+                        var gse = eff as ECSGameSpellEffect;
+                        if (gse != null)
+                        {
+                            // No concentration Effect from Other Caster
+                            if (gse.SpellHandler?.Spell?.Concentration > 0 && gse.SpellHandler.Caster != player)
+                                continue;
+                        }
+						
+                        PlayerXEffect effx = eff.getSavedEffect();
+						
+                        if (effx == null)
+                            continue;
+	
+                        if (effx.SpellLine == GlobalSpellsLines.Reserved_Spells)
+                            continue;
+	
+                        effx.ChardID = player.ObjectId;
+						
+                        GameServer.Database.AddObject(effx);
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.WarnFormat("Could not save effect ({0}) on player: {1}, {2}", eff, player, e);
+                    }
+                }
+            }
+        }
 
         /// <summary>
 		/// Method used to apply bonuses
