@@ -13,6 +13,18 @@ namespace DOL.GS.Spells
     {
 	    public SummonSiegeBallista(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line) { }
+
+
+        public override bool StartSpell(GameLiving target)
+        {
+            if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
+            {
+			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+			    return false;
+		    }
+
+            return base.StartSpell(target);
+        }    
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
 	        
@@ -33,6 +45,8 @@ namespace DOL.GS.Spells
             bal.Name = "field ballista";
             bal.Realm = Caster.Realm;
             bal.AddToWorld();
+            if(Caster is GamePlayer player)
+                bal.TakeControl(player);
         }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)

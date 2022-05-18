@@ -670,6 +670,12 @@ namespace DOL.GS
                 if (p.IsOnHorse)
                     p.IsOnHorse = false;
 
+                if (p.Steed != null && p.Steed is GameSiegeRam)
+				{
+					p.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
+					return;
+				}
+
                 if (p.IsDisarmed)
                 {
                     p.Out.SendMessage(

@@ -194,7 +194,7 @@ public class ECSGameTimer
     {
         get
         {
-            return (int)(GameLoop.GameLoopTime - this.StartTick);
+            return (int)((this.StartTick + Interval) - GameLoop.GameLoopTime);
         }
     }
 
