@@ -3906,16 +3906,13 @@ namespace DOL.GS
 					shieldSize = (double)lefthand.Type_Damage;
 				if( player != null && attackerCount > shieldSize )
 					blockChance *= (shieldSize / attackerCount);
-
 				blockChance *= 0.001;
 				// no chance bonus with ranged attacks?
 				//					if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				
-			
-				if(lefthand != null && player.HasAbility( Abilities.Shield ))
+				if(lefthand != null && player.HasSpecialization(Abilities.Shield ))
                 {
 					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
