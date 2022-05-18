@@ -19,6 +19,7 @@
 using System;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
@@ -30,7 +31,7 @@ namespace DOL.GS
 		public GameSiegeRam()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Body;
+			MeleeDamageType = eDamageType.Crush;
 			Name = "siege ram";
 
 			//AmmoType = 0x3B00;
@@ -48,10 +49,14 @@ namespace DOL.GS
 			};//en ms
 		}
 
+		//Set the maxium rams allowed to attack a target at the same time.
+		private const int MAX_RAMS_ATTACKING_TARGET = 2;
 		public override ushort Type()
 		{
 			return 0x9602;
 		}
+
+
 
 		public override int MAX_PASSENGERS
 		{
@@ -80,29 +85,91 @@ namespace DOL.GS
 			}
 		}
 
+		public override void Aim()
+		{
+			if (Owner.TargetObject == null) return;
+			//Only allow rams to attack keep or relic doors 
+			if (!(Owner.TargetObject is GameKeepDoor) && !(Owner.TargetObject is GameRelicDoor))
+			{
+				Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			//Range Check
+			if (!this.IsWithinRadius(Owner.TargetObject, AttackRange))
+			{
+				if(Owner != null)
+					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			//Limit 2 Rams aimed at door at a time
+			//Check # of rams on the target
+			int ramsAimedAtTarget=0;
+			foreach (GameNPC npc in Owner.CurrentRegion.GetNPCsInRadius(Owner.TargetObject.X, Owner.TargetObject.Y, Owner.TargetObject.Z, (ushort)(600), false, false))
+			{
+				if(npc is GameSiegeRam ram)
+				{
+					if (ram != this && ram.TargetObject == Owner.TargetObject)
+					{
+						ramsAimedAtTarget++;
+					}
+				}
+			}
+			log.Debug($"ramsAimedAtTarget: {ramsAimedAtTarget} ");
+			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
+			{
+				if(Owner != null)
+					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject.Name, eChatType.CT_System,eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			base.Aim();
+
+		}
 		public override void DoDamage()
 		{
 			GameLiving target = (TargetObject as GameLiving);
 			if (target == null)
 			{
-				Owner.Out.SendMessage("Select a target first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if(Owner != null)
+					Owner.Out.SendMessage("Select a target first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
+
+			//Only allow rams to attack keep or relic doors 
+			if (!(target is GameKeepDoor) && !(target is GameRelicDoor))
+			{
+				if(Owner != null)
+					Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			//todo good  distance check
 			if (!this.IsWithinRadius(target, AttackRange))
 			{
-				Owner.Out.SendMessage("You are too far away to attack " + target.Name, eChatType.CT_System,
-									  eChatLoc.CL_SystemWindow);
+				if(Owner != null)
+					Owner.Out.SendMessage("You are too far away to attack " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			int damageAmount = RamDamage;
 
-			//TODO: dps change by number
+			int damageAmount = CalcDamageToTarget(target);
+
+			AttackData ad = new AttackData();
+			ad.Attacker = this;
+			ad.Target = target;
+			ad.AttackType = AttackData.eAttackType.Ranged;
+			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.Damage = damageAmount;
+			ad.DamageType = MeleeDamageType;
+			
 			target.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
-			Owner.Out.SendMessage("The Ram hits " + target.Name + " for " + damageAmount + " dmg!", eChatType.CT_YouHit,
-								  eChatLoc.CL_SystemWindow);
-			Message.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat,
-								 Owner);
+			target.OnAttackedByEnemy(ad);
+		
+			if(Owner != null)
+			{
+				Owner.OnAttackEnemy(ad);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				Message.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat, Owner);
+			}
 			base.DoDamage();
 		}
 
@@ -126,15 +193,18 @@ namespace DOL.GS
 
 		public override void ReleaseControl()
 		{
+			TargetObject=null; //reset aimed object when released. Prevent empty/bugged rams from taking space on the ram limit per door.
+			CurrentState &= ~eState.Aimed;
+			
 			base.ReleaseControl();
 			foreach (GamePlayer player in CurrentRiders)
-				RiderDismount(true, player);
+				player.DismountSteed(true);
 		}
 
 		public void UpdateRamStatus()
 		{
-			//speed of reload changed by number
-			ActionDelay[1] = GetReloadDelay;
+			//speed of reload/arming changed by number of riders
+			ActionDelay[2] = GetReloadDelay;
 		}
 
 		private int GetReloadDelay
@@ -142,19 +212,17 @@ namespace DOL.GS
 			get
 			{
 				//custom formula
-				return 10000 + ((Level + 1) * 2000) - 10000 * (int)((double)CurrentRiders.Length / (double)MAX_PASSENGERS);
+				return 10000 + ((Level + 1) * 2000) - (int)(10000 * ((double)CurrentRiders.Length / (double)MAX_PASSENGERS));
 			}
 		}
 
-		private int RamDamage
+		public override int CalcDamageToTarget(GameLiving target)
 		{
-			get
-			{
-				return BaseRamDamage + (int)(((double)BaseRamDamage / 2.0) * (double)((double)CurrentRiders.Length / (double)MAX_PASSENGERS));
-			}
+			//return BaseDamage + (int)(((double)BaseDamage / 2.0) * (double)((double)CurrentRiders.Length / (double)MAX_PASSENGERS));
+			return BaseDamage + (BaseDamage/2 * CurrentRiders.Length);
 		}
 
-		private int BaseRamDamage
+		public override int BaseDamage
 		{
 			get
 			{
@@ -162,16 +230,20 @@ namespace DOL.GS
 				switch (Level)
 				{
 					case 0:
-						damageAmount = 200;
+						//damageAmount = 200;
+						damageAmount = 100;
 						break;
 					case 1:
-						damageAmount = 300;
+						//damageAmount = 300;
+						damageAmount = 125;
 						break;
 					case 2:
-						damageAmount = 450;
+						//damageAmount = 450;
+						damageAmount = 150;
 						break;
 					case 3:
-						damageAmount = 750;
+						//damageAmount = 750;
+						damageAmount = 200;
 						break;
 				}
 				return damageAmount;
@@ -198,7 +270,7 @@ namespace DOL.GS
 			get
 			{
 				//custom formula
-				double speed = (10.0 + (5.0 * Level) + 100.0 * CurrentRiders.Length / MAX_PASSENGERS);
+				double speed = (10.0 + (5.0 * Level) + 50.0 * CurrentRiders.Length / MAX_PASSENGERS);
 				foreach (GamePlayer player in CurrentRiders)
 				{
 					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.AtlasOF_LifterAbility>();
