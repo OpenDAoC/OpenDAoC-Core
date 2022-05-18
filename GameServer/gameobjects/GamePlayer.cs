@@ -6233,7 +6233,7 @@ namespace DOL.GS
         public override void SwitchWeapon(eActiveWeaponSlot slot)
         {
             //When switching weapons, attackmode is removed!
-            if (attackComponent != null && attackComponent.AttackState)
+            if (attackComponent != null && attackComponent.AttackState && attackComponent.AttackWeapon != null)
             {
                 if (attackComponent.AttackWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon && rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
                 {
