@@ -204,7 +204,6 @@ namespace DOL.GS
 			
 			eff.IsHandler = true;
 			eff.SpellLine = SpellHandler.SpellLine.KeyName;
-			Console.WriteLine($"new effect created: {eff}");
 			return eff;
 		}
     }
