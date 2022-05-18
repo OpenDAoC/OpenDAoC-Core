@@ -51,9 +51,12 @@ namespace DOL.GS
 					0//fireing
 				};//en ms
 			m_enableToMove = true;
-			MaxSpeedBase = 100;
+			MaxSpeedBase = 50;
+			MinAttackRange = -1;
+			MaxAttackRange = -1;
+			BaseDamage = 0;
 		}
-		public const int SIEGE_WEAPON_CONTROLE_DISTANCE = 256;
+		public int SIEGE_WEAPON_CONTROLE_DISTANCE = 256;
 		public const int TIME_TO_DECAY = 60 * 1000 * 3; //3 min
 		public const int DECAYPERIOD = 240000; //ms
 		#region enum
@@ -161,6 +164,12 @@ namespace DOL.GS
 		/// </summary>
 		protected readonly object m_decayTimerLock = new object();
 
+		protected ECSGameTimer m_controlRangeTimer;
+		/// <summary>
+		/// The lock object for controlcheck timers initialization
+		/// </summary>
+		protected readonly object m_controlRangeTimerLock = new object();
+
 		private ushort m_ammoSlot;
 		public ushort AmmoSlot
 		{
@@ -168,14 +177,16 @@ namespace DOL.GS
 			set { m_ammoSlot = value; }
 		}
 
+		//The Decayed HP ammount to put this Siege Weapon into "this siegeweapon needs to be repaired" and unusable;
 		public int DecayedHp
 		{
 			get { return 3 * (this.MaxHealth / 10); }
 		}
 
-		public int DeductHp
+		//Amount of HP to deduct from Siege Weapon on each Decay Tick
+		public int DecayDeductHp
 		{
-			get { return -this.MaxHealth / 10; }
+			get { return this.MaxHealth / 10; }
 		}
 
 		private string m_itemId;
@@ -184,6 +195,29 @@ namespace DOL.GS
 			get { return m_itemId; }
 			set { m_itemId = value; }
 		} 
+
+		/// <summary>
+		/// Base damage for this siege, used to calculate damage against specific targets
+		/// <summary>
+		private int m_baseDamage;
+	
+		public virtual int BaseDamage
+		{
+			get { return m_baseDamage; }
+			set { m_baseDamage = value; }
+		}
+
+		/// <summary>
+		/// The minimum range a target/groundtarget must be above for this siege to fire
+		/// </summary>
+		public int MinAttackRange;
+
+		/// <summary>
+		/// The maximum range a target/groundtarget must be below for this siege to fire
+		/// </summary>
+		public int MaxAttackRange;
+		
+
 		#endregion
 		#region public methode
 		public void TakeControl(GamePlayer player)
@@ -209,6 +243,7 @@ namespace DOL.GS
 			player.SiegeWeapon = this;
 			Owner.Out.SendSiegeWeaponInterface(this, SiegeWeaponTimer.TimeUntilElapsed / 100);
 			player.Out.SendMessage("You take control of " + GetName(0, false) + ".", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+			StartControlRangeCheck();
 			if ((CurrentState & GameSiegeWeapon.eState.Armed) != GameSiegeWeapon.eState.Armed)
 				Arm();
 
@@ -220,6 +255,7 @@ namespace DOL.GS
 			Owner.Out.SendSiegeWeaponCloseInterface();
 			Owner.SiegeWeapon = null;
 			Owner = null;
+			StopControlRangeCheck();
 			StopMove();
 		}
 
@@ -230,12 +266,43 @@ namespace DOL.GS
 			Delete();
 		}
 
-		public void Aim()
+		public virtual void Aim()
 		{
 			if (!CanUse()) return;
-			//The trebuchet isn't ready to be aimed yet!
-			if (Owner.TargetObject == null) return;
-			if (!GameServer.ServerRules.IsAllowedToAttack(Owner, ((GameLiving)Owner.TargetObject), true)) return;
+			if(SiegeWeaponTimer.IsAlive || this.IsMoving)
+			{
+				Owner.Out.SendMessage(GetName(0, true) +" isn't ready to be aimed yet!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (Owner.TargetObject == null)
+			{
+				Owner.Out.SendMessage("You must have a target!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			} 
+			if (!GameServer.ServerRules.IsAllowedToAttack(Owner, ((GameLiving)Owner.TargetObject), true))
+			{
+				Owner.Out.SendMessage("You cannot attack that!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			} 
+
+			if (!Owner.TargetInView)
+			{
+				Owner.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			} 
+
+			//Range Checks
+			if (MinAttackRange != -1 && this.GetDistanceTo(Owner.TargetObject) < MinAttackRange)
+			{
+				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target location is too close!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (MaxAttackRange != -1 && this.GetDistanceTo(Owner.TargetObject) > MaxAttackRange)
+			{
+				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target is too far away to reach!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			CurrentState &= ~eState.Aimed;
 			SetGroundTarget(Owner.TargetObject.X, Owner.TargetObject.Y, Owner.TargetObject.Z);
 			TargetObject = Owner.TargetObject;
@@ -244,7 +311,7 @@ namespace DOL.GS
 			PreAction();
 			if (Owner != null)
 			{
-				Owner.Out.SendMessage(GetName(0, true) + " is turning to your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage(GetName(0, true) + " is turning to your target. (" + (GetActionDelay(SiegeTimer.eAction.Aiming) / 1000).ToString("N") + "s)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -296,8 +363,10 @@ namespace DOL.GS
 				}
 			}
 
-			//unarmed siege weapon
+			//unarmed & unaim siege weapon
 			CurrentState &= ~eState.Armed;
+			TargetObject = null;
+			CurrentState &= ~eState.Aimed;
 			WalkTo(Owner.GroundTarget, 100);
 		}
 
@@ -328,7 +397,7 @@ namespace DOL.GS
 				Owner.Out.SendMessage("Your " + Name + " is now armed!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
-		public void Fire()
+		public virtual void Fire()
 		{
 			if (!CanUse()) return;
 			if (CurrentState != eState.Ready)
@@ -343,6 +412,19 @@ namespace DOL.GS
 				SetGroundTarget(TargetObject.X, TargetObject.Y, TargetObject.Z);
 			if (GroundTarget == null)
 				return;
+
+			//Range Checks
+			if (MinAttackRange != -1 && this.GetDistanceTo(GroundTarget) < MinAttackRange)
+			{
+				Owner.Out.SendMessage("Your target is too close to this siege weapon!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (MaxAttackRange != -1 && this.GetDistanceTo(GroundTarget) > MaxAttackRange)
+			{
+				Owner.Out.SendMessage("Your target is too far away to this siege weapon!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
 			BroadcastFireAnimation(GetActionDelay(SiegeTimer.eAction.Fire));
 			if (Owner != null)
@@ -354,6 +436,14 @@ namespace DOL.GS
 		{
 			DoDamage();
 			return 0;
+		}
+
+		/// <summary>
+		/// Calculates the damage based on the target type (door, siege, player)
+		/// <summary>
+		public virtual int CalcDamageToTarget(GameLiving target)
+		{
+			return BaseDamage;
 		}
 
 		public virtual void DoDamage()
@@ -418,10 +508,10 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="action"></param>
 		/// <returns></returns>
-		private int GetActionDelay(SiegeTimer.eAction action)
+		public int GetActionDelay(SiegeTimer.eAction action)
 		{
-			if (action == SiegeTimer.eAction.Fire && TargetObject != null)
-                return (int)( ActionDelay[(int)action] * 0.001 * this.GetDistanceTo( TargetObject ) );
+			if (action == SiegeTimer.eAction.Fire && GroundTarget != null)
+                return (int)( ActionDelay[(int)action] + this.GetDistanceTo( GroundTarget ) );
 			
 			int delay = ActionDelay[(int)action];
 			//TODO: better to use a property here - discuss to implement one? dunnow if siegespeed is used at another place.
@@ -435,7 +525,7 @@ namespace DOL.GS
 			return delay;
 		}
 
-		private Boolean CanUse()
+		public Boolean CanUse()
 		{
 			if (Owner == null)
 				return false;
@@ -466,7 +556,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		private void PreAction()
+		public void PreAction()
 		{
 			if (SiegeWeaponTimer.IsAlive)
 			{
@@ -477,9 +567,55 @@ namespace DOL.GS
 			SiegeWeaponTimer.Start(GetActionDelay(SiegeWeaponTimer.CurrentAction));
 			if (Owner != null)
 			{
+				if(this is GameSiegeRam) //Ram Siege Interface is 2 seconds fast for some reason. adding 2 seconds to the action delay for rams
+					Owner.Out.SendSiegeWeaponInterface(this, (GetActionDelay(SiegeWeaponTimer.CurrentAction) + 2000) / 100);
+				else
 				Owner.Out.SendSiegeWeaponInterface(this, GetActionDelay(SiegeWeaponTimer.CurrentAction) / 100);
 			}
 			BroadcastAnimation();
+		}
+
+		private void StartControlRangeCheck()
+		{
+			if (ObjectState != eObjectState.Active)
+				return;
+			lock (m_controlRangeTimerLock)
+			{
+				if (m_controlRangeTimer == null)
+				{
+					m_controlRangeTimer = new ECSGameTimer(this);
+					m_controlRangeTimer.Callback = new ECSGameTimer.ECSTimerCallback(ControlRangeTimerCallback);
+				}
+				else if (m_controlRangeTimer.IsAlive)
+					return;
+				m_controlRangeTimer.Start(1500);
+			}
+		}
+
+		private void StopControlRangeCheck()
+		{
+			lock (m_controlRangeTimerLock)
+			{
+				if (m_controlRangeTimer == null)
+					return;
+				m_controlRangeTimer.Stop();
+				m_controlRangeTimer = null;
+			}
+		}
+
+		private int ControlRangeTimerCallback(ECSGameTimer callingTimer)
+		{
+			if(Owner==null)
+			{
+				StopControlRangeCheck();
+				return 0;
+			}
+			if(this.GetDistanceTo(Owner)>SIEGE_WEAPON_CONTROLE_DISTANCE)
+			{
+				ReleaseControl();
+				return 0;
+			}
+			return 1500;
 		}
 		#endregion
 		#region override function
@@ -578,7 +714,7 @@ namespace DOL.GS
 
 		private int DecayTimerCallback(ECSGameTimer callingTimer)
 		{
-			TakeDamage(this, eDamageType.Natural, DeductHp, 0);
+			TakeDamage(this, eDamageType.Natural, DecayDeductHp, 0);
 			return DECAYPERIOD;
 		}
 
@@ -598,7 +734,7 @@ namespace DOL.GS
 	}
 	#endregion
 	#region siegeTimer
-	public class SiegeTimer : RegionAction
+	public class SiegeTimer : RegionECSAction
 	{
 		public enum eAction : byte
 		{
@@ -633,11 +769,10 @@ namespace DOL.GS
 			set { m_siegeWeapon = value; }
 		}
 
-		protected override void OnTick()
+		protected override int OnTick(ECSGameTimer timer)
 		{
-			if (SiegeWeapon.Owner != null)
-				SiegeWeapon.Owner.Out.SendMessage("Action = " + CurrentAction, eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-			else return;
+			if (SiegeWeapon.Owner == null)
+				return 0;
 			switch (CurrentAction)
 			{
 				case eAction.Arming:
@@ -669,6 +804,8 @@ namespace DOL.GS
 			}
 			if ((SiegeWeapon.CurrentState & GameSiegeWeapon.eState.Armed) != GameSiegeWeapon.eState.Armed)
 				SiegeWeapon.Arm();
+			
+			return 0;
 		}
 	}
 	#endregion

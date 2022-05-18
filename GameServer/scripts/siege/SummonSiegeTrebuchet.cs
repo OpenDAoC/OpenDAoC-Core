@@ -13,6 +13,18 @@ namespace DOL.GS.Spells
     {
 	    public SummonSiegeTrebuchet(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line) { }
+
+        public override bool StartSpell(GameLiving target)
+        {
+            if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
+            {
+			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+			    return false;
+		    }
+
+            return base.StartSpell(target);
+        }
+        
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
@@ -32,6 +44,8 @@ namespace DOL.GS.Spells
             tre.Name = "trebuchet";
             tre.Realm = Caster.Realm;
             tre.AddToWorld();
+            if(Caster is GamePlayer player)
+                tre.TakeControl(player);
         }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)

@@ -450,7 +450,7 @@ namespace DOL.GS.ServerRules
 		{
 			//we only allow certain spell targets to be cast when targeting a keep component
 			//tolakram - live allows most damage spells to be cast on doors. This should be handled in spell handlers
-			if (target is GameKeepComponent || target is GameKeepDoor)
+			if (target is GameKeepComponent || target is GameKeepDoor || target is GameSiegeWeapon)
 			{
 				bool isAllowed = false;
 
