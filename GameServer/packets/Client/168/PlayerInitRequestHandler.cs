@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			new PlayerInitRequestAction(client.Player).Start(1);
+			new PlayerInitRequestAction(client.Player).Start(100);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					updateTempProperties = true;
 					player.EnteredGame = true;
 					player.Notify(GamePlayerEvent.GameEntered, player);
-					player.EffectList.RestoreAllEffects();
+					//player.EffectList.RestoreAllEffects();
 					checkInstanceLogin = true;
 				}
 				else
@@ -96,6 +96,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Notify(GamePlayerEvent.Revive, player);
 					player.Notify(GamePlayerEvent.Released, player);
 				}
+				EffectService.RestoreAllEffects(player);
 				if (player.Group != null)
 				{
 					player.Group.UpdateGroupWindow();
