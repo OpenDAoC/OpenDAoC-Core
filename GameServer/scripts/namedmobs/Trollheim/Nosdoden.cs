@@ -93,6 +93,11 @@ namespace DOL.GS
 				if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
 					npc.Die(this);
 			}
+			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
+					npc.RemoveFromWorld();
+			}
 		}
 		#endregion
 		[ScriptLoadedEvent]
@@ -373,6 +378,15 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 		}
 		public static bool IsPulled = false;
+		private bool SpawnAdds1 = false;
+		private bool SpawnAdds2 = false;
+		private bool SpawnAdds3 = false;
+		private bool SpawnAdds4 = false;
+		private bool SpawnAdds5 = false;
+		private bool SpawnAdds6 = false;
+		private bool SpawnAdds7 = false;
+		private bool SpawnAdds8 = false;
+		private bool SpawnAdds9 = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -511,31 +525,107 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		#endregion
+		public static GameNPC spiritmob = null;
+		public static GameNPC SpiritMob
+		{
+			get { return spiritmob; }
+			set { spiritmob = value; }
+		}
+		public static GamePlayer playerrezzed = null;
+		public static GamePlayer PlayerRezzed
+		{
+			get { return playerrezzed; }
+			set { playerrezzed = value; }
+		}
 		public override void Think()
 		{
-			if(!HasAggressionTable())
-            {
+			if (!HasAggressionTable())
+			{
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				StartCastDOT = false;
+                #region Checks
+                StartCastDOT = false;
 				StartCastDD = false;
 				CanCast2 = false;
 				CanCast = false;
 				RandomTarget = null;
 				RandomTarget2 = null;
-				if (Enemys_To_DD.Count > 0)
+				CanKillSpirit = false;
+				SpawnAdds1 = false;
+				SpawnAdds2 = false;
+				SpawnAdds3 = false;
+				SpawnAdds4 = false;
+				SpawnAdds5 = false;
+				SpawnAdds6 = false;
+				SpawnAdds7 = false;
+				SpawnAdds8 = false;
+				SpawnAdds9 = false;
+                #endregion
+                if (Enemys_To_DD.Count > 0)
 					Enemys_To_DD.Clear();
 				if (Enemys_To_DOT.Count > 0)
 					Enemys_To_DOT.Clear();
-				foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
+				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				{
 					if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
 						npc.Die(Body);
-                }
+				}
+				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				{
+					if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
+						npc.RemoveFromWorld();
+				}
 			}
 			if (Body.IsAlive && HasAggro)
 			{
-				if (StartCastDOT == false)
+                #region Summon Adds
+                if (Body.HealthPercent <= 90 && SpawnAdds1==false)
+                {
+					SpawnEssences();
+					SpawnAdds1 = true;
+                }
+				if (Body.HealthPercent <= 80 && SpawnAdds2 == false)
+				{
+					SpawnEssences();
+					SpawnAdds2 = true;
+				}
+				if (Body.HealthPercent <= 70 && SpawnAdds3 == false)
+				{
+					SpawnEssences();
+					SpawnAdds3 = true;
+				}
+				if (Body.HealthPercent <= 60 && SpawnAdds4 == false)
+				{
+					SpawnEssences();
+					SpawnAdds4 = true;
+				}
+				if (Body.HealthPercent <= 50 && SpawnAdds5 == false)
+				{
+					SpawnEssences();
+					SpawnAdds5 = true;
+				}
+				if (Body.HealthPercent <= 40 && SpawnAdds6 == false)
+				{
+					SpawnEssences();
+					SpawnAdds6 = true;
+				}
+				if (Body.HealthPercent <= 30 && SpawnAdds7 == false)
+				{
+					SpawnEssences();
+					SpawnAdds7 = true;
+				}
+				if (Body.HealthPercent <= 20 && SpawnAdds8 == false)
+				{
+					SpawnEssences();
+					SpawnAdds8 = true;
+				}
+				if (Body.HealthPercent <= 10 && SpawnAdds9 == false)
+				{
+					SpawnEssences();
+					SpawnAdds9 = true;
+				}
+                #endregion
+                if (StartCastDOT == false)
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(20000, 30000));
 					StartCastDOT = true;
@@ -556,15 +646,44 @@ namespace DOL.AI.Brain
 							{
 								if (Regex.IsMatch(ghosts.Name, string.Format(@"\b{0}\b", player.Name)))//check if spirit name contains exact player name
 								{
-									ghosts.Die(Body);
-									BroadcastMessage(String.Format("Life essense returned back to " + player.Name + "."));
+									SpiritMob = ghosts;
+									PlayerRezzed = player;
 								}
 							}
 						}
 					}
 				}
+				if(CanKillSpirit == false)
+                {
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(KillSpirit), 2000);
+					CanKillSpirit = true;
+                }
 			}
 			base.Think();
+		}
+		private bool CanKillSpirit = false;
+		private int KillSpirit(ECSGameTimer timer)
+		{
+			if (Body.IsAlive && SpiritMob != null && SpiritMob.IsAlive && PlayerRezzed != null && PlayerRezzed.IsAlive)
+			{
+				BroadcastMessage(String.Format("Life essense returned back to " + PlayerRezzed.Name + "."));
+				SpiritMob.Die(Body);
+			}
+			CanKillSpirit = false;
+			return 0;
+		}
+		private void SpawnEssences()
+		{
+			for (int i = 0; i < Util.Random(12, 18); i++)
+			{
+				NosdodenSummonedAdds add = new NosdodenSummonedAdds();
+				add.X = Body.X + Util.Random(-200, 200);
+				add.Y = Body.Y + Util.Random(-200, 200);
+				add.Z = Body.Z;
+				add.Heading = Body.Heading;
+				add.CurrentRegion = Body.CurrentRegion;
+				add.AddToWorld();
+			}
 		}
         #region Spells
         private Spell m_NosdodenDot;
@@ -3032,6 +3151,80 @@ namespace DOL.AI.Brain
 				}
 				return m_Pet_Heal;
 			}
+		}
+	}
+}
+#endregion
+#region Nosdoden adds
+namespace DOL.GS
+{
+	public class NosdodenSummonedAdds : GameNPC
+	{
+		public override int MaxHealth
+		{
+			get { return 2500; }
+		}
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 15; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 15; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
+				default: return 25; // dmg reduction for rest resists
+			}
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 200;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.15;
+		}
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 80; }
+        public override bool AddToWorld()
+		{
+			Model = 902;
+			Name = "essence of fallen";
+			Size = 50;
+			Level = (byte)Util.Random(60,62);
+			RespawnInterval = -1;
+			Realm = eRealm.None;
+			MaxSpeedBase = 250;
+			Faction = FactionMgr.GetFactionByID(150);
+			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
+			NosdodenSummonedAddsBrain adds = new NosdodenSummonedAddsBrain();
+			SetOwnBrain(adds);
+			base.AddToWorld();
+			return true;
+		}
+		public override void DropLoot(GameObject killer) //no loot
+		{
+		}
+		public override long ExperienceValue => 0;
+	}
+}
+
+namespace DOL.AI.Brain
+{
+	public class NosdodenSummonedAddsBrain : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public NosdodenSummonedAddsBrain()
+		{
+			AggroLevel = 100;
+			AggroRange = 1500;
+		}
+		public override void Think()
+		{
+			if (Body.IsAlive)
+			{				
+			}
+			base.Think();
 		}
 	}
 }

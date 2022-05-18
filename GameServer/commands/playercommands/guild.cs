@@ -2341,7 +2341,6 @@ namespace DOL.GS.Commands
 						#endregion
 						#region Noteself
 					case "noteself":
-					case "note":
 						{
 							if (client.Player.Guild == null)
 							{
@@ -2352,6 +2351,46 @@ namespace DOL.GS.Commands
 							string note = String.Join(" ", args, 2, args.Length - 2);
 							client.Player.GuildNote = note;
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoteSet", note), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Guild.UpdateGuildWindow();
+							break;
+						}
+						#endregion
+						#region Note
+						case "note":
+						{
+							if (client.Player.Guild == null)
+							{
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+							
+							if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader))
+							{
+								client.Out.SendMessage("Use '/gc noteself <note>' to set your own note", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+
+							if (args[2] is null)
+							{
+								client.Out.SendMessage("You need to specify a target guild member.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+
+							bool noteSet = false;
+							foreach (var guildMember in GuildMgr.GetAllGuildMembers(client.Player.GuildID))
+							{
+								if (guildMember.Value.Name.ToLower() != args[2].ToLower()) continue;
+								string note = String.Join(" ", args, 3, args.Length - 3);
+								guildMember.Value.Note = note;
+								noteSet = true;
+								break;
+							}
+							
+							if(!noteSet)
+								client.Out.SendMessage("No guild member with that name found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							else
+								client.Out.SendMessage($"Note set correctly for {args[2]}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							
 							client.Player.Guild.UpdateGuildWindow();
 							break;
 						}

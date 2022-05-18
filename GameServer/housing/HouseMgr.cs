@@ -37,9 +37,10 @@ namespace DOL.GS.Housing
 	{
 		public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static Timer CheckRentTimer = null;
+		private static ECSGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
+		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
 
 		protected enum eLotSpawnType
 		{
@@ -108,13 +109,10 @@ namespace DOL.GS.Housing
 			if (client != null)
 				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			if (CheckRentTimer != null)
+			if (CheckRentTimer == null)
 			{
-				CheckRentTimer.Change(Properties.RENT_CHECK_INTERVAL * 60 * 1000, Properties.RENT_CHECK_INTERVAL * 60 * 1000);
-			}
-			else
-			{
-				CheckRentTimer = new Timer(CheckRents, null, Properties.RENT_CHECK_INTERVAL * 60 * 1000, Properties.RENT_CHECK_INTERVAL * 60 * 1000);
+				CheckRentTimer =
+					new ECSGameTimer(null, CheckRents, TimerInterval);
 			}
 
 			return true;
@@ -598,6 +596,15 @@ namespace DOL.GS.Housing
 		/// <returns>The house object</returns>
 		public static House GetHouseByPlayer(GamePlayer p)
 		{
+			List<String> acctObjectIds = new List<string>();
+			foreach (var character in p.Client.Account.Characters)
+			{
+				if (character.Realm == (int)p.Realm)
+				{
+					acctObjectIds.Add(character.ObjectId);	
+				}
+			}
+			
 			// check every house in every region until we find
 			// a house that belongs to this player
 			foreach (var regs in _houseList)
@@ -606,7 +613,7 @@ namespace DOL.GS.Housing
 				{
 					var house = entry.Value;
 
-					if (house.OwnerID == p.ObjectId)
+					if (acctObjectIds.Contains(house.OwnerID))
 						return house;
 				}
 			}
@@ -750,12 +757,12 @@ namespace DOL.GS.Housing
 			return Properties.HOUSING_RENT_COTTAGE;
 		}
 
-		public static void CheckRents(object state)
+		public static int CheckRents(ECSGameTimer timer)
 		{
 			if (Properties.RENT_DUE_DAYS == 0)
-				return;
+				return 0;
 
-			log.Debug("[Housing] Starting timed rent check");
+			Console.WriteLine("[Housing] Starting timed rent check");
 
 			TimeSpan diff;
 			var houseRemovalList = new List<House>();
@@ -776,7 +783,7 @@ namespace DOL.GS.Housing
 
 					// get the amount of rent for the given house
 					long rent = GetRentByModel(house.Model);
-
+					
 					// Does this house need to pay rent?
 					if (rent > 0L && diff.Days >= Properties.RENT_DUE_DAYS)
 					{
@@ -822,6 +829,8 @@ namespace DOL.GS.Housing
 			{
 				RemoveHouse(h);
 			}
+
+			return TimerInterval;
 		}
 
 

@@ -188,13 +188,13 @@ namespace DOL.GS.PropertyCalc
 				else
 				{
 					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 11*living.Level + 0.448331 * living.Level * (living.Level)) + (living as GameNPC).Constitution;
+					hp = (int)(50 + 15*living.Level + 0.55 * living.Level * (living.Level)) + (living as GameNPC).Constitution;
 					if (living.Level < 25)
 						hp += 20;
 				}
 
 				int basecon = (living as GameNPC).Constitution;
-				int conmod = 20; // at level 50 +75 con ~= +300 hit points
+				int conmod = 25; // at level 50 +75 con ~= +300 hit points
 
 				// first adjust hitpoints based on base CON
 

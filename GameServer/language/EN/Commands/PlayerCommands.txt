@@ -82,6 +82,10 @@ Scripts.Players.Autosplit.Off:				The leader switched off the autosplit.
 Scripts.Players.Autosplit.On:				The leader switched on the autosplit.
 Scripts.Players.Autosplit.Self:				{0} switched
 
+## /groupsort
+Scripts.Players.Groupsort.InGroup:			You must be in a group to use this command.
+Scripts.Players.Groupsort.Leader:			You must be the leader of the group to use this command.
+
 ## /battlegroup
 Scripts.Players.Battlegroup.Usage:			Usage: /bg <text>
 Scripts.Players.Battlegroup.UsageInvite:		Usage: /bg invite <playername>

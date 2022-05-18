@@ -17,6 +17,7 @@
  *
  */
 using System;
+using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
@@ -41,8 +42,24 @@ namespace DOL.GS
 				5000,//aiming
 				15000,//arming
 				0,//loading
-				4500//fireing
+				1000//fireing base delay
 			};//en ms
+			BaseDamage = 100;
+			MinAttackRange = 2000;
+			MaxAttackRange = 5000;
+			AttackRadius = 150;
+		}
+
+		/// <summary>
+		/// Calculates the damage based on the target type (door, siege, player)
+		/// <summary>
+		public override int CalcDamageToTarget(GameLiving target)
+		{
+			//Trebs are better against doors but lower damage against players/npcs/other objects
+			if(target is GameKeepDoor || target is GameRelicDoor)
+				return BaseDamage * 3;
+			else
+				return BaseDamage;
 		}
 	}
 }
