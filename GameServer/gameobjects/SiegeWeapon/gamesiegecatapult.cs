@@ -100,8 +100,8 @@ namespace DOL.GS
 			{
 				if (Owner is null) continue;
 				int damageAmount = 50 + Util.Random(200);
-				living.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
-				Owner.Out.SendMessage("The " + this.Name + " hits " + living.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit,
+				living?.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + living?.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit,
 				                      eChatLoc.CL_SystemWindow);
 				foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					player.Out.SendCombatAnimation(this, living, 0x0000, 0x0000, 0x00, 0x00, 0x14, living.HealthPercent);
