@@ -1868,13 +1868,15 @@ namespace DOL.GS
             Mana = MaxMana;
             StartPowerRegeneration();
             StartEnduranceRegeneration();
+
+            var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
             
             foreach (var item in this.Inventory.EquippedItems)
             {
                 //max 2 charges
                 if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
                 {
-                    if(ActiveBuffCharges < 2)
+                    if(ActiveBuffCharges < maxChargeItems)
                         UseItemCharge(item, (int)eUseType.use1);
                     else
                     {
@@ -1885,7 +1887,7 @@ namespace DOL.GS
                 //max 2 charges
                 if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
                 {
-                    if(ActiveBuffCharges < 2)
+                    if(ActiveBuffCharges < maxChargeItems)
                         UseItemCharge(item, (int)eUseType.use2);
                     else
                     {
@@ -10190,7 +10192,7 @@ namespace DOL.GS
             
             if (spell != null)
             {
-                if (ActiveBuffCharges >= 2 && SelfBuffChargeIDs.Contains(spell.ID))
+                if (ActiveBuffCharges >= Properties.MAX_CHARGE_ITEMS && SelfBuffChargeIDs.Contains(spell.ID))
                 {
                     Out.SendMessage("You may only use two buff charge effects.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
