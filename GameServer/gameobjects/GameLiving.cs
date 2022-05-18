@@ -4022,8 +4022,9 @@ namespace DOL.GS
             }
 			else
 			{
-				double NPCReduction = 10.0 * (living.Level / 50.0); //10% penetration at level 50
+				double NPCReduction = 7.5 * (living.Level / 50.0); //10% penetration at level 50
 				totalReduction = NPCReduction;
+				if(totalReduction < 0) totalReduction = 0;
 			}
 				
 			return totalReduction;
