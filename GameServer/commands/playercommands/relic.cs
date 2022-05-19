@@ -56,10 +56,17 @@ namespace DOL.GS.Commands
 
             string albStr = "", albPwr = "", midStr = "", midPwr = "", hibStr = "", hibPwr = "";
 			var relicInfo = new List<string>();
+            var relicLoc  = "";
+
 
             #region Reformat Relics  '[Type]: [OwnerRealm]'
             foreach (GameRelic relic in RelicMgr.getNFRelics())
             {
+                if (relic.Realm == eRealm.None)
+                {
+                    relicLoc = $" ({relic.CurrentZone.Description})";
+                }
+                
                 switch (relic.OriginalRealm)
                 {
                     case eRealm.Albion:
@@ -93,16 +100,16 @@ namespace DOL.GS.Commands
             #endregion
 
             relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.AlbRelics")+ ":");
-            relicInfo.Add(albStr);
-            relicInfo.Add(albPwr);
+            relicInfo.Add(albStr + relicLoc);
+            relicInfo.Add(albPwr + relicLoc);
             relicInfo.Add("");
             relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.MidRelics") + ":");
-            relicInfo.Add(midStr);
-            relicInfo.Add(midPwr);
+            relicInfo.Add(midStr + relicLoc);
+            relicInfo.Add(midPwr + relicLoc);
             relicInfo.Add("");
             relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.HibRelics") + ":");
-            relicInfo.Add(hibStr);
-            relicInfo.Add(hibPwr);
+            relicInfo.Add(hibStr + relicLoc);
+            relicInfo.Add(hibPwr + relicLoc);
             relicInfo.Add("");
             relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.UseRealmCommand"));
 
