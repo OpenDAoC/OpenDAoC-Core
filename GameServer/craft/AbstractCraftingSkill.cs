@@ -216,7 +216,7 @@ namespace DOL.GS
 				remainingToCraft = queue - 1;
 			}
 
-			player.CraftTimer.Stop();
+			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
 
 			if (Util.Chance(CalculateChanceToMakeItem(player, recipe.Level)))
