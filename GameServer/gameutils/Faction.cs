@@ -73,6 +73,7 @@ namespace DOL.GS
 
 		public void SaveAggroToFaction(string charID)
 		{
+			if (charID == null) return;
 			var dbfactionAggroLevel = DOLDB<DBFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(charID).And(DB.Column("FactionID").IsEqualTo(ID)));
 			if (dbfactionAggroLevel == null)
 			{
