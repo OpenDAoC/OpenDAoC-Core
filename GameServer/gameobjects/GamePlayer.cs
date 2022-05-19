@@ -10203,7 +10203,8 @@ namespace DOL.GS
                 
                 if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
                 {
-                    spell.Duration = 30 * 60 * 1000;
+                    spell.Duration = 0;
+                    spell.Concentration = 1;
                 }
 
                 ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);

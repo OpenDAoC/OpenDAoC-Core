@@ -39,7 +39,7 @@ namespace DOL.GS
 		protected double m_value = 0;
 		protected double m_damage = 0;
 		protected readonly eDamageType m_damageType = eDamageType.Natural;
-		protected readonly byte m_concentration = 0;
+		protected byte m_concentration = 0;
 		protected int m_duration = 0;
 		protected readonly int m_frequency = 0;
 		protected readonly int m_pulse = 0;
@@ -247,6 +247,7 @@ namespace DOL.GS
 		public byte Concentration
 		{
 			get { return m_concentration; }
+			set { m_concentration = value; }
 		}
 
 		public int LifeDrainReturn
