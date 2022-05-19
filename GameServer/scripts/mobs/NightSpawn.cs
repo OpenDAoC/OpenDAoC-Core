@@ -37,14 +37,14 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body.CurrentRegion.IsNightTime == false)
+            if (!Body.CurrentRegion.IsNightTime)
             {
-                if (changed == false)
+                if (!changed)
                 {
                     oldFlags = Body.Flags;
-                    Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-                    Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-                    Body.Flags ^= GameNPC.eFlags.PEACE;
+                    Body.Flags |= GameNPC.eFlags.CANTTARGET;
+                    Body.Flags |= GameNPC.eFlags.DONTSHOWNAME;
+                    Body.Flags |= GameNPC.eFlags.PEACE;
 
                     if (oldModel == 0)
                     {
@@ -64,6 +64,9 @@ namespace DOL.AI.Brain
                     Body.Model = oldModel;
                     changed = false;
                 }
+                
+                if (Body.Name == "shadow")
+                    Body.Flags |= GameNPC.eFlags.GHOST;
             }
 
             base.Think();
