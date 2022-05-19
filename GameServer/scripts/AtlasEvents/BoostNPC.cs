@@ -126,7 +126,6 @@ namespace DOL.GS.Scripts
                     {
                         var rate = Properties.RP_RATE;
                         var realmPointsToGive = Math.Floor((realmPoints - player.RealmPoints)/rate);
-                        player.Boosted = true;
                         player.CanGenerateNews = false;
                         player.GainRealmPoints((long)realmPointsToGive);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
