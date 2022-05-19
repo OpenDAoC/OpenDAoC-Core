@@ -3720,14 +3720,6 @@ namespace DOL.GS
 
 				if( evadeChance < 0.01 )
 					evadeChance = 0.01;
-				else if (IsObjectInFront( ad.Attacker, 180 ) 
-				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
-				         && evadeChance < 0.05
-				         && ad.AttackType != AttackData.eAttackType.Ranged)
-				{
-					//if player has a hard evade source, 5% miniumum evade chance
-					evadeChance = 0.05;
-				}
 				else if( evadeChance > ServerProperties.Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
 					evadeChance = ServerProperties.Properties.EVADE_CAP; //50% evade cap RvR only; http://www.camelotherald.com/more/664.shtml
 				else if( evadeChance > 0.995 )
@@ -3737,6 +3729,19 @@ namespace DOL.GS
 			{
 				evadeChance = Math.Max(evadeChance * 0.5, 0);
 			}
+			
+			//do a second check to prevent dual wield from halving below the floor
+			if( evadeChance < 0.01 )
+				evadeChance = 0.01;
+			else if (IsObjectInFront( ad.Attacker, 180 ) 
+			         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
+			         && evadeChance < 0.05
+			         && ad.AttackType != AttackData.eAttackType.Ranged)
+			{
+				//if player has a hard evade source, 5% miniumum evade chance
+				evadeChance = 0.05;
+			}
+			
 			//Excalibur : infi RR5
 			GamePlayer p = ad.Attacker as GamePlayer;
 			if (p != null)
@@ -3906,16 +3911,13 @@ namespace DOL.GS
 					shieldSize = (double)lefthand.Type_Damage;
 				if( player != null && attackerCount > shieldSize )
 					blockChance *= (shieldSize / attackerCount);
-
 				blockChance *= 0.001;
 				// no chance bonus with ranged attacks?
 				//					if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				
-			
-				if(lefthand != null && player.HasAbility( Abilities.Shield ))
+				if(lefthand != null && player.HasSpecialization(Abilities.Shield ))
                 {
 					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)

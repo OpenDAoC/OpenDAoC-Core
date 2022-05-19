@@ -2619,6 +2619,12 @@ namespace DOL.GS.ServerProperties
 		public static bool ATLAS_API;
 		
 		/// <summary>
+		/// Maximum number of charges allowed
+		/// </summary>
+		[ServerProperty("atlas", "max_charge_items", "Maximum number of charges allowed", 2)]
+		public static int MAX_CHARGE_ITEMS;
+		
+		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]

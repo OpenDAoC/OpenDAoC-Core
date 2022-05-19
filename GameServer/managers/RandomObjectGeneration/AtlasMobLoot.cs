@@ -100,7 +100,7 @@ namespace DOL.GS {
                 if(player.Level < 50 || mob.Level < 50)
                 {
                     item = AtlasROGManager.GenerateBeadOfRegeneration();
-                    loot.AddRandom(3, item, 1);
+                    loot.AddRandom(1, item, 1);
                 }
 
             }

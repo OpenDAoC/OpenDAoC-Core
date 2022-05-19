@@ -14,6 +14,8 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
+            if (this.OwnerPlayer != null && OwnerPlayer.SelfBuffChargeIDs.Contains(this.SpellHandler.Spell.ID))
+                OwnerPlayer.ActiveBuffCharges++;
             
             if (EffectType == eEffect.StrengthConBuff || EffectType == eEffect.DexQuickBuff)
             {
@@ -77,6 +79,9 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
+            if (this.OwnerPlayer != null && OwnerPlayer.SelfBuffChargeIDs.Contains(this.SpellHandler.Spell.ID))
+                OwnerPlayer.ActiveBuffCharges--;
+            
             if (EffectType == eEffect.StrengthConBuff || EffectType == eEffect.DexQuickBuff)
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))

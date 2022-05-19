@@ -2447,7 +2447,21 @@ namespace DOL.GS.ServerRules
 					items = HouseTemplateMgr.OutdoorShopItems;
 					break;
 				case eMerchantWindowType.HousingBindstoneHookpoint:
-					items = HouseTemplateMgr.IndoorBindstoneShopItems;
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsAlb;
+							break;
+						case eRealm.Hibernia:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsHib;
+							break;
+						case eRealm.Midgard:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsMid;
+							break;
+						default:
+							items = HouseTemplateMgr.IndoorBindstoneShopItems;
+							break;
+					}
 					break;
 				case eMerchantWindowType.HousingCraftingHookpoint:
 					items = HouseTemplateMgr.IndoorCraftShopItems;
@@ -2456,7 +2470,21 @@ namespace DOL.GS.ServerRules
 					items = HouseTemplateMgr.GetNpcShopItems(player);
 					break;
 				case eMerchantWindowType.HousingVaultHookpoint:
-					items = HouseTemplateMgr.IndoorVaultShopItems;
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							items = HouseTemplateMgr.IndoorVaultShopItemsAlb;
+							break;
+						case eRealm.Hibernia:
+							items = HouseTemplateMgr.IndoorVaultShopItemsHib;
+							break;
+						case eRealm.Midgard:
+							items = HouseTemplateMgr.IndoorVaultShopItemsMid;
+							break;
+						default:
+							items = HouseTemplateMgr.IndoorVaultShopItems;
+							break;
+					}
 					break;
 			}
 
