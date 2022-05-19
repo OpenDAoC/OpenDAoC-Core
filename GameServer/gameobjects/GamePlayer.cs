@@ -12390,7 +12390,7 @@ namespace DOL.GS
                 if (item.SpellID > 0 || item.SpellID1 > 0)
                     TempProperties.setProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
             
-            
+            /*
             //max 2 charges
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
@@ -12411,7 +12411,7 @@ namespace DOL.GS
                 {
                     Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
-            }
+            }*/
 
             if (ObjectState == eObjectState.Active)
             {
