@@ -266,7 +266,9 @@ namespace DOL.GS
 					return;
 				}
 
-				if (relicOnPlayer.RelicType != m_parent.PadType || m_parent.MountedRelic != null)
+				if (relicOnPlayer.RelicType != m_parent.PadType
+				    // || m_parent.MountedRelic != null
+				    )
 				{
                     player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					log.DebugFormat("Player {0} needs to find an empty {1} relic pad in order to place {2}.", player.Name, relicOnPlayer.RelicType, relicOnPlayer.Name);
