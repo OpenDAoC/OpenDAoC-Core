@@ -3382,7 +3382,6 @@ namespace DOL.GS
                         DPS = cap;
 
                     double result = DPS * weapon.SPD_ABS * 0.03 * (0.94 + 0.003 * weapon.SPD_ABS);
-                    Console.WriteLine($"Slow weapon bonus {1 + ((weapon.SPD_ABS - 20) * 0.03) * .1}");
 
                     if (weapon.Hand == 1) //2h
                     {
