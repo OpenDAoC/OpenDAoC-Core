@@ -196,6 +196,8 @@ namespace DOL.GS
 			
 			PlayerXEffect eff = new PlayerXEffect();
 			eff.Var1 = SpellHandler.Spell.ID;
+			eff.Var2 = Effectiveness;
+			eff.Var3 = (int)SpellHandler.Spell.Value;
 			
 			if (Duration > 0)
 				eff.Duration = (int)(ExpireTick - GameLoop.GameLoopTime);
