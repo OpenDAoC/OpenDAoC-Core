@@ -45,7 +45,7 @@ namespace DOL.GS
 		protected readonly int m_pulse = 0;
 		protected readonly int m_pulse_power = 0;
 		protected readonly int m_power = 0;
-		protected readonly int m_casttime = 0;
+		protected int m_casttime = 0;
 		protected readonly int m_recastdelay = 0;
 		protected readonly int m_reshealth = 0;
 		protected readonly int m_resmana = 0;
@@ -173,6 +173,7 @@ namespace DOL.GS
 				else
 					return m_casttime;
 			}
+			set { m_casttime = value; }
 		}
 
 		public double Damage

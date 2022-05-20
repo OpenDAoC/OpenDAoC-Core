@@ -1870,7 +1870,7 @@ namespace DOL.GS
             StartEnduranceRegeneration();
 
             var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
-            
+            /*
             foreach (var item in this.Inventory.EquippedItems)
             {
                 //max 2 charges
@@ -1894,7 +1894,7 @@ namespace DOL.GS
                         Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                 }
-            }
+            }*/
             
             UpdatePlayerStatus();
 
