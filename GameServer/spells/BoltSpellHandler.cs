@@ -191,7 +191,7 @@ namespace DOL.GS.Spells
 				if (Util.Chance(missrate)) 
 				{
 					ad.AttackResult = eAttackResult.Missed;
-					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
+					m_handler.MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
 					target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
