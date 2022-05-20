@@ -1616,7 +1616,7 @@ namespace DOL.GS
 
                     double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 0;
 
-                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF)/
+                    double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     if (armorMod <= 0) armorMod = 0.1;
                     
