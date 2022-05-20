@@ -44,7 +44,7 @@ namespace DOL.GS
             SetOwnBrain(sBrain);
 
             //1.30min
-            RespawnInterval = 1000;
+            RespawnInterval = 90000;
 
             base.AddToWorld();
             return true;
