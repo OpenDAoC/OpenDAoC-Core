@@ -161,7 +161,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use spell actions
 		/// </summary>
-		protected class UseSpellAction : RegionAction
+		protected class UseSpellAction : RegionECSAction
 		{
 			/// <summary>
 			/// Defines a logger for this class.
@@ -201,7 +201,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer)m_actionSource;
 
@@ -265,7 +265,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					
 					player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", m_spellLineIndex, m_spellLevel), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				}
-				
+
+				return 0;
 			}
 		}
 	}
