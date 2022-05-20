@@ -288,10 +288,14 @@ namespace DOL.GS.Spells
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
-					double ws = (caster.Level * 8 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double ws = (caster.Level * 2.65 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 45;
 
-					damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20*4.67));
-					damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+					double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
+					                  (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+					damage *= ws / armorMod;
+					//damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20*4.67));
+					//damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
 					ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) / -100.0);
 					damage += ad.Modifier;
 
