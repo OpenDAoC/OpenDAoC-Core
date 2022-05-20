@@ -275,7 +275,9 @@ namespace DOL.GS
 
                     if (target == null || !(target is GameLiving))
                     {
-                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(p, eEffect.Volley);//volley check to avoid spam
+                        if(volley == null)
+                            p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                     else if (!p.IsWithinRadius(target, p.attackComponent.AttackRange))
                     {
@@ -341,9 +343,13 @@ namespace DOL.GS
                 //Player is aiming
                 if (RangedAttackState == eRangedAttackState.Aim)
                 {
-                    p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    RangedAttackState = eRangedAttackState.ReadyToFire;
-                    return eCheckRangeAttackStateResult.Hold;
+                    ECSGameEffect volley = EffectListService.GetEffectOnTarget(p, eEffect.Volley);//volley check to avoid spam
+                    if (volley == null)
+                    {
+                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        RangedAttackState = eRangedAttackState.ReadyToFire;
+                        return eCheckRangeAttackStateResult.Hold;
+                    }
                 }
                 else if (RangedAttackState == eRangedAttackState.ReadyToFire)
                 {
