@@ -747,7 +747,7 @@ namespace DOL.GS.Effects
                 ad.Damage = 550;//cap dmg for volley just incase we see weird numbers
             if (ad.Damage < 50)
                 ad.Damage = 50;//minimum volley damage;
-           
+
             /* archer.Out.SendMessage("weaponspeed = " + weaponspeed + //For testing purpose only, we dont want show this to player
                  "WeaponDPS = " + WeaponDPS +
                  " ad.Modifier = " + ((int)(baseDamage * (target.GetResist(damagetype) + SkillBase.GetArmorResist(armor, damagetype)) * -0.007)) +
@@ -760,7 +760,7 @@ namespace DOL.GS.Effects
                  " SlowWeaponBonus = "+ SlowWeaponBonus+
                  " ArmorHitLocation = " + ad.ArmorHitLocation +
                  " DamageResistReduct = "+ (baseDamage * target.GetResist(damagetype) * 0.01), eChatType.CT_Important, eChatLoc.CL_SystemWindow);*/
-
+        
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);//being attacked animation
@@ -773,7 +773,7 @@ namespace DOL.GS.Effects
                 GamePlayer playerTarget = target as GamePlayer;
                 if (playerTarget != null)
                 {
-                    playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "Effects.VolleyEffect.XMBExtraDamageToYou", archer.GetName(0, false), ad.Damage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                    playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "Effects.VolleyEffect.XMBExtraDamageToYou", archer.GetName(0, false),Convert.ToString(ad.ArmorHitLocation).ToLower(), ad.Damage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     if(ad.CriticalDamage > 0)
                         playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "Effects.VolleyEffect.XMBExtraDamageToYouCrit", archer.GetName(0, false), ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                 }
