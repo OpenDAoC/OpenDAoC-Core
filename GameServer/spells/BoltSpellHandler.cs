@@ -155,7 +155,8 @@ namespace DOL.GS.Spells
 				// Bolts are treated as physical attacks for the purpose of ABS only
 				// Based on this I am normalizing the miss rate for npc's to be that of a standard spell
 
-				int missrate = 0;
+				int missrate = m_handler.CalculateSpellResistChance(target);
+				int baseMissRate = missrate;
 
 				if (caster is GamePlayer && target is GamePlayer)
 				{
@@ -192,10 +193,19 @@ namespace DOL.GS.Spells
 
 				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
 
-				if (Util.Chance(missrate)) 
+				int rand = 0;
+				if (caster is GamePlayer p)
+					rand = p.RandomNumberDeck.GetInt();
+				else
+					rand = Util.Random(100);
+
+				if (missrate > rand) 
 				{
 					ad.AttackResult = eAttackResult.Missed;
-					m_handler.MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
+					if(missrate > baseMissRate)
+						m_handler.MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
+					else
+						m_handler.MessageToCaster($"You miss!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
 					target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
