@@ -199,6 +199,9 @@ namespace DOL.GS.Spells
 				else
 					rand = Util.Random(100);
 
+				if (target is GameKeepDoor)
+					missrate = 0;
+
 				if (missrate > rand) 
 				{
 					ad.AttackResult = eAttackResult.Missed;
