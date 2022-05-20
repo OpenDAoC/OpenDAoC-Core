@@ -1,9 +1,9 @@
 ﻿using DOL.AI;
 using DOL.AI.Brain;
-using DOL.GS.DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts.DOL.AI.Brain;
 
-namespace DOL.GS
+namespace DOL.GS.Scripts
 {
     public class BotonidSeedling : GameNPC
     {
