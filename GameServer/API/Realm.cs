@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DOL.Database;
+﻿using System.Collections.Generic;
 using DOL.GS.Keeps;
 using DOL.GS.ServerRules;
 using Microsoft.Extensions.Caching.Memory;
@@ -24,6 +21,8 @@ public class Realm
         public string OriginalRealm { get; set; }
         public string CurrentRealm { get; set; }
         public string ClaimingGuild { get; set; }
+        public int Level { get; set; }
+        public int UnderSiege { get; set; }
 
         public KeepInfo() { }
 
@@ -36,7 +35,8 @@ public class Realm
             OriginalRealm = GlobalConstants.RealmToName(keep.OriginalRealm);
             CurrentRealm = RealmIDtoString((int)keep.Realm);
             ClaimingGuild = keep.Guild?.Name;
-
+            Level = keep.DifficultyLevel;
+            UnderSiege = keep.InCombat ? 1 : 0;
         }
         
     }
