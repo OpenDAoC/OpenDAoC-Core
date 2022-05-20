@@ -9733,12 +9733,24 @@ namespace DOL.GS
 
                     case Slot.RANGED:
                         bool newAttack = false;
+                        ///Volley TempProperties to not allow shot during volley and cancel aim animation
+                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//check if player got volley
+                       /* var IsReadyToFire = TempProperties.getProperty<bool>("volley_IsReadyToFire");
+                        if(!IsReadyToFire && volley != null)
+                        {
+                            return;//dont shot until it's ready to fire
+                        }
+                        if(IsReadyToFire && volley != null && type == 0)//type == 0 means player click icon
+                            TempProperties.removeProperty("volley_IsReadyToFire");
+                        if(volley == null)//dont have volley so remove property
+                          TempProperties.removeProperty("volley_IsReadyToFire");*/
+                        ///////////////////////////////////////////////////////////////////////////////////
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
                             SwitchWeapon(eActiveWeaponSlot.Distance);
                             if(useItem.Object_Type == (int)eObjectType.Instrument) return;
                         }
-                        else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument)
+                        else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument && volley == null)//volley check
                         {
                             StopCurrentSpellcast();
                             attackComponent.StartAttack(TargetObject);
@@ -9747,12 +9759,13 @@ namespace DOL.GS
 
                         //Clean up range attack state/type if we are not in combat mode
                         //anymore
-                        if (!attackComponent.AttackState)
+                        if (!attackComponent.AttackState && volley == null)//volley check
                         {
                             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
                         }
-                        if (!newAttack && rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
+                        
+                        if (!newAttack && rangeAttackComponent.RangedAttackState != eRangedAttackState.None && volley == null)//volley check
                         {
                             if (rangeAttackComponent.RangedAttackState == eRangedAttackState.ReadyToFire)
                             {
@@ -9766,7 +9779,8 @@ namespace DOL.GS
                                 if (!TargetInView)
                                 {
                                     // Don't store last target if it's not visible
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    if(volley == null)//volley check
+                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
                                 else
                                 {
