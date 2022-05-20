@@ -14288,7 +14288,7 @@ namespace DOL.GS
         /// <summary>
         /// Uncovers the player if a mob is too close
         /// </summary>
-        protected class UncoverStealthAction : RegionAction
+        protected class UncoverStealthAction : RegionECSAction
         {
             /// <summary>
             /// Constructs a new uncover stealth action
@@ -14302,10 +14302,10 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 GamePlayer player = (GamePlayer)m_actionSource;
-                if (player.Client.Account.PrivLevel > 1) return;
+                if (player.Client.Account.PrivLevel > 1) return 0;
 
                 bool checklos = false;
                 foreach (AbstractArea area in player.CurrentAreas)
@@ -14394,6 +14394,8 @@ namespace DOL.GS
                         }
                     }
                 }
+
+                return 0;
             }
         }
         /// <summary>
