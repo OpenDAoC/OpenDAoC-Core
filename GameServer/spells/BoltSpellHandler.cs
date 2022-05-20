@@ -156,7 +156,7 @@ namespace DOL.GS.Spells
 				// Based on this I am normalizing the miss rate for npc's to be that of a standard spell
 
 				int missrate = m_handler.CalculateSpellResistChance(target);
-				int baseMissRate = missrate;
+				bool combatMiss = false;
 
 				if (caster is GamePlayer && target is GamePlayer)
 				{
@@ -172,6 +172,7 @@ namespace DOL.GS.Spells
 								// each attacker adds a 20% chance to miss
 								
 								missrate += 20;
+								combatMiss = true;
 							}
 						}
 					}
@@ -189,6 +190,7 @@ namespace DOL.GS.Spells
 					&& targetAD.Style != null)
 				{
 					missrate += targetAD.Style.BonusToDefense;
+					combatMiss = true;
 				}
 
 				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
@@ -205,7 +207,7 @@ namespace DOL.GS.Spells
 				if (missrate > rand) 
 				{
 					ad.AttackResult = eAttackResult.Missed;
-					if(missrate > baseMissRate)
+					if(combatMiss)
 						m_handler.MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
 					else
 						m_handler.MessageToCaster($"You miss!", eChatType.CT_YouHit);
