@@ -366,12 +366,12 @@ namespace DOL.AI.Brain
             if (Body.attackComponent.AttackState)
                 return;
 
-            if (!CheckForProximityAggro)
+            if (!CheckForProximityAggro || (Body == null || Body.CurrentZone == null))
             {
                 return;
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, Body.CurrentZone.IsDungeon ? false : true))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
                 // Don't aggro on immune players.
