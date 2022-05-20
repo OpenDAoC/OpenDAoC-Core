@@ -1614,7 +1614,9 @@ namespace DOL.GS
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 0;
+
+                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF)/
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     if (armorMod <= 0) armorMod = 0.1;
                     
@@ -1630,7 +1632,7 @@ namespace DOL.GS
                             $"Base WS: {weaponskillCalc.ToString("0.00")} | Calc WS: {(weaponskillCalc * specModifier * strengthRelicCount).ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage(
-                            $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation)).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
+                            $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1744,8 +1746,8 @@ namespace DOL.GS
                 ad.Damage = (int) damage;
 
                 // apply total damage cap
-                ad.UncappedDamage = ad.Damage;
                 // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
+                ad.UncappedDamage = ad.Damage;
                 if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
                 else
