@@ -1614,7 +1614,7 @@ namespace DOL.GS
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 1;
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 35 / 50d : 1;
 
                     double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
