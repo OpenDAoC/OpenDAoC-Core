@@ -72,7 +72,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles pet command actions
 		/// </summary>
-		protected class HandlePetCommandAction : RegionAction
+		protected class HandlePetCommandAction : RegionECSAction
 		{
 			/// <summary>
 			/// The pet aggro state
@@ -107,7 +107,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer)m_actionSource;
 
@@ -162,6 +162,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 						Log.Warn($"unknown command state {_command}, player={player.Name}  version={player.Client.Version}  client type={player.Client.ClientType}");
 						break;
 				}
+
+				return 0;
 			}
 		}
 	}
