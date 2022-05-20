@@ -7,6 +7,8 @@ info:
     Use this documentation to navigate the available Atlas APIs
     <br><br>
     <h2>Changes</h2>
+    <h3>0.1.8</h3>
+    Added `Level` and `UnderSiege` to `keep` schema<br>
     <h3>0.1.7</h3>
     Added `/guild/getAll` endpoint<br>
     Added `/guild/topRP` endpoint<br>
@@ -377,6 +379,12 @@ components:
         claimingGuild:
           type: string
           example: Cotswold Clan
+        Level:
+          type: integer
+          example: 4
+        underSiege:
+          type: integer
+          example: 0
     df:
       type: string
       enum: [Albion, Midgard, Hibernia]

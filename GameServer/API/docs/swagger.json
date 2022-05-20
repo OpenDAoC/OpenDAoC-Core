@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "Use this documentation to navigate the available Atlas APIs <br><br> <h2>Changes</h2> <h3>0.1.7</h3> Added `/guild/getAll` endpoint<br> Added `/guild/topRP` endpoint<br> Added `members` to `guild` schema<br> <h3>0.1.6</h3> Added `/realm/realmName` to return the Realm keep statuses<br> Added `/realm/df` to return the name of the Realm currently owning Darkness Fall<br> <h3>0.1.5.1</h3> Added `/stats/uptime`<br> <h3>0.1.5</h3> `PvPDeaths`, `Race` and `RaceID` added to `player` response schema<br> `realmRank` now returns a string value <h3>0.1.4</h3> Added `/stats/rp`<br> <h3>0.1.3</h3> Timestamp (`dd-MM-yyyy hh:mm tt`) added to `stats` schema<br> <h3>0.1.2</h3> Refactored `/player` and `/stats`<br> Added `/guild` endpoint<br> Added `/player/getAll` endpoint<br> <h3>0.1.1</h3> Initial release<br><br>",
+    "description": "Use this documentation to navigate the available Atlas APIs <br><br> <h2>Changes</h2> <h3>0.1.8</h3> Added `Level` and `UnderSiege` to `keep` schema<br> <h3>0.1.7</h3> Added `/guild/getAll` endpoint<br> Added `/guild/topRP` endpoint<br> Added `members` to `guild` schema<br> <h3>0.1.6</h3> Added `/realm/realmName` to return the Realm keep statuses<br> Added `/realm/df` to return the name of the Realm currently owning Darkness Fall<br> <h3>0.1.5.1</h3> Added `/stats/uptime`<br> <h3>0.1.5</h3> `PvPDeaths`, `Race` and `RaceID` added to `player` response schema<br> `realmRank` now returns a string value <h3>0.1.4</h3> Added `/stats/rp`<br> <h3>0.1.3</h3> Timestamp (`dd-MM-yyyy hh:mm tt`) added to `stats` schema<br> <h3>0.1.2</h3> Refactored `/player` and `/stats`<br> Added `/guild` endpoint<br> Added `/player/getAll` endpoint<br> <h3>0.1.1</h3> Initial release<br><br>",
     "version": "0.1.7",
     "title": "AtlasAPI",
     "termsOfService": "https://www.atlasfreeshard.com",
@@ -519,6 +519,14 @@
           "claimingGuild": {
             "type": "string",
             "example": "Cotswold Clan"
+          },
+          "Level": {
+            "type": "integer",
+            "example": 4
+          },
+          "underSiege": {
+            "type": "integer",
+            "example": 0
           }
         }
       },
