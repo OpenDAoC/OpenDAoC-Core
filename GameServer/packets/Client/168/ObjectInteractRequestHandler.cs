@@ -36,7 +36,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player interact actions
 		/// </summary>
-		protected class InteractActionHandler : RegionAction
+		protected class InteractActionHandler : RegionECSAction
 		{
 			/// <summary>
 			/// The interact target OID
@@ -56,18 +56,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 				Region region = player.CurrentRegion;
 				if (region == null)
-					return;
+					return 0;
 
 				GameObject obj = region.GetObject(m_targetOid);
 				if (obj == null || !player.IsWithinRadius(obj, WorldMgr.OBJ_UPDATE_DISTANCE))
 					player.Out.SendObjectDelete(m_targetOid);
 				else
 					obj.Interact(player);
+
+				return 0;
 			}
 		}
 	}
