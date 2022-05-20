@@ -373,20 +373,44 @@ namespace DOL.GS
 			}
 		}
 		
-		public string QuestPropertyKey
+		public string PlayersKilledKey
 		{
 			get => "EventLaunchQuest";
 			set { ; }
 		}
 		
+		public string RelicsTakenKey
+		{
+			get => "EventLaunchQuestRelicCap";
+			set { ; }
+		}
+		
+		public string KeepsTakenKey
+		{
+			get => "EventLaunchQuestKeeps";
+			set { ; }
+		}
+		
+		public string RPSPropertyKey
+		{
+			get => "EventLaunchQuestRealmPoints";
+			set { ; }
+		}
+		
 		public void LoadQuestParameters()
 		{
-			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			PlayersKilled = GetCustomProperty(PlayersKilledKey) != null ? int.Parse(GetCustomProperty(PlayersKilledKey)) : 0;
+			KeepsTaken = GetCustomProperty(KeepsTakenKey) != null ? int.Parse(GetCustomProperty(KeepsTakenKey)) : 0;
+			RelicsTaken = GetCustomProperty(RelicsTakenKey) != null ? int.Parse(GetCustomProperty(RelicsTakenKey)) : 0;
+			RealmPointsEarned = GetCustomProperty(RPSPropertyKey) != null ? int.Parse(GetCustomProperty(RPSPropertyKey)) : 0;
 		}
 
 		public void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+			SetCustomProperty(PlayersKilledKey, PlayersKilled.ToString());
+			SetCustomProperty(KeepsTakenKey, KeepsTaken.ToString());
+			SetCustomProperty(RelicsTakenKey, RelicsTaken.ToString());
+			SetCustomProperty(RPSPropertyKey, RealmPointsEarned.ToString());
 		}
 
 
@@ -406,7 +430,7 @@ namespace DOL.GS
 			RealmPointsEarned = 0;
 			AccountXCustomParam eventParam = new AccountXCustomParam();
 			eventParam.Name = m_questPlayer.AccountName;
-			eventParam.KeyName = QuestPropertyKey;
+			eventParam.KeyName = PlayersKilledKey;
 			int realmInt = (int)m_questPlayer.Realm;
 			eventParam.Value = realmInt.ToString();
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
