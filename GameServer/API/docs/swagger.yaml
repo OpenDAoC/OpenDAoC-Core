@@ -31,7 +31,7 @@ info:
     Added `/player/getAll` endpoint<br>
     <h3>0.1.1</h3>
     Initial release<br><br>
-  version: 0.1.7
+  version: 0.1.8
   title: AtlasAPI
   termsOfService: https://www.atlasfreeshard.com
   license:
