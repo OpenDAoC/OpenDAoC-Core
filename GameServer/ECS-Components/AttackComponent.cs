@@ -1614,7 +1614,9 @@ namespace DOL.GS
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 35 / 50d : 1;
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 20 / 50d : 1;
+                    if (playerBaseAF < 1)
+                        playerBaseAF = 1;
 
                     double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
@@ -2795,7 +2797,6 @@ namespace DOL.GS
                     rando = Util.CryptoNextDouble();
                 }
 
-
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
                     misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {(rando * 100).ToString("0.##")}", eChatType.CT_DamageAdd,
@@ -3438,7 +3439,7 @@ namespace DOL.GS
                     else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND ||
                              weapon.Item_Type == Slot.TWOHAND)
                     {
-                        result += p.GetModified(eProperty.MeleeDamage) * 0.01;
+                        result *= 1 + p.GetModified(eProperty.MeleeDamage) * 0.01;
                     }
 
                     if (result <= 0) //Checking if 0 or negative
