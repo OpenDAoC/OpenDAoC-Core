@@ -42,29 +42,42 @@ namespace DOL.GS
 		{
 			public string name;
 			public int slot;
-			public int skill;
-			public int resist;
-			public int bonus;
-			public int hp;
-			public int power;
+
+			public int bonus1;
+			public int bonus1Value;
+			public int bonus2;
+			public int bonus2Value;
+			public int bonus3;
+			public int bonus3Value;
+
+			//public int skill;
+			//public int resist;
+			//public int bonus;
+			//public int hp;
+			//public int power;
 			public int proc;
-			public int qtyMin;
-			public int qtyMax;
-			public int levelMin;
-			public int levelMax;
-			public int priceMin;
-			public int priceMax;
-			public int visual;
-			public byte page;
 			public byte armorType;
 			public byte damageType;
+			public int levelMin;
+			public int levelMax;
+			public int qtyMin;
+			//public int qtyMax;
+			public uint priceMin;
+			public uint priceMax;
 			public byte playerCrafted;
+			public int visual;
+			public byte page;
+			
+			
+			
 			public string clientVersion;
 
 			public override string ToString()
 			{
-				return string.Format("name:'{0}', slot:{1,2}, skill:{2,2}, resist:{3,2}, bonus:{4,2}, hp:{5,2}, power:{6,2}, proc:{7}, qtyMin:{8,3}, qtyMax:{9,3}, levelMin:{10,2}, levelMax:{11,2}, priceMin:{12,2}, priceMax:{13,2}, visual:{14}, armorType:{15:2}, damageType:{16}, playerCrafted:{17}, clientVersion:{18}",
-					name, slot, skill, resist, bonus, hp, power, proc, qtyMin, qtyMax, levelMin, levelMax, priceMin, priceMax, visual, armorType, damageType, playerCrafted, clientVersion);
+				return string.Format("name:'{0}', slot:{1,2}, bonus1:{2,2}, bonus1value:{3,2}, bonus2:{4,2}, bonus2value:{5,2}, bonus3:{6,2}, bonus3value: {7,2} proc:{8}, armorType:{9,2}, damageType:{10}, levelMin:{11,2}, levelMax:{12,2}, qtyMin:{13,3}, priceMin:{14,2}, priceMax:{15,2}, playerCrafted:{16}, visual:{17}, clientVersion:{18}",
+					name, slot, bonus1, bonus1Value, bonus2, bonus2Value, bonus3, bonus3Value, proc, armorType, damageType, levelMin, levelMax, qtyMin, priceMin, priceMax, playerCrafted, visual, clientVersion);
+				//return string.Format("name:'{0}', slot:{1,2}, skill:{2,2}, resist:{3,2}, bonus:{4,2}, hp:{5,2}, power:{6,2}, proc:{7}, qtyMin:{8,3}, qtyMax:{9,3}, levelMin:{10,2}, levelMax:{11,2}, priceMin:{12,2}, priceMax:{13,2}, visual:{14}, armorType:{15:2}, damageType:{16}, playerCrafted:{17}, clientVersion:{18}",
+				//	name, slot, skill, resist, bonus, hp, power, proc, qtyMin, qtyMax, levelMin, levelMax, priceMin, priceMax, visual, armorType, damageType, playerCrafted, clientVersion);
 			}
 		}
 
@@ -118,8 +131,8 @@ namespace DOL.GS
 				if (search.qtyMin > 84 && item.Quality < search.qtyMin)
 					continue;
 
-				if (search.qtyMax < 100 && item.Quality > search.qtyMax)
-					continue;
+				//if (search.qtyMax < 100 && item.Quality > search.qtyMax)
+				//	continue;
 
 				if (search.priceMin > 1 && item.SellPrice < search.priceMin)
 					continue;
@@ -136,26 +149,66 @@ namespace DOL.GS
 				if (search.proc > 0 && item.ProcSpellID == 0 && item.ProcSpellID1 == 0)
 					continue;
 
-				if (CheckSlot(item, search.slot) == false)
+                if (CheckSlot(item, search.slot) == false)
+                    continue;
+
+                if (search.armorType > 0 && CheckForArmorType(item, search.armorType) == false)
 					continue;
 
-				if (search.armorType > 0 && CheckForArmorType(item, search.armorType) == false)
+				//Stats
+				if (search.bonus1 > 0 && search.bonus1 == 1 && CheckForBonus(item, search.bonus1Value) == false)
+					continue;
+				if (search.bonus2 > 0 && search.bonus2 == 1 && CheckForBonus(item, search.bonus2Value) == false)
+					continue;
+				if (search.bonus3 > 0 && search.bonus3 == 1 && CheckForBonus(item, search.bonus3Value) == false)
 					continue;
 
-				if (search.hp > 0 && CheckForHP(item, search.hp) == false)
+				//Skills
+				if (search.bonus1 > 0 && search.bonus1 == 2 && CheckForSkill(item, search.bonus1Value) == false)
+					continue;
+				if (search.bonus2 > 0 && search.bonus2 == 2 && CheckForSkill(item, search.bonus2Value) == false)
+					continue;
+				if (search.bonus3 > 0 && search.bonus3 == 2 && CheckForSkill(item, search.bonus3Value) == false)
 					continue;
 
-				if (search.power > 0 && CheckForPower(item, search.power) == false)
+				//Power
+				if (search.bonus1 > 0 && search.bonus1 == 3 && CheckForPower(item, search.bonus1Value) == false)
+					continue;
+				if (search.bonus2 > 0 && search.bonus2 == 3 && CheckForPower(item, search.bonus2Value) == false)
+					continue;
+				if (search.bonus3 > 0 && search.bonus3 == 3 && CheckForPower(item, search.bonus3Value) == false)
 					continue;
 
-				if (search.bonus >= 0 && CheckForBonus(item, search.bonus) == false)
+				//MaxHP
+				if (search.bonus1 > 0 && search.bonus1 == 4 && CheckForHP(item, search.bonus1Value) == false)
+					continue;
+				if (search.bonus2 > 0 && search.bonus2 == 4 && CheckForHP(item, search.bonus2Value) == false)
+					continue;
+				if (search.bonus3 > 0 && search.bonus3 == 4 && CheckForHP(item, search.bonus3Value) == false)
 					continue;
 
-				if (search.skill >= 0 && CheckForSkill(item, search.skill) == false)
+				//Resists
+				if (search.bonus1 > 0 && search.bonus1 == 5 && CheckForResist(item, search.bonus1Value) == false)
+					continue;
+				if (search.bonus2 > 0 && search.bonus2 == 5 && CheckForResist(item, search.bonus2Value) == false)
+					continue;
+				if (search.bonus3 > 0 && search.bonus3 == 5 && CheckForResist(item, search.bonus3Value) == false)
 					continue;
 
-				if (search.resist >= 0 && CheckForResist(item, search.resist) == false)
-					continue;
+				//if (search.hp > 0 && CheckForHP(item, search.hp) == false)
+				//	continue;
+
+				//if (search.power > 0 && CheckForPower(item, search.power) == false)
+				//	continue;
+
+				//if (search.bonus >= 0 && CheckForBonus(item, search.bonus) == false)
+				//	continue;
+
+				//if (search.skill >= 0 && CheckForSkill(item, search.skill) == false)
+				//	continue;
+
+				//if (search.resist >= 0 && CheckForResist(item, search.resist) == false)
+				//	continue;
 
 				if (search.damageType > 0 && CheckForDamageType(item, search.damageType) == false)
 					continue;
@@ -174,32 +227,32 @@ namespace DOL.GS
 			if (slot != -1)
 			{
 				switch (slot)
-				{
-					case 0: return item.Item_Type == (int)eInventorySlot.HandsArmor;
-					case 1: return item.Item_Type == (int)eInventorySlot.FeetArmor;
-					case 2: return item.Item_Type == (int)eInventorySlot.HeadArmor;
-					case 3: return item.Item_Type == (int)eInventorySlot.ArmsArmor;
-					case 4: return item.Item_Type == (int)eInventorySlot.LegsArmor;
+				{					
+					case 1: return item.Item_Type == (int)eInventorySlot.HeadArmor;
+					case 2: return item.Item_Type == (int)eInventorySlot.HandsArmor;
+					case 3: return item.Item_Type == (int)eInventorySlot.FeetArmor;
+					case 4: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Jewellery;
 					case 5: return item.Item_Type == (int)eInventorySlot.TorsoArmor;
-					case 6: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightRing || item.Item_Type == (int)eInventorySlot.LeftRing);
-					case 7: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightBracer || item.Item_Type == (int)eInventorySlot.LeftBracer);
-					case 8: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Waist;
+					case 6: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Cloak;
+					case 7: return item.Item_Type == (int)eInventorySlot.LegsArmor;
+					case 8: return item.Item_Type == (int)eInventorySlot.ArmsArmor;
 					case 9: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Neck;
-					case 10: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Cloak;
-					case 11: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Jewellery;
-					case 12: return item.Item_Type == (int)eInventorySlot.RightHandWeapon || item.Item_Type == (int)eInventorySlot.LeftHandWeapon || item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
-					case 13: return item.Object_Type == (int)eObjectType.Shield && item.Item_Type == (int)eInventorySlot.LeftHandWeapon;
-					case 14: return item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
-					case 15: return item.Item_Type == (int)eInventorySlot.DistanceWeapon;
-					case 16: return item.Item_Type == (int)eInventorySlot.LeftHandWeapon;
-					case 17: return item.Object_Type == (int)eObjectType.Instrument && item.Item_Type == (int)eInventorySlot.RightHandWeapon;
-					case 18: return item.Object_Type == (int)eObjectType.GenericItem;
+					case 12: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Waist;
+					case 13: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightBracer || item.Item_Type == (int)eInventorySlot.LeftBracer);
+					case 15: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightRing || item.Item_Type == (int)eInventorySlot.LeftRing);					
+					case 100: return item.Item_Type == (int)eInventorySlot.RightHandWeapon || item.Item_Type == (int)eInventorySlot.LeftHandWeapon || item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
+					case 101: return item.Item_Type == (int)eInventorySlot.LeftHandWeapon;
+					case 102: return item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
+					case 103: return item.Item_Type == (int)eInventorySlot.DistanceWeapon;
+					case 104: return item.Object_Type == (int)eObjectType.Instrument && item.Item_Type == (int)eInventorySlot.RightHandWeapon;
+					case 105: return item.Object_Type == (int)eObjectType.Shield && item.Item_Type == (int)eInventorySlot.LeftHandWeapon;					
+					case 106: return item.Object_Type == (int)eObjectType.GenericItem;
 
 					default:
 
-						log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
-						ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
-						m_searchHasError = true;
+						// log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
+						// ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
+						//m_searchHasError = true;
 						break;
 
 				}
@@ -286,7 +339,7 @@ namespace DOL.GS
 
 					log.Error("There has been an unexpected type passed to CheckForArmorType: " + type);
 					ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled armor type (" + type + ") specified in search!");
-					m_searchHasError = true;
+					//m_searchHasError = true;
 					return false;
 			}
 		}
@@ -309,7 +362,7 @@ namespace DOL.GS
 
 					log.Error("There has been an unexpected resist passed to CheckForResist: " + resist);
 					ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled resist (" + resist + ") specified in search!");
-					m_searchHasError = true;
+					//m_searchHasError = true;
 					break;
 			}
 
@@ -506,7 +559,7 @@ namespace DOL.GS
 
 						log.Error("There has been an unexpected skill passed to CheckForSkill: " + skill);
 						ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled skill (" + skill + ") specified in search!");
-						m_searchHasError = true;
+						//m_searchHasError = true;
 						break;
 				}
 
@@ -602,7 +655,7 @@ namespace DOL.GS
 
 						log.Error("There has been an unexpected bonus passed to CheckForBonus: " + bonus);
 						ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled bonus type (" + bonus + ") specified in search!");
-						m_searchHasError = true;
+						//m_searchHasError = true;
 						break;
 				}
 			}
@@ -622,7 +675,7 @@ namespace DOL.GS
 				{
 					log.Error("There has been an unexpected bonus passed to CheckForDamageType: " + damageType);
 					ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled damage type (" + damageType + ") specified in search!");
-					m_searchHasError = true;
+					//m_searchHasError = true;
 					return false;
 				}
 			}
