@@ -45,6 +45,7 @@ namespace DOL.Database
 		private bool m_isTester;
 		private int m_charactersTraded;
 		private int m_soloCharactersTraded;
+		private string m_discordID;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -267,6 +268,16 @@ namespace DOL.Database
 		{
 			get { return m_soloCharactersTraded; }
 			set { Dirty = true; m_soloCharactersTraded = value; }
+		}
+		
+		/// <summary>
+		/// Gets the account DiscordID
+		/// </summary>
+		[DataElement(AllowDbNull = true)]
+		public string DiscordID
+		{
+			get { return m_discordID; }
+			set { m_discordID = value; }
 		}
 
 		/// <summary>
