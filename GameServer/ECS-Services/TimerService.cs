@@ -74,7 +74,7 @@ public class TimerService
     {
       //  if (!ActiveTimers.Contains(newTimer))
       //  {
-            TimerToAdd.Push(newTimer);
+            TimerToAdd?.Push(newTimer);
             //Console.WriteLine($"added {newTimer.Callback.GetMethodInfo()}");
       //  }
     }
@@ -83,14 +83,14 @@ public class TimerService
     //The Tick() method will still check for duplicate timer in ActiveTimers
     public static void AddExistingTimer(ECSGameTimer newTimer)
     {
-            TimerToAdd.Push(newTimer);
+            TimerToAdd?.Push(newTimer);
     }
 
     public static void RemoveTimer(ECSGameTimer timerToRemove)
     {
         if (ActiveTimers.Contains(timerToRemove))
         {
-            TimerToRemove.Push(timerToRemove);
+            TimerToRemove?.Push(timerToRemove);
             //Console.WriteLine($"removed {timerToRemove.Callback.GetMethodInfo()}");
         }
     }
