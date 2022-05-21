@@ -13989,6 +13989,14 @@ namespace DOL.GS
 
                     if (quest is WeeklyQuest wq)
                         wq.SaveQuestParameters();
+
+                    if (quest is LaunchQuestAlb lqa)
+                        lqa.SaveQuestParameters();
+                    if (quest is LaunchQuestAlb lqh)
+                        lqh.SaveQuestParameters();
+                    if (quest is LaunchQuestAlb lqm)
+                        lqm.SaveQuestParameters();
+                        
                 }
 
 
@@ -14611,6 +14619,13 @@ namespace DOL.GS
                     
                     if (quest is WeeklyQuest wq)
                         wq.LoadQuestParameters();
+                    
+                    if (quest is LaunchQuestAlb lqa)
+                        lqa.LoadQuestParameters();
+                    if (quest is LaunchQuestAlb lqh)
+                        lqh.LoadQuestParameters();
+                    if (quest is LaunchQuestAlb lqm)
+                        lqm.LoadQuestParameters();
                 }
             }
 
