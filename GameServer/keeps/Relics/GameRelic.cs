@@ -578,7 +578,7 @@ namespace DOL.GS
 				case eRealm.Albion:
 					if (RelicType == eRelicType.Magic)
 					{
-						m_template.Name = "Merlins Staff";
+						m_template.Name = "Merlin's Staff";
 						m_template.Model = 630;
 					}
 					else
@@ -595,7 +595,7 @@ namespace DOL.GS
 					}
 					else
 					{
-						m_template.Name = "Thors Hammer";
+						m_template.Name = "Thor's Hammer";
 						m_template.Model = 634;
 					}
 					break;
@@ -607,12 +607,12 @@ namespace DOL.GS
 					}
 					else
 					{
-						m_template.Name = "Lughs Spear of Lightning";
+						m_template.Name = "Lug's Spear of Lightning";
 						m_template.Model = 633;
 					}
 					break;
 				default:
-					m_template.Name = "Unkown Relic";
+					m_template.Name = "Unknown Relic";
 					m_template.Model = 633;
 					break;
 
