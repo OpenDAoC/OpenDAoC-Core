@@ -250,8 +250,8 @@ namespace DOL.GS
 
 					default:
 
-						log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
-						ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
+						// log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
+						// ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
 						//m_searchHasError = true;
 						break;
 
