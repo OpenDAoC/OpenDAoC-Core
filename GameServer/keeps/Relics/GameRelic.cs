@@ -607,7 +607,7 @@ namespace DOL.GS
 					}
 					else
 					{
-						m_template.Name = " Lughs Spear of Lightning";
+						m_template.Name = "Lughs Spear of Lightning";
 						m_template.Model = 633;
 					}
 					break;
