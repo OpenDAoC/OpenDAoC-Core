@@ -2773,10 +2773,10 @@ namespace DOL.GS
                     }
             }
 
-            if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
-            {
-                missrate >>= 1; //halved
-            }
+            // if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
+            // {
+            //     missrate >>= 1; //halved
+            // }
             
             //check for dirty trick fumbles before misses
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
