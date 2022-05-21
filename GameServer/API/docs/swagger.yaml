@@ -19,7 +19,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 tags:
   - name: stats
-    description: Everything about server statistics <br><br>[cache 1 min]
+    description: Everything about server statistics
   - name: guild
     description: Everything about Guilds
   - name: player

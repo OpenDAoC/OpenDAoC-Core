@@ -13,7 +13,7 @@
   "tags": [
     {
       "name": "stats",
-      "description": "Everything about server statistics <br><br>[cache 1 min]"
+      "description": "Everything about server statistics"
     },
     {
       "name": "guild",
