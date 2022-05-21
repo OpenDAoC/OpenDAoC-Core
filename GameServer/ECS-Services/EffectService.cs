@@ -919,7 +919,7 @@ namespace DOL.GS
                     ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
                     //Console.WriteLine($"Spell {spell} handler {handler}");
                     handler.Spell.Duration = eff.Duration;
-                    handler.Spell.CastTime = 0;
+                    handler.Spell.CastTime = 1;
                     handler.CastSpell();
                     //ECSGameEffect e = new ECSGameSpellEffect(new ECSGameEffectInitParams(p, eff.Duration, eff.Var2, handler));
                     //Console.WriteLine($"Created ECS effect: {e} effectiveness {e.Effectiveness} type {e.EffectType} ownerplayer {e.OwnerPlayer} spellVal {handler.Spell.Value}");
