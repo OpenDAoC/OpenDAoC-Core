@@ -99,7 +99,7 @@ public class Player
     {
         var account = DOLDB<Account>.SelectObject(DB.Column("Name").IsEqualTo(accountName));
         Console.WriteLine(account.DiscordID);
-        return account?.DiscordID is not null;
+        return account.DiscordID is not (null or "");
     }
     
     public static string RealmIDtoString(int realm)
