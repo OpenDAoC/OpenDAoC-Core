@@ -130,8 +130,6 @@ namespace DOL.GS.API
             api.MapGet("/realm", () => "Usage /realm/{realmName}");
             api.MapGet("/realm/df", async c =>
                 await c.Response.WriteAsJsonAsync(_realm.GetDFOwner()));
-            api.MapGet("/relic", async c =>
-                await c.Response.WriteAsJsonAsync(_realm.GetAllRelics()));
             api.MapGet("/realm/{realmName}", (string realmName) =>
             {
                 if (realmName == null)
@@ -169,13 +167,19 @@ namespace DOL.GS.API
             #endregion
 
             #region Relic
-
+            api.MapGet("/relic", async c =>
+                await c.Response.WriteAsJsonAsync(_realm.GetAllRelics()));
             #endregion
 
             #region Misc
 
             api.MapGet("/bread", () => Properties.BREAD);
-
+            
+            api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
+            {
+                var discordStatus = _player.GetDiscord(accountName);
+                return Results.Ok(discordStatus);
+            });
             #endregion
 
             api.Run();
