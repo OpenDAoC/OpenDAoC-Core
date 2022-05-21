@@ -13942,6 +13942,9 @@ namespace DOL.GS
                 {
                     DBCharacter.IgnoreStatistics = true;
                 }
+                
+                //cache all active effects
+                EffectService.SaveAllEffects(this);
 
                 SaveSkillsToCharacter();
                 SaveCraftingSkills();

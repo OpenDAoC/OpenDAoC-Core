@@ -937,6 +937,10 @@ namespace DOL.GS
 			
             if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
                 return;
+            
+            var effs = DOLDB<PlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+            if (effs != null)
+                GameServer.Database.DeleteObject(effs);
 
             lock (player.effectListComponent._effectsLock)
             {
