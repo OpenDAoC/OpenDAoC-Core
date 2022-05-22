@@ -4434,6 +4434,9 @@ namespace DOL.GS
 				}
 			}
 
+			if (this is GameNPC)
+				removeMez = true;
+
             // Remove Mez
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
