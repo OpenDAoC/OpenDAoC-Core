@@ -70,12 +70,16 @@ public class TimerService
         Diagnostics.StopPerfCounter(ServiceName);
     }
 
+    private static readonly object _addTimerLockObject = new object();
     public static void AddTimer(ECSGameTimer newTimer)
     {
-      //  if (!ActiveTimers.Contains(newTimer))
+        //  if (!ActiveTimers.Contains(newTimer))
       //  {
-            TimerToAdd?.Push(newTimer);
-            //Console.WriteLine($"added {newTimer.Callback.GetMethodInfo()}");
+      lock (_addTimerLockObject)
+      {
+          TimerToAdd?.Push(newTimer);
+      }
+      //Console.WriteLine($"added {newTimer.Callback.GetMethodInfo()}");
       //  }
     }
 
@@ -83,15 +87,22 @@ public class TimerService
     //The Tick() method will still check for duplicate timer in ActiveTimers
     public static void AddExistingTimer(ECSGameTimer newTimer)
     {
+        lock (_addTimerLockObject)
+        {
             TimerToAdd?.Push(newTimer);
+        }
     }
 
+    private static readonly object _removeTimerLockObject = new object();
     public static void RemoveTimer(ECSGameTimer timerToRemove)
     {
-        if (ActiveTimers.Contains(timerToRemove))
+        lock (_removeTimerLockObject)
         {
-            TimerToRemove?.Push(timerToRemove);
-            //Console.WriteLine($"removed {timerToRemove.Callback.GetMethodInfo()}");
+            if (ActiveTimers.Contains(timerToRemove))
+            {
+                TimerToRemove?.Push(timerToRemove);
+                //Console.WriteLine($"removed {timerToRemove.Callback.GetMethodInfo()}");
+            }
         }
     }
 
