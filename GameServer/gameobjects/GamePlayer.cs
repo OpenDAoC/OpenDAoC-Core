@@ -14406,7 +14406,7 @@ namespace DOL.GS
                     }
                 }
 
-                return 0;
+                return Interval;
             }
         }
         /// <summary>
