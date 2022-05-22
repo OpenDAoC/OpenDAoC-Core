@@ -118,6 +118,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								callback(player, m_response);
 							}
+							Interval = 0;
 							break;
 						}
 					case eDialogCode.GuildInvite:
@@ -185,13 +186,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 								player.Out.SendMessage("You decline to quit your guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return 0;
 							}
+							Interval = 0;
 							break;
 						}
 					case eDialogCode.QuestSubscribe:
 						{
 							var questNPC = (GameLiving)WorldMgr.GetObjectByIDFromRegion(player.CurrentRegionID, (ushort) m_data2);
 							if (questNPC == null)
-								return Interval;
+								return 0;
 
 							var args = new QuestEventArgs(questNPC, player, (ushort) m_data1);
 							if (m_response == 0x01) // accept
@@ -211,7 +213,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								GameClient cln = WorldMgr.GetClientFromID(m_data1);
 								if (cln == null)
-									return Interval;
+									return 0;
 
 								GamePlayer groupLeader = cln.Player;
 								if (groupLeader == null)
@@ -254,6 +256,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								return 0;
 							}
+							Interval = 0;
 							break;
 						}
 					case eDialogCode.KeepClaim:
@@ -281,6 +284,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								}
 								break;
 							}
+							Interval = 0;
 							break;
 						}
 					case eDialogCode.HousePayRent:
@@ -315,7 +319,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								// take the money from the player
 								if (!player.RemoveMoney(moneyToAdd))
-									return Interval;
+									return 0;
 								InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", eInventoryActionType.Other, moneyToAdd);
 
 								// add the money to the lockbox
