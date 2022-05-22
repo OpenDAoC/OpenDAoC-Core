@@ -32,6 +32,7 @@ namespace DOL.GS.API
             var _guild = new Guild();
             var _stats = new Stats();
             var _realm = new Realm();
+            var _shutdown = new Shutdown();
 
             #endregion
 
@@ -179,6 +180,12 @@ namespace DOL.GS.API
             {
                 var discordStatus = _player.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
+            });
+            
+            api.MapGet("/utils/shutdown/{password}", (string password) =>
+            {
+                var shutdownStatus = _shutdown.ShutdownServer(password);
+                return Results.Ok(shutdownStatus);
             });
             #endregion
 
