@@ -2709,6 +2709,12 @@ namespace DOL.GS.ServerProperties
 		public static double PREDATOR_REWARD_MULTIPLIER;
 		
 		/// <summary>
+		/// Enforces the check on the link between game account and Discord
+		/// </summary>
+		[ServerProperty("atlas", "force_discord_link", "Enforces the check on the link between game account and Discord", false)]
+		public static bool FORCE_DISCORD_LINK;
+		
+		/// <summary>
 		/// Bounty expire check interval in seconds
 		/// </summary>
 		[ServerProperty("predator", "queued_player_insert_interval", "How long to wait between trying to insert new players into system, in seconds", 10)]
