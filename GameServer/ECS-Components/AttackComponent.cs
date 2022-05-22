@@ -320,11 +320,14 @@ namespace DOL.GS
                             case eObjectType.CompositeBow:
                                 range = 1600;
                                 break;
+                            case eObjectType.Thrown:
+                                range = 1160;
+                                if (weapon.Name.ToLower().Contains("weighted"))
+                                    range *= 1450;
+                                break;
                             default:
                                 range = 1200;
-                                if (weapon.Object_Type == (int) eObjectType.Thrown &&
-                                    weapon.Name.ToLower().Contains("weighted"))
-                                    range *= 1.3;
+                                
                                 break; // shortbow, xbow, throwing
                         }
 
