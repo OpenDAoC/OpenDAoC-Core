@@ -10215,7 +10215,7 @@ namespace DOL.GS
                     return;
                 }
                 
-                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
+                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30 && SelfBuffChargeIDs.Contains(spell.ID))
                 {
                     spell.Duration = 0;
                     spell.Concentration = 1;
