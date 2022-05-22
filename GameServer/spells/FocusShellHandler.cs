@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
 			
 
 			timer = new FSTimer(Caster, this);
-			timer.Start(1);
+			timer.Start(1000);
 
  			base.OnEffectStart(effect);
 		}
