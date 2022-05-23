@@ -1940,7 +1940,7 @@ namespace DOL.GS.ServerRules
 					List<GamePlayer> players = new List<GamePlayer>();
 					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
                     {
-                        if (Util.Chance(50) && !playersToAward.Contains(pla))
+                        if (!playersToAward.Contains(pla))
                         {
 							playersToAward.Add(pla);
 						}
