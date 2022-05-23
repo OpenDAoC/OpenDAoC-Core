@@ -6390,6 +6390,16 @@ namespace DOL.GS
 					receiver.SayReceive(this, str);
 				}
 			}
+
+			foreach (GameKeepDoor door in GetDoorsInRadius(200))
+			{
+				GameKeepDoor receiver = door;
+				if (this is GamePlayer)
+				{
+					receiver.SayReceive(this, str);
+					break; //only want to Say to one door
+				}
+			}
 			
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.SAY_DISTANCE))
 			{
