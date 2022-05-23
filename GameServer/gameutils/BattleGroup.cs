@@ -233,7 +233,7 @@ namespace DOL.GS
 				var newLeader = "";
 				if (Leader == player.Name)
 				{
-					newLeader = mybattlegroup.GetPlayersInTheBattleGroup()[1].Name;
+					newLeader = mybattlegroup.GetPlayersInTheBattleGroup()[0].Name;
 					mybattlegroup.Members[newLeader] = true;
 					Leader = newLeader;
 				}
