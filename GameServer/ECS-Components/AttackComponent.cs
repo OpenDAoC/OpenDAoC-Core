@@ -2009,12 +2009,8 @@ namespace DOL.GS
                     if (owner.IsObjectInFront(ad.Target, 120) && ad.Target.IsMoving)
                     {
                         bool preCheck = false;
-                        if (ad.Target is GamePlayer) //only start if we are behind the player
-                        {
-                            float angle = ad.Target.GetAngle(ad.Attacker);
-                            if (angle >= 150 && angle < 210) preCheck = true;
-                        }
-                        else preCheck = true;
+                        float angle = ad.Target.GetAngle(ad.Attacker);
+                        if (angle >= 150 && angle < 210) preCheck = true;
 
                         if (preCheck)
                         {
