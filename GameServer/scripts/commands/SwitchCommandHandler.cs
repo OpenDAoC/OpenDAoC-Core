@@ -22,7 +22,7 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
                 DisplaySyntax(client);
                 return;
