@@ -231,7 +231,7 @@ namespace DOL.GS
 				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
 				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				var newLeader = "";
-				if (Leader == player.Name)
+				if (Leader == player.Name && m_battlegroupMembers.Count > 1)
 				{
 					newLeader = mybattlegroup.GetPlayersInTheBattleGroup()[0].Name;
 					mybattlegroup.Members[newLeader] = true;
