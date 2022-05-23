@@ -235,7 +235,8 @@ namespace DOL.GS.Commands
     ePrivLevel.GM,
     "Toggle server logging of performance diagnostics.",
     "/diag perf <on|off> to toggle performance diagnostics logging on server.",
-    "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.")]
+    "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.",
+    "/diag timer <tickcount> enables debugging of the TimerService for <tickcount> ticks and outputs to the server Console.")]
     public class ECSDiagnosticsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -293,6 +294,20 @@ namespace DOL.GS.Commands
                     ECS.Debug.Diagnostics.StopGameEventMgrNotifyTimeReporting();
                     DisplayMessage(client, "GameEventMgr Notify() logging turned off.");
                 }
+            }
+
+            if (args[1].ToLower().Equals("timer"))
+            {
+                int tickcount = Int32.Parse(args[2]);
+                if (tickcount <= 0)
+                {
+                    DisplayMessage(client, "Invalid tickcount argument. Please specify a positive interger value.");
+                    return;
+                }
+
+                TimerService.debugTimer = true;
+                TimerService.debugTimerTickCount = tickcount;
+                DisplayMessage(client, "Debugging next " + tickcount + " TimerService tick(s)");
             }
         }
     }

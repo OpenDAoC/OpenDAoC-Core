@@ -21,6 +21,12 @@ public class TimerService
 
     private static long debugTick = 0;
 
+    //debugTimer is for outputing Timer count/callback info for debug purposes
+    public static bool debugTimer = false;
+
+    //Number of ticks to debug the Timer
+    public static int debugTimerTickCount = 0;
+
 
     static TimerService()
     {
@@ -35,8 +41,32 @@ public class TimerService
         
         Diagnostics.StartPerfCounter(ServiceName);
         
+        //debug variables
+        Dictionary<String, int> TimerToRemoveCallbacks = null;
+        Dictionary<String, int> TimerToAddCallbacks = null;
+        int TimerToRemoveCount = 0;
+        int TimerToAddCount = 0;
+
+        //check if need to debug, then setup vars.
+        if(debugTimer && debugTimerTickCount > 0)
+        {
+            TimerToRemoveCount = TimerToRemove.Count;
+            TimerToAddCount = TimerToAdd.Count;
+            TimerToRemoveCallbacks = new Dictionary<String, int>();
+            TimerToAddCallbacks = new Dictionary<String, int>();
+        }
+        
         while (TimerToRemove.Count > 0)
         {
+            if(debugTimer && TimerToRemoveCallbacks != null)
+            {
+                String callbackMethodName = TimerToRemove.Peek().Callback.Method.Name;
+                if(TimerToRemoveCallbacks.ContainsKey(callbackMethodName))
+                    TimerToRemoveCallbacks[callbackMethodName]++;
+                else
+                    TimerToRemoveCallbacks.Add(callbackMethodName, 1);
+            }
+
             if(ActiveTimers.Contains(TimerToRemove.Peek()))
                 ActiveTimers.Remove(TimerToRemove.Pop());
             else
@@ -47,6 +77,15 @@ public class TimerService
 
         while (TimerToAdd.Count > 0)
         {
+            if(debugTimer && TimerToAddCallbacks != null)
+            {
+                String callbackMethodName = TimerToAdd.Peek().Callback.Method.Name;
+                if(TimerToAddCallbacks.ContainsKey(callbackMethodName))
+                    TimerToAddCallbacks[callbackMethodName]++;
+                else
+                    TimerToAddCallbacks.Add(callbackMethodName, 1);
+            }
+
             if (!ActiveTimers.Contains(TimerToAdd.Peek()))
                 ActiveTimers.Add(TimerToAdd.Pop());
             else
@@ -66,6 +105,37 @@ public class TimerService
             if (timer != null && timer.NextTick < GameLoop.GameLoopTime)
                 timer.Tick();
         });
+
+
+        //Output Debug info
+        if(debugTimer && TimerToRemoveCallbacks != null && TimerToAddCallbacks != null)
+        {
+            Console.WriteLine($"==== TimerService Callback Methods ====");
+
+            Console.WriteLine($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
+             
+            foreach (var callbacks in TimerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+            {
+                Console.WriteLine($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+            }
+
+            Console.WriteLine($"==== TimerService AddTimer Top 5 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
+            foreach (var callbacks in TimerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+            {
+                Console.WriteLine($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+            }
+
+            Console.WriteLine("---------------------------------------------------------------------------");
+             
+            if(debugTimerTickCount > 1)
+                debugTimerTickCount --;
+            else
+            {
+                debugTimer = false;
+                debugTimerTickCount = 0;
+            }
+
+        }
         
         Diagnostics.StopPerfCounter(ServiceName);
     }
