@@ -4432,12 +4432,12 @@ namespace DOL.GS
 				{
 					removeMez = true;
 				}
+				
+				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpellHandler)
+					removeMez = true;
 			}
 
-			if (this is GameNPC)
-				removeMez = true;
-
-            // Remove Mez
+			// Remove Mez
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
