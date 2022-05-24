@@ -114,7 +114,7 @@ namespace DOL.GS
 					}
 				}
 			}
-			log.Debug($"ramsAimedAtTarget: {ramsAimedAtTarget} ");
+
 			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
 			{
 				if(Owner != null)
@@ -125,6 +125,22 @@ namespace DOL.GS
 			base.Aim();
 
 		}
+
+		public override void Fire()
+		{
+			GameLiving target = (TargetObject as GameLiving);
+			if(target != null && !target.IsAlive)
+			{
+
+				if(Owner != null)
+					Owner.Out.SendMessage(target.Name + " is already destroyed!" , eChatType.CT_System,eChatLoc.CL_SystemWindow);
+				return;
+			}
+			
+			base.Fire();
+
+		}
+
 		public override void DoDamage()
 		{
 			GameLiving target = (TargetObject as GameLiving);

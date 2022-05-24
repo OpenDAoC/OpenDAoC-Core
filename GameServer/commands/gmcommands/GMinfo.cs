@@ -677,6 +677,24 @@ namespace DOL.GS.Commands
 
 				#endregion Keep
 
+				#region Ram
+				if(client.Player.TargetObject is GameSiegeRam)
+				{
+					var target = client.Player.TargetObject as GameSiegeRam;
+
+						
+					info.Add( "  ------- SIEGE RAM ------\n");
+					info.Add( " + Max # Riders: " + target.Riders.Length);
+					foreach (GamePlayer rider in target.Riders)
+					{
+						if(rider != null)
+							info.Add( " + Rider slot: " + target.RiderSlot(rider) + " Player Name: " + rider.Name);
+					}
+					
+				}
+
+				#endregion Ram
+
 				client.Out.SendCustomTextWindow("[ " + name + " ]", info);
 				return;
 			}

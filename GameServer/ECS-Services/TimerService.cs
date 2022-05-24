@@ -58,38 +58,44 @@ public class TimerService
         
         while (TimerToRemove.Count > 0)
         {
-            if(debugTimer && TimerToRemoveCallbacks != null)
+            lock (_removeTimerLockObject)
             {
-                String callbackMethodName = TimerToRemove.Peek().Callback.Method.Name;
-                if(TimerToRemoveCallbacks.ContainsKey(callbackMethodName))
-                    TimerToRemoveCallbacks[callbackMethodName]++;
-                else
-                    TimerToRemoveCallbacks.Add(callbackMethodName, 1);
-            }
+                if(debugTimer && TimerToRemoveCallbacks != null && TimerToRemove.Peek()!=null && TimerToRemove.Peek().Callback != null)
+                {
+                    String callbackMethodName = TimerToRemove.Peek().Callback.Method.Name;
+                    if(TimerToRemoveCallbacks.ContainsKey(callbackMethodName))
+                        TimerToRemoveCallbacks[callbackMethodName]++;
+                    else
+                        TimerToRemoveCallbacks.Add(callbackMethodName, 1);
+                }
 
-            if(ActiveTimers.Contains(TimerToRemove.Peek()))
-                ActiveTimers.Remove(TimerToRemove.Pop());
-            else
-            {
-                TimerToRemove.Pop();
+                if(ActiveTimers.Contains(TimerToRemove.Peek()))
+                    ActiveTimers.Remove(TimerToRemove.Pop());
+                else
+                {
+                    TimerToRemove.Pop();
+                }
             }
         }
 
         while (TimerToAdd.Count > 0)
         {
-            if(debugTimer && TimerToAddCallbacks != null)
+            lock (_addTimerLockObject)
             {
-                String callbackMethodName = TimerToAdd.Peek().Callback.Method.Name;
-                if(TimerToAddCallbacks.ContainsKey(callbackMethodName))
-                    TimerToAddCallbacks[callbackMethodName]++;
-                else
-                    TimerToAddCallbacks.Add(callbackMethodName, 1);
-            }
+                if(debugTimer && TimerToAddCallbacks != null && TimerToAdd.Peek()!=null && TimerToAdd.Peek().Callback != null)
+                {
+                    String callbackMethodName = TimerToAdd.Peek().Callback.Method.Name;
+                    if(TimerToAddCallbacks.ContainsKey(callbackMethodName))
+                        TimerToAddCallbacks[callbackMethodName]++;
+                    else
+                        TimerToAddCallbacks.Add(callbackMethodName, 1);
+                }
 
-            if (!ActiveTimers.Contains(TimerToAdd.Peek()))
-                ActiveTimers.Add(TimerToAdd.Pop());
-            else
-                TimerToAdd.Pop();
+                if (!ActiveTimers.Contains(TimerToAdd.Peek()))
+                    ActiveTimers.Add(TimerToAdd.Pop());
+                else
+                    TimerToAdd.Pop();
+            }
         }
 
         //Console.WriteLine($"timer size {ActiveTimers.Count}");
@@ -110,7 +116,7 @@ public class TimerService
         //Output Debug info
         if(debugTimer && TimerToRemoveCallbacks != null && TimerToAddCallbacks != null)
         {
-            Console.WriteLine($"==== TimerService Callback Methods ====");
+            Console.WriteLine($"==== TimerService Debug - Total ActiveTimers: {ActiveTimers.Count} ====");
 
             Console.WriteLine($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
              
