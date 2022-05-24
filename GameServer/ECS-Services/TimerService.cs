@@ -116,7 +116,7 @@ public class TimerService
         //Output Debug info
         if(debugTimer && TimerToRemoveCallbacks != null && TimerToAddCallbacks != null)
         {
-            Console.WriteLine($"==== TimerService Callback Methods ====");
+            Console.WriteLine($"==== TimerService Debug - Total ActiveTimers: {ActiveTimers.Count} ====");
 
             Console.WriteLine($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
              
