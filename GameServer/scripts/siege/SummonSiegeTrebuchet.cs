@@ -54,6 +54,17 @@ namespace DOL.GS.Spells
 		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
 		        return false;
 	        }
+			
+            //Only allow one treb/catapult in the radius
+            int trebSummonRadius = 500;
+			foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.TargetObject.X, Caster.TargetObject.Y, Caster.TargetObject.Z, (ushort)(trebSummonRadius), false, false))
+			{
+				if(npc is GameSiegeCatapult catapult)
+				{
+					MessageToCaster("You are too close to another trebuchet or catapult and cannot summon here!", PacketHandler.eChatType.CT_SpellResisted);
+                    return false;
+				}
+			}
 
             return base.CheckBeginCast(selectedTarget);
         }

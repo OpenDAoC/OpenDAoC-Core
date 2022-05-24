@@ -114,7 +114,7 @@ namespace DOL.GS
 					}
 				}
 			}
-			log.Debug($"ramsAimedAtTarget: {ramsAimedAtTarget} ");
+
 			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
 			{
 				if(Owner != null)
