@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Quests;
 using ECS.Debug;
+using log4net;
 
 namespace DOL.GS;
 
 public class TimerService
 {
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     private const string ServiceName = "Timer Service";
 
     private static List<ECSGameTimer> ActiveTimers;
@@ -116,22 +118,22 @@ public class TimerService
         //Output Debug info
         if(debugTimer && TimerToRemoveCallbacks != null && TimerToAddCallbacks != null)
         {
-            Console.WriteLine($"==== TimerService Debug - Total ActiveTimers: {ActiveTimers.Count} ====");
+            log.Debug($"==== TimerService Debug - Total ActiveTimers: {ActiveTimers.Count} ====");
 
-            Console.WriteLine($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
+            log.Debug($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
              
             foreach (var callbacks in TimerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(5))
             {
-                Console.WriteLine($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+                log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
             }
 
-            Console.WriteLine($"==== TimerService AddTimer Top 5 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
+            log.Debug($"==== TimerService AddTimer Top 5 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
             foreach (var callbacks in TimerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(5))
             {
-                Console.WriteLine($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+                log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
             }
 
-            Console.WriteLine("---------------------------------------------------------------------------");
+            log.Debug("---------------------------------------------------------------------------");
              
             if(debugTimerTickCount > 1)
                 debugTimerTickCount --;
