@@ -302,7 +302,7 @@ namespace DOL.GS.Keeps
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (damageAmount > 0)
+			if (damageAmount > 0 && IsAlive)
 			{
 				Component.Keep.LastAttackedByEnemyTick = CurrentRegion.Time;
 				base.TakeDamage(source, damageType, damageAmount, criticalAmount);
