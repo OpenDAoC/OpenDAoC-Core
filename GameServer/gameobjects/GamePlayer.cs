@@ -12622,9 +12622,7 @@ namespace DOL.GS
             }
             
             //cancel any self buffs that are unequipped
-            if (item.SpellID > 0 
-                && effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == item.SpellID) != null 
-                && effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == item.SpellID).HasPositiveEffect)
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
             {
                 CancelChargeBuff(item.SpellID);
             }
