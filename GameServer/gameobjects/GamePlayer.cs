@@ -12479,7 +12479,6 @@ namespace DOL.GS
                     m_selfBuffIds.Add(31132); //dex/qui charge
                     m_selfBuffIds.Add(31131); //acuity charge
                     m_selfBuffIds.Add(31130); //AF charge
-                    m_selfBuffIds.Add(33512); //haste charge
                 }
 
                 return m_selfBuffIds;
@@ -12622,8 +12621,10 @@ namespace DOL.GS
                 (item as IGameInventoryItem).OnUnEquipped(this);
             }
             
-            //max 2 charges
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
+            //cancel any self buffs that are unequipped
+            if (item.SpellID > 0 
+                && effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == item.SpellID) != null 
+                && effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == item.SpellID).HasPositiveEffect)
             {
                 CancelChargeBuff(item.SpellID);
             }
@@ -13995,9 +13996,9 @@ namespace DOL.GS
 
                     if (quest is LaunchQuestAlb lqa)
                         lqa.SaveQuestParameters();
-                    if (quest is LaunchQuestAlb lqh)
+                    if (quest is LaunchQuestHib lqh)
                         lqh.SaveQuestParameters();
-                    if (quest is LaunchQuestAlb lqm)
+                    if (quest is LaunchQuestMid lqm)
                         lqm.SaveQuestParameters();
                         
                 }
@@ -14625,9 +14626,9 @@ namespace DOL.GS
                     
                     if (quest is LaunchQuestAlb lqa)
                         lqa.LoadQuestParameters();
-                    if (quest is LaunchQuestAlb lqh)
+                    if (quest is LaunchQuestHib lqh)
                         lqh.LoadQuestParameters();
-                    if (quest is LaunchQuestAlb lqm)
+                    if (quest is LaunchQuestMid lqm)
                         lqm.LoadQuestParameters();
                 }
             }
