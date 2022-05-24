@@ -312,13 +312,15 @@ namespace DOL.GS
 			player.TempProperties.removeProperty(PLAYER_CARRY_RELIC_WEAK);
 			m_currentCarrier = null;
 			player.Out.SendUpdateMaxSpeed();
+			//CurrentRegion.Time;
 
 			if (IsMounted == false)
 			{
 				// launch the reset timer if this relic is not dropped on a pad
-				m_timeRelicOnGround = CurrentRegion.Time;
+				m_timeRelicOnGround = GameLoop.GameLoopTime;
 				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
+				Console.WriteLine($"Starting return relic timer {m_returnRelicTimer}");
 
 				// update the position of the worldObject Relic
 				Update();
@@ -332,7 +334,7 @@ namespace DOL.GS
 		/// </summary>
 		protected virtual int ReturnRelicTick(ECSGameTimer timer)
 		{
-			if (CurrentRegion.Time - m_timeRelicOnGround < ReturnRelicInterval)
+			if (GameLoop.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
 			{
 				// Note: This does not show up, possible issue with SendSpellEffect
 				ushort effectID = (ushort)Util.Random(5811, 5815);
@@ -366,6 +368,7 @@ namespace DOL.GS
 		/// <param name="player">Player to set the timer on. Timer stops if param is null</param>
 		protected virtual void StartPlayerTimer(GamePlayer player)
 		{
+			Console.WriteLine($"Starting player relic timer {player} currentTimer {m_currentCarrierTimer}");
 			if (player != null)
 			{
 				if (m_currentCarrierTimer != null)
