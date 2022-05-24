@@ -1202,6 +1202,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				client.Player.Heading = client.Player.Steed.Heading;
 				newHeading = (ushort)client.Player.Steed.ObjectID;
+				steedSeatPosition = (ushort)client.Player.Steed.RiderSlot(client.Player);
 			}
 			else if ((playerState >> 10) == 4) // patch 0062 fix bug on release preventing players from receiving res sickness
 				client.Player.IsSitting = true;
