@@ -256,6 +256,12 @@ namespace DOL.GS.Commands
             if (client.Account.PrivLevel < 2)
                 return;
 
+            if (args.Length < 2)
+            {
+                DisplaySyntax(client);
+                return;
+            }
+
             if (args[1].ToLower().Equals("currentservicetick"))
             {
                 DisplayMessage(client, "Gameloop CurrentService Tick: " + GameLoop.currentServiceTick);
