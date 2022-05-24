@@ -14273,8 +14273,8 @@ namespace DOL.GS
             //start the uncover timer
             if (action == null)
                 action = new UncoverStealthAction(this);
-            action.Interval = 2000;
-            action.Start(2000);
+            action.Interval = 1000;
+            action.Start(1000);
             TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
         }
 
