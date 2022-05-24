@@ -49,6 +49,7 @@ namespace DOL.GS.Spells
             tre.X = Caster.X;
             tre.Y = Caster.Y;
             tre.Z = Caster.Z;
+            tre.Heading = Caster.Heading;
             tre.CurrentRegion = Caster.CurrentRegion;
             tre.Model = 0xA2E;
             tre.Level = 3;
