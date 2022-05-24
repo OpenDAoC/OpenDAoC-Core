@@ -6391,13 +6391,16 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameKeepDoor door in GetDoorsInRadius(200))
+			foreach (IDoor door in GetDoorsInRadius(150))
 			{
-				GameKeepDoor receiver = door;
-				if (this is GamePlayer)
+				if (door is GameKeepDoor && (str.Contains("enter") || str.Contains("exit")))
 				{
-					receiver.SayReceive(this, str);
-					break; //only want to Say to one door
+					GameKeepDoor receiver = door as GameKeepDoor;
+					if (this is GamePlayer)
+					{
+						receiver.SayReceive(this, str);
+						break; //only want to Say to one door
+					}
 				}
 			}
 			
