@@ -117,12 +117,13 @@ namespace DOL.GS
 			{
 				m_dballiance.DBguildleader.GuildID = myguild.GuildID;
 				m_dballiance.DBguildleader.GuildName = myguild.Name;
-				m_dballiance.AllianceName = myguild.Name;
-				m_dballiance.LeaderGuildID = myguild.GuildID;
-				GameServer.Database.SaveObject(m_dballiance);
-				GameServer.Database.FillObjectRelations(m_dballiance);
 				
-				SendMessageToAllianceMembers(myguild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+				// m_dballiance.AllianceName = myguild.Name;
+				// m_dballiance.LeaderGuildID = myguild.GuildID;
+				GameServer.Database.SaveObject(m_dballiance);
+				// GameServer.Database.FillObjectRelations(m_dballiance);
+				
+				SendMessageToAllianceMembers(myguild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_Alliance, PacketHandler.eChatLoc.CL_SystemWindow);
 			}
 		}
 		

@@ -2036,11 +2036,21 @@ namespace DOL.GS.Commands
 							}
 							if (obj.Guild.alliance != client.Player.Guild.alliance)
 							{
-								client.Out.SendMessage("You're not in the same alliance", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage("You're not in the same alliance", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+								return;
+							}
+							if (client.Player.Guild.alliance.Dballiance.LeaderGuildID != client.Player.Guild.GuildID)
+							{
+								client.Out.SendMessage("You're not the leader of the alliance", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 								return;
 							}
 							
-							client.Player.Guild.alliance.PromoteGuild(obj.Guild);
+							client.Player.Guild.alliance.Dballiance.AllianceName = obj.Guild.Name;
+							client.Player.Guild.alliance.Dballiance.LeaderGuildID = obj.Guild.GuildID;
+							GameServer.Database.SaveObject(client.Player.Guild.alliance.Dballiance);
+							client.Player.Guild.alliance.SendMessageToAllianceMembers(obj.Guild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_Alliance, PacketHandler.eChatLoc.CL_SystemWindow);
+							
+							// client.Player.Guild.alliance.PromoteGuild(obj.Guild);
 
 							break;
 						}
