@@ -872,6 +872,7 @@ namespace DOL.GS
         /// <returns>0</returns>
         protected int LinkdeathTimerCallback(ECSGameTimer callingTimer)
         {
+            log.Debug("call back");
             //If we died during our callback time we release
             try
             {
@@ -935,12 +936,16 @@ namespace DOL.GS
                 m_quitTimer = null;
             }
 
-            int secondsToQuit = QuitTime;
+            // int secondsToQuit = QuitTime;
+            int secondsToQuit = 60;
+
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
-            ECSGameTimer timer = new ECSGameTimer(this); // make sure it is not stopped!
-            timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
-            timer.StartTick = 1 + secondsToQuit * 1000;
+            log.Debug("starting timer");
+            ECSGameTimer timer = new ECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
+            
+            // timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
+            // timer.StartTick = 1 + secondsToQuit * 1000;
             timer.Start();
 
             if (TradeWindow != null)
@@ -11047,9 +11052,14 @@ namespace DOL.GS
                 m_guild.RemoveOnlineMember(this);
             }
             GroupMgr.RemovePlayerLooking(this);
+
+            if (Client.ClientState == GameClient.eClientState.Linkdead)
+            {
+                return;
+            }
             if (log.IsDebugEnabled)
             {
-                log.DebugFormat("({0}) player.Delete()", Name);
+                log.DebugFormat("({0}) player.Delete() alt f4", Name);
             }
             base.Delete();
         }
