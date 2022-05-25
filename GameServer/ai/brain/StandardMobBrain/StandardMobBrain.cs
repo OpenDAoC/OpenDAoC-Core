@@ -562,7 +562,7 @@ namespace DOL.AI.Brain
 
             // Check LOS (walls, pits, etc...) before  attacking, player + pet
             // Be sure the aggrocheck is triggered by the brain on Think() method
-            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || (Body is GameKeepGuard guard && !guard.IsPortalKeepGuard))
+            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || ((Body is GameKeepGuard guard && !guard.IsPortalKeepGuard) && CheckLOS))
             {
                 GamePlayer thisLiving = null;
                 if (living is GamePlayer)
@@ -998,8 +998,8 @@ namespace DOL.AI.Brain
         public virtual void OnAttackedByEnemy(AttackData ad)
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)) { return; }
-
-
+    
+           
             if (!Body.attackComponent.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)
