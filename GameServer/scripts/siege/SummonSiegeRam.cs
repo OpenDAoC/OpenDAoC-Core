@@ -55,6 +55,7 @@ namespace DOL.GS.Spells
             ram.X = Caster.X;
             ram.Y = Caster.Y;
             ram.Z = Caster.Z;
+            ram.Heading = Caster.Heading;
             ram.CurrentRegion = Caster.CurrentRegion;
             ram.Realm = Caster.Realm;
 
