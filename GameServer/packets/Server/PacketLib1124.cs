@@ -6106,8 +6106,8 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort)m_gameClient.Player.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort)m_gameClient.Player.Encumberance); // encumb used
+				pak.WriteShort((ushort)m_gameClient.Player?.MaxEncumberance); // encumb total
+				pak.WriteShort((ushort)m_gameClient.Player?.Encumberance); // encumb used
 				SendTCP(pak);
 			}
 		}

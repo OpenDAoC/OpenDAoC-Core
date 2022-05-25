@@ -9,6 +9,6 @@ PlayerManager.BroadcastRelease.LostControl:		{0} has lost control of {1}!
 
 ## Relic Activity
 GameRelicPad.MountRelic.Captured:			    {0} has captured the {1}.
-GameRelicPad.MountRelic.Stored:				    {0} from {1} has stored the {2} to the {3}.
+GameRelicPad.MountRelic.Stored:				    {0} from {1} has stored the {2} to {3}.
 GameRelicPad.OnPlayerEnter.EmptyRelicPad:		You need to find an empty {0} relic pad in order to place this relic.
-GameRelicPad.RemoveRelic.Removed:			    {0} from {1} has removed the {2} from the {3}.
+GameRelicPad.RemoveRelic.Removed:			    {0} from {1} has removed the {2} from {3}.

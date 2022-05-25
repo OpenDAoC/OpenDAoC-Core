@@ -30,7 +30,7 @@ namespace DOL.GS.API
 
             var _player = new Player();
             var _guild = new Guild();
-            var _stats = new Stats();
+            var utils = new Utils();
             var _realm = new Realm();
             var _shutdown = new Shutdown();
 
@@ -61,10 +61,10 @@ namespace DOL.GS.API
             #region Stats
 
             api.MapGet("/stats", async c =>
-                await c.Response.WriteAsync(_stats.GetPlayerCount()));
+                await c.Response.WriteAsync(utils.GetPlayerCount()));
             api.MapGet("/stats/rp", (string guildName) =>
             {
-                var TopRpPlayers = _stats.GetTopRP();
+                var TopRpPlayers = utils.GetTopRP();
 
                 if (TopRpPlayers == null)
                 {
@@ -74,7 +74,7 @@ namespace DOL.GS.API
                 return Results.Ok(TopRpPlayers);
             });
             api.MapGet("/stats/uptime", async c =>
-                await c.Response.WriteAsJsonAsync(_stats.GetUptime(startupTime)));
+                await c.Response.WriteAsJsonAsync(utils.GetUptime(startupTime)));
 
             #endregion
 
@@ -187,6 +187,9 @@ namespace DOL.GS.API
                 var shutdownStatus = _shutdown.ShutdownServer(password);
                 return Results.Ok(shutdownStatus);
             });
+            
+            api.MapGet("/utils/discordrequired", async c =>
+                await c.Response.WriteAsync(utils.IsDiscordRequired()));
             #endregion
 
             api.Run();

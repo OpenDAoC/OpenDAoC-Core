@@ -51,6 +51,7 @@ namespace DOL.GS.Spells
             cat.X = Caster.X;
             cat.Y = Caster.Y;
             cat.Z = Caster.Z;
+            cat.Heading = Caster.Heading;
             cat.CurrentRegion = Caster.CurrentRegion;
             cat.Model = 0xA26;
             cat.Level = 3;
