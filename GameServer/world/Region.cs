@@ -541,7 +541,7 @@ namespace DOL.GS
         /// </summary>
         public virtual long Time
         {
-            get { return m_timeManager.CurrentTime; }
+            get { return GameLoop.GameLoopTime; }
         }
 
         protected bool m_isDisabled = false;
