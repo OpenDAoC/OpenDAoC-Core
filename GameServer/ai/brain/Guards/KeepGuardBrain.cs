@@ -46,13 +46,14 @@ namespace DOL.AI.Brain
 
         public override void AttackMostWanted()
         {
-			if(Body.TargetObject != null && Body.TargetObject is GamePlayer pl)
-            {
-				pl.Out.SendCheckLOS(Body, pl, new CheckLOSResponse(CheckAggroLOS));
+			//Commenting out LOS Check on AttackMostWanted - Caused issues with not aggroing or switching aggro target
+			// if(Body.TargetObject != null && Body.TargetObject is GamePlayer pl)
+            // {
+			// 	pl.Out.SendCheckLOS(Body, pl, new CheckLOSResponse(CheckAggroLOS));
 
-                if (!AggroLOS) { return; }
-			}
-
+            //     if (!AggroLOS) { return; }
+			// }
+		
 			base.AttackMostWanted();
         }
 
