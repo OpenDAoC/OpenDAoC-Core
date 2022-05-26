@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
         public CrauchonRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
         public CrimthainRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()
@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
         public nGedRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()

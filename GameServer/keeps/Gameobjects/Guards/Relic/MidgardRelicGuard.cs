@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
         public BledmeerRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
         public NotmoorRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()
@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
         public GlenlockRGBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 5000;
         }
 
         public override void Think()
