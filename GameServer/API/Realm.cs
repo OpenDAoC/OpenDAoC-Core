@@ -29,7 +29,6 @@ public class Realm
         public KeepInfo()
         {
         }
-
         public KeepInfo(GameKeep keep)
         {
             if (keep == null)
@@ -168,6 +167,66 @@ public class Realm
 
     #endregion
 
+    #region BG Info
+
+    public class BGInfo
+    {
+        public string Name { get; set; }
+        public string CurrentRealm { get; set; }
+        public int UnderSiege { get; set; }
+
+        public BGInfo()
+        {
+        }
+        public BGInfo(GameKeep keep)
+        {
+            if (keep == null)
+                return;
+
+            Name = keep.Name;
+            CurrentRealm = RealmIDtoString((int) keep.Realm);
+            UnderSiege = keep.InCombat ? 1 : 0;
+        }
+    }
+    public List<BGInfo> GetBGStatus()
+    {
+        var _keepsCacheKey = "api_keeps_bg";
+        var keepInfos = new List<BGInfo>();
+        var cache = _cache.Get<List<BGInfo>>(_keepsCacheKey);
+        
+        if (cache == null)
+        {
+            ICollection<AbstractGameKeep> keepList;
+            
+            ushort[] bgRegions = {253, 252, 251, 250};
+            
+            foreach (var region in bgRegions)
+            {
+                keepList = GameServer.KeepManager.GetKeepsOfRegion(region);
+                
+                foreach (AbstractGameKeep keep in keepList)
+                {
+                    var gk = keep as GameKeep;
+                    
+                    if (gk != null)
+                    {
+                        keepInfos.Add(new BGInfo(gk));
+
+                    }
+                }
+            }
+            
+            _cache.Set(_keepsCacheKey, keepInfos, DateTime.Now.AddMinutes(1));
+        }
+        else
+        {
+            keepInfos = cache;
+        }
+        
+        return keepInfos;
+    }
+    
+    #endregion
     public string GetDFOwner()
     {
         return GlobalConstants.RealmToName(DFEnterJumpPoint.DarknessFallOwner);

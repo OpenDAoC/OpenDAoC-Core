@@ -18,7 +18,7 @@ namespace DOL.GS.API
             var builder = WebApplication.CreateBuilder();
 
             var contentRoot = Directory.GetCurrentDirectory();
-            DateTime startupTime = DateTime.Now;
+            var startupTime = DateTime.Now;
 
             // builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(9874));
 
@@ -30,7 +30,7 @@ namespace DOL.GS.API
 
             var _player = new Player();
             var _guild = new Guild();
-            var utils = new Utils();
+            var _utils = new Utils();
             var _realm = new Realm();
             var _shutdown = new Shutdown();
 
@@ -61,20 +61,15 @@ namespace DOL.GS.API
             #region Stats
 
             api.MapGet("/stats", async c =>
-                await c.Response.WriteAsync(utils.GetPlayerCount()));
+                await c.Response.WriteAsync(_utils.GetPlayerCount()));
             api.MapGet("/stats/rp", (string guildName) =>
             {
-                var TopRpPlayers = utils.GetTopRP();
+                var TopRpPlayers = _utils.GetTopRP();
 
-                if (TopRpPlayers == null)
-                {
-                    return Results.NotFound();
-                }
-
-                return Results.Ok(TopRpPlayers);
+                return TopRpPlayers == null ? Results.NotFound() : Results.Ok(TopRpPlayers);
             });
             api.MapGet("/stats/uptime", async c =>
-                await c.Response.WriteAsJsonAsync(utils.GetUptime(startupTime)));
+                await c.Response.WriteAsJsonAsync(_utils.GetUptime(startupTime)));
 
             #endregion
 
@@ -85,12 +80,7 @@ namespace DOL.GS.API
             {
                 var playerInfo = _player.GetPlayerInfo(playerName);
 
-                if (playerInfo == null)
-                {
-                    return Results.NotFound("Not found");
-                }
-
-                return Results.Ok(playerInfo);
+                return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
             });
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
 
@@ -114,12 +104,7 @@ namespace DOL.GS.API
             {
                 var guildMembers = _player.GetPlayersByGuild(guildName);
 
-                if (guildMembers == null)
-                {
-                    return Results.NotFound();
-                }
-
-                return Results.Ok(guildMembers);
+                return guildMembers == null ? Results.NotFound() : Results.Ok(guildMembers);
             });
             api.MapGet("/guild/getAll", async c => await c.Response.WriteAsJsonAsync(_guild.GetAllGuilds()));
             api.MapGet("/guild/topRP", async c => await c.Response.WriteAsJsonAsync(_guild.GetTopRPGuilds()));
@@ -131,6 +116,8 @@ namespace DOL.GS.API
             api.MapGet("/realm", () => "Usage /realm/{realmName}");
             api.MapGet("/realm/df", async c =>
                 await c.Response.WriteAsJsonAsync(_realm.GetDFOwner()));
+            api.MapGet("/realm/bg", async c =>
+                await c.Response.WriteAsJsonAsync(_realm.GetBGStatus()));
             api.MapGet("/realm/{realmName}", (string realmName) =>
             {
                 if (realmName == null)
@@ -157,12 +144,7 @@ namespace DOL.GS.API
 
                 List<Realm.KeepInfo> realmInfo = _realm.GetKeepsByRealm(realm);
 
-                if (realmInfo == null)
-                {
-                    return Results.NotFound($"Realm {realmName} not found");
-                }
-
-                return Results.Ok(realmInfo);
+                return realmInfo == null ? Results.NotFound($"Realm {realmName} not found") : Results.Ok(realmInfo);
             });
 
             #endregion
@@ -189,7 +171,7 @@ namespace DOL.GS.API
             });
             
             api.MapGet("/utils/discordrequired", async c =>
-                await c.Response.WriteAsync(utils.IsDiscordRequired()));
+                await c.Response.WriteAsync(_utils.IsDiscordRequired()));
             #endregion
 
             api.Run();
