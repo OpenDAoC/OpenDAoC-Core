@@ -18,6 +18,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Crauchon Relic Guards Init";
             CrauchonRGBrain brain = new CrauchonRGBrain();
             SetOwnBrain(brain);
@@ -43,6 +44,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Crimthain Relic Guards Init";
             CrimthainRGBrain brain = new CrimthainRGBrain();
             SetOwnBrain(brain);
@@ -68,6 +70,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "nGed Relic Guards Init";
             nGedRGBrain brain = new nGedRGBrain();
             SetOwnBrain(brain);

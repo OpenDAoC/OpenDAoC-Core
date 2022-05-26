@@ -18,6 +18,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Benowyc Relic Guards Init";
             BenowycRGBrain brain = new BenowycRGBrain();
             SetOwnBrain(brain);
@@ -43,6 +44,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Berkstead Relic Guards Init";
             BerksteadRGBrain brain = new BerksteadRGBrain();
             SetOwnBrain(brain);
@@ -68,6 +70,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Boldiam Relic Guards Init";
             BoldiamRGBrain brain = new BoldiamRGBrain();
             SetOwnBrain(brain);

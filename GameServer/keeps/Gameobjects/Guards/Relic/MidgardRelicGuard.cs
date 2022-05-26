@@ -18,6 +18,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Bledmeer Relic Guards Init";
             BledmeerRGBrain brain = new BledmeerRGBrain();
             SetOwnBrain(brain);
@@ -43,6 +44,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Notmoor Relic Guards Init";
             NotmoorRGBrain brain = new NotmoorRGBrain();
             SetOwnBrain(brain);
@@ -68,6 +70,7 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
+            Model = 1;
             Name = "Glenlock Relic Guards Init";
             GlenlockRGBrain brain = new GlenlockRGBrain();
             SetOwnBrain(brain);
