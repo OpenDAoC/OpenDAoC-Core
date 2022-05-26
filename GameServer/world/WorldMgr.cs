@@ -1598,7 +1598,7 @@ namespace DOL.GS
 							potentialMatches.Add(client);
 							return potentialMatches;
 						}
-						if(client.Player.Name.ToLower().Contains(playerName.ToLower())) potentialMatches.Add(client);
+						if(client.Player.Name.ToLower().StartsWith(playerName.ToLower())) potentialMatches.Add(client);
 					}
 				}
 
