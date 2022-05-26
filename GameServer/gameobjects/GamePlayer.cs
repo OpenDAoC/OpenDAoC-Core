@@ -14486,11 +14486,13 @@ namespace DOL.GS
             if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
             {
                 // we have detect hidden and enemy don't = higher range
-                range = levelDiff * 50 + 250; // Detect Hidden advantage
+                //range = levelDiff * 50 + 250; // Detect Hidden advantage
+                range = levelDiff * 50 + 300; // Detect Hidden advantage
             }
             else
             {
-                range = levelDiff * 20 + 125; // Normal detection range
+                //range = levelDiff * 20 + 125; // Normal detection range
+                range = levelDiff * 20 + 175; 
             }
 
             // Mastery of Stealth Bonus
