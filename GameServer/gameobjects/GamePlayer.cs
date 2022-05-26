@@ -14844,15 +14844,18 @@ namespace DOL.GS
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
+
+            List<AbstractQuest> cloneList;
             // events will only fire for currently active quests.
             lock (QuestList)
             {
-                List<AbstractQuest> cloneList = new List<AbstractQuest>(m_questList);
-                foreach (AbstractQuest q in cloneList)
-                {
-                    // player forwards every single notify message to all active quests
-                    q.Notify(e, sender, args);
-                }
+                cloneList = new List<AbstractQuest>(m_questList);  
+            }
+
+            foreach (AbstractQuest q in cloneList)
+            {
+                // player forwards every single notify message to all active quests
+                q.Notify(e, sender, args);
             }
 
             if (Task != null)
