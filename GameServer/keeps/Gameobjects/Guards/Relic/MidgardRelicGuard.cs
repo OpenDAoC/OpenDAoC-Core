@@ -7,9 +7,9 @@ using DOL.GS.Keeps;
 //DO NOT REMOVE the initializers or the relic guards won't spawn!
 namespace DOL.GS
 {
-    public class BenowycRGInit : GameNPC
+    public class BledmeerRGInit : GameNPC
     {
-        public BenowycRGInit() : base()
+        public BledmeerRGInit() : base()
         {
         }
         public override bool AddToWorld()
@@ -18,8 +18,8 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
-            Name = "Benowyc Relic Guards Init";
-            BenowycRGBrain brain = new BenowycRGBrain();
+            Name = "Bledmeer Relic Guards Init";
+            BledmeerRGBrain brain = new BledmeerRGBrain();
             SetOwnBrain(brain);
             base.AddToWorld();
             return true;
@@ -28,13 +28,13 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Albion  Relic Guards [Benowyc] initialised");
+            log.Warn("Midgard Relic Guards [Bledmeer] initialised");
         }
     }
     
-    public class BerksteadRGInit : GameNPC
+    public class NotmoorRGInit : GameNPC
     {
-        public BerksteadRGInit() : base()
+        public NotmoorRGInit() : base()
         {
         }
         public override bool AddToWorld()
@@ -43,8 +43,8 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
-            Name = "Berkstead Relic Guards Init";
-            BerksteadRGBrain brain = new BerksteadRGBrain();
+            Name = "Notmoor Relic Guards Init";
+            NotmoorRGBrain brain = new NotmoorRGBrain();
             SetOwnBrain(brain);
             base.AddToWorld();
             return true;
@@ -53,13 +53,13 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Albion  Relic Guards [Benowyc] initialised");
+            log.Warn("Midgard Relic Guards [Notmoor] initialised");
         }
     }
     
-    public class BoldiamRGInit : GameNPC
+    public class GlenlockRGInit : GameNPC
     {
-        public BoldiamRGInit() : base()
+        public GlenlockRGInit() : base()
         {
         }
         public override bool AddToWorld()
@@ -68,8 +68,8 @@ namespace DOL.GS
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.PEACE;
-            Name = "Boldiam Relic Guards Init";
-            BoldiamRGBrain brain = new BoldiamRGBrain();
+            Name = "Glenlock Relic Guards Init";
+            GlenlockRGBrain brain = new GlenlockRGBrain();
             SetOwnBrain(brain);
             base.AddToWorld();
             return true;
@@ -78,7 +78,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Albion  Relic Guards [Boldiam] initialised");
+            log.Warn("Midgard Relic Guards [Glenlock] initialised");
         }
     }
 }
@@ -86,16 +86,16 @@ namespace DOL.GS
 #region brains
 namespace DOL.AI.Brain
 {
-    public class BenowycRGBrain : StandardMobBrain
+    public class BledmeerRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         private bool m_guardSpawned = false;
-        private ushort m_keepID = 51; // Benowyc
+        private ushort m_keepID = 75; // Bledmeer
 
-        private string m_guardName = "Benowyc Guardian";
-        public BenowycRGBrain()
+        private string m_guardName = "Bledmeer Guardian";
+        public BledmeerRGBrain()
             : base()
         {
             ThinkInterval = 2000;
@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
             var numRelics = 0;
             foreach (GameRelic relic in relics)
             {
-                if (relic.Realm == eRealm.Albion)
+                if (relic.Realm == eRealm.Midgard)
                 {
                     numRelics++;
                 }
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = 1000;
-                guard.Realm = eRealm.Albion;
+                guard.Realm = eRealm.Midgard;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
                 {
@@ -169,16 +169,16 @@ namespace DOL.AI.Brain
         }
     }
     
-    public class BerksteadRGBrain : StandardMobBrain
+    public class NotmoorRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         private bool m_guardSpawned = false;
-        private ushort m_keepID = 50; // Berkstead
+        private ushort m_keepID = 76; // Notmoor
 
-        private string m_guardName = "Berkstead Guardian";
-        public BerksteadRGBrain()
+        private string m_guardName = "Notmoor Guardian";
+        public NotmoorRGBrain()
             : base()
         {
             ThinkInterval = 2000;
@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
             var numRelics = 0;
             foreach (GameRelic relic in relics)
             {
-                if (relic.Realm == eRealm.Albion)
+                if (relic.Realm == eRealm.Midgard)
                 {
                     numRelics++;
                 }
@@ -232,7 +232,7 @@ namespace DOL.AI.Brain
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = 1000;
-                guard.Realm = eRealm.Albion;
+                guard.Realm = eRealm.Midgard;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
                 {
@@ -252,16 +252,16 @@ namespace DOL.AI.Brain
         }
     }
     
-    public class BoldiamRGBrain : StandardMobBrain
+    public class GlenlockRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         private bool m_guardSpawned = false;
-        private ushort m_keepID = 53; // Boldiam
+        private ushort m_keepID = 79; // Glenlock
 
-        private string m_guardName = "Boldiam Guardian";
-        public BoldiamRGBrain()
+        private string m_guardName = "Glenlock Guardian";
+        public GlenlockRGBrain()
             : base()
         {
             ThinkInterval = 2000;
@@ -300,7 +300,7 @@ namespace DOL.AI.Brain
             var numRelics = 0;
             foreach (GameRelic relic in relics)
             {
-                if (relic.Realm == eRealm.Albion)
+                if (relic.Realm == eRealm.Midgard)
                 {
                     numRelics++;
                 }
@@ -315,7 +315,7 @@ namespace DOL.AI.Brain
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = 1000;
-                guard.Realm = eRealm.Albion;
+                guard.Realm = eRealm.Midgard;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
                 {
