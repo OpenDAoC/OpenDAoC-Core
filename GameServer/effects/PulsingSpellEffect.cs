@@ -142,7 +142,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The pulsing effect action
 		/// </summary>
-		private sealed class SpellPulseAction : RegionAction
+		private sealed class SpellPulseAction : RegionECSAction
 		{
 			/// <summary>
 			/// The pulsing effect
@@ -164,10 +164,11 @@ namespace DOL.GS.Effects
 			/// <summary>
 			/// Callback for spell pulses
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				PulsingSpellEffect effect = m_effect;
 				effect.m_spellHandler.OnSpellPulse(effect);
+				return 0;
 			}
 		}
 	}

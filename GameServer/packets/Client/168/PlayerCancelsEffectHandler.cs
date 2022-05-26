@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles players cancel effect actions
 		/// </summary>
-		protected class CancelEffectHandler : RegionAction
+		protected class CancelEffectHandler : RegionECSAction
 		{
 			/// <summary>
 			/// The effect Id
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) m_actionSource;
 
@@ -78,13 +78,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 				if (found != null)
 					found.Cancel(true);
+				return 0;
 			}
 		}
 
 		/// <summary>
 		/// Handles players cancel effect actions
 		/// </summary>
-		protected class CancelEffectHandler1110 : RegionAction
+		protected class CancelEffectHandler1110 : RegionECSAction
 		{
 			/// <summary>
 			/// The effect Id
@@ -104,7 +105,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) m_actionSource;
 				EffectListComponent effectListComponent = player.effectListComponent;
@@ -116,7 +117,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 					else
 						EffectService.RequestImmediateCancelEffect(effect, true);
                 }
-            }
+
+				return 0;
+			}
 		}
 	}
 }

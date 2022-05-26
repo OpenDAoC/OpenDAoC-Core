@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		protected class BoltOnTargetAction : RegionAction
+		protected class BoltOnTargetAction : RegionECSAction
 		{
 			protected readonly GameLiving m_boltTarget;
 			protected readonly VampiirBoltSpellHandler m_handler;
@@ -81,12 +81,12 @@ namespace DOL.GS.Spells
 				m_handler = spellHandler;
 			}
 
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_boltTarget;
 				GameLiving caster = (GameLiving)m_actionSource;
 				if (target == null || target.CurrentRegionID != caster.CurrentRegionID || target.ObjectState != GameObject.eObjectState.Active || !target.IsAlive)
-					return;
+					return 0;
 
 				int power = 0;
 
@@ -133,6 +133,8 @@ namespace DOL.GS.Spells
 				target.OnAttackedByEnemy(ad);
 				
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
+
+				return 0;
 			}
 		}
 
