@@ -41,6 +41,36 @@ namespace DOL.GS
 				dragonName[0]),
 				X, Y, 0, LairRadius + 200));
 		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			if (source is GamePlayer || source is GamePet)
+			{
+				if (!IsWithinRadius(spawnPoint, LairRadius))//dragon take 0 dmg is it's out of his lair
+				{
+					if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+						damageType == eDamageType.Energy || damageType == eDamageType.Heat
+						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+						damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+						|| damageType == eDamageType.Slash)
+					{
+						GamePlayer truc;
+						if (source is GamePlayer)
+							truc = (source as GamePlayer);
+						else
+							truc = ((source as GamePet).Owner as GamePlayer);
+						if (truc != null)
+							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System,
+								eChatLoc.CL_ChatWindow);
+						base.TakeDamage(source, damageType, 0, 0);
+						return;
+					}
+				}
+				else //take dmg
+				{
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+				}
+			}
+		}
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -86,14 +116,6 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC heads in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
-			{
-				if (heads != null)
-				{
-					if (heads.IsAlive && (heads.Brain is MyrddraxisSecondHeadBrain || heads.Brain is MyrddraxisThirdHeadBrain || heads.Brain is MyrddraxisFourthHeadBrain || heads.Brain is MyrddraxisFifthHeadBrain))
-						heads.Die(heads);
-				}
-			}
 			// debug
 			if (killer == null)
 				log.Error("Dragon Killed: killer is null!");
@@ -168,8 +190,8 @@ namespace DOL.GS
 			else
 				base.StartAttack(target);
         }
-		private static Point3D spawnPoint = new Point3D(708736, 1021663, 3028);
-        public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = value; }
+		private static Point3D spawnPoint = new Point3D(708888, 1021439, 3014);
+        public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2531; }
         public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
         public override bool AddToWorld()
 		{
@@ -284,10 +306,11 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			Point3D spawn = new Point3D(708736, 1021663, 3028);
+			Point3D spawn = new Point3D(708888, 1021439, 3014);
 			if (!HasAggressionTable())
 			{
 				Body.Health = Body.MaxHealth;
+				#region !IsRestless
 				if (!IsRestless)
 				{
 					DragonKaboom1 = false;
@@ -310,8 +333,34 @@ namespace DOL.AI.Brain
 						Port_Enemys.Clear();
 					if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
 						randomlyPickedPlayers.Clear();
+
+					var prepareGlare = Body.TempProperties.getProperty<ECSGameTimer>("gjalpinulva_glare");
+					if (prepareGlare != null)
+					{
+						prepareGlare.Stop();
+						Body.TempProperties.removeProperty("gjalpinulva_glare");
+					}
+					var prepareStun = Body.TempProperties.getProperty<ECSGameTimer>("gjalpinulva_stun");
+					if (prepareStun != null)
+					{
+						prepareStun.Stop();
+						Body.TempProperties.removeProperty("gjalpinulva_stun");
+					}
+					var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("gjalpinulva_throw");
+					if (throwPlayer != null)
+					{
+						throwPlayer.Stop();
+						Body.TempProperties.removeProperty("gjalpinulva_throw");
+					}
+					var spawnMessengers = Body.TempProperties.getProperty<ECSGameTimer>("gjalpinulva_messengers");
+					if (spawnMessengers != null)
+					{
+						spawnMessengers.Stop();
+						Body.TempProperties.removeProperty("gjalpinulva_messengers");
+					}
 				}
-				foreach(GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                #endregion
+                foreach (GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
 					if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
 						messenger.RemoveFromWorld();
@@ -412,22 +461,26 @@ namespace DOL.AI.Brain
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if(CanThrow == false && !IsRestless)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(50000, 70000));//Teleport 2-5 Players every 50-70s
+					ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(60000, 80000));//Teleport 2-5 Players every 60-80s
+					Body.TempProperties.setProperty("gjalpinulva_throw", throwPlayer);
 					CanThrow = true;
                 }
 				if (CanGlare == false && !Body.IsCasting && !IsRestless)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
+					ECSGameTimer prepareGlare = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
+					Body.TempProperties.setProperty("gjalpinulva_glare", prepareGlare);
 					CanGlare = true;
 				}
 				if (CanStun == false && !Body.IsCasting && !IsRestless)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
+					ECSGameTimer prepareStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
+					Body.TempProperties.setProperty("gjalpinulva_stun", prepareStun);
 					CanStun = true;
 				}
 				if(Body.HealthPercent <= 50 && CanSpawnMessengers == false && !IsRestless)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
+					ECSGameTimer spawnMessengers = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
+					Body.TempProperties.setProperty("gjalpinulva_messengers", spawnMessengers);
 					CanSpawnMessengers = true;
                 }
 			}
@@ -494,7 +547,7 @@ namespace DOL.AI.Brain
 			Point3D point25 = new Point3D(747080, 1023245, 5341);
 			Point3D point26 = new Point3D(727530, 1027210, 5341);
 			Point3D point27 = new Point3D(715303, 1025848, 5341);
-			Point3D point28 = new Point3D(708771, 1021666, 3028);//spawn
+			Point3D point28 = new Point3D(708888, 1021439, 3014);//spawn
 			#endregion
 			if (IsRestless && Body.IsAlive)
             {
@@ -753,6 +806,7 @@ namespace DOL.AI.Brain
 						{
 							if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && HasAggro && player.IsWithinRadius(Body, 2000))
 							{
+								player.Out.SendMessage(Body.Name + " begins flapping her wings violently. You struggle to hold your footing on the ground!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 								switch (Util.Random(1, 5))
 								{
 									case 1: player.MoveTo(100, 708632, 1021688, 3721, 2499); break;//lair spawn point
@@ -955,7 +1009,7 @@ namespace DOL.AI.Brain
 				"You feel a rush of air flow past you as {0} inhales deeply!",
 				"{0} takes another powerful breath as she prepares to unleash a raging blazy storm upon you!",
 				"{0} bellows in rage and glares at all of the creatures attacking her.",
-				"{0} noticeably winces from her wounds as he attempts to prepare for yet another life-threatening attack!"
+				"{0} noticeably winces from her wounds as she attempts to prepare for yet another life-threatening attack!"
 		};
 
 		private void DragonBreath()
@@ -965,60 +1019,74 @@ namespace DOL.AI.Brain
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom1 = true;
 			}
 			if (Body.HealthPercent <= 80 && DragonKaboom2 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom2 = true;
 			}
 			if (Body.HealthPercent <= 70 && DragonKaboom3 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom3 = true;
 			}
 			if (Body.HealthPercent <= 60 && DragonKaboom4 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom4 = true;
 			}
 			if (Body.HealthPercent <= 50 && DragonKaboom5 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom5 = true;
 			}
 			if (Body.HealthPercent <= 40 && DragonKaboom6 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom6 = true;
 			}
 			if (Body.HealthPercent <= 30 && DragonKaboom7 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom7 = true;
 			}
 			if (Body.HealthPercent <= 20 && DragonKaboom8 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom8 = true;
 			}
 			if (Body.HealthPercent <= 10 && DragonKaboom9 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom9 = true;
 			}
 		}
-        #endregion
+		private int DragonCastDebuff(ECSGameTimer timer)
+		{
+			Body.CastSpell(Dragon_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+			return 0;
+		}
+		#endregion
 
-        #region Messengers
+		#region Messengers
 		private int SpawnMssengers(ECSGameTimer timer)
         {
 			for(int i = 0; i <= Util.Random(3,5); i++)
@@ -1048,18 +1116,18 @@ namespace DOL.AI.Brain
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
-					spell.ClientEffect = 5700;
-					spell.Icon = 5700;
-					spell.TooltipId = 5700;
-					spell.Damage = 1500;
+					spell.ClientEffect = 5701;
+					spell.Icon = 5701;
+					spell.TooltipId = 5701;
+					spell.Damage = 2000;
 					spell.Name = "Gjalpinulva's Glare";
 					spell.Range = 5000;//very long range cause dragon is flying and got big aggro
-					spell.Radius = 550;
+					spell.Radius = 1000;
 					spell.SpellID = 11954;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)eDamageType.Cold;
 					m_Dragon_DD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_DD2);
 				}
@@ -1077,18 +1145,18 @@ namespace DOL.AI.Brain
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
-					spell.ClientEffect = 5700;
-					spell.Icon = 5700;
-					spell.TooltipId = 5700;
-					spell.Damage = 1300;
+					spell.ClientEffect = 5701;
+					spell.Icon = 5701;
+					spell.TooltipId = 5701;
+					spell.Damage = 1500;
 					spell.Name = "Gjalpinulva's Glare";
-					spell.Range = 1800;
-					spell.Radius = 450;
+					spell.Range = 1500;
+					spell.Radius = 1000;
 					spell.SpellID = 11953;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)eDamageType.Cold;
 					m_Dragon_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_DD);
 				}
@@ -1109,10 +1177,10 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 5701;
 					spell.Icon = 5701;
 					spell.TooltipId = 5701;
-					spell.Damage = 2500;
+					spell.Damage = 2800;
 					spell.Name = "Gjalpinulva's Breath";
 					spell.Range = 0;
-					spell.Radius = 1800;
+					spell.Radius = 2000;
 					spell.SpellID = 11952;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -1141,7 +1209,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 30;
 					spell.Name = "Dragon's Stun";
 					spell.Range = 0;
-					spell.Radius = 1500;
+					spell.Radius = 2000;
 					spell.SpellID = 11951;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.Stun.ToString();
@@ -1151,6 +1219,37 @@ namespace DOL.AI.Brain
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_Stun);
 				}
 				return m_Dragon_Stun;
+			}
+		}
+		private Spell m_Dragon_Debuff;
+		private Spell Dragon_Debuff
+		{
+			get
+			{
+				if (m_Dragon_Debuff == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.RecastDelay = 0;
+					spell.ClientEffect = 2976;
+					spell.Icon = 5701;
+					spell.TooltipId = 5701;
+					spell.Duration = 120;
+					spell.Value = 50;
+					spell.Name = "Dragon's Breath";
+					spell.Description = "Decreases a target's given resistance to Cold magic by 50%";
+					spell.Range = 0;
+					spell.Radius = 2000;
+					spell.SpellID = 11964;
+					spell.Target = "Enemy";
+					spell.Type = eSpellType.ColdResistDebuff.ToString();
+					spell.Uninterruptible = true;
+					spell.DamageType = (int)eDamageType.Cold;
+					m_Dragon_Debuff = new Spell(spell, 70);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_Debuff);
+				}
+				return m_Dragon_Debuff;
 			}
 		}
 		#endregion
