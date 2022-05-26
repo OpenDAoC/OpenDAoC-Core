@@ -604,12 +604,21 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Create the appropriate GameKeep for this region
+        /// Create a keep for this region
         /// </summary>
         /// <returns></returns>
         public virtual AbstractGameKeep CreateGameKeep()
         {
             return new GameKeep();
+        }
+        
+        /// <summary>
+        /// Create a new Relic keep for this region
+        /// </summary>
+        /// <returns></returns>
+        public virtual AbstractGameKeep CreateRelicGameKeep()
+        {
+            return new RelicGameKeep();
         }
 
         /// <summary>
