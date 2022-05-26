@@ -1608,7 +1608,7 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget.Target==target)
+				if (m_followTimer.IsAlive && m_followTarget.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
 				else
 				{
