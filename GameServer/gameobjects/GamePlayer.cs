@@ -11059,7 +11059,7 @@ namespace DOL.GS
             }
             if (log.IsDebugEnabled)
             {
-                log.DebugFormat("({0}) player.Delete() alt f4", Name);
+                log.DebugFormat("({0}) player.Delete()", Name);
             }
             base.Delete();
         }
