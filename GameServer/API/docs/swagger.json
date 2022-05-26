@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.1.9</h3> Added `/relic` endpoint<br> <h3>0.1.8</h3> Added `Level` and `UnderSiege` to `keep` schema<br>",
-    "version": "0.1.9",
+    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.2.0</h3> Added `/realm/bg` endpoint<br> <h3>0.1.9</h3> Added `/relic` endpoint<br>",
+    "version": "0.2.0",
     "title": "AtlasAPI",
     "termsOfService": "https://www.atlasfreeshard.com",
     "license": {
@@ -17,15 +17,19 @@
     },
     {
       "name": "guild",
-      "description": "Everything about Guilds"
+      "description": "Everything about guilds"
     },
     {
       "name": "player",
-      "description": "Everything about Players"
+      "description": "Everything about players"
     },
     {
       "name": "realm",
-      "description": "Everything about RvR"
+      "description": "Everything about keeps"
+    },
+    {
+      "name": "relic",
+      "description": "Everything about relics"
     }
   ],
   "paths": {
@@ -337,6 +341,31 @@
         }
       }
     },
+    "/realm/bg": {
+      "get": {
+        "tags": [
+          "realm"
+        ],
+        "summary": "/realm/bg",
+        "description": "Returns the status of battle ground keeps <br><br>[cache 1 min]",
+        "operationId": "getBGStatus",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/bgkeeps"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
     "/relic": {
       "get": {
         "tags": [
@@ -553,7 +582,8 @@
             "enum": [
               "Albion",
               "Midgard",
-              "Hibernia"
+              "Hibernia",
+              "None"
             ]
           },
           "claimingGuild": {
@@ -566,7 +596,38 @@
           },
           "underSiege": {
             "type": "integer",
-            "example": 0
+            "example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "bgkeep": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Thidranki Faste"
+          },
+          "currentRealm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "underSiege": {
+            "type": "integer",
+            "example": 0,
+            "enum": [
+              0,
+              1
+            ]
           }
         }
       },
@@ -616,6 +677,12 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/keep"
+        }
+      },
+      "bgkeeps": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/bgkeep"
         }
       },
       "serverUptime": {

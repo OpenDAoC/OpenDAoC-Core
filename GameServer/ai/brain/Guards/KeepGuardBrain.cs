@@ -46,13 +46,14 @@ namespace DOL.AI.Brain
 
         public override void AttackMostWanted()
         {
-			if(Body.TargetObject != null && Body.TargetObject is GamePlayer pl)
-            {
-				pl.Out.SendCheckLOS(Body, pl, new CheckLOSResponse(CheckAggroLOS));
+			//Commenting out LOS Check on AttackMostWanted - Caused issues with not aggroing or switching aggro target
+			// if(Body.TargetObject != null && Body.TargetObject is GamePlayer pl)
+            // {
+			// 	pl.Out.SendCheckLOS(Body, pl, new CheckLOSResponse(CheckAggroLOS));
 
-                if (!AggroLOS) { return; }
-			}
-
+            //     if (!AggroLOS) { return; }
+			// }
+		
 			base.AttackMostWanted();
         }
 
@@ -152,7 +153,7 @@ namespace DOL.AI.Brain
                 if (player == null) continue;
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
 				{
-					//player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
+					player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
 					if ( !Body.IsWithinRadius( player, AggroRange ) )
                         continue;
                     if ((Body as GameKeepGuard).Component != null && !GameServer.KeepManager.IsEnemy(Body as GameKeepGuard, player, true))
@@ -166,10 +167,10 @@ namespace DOL.AI.Brain
 					{
 						Body.Say("Want to attack player " + player.Name);
 					}
-                   // if (AggroLOS)
-                  //  {
+                	if (AggroLOS)
+                    {
 						AddToAggroList(player, player.EffectiveLevel << 1);
-				//	}
+					}
 					
 					return;
 				}
@@ -196,6 +197,7 @@ namespace DOL.AI.Brain
 
 				if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
 				{
+					player.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(CheckAggroLOS));
 					if ((Body as GameKeepGuard).Component != null && !GameServer.KeepManager.IsEnemy(Body as GameKeepGuard, player, true))
 					{
 						continue;
@@ -207,8 +209,10 @@ namespace DOL.AI.Brain
 					{
 						Body.Say("Want to attack player " + player.Name + " pet " + npc.Name);
 					}
-
-					AddToAggroList(npc, (npc.Level + 1) << 1);
+					if (AggroLOS)
+                    {
+						AddToAggroList(npc, (npc.Level + 1) << 1);
+					}
 					return;
 				}
 			}
