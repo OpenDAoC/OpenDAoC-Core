@@ -237,7 +237,7 @@ namespace DOL.GS
 					mybattlegroup.Members[newLeader] = true;
 					Leader = newLeader;
 				}
-				foreach(GamePlayer member in Members.Keys)
+				foreach(GamePlayer member in mybattlegroup.GetPlayersInTheBattleGroup())
 				{
 					if (newLeader != "")
 					{
