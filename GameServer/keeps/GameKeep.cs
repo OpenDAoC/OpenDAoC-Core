@@ -129,10 +129,10 @@ namespace DOL.GS.Keeps
 				m_towers.Add(tower);
 		}
 
-		public override void Reset(eRealm realm)
-		{
-			base.Reset(realm);
-			RelicGateMgr.CheckKeeps();
-		}
+		// public override void Reset(eRealm realm)
+		// {
+		// 	base.Reset(realm);
+		// 	RelicGateMgr.CheckKeeps();
+		// }
 	}
 }
