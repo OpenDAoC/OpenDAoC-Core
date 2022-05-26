@@ -153,8 +153,8 @@ namespace DOL.AI.Brain
             for (int i = 1; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
-                guard.X = Body.X + Util.Random(-50, 50);
-                guard.Y = Body.Y + Util.Random(-50, 50);
+                guard.X = Body.X + Util.Random(-100, 100);
+                guard.Y = Body.Y + Util.Random(-100, 100);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = Body.Heading;
@@ -245,8 +245,8 @@ namespace DOL.AI.Brain
             for (int i = 1; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
-                guard.X = Body.X + Util.Random(-50, 50);
-                guard.Y = Body.Y + Util.Random(-50, 50);
+                guard.X = Body.X + Util.Random(-100, 100);
+                guard.Y = Body.Y + Util.Random(-100, 100);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = Body.Heading;
@@ -337,8 +337,8 @@ namespace DOL.AI.Brain
             for (int i = 1; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
-                guard.X = Body.X + Util.Random(-50, 50);
-                guard.Y = Body.Y + Util.Random(-50, 50);
+                guard.X = Body.X + Util.Random(-100, 100);
+                guard.Y = Body.Y + Util.Random(-100, 100);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
                 guard.Heading = Body.Heading;
