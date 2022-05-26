@@ -35,7 +35,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles the LOS check response
 		/// </summary>
-		protected class HandleCheckAction : RegionAction
+		protected class HandleCheckAction : RegionECSAction
 		{
 			/// <summary>
 			/// The LOS source OID
@@ -69,7 +69,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				// Check for Old Callback first
 
@@ -93,6 +93,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					new_callback(player, (ushort)m_response, (ushort)m_checkerOid, (ushort)m_targetOid);
 					player.TempProperties.removeProperty(newkey);
 				}
+
+				return 0;
 			}
 		}
 	}

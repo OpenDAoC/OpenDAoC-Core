@@ -82,6 +82,10 @@ Scripts.Players.Autosplit.Off:				The leader switched off the autosplit.
 Scripts.Players.Autosplit.On:				The leader switched on the autosplit.
 Scripts.Players.Autosplit.Self:				{0} switched
 
+## /groupsort
+Scripts.Players.Groupsort.InGroup:			You must be in a group to use this command.
+Scripts.Players.Groupsort.Leader:			You must be the leader of the group to use this command.
+
 ## /battlegroup
 Scripts.Players.Battlegroup.Usage:			Usage: /bg <text>
 Scripts.Players.Battlegroup.UsageInvite:		Usage: /bg invite <playername>
@@ -302,7 +306,8 @@ Scripts.Player.Guild.Help.GuildAInvite:			'/gc ainvite' to invite another guild 
 Scripts.Player.Guild.Help.GuildALeave:			'/gc aleave' to remove your guild from an alliance
 Scripts.Player.Guild.Help.GuildAlli:			'/gc alliance' to show information on the alliance	
 Scripts.Player.Guild.Help.GuildAMotd:			'/gc amotd <text>' to set the message of the day of the alliance's guild	
-Scripts.Player.Guild.Help.GuildARemove:			'/gc aremove' to removes your entire guild from an alliance	
+Scripts.Player.Guild.Help.GuildARemove:			'/gc aremove' to removes your entire guild from an alliance
+Scripts.Player.Guild.Help.GuildALeader:			'/gc aleader' to promote another guild to alliance leader
 Scripts.Player.Guild.Help.GuildARemoveAlli:		'/gc aremove alliance [#]' to Remove the specified guild (listed by number) from the alliance	
 Scripts.Player.Guild.Help.GuildAutoRemove:		'/gc autoremove <playername>' 	
 Scripts.Player.Guild.Help.GuildAutoRemoveAcc:		'/gc autoremove account <playername>'	

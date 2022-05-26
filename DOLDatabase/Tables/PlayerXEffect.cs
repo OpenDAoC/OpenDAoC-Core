@@ -36,7 +36,7 @@ namespace DOL
 			private bool m_ishandler;
 			private int m_duration;
 			private int m_var1;
-			private int m_var2;
+			private double m_var2;
 			private int m_var3;
 			private int m_var4;
 			private int m_var5;
@@ -113,7 +113,7 @@ namespace DOL
 				}
 			}
 			[DataElement(AllowDbNull = false)]
-			public int Var2
+			public double Var2
 			{
 				get
 				{

@@ -18,6 +18,7 @@
  */
 using System;
 using DOL.GS.Spells;
+using DOL.GS.PacketHandler;
 using System.Collections;
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1
@@ -56,8 +57,13 @@ namespace DOL.GS
 				5000,//aiming
 				10000,//arming
 				0,//loading
-				1100//fireing
-			};//en ms
+				0//fireing base delay
+			};
+			BaseDamage = 75;
+			MinAttackRange = 50;
+			MaxAttackRange = 4000;
+			SIEGE_WEAPON_CONTROLE_DISTANCE=75; //since LOS is based on Owner, making distance smaller
+			//en ms
 			/*SpellLine siegeWeaponSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.SiegeWeapon_Spells);
 			IList spells = SkillBase.GetSpellList(siegeWeaponSpellLine.KeyName);
 			if (spells != null)
@@ -76,12 +82,86 @@ namespace DOL.GS
 			}*/
 		}
 
+		public override void Fire()
+		{
+			if (TargetObject == null) return;
+			// if (TargetObject is GamePlayer) //Try check of LOS from target if target is a player
+			// {
+			// 	GamePlayer player = TargetObject as GamePlayer;
+			// 	player.Out.SendCheckLOS(this, player, new CheckLOSResponse(FireCheckLOS));
+			// }
+			else if (Owner is GamePlayer)
+			{
+				//Owner.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(FireCheckLOS));
+				Owner.Out.SendCheckLOS(Owner, TargetObject, new CheckLOSResponse(FireCheckLOS)); //Have to use owner as "source" for now as checking with ballista the client always returns LOS of true
+			}
+		}
+		/// <summary>
+		/// FireCheckLOS is called after Fire method. Will check for LOS between siege and target
+		/// </summary>
+		private void FireCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		{
+			if ((response & 0x100) == 0x100)
+			{
+				base.Fire();
+			} 
+			else
+			{
+				if (Owner!=null)
+					Owner.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+			}
+		}
+
 		public override void DoDamage()
 		{
-			//todo remove ammo + spell in db and uncomment
-			//m_spellHandler.StartSpell(player);
 			base.DoDamage();//anim mut be called after damage
+			GameLiving target = (TargetObject as GameLiving);
+			if (target == null) return;
+
+			int damageAmount = CalcDamageToTarget(target) + Util.Random(50);
+
+			AttackData ad = new AttackData();
+			ad.Target = target;
+			ad.AttackType = AttackData.eAttackType.Ranged;
+			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.Damage = damageAmount;
+			ad.DamageType = MeleeDamageType;
+
+			if(Owner != null)
+			{
+				ad.Attacker = Owner;
+				target.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
+				target.OnAttackedByEnemy(ad);
+
+				Owner.OnAttackEnemy(ad);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				ad.Attacker = this;
+				target.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+				target.OnAttackedByEnemy(ad);
+			}
+
+
+			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				player.Out.SendCombatAnimation(this, target, 0x0000, 0x0000, 0x00, 0x00, 0x14, target.HealthPercent);
+
+
 		}
+
+		/// <summary>
+		/// Calculates the damage based on the target type (door, siege, player)
+		/// <summary>
+		public override int CalcDamageToTarget(GameLiving target)
+		{
+			//Ballistas are good against siege and players/npc
+			if(target is GameSiegeWeapon || target is GamePlayer || target is GameNPC)
+				return BaseDamage * 3;
+			else
+				return BaseDamage;
+		}
+
 		public override bool ReceiveItem(GameLiving source, DOL.Database.InventoryItem item)
 		{
 			//todo check if bullet

@@ -2619,6 +2619,12 @@ namespace DOL.GS.ServerProperties
 		public static bool ATLAS_API;
 		
 		/// <summary>
+		/// Maximum number of charges allowed
+		/// </summary>
+		[ServerProperty("atlas", "max_charge_items", "Maximum number of charges allowed", 2)]
+		public static int MAX_CHARGE_ITEMS;
+		
+		/// <summary>
 		/// Maximum numbers of entities allowed
 		/// </summary>
 		[ServerProperty("server", "max_entities", "Maximum numbers of entities allowed", 150000)]
@@ -2701,6 +2707,18 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("predator", "predator_reward_multiplier", "Multiplier applied to normal RP value.", 1.5)]
 		public static double PREDATOR_REWARD_MULTIPLIER;
+		
+		/// <summary>
+		/// Enforces the check on the link between game account and Discord
+		/// </summary>
+		[ServerProperty("atlas", "force_discord_link", "Enforces the check on the link between game account and Discord", false)]
+		public static bool FORCE_DISCORD_LINK;
+		
+		/// <summary>
+		/// Set the password to access certain API commands as shutdown
+		/// </summary>
+		[ServerProperty("atlas", "api_password", "Set the password to access certain API commands as shutdown", "")]
+		public static string API_PASSWORD;
 		
 		/// <summary>
 		/// Bounty expire check interval in seconds

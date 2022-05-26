@@ -120,7 +120,7 @@ namespace DOL.GS
                                     if (spellEffect.SpellHandler.Spell.Value >
                                         existingEffects[i].SpellHandler.Spell.Value)
                                     {
-                                        EffectService.RequestCancelEffect(existingEffects[i]);
+                                        EffectService.RequestDisableEffect(existingEffects[i]);
                                         Effects[spellEffect.EffectType].Add(spellEffect);
                                         EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
                                         return true;

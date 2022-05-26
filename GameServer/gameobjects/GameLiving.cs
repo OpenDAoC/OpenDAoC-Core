@@ -897,8 +897,8 @@ namespace DOL.GS
 			double afPerAbsorptionPercent = 6;
 			double liveBaseAFcap = 150 * 1.25 * 1.25;
 			double afBuffBonus = Math.Min(liveBaseAFcap, BaseBuffBonusCategory[eProperty.ArmorFactor] + SpecBuffBonusCategory[eProperty.ArmorFactor]);
-			double afDebuffMalus = Math.Abs(DebuffCategory[eProperty.ArmorFactor] + SpecDebuffCategory[eProperty.ArmorFactor]);
-			double afBuffAbsorb = (afBuffBonus - afDebuffMalus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
+			//double afDebuffMalus = Math.Abs(DebuffCategory[eProperty.ArmorFactor] + SpecDebuffCategory[eProperty.ArmorFactor]);
+			double afBuffAbsorb = (afBuffBonus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
 
 			double baseAbsorb = 0;
 
@@ -3720,22 +3720,29 @@ namespace DOL.GS
 
 				if( evadeChance < 0.01 )
 					evadeChance = 0.01;
-				else if (IsObjectInFront( ad.Attacker, 180 ) 
-				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
-				         && evadeChance < 0.05)
-				{
-					//if player has a hard evade source, 5% miniumum evade chance
-					evadeChance = 0.05;
-				}
 				else if( evadeChance > ServerProperties.Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
 					evadeChance = ServerProperties.Properties.EVADE_CAP; //50% evade cap RvR only; http://www.camelotherald.com/more/664.shtml
 				else if( evadeChance > 0.995 )
 					evadeChance = 0.995;
+				
+				if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+				{
+					evadeChance = Math.Max(evadeChance * 0.5, 0);
+				}
+			
+				//do a second check to prevent dual wield from halving below the floor
+				if( evadeChance < 0.01 )
+					evadeChance = 0.01;
+				else if (IsObjectInFront( ad.Attacker, 180 ) 
+				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
+				         && evadeChance < 0.05
+				         && ad.AttackType != AttackData.eAttackType.Ranged)
+				{
+					//if player has a hard evade source, 5% miniumum evade chance
+					evadeChance = 0.05;
+				}
 			}
-			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-			{
-				evadeChance = Math.Max(evadeChance * 0.5, 0);
-			}
+
 			//Excalibur : infi RR5
 			GamePlayer p = ad.Attacker as GamePlayer;
 			if (p != null)
@@ -3905,16 +3912,13 @@ namespace DOL.GS
 					shieldSize = (double)lefthand.Type_Damage;
 				if( player != null && attackerCount > shieldSize )
 					blockChance *= (shieldSize / attackerCount);
-
 				blockChance *= 0.001;
 				// no chance bonus with ranged attacks?
 				//					if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				
-			
-				if(lefthand != null && player.HasAbility( Abilities.Shield ))
+				if(lefthand != null && player.HasSpecialization(Abilities.Shield ))
                 {
 					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
@@ -4021,8 +4025,9 @@ namespace DOL.GS
             }
 			else
 			{
-				double NPCReduction = 10.0 * (living.Level / 50.0); //10% penetration at level 50
+				double NPCReduction = 7.5 * (living.Level / 50.0); //10% penetration at level 50
 				totalReduction = NPCReduction;
+				if(totalReduction < 0) totalReduction = 0;
 			}
 				
 			return totalReduction;
@@ -4055,7 +4060,7 @@ namespace DOL.GS
 			#region PVP DAMAGE
 
 			// Is this a GamePlayer behind the source?
-			if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null))
+			if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
 			{
 				// Only apply to necropet.
 				if (this is NecromancerPet)
@@ -4427,9 +4432,12 @@ namespace DOL.GS
 				{
 					removeMez = true;
 				}
+				
+				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpellHandler)
+					removeMez = true;
 			}
 
-            // Remove Mez
+			// Remove Mez
             if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
@@ -6384,6 +6392,19 @@ namespace DOL.GS
 				if (receiver != this && receiver != TargetObject)
 				{
 					receiver.SayReceive(this, str);
+				}
+			}
+
+			foreach (IDoor door in GetDoorsInRadius(150))
+			{
+				if (door is GameKeepDoor && (str.Contains("enter") || str.Contains("exit")))
+				{
+					GameKeepDoor receiver = door as GameKeepDoor;
+					if (this is GamePlayer)
+					{
+						receiver.SayReceive(this, str);
+						break; //only want to Say to one door
+					}
 				}
 			}
 			

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using DOL.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -14,28 +13,31 @@ namespace DOL.GS.API
     {
         public ApiHost()
         {
+            #region Config
+
             var builder = WebApplication.CreateBuilder();
 
             var contentRoot = Directory.GetCurrentDirectory();
             DateTime startupTime = DateTime.Now;
 
             // builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(9874));
-            
-            var webRoot = Path.Combine(contentRoot,"wwwroot", "docs");
-            
-            builder.Services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = webRoot;
-            });
-            
+
+            var webRoot = Path.Combine(contentRoot, "wwwroot", "docs");
+
+            builder.Services.AddSpaStaticFiles(configuration => { configuration.RootPath = webRoot; });
+
             var api = builder.Build();
-            
+
             var _player = new Player();
             var _guild = new Guild();
-            var _stats = new Stats();
+            var utils = new Utils();
             var _realm = new Realm();
+            var _shutdown = new Shutdown();
 
-            // API DOCS
+            #endregion
+
+            #region API Docs
+
             api.UseStaticFiles();
 
             api.UseStaticFiles(new StaticFileOptions()
@@ -44,7 +46,7 @@ namespace DOL.GS.API
                     webRoot),
                 RequestPath = new PathString("/docs")
             });
-            api.Map("/docs", spaApp=>
+            api.Map("/docs", spaApp =>
             {
                 spaApp.UseSpa(spa =>
                 {
@@ -52,72 +54,80 @@ namespace DOL.GS.API
                 });
             });
 
-            api.Map("/", async c =>
-            {
-                c.Response.Redirect("/docs");
-            });
+            api.Map("/", async c => { c.Response.Redirect("/docs"); });
 
-            // STATS
+            #endregion
+
+            #region Stats
+
             api.MapGet("/stats", async c =>
-                await c.Response.WriteAsync(_stats.GetPlayerCount()));
+                await c.Response.WriteAsync(utils.GetPlayerCount()));
             api.MapGet("/stats/rp", (string guildName) =>
             {
-                var TopRpPlayers = _stats.GetTopRP();
-                
+                var TopRpPlayers = utils.GetTopRP();
+
                 if (TopRpPlayers == null)
                 {
                     return Results.NotFound();
                 }
+
                 return Results.Ok(TopRpPlayers);
-                
             });
             api.MapGet("/stats/uptime", async c =>
-                await c.Response.WriteAsJsonAsync(_stats.GetUptime(startupTime)));
-            
-            // PLAYER
+                await c.Response.WriteAsJsonAsync(utils.GetUptime(startupTime)));
+
+            #endregion
+
+            #region Player
+
             api.MapGet("/player", () => "Usage /player/{playerName}");
             api.MapGet("/player/{playerName}", (string playerName) =>
             {
                 var playerInfo = _player.GetPlayerInfo(playerName);
-                
+
                 if (playerInfo == null)
                 {
                     return Results.NotFound("Not found");
                 }
+
                 return Results.Ok(playerInfo);
-                
             });
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
-            
-            // GUILD
+
+            #endregion
+
+            #region Guild
+
             api.MapGet("/guild", () => "Usage /guild/{guildName}");
             api.MapGet("/guild/{guildName}", (string guildName) =>
             {
                 var guildInfo = _guild.GetGuildInfo(guildName);
-                
+
                 if (guildInfo == null)
                 {
                     return Results.NotFound($"Guild {guildName} not found");
                 }
+
                 return Results.Ok(guildInfo);
-                
             });
             api.MapGet("/guild/{guildName}/members", (string guildName) =>
             {
                 var guildMembers = _player.GetPlayersByGuild(guildName);
-                
+
                 if (guildMembers == null)
                 {
                     return Results.NotFound();
                 }
+
                 return Results.Ok(guildMembers);
-                
             });
             api.MapGet("/guild/getAll", async c => await c.Response.WriteAsJsonAsync(_guild.GetAllGuilds()));
             api.MapGet("/guild/topRP", async c => await c.Response.WriteAsJsonAsync(_guild.GetTopRPGuilds()));
 
+            #endregion
 
-            // REALM
+            #region Realm
+
             api.MapGet("/realm", () => "Usage /realm/{realmName}");
             api.MapGet("/realm/df", async c =>
                 await c.Response.WriteAsJsonAsync(_realm.GetDFOwner()));
@@ -127,7 +137,7 @@ namespace DOL.GS.API
                 {
                     return Results.NotFound();
                 }
-                
+
                 eRealm realm = eRealm.None;
                 switch (realmName.ToLower())
                 {
@@ -144,21 +154,45 @@ namespace DOL.GS.API
                         realm = eRealm.Hibernia;
                         break;
                 }
-                
+
                 List<Realm.KeepInfo> realmInfo = _realm.GetKeepsByRealm(realm);
-                
+
                 if (realmInfo == null)
                 {
                     return Results.NotFound($"Realm {realmName} not found");
                 }
+
                 return Results.Ok(realmInfo);
             });
-            
+
+            #endregion
+
+            #region Relic
+            api.MapGet("/relic", async c =>
+                await c.Response.WriteAsJsonAsync(_realm.GetAllRelics()));
+            #endregion
+
+            #region Misc
+
             api.MapGet("/bread", () => Properties.BREAD);
+            
+            api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
+            {
+                var discordStatus = _player.GetDiscord(accountName);
+                return Results.Ok(discordStatus);
+            });
+            
+            api.MapGet("/utils/shutdown/{password}", (string password) =>
+            {
+                var shutdownStatus = _shutdown.ShutdownServer(password);
+                return Results.Ok(shutdownStatus);
+            });
+            
+            api.MapGet("/utils/discordrequired", async c =>
+                await c.Response.WriteAsync(utils.IsDiscordRequired()));
+            #endregion
 
             api.Run();
         }
-        
     }
 }
-        

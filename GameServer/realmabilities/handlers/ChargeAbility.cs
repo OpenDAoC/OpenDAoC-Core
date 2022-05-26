@@ -45,6 +45,12 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (living == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+			if (living.TargetObject == null || living.TargetObject is not GamePlayer ||
+			    (living.TargetObject is GamePlayer enemy && enemy.Realm == living.Realm))
+			{
+				if(living is GamePlayer p)p.Out.SendMessage($"You can only charge enemy players.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
 
 			//if (living.TempProperties.getProperty("Charging", false)
 			//	|| living.EffectList.CountOfType(typeof(SpeedOfSoundEffect), typeof(ArmsLengthEffect), typeof(ChargeEffect)) > 0)

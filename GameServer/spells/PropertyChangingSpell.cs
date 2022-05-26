@@ -523,18 +523,6 @@ namespace DOL.GS.Spells
 					tblBonusCat[(int)Property] += Value;
 			}
 		}
-		
-		public override PlayerXEffect GetSavedEffect(GameSpellEffect e)
-		{
-			PlayerXEffect eff = new PlayerXEffect();
-			eff.Var1 = Spell.ID;
-			eff.Duration = e.RemainingTime;
-			eff.IsHandler = true;
-			eff.Var2 = (int)(Spell.Value * e.Effectiveness);
-			eff.SpellLine = SpellLine.KeyName;
-			return eff;
-
-		}
 
 		// constructor
 		public PropertyChangingSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)

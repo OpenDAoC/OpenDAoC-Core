@@ -1767,7 +1767,7 @@ namespace DOL.GS
 				else if (brain.CheckFormation(ref newX, ref newY, ref newZ))
 				{
 					short followspeed= (short) Math.Max(Math.Min(MaxSpeed,GetDistance(new Point2D(newX, newY))*followSpeedScaler),50);
-					log.Debug($"Followspeed: {followspeed}");
+					//log.Debug($"Followspeed: {followspeed}");
 					WalkTo(newX, newY, (ushort) newZ, followspeed);
 					//WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 					
@@ -5774,8 +5774,8 @@ namespace DOL.GS
 
 			if (TargetObject == null)
 			{
-				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
-					.Replace("{targetname}", living.Name) // '{targetname}' returns the mob/NPC target's name
+				text = chosen.Text.Replace("{sourcename}", Brain?.Body?.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", living?.Name) // '{targetname}' returns the mob/NPC target's name
 					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
 				
 				// Replace trigger keywords

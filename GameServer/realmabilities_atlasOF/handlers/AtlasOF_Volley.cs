@@ -22,13 +22,17 @@ namespace DOL.GS.RealmAbilities
 		{
             m_player = living as GamePlayer;
             double attackrangeMin = m_player.AttackRange * 0.66;//minimum attack range
-            double attackrangeMax = m_player.AttackRange / 0.66;//maximum attack range
+            double attackrangeMax = m_player.AttackRange * 2.2;//maximum attack range
             InventoryItem ammo = m_player.rangeAttackComponent.RangeAttackAmmo;
             Region rgn = WorldMgr.GetRegion(m_player.CurrentRegion.ID);
 
             if (CheckPreconditions(m_player, DEAD | SITTING | MEZZED | STUNNED))
                 return;
-
+            if(m_player.CurrentRegion.IsDungeon)
+            {
+                m_player.Out.SendMessage("You can't use this ability in dungeons!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
             if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
             {
                 m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -57,6 +61,12 @@ namespace DOL.GS.RealmAbilities
             if (!m_player.IsWithinRadius(m_player.GroundTarget, (int)attackrangeMax))
             {
                 m_player.Out.SendMessage("You ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
+            if (volley != null)
+            {
+                m_player.Out.SendMessage("You already have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             AtlasOF_VolleyECSEffect Volley = (AtlasOF_VolleyECSEffect)m_player.EffectList.GetOfType(typeof(AtlasOF_VolleyECSEffect));
@@ -91,10 +101,9 @@ namespace DOL.GS.RealmAbilities
 		}
         public override void AddEffectsInfo(IList<string> list)
         {
-            list.Add("Ground-targetted archery attack that fires successive arrows at a various targets in a given area. To use this ability, choose a ground target. This target must be at least 66% of your bow's normal max range away from you.");
+            list.Add("Ground-targetted archery attack that fires successive arrows at a random target in a given area. To use this ability, choose a ground target. This target must be at least 66% of your bow's normal max range away from you.");
             list.Add("Once you are ready to fire, you can fire up to 5 arrows by hitting your bow button in succession.");
-            list.Add("\nCasting time: 2.2 seconds");
-            list.Add("Target: Ground");
+            list.Add("\nTarget: Ground");
             list.Add("Range: Minimum 66% of player range.");
         }
         public AtlasOF_Volley(DBAbility ability, int level) : base(ability, level)

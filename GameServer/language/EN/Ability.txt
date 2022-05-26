@@ -43,7 +43,7 @@ Skill.Ability.CannotUse.Camouflage.DisableDuration:	You must wait {0} more secon
 ## Charge
 Effects.ChargeEffect.StartCharge:                       You begin to charge wildly!
 Effects.ChargeEffect.AreaStartCharge:                   {0} begins charging wildly!
-Effects.ChargeEffect.EndCharge:                         You no longer seem so crazy!
+Effects.ChargeEffect.EndCharge:                         You are no longer charging your target.
 Effects.ChargeEffect.AreaEndCharge:                     {0} ceases their charge!
 
 ## Critical Shot

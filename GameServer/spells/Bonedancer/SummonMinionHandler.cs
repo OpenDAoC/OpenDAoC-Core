@@ -88,8 +88,12 @@ namespace DOL.GS.Spells
 				{
 					cumulativeLevel += petBrain != null && petBrain.Body != null ? petBrain.Body.Level : 0;
 				}
-				
-				if (cumulativeLevel + (Caster.Level * m_spell.Damage * -0.01) > 75)
+
+				byte newpetlevel = (byte)(Caster.Level * m_spell.Damage * -0.01);
+				if (newpetlevel > m_spell.Value)
+					newpetlevel = (byte)m_spell.Value;
+
+				if (cumulativeLevel + newpetlevel > 75)
 				{
 					MessageToCaster("Your commander is not powerful enough to control a subpet of this level.", eChatType.CT_SpellResisted);
 					return false;

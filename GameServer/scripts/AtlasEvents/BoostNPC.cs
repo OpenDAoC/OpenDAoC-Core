@@ -102,6 +102,7 @@ namespace DOL.GS.Scripts
                         
                         player.Out.SendMessage("I have given you enough experience to fight, now speak with the quartermaster and go make your Realm proud!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Boosted = true;
+                        player.CanGenerateNews = false;
                         player.Level = (byte)targetLevel;
                         player.Health = player.MaxHealth;
                         
@@ -125,10 +126,12 @@ namespace DOL.GS.Scripts
                     {
                         var rate = Properties.RP_RATE;
                         var realmPointsToGive = Math.Floor((realmPoints - player.RealmPoints)/rate);
+                        player.CanGenerateNews = false;
                         player.GainRealmPoints((long)realmPointsToGive);
                         player.Out.SendMessage($"I have given you {realmPointsToGive} RPs, now go get some more yourself!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return true;
                     }
+
                     player.Out.SendMessage("You have killed enough enemies already, go kill more!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     return false;
                 

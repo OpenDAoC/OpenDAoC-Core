@@ -128,6 +128,9 @@ Effects.ShadeEffect.Name:						Shade
 GamePlayer.Shade.AlreadyShade:				You are already a shade!
 GamePlayer.Shade.NoLongerShade:				You are no longer a shade!
 
+## Summon Pets
+GamePlayer.CastEnd.Fail.BadRegion:                  You can't do that here!
+
 ## Summon Animist FnF Turret
 SummonAnimistFnF.CheckBeginCast.NoGroundTarget:		You can't summon a turret without a ground target !
 SummonAnimistFnF.CheckBeginCast.TurretAreaCap:	You can't summon any more turrets in this area!

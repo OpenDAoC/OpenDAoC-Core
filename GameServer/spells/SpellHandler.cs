@@ -200,6 +200,49 @@ namespace DOL.GS.Spells
 		{
 			get { return Spell.AllowCoexisting; }
 		}
+		
+		
+		public virtual bool IsSummoningSpell
+		{
+			get
+			{
+				if (m_spell.SpellType != (int)eSpellType.Null)
+					switch ((eSpellType)m_spell.SpellType)
+					{
+						case eSpellType.Bomber:
+						case eSpellType.Charm:
+						case eSpellType.Pet:
+						case eSpellType.SummonCommander:
+						case eSpellType.SummonTheurgistPet:
+						case eSpellType.Summon:
+						case eSpellType.SummonJuggernaut:
+						//case eSpellType.SummonMerchant:
+						case eSpellType.SummonMinion:
+						case eSpellType.SummonSimulacrum:
+						case eSpellType.SummonUnderhill:
+						//case eSpellType.SummonVaultkeeper:
+						case eSpellType.SummonAnimistAmbusher:
+						case eSpellType.SummonAnimistPet:
+						case eSpellType.SummonDruidPet:
+						case eSpellType.SummonHealingElemental:
+						case eSpellType.SummonHunterPet:
+						case eSpellType.SummonAnimistFnF:
+						case eSpellType.SummonAnimistFnFCustom:
+						case eSpellType.SummonSiegeBallista:
+						case eSpellType.SummonSiegeCatapult:
+						case eSpellType.SummonSiegeRam:
+						case eSpellType.SummonSiegeTrebuchet:
+						case eSpellType.SummonSpiritFighter:
+						case eSpellType.SummonNecroPet:
+						//case eSpellType.SummonNoveltyPet:
+							return true;
+						default:
+							return false;
+					}
+				
+				return false;
+			}
+		}
 
 
 		/// <summary>
@@ -749,7 +792,7 @@ namespace DOL.GS.Spells
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
-				if (nextSpellAvailTime > m_caster.CurrentRegion.Time)
+				if (nextSpellAvailTime > m_caster.CurrentRegion.Time && Spell.CastTime > 0) // instant spells ignore the potion cast delay
 				{
 					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -1122,6 +1165,13 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
+			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
+			{
+				// Message: You can't summon here!
+				ChatUtil.SendErrorMessage(Caster as GamePlayer, "GamePlayer.CastEnd.Fail.BadRegion", null);
+				return false;
+			}
+			
 			if (Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 

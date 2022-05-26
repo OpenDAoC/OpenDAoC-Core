@@ -107,14 +107,14 @@ namespace DOL.GS.PropertyCalc
 
 				return (int)((1 + (living.Level / 50.0)) * (living.Level << 1) * epicScaleFactor) 
 				+ living.SpecBuffBonusCategory[(int)property]
-				- Math.Abs(living.DebuffCategory[(int)property])
+				- Math.Abs(living.DebuffCategory[(int)property])/6
 				+ living.BuffBonusCategory4[(int)property];
 			}
 			else
 			{
 				return (int)((1 + (living.Level / 200.0)) * (living.Level << 1))
 				+ (living.SpecBuffBonusCategory[(int)property] / 6)
-				- Math.Abs(living.DebuffCategory[(int)property])
+				- Math.Abs(living.DebuffCategory[(int)property])/6
 				+ living.BuffBonusCategory4[(int)property] / 6;
 			}
 		}

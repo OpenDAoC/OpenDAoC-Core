@@ -366,12 +366,12 @@ namespace DOL.AI.Brain
             if (Body.attackComponent.AttackState)
                 return;
 
-            if (!CheckForProximityAggro)
+            if (!CheckForProximityAggro || (Body == null || Body.CurrentZone == null))
             {
                 return;
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, Body.CurrentZone.IsDungeon ? false : true))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
                 // Don't aggro on immune players.
@@ -562,7 +562,7 @@ namespace DOL.AI.Brain
 
             // Check LOS (walls, pits, etc...) before  attacking, player + pet
             // Be sure the aggrocheck is triggered by the brain on Think() method
-            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || (Body is GameKeepGuard guard && !guard.IsPortalKeepGuard))
+            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || ((Body is GameKeepGuard guard && !guard.IsPortalKeepGuard) && CheckLOS))
             {
                 GamePlayer thisLiving = null;
                 if (living is GamePlayer)
@@ -998,8 +998,8 @@ namespace DOL.AI.Brain
         public virtual void OnAttackedByEnemy(AttackData ad)
         {
             if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE)) { return; }
-
-
+    
+           
             if (!Body.attackComponent.AttackState
                 && Body.IsAlive
                 && Body.ObjectState == GameObject.eObjectState.Active)

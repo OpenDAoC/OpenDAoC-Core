@@ -123,6 +123,8 @@ namespace DOL.GS
 			if(tincture.ProcSpellID != 0)
 			{
 				item.ProcSpellID = tincture.ProcSpellID;
+				if(tincture.ProcChance != 0)
+					item.ProcChance = tincture.ProcChance;
 			}
 			else
 			{

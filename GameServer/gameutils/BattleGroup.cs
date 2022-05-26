@@ -18,6 +18,7 @@
  */
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 using DOL.GS.PacketHandler;
 namespace DOL.GS
 {
@@ -225,11 +226,27 @@ namespace DOL.GS
 				if (!m_battlegroupMembers.Contains(player))
 					return false;
 				m_battlegroupMembers.Remove(player);
+				BattleGroup mybattlegroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
 				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
 				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				foreach(GamePlayer member in Members.Keys)
+				var newLeader = "";
+				if (Leader == player.Name && m_battlegroupMembers.Count > 1)
 				{
-					member.Out.SendMessage(player.Name+" has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					newLeader = mybattlegroup.GetPlayersInTheBattleGroup()[0].Name;
+					mybattlegroup.Members[newLeader] = true;
+					Leader = newLeader;
+				}
+				foreach(GamePlayer member in mybattlegroup.GetPlayersInTheBattleGroup())
+				{
+					if (newLeader != "")
+					{
+						member.Out.SendMessage(player.Name+" has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						member.Out.SendMessage(newLeader + " is the new battle group leader.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					} else
+					{
+						member.Out.SendMessage(player.Name+" has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
 				}
 				if (m_battlegroupMembers.Count == 1)
 				{

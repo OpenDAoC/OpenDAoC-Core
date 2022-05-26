@@ -61,6 +61,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override void AddEffectsInfo(IList<string> list)
 		{
+			/*
 			//TODO Translate
 			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
 			{
@@ -78,7 +79,10 @@ namespace DOL.GS.RealmAbilities
 	            list.Add("");
 	            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info4"));
 	            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info5"));
-			}
+			}*/
+			
+			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info4"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info5"));
 		}
 	}
 }
