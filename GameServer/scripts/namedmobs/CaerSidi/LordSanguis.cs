@@ -9,9 +9,7 @@ namespace DOL.GS
 {
     public class LordSanguis : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public LordSanguis()
             : base()
         {
@@ -20,77 +18,62 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
-                default: return 25; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
-        public virtual int COifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public void BroadcastMessage(String message)
         {
-            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         public override int AttackRange
         {
             get { return 450; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 880;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override bool AddToWorld()
         {
             Spawn_Lich_Lord = false;
-            foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+            foreach (GameNPC npc in GetNPCsInRadius(5000))
             {
                 if (npc != null)
                 {
                     if (npc.IsAlive)
                     {
                         if (npc.Brain is LichLordSanguisBrain)
-                        {
                             npc.RemoveFromWorld();
-                        }
                     }
                 }
             }
-
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163412);
             LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
@@ -126,11 +109,11 @@ namespace DOL.GS
         public int SpawnLich(ECSGameTimer timer)
         {
             LichLordSanguis Add = new LichLordSanguis();
-            Add.X = this.X;
-            Add.Y = this.Y;
-            Add.Z = this.Z;
-            Add.CurrentRegion = this.CurrentRegion;
-            Add.Heading = this.Heading;
+            Add.X = X;
+            Add.Y = Y;
+            Add.Z = Z;
+            Add.CurrentRegion = CurrentRegion;
+            Add.Heading = Heading;
             Add.AddToWorld();
             return 0;
         }
@@ -140,11 +123,11 @@ namespace DOL.GS
             for (int i = 0; i < Util.Random(2, 4); i++) // Spawn 2-4 mages
             {
                 BloodMage Add = new BloodMage();
-                Add.X = this.X + Util.Random(-50, 80);
-                Add.Y = this.Y + Util.Random(-50, 80);
-                Add.Z = this.Z;
-                Add.CurrentRegion = this.CurrentRegion;
-                Add.Heading = this.Heading;
+                Add.X = X + Util.Random(-50, 80);
+                Add.Y = Y + Util.Random(-50, 80);
+                Add.Z = Z;
+                Add.CurrentRegion = CurrentRegion;
+                Add.Heading = Heading;
                 Add.AddToWorld();
             }
         }
@@ -214,16 +197,14 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 BloodMage.MageCount = 0;
                 foreach(GameNPC mages in Body.GetNPCsInRadius(5000))
                 {
                     if(mages != null)
                     {
                         if(mages.IsAlive && mages.Brain is BloodMageBrain)
-                        {
                             mages.RemoveFromWorld();
-                        }
                     }
                 }
             }
@@ -232,9 +213,7 @@ namespace DOL.AI.Brain
                 if (Util.Chance(10))
                 {
                     if (BloodMage.MageCount < 2)
-                    {
                         SpawnMages();
-                    }
                 }
             }
             base.Think();
@@ -265,7 +244,6 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
@@ -273,38 +251,34 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 95; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
-                default: return 75; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163267);
@@ -383,7 +357,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.GHOST;
                 set_flag = false;
             }
@@ -423,18 +397,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 450;
+            return 150;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
 
         public override int MaxHealth
         {
-            get { return 4000; }
+            get { return 8000; }
         }
 
         public override void Die(GameObject killer)
@@ -444,7 +418,8 @@ namespace DOL.GS
         }
 
         public static int MageCount = 0;
-
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 150; }   
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -469,7 +444,7 @@ namespace DOL.GS
             TetherRange = 3000;
             RoamingRange = 120;
             Size = 50;
-            Level = 75;
+            Level = 70;
             MaxSpeedBase = 200;
 
             Faction = FactionMgr.GetFactionByID(64);
@@ -477,13 +452,6 @@ namespace DOL.GS
             BodyType = 6;
             Realm = eRealm.None;
             ++MageCount;
-
-            Strength = 25;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
 
             BloodMageBrain adds = new BloodMageBrain();
             SetOwnBrain(adds);

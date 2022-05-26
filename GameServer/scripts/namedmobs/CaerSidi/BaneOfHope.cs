@@ -10,20 +10,20 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -31,7 +31,7 @@ namespace DOL.GS.Scripts
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == "CCImmunity")
+            if (IsAlive && keyName == "CCImmunity")
                 return true;
 
             return base.HasAbility(keyName);
@@ -41,7 +41,7 @@ namespace DOL.GS.Scripts
             get => (short) (191 + (Level * 2));
             set => m_maxSpeedBase = value;
         }
-        public override int MaxHealth => 20000;
+        public override int MaxHealth => 200000;
         public override int AttackRange
         {
             get => 180;
@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 350;
+                    spell.Damage = 200;
                     spell.Name = "Essense of Souls";
                     spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
