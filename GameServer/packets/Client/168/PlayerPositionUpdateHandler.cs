@@ -376,7 +376,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						area.OnPlayerEnter(client.Player);
 				// set current areas to new one...
 				client.Player.CurrentAreas = newAreas;
-				client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 2000; // update every 2 seconds
+				client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 1000; // update every 2 seconds
 			}
 			// End ---------- New Area System -----------
 
