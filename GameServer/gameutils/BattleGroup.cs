@@ -91,7 +91,7 @@ namespace DOL.GS
 					return false;
 				player.TempProperties.setProperty(BATTLEGROUP_PROPERTY, this);
 				player.Out.SendMessage("You join the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				foreach(GamePlayer member in Members.Keys)
+				foreach(GamePlayer member in m_battlegroupMembers.Keys)
 				{
 					member.Out.SendMessage(player.Name+" has joined the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
