@@ -85,7 +85,7 @@ namespace DOL.GS
 		public virtual bool AddBattlePlayer(GamePlayer player,bool leader) 
 		{
 			if (player == null) return false;
-			lock (m_battlegroupMembers)
+			lock (m_battlegroupMembers.SyncRoot)
 			{
 				if (m_battlegroupMembers.Contains(player))
 					return false;
@@ -110,7 +110,7 @@ namespace DOL.GS
 
         public virtual bool IsInTheBattleGroup(GamePlayer player)
         {
-            lock (m_battlegroupMembers) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+            lock (m_battlegroupMembers.SyncRoot) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
             {
                 return m_battlegroupMembers.Contains(player);
             }
@@ -200,7 +200,7 @@ namespace DOL.GS
 
         public virtual void SendMessageToBattleGroupMembers(string msg, eChatType type, eChatLoc loc)
         {
-            lock (m_battlegroupMembers) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+            lock (m_battlegroupMembers.SyncRoot) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
             {
                 foreach (GamePlayer player in m_battlegroupMembers.Keys)
                 {
@@ -221,7 +221,7 @@ namespace DOL.GS
 		public virtual bool RemoveBattlePlayer(GamePlayer player)
 		{
 			if (player == null) return false;
-			lock (m_battlegroupMembers)
+			lock (m_battlegroupMembers.SyncRoot)
 			{
 				if (!m_battlegroupMembers.Contains(player))
 					return false;
@@ -231,7 +231,7 @@ namespace DOL.GS
 				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
 				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				var newLeader = "";
-				if (Leader == player.Name && m_battlegroupMembers.Count > 1)
+				if (Leader.Equals(player.Name) && m_battlegroupMembers.Count > 1)
 				{
 					newLeader = mybattlegroup.GetPlayersInTheBattleGroup()[0].Name;
 					mybattlegroup.Members[newLeader] = true;
