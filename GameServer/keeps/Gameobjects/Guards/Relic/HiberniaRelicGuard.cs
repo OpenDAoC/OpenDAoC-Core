@@ -148,7 +148,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Hibernia;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Hibernia;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
@@ -314,7 +314,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Hibernia;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)

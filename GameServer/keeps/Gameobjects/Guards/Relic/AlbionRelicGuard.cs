@@ -94,6 +94,7 @@ namespace DOL.AI.Brain
         private bool m_guardSpawned = false;
         private ushort m_keepID = 51; // Benowyc
 
+
         private string m_guardName = "Benowyc Guardian";
         public BenowycRGBrain()
             : base()
@@ -148,7 +149,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Albion;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
@@ -176,6 +177,7 @@ namespace DOL.AI.Brain
         
         private bool m_guardSpawned = false;
         private ushort m_keepID = 50; // Berkstead
+
 
         private string m_guardName = "Berkstead Guardian";
         public BerksteadRGBrain()
@@ -231,7 +233,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Albion;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
@@ -259,6 +261,7 @@ namespace DOL.AI.Brain
         
         private bool m_guardSpawned = false;
         private ushort m_keepID = 53; // Boldiam
+
 
         private string m_guardName = "Boldiam Guardian";
         public BoldiamRGBrain()
@@ -314,7 +317,7 @@ namespace DOL.AI.Brain
                 guard.Y = Body.Y + Util.Random(-50, 50);
                 guard.Z = Body.Z;
                 guard.CurrentRegionID = Body.CurrentRegionID;
-                guard.Heading = 1000;
+                guard.Heading = Body.Heading;
                 guard.Realm = eRealm.Albion;
                 guard.LoadedFromScript = false;
                 foreach (AbstractArea area in guard.CurrentAreas)
