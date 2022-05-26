@@ -65,7 +65,7 @@ namespace DOL.GS.Commands
 			}
 
             // prevent to send an anon GM a message to find him - but send the message to the GM - thx to Sumy
-            if (targetClient.Player != null && targetClient.Player.IsAnonymous && targetClient.Account.PrivLevel > (uint)ePrivLevel.Player)
+            if (targetClient.Player != null && targetClient.Player.IsAnonymous && targetClient.Account.PrivLevel > (uint)ePrivLevel.Player && targetClient != client)
             {
 				if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
 				{
