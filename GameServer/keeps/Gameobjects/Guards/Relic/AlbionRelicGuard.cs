@@ -140,7 +140,15 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
-            var numGuards = 4 * (1 - 0.25 * (numRelics - 2));
+            var numGuards = 0;
+            if (numRelics < 2)
+            {
+                numGuards = 4;
+            }
+            else
+            {
+                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+            }
 
             for (int i = 1; i < numGuards; i++)
             {
@@ -224,7 +232,15 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
-            var numGuards = 4 * (1 - 0.25 * (numRelics - 2));
+            var numGuards = 0;
+            if (numRelics < 2)
+            {
+                numGuards = 4;
+            }
+            else
+            {
+                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+            }
 
             for (int i = 1; i < numGuards; i++)
             {
@@ -308,7 +324,15 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
-            var numGuards = 4 * (1 - 0.25 * (numRelics - 2));
+            var numGuards = 0;
+            if (numRelics < 2)
+            {
+                numGuards = 4;
+            }
+            else
+            {
+                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+            }
 
             for (int i = 1; i < numGuards; i++)
             {
