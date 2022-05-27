@@ -797,6 +797,7 @@ namespace DOL.GS.Keeps
 		public void Repair(int amount)
 		{
 			Health += amount;
+			BroadcastDoorStatus();
 		}
 		/// <summary>
 		/// This Function is called when keep is taken to repair door

@@ -145,7 +145,7 @@ namespace DOL.GS.Commands
 				return false;
 			}
 
-			int repairamount = (GetTotalWoodForLevel(obj.Level) / 100) * 15;
+			int repairamount = (GetTotalWoodForLevel(obj.Level) / 100) * 5;
 			int playerswood = CalculatePlayersWood(player, 0);
 
 			if (playerswood < repairamount)
@@ -189,6 +189,7 @@ namespace DOL.GS.Commands
 			}
 
 			player.CraftTimer.Stop();
+			player.CraftTimer = null;
 			player.Out.SendCloseTimerWindow();
 
 			if (!PreFireChecks(player, obj))
@@ -200,12 +201,12 @@ namespace DOL.GS.Commands
 				if (obj is GameKeepDoor)
 				{
 					GameKeepDoor door = obj as GameKeepDoor;
-					door.Repair((int)(door.MaxHealth * 0.15));
+					door.Repair((int)(door.MaxHealth * 0.05));
 				}
 				if (obj is GameKeepComponent)
 				{
 					GameKeepComponent component = obj as GameKeepComponent;
-					component.Repair((int)(component.MaxHealth * 0.15));
+					component.Repair((int)(component.MaxHealth * 0.05));
 				}
 				if (obj is GameSiegeWeapon)
 				{
@@ -213,16 +214,16 @@ namespace DOL.GS.Commands
 					weapon.Repair();
 				}
 				int finish = obj.HealthPercent;
-				CalculatePlayersWood(player, (GetTotalWoodForLevel(obj.Level + 1)));
-				DisplayMessage(player, "You successfully repair the component by 15%!");
+				CalculatePlayersWood(player, ((GetTotalWoodForLevel(obj.Level) / 100) * 5));
+				DisplayMessage(player, "You successfully repair the component by 5%!");
 				/*
 				 * - Realm points will now be awarded for successfully repairing a door or outpost piece.
 				 * Players will receive approximately 10% of the amount repaired in realm points.
 				 * (Note that realm points for repairing a door or outpost piece will not work in the battlegrounds.)
 				 */
 				// tolakram - we have no idea how many hit points a live door has so this code is not accurate
-				int amount = (finish - start) * obj.Level;  // level of non claimed keep is 4
-				player.GainRealmPoints(Math.Min(150, amount));
+				// int amount = (finish - start) * obj.Level;  // level of non claimed keep is 4
+				// player.GainRealmPoints(Math.Min(150, amount));
 			}
 			else
 			{
@@ -246,6 +247,7 @@ namespace DOL.GS.Commands
 		{
 			switch (level)
 			{
+					case 0: return 2;
 					case 1: return 2;
 					case 2: return 44;
 					case 3: return 192;
