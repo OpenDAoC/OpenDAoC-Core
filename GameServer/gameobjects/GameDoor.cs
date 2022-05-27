@@ -49,7 +49,6 @@ namespace DOL.GS
 		private readonly object m_LockObject = new object();
 		private uint m_flags = 0;
 
-
 		/// <summary>
 		/// The time interval after which door will be closed, in milliseconds
 		/// On live this is usually 5 seconds
@@ -97,6 +96,7 @@ namespace DOL.GS
 			m_maxHealth = m_dbdoor.MaxHealth;
 			m_locked = m_dbdoor.Locked;
 			m_flags = m_dbdoor.Flags;
+			m_isPostern = m_dbdoor.IsPostern;
 
 			// Open mile gates on PVE and PVP server types
 			if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE
@@ -105,6 +105,7 @@ namespace DOL.GS
 
 			this.AddToWorld();
 		}
+		
 		/// <summary>
 		/// save this door to a door table slot
 		/// </summary>
@@ -159,6 +160,14 @@ namespace DOL.GS
 			get { return m_doorID; }
 			set { m_doorID = value; }
 		}
+
+		private bool m_isPostern;
+		public bool IsPostern
+		{
+			get { return m_isPostern; }
+			set { m_isPostern = value; }
+		}
+
 
 		/// <summary>
 		/// Get the ZoneID of this door
