@@ -5720,7 +5720,6 @@ namespace DOL.GS
 			{
 				int stackingBonus = 0;
 				if (this is GamePlayer p) stackingBonus = p.PowerRegenStackingBonus;
-				Console.WriteLine($"Stacking bonus {stackingBonus} totalChange {GetModified(eProperty.PowerRegenerationRate) + stackingBonus}");
 				if (Mana < MaxMana)
 				{
 					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate) + stackingBonus);

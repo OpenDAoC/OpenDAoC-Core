@@ -41,7 +41,6 @@ namespace DOL.GS.Spells
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
 			int cost = PowerCost(Caster);
-			Console.WriteLine($"cost {cost} health {Caster.Health}");
 			if (Caster.Health < cost)
 			{
 				MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), eChatType.CT_SpellResisted);
