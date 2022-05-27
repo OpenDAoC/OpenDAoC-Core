@@ -140,7 +140,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
                 else if (client.Account.PrivLevel > 1)
 				{
-					client.Out.SendDebugMessage("GM: Forcing locked door open.");
+					client.Out.SendDebugMessage("GM: Forcing locked door open. ");
+					client.Out.SendDebugMessage($"PosternDoor: {door.IsPostern}");
+
 					new ChangeDoorAction(client.Player, doorID, doorState, radius).Start(1);
 					return;
 				}
