@@ -2384,7 +2384,8 @@ namespace DOL.GS.Spells
             {
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
             }*/
-			m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
+			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing)
+				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}
