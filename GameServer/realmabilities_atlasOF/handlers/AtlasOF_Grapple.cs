@@ -71,7 +71,7 @@ namespace DOL.GS.RealmAbilities
 
 			foreach (GamePlayer pl in caster.GetPlayersInRadius(m_range))
 			{
-				if(pl.Realm != caster.Realm)
+				if(pl.Realm != caster.Realm || caster.DuelTarget == pl)
 					CastSpellOn(pl, caster);
 			}
 
