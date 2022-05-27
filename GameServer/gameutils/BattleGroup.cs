@@ -225,11 +225,9 @@ namespace DOL.GS
 			{
 				if (!m_battlegroupMembers.Contains(player))
 					return false;
-				m_battlegroupMembers.Remove(player);
+				
 				BattleGroup mybattlegroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-
-				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
-				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				
 				var newLeader = "";
 				if (Leader.Equals(player.Name) && m_battlegroupMembers.Count > 1)
 				{
@@ -257,7 +255,9 @@ namespace DOL.GS
 						RemoveBattlePlayer(plr);
 					}
 				}
-
+				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
+				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_battlegroupMembers.Remove(player);
                 player.isInBG = false; //Xarik: Player is no more in the BG
 			}
 			return true;
