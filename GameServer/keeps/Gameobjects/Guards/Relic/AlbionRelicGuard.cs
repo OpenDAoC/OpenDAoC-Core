@@ -153,7 +153,7 @@ namespace DOL.AI.Brain
                 numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
             }
 
-            for (int i = 0; i <= numGuards; i++)
+            for (int i = 0; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
                 guard.X = Body.X + Util.Random(-100, 100);
@@ -245,7 +245,7 @@ namespace DOL.AI.Brain
                 numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
             }
 
-            for (int i = 0; i <= numGuards; i++)
+            for (int i = 0; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
                 guard.X = Body.X + Util.Random(-100, 100);
@@ -337,7 +337,7 @@ namespace DOL.AI.Brain
                 numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
             }
 
-            for (int i = 0; i <= numGuards; i++)
+            for (int i = 0; i < numGuards; i++)
             {
                 var guard = new GuardFighter();
                 guard.X = Body.X + Util.Random(-100, 100);
