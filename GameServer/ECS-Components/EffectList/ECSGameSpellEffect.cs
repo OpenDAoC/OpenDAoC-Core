@@ -82,7 +82,7 @@ namespace DOL.GS
             {
                 if (OwnerPlayer != null)
                 {
-                    if (EffectType == eEffect.Stun && SpellHandler.Caster is GamePet)
+                    if ((EffectType == eEffect.Stun && SpellHandler.Caster is GamePet) || SpellHandler is UnresistableStunSpellHandler)
                         return;
 
                     new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
