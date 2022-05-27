@@ -197,9 +197,11 @@ namespace DOL.GS.Keeps
 							return true;
 					}
 					
-				} else if (Component.Keep is RelicGameKeep)
-                { 
-	                return true;
+				} 
+                else if (Component.Keep is RelicGameKeep)
+                {
+	                var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+	                return !door.IsPostern;
                 }
                 return false;
 			}
