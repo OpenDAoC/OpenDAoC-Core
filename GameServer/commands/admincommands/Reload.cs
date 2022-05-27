@@ -213,6 +213,14 @@ namespace DOL.GS.Commands
 				log.Info("NPC templates reloaded.");
 				return;
 			}
+			
+			if (args[1].ToLower() == "doors")
+			{
+				NpcTemplateMgr.Reload();
+				if (client != null) client.Out.SendMessage("Doors reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				log.Info("Doors reloaded.");
+				return;
+			}
 
 			return;
 		}
