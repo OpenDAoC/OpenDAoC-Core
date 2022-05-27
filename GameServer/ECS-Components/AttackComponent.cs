@@ -3571,7 +3571,7 @@ namespace DOL.GS
                     if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
                     {
                         pl.Out.SendMessage(
-                            $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
+                            $"Chance for 2 hits: {hitChance}% | 3 hits: { (specLevel > 25 ? (specLevel >> 2 ) : 0)}% | 4 hits: {(specLevel > 40 ? (specLevel >> 4 ) : 0)}% \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
                     
@@ -3579,11 +3579,11 @@ namespace DOL.GS
                         return 1; // 1 hit = spec/2
                     
                     hitChance += specLevel >> 2;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 25)
                         return 2; // 2 hits = spec/4
                     
                     hitChance += specLevel >> 4;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 40)
                         return 3; // 3 hits = spec/16
 
                     return 0;
