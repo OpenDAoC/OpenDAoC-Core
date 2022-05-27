@@ -35,25 +35,21 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
-        }
-        public virtual int HurionDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
 
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * (Strength * HurionDifficulty) / 100;
+            return base.AttackDamage(weapon) * Strength / 100;
         }
 
         public override int MaxHealth
         {
-            get { return 20000 * HurionDifficulty / 100; }
+            get { return 200000; }
         }
 
         public override int AttackRange
@@ -64,18 +60,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800 * HurionDifficulty / 100;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55 * HurionDifficulty / 100;
+            return 0.20;
         }
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -230,11 +226,11 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Crush;
             Body.BodyType = 5; // Giant
 
-            Body.Strength = 550;
+            Body.Strength = 250;
             Body.Dexterity = 200;
-            Body.Quickness = 100;
+            Body.Quickness = 80;
             Body.Intelligence = 200;
-            Body.Empathy = 280;
+            Body.Empathy = 400;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -257,12 +253,12 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 10; // Plant
 
-            Body.Strength = 700;
+            Body.Strength = 400;
             Body.Constitution = 100;
             Body.Dexterity = 200;
-            Body.Quickness = 80;
+            Body.Quickness = 100;
             Body.Intelligence = 200;
-            Body.Empathy = 300;
+            Body.Empathy = 400;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -285,12 +281,12 @@ namespace DOL.AI.Brain
             Body.MeleeDamageType = eDamageType.Spirit;
             Body.BodyType = 1; // Animal
 
-            Body.Strength = 550;
+            Body.Strength = 350;
             Body.Constitution = 100;
             Body.Dexterity = 200;
-            Body.Quickness = 185;
+            Body.Quickness = 205;
             Body.Intelligence = 200;
-            Body.Empathy = 260;
+            Body.Empathy = 400;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
@@ -312,12 +308,12 @@ namespace DOL.AI.Brain
             Body.AttackRange = 450;
             Body.MeleeDamageType = eDamageType.Spirit;
 
-            Body.Strength = 500;
+            Body.Strength = 300;
             Body.Constitution = 100;
             Body.Dexterity = 200;
-            Body.Quickness = 100;
+            Body.Quickness = 80;
             Body.Intelligence = 200;
-            Body.Empathy = 250;
+            Body.Empathy = 400;
             Body.Piety = 200;
             Body.Charisma = 200;
         }
