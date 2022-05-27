@@ -197,8 +197,11 @@ namespace DOL.GS.Keeps
 							return true;
 					}
 					
-				}
-				return false;
+				} else if (Component.Keep is RelicGameKeep)
+                { 
+	                return true;
+                }
+                return false;
 			}
 		}
 
