@@ -38,6 +38,28 @@ namespace DOL.GS.Spells
 			new SavageBuffECSGameEffect(initParams);
 		}
 
+		public override bool CheckBeginCast(GameLiving selectedTarget)
+		{
+			int cost = PowerCost(Caster);
+			Console.WriteLine($"cost {cost} health {Caster.Health}");
+			if (Caster.Health < cost)
+			{
+				MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), eChatType.CT_SpellResisted);
+				return false;
+			}
+			return base.CheckBeginCast(selectedTarget);
+		}
+		
+		public override int PowerCost(GameLiving target)
+		{
+			int cost = 0;
+			if (m_spell.Power < 0)
+				cost = (int)(m_caster.MaxHealth * Math.Abs(m_spell.Power) * 0.01);
+			else
+				cost = m_spell.Power;
+			return cost;
+		}
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only
