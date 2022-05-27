@@ -189,6 +189,7 @@ namespace DOL.GS.Commands
 			}
 
 			player.CraftTimer.Stop();
+			player.CraftTimer = null;
 			player.Out.SendCloseTimerWindow();
 
 			if (!PreFireChecks(player, obj))
@@ -221,8 +222,8 @@ namespace DOL.GS.Commands
 				 * (Note that realm points for repairing a door or outpost piece will not work in the battlegrounds.)
 				 */
 				// tolakram - we have no idea how many hit points a live door has so this code is not accurate
-				int amount = (finish - start) * obj.Level;  // level of non claimed keep is 4
-				player.GainRealmPoints(Math.Min(150, amount));
+				// int amount = (finish - start) * obj.Level;  // level of non claimed keep is 4
+				// player.GainRealmPoints(Math.Min(150, amount));
 			}
 			else
 			{
