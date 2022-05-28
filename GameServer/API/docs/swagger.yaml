@@ -7,27 +7,30 @@ info:
     Use this documentation to navigate the available Atlas APIs
     <br>
     <h2>Recent Changes</h2>
+    <h3>0.2.1</h3>
+    Added `/news/all`, `/news/type/{type}` and `/news/realm/{realm}` endpoints<br>
+    
     <h3>0.2.0</h3>
     Added `/realm/bg` endpoint<br>
-    <h3>0.1.9</h3>
-    Added `/relic` endpoint<br>
-  version: 0.2.0
+  version: 0.2.1
   title: AtlasAPI
   termsOfService: https://www.atlasfreeshard.com
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 tags:
-  - name: stats
-    description: Everything about server statistics
   - name: guild
     description: Everything about guilds
+  - name: news
+    description: Everything about in-game events news
   - name: player
     description: Everything about players
   - name: realm
     description: Everything about keeps
   - name: relic
     description: Everything about relics
+  - name: stats
+    description: Everything about server statistics
 paths:
   /stats:
     get:
@@ -259,6 +262,78 @@ paths:
                 $ref: '#/components/schemas/relic'
         '404':
           description: Not found
+  /news/all:
+    get:
+      tags:
+        - news
+      summary: /news/all
+      description: Returns all in-game server news <br><br>[cache 2 min]
+      operationId: getAllNews
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newsEntry'
+        '404':
+          description: Not found
+  /news/realm/{realm}:
+    get:
+      tags:
+        - news
+      summary: /news/realm/{realm}
+      description: Returns the in-game server news for a given realm <br><br>[cache 2 min]
+      operationId: getRealmNews
+      parameters:
+        - name: realm
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["1", "2", "3"]
+          description: >
+            Enums:
+             * 1 - Albion
+             * 2 - Midgard
+             * 3 - Hibernia
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newsEntry'
+        '404':
+          description: Not found
+  /news/type/{type}:
+    get:
+      tags:
+        - news
+      summary: /news/type/{type}
+      description: Returns the in-game server news for a given type <br><br>[cache 2 min]
+      operationId: getTypeNews
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["0", "1", "2"]
+          description: >
+            Enums:
+             * 0 - RvR
+             * 1 - PlayerRP
+             * 2 - PlayerXP
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newsEntry'
+        '404':
+          description: Not found
 servers:
   - url: https://api.atlasfreeshard.com/
 components:
@@ -478,3 +553,24 @@ components:
           type: string
           format: date-time
           example: 08-12-2021 11:18 AM
+    newsEntry:
+      type: object
+      properties:
+        Date:
+          type: string
+          example: 27-05-2022 04:37 AM
+        Type:
+          type: string
+          example: RvR
+          enum: [RvR, PlayerRP, PlayerXP]
+        Realm:
+          type: string
+          example: Albion
+          enum: [Albion, Midgard, Hibernia, None]
+        Text:
+          type: string
+          example: The forces of Albion have captured Dun Crauchon!
+    news:
+      type: array
+      items:
+        $ref: '#/components/schemas/newsEntry'

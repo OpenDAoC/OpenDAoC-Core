@@ -111,7 +111,8 @@ namespace DOL.GS.Keeps
 					}
 					else
 					{
-						keep = keepRegion.CreateGameKeep();
+						// set SkinType to 99 for relic keeps
+						keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
 					}
 
 					keep.Load(datakeep);

@@ -2553,6 +2553,8 @@ namespace DOL.GS
                 m_powerRegenerationTimer = new ECSGameTimer(this);
                 m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
             }
+
+            PowerRegenStackingBonus = 0;
             m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
         }
         /// <summary>
@@ -2587,6 +2589,7 @@ namespace DOL.GS
         /// </summary>
         public override void StopPowerRegeneration()
         {
+            PowerRegenStackingBonus = 0;
             if (m_powerRegenerationTimer == null) return;
             m_powerRegenerationTimer.Stop();
         }
@@ -2663,6 +2666,8 @@ namespace DOL.GS
             return HealthRegenerationPeriod;
         }
 
+        public int PowerRegenStackingBonus = 0;
+
         /// <summary>
         /// Override PowerRegenTimer because if we are not connected anymore
         /// we DON'T regenerate mana, even if we are not garbage collected yet!
@@ -2673,6 +2678,11 @@ namespace DOL.GS
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
+            if (IsSitting)
+            {
+                if(PowerRegenStackingBonus < 5) PowerRegenStackingBonus++;
+            }
+            else PowerRegenStackingBonus = 0;
             int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);
             return interval;
         }
@@ -14481,13 +14491,13 @@ namespace DOL.GS
             int levelDiff = this.Level - EnemyStealthLevel;
             if (levelDiff < 0) levelDiff = 0;
 
-            int range;
+            int range = 0;
             bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Camouflage) != null;
             if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
             {
                 // we have detect hidden and enemy don't = higher range
-                //range = levelDiff * 50 + 250; // Detect Hidden advantage
-                range = levelDiff * 50 + 300; // Detect Hidden advantage
+                range = levelDiff * 50 + 250; // Detect Hidden advantage
+                //range = levelDiff * 50 + 300; // Detect Hidden advantage
             }
             else
             {
@@ -14834,15 +14844,18 @@ namespace DOL.GS
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
+
+            List<AbstractQuest> cloneList;
             // events will only fire for currently active quests.
             lock (QuestList)
             {
-                List<AbstractQuest> cloneList = new List<AbstractQuest>(m_questList);
-                foreach (AbstractQuest q in cloneList)
-                {
-                    // player forwards every single notify message to all active quests
-                    q.Notify(e, sender, args);
-                }
+                cloneList = new List<AbstractQuest>(m_questList);  
+            }
+
+            foreach (AbstractQuest q in cloneList)
+            {
+                // player forwards every single notify message to all active quests
+                q.Notify(e, sender, args);
             }
 
             if (Task != null)

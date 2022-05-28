@@ -13,7 +13,8 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-
+            Owner.InterruptTime = 0;
+            Owner.InterruptAction = 0;
         }
 
         public override void OnStopEffect()

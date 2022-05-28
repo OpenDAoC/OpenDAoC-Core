@@ -5718,9 +5718,11 @@ namespace DOL.GS
 			}
 			else
 			{
+				int stackingBonus = 0;
+				if (this is GamePlayer p) stackingBonus = p.PowerRegenStackingBonus;
 				if (Mana < MaxMana)
 				{
-					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate));
+					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate) + stackingBonus);
 				}
 
 				//If we are full, we stop the timer

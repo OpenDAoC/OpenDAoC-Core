@@ -146,7 +146,7 @@ namespace DOL.GS
                             }
                         }
 
-                        if (effect.NextTick != 0 && tick >= effect.NextTick)
+                        if (effect.NextTick != 0 && tick >= effect.NextTick && tick < effect.ExpireTick)
                         {
                             effect.OnEffectPulse();
                         }

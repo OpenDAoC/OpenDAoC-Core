@@ -450,7 +450,7 @@ namespace DOL.Database
 
 		public virtual int Weight
 		{
-			get { return (int)Math.Round(Template.Weight * m_count * .5) ; }
+			get { return (int)Math.Round((double)(Template.Weight * m_count)) ; }
 			set { Template.Weight = value; }
 		}
 

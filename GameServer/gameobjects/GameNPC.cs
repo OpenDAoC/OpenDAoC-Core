@@ -1608,7 +1608,7 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget.Target==target)
+				if (m_followTimer.IsAlive && m_followTarget.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
 				else
 				{
@@ -3729,6 +3729,13 @@ namespace DOL.GS
 					name = "boat";
 				if (this is GameSiegeRam)
 					name = "ram";
+
+				if (this is GameSiegeRam && player.Realm != this.Realm)
+				{
+					player.Out.SendMessage($"This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				
 
 				if (RiderSlot(player) != -1)
 				{
