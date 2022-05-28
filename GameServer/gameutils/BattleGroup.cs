@@ -270,7 +270,7 @@ namespace DOL.GS
                         {
                             member.Out.SendMessage(player.Name + " has left the battle group.", eChatType.CT_System,
                                 eChatLoc.CL_SystemWindow);
-                            member.Out.SendMessage(newLeader + " is the new battle group leader.", eChatType.CT_System,
+                            member.Out.SendMessage(newLeader.Name + " is the new battle group leader.", eChatType.CT_System,
                                 eChatLoc.CL_SystemWindow);
                         }
                     }
