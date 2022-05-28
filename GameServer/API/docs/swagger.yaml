@@ -267,7 +267,7 @@ paths:
       tags:
         - news
       summary: /news/all
-      description: Returns all in-game server news <br><br>[cache 2 min]
+      description: Returns the last 100 in-game server news <br><br>[cache 2 min]
       operationId: getAllNews
       responses:
         '200':
@@ -283,7 +283,7 @@ paths:
       tags:
         - news
       summary: /news/realm/{realm}
-      description: Returns the in-game server news for a given realm <br><br>[cache 2 min]
+      description: Returns the last 100 in-game server news for a given realm <br><br>[cache 2 min]
       operationId: getRealmNews
       parameters:
         - name: realm
@@ -311,7 +311,7 @@ paths:
       tags:
         - news
       summary: /news/type/{type}
-      description: Returns the in-game server news for a given type <br><br>[cache 2 min]
+      description: Returns the last 100 in-game server news for a given type <br><br>[cache 2 min]
       operationId: getTypeNews
       parameters:
         - name: type
