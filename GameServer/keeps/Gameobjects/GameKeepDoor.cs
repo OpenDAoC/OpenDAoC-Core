@@ -197,9 +197,11 @@ namespace DOL.GS.Keeps
 							return true;
 					}
 					
-				} else if (Component.Keep is RelicGameKeep)
-                { 
-	                return true;
+				} 
+                else if (Component.Keep is RelicGameKeep)
+                {
+	                var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+	                return !door.IsPostern;
                 }
                 return false;
 			}
@@ -795,6 +797,7 @@ namespace DOL.GS.Keeps
 		public void Repair(int amount)
 		{
 			Health += amount;
+			BroadcastDoorStatus();
 		}
 		/// <summary>
 		/// This Function is called when keep is taken to repair door

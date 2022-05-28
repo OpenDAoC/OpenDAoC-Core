@@ -19,10 +19,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -33,7 +33,7 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override int AttackRange
@@ -52,13 +52,13 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override void Die(GameObject killer)
@@ -428,21 +428,21 @@ namespace DOL.GS
                 case eDamageType.Slash: return 30; // dmg reduction for melee dmg
                 case eDamageType.Crush: return 30; // dmg reduction for melee dmg
                 case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
-                default: return 50; // dmg reduction for rest resists
+                default: return 30; // dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.10;
         }
         public override int MaxHealth
         {
-            get { return 5000; }
+            get { return 8000; }
         }
 
         public override double AttackDamage(InventoryItem weapon)

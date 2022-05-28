@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -30,17 +31,15 @@ namespace DOL.GS.Spells
 		{
 			if (target == null || !target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
-			if (target is GamePlayer || target is GameNPC)
-			{
-				// calc damage and healing
-				AttackData ad = CalculateDamageToTarget(target, effectiveness);
-				// "Your life energy is stolen!"
-				MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
-				SendDamageMessages(ad);
-				DamageTarget(ad, true);
-				StealLife(ad);
-				target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
-			}
+			if (target is not (GamePlayer or GameNPC or GameKeepDoor or GameRelicDoor)) return;
+			// calc damage and healing
+			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			// "Your life energy is stolen!"
+			MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
+			SendDamageMessages(ad);
+			DamageTarget(ad, true);
+			StealLife(ad);
+			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
 
         /// <summary>
@@ -58,6 +57,12 @@ namespace DOL.GS.Spells
                 MessageToCaster("You are diseased!", eChatType.CT_SpellResisted);
                 heal >>= 1;
             }*/
+            
+            if (ad.Target is (GameKeepDoor or GameRelicDoor))
+			{
+				heal = 0;
+			}
+            
             if (heal <= 0) return;
             heal = m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, heal);
 

@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.2.0</h3> Added `/realm/bg` endpoint<br> <h3>0.1.9</h3> Added `/relic` endpoint<br>",
-    "version": "0.2.0",
+    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.2.1</h3> Added `/news/all`, `/news/type/{type}` and `/news/realm/{realm}` endpoints<br>\n<h3>0.2.0</h3> Added `/realm/bg` endpoint<br>",
+    "version": "0.2.1",
     "title": "AtlasAPI",
     "termsOfService": "https://www.atlasfreeshard.com",
     "license": {
@@ -12,12 +12,12 @@
   },
   "tags": [
     {
-      "name": "stats",
-      "description": "Everything about server statistics"
-    },
-    {
       "name": "guild",
       "description": "Everything about guilds"
+    },
+    {
+      "name": "news",
+      "description": "Everything about in-game events news"
     },
     {
       "name": "player",
@@ -30,6 +30,10 @@
     {
       "name": "relic",
       "description": "Everything about relics"
+    },
+    {
+      "name": "stats",
+      "description": "Everything about server statistics"
     }
   ],
   "paths": {
@@ -390,6 +394,113 @@
           }
         }
       }
+    },
+    "/news/all": {
+      "get": {
+        "tags": [
+          "news"
+        ],
+        "summary": "/news/all",
+        "description": "Returns the last 100 in-game server news <br><br>[cache 2 min]",
+        "operationId": "getAllNews",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/newsEntry"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/news/realm/{realm}": {
+      "get": {
+        "tags": [
+          "news"
+        ],
+        "summary": "/news/realm/{realm}",
+        "description": "Returns the last 100 in-game server news for a given realm <br><br>[cache 2 min]",
+        "operationId": "getRealmNews",
+        "parameters": [
+          {
+            "name": "realm",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1",
+                "2",
+                "3"
+              ]
+            },
+            "description": "Enums:\n * 1 - Albion\n * 2 - Midgard\n * 3 - Hibernia\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/newsEntry"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/news/type/{type}": {
+      "get": {
+        "tags": [
+          "news"
+        ],
+        "summary": "/news/type/{type}",
+        "description": "Returns the last 100 in-game server news for a given type <br><br>[cache 2 min]",
+        "operationId": "getTypeNews",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "2"
+              ]
+            },
+            "description": "Enums:\n * 0 - RvR\n * 1 - PlayerRP\n * 2 - PlayerXP\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/newsEntry"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -734,6 +845,44 @@
             "format": "date-time",
             "example": "08-12-2021 11:18 AM"
           }
+        }
+      },
+      "newsEntry": {
+        "type": "object",
+        "properties": {
+          "Date": {
+            "type": "string",
+            "example": "27-05-2022 04:37 AM"
+          },
+          "Type": {
+            "type": "string",
+            "example": "RvR",
+            "enum": [
+              "RvR",
+              "PlayerRP",
+              "PlayerXP"
+            ]
+          },
+          "Realm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "Text": {
+            "type": "string",
+            "example": "The forces of Albion have captured Dun Crauchon!"
+          }
+        }
+      },
+      "news": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/newsEntry"
         }
       }
     }

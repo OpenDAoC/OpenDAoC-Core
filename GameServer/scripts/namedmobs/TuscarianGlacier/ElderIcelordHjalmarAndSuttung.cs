@@ -13,15 +13,14 @@ namespace DOL.GS
         public Suttung() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -46,18 +45,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override bool AddToWorld()
@@ -165,7 +164,7 @@ namespace DOL.AI.Brain
             {
                 BroadcastMessage(String.Format(Body.Name + " goes into berserker stance!"));
                 Body.Emote(eEmote.MidgardFrenzy);
-                Body.Empathy = 340;
+                Body.Strength = 850;
                 Body.MaxSpeedBase = 200; //slow under zerk mode
                 Body.Size = 75;
                 new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndBerserkerPhase),
@@ -180,7 +179,7 @@ namespace DOL.AI.Brain
             if (Body.IsAlive)
             {
                 BroadcastMessage(String.Format(Body.Name + " berserker stance fades away!"));
-                Body.Empathy = Body.NPCTemplate.Empathy;
+                Body.Strength = Body.NPCTemplate.Strength;
                 Body.Size = Convert.ToByte(Body.NPCTemplate.Size);
                 Body.MaxSpeedBase = Body.NPCTemplate.MaxSpeed;
                 IsBerserker = false;
@@ -289,10 +288,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -317,18 +316,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override void Die(GameObject killer) //on kill generate orbs
@@ -466,6 +465,8 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160394);
+                Body.Strength = npcTemplate.Strength;
                 message2 = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {
@@ -474,9 +475,7 @@ namespace DOL.AI.Brain
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is MorkimmaBrain)
-                            {
                                 npc.Die(Body);
-                            }
                         }
                     }
                 }
@@ -511,12 +510,12 @@ namespace DOL.AI.Brain
                     {
                         if (angle >= 150 && angle < 210)
                         {
-                            Body.Empathy = 240;
+                            Body.Strength = 840;
                             Body.styleComponent.NextCombatStyle = Hjalmar.back_style;
                         }
                         else
                         {
-                            Body.Empathy = 200;
+                            Body.Strength = 700;
                             Body.styleComponent.NextCombatStyle = Hjalmar.taunt;
                         }
                     }
@@ -560,11 +559,8 @@ namespace DOL.GS
                 foreach (GamePlayer player in this.GetPlayersInRadius(8000))
                 {
                     if (player != null)
-                    {
                         player.Out.SendSpellEffectAnimation(this, this, 4323, 0, false, 0x01);
-                    }
                 }
-
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
 
@@ -574,16 +570,13 @@ namespace DOL.GS
         protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
-            {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-            }
-
             return 0;
         }
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)

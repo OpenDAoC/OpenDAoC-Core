@@ -18,10 +18,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -42,16 +42,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override bool AddToWorld()
         {
@@ -194,7 +194,7 @@ namespace DOL.AI.Brain
                     {
                         GamePlayer Target = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                         RandomTarget = Target; //randomly picked target is now RandomTarget
-                        if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView)
+                        if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView && RandomTarget != null && RandomTarget.IsAlive)
                         {
                             GamePlayer oldTarget = (GamePlayer)Body.TargetObject; //old target
                             Body.TargetObject = RandomTarget; //set target to randomly picked
@@ -274,7 +274,7 @@ namespace DOL.AI.Brain
                 }
                 if (IsTargetPicked == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(20000, 35000));
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(15000, 20000));
                     IsTargetPicked = true;
                 }
             }
@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 4559;
                     spell.Icon = 4559;
                     spell.TooltipId = 4559;
-                    spell.Damage = 350;
+                    spell.Damage = 400;
                     spell.Name = "Frost Sphere";
                     spell.Range = 1800;
                     spell.SpellID = 11749;
@@ -353,10 +353,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -377,16 +377,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {
@@ -584,7 +584,6 @@ namespace DOL.AI.Brain
                     message1 = true;
                 }
             }
-
             base.Think();
         }
 
@@ -695,7 +694,7 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 300;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
@@ -710,7 +709,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 4000; }
+            get { return 5000; }
         }
         public override bool AddToWorld()
         {
@@ -732,7 +731,7 @@ namespace DOL.GS
             if (success)
             {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode), 20000); //20 seconds until this will explode and deal heavy cold dmg
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode), 25000); //25 seconds until this will explode and deal heavy cold dmg
             }
             return success;
         }
@@ -751,10 +750,10 @@ namespace DOL.GS
                     spell.ClientEffect = 208;
                     spell.Icon = 208;
                     spell.TooltipId = 208;
-                    spell.Damage = 2000;
+                    spell.Damage = 2500;
                     spell.Name = "Ice Bomb";
-                    spell.Radius = 0; //very big radius to make them feel pain lol
-                    spell.Range = 2000;
+                    spell.Radius = 3000; //very big radius to make them feel pain lol
+                    spell.Range = 0;
                     spell.SpellID = 11751;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();

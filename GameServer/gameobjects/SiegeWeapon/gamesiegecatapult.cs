@@ -181,6 +181,19 @@ namespace DOL.GS
 					list.Add(player);
 				}
 			}
+
+			foreach (IDoor door in this.CurrentRegion.GetDoorsInRadius(GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius, false))
+			{
+				if (Owner != null && door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(Owner, (GameKeepDoor)door, true))
+				{
+					list.Add(door);
+				}
+				else if (door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(this, (GameKeepDoor)door, true)) //use this siege as attacker if Owner is null
+				{
+					list.Add(door);
+				}
+			}
+
 			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(this.CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius))
 			{
 				if (Owner != null &&GameServer.ServerRules.IsAllowedToAttack(Owner, npc, true))
