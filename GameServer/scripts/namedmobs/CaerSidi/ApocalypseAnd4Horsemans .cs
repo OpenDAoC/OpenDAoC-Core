@@ -150,6 +150,7 @@ namespace DOL.GS
             Add.Heading = 4072;
             Add.AddToWorld();
             FamesWaitForText = true;
+            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(OtherPlayersCanInteract), 60000);
             return 0;
         }
         public int SpawnHorsemanBellum(ECSGameTimer timer)
@@ -196,9 +197,17 @@ namespace DOL.GS
             Add.AddToWorld();
             return 0;
         }
+        public static bool OthersCanInteract = false;
+        private int OtherPlayersCanInteract(ECSGameTimer timer)
+        {
+            OthersCanInteract = true;
+            RandomTarget = null;
+            return 0;
+        }
         #endregion
 
         #region Pick Random Player, PlayerEnter
+        private bool CheckNullPlayer = false;
         public static GamePlayer randomtarget=null;
         public static GamePlayer RandomTarget
         {
@@ -216,19 +225,17 @@ namespace DOL.GS
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)//we pick only players, not gms !
                     {
                         if (!PlayersInRoom.Contains(player))
-                        {
                             PlayersInRoom.Add(player);
-                        }
                     }
                 }
             }
-
             if (PickedTarget == false && PlayersInRoom.Count > 0)
             {
                 GamePlayer ptarget = ((GamePlayer)(PlayersInRoom[Util.Random(1, PlayersInRoom.Count) - 1]));
                 RandomTarget = ptarget;
 
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer), 4000);
+                if(RandomTarget != null)
+                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer), 4000);
                 PickedTarget = true;
             }
         }
@@ -255,7 +262,10 @@ namespace DOL.GS
         }
         public int DoRespawnNow(ECSGameTimer timer)
         {
+            ApocCount = 1;
+            HorsemanCount = 4;
             PickedTarget = false;//we start encounter again here!
+            OthersCanInteract = false;//other players can interact too!
             return 0;
         }
         #endregion
@@ -375,14 +385,15 @@ namespace DOL.GS
             return 0;
         }
         public static bool CanInteract = false;
+        public static bool FamesIsUp = true;
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 65; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override bool Interact(GamePlayer player)
@@ -400,6 +411,17 @@ namespace DOL.GS
                         "Say [yes] and prepare yourselves.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                 }
             }
+            if (ApocInitializator.OthersCanInteract == true)
+            {
+                if (player != null)
+                {
+                    TurnTo(player.X, player.Y);
+
+                    player.Out.SendMessage("Fames says, Well? Do you challenge fate itself?\n" +
+                        "Say [no] and walk away...\n" +
+                        "Say [yes] and prepare yourselves.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                }
+            }
             return true;
         }      
         public override bool WhisperReceive(GameLiving source, string str)
@@ -408,8 +430,8 @@ namespace DOL.GS
             if (!(source is GamePlayer)) return false;
             GamePlayer t = (GamePlayer)source;
             if (CanInteract == false)
-            {
-                if (t == ApocInitializator.RandomTarget)
+            {            
+                if (t == ApocInitializator.RandomTarget || ApocInitializator.OthersCanInteract == true)
                 {
                     TurnTo(t.X, t.Y);
                     switch (str.ToLower())
@@ -457,27 +479,27 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-
+            FamesIsUp = false;
             --ApocInitializator.HorsemanCount;
             FamesBrain.StartedFames = false;
             base.Die(killer);
@@ -498,6 +520,13 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160695);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -505,15 +534,7 @@ namespace DOL.GS
             FamesBrain.spawn_fate = false;
             CanInteract = false;
             FamesBrain.StartedFames = false;
-
-
-            Strength = 5;
-            Empathy = 325;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 220;
-            Intelligence = 220;          
+            FamesIsUp = true;
 
             FamesBrain adds = new FamesBrain();
             SetOwnBrain(adds);
@@ -543,18 +564,18 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 BafMobs = false;
                 StartedFames = false;
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
@@ -593,6 +614,8 @@ namespace DOL.AI.Brain
             Add.Heading = Body.Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "FamesBaf";
+            Add.Faction = FactionMgr.GetFactionByID(64);
+            Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             Add.AddToWorld();
         }
     }
@@ -608,7 +631,7 @@ namespace DOL.GS
         public Bellum() : base() { }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -629,16 +652,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
@@ -668,13 +691,15 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
             GameEpicNPC Add = new GameEpicNPC();
             Add.LoadTemplate(npcTemplate);
-            Add.X = this.X - 100;
-            Add.Y = this.Y;
-            Add.Z = this.Z;
-            Add.CurrentRegionID = this.CurrentRegionID;
-            Add.Heading = this.Heading;
+            Add.X = X - 100;
+            Add.Y = Y;
+            Add.Z = Z;
+            Add.CurrentRegionID = CurrentRegionID;
+            Add.Heading = Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "BellumBaf";
+            Add.Faction = FactionMgr.GetFactionByID(64);
+            Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             Add.AddToWorld();
         }
 
@@ -693,6 +718,13 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158353);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -700,23 +732,16 @@ namespace DOL.GS
             BellumBrain.StartedBellum = false;
             BellumBrain.SpawnWeapons = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 99;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 99;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 99;
+            AbilityBonus[(int)eProperty.Resist_Body] = -10;
+            AbilityBonus[(int)eProperty.Resist_Heat] = -10;
+            AbilityBonus[(int)eProperty.Resist_Cold] = -10;
+            AbilityBonus[(int)eProperty.Resist_Matter] = -10;
+            AbilityBonus[(int)eProperty.Resist_Energy] = -10;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 99;
+            AbilityBonus[(int)eProperty.Resist_Crush] = 99;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 99;
 
-            Strength = 5;
-            Empathy = 325;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 220;
-            Intelligence = 220;
             if (spawn_fate2 == false)
             {
                 SpawnFateBearer();
@@ -749,7 +774,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 StartedBellum = false;
                 SpawnWeapons = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -768,12 +793,12 @@ namespace DOL.AI.Brain
             }
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
             if (Body.InCombat && HasAggro)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
@@ -852,12 +877,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -1083,12 +1108,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -1332,12 +1357,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -1555,19 +1580,9 @@ namespace DOL.GS
     public class Morbus : GameEpicBoss
     {
         public Morbus() : base() { }
-        public override int GetResist(eDamageType damageType)
-        {
-            switch (damageType)
-            {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 65; // dmg reduction for rest resists
-            }
-        }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -1610,7 +1625,6 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get
@@ -1623,16 +1637,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
@@ -1648,13 +1662,15 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
             GameEpicNPC Add = new GameEpicNPC();
             Add.LoadTemplate(npcTemplate);
-            Add.X = this.X - 100;
-            Add.Y = this.Y;
-            Add.Z = this.Z;
-            Add.CurrentRegionID = this.CurrentRegionID;
-            Add.Heading = this.Heading;
+            Add.X = X - 100;
+            Add.Y = Y;
+            Add.Z = Z;
+            Add.CurrentRegionID = CurrentRegionID;
+            Add.Heading = Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "MorbusBaf";
+            Add.Faction = FactionMgr.GetFactionByID(64);
+            Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             Add.AddToWorld();
         }
         public override bool AddToWorld()
@@ -1672,6 +1688,13 @@ namespace DOL.GS
             
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164171);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -1682,23 +1705,16 @@ namespace DOL.GS
             MorbusBrain.message_warning1 = false;
             MorbusBrain.IsBug = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 80;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 80;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 80;
+            AbilityBonus[(int)eProperty.Resist_Body] = 26;
+            AbilityBonus[(int)eProperty.Resist_Heat] = 26;
+            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[(int)eProperty.Resist_Matter] = 26;
+            AbilityBonus[(int)eProperty.Resist_Energy] = 26;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = 26;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 60;
+            AbilityBonus[(int)eProperty.Resist_Crush] = 60;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 60;
 
-            Strength = 5;
-            Empathy = 325;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 220;
-            Intelligence = 220;
             if (spawn_fate3 == false)
             {
                 SpawnFateBearer();
@@ -1897,16 +1913,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.40;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 8000; }
+            get { return 20000; }
         }
         public override void Die(GameObject killer)
         {
@@ -1916,7 +1932,7 @@ namespace DOL.GS
 
         public override void AutoSetStats(Mob dbMob = null)
         {
-            if (this.PackageID == "MorbusBaf")
+            if (PackageID == "MorbusBaf")
                 return;
             base.AutoSetStats(dbMob);
         }
@@ -1931,9 +1947,9 @@ namespace DOL.GS
                     {
                         Model = 1201;//bug tanky
                         Constitution = 150;
-                        this.Strength = 35;
-                        this.Dexterity = 100;
-                        this.Quickness = 80;
+                        Strength = 35;
+                        Dexterity = 100;
+                        Quickness = 80;
                         Size = (byte)Util.Random(20, 45);
                         MaxSpeedBase = 185;
                         MeleeDamageType = eDamageType.Crush;
@@ -1943,9 +1959,9 @@ namespace DOL.GS
                     {
                         Model = 567;//rat dps
                         Constitution = 100;
-                        this.Strength = 55;
-                        this.Dexterity = 100;
-                        this.Quickness = 100;
+                        Strength = 55;
+                        Dexterity = 100;
+                        Quickness = 100;
                         Size = (byte)Util.Random(20, 30);
                         MaxSpeedBase = 200;
                         MeleeDamageType = eDamageType.Slash;
@@ -1955,9 +1971,9 @@ namespace DOL.GS
                     {
                         Model = 771;//roach tanky+dps
                         Constitution = 200;
-                        this.Strength = 80;
-                        this.Dexterity = 100;
-                        this.Quickness = 65;
+                        Strength = 80;
+                        Dexterity = 100;
+                        Quickness = 65;
                         Size = (byte)Util.Random(20, 30);
                         MaxSpeedBase = 165;
                         MeleeDamageType = eDamageType.Crush;
@@ -1968,9 +1984,9 @@ namespace DOL.GS
                         Model = 824;//cicada quick attacks
                         Size = (byte)Util.Random(20, 30);
                         Constitution = 100;
-                        this.Strength = 25;
-                        this.Dexterity = 100;
-                        this.Quickness = 200;
+                        Strength = 25;
+                        Dexterity = 100;
+                        Quickness = 200;
                         MaxSpeedBase = 220;
                         MeleeDamageType = eDamageType.Thrust;
                     }
@@ -1980,9 +1996,9 @@ namespace DOL.GS
                         Model = 819;//dragonfly quick attacks
                         Size = (byte)Util.Random(20, 30);
                         Constitution = 100;
-                        this.Strength = 25;
-                        this.Dexterity = 100;
-                        this.Quickness = 200;
+                        Strength = 25;
+                        Dexterity = 100;
+                        Quickness = 200;
                         MaxSpeedBase = 220;
                         MeleeDamageType = eDamageType.Thrust;
                     }
@@ -1992,15 +2008,15 @@ namespace DOL.GS
             TetherRange = 3000;
             Level = 75;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            AbilityBonus[(int)eProperty.Resist_Body] = 15;
+            AbilityBonus[(int)eProperty.Resist_Heat] = 15;
+            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[(int)eProperty.Resist_Matter] = 15;
+            AbilityBonus[(int)eProperty.Resist_Energy] = 15;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 25;
+            AbilityBonus[(int)eProperty.Resist_Crush] = 25;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
@@ -2103,7 +2119,7 @@ namespace DOL.GS
                 else
                 {
                     truc.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                    this.Health += this.MaxHealth;
+                    Health += MaxHealth;
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -2113,7 +2129,7 @@ namespace DOL.GS
                 GamePet truc = source as GamePet;
                 GamePlayer pet_owner = truc.Owner as GamePlayer;
                 pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                this.Health += this.MaxHealth;
+                Health += MaxHealth;
                 base.TakeDamage(source, damageType, 0, 0);
                 return;
             }
@@ -2134,23 +2150,23 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 15000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
@@ -2164,13 +2180,15 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
             GameEpicNPC Add = new GameEpicNPC();
             Add.LoadTemplate(npcTemplate);
-            Add.X = this.X - 100;
-            Add.Y = this.Y;
-            Add.Z = this.Z;
-            Add.CurrentRegionID = this.CurrentRegionID;
-            Add.Heading = this.Heading;
+            Add.X = X - 100;
+            Add.Y = Y;
+            Add.Z = Z;
+            Add.CurrentRegionID = CurrentRegionID;
+            Add.Heading = Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "FunusBaf";
+            Add.Faction = FactionMgr.GetFactionByID(64);
+            Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             Add.AddToWorld();
         }
 
@@ -2190,6 +2208,13 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161151);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
@@ -2197,23 +2222,16 @@ namespace DOL.GS
             FunusBrain.StartedFunus = false;
             FunusBrain.BafMobs4 = false;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 55;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 55;
+            AbilityBonus[(int)eProperty.Resist_Body] = 25;
+            AbilityBonus[(int)eProperty.Resist_Heat] = 25;
+            AbilityBonus[(int)eProperty.Resist_Cold] = 25;
+            AbilityBonus[(int)eProperty.Resist_Matter] = -10;
+            AbilityBonus[(int)eProperty.Resist_Energy] = -10;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
+            AbilityBonus[(int)eProperty.Resist_Slash] = 25;
+            AbilityBonus[(int)eProperty.Resist_Crush] = -10;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
 
-            Strength = 5;
-            Empathy = 325;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 220;
-            Intelligence = 220;
             if (spawn_fate4 == false)
             {
                 SpawnFateBearer();
@@ -2292,9 +2310,19 @@ namespace DOL.GS
         public Apocalypse() : base() { }
         public void BroadcastMessage(String message)
         {
-            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -2313,23 +2341,23 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 900;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.60;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 40000; }
+            get { return 300000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
@@ -2340,9 +2368,7 @@ namespace DOL.GS
                     if (npc.IsAlive)
                     {
                         if (npc.Brain is HarbringerOfFateBrain || npc.Brain is RainOfFireBrain)
-                        {
                             npc.RemoveFromWorld();
-                        }
                     }
                 }
             }
@@ -2384,16 +2410,18 @@ namespace DOL.GS
             TetherRange = 3600;
             Size = 120;
             Level = 87;
-            MaxSpeedBase = 300;
-            ParryChance = 35;
-            Flags = eFlags.FLYING;
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157955);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-            BodyType = 11;
-            Realm = eRealm.None;
 
             ApocalypseBrain.spawn_harbringers = false;
             ApocalypseBrain.spawn_rain_of_fire = false;
@@ -2406,17 +2434,8 @@ namespace DOL.GS
             ApocalypseBrain.StartedApoc = false;
             HarbringerOfFate.HarbringersCount = 0;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 70;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 80;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 80;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 80;
 
-            foreach (GameClient client in WorldMgr.GetClientsOfRegion(this.CurrentRegionID))
+            foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
             {
                 if (client == null) break;
                 if (client.Player == null) continue;
@@ -2425,15 +2444,6 @@ namespace DOL.GS
                     client.Out.SendSoundEffect(2452, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
                 }
             }
-
-            Strength = 5;//no need str at all
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 10;//slow attacks
-            Piety = 350;
-            Intelligence = 350;
-            Charisma = 350;
-            Empathy = 302;//most important stat for boss damage, with this sestings it will hit for 940~
             KilledEnemys = 0;
             ApocalypseBrain adds = new ApocalypseBrain();
             SetOwnBrain(adds);
@@ -2449,6 +2459,13 @@ namespace DOL.GS
                 ++KilledEnemys;
             }
             base.EnemyKilled(enemy);
+        }
+        public override void StartAttack(GameObject target)
+        {
+            if (ApocalypseBrain.IsInFlyPhase)
+                return;
+            else
+                base.StartAttack(target);
         }
     }
 }
@@ -2472,32 +2489,13 @@ namespace DOL.AI.Brain
         public static bool ApocAggro = false;
         public static bool pop_harbringers = false;
         public static bool StartedApoc = false;
-        public override void AttackMostWanted()
-        {
-            if (IsInFlyPhase == true)
-                return;
-            else
-            {
-                base.AttackMostWanted();
-            }
-        }
-        public override void OnAttackedByEnemy(AttackData ad)//another check to not attack enemys
-        {
-            if (IsInFlyPhase == true)
-                return;
-            else
-            {
-                base.OnAttackedByEnemy(ad);
-            }
-        }
+
         public override void Think()
         {
             #region Reset boss
-            if (!HasAggressionTable())
+            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             {
-                //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 spawn_rain_of_fire = false;
                 spawn_harbringers = false;
 
@@ -2508,59 +2506,47 @@ namespace DOL.AI.Brain
                 ApocAggro = false;
                 pop_harbringers = false;
                 StartedApoc = false;
+                Apocalypse.KilledEnemys = 0;
                 HarbringerOfFate.HarbringersCount = 0;
 
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
-                    if(npc != null)
+                    if (npc != null)
                     {
-                        if(npc.IsAlive)
+                        if (npc.IsAlive)
                         {
-                            if(npc.Brain is HarbringerOfFateBrain || npc.Brain is RainOfFireBrain)
-                            {
+                            if (npc.Brain is HarbringerOfFateBrain || npc.Brain is RainOfFireBrain)
                                 npc.RemoveFromWorld();
-                            }    
                         }
                     }
                 }
-            }
-            if (Body.IsOutOfTetherRange)
-            {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
-            {
-                this.Body.Health = this.Body.MaxHealth;
-                ClearAggroList();
+                //ClearAggroList();
             }
             #endregion
             #region Boss combat
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="ApocBaf"
+            if (Body.IsAlive)//bring mobs from rooms if mobs got set PackageID="ApocBaf"
             {
                 StartedApoc = true;
                 if (ApocAggro == false && Body.HealthPercent <=99)//1st time apoc fly to celling
                 {
                     Point3D point1 = new Point3D();
                     point1.X = Body.SpawnPoint.X; point1.Y = Body.SpawnPoint.Y + 100; point1.Z = Body.SpawnPoint.Z + 750;
-                    Body.StopAttack();
+                    ClearAggroList();
                     if (!Body.IsWithinRadius(point1, 100))
                     {
-                        Body.WalkTo(point1, 100);
+                        Body.WalkTo(point1, 200);
                         IsInFlyPhase = true;
                     }
                     else
                     {
                         if (fly_phase2 == false)
                         {
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 500);
                             fly_phase2 = true;
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
-                                {
                                     player.Out.SendMessage("Apocalypse says, 'Is it power? Fame? Fortune? Perhaps it is all three.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                                }
                             }
                             ApocAggro = true;
                         }
@@ -2577,15 +2563,12 @@ namespace DOL.AI.Brain
                     if (spawn_harbringers == false)
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnHarbringers), 2000);
-
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
                             if (npc != null)
                             {
                                 if (npc.IsAlive && npc.PackageID == "ApocBaf" && npc.Brain is HarbringerOfFateBrain)
-                                {
                                     AddAggroListTo(npc.Brain as HarbringerOfFateBrain);// add to aggro mobs with ApocBaf PackageID
-                                }
                             }
                         }
                         spawn_harbringers = true;
@@ -2595,24 +2578,21 @@ namespace DOL.AI.Brain
                 {
                     Point3D point1 = new Point3D();
                     point1.X = Body.SpawnPoint.X; point1.Y = Body.SpawnPoint.Y+100; point1.Z = Body.SpawnPoint.Z + 750;
-                    Body.StopAttack();                      
+                    ClearAggroList();
                     if (!Body.IsWithinRadius(point1, 100))
                     {
-                        Body.StopAttack();
-                        Body.WalkTo(point1, 70);
+                        Body.WalkTo(point1, 200);
                         IsInFlyPhase = true;                       
                     }
                     else
                     {
                         if(fly_phase1 == false)
                         {
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 1000);
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FlyPhaseStart), 500);
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
-                                {
                                     player.Out.SendMessage("Apocalypse says, 'I wonder, also, about the motivation that drives one to such an audacious move.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                                }
                             }
                            fly_phase1 = true;
                         }
@@ -2620,10 +2600,17 @@ namespace DOL.AI.Brain
                 }
                 if (apoc_fly_phase == true)//here cast rain of fire from celling for 30s
                 {
-                    Body.GroundTarget.X = Body.X;
-                    Body.GroundTarget.Y = Body.Y;
-                    Body.GroundTarget.Z = Body.Z - 750;
-                    Body.CastSpell(Apoc_Gtaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    foreach(GamePlayer player in Body.GetPlayersInRadius(1800))
+                    {
+                        if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroTable.ContainsKey(player))
+                            AggroTable.Add(player, 200);
+                    }
+                    Body.SetGroundTarget(Body.X, Body.Y, Body.Z - 750);
+                    if (!Body.IsCasting)
+                    {
+                        //Body.TurnTo(Body.GroundTarget.X, Body.GroundTarget.Y);
+                        Body.CastSpell(Apoc_Gtaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                    }
                 }
             }
             #endregion
@@ -2734,13 +2721,13 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 4;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 368;
                     spell.Icon = 368;
                     spell.Damage = 750;
                     spell.Name = "Rain of Fire";
-                    spell.Radius = 1000;
+                    spell.Radius = 1500;
                     spell.Range = 2800;
                     spell.SpellID = 11740;
                     spell.Target = "Area";
@@ -2780,16 +2767,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 30000; }
         }
         public override void Die(GameObject killer)
         {
@@ -2803,6 +2790,8 @@ namespace DOL.GS
             base.AutoSetStats(dbMob);
         }
         public static int HarbringersCount = 0;
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 50; }
+        public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -2816,11 +2805,6 @@ namespace DOL.GS
             RespawnInterval = -1;
             Model = 952;
             Size = 90;
-
-            Strength = 5;
-            Constitution = 100;
-            Dexterity = 200;
-            Quickness = 50;
             ParryChance = 25;
 
             this.AbilityBonus[(int)eProperty.Resist_Body] = 25;
@@ -2918,6 +2902,8 @@ namespace DOL.GS
                 return;
             base.AutoSetStats(dbMob);
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 300; }
         public override bool AddToWorld()
         {
             Name = "Rain of Fire";
@@ -2932,7 +2918,6 @@ namespace DOL.GS
 
             Strength = 450;
             Constitution = 100;
-            Dexterity = 200;
             Quickness = 125;
             Piety = 350;
             Intelligence = 350;
@@ -3016,7 +3001,7 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null)
             {
                 Body.TargetInView = true;            
-                Body.CastSpell(Apoc_Rain_of_Fire, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                Body.CastSpell(Apoc_Rain_of_Fire, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
                 if (reset_cast == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetCast), 25000);//25s recast
@@ -3044,15 +3029,15 @@ namespace DOL.AI.Brain
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 0;
-                    spell.ClientEffect = 378;
-                    spell.Icon = 378;
-                    spell.Damage = 750;
+                    spell.ClientEffect = 360;
+                    spell.Icon = 360;
+                    spell.Damage = 800;
                     spell.Name = "Rain of Fire";
-                    spell.Radius = 1000;
+                    spell.Radius = 600;
                     spell.Range = 2800;
                     spell.SpellID = 11738;
                     spell.Target = "Enemy";
-                    spell.Type = "DirectDamageNoVariance";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;

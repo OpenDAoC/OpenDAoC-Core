@@ -20,10 +20,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 90; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -59,7 +59,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override int AttackRange
         {
@@ -68,19 +68,19 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public void SpawnTineBeatha()
         {
@@ -115,9 +115,7 @@ namespace DOL.GS
                 if(lights != null)
                 {
                     if(lights.IsAlive && (lights.Brain is TineBrain || lights.Brain is BeathaBrain))
-                    {
                         lights.Die(lights);
-                    }
                 }
             }
             base.Die(killer);
@@ -297,9 +295,7 @@ namespace DOL.GS
                     if (xaga != null)
                     {
                         if (xaga.IsAlive && xaga.Brain is XagaBrain)
-                        {
                             xaga.Health += ad.Damage*2;//dmg heals xaga
-                        }
                     }
                 }
             }
@@ -307,23 +303,23 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 50000; }
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.20;
         }
         public static int BeathaCount = 0;
         public override void Die(GameObject killer)
@@ -476,7 +472,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 8;
                     spell.ClientEffect = 4568;
                     spell.Icon = 4568;
-                    spell.Damage = 400;
+                    spell.Damage = 450;
                     spell.Name = "Beatha's Void";
                     spell.TooltipId = 4568;
                     spell.Range = 3000;
@@ -520,23 +516,23 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 50000; }
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 600;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.20;
         }
         public static int TineCount = 0;
         public override void Die(GameObject killer)
@@ -690,7 +686,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 8;
                     spell.ClientEffect = 4227;
                     spell.Icon = 4227;
-                    spell.Damage = 350;
+                    spell.Damage = 450;
                     spell.Name = "Tine's Fire";
                     spell.TooltipId = 4227;
                     spell.Range = 3000;

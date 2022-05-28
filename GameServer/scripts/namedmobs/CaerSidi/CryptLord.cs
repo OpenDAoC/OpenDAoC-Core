@@ -19,10 +19,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public virtual int COifficulty
@@ -37,18 +37,18 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override int AttackRange
         {
-            get { return 450; }
+            get { return 350; }
             set { }
         }
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -56,18 +56,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 60) //if region is caer sidi
+            if (CurrentRegionID == 60) //if region is caer sidi
             {
                 if (IsAlive)
                     return;
@@ -351,17 +351,17 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 BafMobs = false;
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat || HasAggro ||

@@ -15,10 +15,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -34,7 +34,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -42,20 +42,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162545);
@@ -134,7 +132,6 @@ namespace DOL.AI.Brain
         }
 
         public static bool BafMobs = false;
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -160,9 +157,7 @@ namespace DOL.AI.Brain
                 if (Body.TargetObject != null)
                 {
                     if (Util.Chance(10))
-                    {
                         Body.CastSpell(IssoRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
                 }
 
                 if (BafMobs == false)
@@ -173,20 +168,17 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.PackageID == "IssordenBaf")
                             {
-                                AddAggroListTo(
-                                    npc.Brain as StandardMobBrain); // add to aggro mobs with IssordenBaf PackageID
+                                AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with IssordenBaf PackageID
                                 BafMobs = true;
                             }
                         }
                     }
                 }
             }
-
             base.Think();
         }
 
         private Spell m_IssoRoot;
-
         private Spell IssoRoot
         {
             get
@@ -213,7 +205,6 @@ namespace DOL.AI.Brain
                     m_IssoRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IssoRoot);
                 }
-
                 return m_IssoRoot;
             }
         }

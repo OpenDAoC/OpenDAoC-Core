@@ -22,10 +22,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 55; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
-                default: return 85; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -43,7 +43,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override int AttackRange
@@ -53,13 +53,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override bool HasAbility(string keyName)
         {
@@ -514,16 +514,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override int MaxHealth
         {
-            get { return 3000; }
+            get { return 10000; }
         }
 
         public override void DropLoot(GameObject killer) //no loot

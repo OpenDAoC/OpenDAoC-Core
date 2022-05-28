@@ -12,21 +12,21 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 850;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override short MaxSpeedBase
@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
             set => m_maxSpeedBase = value;
         }
 
-        public override int MaxHealth => 20000;
+        public override int MaxHealth => 200000;
 
         public override int AttackRange
         {
@@ -44,7 +44,7 @@ namespace DOL.GS.Scripts
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == "CCImmunity")
+            if (IsAlive && keyName == "CCImmunity")
                 return true;
 
             return base.HasAbility(keyName);
@@ -181,7 +181,7 @@ namespace DOL.GS
     {
         public override int MaxHealth
         {
-            get { return 1000; }
+            get { return 8000; }
         }
         public override int GetResist(eDamageType damageType)
         {
@@ -195,13 +195,13 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 200;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
         public override bool AddToWorld()
         {
@@ -300,7 +300,6 @@ namespace DOL.AI.Brain
             {
                 Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             base.Think();
         }
     }
