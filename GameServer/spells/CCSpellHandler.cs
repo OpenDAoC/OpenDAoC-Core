@@ -152,7 +152,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-
 			return (int)duration;
 		}
 
