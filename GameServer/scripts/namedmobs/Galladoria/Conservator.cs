@@ -23,10 +23,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 90; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -90,7 +90,7 @@ namespace DOL.GS
         {
             get
             {
-                return 20000;
+                return 200000;
             }
         }
         public override int AttackRange
@@ -112,12 +112,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)

@@ -11,19 +11,19 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 55; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
-                default: return 35; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override int MaxHealth
         {
-            get { return 15000; }
+            get { return 150000; }
         }
         public override bool HasAbility(string keyName)
         {         
-            if (this.IsAlive && keyName == "CCImmunity")
+            if (IsAlive && keyName == "CCImmunity")
                 return true;
 
             return base.HasAbility(keyName);
@@ -31,13 +31,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.20;
         }
         public override bool AddToWorld()
 		{
@@ -79,7 +79,7 @@ namespace DOL.GS.Scripts
 
         public override void WalkToSpawn(short speed)
         {
-            if (this.CurrentRegionID == 60) //if region is caer sidi
+            if (CurrentRegionID == 60) //if region is caer sidi
             {
                 if (SkeletalSacristanBrain.ToSpawn == true)
                 {
@@ -151,8 +151,7 @@ namespace DOL.AI.Brain
                 point4check = false;
                 point5check = false;
                 point6check = false;
-                ToSpawn = false;
-                this.Body.Health = this.Body.MaxHealth;
+                ToSpawn = false;              
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
 			if (HasAggressionTable())
@@ -234,9 +233,10 @@ namespace DOL.AI.Brain
                     //mob will not roam
                 }
             }
-            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(40 * 1000) == false && this.Body.InCombatInLast(45 * 1000))
             {
                 ClearAggroList();
+                Body.Health = Body.MaxHealth;
             }
             base.Think();
 		}

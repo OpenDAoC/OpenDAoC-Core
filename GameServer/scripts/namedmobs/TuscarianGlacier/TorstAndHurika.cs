@@ -17,10 +17,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -37,7 +37,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -45,46 +45,44 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 160) //if region is tuscaran glacier
+            if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
 
         public override bool AddToWorld()
         {
-            Strength = 5;
+            Strength = 350;
             Dexterity = 200;
             Constitution = 100;
             Quickness = 125;
             Piety = 100;
             Intelligence = 100;
-            Empathy = 280;
+            Empathy = 400;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             MaxSpeedBase = 250;
             Flags = eFlags.FLYING;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             TorstBrain sbrain = new TorstBrain();
             SetOwnBrain(sbrain);
@@ -285,13 +283,13 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.FLYING; //fly
             }
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat && HasAggro)
@@ -305,9 +303,7 @@ namespace DOL.AI.Brain
                             if (gamePlayer.Client.Account.PrivLevel == 1)
                             {
                                 if (!PlayersToAttack.Contains(gamePlayer))
-                                {
                                     PlayersToAttack.Add(gamePlayer);
-                                }
                             }
                         }
                     }
@@ -317,17 +313,12 @@ namespace DOL.AI.Brain
                 if (Body.TargetObject != null)
                 {
                     if (Util.Chance(10))
-                    {
                         Body.CastSpell(TorstRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
 
                     if (Util.Chance(15))
-                    {
                         Body.CastSpell(TorstDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
                 }
             }
-
             base.Think();
         }
 
@@ -365,9 +356,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
         private Spell m_TorstRoot;
-
         private Spell TorstRoot
         {
             get
@@ -393,13 +382,11 @@ namespace DOL.AI.Brain
                     m_TorstRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstRoot);
                 }
-
                 return m_TorstRoot;
             }
         }
 
         public Spell m_TorstDD;
-
         public Spell TorstDD
         {
             get
@@ -425,7 +412,6 @@ namespace DOL.AI.Brain
                     m_TorstDD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstDD);
                 }
-
                 return m_TorstDD;
             }
         }
@@ -445,21 +431,20 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 160) //if region is tuscaran glacier
+            if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
 
@@ -476,7 +461,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -484,18 +469,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override void Die(GameObject killer) //on kill generate orbs
@@ -517,8 +502,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             Flags = eFlags.FLYING;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             HurikaBrain sbrain = new HurikaBrain();
             SetOwnBrain(sbrain);
@@ -686,17 +670,13 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.FLYING; //fly
             }
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
-            {
+                Body.Health = Body.MaxHealth;
             }
 
             base.Think();

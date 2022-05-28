@@ -31,10 +31,10 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override bool AddToWorld()
@@ -54,6 +54,13 @@ namespace DOL.GS.Scripts
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
             LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
             SaveIntoDatabase();
             LoadedFromScript = false;
             base.AddToWorld();
@@ -68,7 +75,7 @@ namespace DOL.GS.Scripts
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override int AttackRange
@@ -87,13 +94,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         /// <summary>

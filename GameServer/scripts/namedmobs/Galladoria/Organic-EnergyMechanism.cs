@@ -25,10 +25,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void StartAttack(GameObject target)//dont attack
@@ -36,7 +36,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override int AttackRange
         {
@@ -46,11 +46,11 @@ namespace DOL.GS
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 350;
         }
         public override bool HasAbility(string keyName)
         {
@@ -446,11 +446,11 @@ namespace DOL.GS
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.25;
+            return 0.15;
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
         public override double AttackDamage(InventoryItem weapon)
         {
@@ -458,7 +458,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 2000; }
+            get { return 5000; }
         }
         public override int AttackRange
         {
@@ -472,7 +472,7 @@ namespace DOL.GS
         {
             base.Die(null); //null to not gain experience
         }
-        public override short Strength { get => base.Strength; set => base.Strength = 200; }
+        public override short Strength { get => base.Strength; set => base.Strength = 150; }
         public override bool AddToWorld()
         {
             Model = 905;

@@ -18,10 +18,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 70; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 70; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 70; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -42,16 +42,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {
@@ -196,9 +196,7 @@ namespace DOL.AI.Brain
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                         {
                             if (!m_aggroTable.ContainsKey(player))
-                            {
                                 m_aggroTable.Add(player, 1);
-                            }
                         }
                     }
                 }
@@ -314,16 +312,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 20000; }
         }
         public static int IceweaverCount = 0;
         public override void Die(GameObject killer)
@@ -331,6 +329,8 @@ namespace DOL.GS
             --IceweaverCount;
             base.Die(killer);
         }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 250; }
         public override bool AddToWorld()
         {
             Model = 766;
@@ -348,13 +348,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             BodyType = 1;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
 
             HakrAddBrain adds = new HakrAddBrain();
             SetOwnBrain(adds);
@@ -405,7 +398,6 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 IsPulled = false;
             }
-
             if (HasAggro)
             {
                 if (Body.TargetObject != null)
