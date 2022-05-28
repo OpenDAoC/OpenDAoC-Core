@@ -33,6 +33,7 @@ namespace DOL.GS.API
             var _utils = new Utils();
             var _realm = new Realm();
             var _shutdown = new Shutdown();
+            var _news = new News();
 
             #endregion
 
@@ -153,6 +154,23 @@ namespace DOL.GS.API
             api.MapGet("/relic", async c =>
                 await c.Response.WriteAsJsonAsync(_realm.GetAllRelics()));
             #endregion
+            
+            #region News
+            api.MapGet("/news/all", async c => await c.Response.WriteAsJsonAsync(_news.GetAllNews()));
+            
+            api.MapGet("/news/realm/{realm}", (string realm) =>
+            {
+                var realmNews = _news.GetRealmNews(realm);
+                return Results.Ok(realmNews);
+            });
+            
+            api.MapGet("/news/type/{type}", (string type) =>
+            {
+                var typeNews = _news.GetTypeNews(type);
+                return Results.Ok(typeNews);
+            });
+
+            #endregion
 
             #region Misc
 
@@ -173,6 +191,7 @@ namespace DOL.GS.API
             api.MapGet("/utils/discordrequired", async c =>
                 await c.Response.WriteAsync(_utils.IsDiscordRequired()));
             #endregion
+            
 
             api.Run();
         }
