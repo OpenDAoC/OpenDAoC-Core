@@ -508,6 +508,7 @@ namespace DOL.GS
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
                 case (byte)eSpellType.DamageSpeedDecrease:
+                case (byte)eSpellType.DamageSpeedDecreaseNoVariance:
                 case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
                 case (byte)eSpellType.UnbreakableSpeedDecrease:
