@@ -1642,7 +1642,7 @@ namespace DOL.GS
                         weaponskiller.Out.SendMessage(
                             $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
+                        weaponskiller.Out.SendMessage($"Attack Speed: {AttackSpeed(weapon)/1000.0}s | Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
