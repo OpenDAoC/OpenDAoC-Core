@@ -14,15 +14,14 @@ namespace DOL.GS
         public Jailer() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -30,16 +29,14 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -47,20 +44,17 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162583);
@@ -74,8 +68,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             JailerBrain sbrain = new JailerBrain();
             SetOwnBrain(sbrain);
@@ -149,7 +142,6 @@ namespace DOL.AI.Brain
                 SpawnTunnelGuardians();
                 IsPulled = true;
             }
-
             base.OnAttackedByEnemy(ad);
         }
 
@@ -163,13 +155,10 @@ namespace DOL.AI.Brain
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
                         if (!m_aggroTable.ContainsKey(player))
-                        {
                             m_aggroTable.Add(player, 1);
-                        }
                     }
                 }
             }
-
             if (enemies.Count == 0)
                 return;
             else
@@ -190,11 +179,10 @@ namespace DOL.AI.Brain
                         damage_enemies.Add(enemies[i] as GameLiving);
                     }
                 }
-
                 if (damage_enemies.Count > 0)
                 {
                     GamePlayer PortTarget = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
-                    if (PortTarget.IsVisibleTo(Body) && Body.TargetInView)
+                    if (PortTarget.IsVisibleTo(Body) && Body.TargetInView && PortTarget != null && PortTarget.IsAlive)
                     {
                         AggroTable.Remove(PortTarget);
                         m_aggroTable.Remove(PortTarget);
@@ -204,13 +192,11 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
         public int PortTimer(ECSGameTimer timer)
         {
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPortTimer), 5000);
             return 0;
         }
-
         public int DoPortTimer(ECSGameTimer timer)
         {
             TeleportPlayer();
@@ -219,7 +205,6 @@ namespace DOL.AI.Brain
         }
 
         public static bool spam_teleport = false;
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -245,9 +230,7 @@ namespace DOL.AI.Brain
                         if (npc.IsAlive && !npc.InCombat)
                         {
                             if (npc.Brain is JailerAddBrain && npc.RespawnInterval == -1)
-                            {
                                 npc.RemoveFromWorld();
-                            }
                         }
                     }
                 }
@@ -262,7 +245,6 @@ namespace DOL.AI.Brain
                     spam_teleport = true;
                 }
             }
-
             base.Think();
         }
 
@@ -318,20 +300,21 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 200;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
 
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 20000; }
         }
-
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 250; }
         public override bool AddToWorld()
         {
             Model = 918;
@@ -349,13 +332,6 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             BodyType = 1;
             Realm = eRealm.None;
-
-            Strength = 100;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
 
             JailerAddBrain adds = new JailerAddBrain();
             SetOwnBrain(adds);
@@ -379,13 +355,8 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 800;
         }
-
         public override void Think()
         {
-            if (Body.InCombat || HasAggro)
-            {
-            }
-
             base.Think();
         }
     }

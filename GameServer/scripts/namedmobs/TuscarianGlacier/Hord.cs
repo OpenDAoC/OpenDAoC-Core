@@ -15,19 +15,26 @@ namespace DOL.GS.Scripts
             : base()
         {
         }
-
-        public virtual int HordDifficulty
-        {
-            get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
-        }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
-        }
-        
+        }      
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159449);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
+            Faction = FactionMgr.GetFactionByID(140);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
+
             Name = "Council Hord";
             Model = 918;
             Size = 70;
@@ -38,46 +45,38 @@ namespace DOL.GS.Scripts
             
             HordBrain sBrain = new HordBrain();
             SetOwnBrain(sBrain);
+            LoadedFromScript = false;//load from database
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
 
         public override int MaxHealth
         {
-            get
-            {
-                return 20000 * HordDifficulty / 100;
-            }
+            get{return 200000;}
         }
-
         public override int AttackRange
         {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
+            get{ return 450;}
+            set{}
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800 * HordDifficulty / 100;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55 * HordDifficulty / 100;
+            return 0.20;
         }
-
         #region Damage & Heal Events
 
         /// <summary>
@@ -118,8 +117,7 @@ namespace DOL.AI.Brain
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
             }
-        }
-        
+        }    
         public override void Think()
         {
             /*if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
@@ -141,9 +139,7 @@ namespace DOL.AI.Brain
                 if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
                 {
                     if (Util.Chance(3))
-                    {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 1000);
-                    }
                 }
             }
         }
