@@ -17,7 +17,6 @@ namespace DOL.GS
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "Crauchon Relic Guards Init";
             CrauchonRGBrain brain = new CrauchonRGBrain();
@@ -29,7 +28,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Hibernia Relic Guards [Crauchon] initialised");
+            log.Info("Hibernia Relic Guards [Crauchon] initialised");
         }
     }
     
@@ -43,7 +42,6 @@ namespace DOL.GS
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "Crimthain Relic Guards Init";
             CrimthainRGBrain brain = new CrimthainRGBrain();
@@ -55,7 +53,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Hibernia Relic Guards [Crimthain] initialised");
+            log.Info("Hibernia Relic Guards [Crimthain] initialised");
         }
     }
     
@@ -69,7 +67,6 @@ namespace DOL.GS
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "nGed Relic Guards Init";
             nGedRGBrain brain = new nGedRGBrain();
@@ -81,7 +78,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Hibernia Relic Guards [nGed] initialised");
+            log.Info("Hibernia Relic Guards [nGed] initialised");
         }
     }
 }

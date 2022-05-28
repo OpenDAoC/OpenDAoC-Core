@@ -12,12 +12,12 @@ namespace DOL.GS
         public BledmeerRGInit() : base()
         {
         }
+
         public override bool AddToWorld()
         {
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "Bledmeer Relic Guards Init";
             BledmeerRGBrain brain = new BledmeerRGBrain();
@@ -29,21 +29,21 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Midgard Relic Guards [Bledmeer] initialised");
+            log.Info("Midgard Relic Guards [Bledmeer] initialised");
         }
     }
-    
+
     public class NotmoorRGInit : GameNPC
     {
         public NotmoorRGInit() : base()
         {
         }
+
         public override bool AddToWorld()
         {
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "Notmoor Relic Guards Init";
             NotmoorRGBrain brain = new NotmoorRGBrain();
@@ -55,21 +55,21 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Midgard Relic Guards [Notmoor] initialised");
+            log.Info("Midgard Relic Guards [Notmoor] initialised");
         }
     }
-    
+
     public class GlenlockRGInit : GameNPC
     {
         public GlenlockRGInit() : base()
         {
         }
+
         public override bool AddToWorld()
         {
             Flags ^= eFlags.CANTTARGET;
             Flags ^= eFlags.FLYING;
             Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
             Model = 1;
             Name = "Glenlock Relic Guards Init";
             GlenlockRGBrain brain = new GlenlockRGBrain();
@@ -81,23 +81,25 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("Midgard Relic Guards [Glenlock] initialised");
+            log.Info("Midgard Relic Guards [Glenlock] initialised");
         }
     }
 }
 
 #region brains
+
 namespace DOL.AI.Brain
 {
     public class BledmeerRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         private bool m_guardSpawned = false;
         private ushort m_keepID = 75; // Bledmeer
 
         private string m_guardName = "Bledmeer Guardian";
+
         public BledmeerRGBrain()
             : base()
         {
@@ -111,12 +113,13 @@ namespace DOL.AI.Brain
             {
                 return;
             }
+
             if (keep.Realm == keep.OriginalRealm && !m_guardSpawned)
             {
                 SpawnGuards();
                 m_guardSpawned = true;
             }
-            else if(keep.Realm != keep.OriginalRealm && m_guardSpawned)
+            else if (keep.Realm != keep.OriginalRealm && m_guardSpawned)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
@@ -126,8 +129,10 @@ namespace DOL.AI.Brain
                         guard.Delete();
                     }
                 }
+
                 m_guardSpawned = false;
             }
+
             base.Think();
         }
 
@@ -142,6 +147,7 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
+
             var numGuards = 0;
             if (numRelics < 2)
             {
@@ -149,7 +155,7 @@ namespace DOL.AI.Brain
             }
             else
             {
-                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+                numGuards = (int) (4 * (1 - 0.25 * (numRelics - 2)));
             }
 
             for (int i = 0; i < numGuards; i++)
@@ -172,23 +178,24 @@ namespace DOL.AI.Brain
                         break;
                     }
                 }
-                
+
                 guard.AddToWorld();
                 guard.RefreshTemplate();
                 guard.Name = m_guardName;
             }
         }
     }
-    
+
     public class NotmoorRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         private bool m_guardSpawned = false;
         private ushort m_keepID = 76; // Notmoor
 
         private string m_guardName = "Notmoor Guardian";
+
         public NotmoorRGBrain()
             : base()
         {
@@ -202,12 +209,13 @@ namespace DOL.AI.Brain
             {
                 return;
             }
+
             if (keep.Realm == keep.OriginalRealm && !m_guardSpawned)
             {
                 SpawnGuards();
                 m_guardSpawned = true;
             }
-            else if(keep.Realm != keep.OriginalRealm && m_guardSpawned)
+            else if (keep.Realm != keep.OriginalRealm && m_guardSpawned)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
@@ -217,8 +225,10 @@ namespace DOL.AI.Brain
                         guard.Delete();
                     }
                 }
+
                 m_guardSpawned = false;
             }
+
             base.Think();
         }
 
@@ -233,6 +243,7 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
+
             var numGuards = 0;
             if (numRelics < 2)
             {
@@ -240,7 +251,7 @@ namespace DOL.AI.Brain
             }
             else
             {
-                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+                numGuards = (int) (4 * (1 - 0.25 * (numRelics - 2)));
             }
 
             for (int i = 0; i < numGuards; i++)
@@ -263,23 +274,24 @@ namespace DOL.AI.Brain
                         break;
                     }
                 }
-                
+
                 guard.AddToWorld();
                 guard.RefreshTemplate();
                 guard.Name = m_guardName;
             }
         }
     }
-    
+
     public class GlenlockRGBrain : StandardMobBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         private bool m_guardSpawned = false;
         private ushort m_keepID = 79; // Glenlock
 
         private string m_guardName = "Glenlock Guardian";
+
         public GlenlockRGBrain()
             : base()
         {
@@ -293,12 +305,13 @@ namespace DOL.AI.Brain
             {
                 return;
             }
+
             if (keep.Realm == keep.OriginalRealm && !m_guardSpawned)
             {
                 SpawnGuards();
                 m_guardSpawned = true;
             }
-            else if(keep.Realm != keep.OriginalRealm && m_guardSpawned)
+            else if (keep.Realm != keep.OriginalRealm && m_guardSpawned)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
@@ -308,8 +321,10 @@ namespace DOL.AI.Brain
                         guard.Delete();
                     }
                 }
+
                 m_guardSpawned = false;
             }
+
             base.Think();
         }
 
@@ -324,6 +339,7 @@ namespace DOL.AI.Brain
                     numRelics++;
                 }
             }
+
             var numGuards = 0;
             if (numRelics < 2)
             {
@@ -331,7 +347,7 @@ namespace DOL.AI.Brain
             }
             else
             {
-                numGuards = (int)(4 * (1 - 0.25 * (numRelics - 2)));
+                numGuards = (int) (4 * (1 - 0.25 * (numRelics - 2)));
             }
 
             for (int i = 0; i < numGuards; i++)
@@ -354,14 +370,13 @@ namespace DOL.AI.Brain
                         break;
                     }
                 }
-                
+
                 guard.AddToWorld();
                 guard.RefreshTemplate();
                 guard.Name = m_guardName;
             }
         }
     }
-    
 }
-#endregion
 
+#endregion
