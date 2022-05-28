@@ -105,15 +105,17 @@ namespace DOL.GS.Keeps
 						continue;
 				
 					AbstractGameKeep keep;
-					if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
-					{
-						keep = keepRegion.CreateGameKeepTower();
-					}
-					else
-					{
-						// set SkinType to 99 for relic keeps
-						keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
-					}
+					// if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
+					// {
+					// 	keep = keepRegion.CreateGameKeepTower();
+					// }
+					// else
+					// {
+					
+					// set SkinType to 99 for relic keeps
+					keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
+						
+					// }
 
 					keep.Load(datakeep);
 					RegisterKeep(datakeep.KeepID, keep);
