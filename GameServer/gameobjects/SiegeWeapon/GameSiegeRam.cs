@@ -118,7 +118,7 @@ namespace DOL.GS
 			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject.Name, eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject?.Name, eChatType.CT_System,eChatLoc.CL_SystemWindow);
 				return;
 			}
 
