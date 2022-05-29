@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -37,19 +38,25 @@ namespace DOL.GS.Commands
 
 			if (IsSpammingCommand(client.Player, "rp"))
 				return;
-			
-			DisplayMessage(client, "/rp is disabled on this server.");
 
-			// if (args[1].ToLower().Equals("on"))
-			// {
-			// 	client.Player.GainRP = true;
-			// 	client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			// }
-			// else if (args[1].ToLower().Equals("off"))
-			// {
-			// 	client.Player.GainRP = false;
-			// 	client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			// }
+
+			if (client.Player.Level < 24)
+			{
+				DisplayMessage(client, "This command is only available to players above level 24.");
+				return;
+			}
+
+			switch (args[1].ToLower())
+			{
+				case "on":
+					client.Player.GainRP = true;
+					client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					break;
+				case "off":
+					client.Player.GainRP = false;
+					client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					break;
+			}
 		}
 	}
 }
