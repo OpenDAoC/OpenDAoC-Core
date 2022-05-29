@@ -200,6 +200,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				player.Out.SendMessage("Added door " + m_handlerDoorID + " to the database!", eChatType.CT_Important,
 				                       eChatLoc.CL_SystemWindow);
+				GameServer.Database.SaveObject(door);
 				DoorMgr.Init();
 			}
 		}

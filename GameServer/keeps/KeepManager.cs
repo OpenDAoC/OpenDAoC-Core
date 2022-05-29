@@ -675,7 +675,7 @@ namespace DOL.GS.Keeps
 		/// <returns>true if the player is an enemy of the door</returns>
 		public virtual bool IsEnemy(GameKeepDoor checker, GamePlayer target)
 		{
-			return IsEnemy(checker.Component.Keep, target);
+			return IsEnemy(checker.Component?.Keep, target);
 		}
 
 		/// <summary>
