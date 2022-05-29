@@ -446,6 +446,6 @@ GMCommands.MinoRelic.Spawn.AlreadySpawned:	Relic already spawned
 
 ## /zonepoint or /zp
 GMCommands.Zonepoint.Description:			Adds a zonepoint to the game at the current player position.
-GMCommands.Zonepoint.Usage:					/zonepoint <id> <realm>
-GMCommands.Zonepoint.UsageClass:			/zonepoint <id> <realm> <class>
+GMCommands.Zonepoint.Usage:					/zonepoint add <id> <realm>
+GMCommands.Zonepoint.UsageClass:			/zonepoint add <id> <realm> <class>
 GMCommands.Zonepoint.ZonepointAdded:		Zonepoint added: ID={0}, Realm={1}, X={2}, Y={3}, Z={4}, Region={5}
