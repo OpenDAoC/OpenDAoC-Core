@@ -13,15 +13,14 @@ namespace DOL.GS
         public Kvasir() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -32,8 +31,7 @@ namespace DOL.GS
                 if (damageType == eDamageType.Cold) //take no damage
                 {
                     this.Health += this.MaxHealth / 5; //heal himself if damage is cold
-                    BroadcastMessage(String.Format("Icelord Kvasir says, 'aahhhh thank you " + source.Name +
-                                                   " for healing me !'"));
+                    BroadcastMessage(String.Format("Icelord Kvasir says, 'aahhhh thank you " + source.Name +" for healing me !'"));
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -57,7 +55,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -65,20 +63,17 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -86,7 +81,6 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162348);
@@ -100,8 +94,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             KvasirBrain sbrain = new KvasirBrain();
             SetOwnBrain(sbrain);
@@ -130,9 +123,7 @@ namespace DOL.GS
                 TG.Size = 70;
                 TG.CurrentRegionID = 160; //tuscaran glacier
                 TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
+                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
@@ -147,8 +138,7 @@ namespace DOL.GS
                 TG.Brain.Start();
             }
             else
-                log.Warn(
-                    "Icelord Kvasir exist ingame, remove it and restart server if you want to add by script code.");
+                log.Warn("Icelord Kvasir exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -169,8 +159,6 @@ namespace DOL.AI.Brain
         }
 
         public static bool IsPulled = false;
-
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -187,44 +175,36 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }
-
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 if (Util.Chance(10))
-                {
                     Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                }
             }
-
             base.Think();
         }
 
         protected Spell m_mezSpell;
-
         protected Spell Mezz
         {
             get
@@ -251,7 +231,6 @@ namespace DOL.AI.Brain
                     m_mezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
-
                 return m_mezSpell;
             }
         }

@@ -30,6 +30,17 @@ namespace DOL.GS.Scripts
 
         public override bool AddToWorld()
         {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159452);
+            LoadTemplate(npcTemplate);
+            Strength = npcTemplate.Strength;
+            Dexterity = npcTemplate.Dexterity;
+            Constitution = npcTemplate.Constitution;
+            Quickness = npcTemplate.Quickness;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+            Empathy = npcTemplate.Empathy;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
             Name = "Council Ozur";
             Model = 918;
             Size = 70;
@@ -40,13 +51,15 @@ namespace DOL.GS.Scripts
 
             OzurBrain sBrain = new OzurBrain();
             SetOwnBrain(sBrain);
+            LoadedFromScript = false;//load from database
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
 
         public override int MaxHealth
         {
-            get { return 20000 * OzurDifficulty / 100; }
+            get { return 200000; }
         }
 
         public override int AttackRange
@@ -57,7 +70,7 @@ namespace DOL.GS.Scripts
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -65,13 +78,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800 * OzurDifficulty / 100;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55 * OzurDifficulty / 100;
+            return 0.20;
         }
 
         #region Damage & Heal Events
@@ -111,7 +124,7 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 200;
-            AggroRange = 1000;
+            AggroRange = 800;
         }
 
         public void BroadcastMessage(String message)
@@ -184,14 +197,14 @@ namespace DOL.AI.Brain
                 if (countPlayer >= _GettingFirstPlayerStage && countPlayer < _GettingSecondPlayerStage)
                 {
                     Body.ScalingFactor += 10;
-                    Body.Strength += 50;
+                    Body.Strength = 200;
                     Resists(false);
                 }
 
                 if (countPlayer >= _GettingSecondPlayerStage)
                 {
                     Body.ScalingFactor += 25;
-                    Body.Strength += 150;
+                    Body.Strength = 350;
                     Weak(true);
                 }
             }

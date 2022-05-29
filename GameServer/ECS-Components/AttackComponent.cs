@@ -323,7 +323,7 @@ namespace DOL.GS
                             case eObjectType.Thrown:
                                 range = 1160;
                                 if (weapon.Name.ToLower().Contains("weighted"))
-                                    range *= 1450;
+                                    range = 1450;
                                 break;
                             default:
                                 range = 1200;
@@ -1642,7 +1642,7 @@ namespace DOL.GS
                         weaponskiller.Out.SendMessage(
                             $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
+                        weaponskiller.Out.SendMessage($"Attack Speed: {AttackSpeed(weapon)/1000.0}s | Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
@@ -3571,7 +3571,7 @@ namespace DOL.GS
                     if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
                     {
                         pl.Out.SendMessage(
-                            $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
+                            $"Chance for 2 hits: {hitChance}% | 3 hits: { (specLevel > 25 ? (specLevel >> 2 ) : 0)}% | 4 hits: {(specLevel > 40 ? (specLevel >> 4 ) : 0)}% \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
                     
@@ -3579,11 +3579,11 @@ namespace DOL.GS
                         return 1; // 1 hit = spec/2
                     
                     hitChance += specLevel >> 2;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 25)
                         return 2; // 2 hits = spec/4
                     
                     hitChance += specLevel >> 4;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 40)
                         return 3; // 3 hits = spec/16
 
                     return 0;

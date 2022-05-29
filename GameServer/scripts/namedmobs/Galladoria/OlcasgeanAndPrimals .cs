@@ -104,8 +104,7 @@ namespace DOL.AI.Brain
                     if (player.IsAlive)
                     {
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
-                        {
-                            
+                        {                          
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
@@ -347,10 +346,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override double AttackDamage(InventoryItem weapon)
@@ -359,20 +358,12 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get
-            {
-                return 40000;//tons of health
-            }
+            get{return 300000;}
         }
         public override int AttackRange
         {
-            get
-            {
-                return 1500;
-            }
-            set
-            {
-            }
+            get{return 1500;}
+            set{}
         }
         public override bool HasAbility(string keyName)
         {
@@ -383,12 +374,12 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -529,8 +520,20 @@ namespace DOL.GS
             Flags ^= GameNPC.eFlags.PEACE;
             Flags ^= GameNPC.eFlags.STATUE;
             Flags ^= GameNPC.eFlags.CANTTARGET;
+            if (PackageID == "Olcasgean1")
+                RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+            else
+                RespawnInterval = -1;
             return base.AddToWorld();
         }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Constitution { get => base.Constitution; set => base.Constitution = 100; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 20; }
+        public override short Strength { get => base.Strength; set => base.Strength = 350; }
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
@@ -556,13 +559,7 @@ namespace DOL.GS
                 OLC.Z = 11681;
                 OLC.Heading = 2491;
 
-                OLC.Strength = 5;
-                OLC.Intelligence = 200;
-                OLC.Piety = 200;
-                OLC.Dexterity = 200;
-                OLC.Constitution = 100;
-                OLC.Quickness = 80;
-                OLC.Empathy = 300;
+                OLC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
                 OLC.MeleeDamageType = eDamageType.Slash;
                 OLC.Faction = FactionMgr.GetFactionByID(96);
                 OLC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -800,9 +797,7 @@ namespace DOL.AI.Brain
                             if (npc.Name == "Olcasgean" && npc.Brain is OlcasgeanBrain && npc.PackageID != "Olcasgean2")
                             {
                                 if (OlcasgeanCount < 1)
-                                {
                                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PopBoss), 1000);//create copy of himself
-                                }
                             }
                         }
                     }
@@ -818,14 +813,13 @@ namespace DOL.AI.Brain
                 Point3D point2 = new Point3D();
                 point2.X = 39237; point2.Y = 62644; point2.Z = 11685;
 
-                if (Body.InCombat || HasAggro)//Boss in combat
+                if (Body.InCombat || HasAggro && Body.TargetObject != null)//Boss in combat
                 {
                     if(spawn_effect ==false)
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnEffects), 2000);
                         spawn_effect = true;
                     }
-
                     if (player_in_range == null)
                         player_in_range = new List<GamePlayer>();
 
@@ -847,12 +841,10 @@ namespace DOL.AI.Brain
                     {
                         if (player != null)
                         {
-                            if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                            if (player.IsAlive && player.Client.Account.PrivLevel == 1 && player != Body.TargetObject)
                             {
                                 if (!player_to_port.Contains(player))
-                                {
                                     player_to_port.Add(player);
-                                }
                             }
                         }
                     }
@@ -865,69 +857,41 @@ namespace DOL.AI.Brain
                                 if (player.IsWithinRadius(point1, 200))//location of main boss
                                 {
                                     if (!player_in_range.Contains(player))
-                                    {
                                         player_in_range.Add(player);
-                                    }
                                 }
                                 else
                                 {
                                     if (player_in_range.Contains(player))
-                                    {
                                         player_in_range.Remove(player);//remove player if he leaves gloc radius
-                                    }
                                 }
                                 if (player.IsWithinRadius(point2, 200))//location of clone-boss
                                 {
                                     if (!player_in_range2.Contains(player))
-                                    {
                                         player_in_range2.Add(player);
-                                    }
                                 }
                                 else
                                 {
                                     if (player_in_range2.Contains(player))
-                                    {
                                         player_in_range2.Remove(player);//remove player if he leaves gloc radius
-                                    }
                                 }
                             }
                         }
                     }
                     if (player_in_range.Count > 0 && player_in_range2.Count > 0)
-                    {
-                    }
+                    {/* do nothing */}
                     else
-                    {
                         Body.CastSpell(OlcasgeanDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
-
-                    GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(1, player_to_port.Count) - 1]));
-                    TeleportTarget = port;
-
-                    Point3D point3 = new Point3D();
-                    point3.X = 40585; point3.Y = 63550; point3.Z = 11713;//roots location climb points to remove player from list ported_player
-                    Point3D point4 = new Point3D();
-                    point4.X = 40721; point4.Y = 61641; point4.Z = 11741;
-                    Point3D point5 = new Point3D();
-                    point5.X = 38257; point5.Y = 61933; point5.Z = 11706;
 
                     if (ported_player.Count > 0)
                     {
-                        if (ported_player.Contains(TeleportTarget))
+                        GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(1, player_to_port.Count) - 1]));
+                        TeleportTarget = port;
+
+                        if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50 && TeleportTarget.IsAlive && TeleportTarget != null)
                         {
-                            if (TeleportTarget.IsAlive)
-                            {
-                                if (TeleportTarget.IsWithinRadius(point4, 130) || TeleportTarget.IsWithinRadius(point5, 130) || TeleportTarget.IsWithinRadius(point3, 130))
-                                {
-                                    ported_player.Remove(TeleportTarget);//remove player from list ported_player so boss can port again him after player climb on roots
-                                }
-                            }
+                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPort), 20000);//do teleport every 20s
+                            teleport_player = true;
                         }
-                    }
-                    if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50)
-                    {
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPort), 20000);//do teleport every 20s
-                        teleport_player = true;
                     }
                 }
             }
@@ -946,41 +910,35 @@ namespace DOL.AI.Brain
                     {
                         case 1:
                             {
-                                if (TeleportTarget.IsAlive && !ported_player.Contains(TeleportTarget))
+                                if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 38399, 60893, 12242, 3548);
                                     TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
-                                    {
                                         ported_player.Add(TeleportTarget);
-                                    }
                                 }
                             }
                             break;
                         case 2:
                             {
-                                if (TeleportTarget.IsAlive && !ported_player.Contains(TeleportTarget))
+                                if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 38564, 64161, 12242, 2382);
                                     TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
-                                    {
                                         ported_player.Add(TeleportTarget);
-                                    }
                                 }
 
                             }
                             break;
                         case 3:
                             {
-                                if (TeleportTarget.IsAlive && !ported_player.Contains(TeleportTarget))
+                                if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 41580, 62325, 12242, 890);
                                     TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
-                                    {
                                         ported_player.Add(TeleportTarget);
-                                    }
                                 }
                             }
                             break;
@@ -1041,10 +999,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 0; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -1070,30 +1028,29 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get
-            {
-                return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
+            get {return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
             }
         }
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get{return 350;}
+            set{}
+        }
+        public override void WalkToSpawn(short speed)
+        {
+            if (IsAlive)
+                return;
+            base.WalkToSpawn(speed);
         }
         public override void Follow(GameObject target, int minDistance, int maxDistance)
         {
@@ -1168,16 +1125,12 @@ namespace DOL.AI.Brain
                         if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
                         {
                             if (!m_aggroTable.ContainsKey(player))
-                            {
                                 m_aggroTable.Add(player, 1);
-                            }
                         }
                         else
                         {
                             if (m_aggroTable.ContainsKey(player))
-                            {
                                 m_aggroTable.Remove(player);
-                            }
                         }
                     }
                 }
@@ -1210,7 +1163,7 @@ namespace DOL.AI.Brain
                     if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView)
                     {
                         PrepareToDD();
-                        if (Util.Chance(15))
+                        if (Util.Chance(15) && RandomTarget != null)
                         {
                             Body.TargetObject = RandomTarget;
                             if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
@@ -1271,9 +1224,7 @@ namespace DOL.AI.Brain
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
                         if (!AggroTable.ContainsKey(player))
-                        {
                             AggroTable.Add(player, 100);
-                        }
                     }
                 }
             }
@@ -1413,14 +1364,12 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-
                 PickRandomTarget();
             }
             base.Think();
         }
 
         public Spell m_AirDD;
-
         public Spell AirDD
         {
             get
@@ -1500,10 +1449,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void Die(GameObject killer)
@@ -1524,19 +1473,19 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 20000;
+                return 200000;
             }
         }
 
@@ -1835,10 +1784,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 50; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 50; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 50; // dmg reduction for melee dmg
-                default: return 70; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void StartAttack(GameObject target)
@@ -1868,29 +1817,24 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 20000;
+                return 200000;
             }
         }
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get{return 350;}
+            set{}
         }
 
         public override bool AddToWorld()
@@ -1965,9 +1909,7 @@ namespace DOL.AI.Brain
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                         {
                             if (!AggroTable.ContainsKey(player))
-                            {
                                 AggroTable.Add(player, 100);
-                            }
                         }
                     }
                 }
@@ -2115,7 +2057,7 @@ namespace DOL.GS
                 return 10000;
             }
         }
-        protected int Show_Effect(ECSGameTimer timer)
+        private int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
@@ -2128,13 +2070,13 @@ namespace DOL.GS
             }
             return 0;
         }
-        protected int DoCast(ECSGameTimer timer)
+        private int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
             return 0;
         }
-        public int RemoveFire(ECSGameTimer timer)
+        private int RemoveFire(ECSGameTimer timer)
         {
             if (IsAlive)
                 RemoveFromWorld();
@@ -2150,7 +2092,7 @@ namespace DOL.GS
             Name = "trail of fire";
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
+            //Flags ^= eFlags.STATUE;
             MaxSpeedBase = 0;
             Level = 80;
             Size = 10;
@@ -2161,12 +2103,13 @@ namespace DOL.GS
 
             TrailOfFireBrain sBrain = new TrailOfFireBrain();
             SetOwnBrain(sBrain);
-            Brain.Start();
+            //Brain.Start();
             bool success = base.AddToWorld();
             if (success)
             {
                 SetGroundTarget(X, Y, Z);
-                CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                if(!IsCasting)
+                    CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveFire), 8000);
             }
@@ -2186,7 +2129,7 @@ namespace DOL.GS
                     spell.ClientEffect = 368;
                     spell.Icon = 368;
                     spell.TooltipId = 368;
-                    spell.Damage = 180;
+                    spell.Damage = 220;
                     spell.Range = 1200;
                     spell.Radius = 450;
                     spell.SpellID = 11866;
@@ -2213,7 +2156,6 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 1500;
-            ThinkInterval = 1000;
         }
         public override void Think()
         {
@@ -2226,14 +2168,12 @@ namespace DOL.AI.Brain
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                         {
                             if (!AggroTable.ContainsKey(player))
-                            {
                                 AggroTable.Add(player, 100);
-                            }
                         }
                     }
                 }
                 Body.SetGroundTarget(Body.X,Body.Y,Body.Z);
-                Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
             }
             base.Think();
         }
@@ -2251,7 +2191,7 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 368;
                     spell.Icon = 368;
                     spell.TooltipId = 368;
-                    spell.Damage = 180;
+                    spell.Damage = 220;
                     spell.Range = 1200;
                     spell.Radius = 450;
                     spell.SpellID = 11720;
@@ -2289,10 +2229,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 60; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 60; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 60; // dmg reduction for melee dmg
-                default: return 70; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void Die(GameObject killer)
@@ -2305,9 +2245,7 @@ namespace DOL.GS
                     if (npc.IsAlive)
                     {
                         if (npc.Brain is GuardianEarthmenderBrain || npc.Brain is MagicalEarthmenderBrain || npc.Brain is NaturalEarthmenderBrain || npc.Brain is ShadowyEarthmenderBrain)
-                        {
                             npc.Die(null);
-                        }
                     }
                 }
             }
@@ -2326,29 +2264,21 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 700;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get
-            {
-                return 20000;
-            }
+            get{ return 200000;}
         }
         public override int AttackRange
         {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
+            get{return 350;}
+            set{}
         }
         public override bool AddToWorld()
         {
@@ -2361,6 +2291,7 @@ namespace DOL.GS
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
+            TetherRange = 890;
 
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
@@ -2417,9 +2348,7 @@ namespace DOL.AI.Brain
             if (Body.InCombat && HasAggro)
             {
                 if (Util.Chance(15))
-                {
                     Body.CastSpell(EarthRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                }
             }
             if (Body.IsOutOfTetherRange && HasAggro)
             {
@@ -2545,18 +2474,18 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 15000;
+                return 60000;
             }
         }
         public override bool AddToWorld()
@@ -2747,19 +2676,19 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 15000;
+                return 60000;
             }
         }
         public override bool AddToWorld()
@@ -2952,18 +2881,18 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 15000;
+                return 60000;
             }
         }
         public override bool AddToWorld()
@@ -3154,18 +3083,18 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.20;
         }
         public override int MaxHealth
         {
             get
             {
-                return 15000;
+                return 60000;
             }
         }
         public override bool AddToWorld()
@@ -3334,13 +3263,8 @@ namespace DOL.GS
         }
         public override int AttackRange
         {
-            get
-            {
-                return 200;
-            }
-            set
-            {
-            }
+            get{return 200;}
+            set{}
         }
         public override void DropLoot(GameObject killer)//no loot
         {
@@ -3390,15 +3314,12 @@ namespace DOL.AI.Brain
             AggroRange = 450;
             ThinkInterval = 3000;
         }
-
         public override void Think()
         {
             if (Body.InCombat || HasAggro)
             {
                 if (!Body.IsCasting)
-                {
                     Body.CastSpell(VortexDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                }
             }
             base.Think();
         }
@@ -3418,7 +3339,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Vortex's Root";
                     spell.Icon = 11027;
                     spell.TooltipId = 11027;
-                    spell.Damage = 120;
+                    spell.Damage = 150;
                     spell.Value = 50;
                     spell.Duration = 36;
                     spell.Range = 500;
@@ -3444,7 +3365,6 @@ namespace DOL.GS
     public class WaterfallAntipass : GameNPC
     {
         public WaterfallAntipass() : base() { }
-
         public override bool AddToWorld()
         {
             Model = 665;
@@ -3480,7 +3400,6 @@ namespace DOL.AI.Brain
             AggroRange = 250;
             ThinkInterval = 1000;
         }
-
         public override void Think()
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
@@ -3490,15 +3409,12 @@ namespace DOL.AI.Brain
                     if (player.IsAlive)
                     {
                         if (player.Client.Account.PrivLevel == 1)
-                        {
                             player.MoveTo(Body.CurrentRegionID, 39664, 60792, 11542, 4078);
-                        }
                     }
                 }
             }
             base.Think();
         }
-
     }
 }
 #endregion
@@ -3509,7 +3425,6 @@ namespace DOL.GS
     public class OlcasgeanEffect : GameNPC
     {
         public OlcasgeanEffect() : base() { }
-
         public override bool AddToWorld()
         {
             Model = 665;
@@ -3542,9 +3457,7 @@ namespace DOL.GS
                 foreach (GamePlayer player in this.GetPlayersInRadius(8000))
                 {
                     if (player != null)
-                    {
                         player.Out.SendSpellEffectAnimation(this, this, 11027, 0, false, 0x01);
-                    }
                 }
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 3000);
             }

@@ -10,6 +10,7 @@ public class News
 {
     private IMemoryCache _cache;
 
+    private int _numNews = 100;
     public News()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
@@ -45,7 +46,7 @@ public class News
         
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectAllObjects().OrderBy(a => a.CreationDate).ToList();
+            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectAllObjects().OrderByDescending(a => a.CreationDate).Take(_numNews).ToList();
             
             foreach (DBNews news in newsList)
             {
@@ -69,7 +70,7 @@ public class News
         
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Realm").IsEqualTo(realm))  .OrderBy(a => a.CreationDate).ToList();
+            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Realm").IsEqualTo(realm)).OrderByDescending(a => a.CreationDate).Take(_numNews).ToList();
             
             foreach (DBNews news in newsList)
             {
@@ -93,7 +94,7 @@ public class News
         
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Type").IsEqualTo(type))  .OrderBy(a => a.CreationDate).ToList();
+            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Type").IsEqualTo(type)).OrderByDescending(a => a.CreationDate).Take(_numNews).ToList();
             
             foreach (DBNews news in newsList)
             {

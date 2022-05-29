@@ -9,14 +9,16 @@ namespace DOL.GS.Scripts
 {
     public class SpectralProvisioner : GameEpicBoss
     {
+	public SpectralProvisioner()
+		: base() { }
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-				default: return 55; // dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -44,11 +46,11 @@ namespace DOL.GS.Scripts
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 	    {
-		    return 800;
+		    return 350;
 	    }
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == "CCImmunity")
+			if (IsAlive && keyName == "CCImmunity")
 				return true;
 
 			return base.HasAbility(keyName);
@@ -56,7 +58,7 @@ namespace DOL.GS.Scripts
 		public override double GetArmorAbsorb(eArmorSlot slot)
 	    {
 		    // 85% ABS is cap.
-		    return 0.45;
+		    return 0.20;
 	    }
 
 	    public override short MaxSpeedBase
@@ -64,7 +66,7 @@ namespace DOL.GS.Scripts
 		    get => (short)(191 + (Level * 2));
 		    set => m_maxSpeedBase = value;
 	    }
-	    public override int MaxHealth => 20000;
+	    public override int MaxHealth => 150000;
 
 	    public override int AttackRange
 	    {
@@ -107,7 +109,7 @@ namespace DOL.GS.Scripts
 		}
 		public override void WalkToSpawn(short speed)
 		{
-			if (this.CurrentRegionID == 60) //if region is caer sidi
+			if (CurrentRegionID == 60) //if region is caer sidi
 			{
 				if (SkeletalSacristanBrain.ToSpawn == true)
 				{
@@ -143,9 +145,7 @@ namespace DOL.AI.Brain
 				foreach (GamePlayer player in Body.GetPlayersInRadius(500))
 				{
 					if (player.IsAlive)
-					{
 						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
-					}
 				}
 			}
 		}
@@ -180,9 +180,7 @@ namespace DOL.AI.Brain
 						if(npc != null)
                         {
 							if(npc.IsAlive && npc.PackageID =="ProvisionerBaf")
-                            {
 								AddAggroListTo(npc.Brain as StandardMobBrain);
-							}
                         }
                     }
                 }
@@ -193,17 +191,13 @@ namespace DOL.AI.Brain
 						if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 						{
 							if (!AggroTable.ContainsKey(player))
-							{
 								AggroTable.Add(player, 10);
-							}
 						}
 					}
 					if (player == null || player.Client.Account.PrivLevel != 1 || player.IsAlive == false)
 					{
 						if (AggroTable.Count > 0)
-						{
 							ClearAggroList();
-						}
 					}
 				}
 				if (!HasAggressionTable())
@@ -300,6 +294,7 @@ namespace DOL.AI.Brain
 				if (Body.InCombatInLast(40 * 1000) == false && this.Body.InCombatInLast(45 * 1000))
 				{
 					ClearAggroList();
+					Body.Health = Body.MaxHealth;
 				}
 			}
 			base.Think();

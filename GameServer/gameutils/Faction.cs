@@ -38,10 +38,10 @@ namespace DOL.GS
 		public Faction()
 		{
 			m_name = String.Empty;
-			m_friendFactions = new ArrayList(1);
-			m_enemyFactions = new ArrayList(1);
-			m_playerxFaction = new Hashtable(1);
-			m_updatePlayer = new ArrayList(1);
+			m_friendFactions = new ArrayList();
+			m_enemyFactions = new ArrayList();
+			m_playerxFaction = new Hashtable();
+			m_updatePlayer = new ArrayList();
 		}
 
 		#region DB
