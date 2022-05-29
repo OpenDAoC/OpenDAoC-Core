@@ -32,10 +32,9 @@ namespace DOL.GS.RealmAbilities
 		{
 			return level switch
 			{
-				1 => 3,
-				2 => 6,
-				3 => 10,
-				_ => 0
+				1 => 6,
+				2 => 10,
+				_ => 3
 			};
 		}
 
