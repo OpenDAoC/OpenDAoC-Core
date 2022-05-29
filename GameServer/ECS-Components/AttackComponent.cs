@@ -323,7 +323,7 @@ namespace DOL.GS
                             case eObjectType.Thrown:
                                 range = 1160;
                                 if (weapon.Name.ToLower().Contains("weighted"))
-                                    range *= 1450;
+                                    range = 1450;
                                 break;
                             default:
                                 range = 1200;
