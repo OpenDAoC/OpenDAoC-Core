@@ -779,7 +779,7 @@ namespace DOL.AI.Brain
                     GameLiving living = aggros.Current.Key;
 
                     // check to make sure this target is still valid
-                    if (living.IsAlive == false ||
+                    if (living == null || living.IsAlive == false ||
                         living.ObjectState != GameObject.eObjectState.Active ||
                         living.IsStealthed ||
                         Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
