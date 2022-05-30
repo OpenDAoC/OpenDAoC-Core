@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Name = "Rune Of Decimation";
             m_dbspell.Icon = 4254;
             m_dbspell.ClientEffect = 7153;
-            m_dbspell.Damage = 700;
+            m_dbspell.Damage = 650;
             m_dbspell.DamageType = (int)eDamageType.Energy;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = 0;

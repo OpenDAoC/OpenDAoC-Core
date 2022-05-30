@@ -24,12 +24,14 @@ namespace DOL.GS.Effects
         public override void OnEffectPulse()
         {
             bool shouldDetonate = false;
+            GameLiving triggeringLiving = null;
             List<GameLiving> DetonateTargets = new List<GameLiving>();
             foreach (GamePlayer player in Owner?.GetPlayersInRadius((ushort)SpellHandler.Spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Owner, player, true))
                 {
                     shouldDetonate = true;
+                    if (triggeringLiving == null) triggeringLiving = player; 
                     DetonateTargets.Add(player);
                 }
             }
@@ -39,6 +41,7 @@ namespace DOL.GS.Effects
                 if (GameServer.ServerRules.IsAllowedToAttack(Owner, living, true))
                 {
                     shouldDetonate = true;
+                    if (triggeringLiving == null) triggeringLiving = living;
                     DetonateTargets.Add(living);
                 }
             }
@@ -52,6 +55,8 @@ namespace DOL.GS.Effects
                 
                 foreach (var target in DetonateTargets)
                 {
+                    if (triggeringLiving == null) continue;
+                    
                     AttackData ad = new AttackData();
                     ad.Attacker = SpellHandler.Caster;
                     ad.Target = target;
@@ -59,7 +64,7 @@ namespace DOL.GS.Effects
                     ad.SpellHandler = SpellHandler;
                     ad.AttackResult = eAttackResult.HitUnstyled;
                     ad.IsSpellResisted = false;
-                    ad.Damage = CalculateDamageWithFalloff((int)SpellHandler.Spell.Damage, Owner, target);
+                    ad.Damage = CalculateDamageWithFalloff((int)SpellHandler.Spell.Damage, triggeringLiving, target);
                     ad.DamageType = SpellHandler.Spell.DamageType;
                     
                     ad.Modifier = (int)(ad.Damage * (ad.Target.GetResist(ad.DamageType)) / -100.0);
