@@ -59,7 +59,7 @@ namespace DOL.GS.Effects
                     ad.SpellHandler = SpellHandler;
                     ad.AttackResult = eAttackResult.HitUnstyled;
                     ad.IsSpellResisted = false;
-                    ad.Damage = (int)SpellHandler.Spell.Damage;
+                    ad.Damage = CalculateDamageWithFalloff((int)SpellHandler.Spell.Damage, Owner, target);
                     ad.DamageType = SpellHandler.Spell.DamageType;
                     
                     ad.Modifier = (int)(ad.Damage * (ad.Target.GetResist(ad.DamageType)) / -100.0);
@@ -91,6 +91,14 @@ namespace DOL.GS.Effects
             
             
             base.OnEffectPulse();
+        }
+        
+        private int CalculateDamageWithFalloff(int initialDamage, GameLiving initTarget, GameLiving aetarget)
+        {
+            //Console.WriteLine($"initial {initialDamage} caster {initTarget} target {aetarget}");
+            int modDamage = (int)Math.Round((decimal) (initialDamage * ((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)));
+            //Console.WriteLine($"distance {((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)} Mod {modDamage}");
+            return modDamage;
         }
     }
 }
