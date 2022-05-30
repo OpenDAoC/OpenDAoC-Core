@@ -13,12 +13,13 @@ namespace DOL.GS.Effects
         {
             EffectType = eEffect.RuneOfDecimation;
             this.NextTick = 1;
-            EffectService.RequestStartEffect(this);
+            //EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 4254; } }
+        public override ushort Icon { get { return 7153; } }
+        
         public override string Name { get { return "Rune Of Decimation"; } }
-        public override bool HasPositiveEffect { get { return true; } }
+        public override bool HasPositiveEffect { get { return false; } }
 
         public override void OnEffectPulse()
         {
@@ -46,13 +47,40 @@ namespace DOL.GS.Effects
             {
                 foreach (GamePlayer i_player in Owner.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
                 {
-                    i_player.Out.SendMessage($"{SpellHandler.Caster}'s Rune of Decimation trap detonates!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    i_player.Out.SendMessage($"{SpellHandler.Caster.Name}'s Rune of Decimation trap detonates!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                 }
                 
                 foreach (var target in DetonateTargets)
                 {
-                    target.TakeDamage(SpellHandler.Caster, SpellHandler.Spell.DamageType, (int) SpellHandler.Spell.Damage, 0);
+                    AttackData ad = new AttackData();
+                    ad.Attacker = SpellHandler.Caster;
+                    ad.Target = target;
+                    ad.AttackType = AttackData.eAttackType.Spell;
+                    ad.SpellHandler = SpellHandler;
+                    ad.AttackResult = eAttackResult.HitUnstyled;
+                    ad.IsSpellResisted = false;
+                    ad.Damage = (int)SpellHandler.Spell.Damage;
+                    ad.DamageType = SpellHandler.Spell.DamageType;
+                    
+                    ad.Modifier = (int)(ad.Damage * (ad.Target.GetResist(ad.DamageType)) / -100.0);
+                    ad.Damage += ad.Modifier;
+                    
+                    if (target is GamePlayer pl)
+                    {
+                        pl.Out.SendMessage($"You take {ad.Damage}({ad.Modifier}) damage from a Rune of Decimation!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        pl.Out.SendSpellCastAnimation(Owner, 7153, 1);
+                    }
+
+                    if(SpellHandler.Caster is GamePlayer c)
+                        c.Out.SendMessage($"Your Rune of Decimation deals {ad.Damage}({ad.Modifier}) damage to {target?.Name}!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                    
+                    target.DealDamage(ad);
+                    //target.TakeDamage(SpellHandler.Caster, SpellHandler.Spell.DamageType, (int) SpellHandler.Spell.Damage, 0);
                 }
+                
+                if(SpellHandler.Caster is GamePlayer pl2)
+                    pl2.Out.SendSpellCastAnimation(Owner, 7153, 1);
+                
                 
                 Owner.Die(Owner);
             }
