@@ -14493,7 +14493,7 @@ namespace DOL.GS
 
             int range = 0;
             bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Camouflage) != null;
-            if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
+            if (HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
             {
                 // we have detect hidden and enemy don't = higher range
                 range = levelDiff * 50 + 250; // Detect Hidden advantage
@@ -14502,7 +14502,7 @@ namespace DOL.GS
             else
             {
                 //range = levelDiff * 20 + 125; // Normal detection range
-                range = levelDiff * 20 + 175; 
+                range = levelDiff * 20 + 125; 
             }
 
             // Mastery of Stealth Bonus
