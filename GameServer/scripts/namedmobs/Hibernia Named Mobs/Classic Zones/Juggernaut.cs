@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -16,6 +17,9 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Juggernaut Initializing...");
 		}
+		public static int TauntID = 103;
+		public static int TauntClassID = 2; //armsman
+		public static Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -55,18 +59,40 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
+		#region Stats
+		public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+		public override short Piety { get => base.Piety; set => base.Piety = 200; }
+		public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+		public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
+		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+		public override short Strength { get => base.Strength; set => base.Strength = 500; }
+		#endregion
 		public override bool AddToWorld()
 		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12433);
-			LoadTemplate(npcTemplate);
-			Strength = npcTemplate.Strength;
-			Dexterity = npcTemplate.Dexterity;
-			Constitution = npcTemplate.Constitution;
-			Quickness = npcTemplate.Quickness;
-			Piety = npcTemplate.Piety;
-			Intelligence = npcTemplate.Intelligence;
-			Empathy = npcTemplate.Empathy;
+			Name = "Juggernaut";
+			Model = 137;
+			Level = 75;
+			Size = 200;
+			ParryChance = 50;
+			MaxDistance = 3500;
+			TetherRange = 3600;
+			if (!Styles.Contains(taunt))
+				Styles.Add(taunt);
 
+			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 403, 43, 0, 0);//modelID,color,effect,extension
+			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 405, 43);
+			template.AddNPCEquipment(eInventorySlot.LegsArmor, 404, 43);
+			template.AddNPCEquipment(eInventorySlot.HandsArmor, 406, 43, 0, 0);
+			template.AddNPCEquipment(eInventorySlot.FeetArmor, 407, 43, 0, 0);
+			template.AddNPCEquipment(eInventorySlot.HeadArmor, 831, 43, 0, 0);
+			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 577, 0, 0);
+			Inventory = template.CloseTemplate();
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+
+			VisibleActiveWeaponSlots = 34;
+			MeleeDamageType = eDamageType.Slash;
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			EpicJuggernautBrain sbrain = new EpicJuggernautBrain();
 			SetOwnBrain(sbrain);
@@ -97,6 +123,8 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
+			if (HasAggro && Body.TargetObject != null)
+				Body.styleComponent.NextCombatStyle = EpicJuggernaut.taunt;
 			base.Think();
 		}
 	}
