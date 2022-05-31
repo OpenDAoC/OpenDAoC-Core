@@ -35,7 +35,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles ground target changes
 		/// </summary>
-		protected class ChangeGroundTargetHandler : RegionAction
+		protected class ChangeGroundTargetHandler : RegionECSAction
 		{
 			protected readonly ushort m_flag;
 
@@ -73,7 +73,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 				player.GroundTargetInView = ((m_flag & 0x100) != 0);
@@ -82,14 +82,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (!player.GroundTargetInView)
 					player.Out.SendMessage("Your ground target is not visible!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-				if (player.SiegeWeapon != null)
+				if (player.SiegeWeapon != null && player.SiegeWeapon.Owner == player)
 				{
 					player.SiegeWeapon.Move();
-					return;
+					return 0;
 				}
-				if (player.Steed != null && player.Steed.MAX_PASSENGERS >= 1)
+				if (player.Steed != null && player.Steed.MAX_PASSENGERS >= 1 && player.Steed.OwnerID == player.InternalID)
 				{
-					if (player.Steed is GameTaxiBoat) return;
+					if (player.Steed is GameTaxiBoat) return 0;
 					if (player.Steed is GameBoat)
 						// Ichi - && player.GroundTarget.Z > player.CurrentZone.ZoneRegion.WaterLevel) return;
 					{
@@ -97,7 +97,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							player.Out.SendMessage("You usher your boat forward.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							player.Steed.WalkTo(player.GroundTarget, player.Steed.MaxSpeed);
-							return;
+							return 0;
 						}
 					}
 
@@ -105,11 +105,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.Out.SendMessage("The " + player.Steed.Name + " does not yet have enough passengers to move!",
 						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						return 0;
 					}
 					player.Steed.WalkTo(player.GroundTarget, player.Steed.MaxSpeed);
-					return;
+					return 0;
 				}
+
+				return 0;
 			}
 		}
 	}

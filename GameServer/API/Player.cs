@@ -94,6 +94,13 @@ public class Player
         
         return realmRank;
     }
+
+    public bool GetDiscord(string accountName)
+    {
+        var account = DOLDB<Account>.SelectObject(DB.Column("Name").IsEqualTo(accountName));
+        Console.WriteLine(account.DiscordID);
+        return account.DiscordID is not (null or "");
+    }
     
     public static string RealmIDtoString(int realm)
     {

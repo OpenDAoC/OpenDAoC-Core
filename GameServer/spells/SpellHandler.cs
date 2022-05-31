@@ -792,7 +792,7 @@ namespace DOL.GS.Spells
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
-				if (nextSpellAvailTime > m_caster.CurrentRegion.Time)
+				if (nextSpellAvailTime > m_caster.CurrentRegion.Time && Spell.CastTime > 0) // instant spells ignore the potion cast delay
 				{
 					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -2384,6 +2384,8 @@ namespace DOL.GS.Spells
             {
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
             }*/
+			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing)
+				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}
@@ -3174,6 +3176,7 @@ namespace DOL.GS.Spells
 						case (byte)eSpellType.DirectDamage:
 						case (byte)eSpellType.MagicalStrike:
 						case (byte)eSpellType.SiegeArrow:
+						case (byte)eSpellType.Lifedrain:
 						case (byte)eSpellType.SiegeDirectDamage:
 						case (byte)eSpellType.SummonTheurgistPet:
 						case (byte)eSpellType.DirectDamageWithDebuff:
@@ -5279,6 +5282,9 @@ namespace DOL.GS.Spells
 				//	break;
 				case eSpellType.FatigueConsumptionBuff:
 					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% less endurance.");
+					break;
+				case eSpellType.FatigueConsumptionDebuff:
+					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% more endurance.");
 					break;
 				case eSpellType.MeleeDamageBuff:
 					dw.AddKeyValuePair("delve_string", $"Increases your melee damage by {(int)Spell.Value}%.");

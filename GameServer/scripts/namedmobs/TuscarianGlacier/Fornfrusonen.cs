@@ -12,42 +12,35 @@ namespace DOL.GS
         public Fornfrusenen() : base()
         {
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override void Die(GameObject killer) //on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(4000))
@@ -57,16 +50,12 @@ namespace DOL.GS
                     if (npc.IsAlive)
                     {
                         if (npc.Brain is FornShardBrain)
-                        {
                             npc.RemoveFromWorld();
-                        }
                     }
                 }
             }
-
             base.Die(killer);
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161047);
@@ -81,18 +70,17 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             MaxSpeedBase = 0;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
-            AbilityBonus[(int) eProperty.Resist_Body] = 15;
-            AbilityBonus[(int) eProperty.Resist_Heat] = 15;
-            AbilityBonus[(int) eProperty.Resist_Cold] = 15;
-            AbilityBonus[(int) eProperty.Resist_Matter] = 15;
-            AbilityBonus[(int) eProperty.Resist_Energy] = 15;
-            AbilityBonus[(int) eProperty.Resist_Spirit] = 15;
-            AbilityBonus[(int) eProperty.Resist_Slash] = 25;
-            AbilityBonus[(int) eProperty.Resist_Crush] = 25;
-            AbilityBonus[(int) eProperty.Resist_Thrust] = 25;
+            AbilityBonus[(int) eProperty.Resist_Body] = 70;
+            AbilityBonus[(int) eProperty.Resist_Heat] = 70;
+            AbilityBonus[(int) eProperty.Resist_Cold] = 70;
+            AbilityBonus[(int) eProperty.Resist_Matter] = 70;
+            AbilityBonus[(int) eProperty.Resist_Energy] = 70;
+            AbilityBonus[(int) eProperty.Resist_Spirit] = 70;
+            AbilityBonus[(int) eProperty.Resist_Slash] = 40;
+            AbilityBonus[(int) eProperty.Resist_Crush] = 40;
+            AbilityBonus[(int) eProperty.Resist_Thrust] = 40;
 
             FornfrusenenBrain sbrain = new FornfrusenenBrain();
             SetOwnBrain(sbrain);
@@ -186,7 +174,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 FornInCombat = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
@@ -195,9 +183,7 @@ namespace DOL.AI.Brain
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is FornShardBrain)
-                            {
                                 npc.RemoveFromWorld(); //remove adds here
-                            }
                         }
                     }
                 }
@@ -205,14 +191,13 @@ namespace DOL.AI.Brain
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
-
             if (Body.InCombat && HasAggro)
             {
                 if (FornInCombat == false)
@@ -221,12 +206,10 @@ namespace DOL.AI.Brain
                     FornInCombat = true;
                 }
             }
-
             base.Think();
         }
 
         public static bool FornInCombat = false;
-
         public void SpawnShards()
         {
             for (int i = 0; i < Util.Random(6, 10); i++)
@@ -251,9 +234,7 @@ namespace DOL.GS
         public FornfrusenenShard() : base()
         {
         }
-
         public static GameNPC Boss = null;
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GamePet)
@@ -265,9 +246,7 @@ namespace DOL.GS
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is FornfrusenenBrain)
-                            {
                                 Boss = npc; //pick boss here
-                            }
                         }
                     }
                 }
@@ -306,18 +285,16 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 500;
+            return 300;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.35;
+            return 0.15;
         }
-
         public override int MaxHealth
         {
-            get { return 10000; }
+            get { return 20000; }
         }
 
         public override void Die(GameObject killer)
@@ -339,7 +316,6 @@ namespace DOL.GS
                     }
                 }
             }
-
             base.Die(killer);
         }
 
@@ -393,7 +369,6 @@ namespace DOL.AI.Brain
             AggroRange = 0;
             ThinkInterval = 2000;
         }
-
         public override void Think()
         {
             base.Think();

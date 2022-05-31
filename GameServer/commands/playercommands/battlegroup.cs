@@ -107,6 +107,9 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "battlegroup"))
 				return;
 
+			if (client == null)
+				return;
+
 			if (args.Length < 2)
 			{
 				PrintHelp(client);

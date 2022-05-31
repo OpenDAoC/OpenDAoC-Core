@@ -306,7 +306,8 @@ Scripts.Player.Guild.Help.GuildAInvite:			'/gc ainvite' to invite another guild 
 Scripts.Player.Guild.Help.GuildALeave:			'/gc aleave' to remove your guild from an alliance
 Scripts.Player.Guild.Help.GuildAlli:			'/gc alliance' to show information on the alliance	
 Scripts.Player.Guild.Help.GuildAMotd:			'/gc amotd <text>' to set the message of the day of the alliance's guild	
-Scripts.Player.Guild.Help.GuildARemove:			'/gc aremove' to removes your entire guild from an alliance	
+Scripts.Player.Guild.Help.GuildARemove:			'/gc aremove' to removes your entire guild from an alliance
+Scripts.Player.Guild.Help.GuildALeader:			'/gc aleader' to promote another guild to alliance leader
 Scripts.Player.Guild.Help.GuildARemoveAlli:		'/gc aremove alliance [#]' to Remove the specified guild (listed by number) from the alliance	
 Scripts.Player.Guild.Help.GuildAutoRemove:		'/gc autoremove <playername>' 	
 Scripts.Player.Guild.Help.GuildAutoRemoveAcc:		'/gc autoremove account <playername>'	

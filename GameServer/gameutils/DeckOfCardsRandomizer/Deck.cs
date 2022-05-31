@@ -11,8 +11,8 @@ namespace DOL.GS.Utils;
 
 public class PlayerDeck
 {
-    private const int NUM_BONUS_DECKS = 2;
-    private const int NUM_NORMAL_DECKS = 2;
+    private const int NUM_BONUS_DECKS = 1;
+    private const int NUM_NORMAL_DECKS = 1;
     private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * 50;
 
     private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
@@ -92,7 +92,7 @@ public class PlayerDeck
         //append our ints together
         //if we are unable to parse numbers for any reason, use a 0
         int append;
-        if (!int.TryParse(first.ToString() + second.ToString(), out append)) append = 0;
+        if (!int.TryParse(first.ToString() + second.ToString("D2"), out append)) append = 0;
             
         
         //divide by max possible value to simulate 0-1 output of doubles

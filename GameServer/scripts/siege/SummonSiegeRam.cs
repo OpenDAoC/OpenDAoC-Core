@@ -23,6 +23,21 @@ namespace DOL.GS.Spells
 			    return false;
 		    }
 
+            //Limit 2 Rams in a certain radius
+			int ramSummonRadius = 200;
+            int ramsInRadius = 0;
+			foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.X, Caster.Y, Caster.Z, (ushort)(ramSummonRadius), false, false))
+			{
+				if(npc is GameSiegeRam ram && ram.Realm == Caster.Realm)
+					ramsInRadius++;	
+			}
+
+			if (ramsInRadius >= 2)
+			{
+				MessageToCaster("Too many rams in this area and you cannot summon another ram here!", PacketHandler.eChatType.CT_SpellResisted);
+                return false;
+			}
+
             return base.StartSpell(target);
         }
 
@@ -40,6 +55,7 @@ namespace DOL.GS.Spells
             ram.X = Caster.X;
             ram.Y = Caster.Y;
             ram.Z = Caster.Z;
+            ram.Heading = Caster.Heading;
             ram.CurrentRegion = Caster.CurrentRegion;
             ram.Realm = Caster.Realm;
 

@@ -320,8 +320,14 @@ namespace DOL.GS
                             case eObjectType.CompositeBow:
                                 range = 1600;
                                 break;
+                            case eObjectType.Thrown:
+                                range = 1160;
+                                if (weapon.Name.ToLower().Contains("weighted"))
+                                    range = 1450;
+                                break;
                             default:
                                 range = 1200;
+                                
                                 break; // shortbow, xbow, throwing
                         }
 
@@ -509,6 +515,10 @@ namespace DOL.GS
 
                 double effectiveness = 1.00;
                 double damage = p.WeaponDamage(weapon) * weapon.SPD_ABS * 0.1;
+                
+                //slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
+                //EDPS * (your WS/target AF) * (1-absorb) * slow weap bonus * SPD * 2h weapon bonus * Arrow Bonus 
+                damage *= 1 + ((weapon.SPD_ABS - 20) * 0.03) * .1;
 
                 if (weapon.Hand == 1) // two-hand
                 {
@@ -536,10 +546,6 @@ namespace DOL.GS
                                 break; //Broadhead (X-heavy) +25%
                         }
                     }
-
-                    //slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
-                    //EDPS * (your WS/target AF) * (1-absorb) * slow weap bonus * SPD * 2h weapon bonus * Arrow Bonus 
-                    damage *= 1 + ((weapon.SPD_ABS - 20) * 0.03) * .1;
 
                     //Ranged damage buff,debuff,Relic,RA
                     effectiveness += p.GetModified(eProperty.RangedDamage) * 0.01;
@@ -1614,7 +1620,11 @@ namespace DOL.GS
                         0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double armorMod = (1 + ad.Target.GetArmorAF(ad.ArmorHitLocation)) /
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 20 / 50d : 1;
+                    if (playerBaseAF < 1)
+                        playerBaseAF = 1;
+
+                    double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
                                       (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     if (armorMod <= 0) armorMod = 0.1;
                     
@@ -1630,9 +1640,9 @@ namespace DOL.GS
                             $"Base WS: {weaponskillCalc.ToString("0.00")} | Calc WS: {(weaponskillCalc * specModifier * strengthRelicCount).ToString("0.00")} | SpecMod: {specModifier.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                         weaponskiller.Out.SendMessage(
-                            $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation)).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
+                            $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
+                        weaponskiller.Out.SendMessage($"Attack Speed: {AttackSpeed(weapon)/1000.0}s | Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
@@ -1744,8 +1754,8 @@ namespace DOL.GS
                 ad.Damage = (int) damage;
 
                 // apply total damage cap
-                ad.UncappedDamage = ad.Damage;
                 // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
+                ad.UncappedDamage = ad.Damage;
                 if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
                 else
@@ -1999,12 +2009,8 @@ namespace DOL.GS
                     if (owner.IsObjectInFront(ad.Target, 120) && ad.Target.IsMoving)
                     {
                         bool preCheck = false;
-                        if (ad.Target is GamePlayer) //only start if we are behind the player
-                        {
-                            float angle = ad.Target.GetAngle(ad.Attacker);
-                            if (angle >= 150 && angle < 210) preCheck = true;
-                        }
-                        else preCheck = true;
+                        float angle = ad.Target.GetAngle(ad.Attacker);
+                        if (angle >= 150 && angle < 210) preCheck = true;
 
                         if (preCheck)
                         {
@@ -2769,10 +2775,10 @@ namespace DOL.GS
                     }
             }
 
-            if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
-            {
-                missrate >>= 1; //halved
-            }
+            // if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
+            // {
+            //     missrate >>= 1; //halved
+            // }
             
             //check for dirty trick fumbles before misses
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
@@ -2792,7 +2798,6 @@ namespace DOL.GS
                 {
                     rando = Util.CryptoNextDouble();
                 }
-
 
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
@@ -3436,7 +3441,7 @@ namespace DOL.GS
                     else if (weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND ||
                              weapon.Item_Type == Slot.TWOHAND)
                     {
-                        result += p.GetModified(eProperty.MeleeDamage) * 0.01;
+                        result *= 1 + p.GetModified(eProperty.MeleeDamage) * 0.01;
                     }
 
                     if (result <= 0) //Checking if 0 or negative
@@ -3566,7 +3571,7 @@ namespace DOL.GS
                     if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
                     {
                         pl.Out.SendMessage(
-                            $"Chance for 2 hits: {hitChance}% | 3 hits: {specLevel >> 2}% | 4 hits: {specLevel >> 4}% \n",
+                            $"Chance for 2 hits: {hitChance}% | 3 hits: { (specLevel > 25 ? (specLevel >> 2 ) : 0)}% | 4 hits: {(specLevel > 40 ? (specLevel >> 4 ) : 0)}% \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
                     
@@ -3574,11 +3579,11 @@ namespace DOL.GS
                         return 1; // 1 hit = spec/2
                     
                     hitChance += specLevel >> 2;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 25)
                         return 2; // 2 hits = spec/4
                     
                     hitChance += specLevel >> 4;
-                    if (randomChance < hitChance)
+                    if (randomChance < hitChance && specLevel > 40)
                         return 3; // 3 hits = spec/16
 
                     return 0;

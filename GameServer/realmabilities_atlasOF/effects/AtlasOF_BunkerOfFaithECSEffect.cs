@@ -1,21 +1,16 @@
 using System;
 using DOL.Events;
+using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class BunkerOfFaithECSEffect : ECSGameAbilityEffect
+    public class BunkerOfFaithECSEffect : StatBuffECSEffect
     {
-        public BunkerOfFaithECSEffect(ECSGameEffectInitParams initParams)
-            : base(initParams)
-        {
-            EffectType = eEffect.BunkerOfFaith;
-            EffectService.RequestStartEffect(this);
-        }
-
-        public override ushort Icon { get { return 4242; } }
-        public override string Name { get { return "Bunker of Faith"; } }
+        public ushort Icon { get { return 4242; } }
+        public string Name { get { return "Bunker of Faith"; } }
         public override bool HasPositiveEffect { get { return true; } }
 
+        /*
         public override void OnStartEffect()
         {
             if (OwnerPlayer == null)
@@ -30,7 +25,7 @@ namespace DOL.GS.Effects
                 return;
             GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             OwnerPlayer.AbilityBonus[(int)eProperty.ArmorAbsorption] -= (int)Effectiveness;
-        }
+        }*/
 
         /// <summary>
         /// Called when a player leaves the game
@@ -43,8 +38,13 @@ namespace DOL.GS.Effects
             GamePlayer player = sender as GamePlayer;
             if (player != null && player.effectListComponent != null)
             {
-                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.BunkerOfFaith));
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ArmorAbsorptionBuff));
             }
+        }
+
+        public BunkerOfFaithECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        {
+            EffectType = eEffect.ArmorAbsorptionBuff;
         }
     }
 }

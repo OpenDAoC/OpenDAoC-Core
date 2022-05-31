@@ -450,7 +450,14 @@ namespace DOL.Database
 
 		public virtual int Weight
 		{
-			get { return (int)Math.Round(Template.Weight * m_count * .5) ; }
+			get
+			{
+				if (Object_Type is (43 or 46)) // halved weight for arrows and poisons
+				{
+					return (int)Math.Round((double)(Template.Weight * m_count * 0.6)) ;
+				}
+				return (int)Math.Round((double)(Template.Weight * m_count)) ;
+			}
 			set { Template.Weight = value; }
 		}
 

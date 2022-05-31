@@ -39,6 +39,7 @@ namespace DOL.GS.Spells
             bal.X = Caster.X;
             bal.Y = Caster.Y;
             bal.Z = Caster.Z;
+            bal.Heading = Caster.Heading;
             bal.CurrentRegion = Caster.CurrentRegion;
             bal.Model = 0x0A55;
             bal.Level = 3;

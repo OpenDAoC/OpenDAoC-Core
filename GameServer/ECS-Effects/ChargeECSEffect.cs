@@ -36,7 +36,7 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // "You begin to charge wildly!"
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.StartCharge"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage($"You are now charging {OwnerPlayer.TargetObject?.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 // "{0} begins charging wildly!"
                 Message.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaStartCharge",OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
             }

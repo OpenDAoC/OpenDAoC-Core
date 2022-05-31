@@ -872,6 +872,7 @@ namespace DOL.GS
         /// <returns>0</returns>
         protected int LinkdeathTimerCallback(ECSGameTimer callingTimer)
         {
+            log.Debug("call back");
             //If we died during our callback time we release
             try
             {
@@ -935,12 +936,16 @@ namespace DOL.GS
                 m_quitTimer = null;
             }
 
-            int secondsToQuit = QuitTime;
+            // int secondsToQuit = QuitTime;
+            int secondsToQuit = 60;
+
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
-            ECSGameTimer timer = new ECSGameTimer(this); // make sure it is not stopped!
-            timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
-            timer.StartTick = 1 + secondsToQuit * 1000;
+            log.Debug("starting timer");
+            ECSGameTimer timer = new ECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
+            
+            // timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
+            // timer.StartTick = 1 + secondsToQuit * 1000;
             timer.Start();
 
             if (TradeWindow != null)
@@ -1870,7 +1875,7 @@ namespace DOL.GS
             StartEnduranceRegeneration();
 
             var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
-            
+            /*
             foreach (var item in this.Inventory.EquippedItems)
             {
                 //max 2 charges
@@ -1894,7 +1899,7 @@ namespace DOL.GS
                         Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                 }
-            }
+            }*/
             
             UpdatePlayerStatus();
 
@@ -2548,6 +2553,8 @@ namespace DOL.GS
                 m_powerRegenerationTimer = new ECSGameTimer(this);
                 m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
             }
+
+            PowerRegenStackingBonus = 0;
             m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
         }
         /// <summary>
@@ -2582,6 +2589,7 @@ namespace DOL.GS
         /// </summary>
         public override void StopPowerRegeneration()
         {
+            PowerRegenStackingBonus = 0;
             if (m_powerRegenerationTimer == null) return;
             m_powerRegenerationTimer.Stop();
         }
@@ -2658,6 +2666,8 @@ namespace DOL.GS
             return HealthRegenerationPeriod;
         }
 
+        public int PowerRegenStackingBonus = 0;
+
         /// <summary>
         /// Override PowerRegenTimer because if we are not connected anymore
         /// we DON'T regenerate mana, even if we are not garbage collected yet!
@@ -2668,6 +2678,11 @@ namespace DOL.GS
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
+            if (IsSitting)
+            {
+                if(PowerRegenStackingBonus < 5) PowerRegenStackingBonus++;
+            }
+            else PowerRegenStackingBonus = 0;
             int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);
             return interval;
         }
@@ -4993,7 +5008,7 @@ namespace DOL.GS
         {
             get
             {
-                return 3 * prcRestore[Level < GamePlayer.prcRestore.Length ? Level : GamePlayer.prcRestore.Length - 1];
+                return 5 * prcRestore[Level < GamePlayer.prcRestore.Length ? Level : GamePlayer.prcRestore.Length - 1];
             }
         }
 
@@ -6266,10 +6281,10 @@ namespace DOL.GS
             {
                 if (attackComponent.AttackWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon 
                     && rangeAttackComponent.RangedAttackState != eRangedAttackState.None 
-                    && GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START) > 500
+                    && GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START) > 100
                     && attackComponent.attackAction != null)
                 {
-                    attackComponent.attackAction.StartTime = 1;
+                    attackComponent.attackAction.StartTime = 1000;
                 }
                 attackComponent.LivingStopAttack();
             }
@@ -10215,9 +10230,10 @@ namespace DOL.GS
                     return;
                 }
                 
-                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
+                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30 && SelfBuffChargeIDs.Contains(spell.ID))
                 {
-                    spell.Duration = 30 * 60 * 1000;
+                    spell.Duration = 0;
+                    spell.Concentration = 1;
                 }
 
                 ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
@@ -11046,6 +11062,11 @@ namespace DOL.GS
                 m_guild.RemoveOnlineMember(this);
             }
             GroupMgr.RemovePlayerLooking(this);
+
+            if (Client.ClientState == GameClient.eClientState.Linkdead)
+            {
+                return;
+            }
             if (log.IsDebugEnabled)
             {
                 log.DebugFormat("({0}) player.Delete()", Name);
@@ -12404,7 +12425,7 @@ namespace DOL.GS
                 if (item.SpellID > 0 || item.SpellID1 > 0)
                     TempProperties.setProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
             
-            
+            /*
             //max 2 charges
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
@@ -12425,7 +12446,7 @@ namespace DOL.GS
                 {
                     Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
-            }
+            }*/
 
             if (ObjectState == eObjectState.Active)
             {
@@ -12478,7 +12499,6 @@ namespace DOL.GS
                     m_selfBuffIds.Add(31132); //dex/qui charge
                     m_selfBuffIds.Add(31131); //acuity charge
                     m_selfBuffIds.Add(31130); //AF charge
-                    m_selfBuffIds.Add(33512); //haste charge
                 }
 
                 return m_selfBuffIds;
@@ -12621,7 +12641,7 @@ namespace DOL.GS
                 (item as IGameInventoryItem).OnUnEquipped(this);
             }
             
-            //max 2 charges
+            //cancel any self buffs that are unequipped
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
             {
                 CancelChargeBuff(item.SpellID);
@@ -13941,6 +13961,9 @@ namespace DOL.GS
                 {
                     DBCharacter.IgnoreStatistics = true;
                 }
+                
+                //cache all active effects
+                EffectService.SaveAllEffects(this);
 
                 SaveSkillsToCharacter();
                 SaveCraftingSkills();
@@ -13988,6 +14011,14 @@ namespace DOL.GS
 
                     if (quest is WeeklyQuest wq)
                         wq.SaveQuestParameters();
+
+                    if (quest is LaunchQuestAlb lqa)
+                        lqa.SaveQuestParameters();
+                    if (quest is LaunchQuestHib lqh)
+                        lqh.SaveQuestParameters();
+                    if (quest is LaunchQuestMid lqm)
+                        lqm.SaveQuestParameters();
+                        
                 }
 
 
@@ -14262,8 +14293,8 @@ namespace DOL.GS
             //start the uncover timer
             if (action == null)
                 action = new UncoverStealthAction(this);
-            action.Interval = 2000;
-            action.Start(2000);
+            action.Interval = 1000;
+            action.Start(1000);
             TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
         }
 
@@ -14287,7 +14318,7 @@ namespace DOL.GS
         /// <summary>
         /// Uncovers the player if a mob is too close
         /// </summary>
-        protected class UncoverStealthAction : RegionAction
+        protected class UncoverStealthAction : RegionECSAction
         {
             /// <summary>
             /// Constructs a new uncover stealth action
@@ -14301,10 +14332,10 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 GamePlayer player = (GamePlayer)m_actionSource;
-                if (player.Client.Account.PrivLevel > 1) return;
+                if (player.Client.Account.PrivLevel > 1) return 0;
 
                 bool checklos = false;
                 foreach (AbstractArea area in player.CurrentAreas)
@@ -14393,6 +14424,8 @@ namespace DOL.GS
                         }
                     }
                 }
+
+                return Interval;
             }
         }
         /// <summary>
@@ -14458,16 +14491,18 @@ namespace DOL.GS
             int levelDiff = this.Level - EnemyStealthLevel;
             if (levelDiff < 0) levelDiff = 0;
 
-            int range;
+            int range = 0;
             bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Camouflage) != null;
-            if (HasAbility(Abilities.DetectHidden) && !enemy.HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
+            if (HasAbility(Abilities.DetectHidden) && !enemyHasCamouflage)
             {
                 // we have detect hidden and enemy don't = higher range
                 range = levelDiff * 50 + 250; // Detect Hidden advantage
+                //range = levelDiff * 50 + 300; // Detect Hidden advantage
             }
             else
             {
-                range = levelDiff * 20 + 125; // Normal detection range
+                //range = levelDiff * 20 + 125; // Normal detection range
+                range = levelDiff * 20 + 125; 
             }
 
             // Mastery of Stealth Bonus
@@ -14608,6 +14643,13 @@ namespace DOL.GS
                     
                     if (quest is WeeklyQuest wq)
                         wq.LoadQuestParameters();
+                    
+                    if (quest is LaunchQuestAlb lqa)
+                        lqa.LoadQuestParameters();
+                    if (quest is LaunchQuestHib lqh)
+                        lqh.LoadQuestParameters();
+                    if (quest is LaunchQuestMid lqm)
+                        lqm.LoadQuestParameters();
                 }
             }
 
@@ -14802,15 +14844,18 @@ namespace DOL.GS
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
+
+            List<AbstractQuest> cloneList;
             // events will only fire for currently active quests.
             lock (QuestList)
             {
-                List<AbstractQuest> cloneList = new List<AbstractQuest>(m_questList);
-                foreach (AbstractQuest q in cloneList)
-                {
-                    // player forwards every single notify message to all active quests
-                    q.Notify(e, sender, args);
-                }
+                cloneList = new List<AbstractQuest>(m_questList);  
+            }
+
+            foreach (AbstractQuest q in cloneList)
+            {
+                // player forwards every single notify message to all active quests
+                q.Notify(e, sender, args);
             }
 
             if (Task != null)

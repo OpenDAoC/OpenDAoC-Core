@@ -51,10 +51,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -125,16 +125,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 300000; }
         }
         #region BroadcastMessage & Die()
         public void BroadcastMessage(String message)
@@ -386,7 +386,9 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                IsTargetPicked=false;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165083);
+                Body.Strength = npcTemplate.Strength;
+                IsTargetPicked =false;
                 IsPulled1 = false;
             }
             if (Body.IsOutOfTetherRange)
@@ -433,11 +435,11 @@ namespace DOL.AI.Brain
                     }
                     if (KingTuscar.KingTuscarCount == 1)
                     {
-                        Body.Strength = 400;//if king is up it will deal less dmg
+                        Body.Strength = 350;//if king is up it will deal less dmg
                     }
-                    else if (KingTuscar.KingTuscarCount == 0)
+                    if (KingTuscar.KingTuscarCount == 0 || Body.HealthPercent <= 50)
                     {
-                        Body.Empathy = 600;//king is dead so more dmg
+                        Body.Strength = 500;//king is dead so more dmg
                     }
                     Body.styleComponent.NextCombatStyle = QueenKula.taunt;
                 }
@@ -538,10 +540,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -611,16 +613,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 300000; }
         }
         public static int KingTuscarCount = 0;
         public override void Die(GameObject killer)//on kill generate orbs
@@ -895,6 +897,8 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162909);
+                Body.Strength = npcTemplate.Strength;
                 TuscarRage = false;
                 IsPulled2 = false;
             }
@@ -925,11 +929,11 @@ namespace DOL.AI.Brain
                     GameLiving living = Body.TargetObject as GameLiving;
                     if(QueenKula.QueenKulaCount == 1)
                     {
-                        Body.Strength = 500;
+                        Body.Strength = 350;
                     }
-                    else if (QueenKula.QueenKulaCount == 0 || Body.HealthPercent <=50)
+                    if (QueenKula.QueenKulaCount == 0 || Body.HealthPercent <= 50)
                     {
-                        Body.Empathy = 700;
+                        Body.Strength = 500;
                     }
                 }
             }

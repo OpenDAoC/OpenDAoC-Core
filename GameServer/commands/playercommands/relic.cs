@@ -56,36 +56,44 @@ namespace DOL.GS.Commands
 
             string albStr = "", albPwr = "", midStr = "", midPwr = "", hibStr = "", hibPwr = "";
 			var relicInfo = new List<string>();
+            
+
 
             #region Reformat Relics  '[Type]: [OwnerRealm]'
             foreach (GameRelic relic in RelicMgr.getNFRelics())
             {
+                string relicLoc = "";
+                if (relic.Realm == eRealm.None)
+                {
+                    relicLoc = $" ({relic.CurrentZone.Description})";
+                }
+
                 switch (relic.OriginalRealm)
                 {
                     case eRealm.Albion:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             if (relic.RelicType == eRelicType.Magic)
-								albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             break;
                         }
 
                     case eRealm.Midgard:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             if (relic.RelicType == eRelicType.Magic)
-								midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             break;
                         }
 
                     case eRealm.Hibernia:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             if (relic.RelicType == eRelicType.Magic)
-								hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm);
+								hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
                             break;
                         }
                 }

@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 		
-		protected class BoltOnTargetAction : RegionAction
+		protected class BoltOnTargetAction : RegionECSAction
 		{
 			protected readonly GameLiving m_boltTarget;
 			protected readonly StarsProc m_handler;
@@ -84,16 +84,16 @@ namespace DOL.GS.Spells
 				m_handler = spellHandler;
 			}
 
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_boltTarget;
 				GameLiving caster = (GameLiving)m_actionSource;
-				if (target == null) return;
-				if (target.CurrentRegion.ID != caster.CurrentRegion.ID) return;
-				if (target.ObjectState != GameObject.eObjectState.Active) return;
-				if (!target.IsAlive) return;
-				if (target == null) return;
-				if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
+				if (target == null) return 0;
+				if (target.CurrentRegion.ID != caster.CurrentRegion.ID) return 0;
+				if (target.ObjectState != GameObject.eObjectState.Active) return 0;
+				if (!target.IsAlive) return 0;
+				if (target == null) return 0;
+				if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return 0;
 				
 				AttackData ad = m_handler.CalculateDamageToTarget(target, 1);
 				ad.Damage = (int)m_handler.Spell.Damage;
@@ -108,6 +108,7 @@ namespace DOL.GS.Spells
 				}
 					
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
+				return 0;
 			}
 		}
 

@@ -185,20 +185,28 @@ namespace DOL.GS.Keeps
 				}
 				else if (Component.Keep is GameKeep)
 				{
-					if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
-					{
-						if (DoorIndex == 1)
-							return true;
-					}
-					if (Component.Skin == 0 || Component.Skin == 24)//old and new main gate
-					{
-						if (DoorIndex == 1 ||
-							DoorIndex == 2)
-							return true;
-					}
+					// if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
+					// {
+					// 	if (DoorIndex == 1)
+					// 		return true;
+					// }
+					// if (Component.Skin == 0 || Component.Skin == 24)//old and new main gate
+					// {
+					// 	if (DoorIndex == 1 ||
+					// 		DoorIndex == 2)
+					// 		return true;
+					// }
 					
-				}
-				return false;
+					var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+					return !door.IsPostern;
+					
+				} 
+                else if (Component.Keep is RelicGameKeep)
+                {
+	                var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+	                return !door.IsPostern;
+                }
+                return false;
 			}
 		}
 
@@ -302,7 +310,7 @@ namespace DOL.GS.Keeps
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (damageAmount > 0)
+			if (damageAmount > 0 && IsAlive)
 			{
 				Component.Keep.LastAttackedByEnemyTick = CurrentRegion.Time;
 				base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -792,6 +800,7 @@ namespace DOL.GS.Keeps
 		public void Repair(int amount)
 		{
 			Health += amount;
+			BroadcastDoorStatus();
 		}
 		/// <summary>
 		/// This Function is called when keep is taken to repair door

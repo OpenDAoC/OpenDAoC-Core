@@ -20,6 +20,8 @@ namespace DOL.GS
         public static GamePlayer[] players = new GamePlayer[4000];
         private static int _lastPlayerIndex = 0;
 
+        public static String currentServiceTick;
+
         public static long TickRate { get { return _tickDueTime; } }
 
         public static bool Init()
@@ -61,16 +63,27 @@ namespace DOL.GS
             //Make sure the tick < gameLoopTick
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
+            currentServiceTick = "NPCThinkService";
             NPCThinkService.Tick(GameLoopTime);
+            currentServiceTick = "AttackService";
             AttackService.Tick(GameLoopTime);
+            currentServiceTick = "CastingService";
             CastingService.Tick(GameLoopTime);
+            currentServiceTick = "EffectService";
             EffectService.Tick(GameLoopTime);
+            currentServiceTick = "EffectListService";
             EffectListService.Tick(GameLoopTime);
+            currentServiceTick = "DailQuestService";
             DailyQuestService.Tick(GameLoopTime);
+            currentServiceTick = "WeeklyQuestService";
             WeeklyQuestService.Tick(GameLoopTime);
+            currentServiceTick = "ConquestService";
             ConquestService.Tick(GameLoopTime);
+            currentServiceTick = "BountyService";
             BountyService.Tick(GameLoopTime);
+            currentServiceTick = "PredatorService";
             PredatorService.Tick(GameLoopTime);
+            currentServiceTick = "TimerService";
             TimerService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
@@ -79,7 +92,9 @@ namespace DOL.GS
                 ZoneBonusRotator._lastRvRChangeTick = GameLoopTime;
 
             //Always tick last!
+            currentServiceTick = "Diagnostics";
             ECS.Debug.Diagnostics.Tick();
+            currentServiceTick = "";
 
             ECS.Debug.Diagnostics.StopPerfCounter(PerfCounterName);
 

@@ -155,18 +155,24 @@ namespace DOL.GS.Spells
 				// Bolts are treated as physical attacks for the purpose of ABS only
 				// Based on this I am normalizing the miss rate for npc's to be that of a standard spell
 
-				int missrate = 0;
+				int missrate = m_handler.CalculateSpellResistChance(target);
+				bool combatMiss = false;
 
 				if (caster is GamePlayer && target is GamePlayer)
 				{
 					if (target.InCombat)
 					{
 						foreach (GameLiving attacker in target.attackComponent.Attackers)
+						         //200 unit range restriction added in 1.84 - reverted for Atlas 1.65 target
+						         //&& target.GetDistanceTo(attacker) <= 200)
+						         
 						{
-							if (attacker != caster && target.GetDistanceTo(attacker) <= 200)
+							if (attacker != caster)
 							{
-								// each attacker within 200 units adds a 20% chance to miss
+								// each attacker adds a 20% chance to miss
+								
 								missrate += 20;
+								combatMiss = true;
 							}
 						}
 					}
@@ -184,14 +190,27 @@ namespace DOL.GS.Spells
 					&& targetAD.Style != null)
 				{
 					missrate += targetAD.Style.BonusToDefense;
+					combatMiss = true;
 				}
 
 				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
 
-				if (Util.Chance(missrate)) 
+				int rand = 0;
+				if (caster is GamePlayer p)
+					rand = p.RandomNumberDeck.GetInt();
+				else
+					rand = Util.Random(100);
+
+				if (target is GameKeepDoor)
+					missrate = 0;
+
+				if (missrate > rand) 
 				{
 					ad.AttackResult = eAttackResult.Missed;
-					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
+					if(combatMiss)
+						m_handler.MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
+					else
+						m_handler.MessageToCaster($"You miss!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
 					target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
@@ -288,10 +307,14 @@ namespace DOL.GS.Spells
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
-					double ws = (caster.Level * 8 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double ws = (caster.Level * 2.65 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 45;
 
-					damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20*4.67));
-					damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+					double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
+					                  (1 - ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+					damage *= ws / armorMod;
+					//damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20*4.67));
+					//damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
 					ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) / -100.0);
 					damage += ad.Modifier;
 

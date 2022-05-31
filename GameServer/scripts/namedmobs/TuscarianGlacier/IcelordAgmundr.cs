@@ -11,15 +11,14 @@ namespace DOL.GS
         public Agmundr() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 85; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 85; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 85; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -27,16 +26,14 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -44,20 +41,17 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162346);
@@ -153,23 +147,17 @@ namespace DOL.AI.Brain
         }
 
         public static bool IsPulled = false;
-
         public static bool IsChanged = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             base.OnAttackedByEnemy(ad);
         }
-
         public override void AttackMostWanted()
         {
             if (Util.Chance(15))
-            {
                 Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-            }
             base.AttackMostWanted();
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -251,7 +239,6 @@ namespace DOL.AI.Brain
             }
         }
         private Spell m_AgmundrDD;
-
         private Spell AgmundrDD
         {
             get
@@ -260,13 +247,13 @@ namespace DOL.AI.Brain
                 DBSpell spell = new DBSpell();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
-                spell.RecastDelay = Util.Random(25, 45);
+                spell.RecastDelay = Util.Random(15, 25);
                 spell.ClientEffect = 228;
                 spell.Icon = 208;
                 spell.TooltipId = 479;
                 spell.Damage = 650;
                 spell.Range = 1500;
-                spell.Radius = 800;
+                spell.Radius = 500;
                 spell.SpellID = 11744;
                 spell.Target = "Enemy";
                 spell.Type = "DirectDamageNoVariance";
@@ -275,7 +262,6 @@ namespace DOL.AI.Brain
                 spell.DamageType = (int) eDamageType.Cold;
                 m_AgmundrDD = new Spell(spell, 70);
                 SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AgmundrDD);
-
                 return m_AgmundrDD;
             }
         }

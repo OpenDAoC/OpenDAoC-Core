@@ -5772,14 +5772,14 @@ namespace DOL.GS.PacketHandler
 			var group = m_gameClient.Player.Group;
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
-				lock (group._groupLock)
-				{
+				// lock (group._groupLock)
+				// {
 					// make sure group is not modified before update is sent else player index could change _before_ update
 					if (living.Group != group)
 						return;
 					WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);
 					pak.WriteByte(0x00);
-				}
+				// }
 				SendTCP(pak);
 			}
 		}
@@ -6106,8 +6106,8 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort)m_gameClient.Player.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort)m_gameClient.Player.Encumberance); // encumb used
+				pak.WriteShort((ushort)m_gameClient.Player?.MaxEncumberance); // encumb total
+				pak.WriteShort((ushort)m_gameClient.Player?.Encumberance); // encumb used
 				SendTCP(pak);
 			}
 		}

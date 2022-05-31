@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -45,6 +46,12 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (living == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+			if (living.TargetObject == null || living.TargetObject is not GamePlayer ||
+			    (living.TargetObject is GamePlayer enemy && enemy.Realm == living.Realm))
+			{
+				if(living is GamePlayer p)p.Out.SendMessage($"You can only charge enemy players.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
 
 			//if (living.TempProperties.getProperty("Charging", false)
 			//	|| living.EffectList.CountOfType(typeof(SpeedOfSoundEffect), typeof(ArmsLengthEffect), typeof(ChargeEffect)) > 0)
@@ -67,6 +74,8 @@ namespace DOL.GS.RealmAbilities
 
 		public override int GetReUseDelay(int level)
 		{
+			return 900;
+			/*
 			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
 			{
 				switch (level)
@@ -88,12 +97,29 @@ namespace DOL.GS.RealmAbilities
 						case 3: return 90;
 				}
 				return 600;
-			}
+			}*/
 		}
 
 		public override bool CheckRequirement(GamePlayer player)
 		{
 			return player.Level >= 45;
+		}
+
+		public override void AddDelve(ref MiniDelveWriter w)
+		{
+			w.AddKeyValuePair("Charge: ", "Target does not consume endurance while sprinting for the duration.");
+		}
+		
+		public override void AddEffectsInfo(IList<string> list)
+		{
+			list.Add("Target: Self");
+			list.Add("Duration: 60 sec");
+			list.Add("Casting time: instant");
+		}
+
+		public override void AddReUseDelayInfo(IList<string> list)
+		{
+			list.Add("Re-Use Time: 15 minutes");
 		}
 	}
 }

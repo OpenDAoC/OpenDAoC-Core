@@ -112,10 +112,15 @@ namespace DOL.GS.PropertyCalc
 			}
 			else
 			{
-				return (int)((1 + (living.Level / 200.0)) * (living.Level << 1))
+				int baseVal = (int)((1 + (living.Level / 200.0)) * (living.Level << 1))
 				+ (living.SpecBuffBonusCategory[(int)property] / 6)
 				- Math.Abs(living.DebuffCategory[(int)property])/6
 				+ living.BuffBonusCategory4[(int)property] / 6;
+
+				if (living is NecromancerPet)
+					baseVal += 10;
+				
+				return baseVal;
 			}
 		}
 	}

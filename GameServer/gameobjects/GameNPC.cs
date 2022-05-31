@@ -1608,7 +1608,7 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget.Target==target)
+				if (m_followTimer.IsAlive && m_followTarget.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
 				else
 				{
@@ -1767,7 +1767,7 @@ namespace DOL.GS
 				else if (brain.CheckFormation(ref newX, ref newY, ref newZ))
 				{
 					short followspeed= (short) Math.Max(Math.Min(MaxSpeed,GetDistance(new Point2D(newX, newY))*followSpeedScaler),50);
-					log.Debug($"Followspeed: {followspeed}");
+					//log.Debug($"Followspeed: {followspeed}");
 					WalkTo(newX, newY, (ushort) newZ, followspeed);
 					//WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 					
@@ -3729,6 +3729,13 @@ namespace DOL.GS
 					name = "boat";
 				if (this is GameSiegeRam)
 					name = "ram";
+
+				if (this is GameSiegeRam && player.Realm != this.Realm)
+				{
+					player.Out.SendMessage($"This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				
 
 				if (RiderSlot(player) != -1)
 				{
@@ -5774,8 +5781,8 @@ namespace DOL.GS
 
 			if (TargetObject == null)
 			{
-				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
-					.Replace("{targetname}", living.Name) // '{targetname}' returns the mob/NPC target's name
+				text = chosen.Text.Replace("{sourcename}", Brain?.Body?.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", living?.Name) // '{targetname}' returns the mob/NPC target's name
 					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
 				
 				// Replace trigger keywords

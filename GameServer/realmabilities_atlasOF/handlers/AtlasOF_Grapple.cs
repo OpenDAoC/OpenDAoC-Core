@@ -7,6 +7,8 @@ using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.Events;
 using DOL.Database;
+using DOL.GS.API;
+
 namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_Grapple : TimedRealmAbility, ISpellCastingAbilityHandler
@@ -71,7 +73,7 @@ namespace DOL.GS.RealmAbilities
 
 			foreach (GamePlayer pl in caster.GetPlayersInRadius(m_range))
 			{
-				if(pl.Realm != caster.Realm)
+				if(pl.Realm != caster.Realm || caster.DuelTarget == pl)
 					CastSpellOn(pl, caster);
 			}
 
@@ -82,6 +84,8 @@ namespace DOL.GS.RealmAbilities
 
 			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
+            
+            DisableSkill(caster);
 		}
 
         public void CastSpellOn(GameLiving target, GameLiving caster)
@@ -89,6 +93,7 @@ namespace DOL.GS.RealmAbilities
 	        if (target.IsAlive && m_spell != null)
 	        {
 		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
+		        if(caster is GamePlayer p) p.Out.SendMessage($"You grapple {target.Name} and they are slowed!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 		        dd.StartSpell(target);
 	        }
         }

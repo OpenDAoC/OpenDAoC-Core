@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using DOL.Database;
+using DOL.GS.ServerProperties;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Stats
+public class Utils
 {
     private IMemoryCache _cache;
 
-    public Stats()
+    public Utils()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
@@ -117,6 +118,28 @@ public class Stats
             _cache.Set(_topRPKey, topRP, DateTime.Now.AddMinutes(60));
         }
         return topRP;
+    }
+    #endregion
+    
+    #region Discord
+    
+    public string IsDiscordRequired()
+    {
+        string _discordRequiredKey = "api_discord_required";
+        
+        if (!_cache.TryGetValue(_discordRequiredKey, out bool discordRequired))
+        {
+            discordRequired = Properties.FORCE_DISCORD_LINK;
+            _cache.Set(_discordRequiredKey, discordRequired, DateTime.Now.AddMinutes(1));
+        }
+        
+
+        var options = new JsonSerializerOptions()
+        {
+            WriteIndented = true
+        };
+        string jsonString = JsonSerializer.Serialize(discordRequired,options);
+        return jsonString;
     }
     #endregion
 }

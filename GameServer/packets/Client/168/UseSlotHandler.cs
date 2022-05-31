@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use slot actions
 		/// </summary>
-		protected class UseSlotAction : RegionAction
+		protected class UseSlotAction : RegionECSAction
 		{
 			/// <summary>
 			/// The speed and flags data
@@ -79,7 +79,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 				if ((m_flagSpeedData & 0x200) != 0)
@@ -94,6 +94,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.TargetInView = (m_flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
 				player.GroundTargetInView = ((m_flagSpeedData & 0x1000) != 0);
 				player.UseSlot(m_slot, m_useType);
+				return 0;
 			}
 		}
 	}

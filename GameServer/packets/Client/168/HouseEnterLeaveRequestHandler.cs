@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles house enter/leave events
 		/// </summary>
-		private class EnterLeaveHouseAction : RegionAction
+		private class EnterLeaveHouseAction : RegionECSAction
 		{
 			/// <summary>
 			/// The enter house flag
@@ -67,7 +67,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
@@ -78,10 +78,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 						break;
 
 					case 1:
-						if (!player.IsWithinRadius(_house, WorldMgr.VISIBILITY_DISTANCE) || (player.CurrentRegionID != _house.RegionID))
+						if (!player.IsWithinRadius(_house, 1000) || (player.CurrentRegionID != _house.RegionID))
 						{
 							ChatUtil.SendSystemMessage(player, string.Format("You are too far away to enter house {0}.", _house.HouseNumber));
-							return;
+							return 0;
 						}
 
 						// make sure player can enter
@@ -94,11 +94,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 						else
 						{
 							ChatUtil.SendSystemMessage(player, string.Format("You can't enter house {0}.", _house.HouseNumber));
-							return;
+							return 0;
 						}
 
 						break;
 				}
+
+				return 0;
 			}
 		}
 	}

@@ -109,6 +109,7 @@ namespace DOL.GS
         FacilitatePainworking,
         MesmerizeDurationBuff,
         FatigueConsumptionBuff,
+        FatigueConsumptionDebuff,
         SavageBuff,
         Pet,
         OffensiveProc,

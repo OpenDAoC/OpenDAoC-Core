@@ -191,6 +191,19 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
+			
+			if (Properties.FORCE_DISCORD_LINK)
+			{
+				if (account == null || account.PrivLevel == 1 && account.DiscordID is (null or ""))
+				{
+					// GMs are still allowed to enter server
+					// Normal Players will not be allowed to Log in unless they have linked their Discord
+					client.IsConnected = false;
+					client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
+					log.Debug("Denied access, account is not linked to Discord");
+					return false;
+				}
+			}
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
@@ -1927,7 +1940,7 @@ namespace DOL.GS.ServerRules
 					List<GamePlayer> players = new List<GamePlayer>();
 					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
                     {
-                        if (Util.Chance(50) && !playersToAward.Contains(pla))
+                        if (!playersToAward.Contains(pla))
                         {
 							playersToAward.Add(pla);
 						}
