@@ -45,7 +45,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 40000; }
         }
         public override int AttackRange
         {
