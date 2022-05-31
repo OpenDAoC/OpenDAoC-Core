@@ -1745,11 +1745,23 @@ namespace DOL.GS
                 int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[(int) property];
                 int resistModifier = 0;
                 resistModifier +=
-                    (int) ((ad.Damage + (double) resistModifier) * (double) secondaryResistModifier * -0.01);
-
-                damage += resist;
-                damage += resistModifier;
-                ad.Modifier += resist;
+                    (int) ((ad.Damage + (double) resist) * (double) secondaryResistModifier * -0.01);
+                /*
+                Console.WriteLine($"first mod {(ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01} " +
+                                  $"second mod {ad.Target.GetDamageResist(owner.GetResistTypeForDamage(ad.DamageType)) * -0.01} " +
+                                  $"resist modifier {resistModifier} " +
+                                  $"damage type {ad.DamageType}");
+                */
+                
+                //against NPC targets this just doubles the resists
+                //applying only to player targets as a fix
+                if (ad.Target is GamePlayer)
+                {
+                    damage += resist;
+                    damage += resistModifier;
+                    ad.Modifier += resist;
+                }
+                    
                 damage += ad.Modifier;
                 ad.Damage = (int) damage;
 
