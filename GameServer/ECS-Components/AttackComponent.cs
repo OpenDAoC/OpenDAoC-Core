@@ -1732,10 +1732,15 @@ namespace DOL.GS
                                     owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
                 }
 
-
+                //against NPC targets this just doubles the resists
+                //applying only to player targets as a fix
+                if (ad.Target is GamePlayer)
+                {
                 ad.Modifier = (int) (damage *
                                      (ad.Target.GetResist(ad.DamageType) +
                                       SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
+                }
+                
                 //damage += ad.Modifier;
                 // RA resist check
                 int resist = (int) (damage * ad.Target.GetDamageResist(owner.GetResistTypeForDamage(ad.DamageType)) *
@@ -1752,15 +1757,10 @@ namespace DOL.GS
                                   $"resist modifier {resistModifier} " +
                                   $"damage type {ad.DamageType}");
                 */
+                damage += resist;
+                damage += resistModifier;
+                ad.Modifier += resist;
                 
-                //against NPC targets this just doubles the resists
-                //applying only to player targets as a fix
-                if (ad.Target is GamePlayer)
-                {
-                    damage += resist;
-                    damage += resistModifier;
-                    ad.Modifier += resist;
-                }
                     
                 damage += ad.Modifier;
                 ad.Damage = (int) damage;
