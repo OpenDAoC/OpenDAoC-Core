@@ -172,29 +172,32 @@ namespace DOL.GS
                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                 && effect.IsDisabled)
                             {
+                                //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                                 ECSGameSpellEffect enabled = null;
                                 List<ECSGameEffect> sameEffectTypeEffects;
                                 effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out sameEffectTypeEffects);
                                 bool isBest = false;
                                 if (sameEffectTypeEffects.Count == 1)
                                     isBest = true;
-                                //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                                 else if (sameEffectTypeEffects.Count > 1)
                                 {
                                     foreach (var tmpEff in sameEffectTypeEffects)
                                     {
                                         if (tmpEff is ECSGameSpellEffect eff)
                                         {
+                                            //Check only against enabled spells
                                             if (!eff.IsDisabled)
+                                            {
                                                 enabled = eff;
-                                            if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
-                                            {
-                                                isBest = true;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                isBest = false;
+                                                if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                                {
+                                                    isBest = true;
+                                                    //break;
+                                                }
+                                                else
+                                                {
+                                                    isBest = false;
+                                                }
                                             }
                                         }
                                     }
