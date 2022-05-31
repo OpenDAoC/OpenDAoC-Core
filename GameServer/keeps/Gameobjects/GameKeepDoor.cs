@@ -198,6 +198,7 @@ namespace DOL.GS.Keeps
 					// }
 					
 					var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+					if (door == null) return false;
 					return !door.IsPostern;
 					
 				} 

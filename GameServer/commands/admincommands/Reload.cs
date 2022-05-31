@@ -216,7 +216,7 @@ namespace DOL.GS.Commands
 			
 			if (args[1].ToLower() == "doors")
 			{
-				NpcTemplateMgr.Reload();
+				DoorMgr.Init();
 				if (client != null) client.Out.SendMessage("Doors reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				log.Info("Doors reloaded.");
 				return;
