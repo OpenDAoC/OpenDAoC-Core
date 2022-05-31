@@ -32,7 +32,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 40000; }
+			get { return 100000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
