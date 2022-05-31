@@ -37,7 +37,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		private static GameNPC Revelin = null; // Start NPC
 		//private static GameNPC Lauralaye = null; //Reward NPC
-		private static GameNPC Cailean = null; // Mob to kill
+		private static Cailean Cailean = null; // Mob to kill
 
 		private static ItemTemplate Horn = null; //ball of flame        
 		private static ItemTemplate BlademasterEpicBoots = null; //Mist Shrouded Boots 
@@ -151,7 +151,7 @@ namespace DOL.GS.Quests.Hibernia
 			npcs = WorldMgr.GetNPCsByName("Cailean", eRealm.None);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (Cailean npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 479042 && npc.Y == 508134)
 					{
 						Cailean = npc;
@@ -162,7 +162,7 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Cailean , creating it ...");
-				Cailean = new GameNPC();
+				Cailean = new Cailean();
 				Cailean.Model = 98;
 				Cailean.Name = "Cailean";
 				Cailean.GuildName = "";
