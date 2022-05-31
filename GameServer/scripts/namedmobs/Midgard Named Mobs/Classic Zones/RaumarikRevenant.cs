@@ -53,7 +53,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 40000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -77,7 +77,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25))
+			if (Util.Chance(45))
 			{
 				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
 					CastSpell(RevenantDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));

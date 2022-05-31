@@ -55,7 +55,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 40000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3;
+					spell.CastTime = 2;
 					spell.RecastDelay = Util.Random(15,25);
 					spell.ClientEffect = 14315;
 					spell.Icon = 14315;
