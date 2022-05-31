@@ -790,6 +790,23 @@ namespace DOL.GS.Effects
                 archer.LastAttackTickPvP = GameLoop.GameLoopTime;
                 archer.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
             }
+            if(ad.Damage > 0)
+            {
+                if (ad.Target.effectListComponent.Effects.ContainsKey(eEffect.Mez)) //cancel mezz 
+                {
+                    var effect = EffectListService.GetEffectOnTarget(ad.Target, eEffect.Mez);
+
+                    if (effect != null)
+                        EffectService.RequestImmediateCancelEffect(effect);
+                }
+                if (ad.Target.effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedDebuff))//cancel root
+                {
+                    var effect = EffectListService.GetEffectOnTarget(ad.Target, eEffect.MovementSpeedDebuff);
+
+                    if (effect != null)
+                        EffectService.RequestImmediateCancelEffect(effect);
+                }
+            }
         }
         #endregion
 
