@@ -596,6 +596,8 @@ namespace DOL.GS
                     return eEffect.FacilitatePainworking;
                 case (byte)eSpellType.FatigueConsumptionBuff:
                     return eEffect.FatigueConsumptionBuff;
+                case (byte)eSpellType.FatigueConsumptionDebuff:
+                    return eEffect.FatigueConsumptionDebuff;
                 case (byte)eSpellType.DirectDamageWithDebuff:
                     if (spell.DamageType == eDamageType.Body)
                         return eEffect.BodyResistDebuff;
@@ -803,8 +805,10 @@ namespace DOL.GS
                     list.Add(eProperty.MesmerizeDurationReduction);
                     return list;
                 case eEffect.FatigueConsumptionBuff:
+                case eEffect.FatigueConsumptionDebuff:
                     list.Add(eProperty.FatigueConsumption);
                     return list;
+                
                 default:
                     //Console.WriteLine($"Unable to find property mapping for: {e}");
                     return list;

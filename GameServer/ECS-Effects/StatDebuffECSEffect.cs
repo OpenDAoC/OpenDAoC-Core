@@ -138,7 +138,11 @@ namespace DOL.GS
         private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value,
             double Effectiveness, bool IsSubstracted)
         {
-            int effectiveValue = (int) (Value * Effectiveness);
+            
+            int effectiveValue = (int) Value;
+
+            if (Property != eProperty.FatigueConsumption)
+                effectiveValue = (int)(Value * Effectiveness);
 
             IPropertyIndexer tblBonusCat;
             if (Property != eProperty.Undefined)

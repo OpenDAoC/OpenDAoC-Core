@@ -5283,6 +5283,9 @@ namespace DOL.GS.Spells
 				case eSpellType.FatigueConsumptionBuff:
 					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% less endurance.");
 					break;
+				case eSpellType.FatigueConsumptionDebuff:
+					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% more endurance.");
+					break;
 				case eSpellType.MeleeDamageBuff:
 					dw.AddKeyValuePair("delve_string", $"Increases your melee damage by {(int)Spell.Value}%.");
 					break;

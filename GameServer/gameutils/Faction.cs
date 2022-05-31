@@ -267,20 +267,22 @@ namespace DOL.GS
 			// check if changed
 			if (newAggro != oldAggro)
 			{
+				
 				// save the change
-				m_playerxFaction[player.ObjectId] = newAggro;
-				// tell the player
-				string msg = "Your relationship with " + this.Name + " has ";
-				if (amount > 0)
-				{
-					msg += "decreased.";
-				}
-				else
-				{
-					msg += "increased.";
-				}
-				player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if(Util.Chance(20))
+					m_playerxFaction[player.ObjectId] = newAggro;
 			}
+			// tell the player
+			string msg = "Your relationship with " + this.Name + " has ";
+			if (amount > 0)
+			{
+				msg += "decreased.";
+			}
+			else
+			{
+				msg += "increased.";
+			}
+			player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
