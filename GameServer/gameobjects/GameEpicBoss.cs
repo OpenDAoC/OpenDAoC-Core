@@ -9,6 +9,11 @@ namespace DOL.GS {
         }
         public override void Die(GameObject killer)
         {
+            if (MaxHealth < 60000 && MaxHealth > 30000)// 1.5k orbs for finalll boss in dungeon, or huge one in classic/SI zone
+                OrbsReward /= 2;
+
+            if (MaxHealth < 40000)// 750 orbs for normal nameds
+                OrbsReward /= 4;
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
             

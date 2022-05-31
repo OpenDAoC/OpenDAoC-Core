@@ -3,17 +3,65 @@ using System.Reflection;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using DOL.Database;
 
 namespace DOL.GS.Scripts
 {
-	public class ElroTheAncient : GameNPC
+	public class ElroTheAncient : GameEpicBoss
 	{
 		public ElroTheAncient()
 		{
 			TetherRange = 4500;
 			ScalingFactor = 55;
 		}
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
+			}
+		}
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			return base.AttackDamage(weapon) * Strength / 100;
+		}
+		public override int AttackRange
+		{
+			get { return 350; }
+			set { }
+		}
+		public override bool HasAbility(string keyName)
+		{
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
+				return true;
 
+			return base.HasAbility(keyName);
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override int MaxHealth
+		{
+			get { return 30000; }
+		}
+		#region Stats
+		public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+		public override short Piety { get => base.Piety; set => base.Piety = 200; }
+		public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+		public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
+		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+		public override short Strength { get => base.Strength; set => base.Strength = 300; }
+		#endregion
 		public override bool AddToWorld()
 		{
 			this.Name = "Elro the Ancient";
