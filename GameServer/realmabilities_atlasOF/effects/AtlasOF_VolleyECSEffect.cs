@@ -402,7 +402,7 @@ namespace DOL.GS.Effects
             {
                 if (VolleePlayerTarget != null)
                 {
-                    if (VolleePlayerTarget.IsAlive && VolleePlayerTarget.Client.Account.PrivLevel == 1 && !list.Contains(VolleePlayerTarget) && VolleePlayerTarget.Realm != m_player.Realm)
+                    if (VolleePlayerTarget.IsAlive && VolleePlayerTarget.Client.Account.PrivLevel == 1 && !list.Contains(VolleePlayerTarget) && (VolleePlayerTarget.Realm != m_player.Realm || m_player.DuelTarget == VolleePlayerTarget))
                     {
                         if (Util.Chance(50))
                             list.Add(VolleePlayerTarget);//add player to list of potentional targets
