@@ -3578,25 +3578,26 @@ namespace DOL.GS
                 {
                     specLevel--;
                     int randomChance = Util.Random(99);
-                    int hitChance = specLevel >> 1;
-
+                    int doubleHitChance = (specLevel >> 1) + owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                    int tripleHitChance = doubleHitChance + (specLevel >> 2) + ((owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)) >> 1);
+                    int quadHitChance = tripleHitChance + (specLevel >> 4) + ((owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)) >> 2);
                     
                     if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
                     {
                         pl.Out.SendMessage(
-                            $"Chance for 2 hits: {hitChance}% | 3 hits: { (specLevel > 25 ? (specLevel >> 2 ) : 0)}% | 4 hits: {(specLevel > 40 ? (specLevel >> 4 ) : 0)}% \n",
+                            $"Chance for 2 hits: {doubleHitChance}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0)}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0)}% \n",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
                     
-                    if (randomChance < hitChance)
+                    if (randomChance < doubleHitChance)
                         return 1; // 1 hit = spec/2
                     
-                    hitChance += specLevel >> 2;
-                    if (randomChance < hitChance && specLevel > 25)
+                    //doubleHitChance += specLevel >> 2;
+                    if (randomChance < tripleHitChance && specLevel > 25)
                         return 2; // 2 hits = spec/4
                     
-                    hitChance += specLevel >> 4;
-                    if (randomChance < hitChance && specLevel > 40)
+                    //doubleHitChance += specLevel >> 4;
+                    if (randomChance < quadHitChance && specLevel > 40)
                         return 3; // 3 hits = spec/16
 
                     return 0;
