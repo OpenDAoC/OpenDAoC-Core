@@ -11063,10 +11063,10 @@ namespace DOL.GS
             }
             GroupMgr.RemovePlayerLooking(this);
 
-            if (Client.ClientState == GameClient.eClientState.Linkdead)
-            {
-                return;
-            }
+            // if (Client.ClientState == GameClient.eClientState.Linkdead)
+            // {
+            //     return;
+            // }
             if (log.IsDebugEnabled)
             {
                 log.DebugFormat("({0}) player.Delete()", Name);
