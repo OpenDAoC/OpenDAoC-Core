@@ -149,7 +149,7 @@ namespace DOL.GS
             if (Property != eProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
-                //Console.WriteLine($"Applying bonus for property {Property} at value {Value} for owner {owner} bonus cat {tblBonusCat} #2 {BonusCat}");
+                //Console.WriteLine($"Applying bonus for property {Property} at value {Value} for owner {owner.Name} at effectiveness {Effectiveness} for {effectiveValue} change");
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
                 if (IsSubstracted)
                 {

@@ -51,7 +51,11 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
             int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-			if (Caster is GamePlayer && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage)
+            if (SpellLine.KeyName == GlobalSpellsLines.Potions_Effects || SpellLine.KeyName == GlobalSpellsLines.Item_Effects)
+            {
+                effectiveness = 1;
+            }
+			else if (Caster is GamePlayer && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage)
             {
                 if (Spell.Level > 0)
                 {
@@ -62,11 +66,12 @@ namespace DOL.GS.Spells
                         effectiveness = Math.Max(0.75, effectiveness);
                         effectiveness = Math.Min(1.25, effectiveness);
                     }
+                    /*
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
                     if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.BuffEffectiveness) > 0 )
                     {
                         spellCaster.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    }
+                    }*/
                 }
             }
             else if (Caster is GamePlayer && Spell.Level > 0 && Spell.Target == "Enemy")
@@ -113,6 +118,17 @@ namespace DOL.GS.Spells
             {
                 effectiveness = 1.0;
             }
+
+            //Console.WriteLine($"Target {Spell.Target} SpellLine {this.SpellLine}");
+            if (Spell.Target != "Enemy")
+            {
+                effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
+                if (this.Caster is GamePlayer spellCaster2 && spellCaster2.UseDetailedCombatLog && m_caster.GetModified(eProperty.BuffEffectiveness) > 0 )
+                {
+                    spellCaster2.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+            }
+            
             target.StartHealthRegeneration();
             base.ApplyEffectOnTarget(target, effectiveness);
         }
