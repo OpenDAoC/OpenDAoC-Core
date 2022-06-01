@@ -83,6 +83,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					updateTempProperties = true;
 					player.EnteredGame = true;
 					player.Notify(GamePlayerEvent.GameEntered, player);
+					ShowPatchNotes(player);
 					//player.EffectList.RestoreAllEffects();
 					checkInstanceLogin = true;
 				}
@@ -124,7 +125,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendStarterHelp();
 				}
 				
-				ShowPatchNotes(player);
+				
 
 
 				if (ServerProperties.Properties.ENABLE_DEBUG)
