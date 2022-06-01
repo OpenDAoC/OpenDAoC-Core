@@ -51,7 +51,7 @@ public class PlayerDeck
         Shuffle();
         Shuffle();
         Shuffle();
-        Console.WriteLine($"deck reset");
+        //Console.WriteLine($"deck reset");
     }
     
     private void Shuffle()
