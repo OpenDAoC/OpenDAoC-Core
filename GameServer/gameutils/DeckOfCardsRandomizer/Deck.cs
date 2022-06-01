@@ -12,8 +12,8 @@ namespace DOL.GS.Utils;
 public class PlayerDeck
 {
     private const int NUM_BONUS_DECKS = 1;
-    private const int NUM_NORMAL_DECKS = 1;
-    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * 50;
+    private const int NUM_NORMAL_DECKS = 2;
+    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * 25;
 
     private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
 
@@ -36,9 +36,9 @@ public class PlayerDeck
 
         for (int i = 0; i < NUM_BONUS_DECKS; i++)
         {
-            for (int j = 50; j < 100; j++)
+            for (int j = 75; j < 100; j++)
             {
-                //add a "bonus deck" of numbers 50-99
+                //add a "bonus deck" of numbers 75-99
                 _cards.Push(j);
             }
         }
@@ -51,9 +51,7 @@ public class PlayerDeck
         Shuffle();
         Shuffle();
         Shuffle();
-        Shuffle();
-        Shuffle();
-        //Console.WriteLine($"deck reset");
+        Console.WriteLine($"deck reset");
     }
     
     private void Shuffle()
