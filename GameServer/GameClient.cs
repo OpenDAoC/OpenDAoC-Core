@@ -598,16 +598,19 @@ namespace DOL.GS
 		/// </summary>
 		public override void OnDisconnect()
 		{
+			bool linkdead = false;
 			try
 			{
 				if (PacketProcessor != null)
 					PacketProcessor.OnDisconnect();
 
+				
 				//If we went linkdead and we were inside the game
 				//we don't let the player disappear!
 				if (ClientState == eClientState.Playing)
 				{
 					OnLinkdeath();
+					linkdead = true;
 					return;
 				}
 
@@ -623,8 +626,9 @@ namespace DOL.GS
 			}
 			finally
 			{
-				// Make sure the client is diconnected even on errors
-				Quit();
+				// Make sure the client is diconnected even on errors but only if OnLinkDeath() wasnt called.
+				if(!linkdead)
+					Quit();
 			}
 		}
 
@@ -832,7 +836,7 @@ namespace DOL.GS
 					}
 
 					ClientState = eClientState.Disconnected;
-					Player = null;
+					//Player = null;
 
 					GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 
