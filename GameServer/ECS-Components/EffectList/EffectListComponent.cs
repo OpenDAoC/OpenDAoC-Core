@@ -79,19 +79,21 @@ namespace DOL.GS
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
                         // Effects contains this effect already so refresh it
-                        if (existingEffects.Where(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID || (e.SpellHandler.Spell.EffectGroup == spellEffect.SpellHandler.Spell.EffectGroup && spellEffect.SpellHandler.Spell.IsPoisonEffect)).FirstOrDefault() != null)
+                        if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID 
+                                                                || (spellEffect.SpellHandler.Spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spellEffect.SpellHandler.Spell.EffectGroup && spellEffect.SpellHandler.Spell.IsPoisonEffect)) != null)
                         {
                             if (spellEffect.IsConcentrationEffect() && !spellEffect.RenewEffect) 
                                 return false;
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                if (existingEffects[i].SpellHandler.Spell.IsPulsing && spellEffect.SpellHandler.Caster.LastPulseCast == spellEffect.SpellHandler.Spell
-                                    && existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID
+                                //Console.WriteLine($"Effect found: name {existingEffects[i].Name} poison? {existingEffects[i].SpellHandler.Spell.IsPoisonEffect} ID {existingEffects[i].SpellHandler.Spell.ID} EffectGroup {existingEffects[i].SpellHandler.Spell.EffectGroup}");
+                                if ((existingEffects[i].SpellHandler.Spell.IsPulsing && spellEffect.SpellHandler.Caster.LastPulseCast == spellEffect.SpellHandler.Spell
+                                    && existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID)
                                     || (existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect == existingEffects[i])
                                     || existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID)
                                    
                                 {
-                                    if (spellEffect.SpellHandler.Spell.IsPoison)
+                                    if (spellEffect.SpellHandler.Spell.IsPoisonEffect)
                                     {
                                         existingEffects[i].ExpireTick = spellEffect.ExpireTick;
                                         spellEffect.IsBuffActive = true;
@@ -150,8 +152,12 @@ namespace DOL.GS
                                 {
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
+                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect)
+                                        {
+                                            addEffect = true;
+                                        }
                                         // Better Effect so disable the current Effect
-                                        if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                        else if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                             spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
                                         {
                                             if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
