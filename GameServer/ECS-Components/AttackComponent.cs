@@ -277,6 +277,8 @@ namespace DOL.GS
         /// </summary>
         public virtual bool AttackState { get; set; }
 
+        public bool LastAttackWasDualWield = false;
+
         /// <summary>
         /// Returns the AttackRange of this living
         /// </summary>
@@ -407,27 +409,37 @@ namespace DOL.GS
                 double speed = 0;
                 bool bowWeapon = true;
 
-                for (int i = 0; i < weapons.Length; i++)
+                if (LastAttackWasDualWield)
                 {
-                    if (weapons[i] != null)
+                    for (int i = 0; i < weapons.Length; i++)
                     {
-                        speed += weapons[i].SPD_ABS;
-                        count++;
-
-                        switch (weapons[i].Object_Type)
+                        if (weapons[i] != null)
                         {
-                            case (int) eObjectType.Fired:
-                            case (int) eObjectType.Longbow:
-                            case (int) eObjectType.Crossbow:
-                            case (int) eObjectType.RecurvedBow:
-                            case (int) eObjectType.CompositeBow:
-                                break;
-                            default:
-                                bowWeapon = false;
-                                break;
+                            speed += weapons[i].SPD_ABS;
+                            count++;
+
+                            switch (weapons[i].Object_Type)
+                            {
+                                case (int) eObjectType.Fired:
+                                case (int) eObjectType.Longbow:
+                                case (int) eObjectType.Crossbow:
+                                case (int) eObjectType.RecurvedBow:
+                                case (int) eObjectType.CompositeBow:
+                                    break;
+                                default:
+                                    bowWeapon = false;
+                                    break;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    speed += weapons[0].SPD_ABS;
+                    count++;
+                }
+               
+                //Console.WriteLine($"DW? {LastAttackWasDualWield} speed {speed}");
 
                 if (count < 1)
                     return 0;
@@ -1643,7 +1655,7 @@ namespace DOL.GS
                         weaponskiller.Out.SendMessage(
                             $"Base AF: {(ad.Target.GetArmorAF(ad.ArmorHitLocation) + playerBaseAF).ToString("0.00")} | ABS: {(ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)*100).ToString("0.00")} | AF/ABS: {armorMod.ToString("0.00")}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        weaponskiller.Out.SendMessage($"Attack Speed: {AttackSpeed(weapon)/1000.0}s | Damage Modifier: {(int) (DamageMod * 1000)}",
+                        weaponskiller.Out.SendMessage($"Damage Modifier: {(int) (DamageMod * 1000)}",
                             eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 
