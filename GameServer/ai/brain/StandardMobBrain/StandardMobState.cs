@@ -205,6 +205,7 @@ public class StandardMobState_AGGRO : StandardMobState
             _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
 
         _brain.AttackMostWanted();
+        _brain.Body.TurnTo(_brain.Body.TargetObject);
 
         base.Think();
     }
