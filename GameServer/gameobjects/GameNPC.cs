@@ -5659,6 +5659,11 @@ namespace DOL.GS
 					else if (pet.Owner is CommanderPet petComm && petComm.Owner is GamePlayer owner)
 						LOSChecker = owner;
 				}
+				else if (LOSChecker == null && this.Brain is IControlledBrain brain) // Check for charmed pets
+				{
+					if (brain.Owner is GamePlayer player)
+						LOSChecker = player;
+				}
 
 				if (LOSChecker == null)
 				{
