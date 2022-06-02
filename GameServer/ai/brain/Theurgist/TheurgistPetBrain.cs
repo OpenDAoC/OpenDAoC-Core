@@ -195,7 +195,8 @@ namespace DOL.AI.Brain
 			}
 			//if (this is IControlledBrain && !Body.attackComponent.AttackState)
 			//	((IControlledBrain)this).Follow(((IControlledBrain)this).Owner);
-			return casted;
+			bool checkingSpellLOS = Body.TempProperties.getProperty<Spell>("LOSCURRENTSPELL", null) != null; //Check if pet is checking for spell LoS
+			return casted || Body.IsCasting || checkingSpellLOS;
 		}
 
 		#region IControlledBrain Members
