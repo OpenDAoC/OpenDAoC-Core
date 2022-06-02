@@ -1550,8 +1550,14 @@ namespace DOL.AI.Brain
                 casted = Body.CastSpell(spell, m_mobSpellLine);
 
                 // if (casted && spell.CastTime > 0 && Body.IsMoving)
+                //Stopfollowing if spell casted and the cast time > 0 (non-instant spells)
                 if (casted && spell.CastTime > 0)
                     Body.StopFollowing();
+                //If instant cast and spell casted, and current follow target is not the target object, then switch follow target to current TargetObject
+                else if(casted && (spell.CastTime == 0 && Body.CurrentFollowTarget != Body.TargetObject))
+                {
+                    Body.Follow(Body.TargetObject, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
+                }
             }
             return casted;
         }
