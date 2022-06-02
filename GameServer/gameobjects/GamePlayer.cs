@@ -9302,12 +9302,16 @@ namespace DOL.GS
 
 
             double percent = DexterityCastTimeReduction;
-
             percent *= 1.0 - GetModified(eProperty.CastingSpeed) * 0.01;
 
             ticks = (int)(ticks * Math.Max(CastingSpeedReductionCap, percent));
             if (ticks < MinimumCastingSpeed)
                 ticks = MinimumCastingSpeed;
+
+            if (this.UseDetailedCombatLog)
+            {
+                this.Out.SendMessage($"Casting Speed: {ticks/1000.0}s", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+            }
 
             return ticks;
         }
