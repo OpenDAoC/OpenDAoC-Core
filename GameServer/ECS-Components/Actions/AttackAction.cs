@@ -361,7 +361,6 @@ namespace DOL.GS
                 }
                 else
                 {
-                    AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
                     //Console.WriteLine($"ad result {ad.AttackResult} weapon {ad.Weapon}");
                     if (attackWeapon != null && leftWeapon != null && owner.attackComponent.LastAttackWasDualWield && leftWeapon.Object_Type != (int)eObjectType.Shield/*  leftHandSwingCount > 0*/)
                     {
@@ -371,7 +370,7 @@ namespace DOL.GS
                     {
                         Interval = owner.attackComponent.AttackSpeed(attackWeapon);
                     }
-                    if (ad.Attacker is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                    if (owner is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
                     {
                         weaponskiller.Out.SendMessage(
                                 $"Attack Speed: {Interval / 1000.0}s",
