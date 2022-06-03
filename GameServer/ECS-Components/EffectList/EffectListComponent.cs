@@ -93,7 +93,7 @@ namespace DOL.GS
                                     || existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID)
                                    
                                 {
-                                    if (spellEffect.SpellHandler.Spell.IsPoisonEffect)
+                                    if (spellEffect.SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime)
                                     {
                                         existingEffects[i].ExpireTick = spellEffect.ExpireTick;
                                         spellEffect.IsBuffActive = true;
