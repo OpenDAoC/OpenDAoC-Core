@@ -1705,6 +1705,7 @@ namespace DOL.GS
                     double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 45/50d);
                     double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 45/50d) * (1 +
                         ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    if (armorCalc <= 0) armorCalc = 0.1;
                     double DamageMod = weaponskillCalc / armorCalc;
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     if (owner is GameEpicBoss)
