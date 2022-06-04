@@ -184,7 +184,8 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            Styles.Add(taunt);
+            if (!Styles.Contains(taunt))
+                Styles.Add(taunt);
             ++QueenKulaCount;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -203,43 +204,7 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Queen Kula", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Queen Kula not found, creating it...");
-
-                log.Warn("Initializing Queen Kula ...");
-                QueenKula TG = new QueenKula();
-                TG.Name = "Queen Kula";
-                TG.Model = 945;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 80;
-                TG.CurrentRegionID = 160;//tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 34136;
-                TG.Y = 57202;
-                TG.Z = 12025;
-                TG.Heading = 2107;
-                QueenKulaBrain ubrain = new QueenKulaBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Queen Kula exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }    
         #endregion
     }
 }
@@ -405,7 +370,7 @@ namespace DOL.AI.Brain
                 PlayerInCenter();//method that check if player enter to frozen circle
                 if (message1 == false)
                 {
-                    BroadcastMessage(String.Format("'Queen Kula grins maliciously: So you got past all my Hrimthursa Guardians!" +
+                    BroadcastMessage(String.Format("Queen Kula grins maliciously, 'So you got past all my Hrimthursa Guardians!" +
                         " These Hrimthursa are useless and arrogant! I'm going to show you what I've been wanting to teach you for a long time." +
                         " The merciless who are not afraid of death will survive in this brutal world! I am merciless I'm not afraid of death!'"));
                     message1 = true;
@@ -689,10 +654,14 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            Styles.Add(taunt);
-            Styles.Add(after_parry);
-            Styles.Add(parry_followup);
-            Styles.Add(after_block);
+            if(!Styles.Contains(taunt))
+                Styles.Add(taunt);
+            if (!Styles.Contains(after_parry))
+                Styles.Add(after_parry);
+            if (!Styles.Contains(parry_followup))
+                Styles.Add(parry_followup);
+            if (!Styles.Contains(after_block))
+                Styles.Add(after_block);
             ++KingTuscarCount;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -711,43 +680,7 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("King Tuscar", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("King Tuscarnot found, creating it...");
-
-                log.Warn("Initializing King Tuscar ...");
-                KingTuscar TG = new KingTuscar();
-                TG.Name = "King Tuscar";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 90;
-                TG.CurrentRegionID = 160;//tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 32073;
-                TG.Y = 53569;
-                TG.Z = 11886;
-                TG.Heading = 33;
-                KingTuscarBrain ubrain = new KingTuscarBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("King Tuscar exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }       
         #endregion
         #region Spells
         private Spell m_Hammers_aoe;
