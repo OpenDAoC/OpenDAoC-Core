@@ -307,7 +307,7 @@ namespace DOL.GS.Spells
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
-					double ws = (caster.Level * 2.65 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double ws = (caster.Level * 2.55 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
 					double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 45;
 
 					double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
