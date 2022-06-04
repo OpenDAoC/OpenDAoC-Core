@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -84,49 +85,17 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public void BroadcastMessage(String message)
         {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Agmundr", 160, (eRealm) 0);
-            if (npcs.Length == 0)
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                log.Warn("Icelord Agmundr not found, creating it...");
-
-                log.Warn("Initializing Icelord Agmundr...");
-                Agmundr TG = new Agmundr();
-                TG.Name = "Icelord Agmundr";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 78;
-                TG.Size = 70;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-
-                GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
-                TG.Inventory = template.CloseTemplate();
-                TG.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-
-                TG.VisibleActiveWeaponSlots = 34;
-                TG.MeleeDamageType = eDamageType.Crush;
-
-                TG.X = 24075;
-                TG.Y = 35593;
-                TG.Z = 12917;
-                TG.Heading = 3094;
-                AgmundrBrain ubrain = new AgmundrBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
-            else
-                log.Warn("Icelord Agmundr exist ingame, remove it and restart server if you want to add by script code.");
+        }
+        public override void Die(GameObject killer)
+        {
+            BroadcastMessage(String.Format("To come this far... only to face a terrible death!"));
+            base.Die(killer);
         }
     }
 }
@@ -148,14 +117,27 @@ namespace DOL.AI.Brain
 
         public static bool IsPulled = false;
         public static bool IsChanged = false;
+        private bool PulledText = false;
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void OnAttackedByEnemy(AttackData ad)
         {
+            if(!PulledText && Body.TargetObject != null)
+            {
+                BroadcastMessage(String.Format("My seer's told me that you were coming {0}! Since you posed no threat I haven't asked for reinforcements!", Body.TargetObject.Name));
+                PulledText = true;
+            }
             base.OnAttackedByEnemy(ad);
         }
         public override void AttackMostWanted()
         {
-            if (Util.Chance(15))
-                Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            if (Util.Chance(15) && Body.TargetObject != null)
+                Body.CastSpell(AgmundrDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
             base.AttackMostWanted();
         }
         public override void Think()
@@ -166,8 +148,9 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
+                PulledText = false;
             }
-            if(Body.InCombat && HasAggro)
+            if(HasAggro && Body.TargetObject != null)
             {
                 IsChanged = false;//reset IsChanged flag here
                 if(IsPulled==false)
@@ -247,7 +230,7 @@ namespace DOL.AI.Brain
                 DBSpell spell = new DBSpell();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
-                spell.RecastDelay = Util.Random(15, 25);
+                spell.RecastDelay = Util.Random(10, 15);
                 spell.ClientEffect = 228;
                 spell.Icon = 208;
                 spell.TooltipId = 479;
