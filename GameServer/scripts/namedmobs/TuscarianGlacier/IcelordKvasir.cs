@@ -83,6 +83,11 @@ namespace DOL.GS
         }
         public override bool AddToWorld()
         {
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            {
+                if (npc.Brain is TunnelsBrain)
+                    npc.RemoveFromWorld();
+            }
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162348);
             LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
@@ -103,42 +108,31 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public override void Die(GameObject killer)
         {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Kvasir", 160, (eRealm) 0);
-            if (npcs.Length == 0)
+            SpawnAnnouncer();
+            if (killer is GamePlayer)
             {
-                log.Warn("Icelord Kvasir not found, creating it...");
-
-                log.Warn("Initializing Icelord Kvasir...");
-                Kvasir TG = new Kvasir();
-                TG.Name = "Icelord Kvasir";
-                TG.PackageID = "Icelord Kvasir";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 78;
-                TG.Size = 70;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-
-                TG.X = 20107;
-                TG.Y = 52112;
-                TG.Z = 10916;
-                TG.Heading = 1025;
-                KvasirBrain ubrain = new KvasirBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
+                GamePlayer player = killer as GamePlayer;
+                if(player != null)
+                    BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.CharacterClass.Name+ "!"));
             }
-            else
-                log.Warn("Icelord Kvasir exist ingame, remove it and restart server if you want to add by script code.");
+            base.Die(killer);
+        }
+        private void SpawnAnnouncer()
+        {
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            {
+                if (npc.Brain is TunnelsBrain)
+                    return;
+            }
+            Tunnels announcer = new Tunnels();
+            announcer.X = 21088;
+            announcer.Y = 52022;
+            announcer.Z = 10880;
+            announcer.Heading = 1006;
+            announcer.CurrentRegion = CurrentRegion;
+            announcer.AddToWorld();
         }
     }
 }
@@ -159,8 +153,29 @@ namespace DOL.AI.Brain
         }
 
         public static bool IsPulled = false;
+        private bool StartMezz = false;
+        private bool AggroText = false;
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void OnAttackedByEnemy(AttackData ad)
         {
+            if(!AggroText && Body.TargetObject != null)
+            {
+                if (Body.TargetObject is GamePlayer)
+                {
+                    GamePlayer player = Body.TargetObject as GamePlayer;
+                    if (player != null && player.IsAlive)
+                    {
+                        BroadcastMessage(String.Format("To come this far... only to die a horrible death! Huh! Do you not wish that you were taking on a safer endavour at this moment? You realize of course that all of your efforts will come to naught as you are about to die " + player.CharacterClass.Name + "?"));
+                        AggroText = true;
+                    }
+                }
+            }
             if (IsPulled == false)
             {
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
@@ -185,6 +200,8 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
+                StartMezz = false;
+                AggroText = false;
             }
             if (Body.IsOutOfTetherRange)
             {
@@ -196,16 +213,35 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
+            if (HasAggro && Body.TargetObject != null)
             {
-                if (Util.Chance(10))
-                    Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                if (!StartMezz)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareMezz), Util.Random(45000, 60000));
+                    StartMezz = true;
+                }
+                if(!Body.IsCasting && Util.Chance(5))
+                    Body.CastSpell(IssoRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
             }
             base.Think();
         }
+        private int PrepareMezz(ECSGameTimer timer)
+        {
+            BroadcastMessage(String.Format("{0} lets loose a primal scream so intense that it resonates in the surrounding ice for several seconds. Many in the immediate vicinite are stunned by the sound!", Body.Name));
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMezz), 2000);
+            return 0;
+        }
+        private int CastMezz(ECSGameTimer timer)
+        {
+            if (HasAggro && Body.TargetObject != null)
+                Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            StartMezz = false;
+            return 0;
+        }
 
-        protected Spell m_mezSpell;
-        protected Spell Mezz
+        #region Spells
+        private Spell m_mezSpell;
+        private Spell Mezz
         {
             get
             {
@@ -214,14 +250,13 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(60, 120);
-                    spell.ClientEffect = 3371;
-                    spell.Icon = 3371;
-                    spell.Damage = 0;
+                    spell.RecastDelay = 0;
+                    spell.ClientEffect = 2619;
+                    spell.Icon = 2619;
                     spell.Name = "Mesmerize";
-                    spell.Range = 1500;
-                    spell.Radius = 500;
-                    spell.SpellID = 11746;
+                    spell.Range = 0;
+                    spell.Radius = 800;
+                    spell.SpellID = 11928;
                     spell.Duration = 60;
                     spell.Target = eSpellTarget.Enemy.ToString();
                     spell.Type = "Mesmerize";
@@ -234,5 +269,127 @@ namespace DOL.AI.Brain
                 return m_mezSpell;
             }
         }
+        private Spell m_IssoRoot;
+        private Spell IssoRoot
+        {
+            get
+            {
+                if (m_IssoRoot == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = Util.Random(45,55);
+                    spell.ClientEffect = 277;
+                    spell.Icon = 277;
+                    spell.Duration = 60;
+                    spell.Range = 1800;
+                    spell.Radius = 1000;
+                    spell.Value = 99;
+                    spell.Name = "Kvasir's Root";
+                    spell.TooltipId = 277;
+                    spell.SpellID = 11741;
+                    spell.Target = "Enemy";
+                    spell.Type = "SpeedDecrease";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Cold;
+                    m_IssoRoot = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IssoRoot);
+                }
+                return m_IssoRoot;
+            }
+        }
+        #endregion
     }
 }
+#region Tunnels Announcer
+namespace DOL.GS
+{
+    public class Tunnels : GameNPC
+    {
+        public Tunnels() : base()
+        {
+        }
+        public override int MaxHealth
+        {
+            get { return 10000; }
+        }
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "Tunnels Announce";
+            GuildName = "DO NOT REMOVE";
+            RespawnInterval = 5000;
+            Flags = (GameNPC.eFlags)28;
+
+            Size = 50;
+            Level = 50;
+            MaxSpeedBase = 0;
+            TunnelsBrain.message1 = false;
+            TunnelsBrain.message2 = false;
+
+            Faction = FactionMgr.GetFactionByID(140);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
+
+            TunnelsBrain adds = new TunnelsBrain();
+            SetOwnBrain(adds);
+            LoadedFromScript = false;
+            base.AddToWorld();
+            return true;
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class TunnelsBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public TunnelsBrain()
+            : base()
+        {
+            AggroLevel = 0;
+            AggroRange = 0;
+        }
+        public static bool message1 = false;
+        public static bool message2 = false;
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        public override void Think()
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(10000))
+                {
+                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && !message2 && player.IsWithinRadius(Body, 400))
+                        message2 = true;
+                }
+                if (message2 && !message1)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    message1 = true;
+                }
+            }
+            base.Think();
+        }
+        private int Announce(ECSGameTimer timer)
+        {
+            BroadcastMessage("A low rumble echoes throughout the Tuscarian Glacier! Icicles reasonating with the sound break off from the ceiling and shatter on the floors!" +
+                            "The rumble groes louder causing small cracks to form in the walls! It sounds as though there is a sawrm of giants on the move somewhere in the glacier!");
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMob), 300);
+            return 0;
+        }
+        private int RemoveMob(ECSGameTimer timer)
+        {
+            if (Body.IsAlive)
+                Body.RemoveFromWorld();
+            return 0;
+        }
+    }
+}
+#endregion
