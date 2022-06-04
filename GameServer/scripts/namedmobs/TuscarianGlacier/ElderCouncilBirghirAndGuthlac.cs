@@ -86,44 +86,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Birghir", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Elder Council Birghir not found, creating it...");
-
-                log.Warn("Initializing Elder Council Birghir ...");
-                Birghir TG = new Birghir();
-                TG.Name = "Elder Council Birghir";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 81;
-                TG.Size = 65;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 34595;
-                TG.Y = 55711;
-                TG.Z = 11884;
-                TG.Heading = 1039;
-                BirghirBrain ubrain = new BirghirBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn(
-                    "Elder Council Birghir exist ingame, remove it and restart server if you want to add by script code.");
-        }
     }
 }
 
@@ -263,22 +225,98 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
                 Body.Health = Body.MaxHealth;
 
-            if (Body.InCombat && HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 if (message1 == false)
                 {
-                    BroadcastMessage(String.Format(
-                        Body.Name + " says, 'The Ice Lords were right... They were right..." +
-                        " We should have destroyed you all, all your people, before you could invade us! We should have... killed you all!'"));
-                    message1 = true;
+                    GamePlayer player = Body.TargetObject as GamePlayer;
+                    if (player != null && player.IsAlive)
+                    {
+                        BroadcastMessage(String.Format(Body.Name + " Impossible! An ugly "+player.CharacterClass.Name+" there? How could this be? Guthlac, we must defend our Queen and King!"));
+                        message1 = true;
+                    }
                 }
                 if (IsTargetPicked == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(15000, 20000));
                     IsTargetPicked = true;
                 }
+                if(!Body.IsCasting)
+                {
+                    GameLiving target = Body.TargetObject as GameLiving;
+                    if (Util.Chance(20))
+                    {                    
+                        if(target != null && target.IsAlive && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
+                            Body.CastSpell(Icelord_SC_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    }
+                    if (Util.Chance(20))
+                    {
+                        if (target != null && target.IsAlive && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
+                            Body.CastSpell(Icelord_Haste_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    }
+                }
             }
             base.Think();
+        }
+        #region Spells
+        private Spell m_Icelord_SC_Debuff;
+        private Spell Icelord_SC_Debuff
+        {
+            get
+            {
+                if (m_Icelord_SC_Debuff == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 30;
+                    spell.Duration = 60;
+                    spell.ClientEffect = 2767;
+                    spell.Icon = 2767;
+                    spell.Name = "Debuff S/C";
+                    spell.TooltipId = 2767;
+                    spell.Range = 1500;
+                    spell.Value = 80;
+                    spell.Radius = 450;
+                    spell.SpellID = 11928;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_Icelord_SC_Debuff = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_SC_Debuff);
+                }
+                return m_Icelord_SC_Debuff;
+            }
+        }
+        private Spell m_Icelord_Haste_Debuff;
+        private Spell Icelord_Haste_Debuff
+        {
+            get
+            {
+                if (m_Icelord_Haste_Debuff == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 30;
+                    spell.Duration = 60;
+                    spell.ClientEffect = 5427;
+                    spell.Icon = 5427;
+                    spell.Name = "Haste Debuff";
+                    spell.TooltipId = 5427;
+                    spell.Range = 1500;
+                    spell.Value = 19;
+                    spell.SpellID = 11929;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.CombatSpeedDebuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_Icelord_Haste_Debuff = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_Haste_Debuff);
+                }
+                return m_Icelord_Haste_Debuff;
+            }
         }
         private Spell m_Icelord_Bolt;
         private Spell Icelord_Bolt
@@ -289,7 +327,7 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 3;
+                    spell.CastTime = 2;
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 4559;
                     spell.Icon = 4559;
@@ -320,9 +358,9 @@ namespace DOL.AI.Brain
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
-                    spell.ClientEffect = 161;
-                    spell.Icon = 161;
-                    spell.TooltipId = 161;
+                    spell.ClientEffect = 2511;
+                    spell.Icon = 2511;
+                    spell.TooltipId = 2511;
                     spell.Damage = 650;
                     spell.Name = "Frost Strike";
                     spell.Range = 1800;
@@ -338,6 +376,7 @@ namespace DOL.AI.Brain
                 return m_Icelord_dd;
             }
         }
+        #endregion
     }
 }
 
@@ -436,43 +475,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Council Guthlac", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Elder Council Guthlac not found, creating it...");
-
-                log.Warn("Initializing Elder Council Guthlac ...");
-                Guthlac TG = new Guthlac();
-                TG.Name = "Elder Council Guthlac";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 81;
-                TG.Size = 65;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 34595;
-                TG.Y = 55711;
-                TG.Z = 11884;
-                TG.Heading = 1039;
-                GuthlacBrain ubrain = new GuthlacBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Elder Council Guthlac exist ingame, remove it and restart server if you want to add by script code.");
-        }
     }
 }
 
@@ -504,6 +506,70 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         List<GamePlayer> PlayersToDD = new List<GamePlayer>();
+
+        #region Root && debuff
+        public static bool CanCast = false;
+        public static bool StartCastRoot = false;
+        public static GameLiving randomtarget2 = null;
+        public static GameLiving RandomTarget2
+        {
+            get { return randomtarget2; }
+            set { randomtarget2 = value; }
+        }
+        List<GamePlayer> Enemys_To_Root = new List<GamePlayer>();
+
+        public int PickRandomTarget(ECSGameTimer timer)
+        {
+            if (HasAggro)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
+                {
+                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    {
+                        if (!Enemys_To_Root.Contains(player) && player != Body.TargetObject)
+                            Enemys_To_Root.Add(player);
+                    }
+                }
+                if (Enemys_To_Root.Count > 0)
+                {
+                    if (CanCast == false)
+                    {
+                        GamePlayer Target = (GamePlayer)Enemys_To_Root[Util.Random(0, Enemys_To_Root.Count - 1)];//pick random target from list
+                        RandomTarget2 = Target;//set random target to static RandomTarget
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastRoot), 1000);
+                        CanCast = true;
+                    }
+                }
+            }
+            return 0;
+        }
+        public int CastRoot(ECSGameTimer timer)
+        {
+            if (HasAggro && RandomTarget2 != null)
+            {
+                GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+                if (RandomTarget2 != null && RandomTarget2.IsAlive)
+                {
+                    Body.TargetObject = RandomTarget2;
+                    Body.TurnTo(RandomTarget2);
+                    Body.CastSpell(GuthlacRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+                    Body.CastSpell(DebuffDQ, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                }
+                if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRoot), 5000);
+            }
+            return 0;
+        }
+        public int ResetRoot(ECSGameTimer timer)
+        {
+            Enemys_To_Root.Clear();
+            RandomTarget2 = null;
+            CanCast = false;
+            StartCastRoot = false;
+            return 0;
+        }
+        #endregion
+
         public static bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
@@ -536,6 +602,9 @@ namespace DOL.AI.Brain
                 FrozenBomb.FrozenBombCount = 0;
                 message1 = false;
                 IsBombUp = false;
+                StartCastRoot = false;
+                CanCast = false;
+                RandomTarget2 = null;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
@@ -554,8 +623,13 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
                 Body.Health = Body.MaxHealth;
 
-            if (Body.InCombat && HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                if(!StartCastRoot)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
+                    StartCastRoot = true;
+                }
                 foreach (GamePlayer player in Body.GetPlayersInRadius(4500))
                 {
                     if (player == null) break;
@@ -577,16 +651,17 @@ namespace DOL.AI.Brain
                 }
                 if (message1 == false)
                 {
-                    BroadcastMessage(String.Format(
-                        Body.Name +
-                        " says, 'I didn't think it was possible that our home could fall victim to an invasion!" +
+                    BroadcastMessage(String.Format(Body.Name +" says, 'I didn't think it was possible that our home could fall victim to an invasion!" +
                         " The Ice Lords were right! We should have wiped out all dangerous creatures on this island! And we're going to do that today!'"));
                     message1 = true;
                 }
+                if(!Body.IsCasting)
+                    Body.CastSpell(Icelord_dd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             }
             base.Think();
         }
 
+        #region Spawn Frost Bomb
         public int SpawnBombTimer(ECSGameTimer timer)
         {
             if (FrozenBomb.FrozenBombCount == 0)
@@ -625,10 +700,105 @@ namespace DOL.AI.Brain
             npc.CurrentRegion = Body.CurrentRegion;
             npc.AddToWorld();
         }
+        #endregion
+
+        #region Spells
+        private Spell m_DebuffDQ;
+        private Spell DebuffDQ
+        {
+            get
+            {
+                if (m_DebuffDQ == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 0;
+                    spell.Duration = 60;
+                    spell.Value = 80;
+                    spell.ClientEffect = 2627;
+                    spell.Icon = 2627;
+                    spell.TooltipId = 2627;
+                    spell.Name = "Greater Curse of Blindness";
+                    spell.Range = 1500;
+                    spell.Radius = 350;
+                    spell.SpellID = 11932;
+                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Type = eSpellType.DexterityQuicknessDebuff.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    m_DebuffDQ = new Spell(spell, 60);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DebuffDQ);
+                }
+                return m_DebuffDQ;
+            }
+        }
+        private Spell m_GuthlacRoot;
+        private Spell GuthlacRoot
+        {
+            get
+            {
+                if (m_GuthlacRoot == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 0;
+                    spell.ClientEffect = 2678;
+                    spell.Icon = 2678;
+                    spell.Duration = 60;
+                    spell.Value = 99;
+                    spell.Name = "Root";
+                    spell.TooltipId = 2678;
+                    spell.SpellID = 11931;
+                    spell.Target = "Enemy";
+                    spell.Type = "SpeedDecrease";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Body;
+                    m_GuthlacRoot = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GuthlacRoot);
+                }
+                return m_GuthlacRoot;
+            }
+        }
+        private Spell m_Icelord_dd;
+        private Spell Icelord_dd
+        {
+            get
+            {
+                if (m_Icelord_dd == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = Util.Random(8,15);
+                    spell.ClientEffect = 2709;
+                    spell.Icon = 2709;
+                    spell.TooltipId = 2709;
+                    spell.Damage = 550;
+                    spell.Duration = 30;
+                    spell.Value = 35;
+                    spell.Name = "Rune of Mazing";
+                    spell.Range = 1800;
+                    spell.SpellID = 11930;
+                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy;
+                    m_Icelord_dd = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Icelord_dd);
+                }
+                return m_Icelord_dd;
+            }
+        }
+        #endregion
     }
 }
 
 /////////////////////////////////////////////////////////////Guthalc deadly ice spike/////////////////////////////////////////////////////////
+#region Frost Bomb
 namespace DOL.GS
 {
     public class FrozenBomb : GameNPC
@@ -804,3 +974,4 @@ namespace DOL.AI.Brain
         }
     }
 }
+#endregion

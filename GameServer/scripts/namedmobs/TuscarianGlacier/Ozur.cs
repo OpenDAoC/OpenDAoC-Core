@@ -208,8 +208,45 @@ namespace DOL.AI.Brain
                     Weak(true);
                 }
             }
-
+            if(HasAggro && Body.TargetObject != null)
+            {
+                Body.CastSpell(OzurDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+            }
             base.Think();
+        }
+        private Spell m_OzurDisease;
+        private Spell OzurDisease
+        {
+            get
+            {
+                if (m_OzurDisease == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 60;
+                    spell.ClientEffect = 4375;
+                    spell.Icon = 4375;
+                    spell.Name = "Ozur's Disease";
+                    spell.Message1 = "You are diseased!";
+                    spell.Message2 = "{0} is diseased!";
+                    spell.Message3 = "You look healthy.";
+                    spell.Message4 = "{0} looks healthy again.";
+                    spell.TooltipId = 4375;
+                    spell.Range = 1500;
+                    spell.Radius = 400;
+                    spell.Duration = 120;
+                    spell.SpellID = 11926;
+                    spell.Target = "Enemy";
+                    spell.Type = "Disease";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    m_OzurDisease = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OzurDisease);
+                }
+                return m_OzurDisease;
+            }
         }
 
         public override void Notify(DOLEvent e, object sender, EventArgs args)

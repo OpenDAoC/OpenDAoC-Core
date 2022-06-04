@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (Body.InCombat && HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 if (StartCastRoot == false)
                 {
@@ -600,10 +600,10 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if(HasAggro)
+            if(HasAggro && Body.TargetObject != null)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
-                if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && target != null && target.IsAlive)
                 {
                     Body.CastSpell(addstun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }

@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
                     spell.Range = 0;
                     spell.SpellID = 3011;
                     spell.Duration = 0;
-                    spell.Value = 500;
+                    spell.Value = 250;
                     spell.SpellGroup = 130;
                     spell.Target = "Self";
                     spell.Type = "Heal";
