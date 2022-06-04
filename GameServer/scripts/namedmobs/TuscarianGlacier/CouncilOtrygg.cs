@@ -86,42 +86,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Council Otrygg", 160, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Council Otrygg not found, creating it...");
-
-                log.Warn("Initializing Council Otrygg...");
-                Otrygg TG = new Otrygg();
-                TG.Name = "Council Otrygg";
-                TG.PackageID = "Council Otrygg";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 77;
-                TG.Size = 70;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-
-                TG.X = 23958;
-                TG.Y = 42241;
-                TG.Z = 13430;
-                TG.Heading = 2084;
-                OtryggBrain ubrain = new OtryggBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Council Otrygg exist in game, remove it and restart server if you want to add by script code.");
-        }
     }
 }
 
@@ -158,7 +122,7 @@ namespace DOL.AI.Brain
             }
             if (HasAggro)
             {
-                if (OtryggAdd.PetsCount is < 15 and >= 0)
+                if (OtryggAdd.PetsCount is < 8 and >= 0)
                 {
                     SpawnPetsMore();
                 }
@@ -177,7 +141,7 @@ namespace DOL.AI.Brain
         }
         public void SpawnPets()
         {
-            for (int i = 0; i < 14; i++) // Spawn 15 pets
+            for (int i = 0; i < 8; i++) // Spawn 8 pets
             {
                 OtryggAdd Add = new OtryggAdd();
                 Add.X = Body.SpawnPoint.X + Util.Random(-50, 80);
@@ -210,9 +174,19 @@ namespace DOL.GS
         public OtryggAdd() : base()
         {
         }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+                default: return 20;// dmg reduction for rest resists
+            }
+        }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 50;
         }
         public override int AttackRange
         {
@@ -230,7 +204,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 8000; }
+            get { return 10000; }
         }
         public override void Die(GameObject killer)
         {
@@ -241,29 +215,31 @@ namespace DOL.GS
         {
         }
         public static int PetsCount = 0;
+        #region Stats
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 100; }
+        public override short Strength { get => base.Strength; set => base.Strength = 50; }
+        #endregion
         public override bool AddToWorld()
         {
-            Model = 126;
-            MeleeDamageType = eDamageType.Cold;
+            Model = (byte)Util.Random(241,244);
+            MeleeDamageType = eDamageType.Crush;
             Name = "summoned pet";
             RespawnInterval = -1;
 
             RoamingRange = 120;
             Size = 50;
-            Level = 68;
+            Level = 62;
             MaxSpeedBase = 250;
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             BodyType = 6;
             Realm = eRealm.None;
-
-            Strength = 60;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 150;
-            Intelligence = 150;
 
             OtryggAddBrain adds = new OtryggAddBrain();
             SetOwnBrain(adds);
@@ -295,7 +271,7 @@ namespace DOL.AI.Brain
                     if (npc.Brain is OtryggAddBrain brain)
                     {
                         GameLiving target = Body.TargetObject as GameLiving;
-                        if (!brain.HasAggro && Body != npc && target != null && target.IsAlive)
+                        if (!brain.HasAggro && Body != npc && Body.Brain != npc.Brain && target != null && target.IsAlive)
                             brain.AddToAggroList(target, 10); //if one pet aggro all will aggro
                     }
                 }
