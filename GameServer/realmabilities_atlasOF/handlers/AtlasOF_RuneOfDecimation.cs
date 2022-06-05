@@ -89,8 +89,8 @@ namespace DOL.GS.RealmAbilities
 
             GameNPC trap = new GameNPC();
             trap.Model = 488;
-            trap.Name = "Rune Of Decimation";
-            trap.GuildName = m_player.Name + "'s Trap";
+            trap.Name = "nothing";
+            trap.GuildName = m_player.Name + "";
             trap.Realm = m_player.Realm;
             trap.Size = 1;
             trap.Level = m_player.Level;
