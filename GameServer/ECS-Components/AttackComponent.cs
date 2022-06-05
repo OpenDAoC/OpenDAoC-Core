@@ -407,7 +407,7 @@ namespace DOL.GS
 
                 int count = 0;
                 double speed = 0;
-                bool bowWeapon = true;
+                bool bowWeapon = false;
 
                 if (LastAttackWasDualWield)
                 {
@@ -425,6 +425,7 @@ namespace DOL.GS
                                 case (int) eObjectType.Crossbow:
                                 case (int) eObjectType.RecurvedBow:
                                 case (int) eObjectType.CompositeBow:
+                                    bowWeapon = true;
                                     break;
                                 default:
                                     bowWeapon = false;
@@ -435,11 +436,21 @@ namespace DOL.GS
                 }
                 else
                 {
+                    switch (weapons[0].Object_Type)
+                    {
+                        case (int) eObjectType.Fired:
+                        case (int) eObjectType.Longbow:
+                        case (int) eObjectType.Crossbow:
+                        case (int) eObjectType.RecurvedBow:
+                        case (int) eObjectType.CompositeBow:
+                            bowWeapon = true;
+                            break;
+                    }
                     speed += weapons[0].SPD_ABS;
                     count++;
                 }
                
-                //Console.WriteLine($"DW? {LastAttackWasDualWield} speed {speed}");
+                //Console.WriteLine($"DW? {LastAttackWasDualWield} speed {speed} count {count} bow {bowWeapon}");
 
                 if (count < 1)
                     return 0;
@@ -479,7 +490,8 @@ namespace DOL.GS
                 {
                     // TODO use haste
                     //Weapon Speed*(1-(Quickness-60)/500]*(1-Haste)
-                    speed *= (1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed);
+                    speed *= ((1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed));
+                    //Console.WriteLine($"Speed after {speed} quiMod {(1.0 - (qui - 60) * 0.002)} melee speed {0.01 * p.GetModified(eProperty.MeleeSpeed)} together {(1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed)}");
                 }
 
                 // apply speed cap
