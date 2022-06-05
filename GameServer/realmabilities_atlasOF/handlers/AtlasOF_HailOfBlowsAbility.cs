@@ -19,14 +19,14 @@ namespace DOL.GS.RealmAbilities
         public override int GetReUseDelay(int level) { return 900; } // 15 mins
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 3); }
         
-        public override int CostForUpgrade(int level) {
-            switch (level)
+        public override int CostForUpgrade(int level)
+        {
+            return level switch
             {
-                case 1: return 3;
-                case 2: return 6;
-                case 3: return 10;
-                default: return 3;
-            }
+                1 => 6,
+                2 => 10,
+                _ => 3
+            };
         }
         
         private DBSpell m_dbspell;
