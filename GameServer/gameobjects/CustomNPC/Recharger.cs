@@ -40,7 +40,7 @@ public class Recharger : GameNPC
         SayTo(player, eChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.Interact"));
         SayTo(player, eChatLoc.CL_PopupWindow,
-            $"If you're in a hurry, I can also [recharge all] your items for you for an additional {RECHARGE_ALL_TAX*100}% fee.");
+            $"If you're in a hurry, I can also [recharge all] your items for an additional {RECHARGE_ALL_TAX*100}% fee.");
         
         return true;
     }
@@ -53,8 +53,6 @@ public class Recharger : GameNPC
         if (text.ToLower() != "recharge all") return false;
         AskRechargeAll(player);
         return true;
-        
-
     }
 
     #endregion Examine/Interact Message
