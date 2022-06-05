@@ -255,6 +255,7 @@ public class Blacksmith : GameNPC
         if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
                          || item.OwnerID == null) return false;
         if (item.Condition == item.MaxCondition) return false;
+        if (item.RepairCost == 0) return false; // skipping items with no template price - hopefully we'll get tickets and we'll adjust the prices
 
         return true;
     }
