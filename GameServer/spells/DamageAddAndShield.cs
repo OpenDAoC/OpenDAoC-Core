@@ -80,7 +80,7 @@ namespace DOL.GS.Spells
 
 			double minVariance;
 			double maxVariance;
-			CalculateDamageVariance(Caster, out minVariance, out maxVariance);
+			CalculateDamageVariance(target, out minVariance, out maxVariance);
 			//spread += Util.Random(50);
 			double dpsCap = DPSCap(attacker.Level);
 			double dps = IgnoreDamageCap ? Spell.Damage : Math.Min(Spell.Damage, dpsCap);
