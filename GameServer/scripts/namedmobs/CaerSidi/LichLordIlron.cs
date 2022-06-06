@@ -60,6 +60,7 @@ namespace DOL.GS.Scripts
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
+
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
             LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;
@@ -69,11 +70,15 @@ namespace DOL.GS.Scripts
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
+
             LichLordIlronBrain sBrain = new LichLordIlronBrain();
             SetOwnBrain(sBrain);
             sBrain.AggroLevel = 100;
             sBrain.AggroRange = 500;
+
             LichLordIlronBrain.spawnimages = true;
+            LoadedFromScript = false;//load from database
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
@@ -85,9 +90,7 @@ namespace DOL.GS.Scripts
             foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is IlronImagesBrain)
-                {
                     npc.RemoveFromWorld();
-                }
             }
         }
 
@@ -119,12 +122,9 @@ namespace DOL.AI.Brain
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc.Brain is IlronImagesBrain)
-                    {
                         npc.RemoveFromWorld();
-                    }
                 }
             }
-
             base.Think();
         }
 
@@ -134,8 +134,6 @@ namespace DOL.AI.Brain
             if (spawnimages)
             {
                 Spawn(); // spawn images
-                spawnimages = false; // check to avoid spawning adds multiple times
-
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000, false))
                 {
                     if (mob_c?.Brain is IlronImagesBrain && mob_c.IsAlive && mob_c.IsAvailable)
@@ -143,8 +141,8 @@ namespace DOL.AI.Brain
                         AddAggroListTo(mob_c.Brain as IlronImagesBrain);
                     }
                 }
+                spawnimages = false; // check to avoid spawning adds multiple times
             }
-
             base.OnAttackedByEnemy(ad);
         }
 
@@ -181,7 +179,7 @@ namespace DOL.GS
     {
         public override int MaxHealth
         {
-            get { return 8000; }
+            get { return 10000; }
         }
         public override int GetResist(eDamageType damageType)
         {
