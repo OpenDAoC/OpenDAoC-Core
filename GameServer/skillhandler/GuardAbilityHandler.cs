@@ -81,8 +81,9 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// check if someone is guarding the target
-			foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+			foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
 			{
+				
 				if (guard.GuardTarget != guardTarget) continue;
 				if (guard.GuardSource == player)
 				{
@@ -95,7 +96,6 @@ namespace DOL.GS.SkillHandler
                     return;
 				}
 			}
-
 
 			// cancel all guard effects by this player before adding a new one
 			foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
