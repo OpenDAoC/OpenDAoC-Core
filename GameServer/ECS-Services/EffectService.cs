@@ -155,10 +155,17 @@ namespace DOL.GS
                 }
                 else
                 {
+                    //fix for Buff Pot Barrel not showing all icons when used
                     if (e is ECSGameSpellEffect spellEffect && AllStatsBarrel.BuffList.Contains(spellEffect.SpellHandler.Spell.ID))
                     {
                         List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
                         ecsList.AddRange(playerEffects.Skip(playerEffects.Count - AllStatsBarrel.BuffList.Count));
+                    }
+                    //fix for Regen Pot not showing all icons when used
+                    else if (e is ECSGameSpellEffect regenEffect && AllRegenBuff.RegenList.Contains(regenEffect.SpellHandler.Spell.ID))
+                    {
+                        List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                        ecsList.AddRange(playerEffects.Skip(playerEffects.Count - AllRegenBuff.RegenList.Count));
                     }
                     else
                         ecsList.Add(e);
