@@ -80,7 +80,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// check if someone is protecting the target
-			foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+			foreach (ProtectECSGameEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
 			{
 				if (protect.ProtectTarget != protectTarget)
 					continue;
