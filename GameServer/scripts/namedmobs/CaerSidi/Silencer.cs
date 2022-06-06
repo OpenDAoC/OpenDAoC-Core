@@ -77,7 +77,7 @@ namespace DOL.GS
 
         public override int GetResist(eDamageType damageType)
         {
-            if (get_resist == true)
+            if (get_resist)
             {
                 switch (damageType)
                 {
@@ -87,7 +87,16 @@ namespace DOL.GS
                     default: return 99; // 99% reduction for rest resists
                 }
             }
-            return 0; //without resists
+            else
+            {
+                switch (damageType)
+                {
+                    case eDamageType.Slash: return 30;
+                    case eDamageType.Crush: return 30;
+                    case eDamageType.Thrust: return 30; //30% dmg reduction for melee dmg
+                    default: return 50; // 50% reduction for rest resists
+                }
+            }
         }
 
         public static bool get_resist = false; //set resists
@@ -145,46 +154,10 @@ namespace DOL.GS
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             SilencerBrain adds = new SilencerBrain();
             SetOwnBrain(adds);
+            LoadedFromScript = false;//load from database
+            SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Silencer", 60, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Silencer  not found, creating it...");
-
-                log.Warn("Initializing Silencer...");
-                Silencer CO = new Silencer();
-                CO.Name = "Silencer";
-                CO.Model = 934;
-                CO.Realm = 0;
-                CO.Level = 81;
-                CO.Size = 220;
-                CO.CurrentRegionID = 60; //caer sidi
-
-                CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-                CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-
-                CO.X = 31035;
-                CO.Y = 36323;
-                CO.Z = 15620;
-                CO.Heading = 3035;
-
-                SilencerBrain ubrain = new SilencerBrain();
-                CO.SetOwnBrain(ubrain);
-                CO.AddToWorld();
-                CO.Brain.Start();
-                CO.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Silencer exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -200,8 +173,9 @@ namespace DOL.AI.Brain
             : base()
         {
             AggroLevel = 100;
-            AggroRange = 600;
+            AggroRange = 500;
             ThinkInterval = 5000;
+            CanBAF = false;
         }
         public override void Think()
         {
