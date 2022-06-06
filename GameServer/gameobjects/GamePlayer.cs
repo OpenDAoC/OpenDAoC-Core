@@ -166,7 +166,12 @@ namespace DOL.GS
         /// </summary>
         public override bool TargetInView
         {
-            get { return m_targetInView; }
+            get {
+                if(TargetObject != null 
+                   && GetDistanceTo(TargetObject) < 64)
+                    return true; 
+                else
+                    return m_targetInView; }
             set { m_targetInView = value; }
         }
 
