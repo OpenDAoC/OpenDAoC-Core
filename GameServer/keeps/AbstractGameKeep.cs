@@ -315,6 +315,17 @@ namespace DOL.GS.Keeps
 			}
 		}
 
+		protected byte m_skinType = 0;
+		public bool IsRelic
+		{
+			get
+			{
+				if (m_skinType == 0)
+					m_skinType = DBKeep.SkinType;
+				return m_skinType == 99;
+			}
+		}
+
 		/// <summary>
 		/// calculate the effective level from a keep level
 		/// </summary>

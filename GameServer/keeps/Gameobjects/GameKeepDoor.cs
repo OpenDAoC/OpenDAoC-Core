@@ -151,6 +151,14 @@ namespace DOL.GS.Keeps
 			}
 		}
 
+		public bool IsRelic
+		{
+			get
+			{
+				return Component.Keep.IsRelic;
+			}
+		}
+
 		public void UpdateLevel()
 		{
 			if (MaxHealth != m_oldMaxHealth)
@@ -254,7 +262,7 @@ namespace DOL.GS.Keeps
 
 				if (IsAttackableDoor)
 				{
-					name = "Keep Door";
+					name = IsRelic ? "Relic Gate" : "Keep Door";
 				}
 				else
 				{
@@ -325,6 +333,24 @@ namespace DOL.GS.Keeps
 						client.Out.SendObjectUpdate(this);
 					}
 				}
+			}
+
+			if (IsRelic)
+			{
+				if (HealthPercent % 25 != 0) return;
+				var message = $"{Component.Keep.Name} is under attack!";
+				foreach (GameClient cl in WorldMgr.GetClientsOfRealm(Realm))
+				{
+					if (cl.Player.ObjectState != eObjectState.Active) continue;
+					cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+					cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						
+					if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+					{
+						GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
+					}
+				}
+
 			}
 		}
 
