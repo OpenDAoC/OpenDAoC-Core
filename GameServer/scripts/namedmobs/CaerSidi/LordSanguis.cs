@@ -361,7 +361,7 @@ namespace DOL.AI.Brain
                 Body.Flags = GameNPC.eFlags.GHOST;
                 set_flag = false;
             }
-            if (Body.HealthPercent <= 10)
+            if (Body.HealthPercent <= 5)
             {
                 if (set_flag == false)
                 {
