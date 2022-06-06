@@ -2725,9 +2725,9 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 368;
                     spell.Icon = 368;
-                    spell.Damage = 750;
+                    spell.Damage = 650;
                     spell.Name = "Rain of Fire";
-                    spell.Radius = 1500;
+                    spell.Radius = 800;
                     spell.Range = 2800;
                     spell.SpellID = 11740;
                     spell.Target = "Area";
