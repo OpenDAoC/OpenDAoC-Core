@@ -100,7 +100,7 @@ namespace DOL.GS
 			StopImmunityEffects(Starter);
 
 			Started = false;
-			Target.DuelStop();
+			Target?.DuelStop();
 			Target = null;
 
 			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Quit, new DOLEventHandler(DuelOnPlayerQuit));
