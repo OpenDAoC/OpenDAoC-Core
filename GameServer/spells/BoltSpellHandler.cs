@@ -164,10 +164,9 @@ namespace DOL.GS.Spells
 					{
 						foreach (GameLiving attacker in target.attackComponent.Attackers)
 						         //200 unit range restriction added in 1.84 - reverted for Atlas 1.65 target
-						         //&& target.GetDistanceTo(attacker) <= 200)
-						         
+						         //re-implementing the 200 unit restriction to make bolts a little friendlier 6/6/2022
 						{
-							if (attacker != caster)
+							if (attacker != caster && target.GetDistanceTo(attacker) <= 200)
 							{
 								// each attacker adds a 20% chance to miss
 								
