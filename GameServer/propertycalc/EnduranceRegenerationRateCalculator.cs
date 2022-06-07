@@ -17,6 +17,7 @@
  *
  */
 using System;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -58,8 +59,18 @@ namespace DOL.GS.PropertyCalc
 			double regen = regenBuff;
 			if (regen == 0 && living is GamePlayer) //&& ((GamePlayer)living).HasAbility(Abilities.Tireless))
 				regen++;
-			if (living is GamePlayer && living.HasAbility(Abilities.Tireless))
+			// if (living is GamePlayer && living.HasAbility(Abilities.Tireless))
+			// 	regen++;
+			
+			// --- [START] --- AtlasOF_Tireless ---------------------------------------------------------
+			var raTirelessAmount = 0;
+			var raTireless = living.GetAbility<AtlasOF_RAEndRegenEnhancer>();
+
+			if (raTireless != null)
+			{
 				regen++;
+			}
+			// --- [ END ] --- AtlasOF_Tireless ---------------------------------------------------------
 
 			if (p != null)
 				p.RegenAfterTireless = regen;

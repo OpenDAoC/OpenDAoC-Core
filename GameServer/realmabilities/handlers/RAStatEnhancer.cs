@@ -174,4 +174,9 @@ namespace DOL.GS.RealmAbilities
 			return player.Level >= 40;
 		}
 	}
+	
+	public class RAEndRegenEnhancer : RAStatEnhancer
+	{
+		public RAEndRegenEnhancer(DBAbility dba, int level) : base(dba, level, eProperty.EnduranceRegenerationRate) { }
+	}
 }
