@@ -95,7 +95,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				SayTo(player, "Choose a destination ...");
+				SayTo(player, $"Hello {player.CharacterClass.Name}, choose a destination: \n");
 			}
 
 			int numDestinations = 0;
