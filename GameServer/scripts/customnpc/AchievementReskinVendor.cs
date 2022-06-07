@@ -1544,6 +1544,10 @@ public bool SetModel(GamePlayer player, int number, int price)
         GameServer.Database.AddObject(unique);
         //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
         InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+        if(item.IsCrafted)
+            newInventoryItem.IsCrafted = true;
+        if(item.Creator != "")
+            newInventoryItem.Creator = item.Creator;
         player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
         player.Out.SendInventoryItemsUpdate(new InventoryItem[] {newInventoryItem});
         // player.RemoveBountyPoints(300);
@@ -1599,6 +1603,10 @@ public void SetExtension(GamePlayer player, byte number, int price)
         unique.Extension = number;
         GameServer.Database.AddObject(unique);
         InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+        if(item.IsCrafted)
+            newInventoryItem.IsCrafted = true;
+        if(item.Creator != "")
+            newInventoryItem.Creator = item.Creator;
         player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
         player.Out.SendInventoryItemsUpdate(new InventoryItem[] {newInventoryItem});
         // player.RemoveBountyPoints(300);
