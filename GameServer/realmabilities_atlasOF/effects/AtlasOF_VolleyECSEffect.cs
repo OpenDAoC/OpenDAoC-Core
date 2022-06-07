@@ -533,7 +533,7 @@ namespace DOL.GS.Effects
             double AcherWeaponSkill = archer.DisplayedWeaponSkill;
             double baseDamage = WeaponDPS * (AcherWeaponSkill / TargetAF) * meleeRelicBonus  * SlowWeaponBonus * WeaponBonus2H * weaponspeed;//calculate dmg
 
-            switch ((archer.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)//switch dmg based of arrow type
+            switch ((archer?.rangeAttackComponent?.RangeAttackAmmo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
             {
                 case 0:
                     baseDamage *= 0.85;
