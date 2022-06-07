@@ -130,6 +130,7 @@ namespace DOL.GS.Commands
 					for (int i = firstItem; i <= lastItem; i++)
                     {
 						InventoryItem item = player.Inventory.GetItem((eInventorySlot)i);
+						if (item is {PackageID: "AtlasXPItem"}) return;
 						if (item != null)
 							merchant.OnPlayerSell(player, item);
                     }
