@@ -1909,6 +1909,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("keeps", "guard_respawn_variance", "Respawn variance for keep guards in minutes.", 10)]
 		public static int GUARD_RESPAWN_VARIANCE;
+		
+		/// <summary>
+		/// Relic gates health value.
+		/// </summary>
+		[ServerProperty("keeps", "relic_doors_health", "Relic gates health value", 180000)]
+		public static int RELIC_DOORS_HEALTH;
 		#endregion
 
 		#region PVE / TOA

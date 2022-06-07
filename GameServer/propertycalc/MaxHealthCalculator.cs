@@ -2,6 +2,7 @@ using System;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.RealmAbilities;
+using DOL.GS.ServerProperties;
 using log4net.Core;
 
 namespace DOL.GS.PropertyCalc
@@ -71,6 +72,10 @@ namespace DOL.GS.PropertyCalc
 
 				if (keepdoor.Component != null && keepdoor.Component.Keep != null)
 				{
+					if (keepdoor.IsRelic)
+					{
+						return Properties.RELIC_DOORS_HEALTH;
+					}
 					return (keepdoor.Component.Keep.EffectiveLevel(keepdoor.Component.Keep.Level) + 1) * keepdoor.Component.Keep.BaseLevel * 200;
 				}
 
