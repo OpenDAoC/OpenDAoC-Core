@@ -436,18 +436,23 @@ namespace DOL.GS
                 }
                 else
                 {
-                    switch (weapons[0].Object_Type)
+                    if (weapons[0] == null) { }
+                    else
                     {
-                        case (int) eObjectType.Fired:
-                        case (int) eObjectType.Longbow:
-                        case (int) eObjectType.Crossbow:
-                        case (int) eObjectType.RecurvedBow:
-                        case (int) eObjectType.CompositeBow:
-                            bowWeapon = true;
-                            break;
+                        switch (weapons[0].Object_Type)
+                        {
+                            case (int) eObjectType.Fired:
+                            case (int) eObjectType.Longbow:
+                            case (int) eObjectType.Crossbow:
+                            case (int) eObjectType.RecurvedBow:
+                            case (int) eObjectType.CompositeBow:
+                                bowWeapon = true;
+                                break;
+                        }
+                        speed += weapons[0].SPD_ABS;
+                        count++;
                     }
-                    speed += weapons[0].SPD_ABS;
-                    count++;
+                    
                 }
                
                 //Console.WriteLine($"DW? {LastAttackWasDualWield} speed {speed} count {count} bow {bowWeapon}");
