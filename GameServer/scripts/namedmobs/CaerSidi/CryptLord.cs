@@ -95,57 +95,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Crypt Lord", 60, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Crypt Lord  not found, creating it...");
-
-                log.Warn("Initializing Crypt Lord...");
-                CryptLord CO = new CryptLord();
-                CO.Name = "Crypt Lord";
-                CO.Model = 927;
-                CO.Realm = 0;
-                CO.Level = 81;
-                CO.Size = 150;
-                CO.CurrentRegionID = 60; //caer sidi
-
-                CO.Strength = 500;
-                CO.Intelligence = 220;
-                CO.Piety = 220;
-                CO.Dexterity = 200;
-                CO.Constitution = 200;
-                CO.Quickness = 125;
-                CO.BodyType = 5;
-                CO.MeleeDamageType = eDamageType.Slash;
-                CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-                CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-
-                CO.X = 24906;
-                CO.Y = 40138;
-                CO.Z = 15372;
-                CO.MaxDistance = 4500;
-                CO.TetherRange = 4700;
-                CO.MaxSpeedBase = 300;
-                CO.Heading = 3035;
-
-                CryptLordBrain ubrain = new CryptLordBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 400;
-                CO.SetOwnBrain(ubrain);
-                CO.AddToWorld();
-                CO.Brain.Start();
-                CO.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Crypt Lord exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        public override bool IsVisibleToPlayers => true;
     }
 }
 
@@ -195,60 +145,53 @@ namespace DOL.AI.Brain
 
             if (!Body.InCombat && !HasAggro)
             {
-                if (Body.CurrentRegionID == 60) //caer sidi
+                if (!Body.IsWithinRadius(point1, 30) && point1check == false)
                 {
-                    if (!Body.IsWithinRadius(point1, 30) && point1check == false)
+                    Body.WalkTo(point1, 100);
+                }
+                else
+                {
+                    point1check = true;
+                    walkback = false;
+                    if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
                     {
-                        Body.WalkTo(point1, 100);
+                        Body.WalkTo(point2, 100);
                     }
                     else
                     {
-                        point1check = true;
-                        walkback = false;
-                        if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
+                        point2check = true;
+                        if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
+                            point3check == false)
                         {
-                            Body.WalkTo(point2, 100);
+                            Body.WalkTo(point3, 100);
                         }
                         else
                         {
-                            point2check = true;
-                            if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-                                point3check == false)
+                            point3check = true;
+                            if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
+                                point3check == true && point4check == false)
                             {
-                                Body.WalkTo(point3, 100);
+                                Body.WalkTo(point4, 100);
                             }
                             else
                             {
-                                point3check = true;
-                                if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-                                    point3check == true && point4check == false)
+                                point4check = true;
+                                if (!Body.IsWithinRadius(spawn, 30) && point1check == true && point2check == true &&
+                                    point3check == true && point4check == true && walkback == false)
                                 {
-                                    Body.WalkTo(point4, 100);
+                                    Body.WalkTo(spawn, 100);
                                 }
                                 else
                                 {
-                                    point4check = true;
-                                    if (!Body.IsWithinRadius(spawn, 30) && point1check == true && point2check == true &&
-                                        point3check == true && point4check == true && walkback == false)
-                                    {
-                                        Body.WalkTo(spawn, 100);
-                                    }
-                                    else
-                                    {
-                                        walkback = true;
-                                        point1check = false;
-                                        point2check = false;
-                                        point3check = false;
-                                        point4check = false;
-                                    }
+                                    walkback = true;
+                                    point1check = false;
+                                    point2check = false;
+                                    point3check = false;
+                                    point4check = false;
                                 }
                             }
                         }
                     }
-                }
-                else //not sidi
-                {
-                    //mob will not roam
                 }
             }
         }
@@ -257,23 +200,15 @@ namespace DOL.AI.Brain
         {
             foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (npc != null)
+                if (npc != null && npc.IsAlive && npc.PackageID == "CryptLordBaf")
                 {
-                    if (npc.IsAlive)
+                    if (npc.InCombat && npc.TargetObject != null)
                     {
-                        if (npc.PackageID == "CryptLordBaf")
+                        GameLiving target = npc.TargetObject as GameLiving;
+                        if (Body.IsAlive && target != null && target.IsAlive)
                         {
-                            if (npc.InCombat && npc.TargetObject != null)
-                            {
-                                GameLiving target = npc.TargetObject as GameLiving;
-                                if (Body.IsAlive)
-                                {
-                                    if (npc.IsWithinRadius(Body,800)) //the range that mob will bring Boss and rest mobs
-                                    {
-                                        AddToAggroList(target, 100);
-                                    }
-                                }
-                            }
+                            if (npc.IsWithinRadius(Body, 800)) //the range that mob will bring Boss and rest mobs
+                                AddToAggroList(target, 100);
                         }
                     }
                 }
@@ -282,22 +217,20 @@ namespace DOL.AI.Brain
 
         public void SetMobstats()
         {
-            if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)) //if in combat
+            if (Body.TargetObject != null && HasAggro) //if in combat
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {
                         if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
                         {
-                            if (BafMobs == true && npc.TargetObject == Body.TargetObject && npc.NPCTemplate != null)//check if npc got NpcTemplate!
+                            if (npc.TargetObject == Body.TargetObject && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                             {
                                 npc.MaxDistance = 10000; //set mob distance to make it reach target
                                 npc.TetherRange = 10000; //set tether to not return to home
                                 if (!npc.IsWithinRadius(Body.TargetObject, 100))
-                                {
                                     npc.MaxSpeedBase = 300; //speed is is not near to reach target faster
-                                }
                                 else
                                     npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
                             }
@@ -307,13 +240,13 @@ namespace DOL.AI.Brain
             }
             else //if not in combat
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {
                         if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                         {
-                            if (BafMobs == false)
+                            if (!HasAggro)
                             {
                                 npc.MaxDistance = npc.NPCTemplate.MaxDistance; //return distance to normal
                                 npc.TetherRange = npc.NPCTemplate.TetherRange; //return tether to normal
@@ -347,38 +280,18 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            if (!HasAggressionTable())
-            {
-                //set state to RETURN TO SPAWN
-                BafMobs = false;
-                Body.Health = Body.MaxHealth;
-            }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                Body.Health = Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
             }
-
-            if (Body.InCombat || HasAggro ||
-                Body.attackComponent.AttackState == true) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
+            if (HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
             {
-                if (BafMobs == false)
+                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    if (npc != null)
                     {
-                        if (npc != null)
-                        {
-                            if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
-                            {
-                                AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
-                                BafMobs = true;
-                            }
-                        }
+                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
+                            AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
                     }
                 }
             }

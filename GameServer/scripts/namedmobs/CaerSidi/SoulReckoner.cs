@@ -94,7 +94,8 @@ namespace DOL.GS
                     spawn_souls = true;
                 }
             }
-
+            SaveIntoDatabase();
+            LoadedFromScript = false;
             base.AddToWorld();
             return true;
         }
@@ -115,60 +116,16 @@ namespace DOL.GS
             }
         }
 
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Soul Reckoner", 60, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Soul Reckoner not found, creating it...");
-
-                log.Warn("Initializing Soul Reckoner...");
-                SoulReckoner CO = new SoulReckoner();
-                CO.Name = "Soul Reckoner";
-                CO.Model = 1676;
-                CO.Realm = 0;
-                CO.Level = 81;
-                CO.Size = 190;
-                CO.CurrentRegionID = 60; //caer sidi
-
-                CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-
-                CO.X = 28891;
-                CO.Y = 35855;
-                CO.Z = 15370;
-                CO.Heading = 966;
-                CO.Flags = eFlags.GHOST;
-
-                SoulReckonerBrain ubrain = new SoulReckonerBrain();
-                CO.SetOwnBrain(ubrain);
-                CO.AddToWorld();
-                CO.Brain.Start();
-                CO.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Soul Reckoner exist ingame, remove it and restart server if you want to add by script code.");
-        }
-
         public override void Die(GameObject killer) //on kill generate orbs
         {
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
-                if (npc != null)
+                if (npc != null && npc.IsAlive)
                 {
-                    if (npc.IsAlive)
-                    {
-                        if (npc.Brain is ReckonedSoulBrain)
-                        {
-                            npc.RemoveFromWorld();
-                        }
-                    }
+                    if (npc.Brain is ReckonedSoulBrain)
+                        npc.RemoveFromWorld();
                 }
             }
-
             spawn_souls = false;
             base.Die(killer);
         }
@@ -238,6 +195,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 400;
+            CanBAF = false;
         }
 
         public static bool InRoom = false;
@@ -286,24 +244,17 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 BafMobs = false;
+                Spawn_Souls = false;
             }
-
-            if (Body.IsOutOfTetherRange)
-            {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 11);
-                Body.Health = Body.MaxHealth;
-                ClearAggroList();
-            }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
                 Body.Health = Body.MaxHealth;
                 Spawn_Souls = false;
             }
 
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
+            if (HasAggro)
             {
                 AwayFromRoom();
-
                 if (Util.Chance(15)) // 15% chance to cast lifetap dmg
                 {
                     if (Body.TargetObject != null)
@@ -329,21 +280,36 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
+        #region Spawn Soul
         public static bool Spawn_Souls = false;
         public void SpawnSouls()
         {
-            for (int i = 0; i < Util.Random(4, 6); i++) // Spawn 4-6 souls
-            {
-                ReckonedSoul Add = new ReckonedSoul();
-                Add.X = Body.X + Util.Random(-50, 80);
-                Add.Y = Body.Y + Util.Random(-50, 80);
-                Add.Z = Body.Z;
-                Add.CurrentRegion = Body.CurrentRegion;
-                Add.Heading = Body.Heading;
-                Add.AddToWorld();
-            }
+            ReckonedSoul Add = new ReckonedSoul();
+            Add.X = Body.X + Util.Random(-50, 80);
+            Add.Y = Body.Y + Util.Random(-50, 80);
+            Add.Z = Body.Z;
+            Add.CurrentRegion = Body.CurrentRegion;
+            Add.Heading = Body.Heading;
+            Add.AddToWorld();
         }
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+            if(ad != null && !Spawn_Souls && Util.Chance(10))
+            {
+                SpawnSouls();
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
+                Spawn_Souls = true;
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        private int ResetRespawnSouls(ECSGameTimer timer)
+        {
+            Spawn_Souls = false;
+            return 0;
+        }
+        #endregion
 
+        #region Spell
         public Spell m_Reckoner_Lifetap;
         public Spell Reckoner_Lifetap
         {
@@ -354,10 +320,10 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
-                    spell.RecastDelay = 20;
+                    spell.RecastDelay = Util.Random(8,12);
                     spell.ClientEffect = 9191;
                     spell.Icon = 710;
-                    spell.Damage = 550;
+                    spell.Damage = 650;
                     spell.Name = "Drain Life Essence";
                     spell.Range = 1800;
                     spell.SpellID = 11733;
@@ -372,6 +338,7 @@ namespace DOL.AI.Brain
                 return m_Reckoner_Lifetap;
             }
         }
+        #endregion
     }
 }
 
@@ -433,8 +400,8 @@ namespace DOL.GS
             RoamingRange = 120;
             Size = 70;
             Level = 75;
-            MaxSpeedBase = 200;
-            Flags = eFlags.GHOST;
+            MaxSpeedBase = 230;
+            Flags = eFlags.GHOST;           
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
@@ -444,7 +411,7 @@ namespace DOL.GS
 
             ReckonedSoulBrain adds = new ReckonedSoulBrain();
             SetOwnBrain(adds);
-            LoadedFromScript = false;
+            LoadedFromScript = true;
             base.AddToWorld();
             return true;
         }
@@ -463,6 +430,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 500;
+            CanBAF = false;
         }
         public override void Think()
         {
