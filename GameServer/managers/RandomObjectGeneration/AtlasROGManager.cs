@@ -69,7 +69,7 @@ namespace DOL.GS {
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
-                int maxcount = Util.Random(10, 20);
+                int maxcount = Util.Random(20, 50);
                 
                 int orbBonus = (int) Math.Floor((decimal) ((maxcount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
