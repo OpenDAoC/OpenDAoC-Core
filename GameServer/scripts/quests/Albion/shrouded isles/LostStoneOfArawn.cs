@@ -35,14 +35,14 @@ namespace DOL.GS.Quests.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "Lost Stone of Arawn";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "Lost Stone of Arawn";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC Honaytrt = null; // Start NPC Honayt'rt
 		private static GameNPC Nchever = null; // N'chever
 		private static GameNPC Ohonat = null; // O'honat
-		private static GameNPC Nyaegha = null; // O'honat
+		private static GameNPC Nyaegha = null; // Nyaegha
 
 		private static GameLocation demonLocation = new GameLocation("Nyaegha", 51, 348381, 479838, 3320);
 
@@ -347,8 +347,8 @@ namespace DOL.GS.Quests.Albion
 			#endregion
 
 			const int radius = 1500;
-			Region region = WorldMgr.GetRegion(demonLocation.RegionID);
-			demonArea = region.AddArea(new Area.Circle("Nyaegha Area", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
+			var region = WorldMgr.GetRegion(demonLocation.RegionID);
+			demonArea = region.AddArea(new Area.Circle("", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
 			demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -399,7 +399,7 @@ namespace DOL.GS.Quests.Albion
 			Honaytrt.RemoveQuestToGive(typeof (LostStoneofArawn));
 		}
 
-		protected virtual void CreateNyaegha()
+		protected virtual void CreateNyaegha(GamePlayer player)
 		{
 			Nyaegha = new GameNPC();
 			Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
@@ -421,47 +421,42 @@ namespace DOL.GS.Quests.Albion
 			Nyaegha.AddToWorld();
 			
 
-			StandardMobBrain brain = new StandardMobBrain();
+			var brain = new StandardMobBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Nyaegha.SetOwnBrain(brain);
 
 			Nyaegha.AddToWorld();
-			if (SAVE_INTO_DATABASE)
-			{
-				Nyaegha.SaveIntoDatabase();
-			}
 
-			foreach (GamePlayer player in Nyaegha.GetPlayersInRadius(1600))
-			{
-				if (player == null) return;
-				
-				Nyaegha.StartAttack(player);
-			}
+			Nyaegha.StartAttack(player);
 			
 		}
 
 		protected static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
 		{
-			AreaEventArgs aargs = args as AreaEventArgs;
-			GamePlayer player = aargs?.GameObject as GamePlayer;
+			var aargs = args as AreaEventArgs;
+			var player = aargs?.GameObject as GamePlayer;
 			
 			if (player == null)
 				return;
 			
-			LostStoneofArawn quest = player.IsDoingQuest(typeof (LostStoneofArawn)) as LostStoneofArawn;
+			var quest = player.IsDoingQuest(typeof (LostStoneofArawn)) as LostStoneofArawn;
 
-			if (quest != null && Nyaegha == null && quest.Step == 4)
+			if (quest == null || quest.Step == 4) return;
+			
+			if (player.Group != null && player.Group.Leader != player) return;
+
+			if (Nyaegha == null)
 			{
 				// player near demon           
 				SendSystemMessage(player, "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
 				player.Out.SendMessage("Nyaegha is angry and attacks you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				quest.CreateNyaegha();
+				quest.CreateNyaegha(player);
 				
 			}
 		}
 
-		protected static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -481,31 +476,31 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Honaytrt.SayTo(player, "Thank you for your help, N\'chever, O\'honat and me are trying to find this stone for very long.\n" +
-							                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [Stone of Arawn].");
+							Honaytrt.SayTo(player, "Thanks for your help! N\'chever, O\'honat and I have been looking for this stone a long time.\n" +
+							                       "Speak with N\'chever in Wearyall Village, he will be able to tell you more about the [Stone of Arawn].");
 							break;
 						case 2:
-							Honaytrt.SayTo(player, "Hey "+player.Name+", did you visit N\'chever yet? You can find him in Wearyall Village.");
+							Honaytrt.SayTo(player, "Hey "+player.Name+", have you visited N\'chever yet? You can find him near Wearyall.");
 							break;
 						case 3:
-							Honaytrt.SayTo(player, "Greetings, I heard you need to go to O\'honat, she can help you find what we are searching for.");
+							Honaytrt.SayTo(player, "Greetings, I heard you are on your way to O\'honat, I'm sure she will help you find what we are searching for.");
 							break;
 						case 4:
-							Honaytrt.SayTo(player, "Wow, O\'honat really found something?\nI knew she could be counted on!");
+							Honaytrt.SayTo(player, "Wow, O\'honat really found something eh?\nI knew she could be counted on!");
 							break;
 						case 5:
-							Honaytrt.SayTo(player, "Oh dear, did you really find the stone?\nPlease bring it to O\'honat first, she has to look at it!");
+							Honaytrt.SayTo(player, "Oh dear, have you really found the stone?\nPlease bring it to O\'honat first, she has to see it!");
 							break;
 						case 6:
-							Honaytrt.SayTo(player, "I cant really explain how happy I am, thank you for your help "+player.CharacterClass.Name+"!\n" +
-							                       "Here is your [reward].");
+							Honaytrt.SayTo(player, "I can't really explain how happy I am, thanks for your help "+player.CharacterClass.Name+"!\n" +
+							                       "Here's your [reward].");
 							break;
 					}
 				}
 				else
 				{
-					Honaytrt.SayTo(player, "Hello "+player.Name+", we live in dark times and I tried to locate the lost stone of the arawn for several years,\n" +
-					                       "could you [help me] retrieve the stone?");
+					Honaytrt.SayTo(player, "Hello "+player.Name+", we live in dark times and only finding the lost Stone of Arawn can save us.\n" +
+					                       "I've been searching for several years with no luck, could you maybe [help me] retrieve the stone?");
 				}
 			}
 				// The player whispered to the NPC
@@ -517,7 +512,7 @@ namespace DOL.GS.Quests.Albion
 					switch (wArgs.Text)
 					{
 						case "help me":
-							player.Out.SendQuestSubscribeCommand(Honaytrt, QuestMgr.GetIDForQuestType(typeof(LostStoneofArawn)), "Will you help Honayt\'rt [Lost Stone of Arawn]?");
+							player.Out.SendQuestSubscribeCommand(Honaytrt, QuestMgr.GetIDForQuestType(typeof(LostStoneofArawn)), "Will you help Honayt\'rt retrieve the [Lost Stone of Arawn]?");
 							break;
 					}
 				}
@@ -529,7 +524,7 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 1)
 							{
 								quest.Step = 2;
-								Honaytrt.SayTo(player, "You can find N\'chever north in Wearyall Village and speak with him.");
+								Honaytrt.SayTo(player, "You can find N\'chever North of Wearyall Village, go and speak to him.");
 							}
 							break;
 						case "reward":
@@ -558,7 +553,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 		
-		protected static void TalkToNchever(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToNchever(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -575,23 +570,23 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Nchever.SayTo(player, "Hey "+player.Name+", welcome in Wearyall Village, if you need some rest go to our stable.\n" +
-							                      "There you can find my friend Honayt\'rt, i know you will like each other!");
+							Nchever.SayTo(player, "Hey "+player.Name+", welcome to Wearyall Village, if you need some rest you can visit our stables.\n" +
+							                      "There, you'll also find my dear friend Honayt\'rt, I feel you will like each other!");
 							break;
 						case 2:
-							Nchever.SayTo(player, "Greetings, I see you spoke with Honayt\'rt about our mission? We are searching for a [stone], do you want to help us?");
+							Nchever.SayTo(player, "Greetings, I see you spoke with Honayt\'rt about our mission already. We are searching for a [stone], do you want to help us?");
 							break;
 						case 3:
-							Nchever.SayTo(player, "Hey "+player.CharacterClass.Name+", did you visit O\'honat yet? You can find her in Caer Diogel on the ramparts.");
+							Nchever.SayTo(player, "Hey "+player.CharacterClass.Name+", have you visited O\'honat yet? You can find her near Caer Diogel's ramparts.");
 							break;
 						case 4:
-							Nchever.SayTo(player, "Incredible, O\'honat really found something?\nThats great!");
+							Nchever.SayTo(player, "Unbelievable, O\'honat really found something?\nThat's great!");
 							break;
 						case 5:
-							Nchever.SayTo(player, "Please bring this stone to O\'honat, she knows what we need to do next!");
+							Nchever.SayTo(player, "Please bring this stone to O\'honat, she will know what we need to do next.");
 							break;
 						case 6:
-							Nchever.SayTo(player, "Thanks for showing me the stone, but bring it Honayt\'rt in the stable, she initiated this mission.");
+							Nchever.SayTo(player, "Thanks for showing me the Stone, now bring it to Honayt\'rt at the stables, she will reward you.");
 							break;
 					}
 				}
@@ -617,7 +612,7 @@ namespace DOL.GS.Quests.Albion
 						case "stone":
 							if (quest.Step == 2)
 							{
-								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel! Telling her about the [Lost Stone of Arawn], she is on the ramparts and will tell you more about it.");
+								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel and ask her about the [Lost Stone of Arawn], I've been told she usually is near the ramparts.");
 							}
 							break;
 						case "Lost Stone of Arawn":
@@ -632,7 +627,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		protected static void TalkToOhonat(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToOhonat(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -649,27 +644,27 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Ohonat.SayTo(player, "Hello Adventurer, I am "+Ohonat.Name+"! Did you visit Wearyall Village?\n" +
+							Ohonat.SayTo(player, "Hello Adventurer, I am "+Ohonat.Name+"! Have visited Wearyall Village?\n" +
 							                     "I have some friends there, Honayt\'rt and N\'chever, feel free to speak with them.");
 							break;
 						case 2:
-							Ohonat.SayTo(player, "Hey, did you visit Honayt\'rt or N\'chever yet? They are really very nice people.");
+							Ohonat.SayTo(player, "Hey, have you visited Honayt\'rt or N\'chever yet? They are really nice people.");
 							break;
 						case 3:
-							Ohonat.SayTo(player, "Did N\'chever send you?\nYeah we doing a mission to find the lost stone of arawn. " +
-							                     "I heard of a demon who kills animals and other creatures in [Gwyddneau] to get stronger, " +
-							                     "we have to do something immediately, otherwise it is too late for Albion!");
+							Ohonat.SayTo(player, "Did N\'chever send you?\nYeah we are on a mission to find the lost Stone of Arawn. " +
+							                     "I heard of a demon who likes to torture animals and other creatures growing stronger in [Gwyddneau], " +
+							                     "we have to do something immediately or it will be too late for Albion!");
 							break;
 						case 4:
-							Ohonat.SayTo(player, "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
-							                     "The Demon that you will need to kill can be found in the Plains of Gwyddneau!\n" +
-							                     "Kill this demon and bring me the stone.");
+							Ohonat.SayTo(player, "Leave Caer Diogel and head out of town to the West. As you reach the coast, turn North. " +
+							                     "The demon that we need to kill usually roams the Plains of Gwyddneau.\n" +
+							                     "Kill the demon and bring me the stone!");
 							break;
 						case 5:
-							Ohonat.SayTo(player, "Hey "+player.Name+", you are our savior in need. I thought it will be [impossible].");
+							Ohonat.SayTo(player, "Hey "+player.Name+", you are the hero we needed. I really thought it would have been [impossible].");
 							break;
 						case 6:
-							Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Show her the speech!");
+							Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Bring her the speech!");
 							break;
 					}
 				}
@@ -696,15 +691,15 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 3)
 							{
 								quest.Step = 4;
-								Ohonat.SayTo(player, "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
-								                     "The Demon that you will need to kill can be found in the Plains of Gwyddneau!\n" +
-								                     "Kill this demon and bring me the stone.");
+								Ohonat.SayTo(player, "Leave Caer Diogel and head out of town to the West. As you reach the coast, turn North. " +
+								                     "The demon that we need to kill usually roams the Plains of Gwyddneau.\n" +
+								                     "Kill the demon and bring me the stone!");
 							}
 							break;
 						case "impossible":
 							if (quest.Step == 5)
 							{
-								Ohonat.SayTo(player, "I will give you a scroll, bring this to Honayt\'rt, she needs to see it!\n[Farewell] my savior of Albion!");
+								Ohonat.SayTo(player, $"Thanks {player.Name}. Now take this scroll and bring it to Honayt\'rt, she needs to read it as soon as possible!\n[Farewell], hero of Albion!");
 								Ohonat.Emote(eEmote.Cheer);
 							}
 							break;
@@ -716,7 +711,7 @@ namespace DOL.GS.Quests.Albion
 								player.Out.SendSpellEffectAnimation(Ohonat, player, 4310, 0, false, 1);
 								new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(timer => TeleportToWearyall(timer, player)), 3000);
 								quest.Step = 6;
-								Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Show her the speech!");
+								Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Bring her the speech!");
 							}
 							break;
 					}
@@ -729,14 +724,14 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (rArgs.Item.Id_nb == lost_stone_of_arawn.Id_nb)
 					{
-						Ohonat.SayTo(player, "Thank you "+ player.Name +". I will give you a scroll, bring this to Honayt\'rt, she needs to see it!\n[Farewell] my savior of Albion!\n");
+						Ohonat.SayTo(player, $"Thanks {player.Name}. Now take this scroll and bring it to Honayt\'rt, she needs to read it as soon as possible!\n[Farewell], hero of Albion!");
 						Ohonat.Emote(eEmote.Cheer);
 					}
 				}
 			}
 		}
 
-		public static int TeleportToWearyall(ECSGameTimer timer, GamePlayer player)
+		private static int TeleportToWearyall(ECSGameTimer timer, GamePlayer player)
 		{
 			//teleport to wearyall village
 			player.MoveTo(51, 435868, 493994, 3088, 3587);
@@ -773,7 +768,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -833,12 +828,12 @@ namespace DOL.GS.Quests.Albion
 					case 3:
 						return "Speak to O\'honat in Caer Diogel.";
 					case 4:
-						return "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
-						       "The Demon that you will need to kill can be found in the Plains of Gwyddneau.";
+						return "Leave Caer Diogel and head out of town to the West. As you reach the coast, turn North. " +
+						       "The demon that we need to kill usually roams the Plains of Gwyddneau.";
 					case 5:
-						return "Go back to Caer Diogel and give O'honat the stone.";
+						return "Go back to Caer Diogel and give O'honat the Stone.";
 					case 6:
-						return "Read the speech to see who it is addressed to and turn it in for your reward.";
+						return "Read the speech to see who it is addressed to, and return it for your reward.";
 				}
 				return base.Description;
 			}
