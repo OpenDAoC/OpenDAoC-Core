@@ -303,6 +303,7 @@ namespace DOL.GS.Commands
 			{
 					case "rowan": return 1;
 					case "elm": return 4;
+					case "oaken":
 					case "oak": return 8;
 					case "ironwood": return 16;
 					case "heartwood": return 32;
