@@ -42,6 +42,10 @@ namespace DOL.GS.Keeps
 		protected int m_oldMaxHealth;
 
 		protected byte m_oldHealthPercent;
+		
+		private bool m_RelicMessage75 = false;
+		private bool m_RelicMessage50 = false;
+		private bool m_RelicMessage25 = false;
 
 		protected int m_doorID;
 		/// <summary>
@@ -335,22 +339,49 @@ namespace DOL.GS.Keeps
 				}
 			}
 
-			if (IsRelic)
+			if (!IsRelic) return;
+			
+			if (HealthPercent == 75)
 			{
-				if (HealthPercent % 25 != 0) return;
-				var message = $"{Component.Keep.Name} is under attack!";
-				foreach (GameClient cl in WorldMgr.GetClientsOfRealm(Realm))
+				if (!m_RelicMessage25)
 				{
-					if (cl.Player.ObjectState != eObjectState.Active) continue;
-					cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-					cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						
-					if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
-					{
-						GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
-					}
+					BroadcastRelicGateDamage();
+					m_RelicMessage25 = true;
 				}
+			}
 
+			if (HealthPercent == 50)
+			{
+				if (!m_RelicMessage50)
+				{
+					BroadcastRelicGateDamage();
+					m_RelicMessage50 = true;
+				}
+			}
+
+			if (HealthPercent == 75)
+			{
+				if (!m_RelicMessage75)
+				{
+					BroadcastRelicGateDamage();
+					m_RelicMessage75 = true;
+				}
+			}
+		}
+
+		private void BroadcastRelicGateDamage()
+		{
+			var message = $"{Component.Keep.Name} is under attack!";
+			foreach (var cl in WorldMgr.GetClientsOfRealm(Realm))
+			{
+				if (cl.Player.ObjectState != eObjectState.Active) continue;
+				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						
+				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+				{
+					GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
+				}
 			}
 		}
 
@@ -778,7 +809,7 @@ namespace DOL.GS.Keeps
 			base.Die(killer);
 
 			foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-				player.Out.SendMessage("The Keep Gate is broken!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage($"The {Name} is broken!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 			m_state = eDoorState.Open;
 			BroadcastDoorStatus();
@@ -827,6 +858,14 @@ namespace DOL.GS.Keeps
 		public void Repair(int amount)
 		{
 			Health += amount;
+
+			if (HealthPercent > 25)
+				m_RelicMessage25 = false;
+			if (HealthPercent > 50)
+				m_RelicMessage50 = false;
+			if (HealthPercent > 75)
+				m_RelicMessage75 = false;
+
 			BroadcastDoorStatus();
 		}
 		/// <summary>
@@ -838,6 +877,9 @@ namespace DOL.GS.Keeps
 			Realm = realm;
 			Health = MaxHealth;
 			m_oldHealthPercent = HealthPercent;
+			m_RelicMessage25 = false;
+			m_RelicMessage50 = false;
+			m_RelicMessage75 = false;
 			CloseDoor();
 		}
 
