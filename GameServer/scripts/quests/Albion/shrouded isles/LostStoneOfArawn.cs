@@ -349,7 +349,7 @@ namespace DOL.GS.Quests.Albion
 			const int radius = 1500;
 			var region = WorldMgr.GetRegion(demonLocation.RegionID);
 			demonArea = region.AddArea(new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
-			demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
+			demonArea.RegisterPlayerEnter(PlayerEnterDemonArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
@@ -442,18 +442,19 @@ namespace DOL.GS.Quests.Albion
 			
 			var quest = player.IsDoingQuest(typeof (LostStoneofArawn)) as LostStoneofArawn;
 
-			if (quest == null || quest.Step == 4) return;
-			
-			if (player.Group != null && player.Group.Leader != player) return;
+			if (quest is not {Step: 4}) return;
 
-			if (Nyaegha == null)
+			if (player.Group != null)
 			{
-				// player near demon           
-				SendSystemMessage(player, "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
-				player.Out.SendMessage("Nyaegha is angry and attacks you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				quest.CreateNyaegha(player);
-				
+				if (player.Group.Leader != player) return;
 			}
+
+			if (Nyaegha != null) return;
+			
+			// player near demon           
+			SendSystemMessage(player, "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
+			player.Out.SendMessage("Nyaegha ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			quest.CreateNyaegha(player);
 		}
 
 		private static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
