@@ -612,7 +612,7 @@ namespace DOL.GS.Quests.Albion
 						case "stone":
 							if (quest.Step == 2)
 							{
-								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel and ask her about the [Lost Stone of Arawn], I've been told she usually is near the ramparts.");
+								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel and ask her about the [Lost Stone of Arawn], I've been told she usually can be found near the ramparts.");
 							}
 							break;
 						case "Lost Stone of Arawn":
