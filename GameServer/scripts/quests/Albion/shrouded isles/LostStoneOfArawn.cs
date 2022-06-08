@@ -242,7 +242,7 @@ namespace DOL.GS.Quests.Albion
 				ancient_copper_necklace.Condition = 50000;
 				ancient_copper_necklace.MaxCondition = 50000;
 				ancient_copper_necklace.Item_Type = 29;
-				ancient_copper_necklace.Object_Type = 41;
+				ancient_copper_necklace.Object_Type = (int)eObjectType.Magical;
 				ancient_copper_necklace.Model = 101;
 				ancient_copper_necklace.Bonus = 35;
 				ancient_copper_necklace.IsDropable = true;
@@ -261,7 +261,6 @@ namespace DOL.GS.Quests.Albion
 				ancient_copper_necklace.Realm = (int)eRealm.Albion;
 				ancient_copper_necklace.DPS_AF = 0;
 				ancient_copper_necklace.SPD_ABS = 0;
-				ancient_copper_necklace.Object_Type = 0;
 				ancient_copper_necklace.Hand = 0;
 				ancient_copper_necklace.Type_Damage = 0;
 				ancient_copper_necklace.Quality = 100;
@@ -697,17 +696,35 @@ namespace DOL.GS.Quests.Albion
 								{
 									RemoveItem(player, lost_stone_of_arawn);
 								}
-								//teleport to wearyall village
-								player.MoveTo(51, 435868, 493994, 3088, 3587);
-								player.Out.SendSpellCastAnimation(player, 4310, 1);
+								player.Out.SendSpellEffectAnimation(Ohonat, player, 4310, 0, false, 1);
+								new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(timer => TeleportToWearyall(timer, player)), 3000);
 								quest.Step = 6;
 							}
 							break;
 					}
 				}
 			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					if (rArgs.Item.Id_nb == lost_stone_of_arawn.Id_nb)
+					{
+						Ohonat.SayTo(player, "Thank you "+ player.Name +". I will give you a scroll, bring this to Honayt\'rt, she needs to see it!\n[Farewell] my savior of Albion!\n");
+						Ohonat.Emote(eEmote.Cheer);
+					}
+				}
+			}
 		}
-		
+
+		public static int TeleportToWearyall(ECSGameTimer timer, GamePlayer player)
+		{
+			//teleport to wearyall village
+			player.MoveTo(51, 435868, 493994, 3088, 3587);
+			return 0;
+		}
+
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
@@ -796,13 +813,12 @@ namespace DOL.GS.Quests.Albion
 					case 3:
 						return "Speak to O\'honat in Caer Diogel.";
 					case 4:
-						return "Leave Caer Diogel and head west out of town, when you reach the coast turn north.\n" +
+						return "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
 						       "The Demon that you will need to kill can be found at 53.6k, 53.8k in the Plains of Gwyddneau.";
 					case 5:
-						return "Go back to Caer Diogel and give O'honat the stone.\n" +
-						       "You will receive a scroll from her in your inventory and then will be teleported to Wearyall Village.";
+						return "Go back to Caer Diogel and give O'honat the stone.";
 					case 6:
-						return "Read the Scroll to see who it is addressed to and turn in the scroll for your reward.";
+						return "Read the speech to see who it is addressed to and turn it in for your reward.";
 				}
 				return base.Description;
 			}
