@@ -143,6 +143,9 @@ namespace DOL.GS
         public static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
         public static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
 
+        public static readonly string DUEL_PREVIOUS_LASTATTACKTICKPVP = "DUEL_PREVIOUS_LASTATTACKTICKPVP";
+        public static readonly string DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP= "DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP";
+
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
         /// </summary>
@@ -8785,6 +8788,10 @@ namespace DOL.GS
 
             Duel = new GameDuel(this, duelTarget);
             Duel.Start();
+
+            //Get PvP Combat ticks before duel.
+            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKTICKPVP, LastAttackTickPvP);
+            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP, LastAttackedByEnemyTickPvP);
         }
 
         /// <summary>
@@ -8797,6 +8804,10 @@ namespace DOL.GS
 			
             Duel.Stop();
             Duel = null;
+
+            //Set PvP Combat ticks to that they were before duel.
+            LastAttackTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKTICKPVP);
+            LastAttackedByEnemyTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP);
         }
         #endregion
 

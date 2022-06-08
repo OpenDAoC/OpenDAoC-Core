@@ -92,6 +92,10 @@ public class RealmTimer
 
     public static void SaveRealmTimer(GamePlayer player)
     {
+        //Don't save realmtimer during duels
+        if(player.DuelTarget != null)
+            return;
+
         Account playerAccount = GameServer.Database.FindObjectByKey<Account>(player.AccountName);
         
         DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
