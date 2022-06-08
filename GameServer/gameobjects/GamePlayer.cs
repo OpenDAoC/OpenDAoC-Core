@@ -850,8 +850,9 @@ namespace DOL.GS
                 if (m_quitTimer == null)
                 {
                     // dirty trick ;-) (20sec min quit time)
-                    if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
-                        LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
+                    //Commenting out the LastAttackTickPvP part as it was messing up the Realm Timer.
+                    // if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
+                    //     LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
                     if (GameLoop.GameLoopTime - LastAttackTickPvE > 40000)
                         LastAttackTickPvE = GameLoop.GameLoopTime - 40000;
                 }
@@ -860,6 +861,7 @@ namespace DOL.GS
                 {
                     lastCombatAction = LastAttackedByEnemyTick;
                 }
+
                 return (int)(60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
             }
             set
@@ -13973,6 +13975,9 @@ namespace DOL.GS
                 
                 //cache all active effects
                 EffectService.SaveAllEffects(this);
+
+                //Save realmtimer
+                RealmTimer.SaveRealmTimer(this);
 
                 SaveSkillsToCharacter();
                 SaveCraftingSkills();
