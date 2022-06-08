@@ -449,7 +449,9 @@ namespace DOL.GS.Quests.Albion
 				if (player.Group.Leader != player) return;
 			}
 
-			if (Nyaegha != null) return;
+			var existingCopy = WorldMgr.GetNPCsByName("Nyaegha", eRealm.None);
+
+			if (existingCopy != null) return;
 			
 			// player near demon           
 			SendSystemMessage(player, "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
