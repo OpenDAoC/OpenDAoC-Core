@@ -500,7 +500,7 @@ namespace DOL.GS.Quests.Albion
 				else
 				{
 					Honaytrt.SayTo(player, "Hello "+player.Name+", we live in dark times and only finding the lost Stone of Arawn can save us.\n" +
-					                       "I've been searching for several years with no luck, could you maybe [help me] retrieve the stone?");
+					                       "I've been searching for it for several years with no luck, could you maybe [help me] retrieve the stone?");
 				}
 			}
 				// The player whispered to the NPC
