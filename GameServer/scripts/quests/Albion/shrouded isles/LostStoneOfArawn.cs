@@ -348,7 +348,7 @@ namespace DOL.GS.Quests.Albion
 
 			const int radius = 1500;
 			var region = WorldMgr.GetRegion(demonLocation.RegionID);
-			demonArea = region.AddArea(new Area.Circle("", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
+			demonArea = region.AddArea(new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
 			demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
