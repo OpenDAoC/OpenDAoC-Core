@@ -49,6 +49,8 @@ namespace DOL.GS.Quests.Albion
 		private static IArea demonArea = null;
 		
 		private static ItemTemplate ancient_copper_necklace = null;
+		private static ItemTemplate scroll_wearyall_loststone = null;
+		private static ItemTemplate lost_stone_of_arawn = null;
 
 		// Constructors
 		public LostStoneofArawn() : base()
@@ -273,6 +275,66 @@ namespace DOL.GS.Quests.Albion
 				}
 
 			}
+			
+			scroll_wearyall_loststone = GameServer.Database.FindObjectByKey<ItemTemplate>("scroll_wearyall_loststone");
+			if (scroll_wearyall_loststone == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Victory Speech for Albion, creating it ...");
+				scroll_wearyall_loststone = new ItemTemplate();
+				scroll_wearyall_loststone.Id_nb = "scroll_wearyall_loststone";
+				scroll_wearyall_loststone.Name = "Victory Speech for Albion";
+				scroll_wearyall_loststone.Level = 5;
+				scroll_wearyall_loststone.Item_Type = 0;
+				scroll_wearyall_loststone.Model = 498;
+				scroll_wearyall_loststone.IsDropable = true;
+				scroll_wearyall_loststone.IsTradable = false;
+				scroll_wearyall_loststone.IsIndestructible = true;
+				scroll_wearyall_loststone.IsPickable = true;
+				scroll_wearyall_loststone.DPS_AF = 0;
+				scroll_wearyall_loststone.SPD_ABS = 0;
+				scroll_wearyall_loststone.Object_Type = 0;
+				scroll_wearyall_loststone.Hand = 0;
+				scroll_wearyall_loststone.Type_Damage = 0;
+				scroll_wearyall_loststone.Quality = 100;
+				scroll_wearyall_loststone.Weight = 1;
+				scroll_wearyall_loststone.Description = "Bring this Speech to Honayt\'rt in Wearyall Village. She initiated this mission and deserves to be recognized";
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(scroll_wearyall_loststone);
+				}
+
+			}
+			
+			lost_stone_of_arawn = GameServer.Database.FindObjectByKey<ItemTemplate>("lost_stone_of_arawn");
+			if (lost_stone_of_arawn == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Lost Stone of Arawn, creating it ...");
+				lost_stone_of_arawn = new ItemTemplate();
+				lost_stone_of_arawn.Id_nb = "lost_stone_of_arawn";
+				lost_stone_of_arawn.Name = "Lost Stone of Arawn";
+				lost_stone_of_arawn.Level = 55;
+				lost_stone_of_arawn.Item_Type = 0;
+				lost_stone_of_arawn.Model = 110;
+				lost_stone_of_arawn.IsDropable = true;
+				lost_stone_of_arawn.IsTradable = false;
+				lost_stone_of_arawn.IsIndestructible = true;
+				lost_stone_of_arawn.IsPickable = true;
+				lost_stone_of_arawn.DPS_AF = 0;
+				lost_stone_of_arawn.SPD_ABS = 0;
+				lost_stone_of_arawn.Object_Type = 0;
+				lost_stone_of_arawn.Hand = 0;
+				lost_stone_of_arawn.Type_Damage = 0;
+				lost_stone_of_arawn.Quality = 100;
+				lost_stone_of_arawn.Weight = 1;
+				lost_stone_of_arawn.Description = "A stone of infinite power.";
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(lost_stone_of_arawn);
+				}
+
+			}
 			//Item Descriptions End
 
 			#endregion
@@ -447,7 +509,6 @@ namespace DOL.GS.Quests.Albion
 						case "reward":
 							if (quest.Step == 6)
 							{
-								GiveItem(player, ancient_copper_necklace);
 								quest.FinishQuest();
 							}
 							break;
@@ -510,7 +571,7 @@ namespace DOL.GS.Quests.Albion
 				}
 				else
 				{
-					Nchever.SayTo(player, "");
+					Nchever.SayTo(player, "Greetings, isn\'t it a perfect day?");
 				}
 			}
 				// The player whispered to the NPC
@@ -561,28 +622,33 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "Hello Adventurer, I am "+Ohonat.Name+"! Did you visit Wearyall Village?\n" +
+							                     "I have some friends there, Honayt\'rt and N\'chever, feel free to speak with them.");
 							break;
 						case 2:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "Hey, did you visit Honayt\'rt or N\'chever yet? They are really very nice people.");
 							break;
 						case 3:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "Did N\'chever send you?\nYeah we doing a mission to find the lost stone of arawn. " +
+							                     "I heard of a demon who kills animals and other creatures in [Gwyddneau] to get stronger, " +
+							                     "we have to do something immediately, otherwise it is too late for Albion!");
 							break;
 						case 4:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
+							                     "The Demon that you will need to kill can be found at 53.6k, 53.8k in the Plains of Gwyddneau!\n" +
+							                     "Kill this demon and bring me the stone.");
 							break;
 						case 5:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "Hey "+player.Name+", you are our savior in need. I thought it will be [impossible].");
 							break;
 						case 6:
-							Ohonat.SayTo(player, "");
+							Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Show her the speech!");
 							break;
 					}
 				}
 				else
 				{
-					Ohonat.SayTo(player, "");
+					Ohonat.SayTo(player, "Greetings Adventurer, feel free to buy something in our merchant house, if you need anything.");
 				}
 			}
 				// The player whispered to the NPC
@@ -598,7 +664,29 @@ namespace DOL.GS.Quests.Albion
 				else
 				{
 					switch (wArgs.Text)
-					{
+					{ 
+						case "Gwyddneau":
+							if (quest.Step == 3)
+							{
+								quest.Step = 4;
+							}
+							break;
+						case "impossible":
+							if (quest.Step == 5)
+							{
+								Ohonat.SayTo(player, "I will give you a scroll, bring this to Honayt\'rt, she needs to see it!\n[Farewell] my savior of Albion!");
+								Ohonat.Emote(eEmote.Cheer);
+							}
+							break;
+						case "Farewell":
+							if (quest.Step == 5 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+							{
+								GiveItem(player, scroll_wearyall_loststone);
+								//teleport to wearyall village
+								player.MoveTo(51, 435868, 493994, 3088, 3587);
+								quest.Step = 6;
+							}
+							break;
 					}
 				}
 			}
@@ -713,6 +801,16 @@ namespace DOL.GS.Quests.Albion
 			
 			if (player==null || player.IsDoingQuest(typeof (LostStoneofArawn)) == null)
 				return;
+
+			if (e == GameLivingEvent.EnemyKilled && Step == 4 && player.TargetObject.Name == Nyaegha.Name)
+			{
+				if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				{
+					player.Out.SendMessage("You dont have enough room for "+lost_stone_of_arawn.Name+" and drops on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+				GiveItem(player, lost_stone_of_arawn);
+				Step = 5;
+			}
 		}
 
 		public override void AbortQuest()
@@ -732,6 +830,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				}
+				GiveItem(m_questPlayer, ancient_copper_necklace);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,121,41,Util.Random(50)), "You receive {0} as a reward.");
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
