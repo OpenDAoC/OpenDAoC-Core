@@ -488,22 +488,23 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Hey "+player.Name+", welcome in Wearyall Village, if you need some rest go to our stable.\n" +
+							                      "There you can find my friend Honayt\'rt, i know you will like each other!");
 							break;
 						case 2:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Greetings, I see you spoke with Honayt\'rt about our mission? We are searching for a [stone], do you want to help us?");
 							break;
 						case 3:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Hey "+player.CharacterClass.Name+", did you visit O\'honat yet? You can find her in Caer Diogel on the ramparts.");
 							break;
 						case 4:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Incredible, O\'honat really found something?\nThats great!");
 							break;
 						case 5:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Please bring this stone to O\'honat, she knows what we need to do next!");
 							break;
 						case 6:
-							Nchever.SayTo(player, "");
+							Nchever.SayTo(player, "Thanks for showing me the stone, but bring it Honayt\'rt in the stable, she initiated this mission.");
 							break;
 					}
 				}
@@ -526,6 +527,18 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
+						case "stone":
+							if (quest.Step == 2)
+							{
+								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel! Telling her about the [lost stone of arawn] she is on the ramparts and will tell you more about it.");
+							}
+							break;
+						case "lost stone of arawn":
+							if (quest.Step == 2)
+							{
+								quest.Step = 3;
+							}
+							break;
 					}
 				}
 			}
