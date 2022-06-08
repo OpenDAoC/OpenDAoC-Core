@@ -397,28 +397,31 @@ namespace DOL.GS.Quests.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "Thank you for your help, N\'chever, O\'honat and me are trying to find this stone for very long.\n" +
+							                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [stone of arawn].");
 							break;
 						case 2:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "Hey "+player.Name+", did you visit N\'chever yet? You can find him in Wearyall Village.");
 							break;
 						case 3:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "Greetings, I heard you need to go to O\'honat, she can help you find what we are searching for.");
 							break;
 						case 4:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "Wow, O\'honat really found something?\nI knew she could be counted on!");
 							break;
 						case 5:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "Oh dear, did you really find the stone?\nPlease bring it to O\'honat first, she has to look at it!");
 							break;
 						case 6:
-							Honaytrt.SayTo(player, "");
+							Honaytrt.SayTo(player, "I cant really explain how happy I am, thank you for your help "+player.CharacterClass.Name+"!\n" +
+							                       "Here is your [reward].");
 							break;
 					}
 				}
 				else
 				{
-					Honaytrt.SayTo(player, "[placeholder]");
+					Honaytrt.SayTo(player, "Hello "+player.Name+", we live in dark times and I tried to locate the lost stone of the arawn for several years,\n" +
+					                       "could you [help me] retrieve the stone?");
 				}
 			}
 				// The player whispered to the NPC
@@ -429,7 +432,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "placeholder":
+						case "help me":
 							player.Out.SendQuestSubscribeCommand(Honaytrt, QuestMgr.GetIDForQuestType(typeof(LostStoneofArawn)), "Will you help Honayt\'rt [Lost Stone of Arawn]?");
 							break;
 					}
@@ -438,6 +441,16 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
+						case "stone of arawn":
+							quest.Step = 2;
+							break;
+						case "reward":
+							if (quest.Step == 6)
+							{
+								GiveItem(player, ancient_copper_necklace);
+								quest.FinishQuest();
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
@@ -649,7 +662,7 @@ namespace DOL.GS.Quests.Albion
 		//Set quest name
 		public override string Name
 		{
-			get { return "Lost Stone of Arawn"; }
+			get { return questTitle; }
 		}
 
 		// Define Steps
