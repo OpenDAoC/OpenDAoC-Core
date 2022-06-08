@@ -341,6 +341,8 @@ namespace DOL.GS.Quests.Albion
 			Nyaegha.X = 348381;
 			Nyaegha.Y = 479838;
 			Nyaegha.Z = 3320;
+			//shouldnt respawn
+			Nyaegha.RespawnInterval = -1;
 			Nyaegha.Heading = 3424;
 			Nyaegha.VisibleActiveWeaponSlots = 34;
 			Nyaegha.MaxSpeedBase = 200;
@@ -359,13 +361,6 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		protected virtual int DeleteFairy(RegionTimer callingTimer)
-		{
-			Nyaegha.Delete();
-			Nyaegha = null;
-			return 0;
-		}
-		
 		protected static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
 		{
 			AreaEventArgs aargs = args as AreaEventArgs;
@@ -686,7 +681,10 @@ namespace DOL.GS.Quests.Albion
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
-
+			
+			if (sender != m_questPlayer)
+				return;
+			
 			if (player==null || player.IsDoingQuest(typeof (LostStoneofArawn)) == null)
 				return;
 		}
@@ -700,8 +698,14 @@ namespace DOL.GS.Quests.Albion
 		{
 			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 800000000, false);
+				if (m_questPlayer.Level >= 49)
+				{
+					m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
+				}
+				else
+				{
+					m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+				}
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,121,41,Util.Random(50)), "You receive {0} as a reward.");
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
