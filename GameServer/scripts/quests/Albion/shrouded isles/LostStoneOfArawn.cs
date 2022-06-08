@@ -69,6 +69,14 @@ namespace DOL.GS.Quests.Albion
 		{
 		}
 
+		public override int Level
+		{
+			get
+			{
+				// Quest Level
+				return minimumLevel;
+			}
+		}
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -338,6 +346,11 @@ namespace DOL.GS.Quests.Albion
 
 			#endregion
 
+			const int radius = 1500;
+			Region region = WorldMgr.GetRegion(demonLocation.RegionID);
+			demonArea = region.AddArea(new Area.Circle("Nyaegha Area", demonLocation.X, demonLocation.Y, demonLocation.Z, radius));
+			demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
+			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
@@ -350,8 +363,8 @@ namespace DOL.GS.Quests.Albion
 			GameEventMgr.AddHandler(Ohonat, GameObjectEvent.Interact, new DOLEventHandler(TalkToOhonat));
 			GameEventMgr.AddHandler(Ohonat, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToOhonat));
 			
-			demonArea = WorldMgr.GetRegion(demonLocation.RegionID).AddArea(new Area.Circle("Nyaegha Area", demonLocation.X, demonLocation.Y, 0, 1500));
-			demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
+			//demonArea = WorldMgr.GetRegion(demonLocation.RegionID).AddArea(new Area.Circle("Nyaegha Area", demonLocation.X, demonLocation.Y, 0, 1500));
+			//demonArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterDemonArea));
 
 			/* Now we bring to Honaytrt the possibility to give this quest to players */
 			Honaytrt.AddQuestToGive(typeof (LostStoneofArawn));
@@ -402,8 +415,6 @@ namespace DOL.GS.Quests.Albion
 			Nyaegha.X = 348381;
 			Nyaegha.Y = 479838;
 			Nyaegha.Z = 3320;
-			//shouldnt respawn
-			Nyaegha.RespawnInterval = -1;
 			Nyaegha.Heading = 3424;
 			Nyaegha.VisibleActiveWeaponSlots = 34;
 			Nyaegha.MaxSpeedBase = 200;
@@ -433,7 +444,11 @@ namespace DOL.GS.Quests.Albion
 		protected static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
 		{
 			AreaEventArgs aargs = args as AreaEventArgs;
-			GamePlayer player = aargs.GameObject as GamePlayer;
+			GamePlayer player = aargs?.GameObject as GamePlayer;
+			
+			if (player == null)
+				return;
+			
 			LostStoneofArawn quest = player.IsDoingQuest(typeof (LostStoneofArawn)) as LostStoneofArawn;
 
 			if (quest != null && Nyaegha == null && quest.Step == 4)
@@ -791,7 +806,7 @@ namespace DOL.GS.Quests.Albion
 				if (!Honaytrt.GiveQuest(typeof (LostStoneofArawn), player, 1))
 					return;
 
-				Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!\n");
+				Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!");
 				Honaytrt.SayTo(player, "N\'chever, O\'honat and me are trying to find this stone for a very long time.\n" +
 				                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [Stone of Arawn].");
 
