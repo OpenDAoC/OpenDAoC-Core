@@ -692,10 +692,7 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 5 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 							{
 								GiveItem(player, scroll_wearyall_loststone);
-								if (lost_stone_of_arawn != null)
-								{
-									RemoveItem(player, lost_stone_of_arawn);
-								}
+								RemoveItem(player, lost_stone_of_arawn);
 								player.Out.SendSpellEffectAnimation(Ohonat, player, 4310, 0, false, 1);
 								new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(timer => TeleportToWearyall(timer, player)), 3000);
 								quest.Step = 6;
@@ -864,16 +861,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				}
-
-				if (lost_stone_of_arawn != null)
-				{
-					RemoveItem(m_questPlayer, lost_stone_of_arawn);
-				}
-				else if (scroll_wearyall_loststone != null)
-				{
-					RemoveItem(m_questPlayer, scroll_wearyall_loststone);
-				}
-
+				RemoveItem(m_questPlayer, scroll_wearyall_loststone);
 				GiveItem(m_questPlayer, ancient_copper_necklace);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,121,41,Util.Random(50)), "You receive {0} as a reward.");
 
