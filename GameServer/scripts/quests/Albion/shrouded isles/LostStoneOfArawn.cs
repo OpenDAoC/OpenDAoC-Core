@@ -28,7 +28,7 @@ using log4net;
 
 namespace DOL.GS.Quests.Albion
 {
-	public class LostStoneofArawn : RewardQuest
+	public class LostStoneofArawn : BaseQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -164,7 +164,7 @@ namespace DOL.GS.Quests.Albion
 					log.Warn("Could not find Ohonat , creating it ...");
 				Ohonat = new GameNPC();
 				Ohonat.LoadEquipmentTemplateFromDatabase("a58ef747-80e0-4cda-9052-15711ea0f4f7");
-				Ohonat.Model = 38;
+				Ohonat.Model = 761;
 				Ohonat.Name = "O\'honat";
 				Ohonat.GuildName = "";
 				Ohonat.Realm = eRealm.Albion;
@@ -298,7 +298,7 @@ namespace DOL.GS.Quests.Albion
 				scroll_wearyall_loststone.Type_Damage = 0;
 				scroll_wearyall_loststone.Quality = 100;
 				scroll_wearyall_loststone.Weight = 1;
-				scroll_wearyall_loststone.Description = "Bring this Speech to Honayt\'rt in Wearyall Village. She initiated this mission and deserves to be recognized";
+				scroll_wearyall_loststone.Description = "Bring this Speech to Honayt\'rt in Wearyall Village. She initiated this mission and deserves to be recognized.";
 				if (SAVE_INTO_DATABASE)
 				{
 					GameServer.Database.AddObject(scroll_wearyall_loststone);
@@ -421,6 +421,14 @@ namespace DOL.GS.Quests.Albion
 			{
 				Nyaegha.SaveIntoDatabase();
 			}
+
+			foreach (GamePlayer player in Nyaegha.GetPlayersInRadius(1600))
+			{
+				if (player == null) return;
+				
+				Nyaegha.StartAttack(player);
+			}
+			
 		}
 
 		protected static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
@@ -505,6 +513,7 @@ namespace DOL.GS.Quests.Albion
 					{
 						case "stone of arawn":
 							quest.Step = 2;
+							Honaytrt.SayTo(player, "You can find him north in Wearyall Village.");
 							break;
 						case "reward":
 							if (quest.Step == 6)
@@ -598,6 +607,7 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 2)
 							{
 								quest.Step = 3;
+								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel!");
 							}
 							break;
 					}
@@ -669,6 +679,7 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 3)
 							{
 								quest.Step = 4;
+								Ohonat.SayTo(player, "Follow the path north along the beach to get to Gwyddneau.");
 							}
 							break;
 						case "impossible":
@@ -682,8 +693,13 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 5 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 							{
 								GiveItem(player, scroll_wearyall_loststone);
+								if (lost_stone_of_arawn != null)
+								{
+									RemoveItem(player, lost_stone_of_arawn);
+								}
 								//teleport to wearyall village
 								player.MoveTo(51, 435868, 493994, 3088, 3587);
+								player.Out.SendSpellCastAnimation(player, 4310, 1);
 								quest.Step = 6;
 							}
 							break;
@@ -755,7 +771,7 @@ namespace DOL.GS.Quests.Albion
 				if (!Honaytrt.GiveQuest(typeof (LostStoneofArawn), player, 1))
 					return;
 
-				Honaytrt.SayTo(player, "");
+				Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!");
 
 			}
 		}
@@ -816,6 +832,8 @@ namespace DOL.GS.Quests.Albion
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			RemoveItem(m_questPlayer, lost_stone_of_arawn);
+			RemoveItem(m_questPlayer, scroll_wearyall_loststone);
 		}
 
 		public override void FinishQuest()
@@ -830,6 +848,16 @@ namespace DOL.GS.Quests.Albion
 				{
 					m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				}
+
+				if (lost_stone_of_arawn != null)
+				{
+					RemoveItem(m_questPlayer, lost_stone_of_arawn);
+				}
+				else if (scroll_wearyall_loststone != null)
+				{
+					RemoveItem(m_questPlayer, scroll_wearyall_loststone);
+				}
+
 				GiveItem(m_questPlayer, ancient_copper_necklace);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,121,41,Util.Random(50)), "You receive {0} as a reward.");
 
