@@ -417,7 +417,7 @@ namespace DOL.GS.Quests.Albion
 			Nyaegha.Z = 3320;
 			Nyaegha.Heading = 3424;
 			Nyaegha.VisibleActiveWeaponSlots = 34;
-			Nyaegha.MaxSpeedBase = 200;
+			Nyaegha.MaxSpeedBase = 250;
 			Nyaegha.AddToWorld();
 			
 
