@@ -467,7 +467,7 @@ namespace DOL.GS.Quests.Albion
 					{
 						case 1:
 							Honaytrt.SayTo(player, "Thank you for your help, N\'chever, O\'honat and me are trying to find this stone for very long.\n" +
-							                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [stone of arawn].");
+							                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [Stone of Arawn].");
 							break;
 						case 2:
 							Honaytrt.SayTo(player, "Hey "+player.Name+", did you visit N\'chever yet? You can find him in Wearyall Village.");
@@ -510,9 +510,12 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "stone of arawn":
-							quest.Step = 2;
-							Honaytrt.SayTo(player, "You can find him north in Wearyall Village.");
+						case "Stone of Arawn":
+							if (quest.Step == 1)
+							{
+								quest.Step = 2;
+								Honaytrt.SayTo(player, "You can find N\'chever north in Wearyall Village and speak with him.");
+							}
 							break;
 						case "reward":
 							if (quest.Step == 6)
@@ -599,10 +602,10 @@ namespace DOL.GS.Quests.Albion
 						case "stone":
 							if (quest.Step == 2)
 							{
-								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel! Telling her about the [lost stone of arawn] she is on the ramparts and will tell you more about it.");
+								Nchever.SayTo(player, "Visit O\'honat in Caer Diogel! Telling her about the [Lost Stone of Arawn], she is on the ramparts and will tell you more about it.");
 							}
 							break;
-						case "lost stone of arawn":
+						case "Lost Stone of Arawn":
 							if (quest.Step == 2)
 							{
 								quest.Step = 3;
@@ -644,7 +647,7 @@ namespace DOL.GS.Quests.Albion
 							break;
 						case 4:
 							Ohonat.SayTo(player, "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
-							                     "The Demon that you will need to kill can be found at 53.6k, 53.8k in the Plains of Gwyddneau!\n" +
+							                     "The Demon that you will need to kill can be found in the Plains of Gwyddneau!\n" +
 							                     "Kill this demon and bring me the stone.");
 							break;
 						case 5:
@@ -678,7 +681,9 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 3)
 							{
 								quest.Step = 4;
-								Ohonat.SayTo(player, "Follow the path north along the beach to get to Gwyddneau.");
+								Ohonat.SayTo(player, "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
+								                     "The Demon that you will need to kill can be found in the Plains of Gwyddneau!\n" +
+								                     "Kill this demon and bring me the stone.");
 							}
 							break;
 						case "impossible":
@@ -696,6 +701,7 @@ namespace DOL.GS.Quests.Albion
 								player.Out.SendSpellEffectAnimation(Ohonat, player, 4310, 0, false, 1);
 								new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(timer => TeleportToWearyall(timer, player)), 3000);
 								quest.Step = 6;
+								Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Show her the speech!");
 							}
 							break;
 					}
@@ -777,7 +783,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Come back if you are ready to help us in our mission.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -785,7 +791,9 @@ namespace DOL.GS.Quests.Albion
 				if (!Honaytrt.GiveQuest(typeof (LostStoneofArawn), player, 1))
 					return;
 
-				Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!");
+				Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!\n");
+				Honaytrt.SayTo(player, "N\'chever, O\'honat and me are trying to find this stone for a very long time.\n" +
+				                       "Speak with N\'chever in Wearyall Village, he will tell you more about the [Stone of Arawn].");
 
 			}
 		}
@@ -811,7 +819,7 @@ namespace DOL.GS.Quests.Albion
 						return "Speak to O\'honat in Caer Diogel.";
 					case 4:
 						return "Leave Caer Diogel and head west out of town, when you reach the coast turn north. " +
-						       "The Demon that you will need to kill can be found at 53.6k, 53.8k in the Plains of Gwyddneau.";
+						       "The Demon that you will need to kill can be found in the Plains of Gwyddneau.";
 					case 5:
 						return "Go back to Caer Diogel and give O'honat the stone.";
 					case 6:
