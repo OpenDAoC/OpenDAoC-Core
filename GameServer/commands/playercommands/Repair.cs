@@ -17,6 +17,7 @@
  *
  */
 using System;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Keeps;
 
@@ -72,28 +73,28 @@ namespace DOL.GS.Commands
 			if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
 				return true;
 
-			if ((obj as GameLiving).InCombat)
-			{
-				DisplayMessage(player, "You can't repair object while it is under attack!");
-				return false;
-			}
-            if (obj is GameKeepDoor)
-            {
-                GameKeepDoor doorcomponent = obj as GameKeepDoor;
-                if (doorcomponent.Component.Keep.InCombat)
-                {
-                    DisplayMessage(player, "You can't repair the keep door while keep is under attack!");
-                    return false;
-                }
-            }
-			if (obj is IKeepItem)
-			{
-				if (obj.CurrentRegion.Time - obj.LastAttackedByEnemyTick <= 60 * 1000)
-				{
-					DisplayMessage(player, "You can't repair the keep component while it is under attack!");
-					return false;
-				}
-			}
+			// if ((obj as GameLiving).InCombat)
+			// {
+			// 	DisplayMessage(player, "You can't repair object while it is under attack!");
+			// 	return false;
+			// }
+   //          if (obj is GameKeepDoor)
+   //          {
+   //              GameKeepDoor doorcomponent = obj as GameKeepDoor;
+   //              if (doorcomponent.Component.Keep.InCombat)
+   //              {
+   //                  DisplayMessage(player, "You can't repair the keep door while keep is under attack!");
+   //                  return false;
+   //              }
+   //          }
+			// if (obj is IKeepItem)
+			// {
+			// 	if (obj.CurrentRegion.Time - obj.LastAttackedByEnemyTick <= 60 * 1000)
+			// 	{
+			// 		DisplayMessage(player, "You can't repair the keep component while it is under attack!");
+			// 		return false;
+			// 	}
+			// }
 
 			if ((obj as GameLiving).HealthPercent == 100)
 			{
@@ -214,7 +215,9 @@ namespace DOL.GS.Commands
 					weapon.Repair();
 				}
 				int finish = obj.HealthPercent;
-				CalculatePlayersWood(player, ((GetTotalWoodForLevel(obj.Level) / 100) * 5));
+				
+				RemoveWU(player,(GetTotalWoodForLevel(obj.Level) / 100) * 5);
+				// CalculatePlayersWood(player, (());
 				DisplayMessage(player, "You successfully repair the component by 5%!");
 				/*
 				 * - Realm points will now be awarded for successfully repairing a door or outpost piece.
@@ -261,8 +264,7 @@ namespace DOL.GS.Commands
 					default: return 0;
 			}
 		}
-		static string[] WoodNames = { "rowan", "elm", "oak", "ironwood", "heartwood", "runewood", "stonewood", "ebonwood", "dyrwood", "duskwood" };
-
+		static string[] WoodNames = { "rowan", "elm", "oak", "oaken", "ironwood", "heartwood", "runewood", "stonewood", "ebonwood", "dyrwood", "duskwood" };
 		public static int CalculatePlayersWood(GamePlayer player, int removeamount)
 		{
 			int amount = 0;
@@ -270,33 +272,54 @@ namespace DOL.GS.Commands
 			{
 				foreach (string name in WoodNames)
 				{
-					if (item.Name.Replace(" wooden boards", "").ToLower() == name)
-					{
-						int woodvalue = GetWoodValue(item.Name.ToLower());
-						amount += item.Count * woodvalue;
-						if (removeamount > 0)
-						{
-							if (item.Count * woodvalue < removeamount)
-							{
-								int removecount = Math.Min(1, removeamount / woodvalue);
-								removeamount -= removecount * woodvalue;
-								player.Inventory.RemoveCountFromStack(item, removecount);
-                                InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, removecount);
-							}
-							else
-							{
-								removeamount -= item.Count * woodvalue;
-								player.Inventory.RemoveItem(item);
-                                InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
-							}
-						}
-						break;
-					}
+					if (item.Name.Replace(" wooden boards", "").ToLower() != name) continue;
+					int woodvalue = GetWoodValue(item.Name.ToLower());
+					amount += item.Count * woodvalue;
+					break;
 				}
 			}
 			return amount;
 		}
 
+		private static void RemoveWU(GamePlayer player, int woodunits)
+		{
+			foreach (var item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			{
+				if (!WoodNames.Contains(item.Name.Replace(" wooden boards", "").ToLower())) continue;
+				if (woodunits == 0) break;
+				var woodvalue = GetWoodValue(item.Name.ToLower()) * item.Count;
+				if (woodvalue < woodunits)
+				{
+					player.Inventory.RemoveItem(item);
+					InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
+					woodunits -= woodvalue;
+				}
+				else
+				{
+					var removeCount = woodunits / GetWoodValue(item.Name.ToLower());
+					player.Inventory.RemoveCountFromStack(item, removeCount);
+					InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, removeCount);
+					woodunits = 0;
+				}
+			}
+			
+			
+			// if (item.Count * woodvalue < removeamount)
+			// {
+			// 	int removecount = removeamount / woodvalue;
+			// 	removeamount -= removecount * woodvalue;
+			// 	player.Inventory.RemoveCountFromStack(item, removecount);
+			// 	
+			// }
+			// else
+			// {
+			// 	removeamount -= item.Count * woodvalue;
+			// 	player.Inventory.RemoveItem(item);
+			// 	InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
+			// }
+		
+		}
+		
 		public static int GetWoodValue(string name)
 		{
 			switch (name.Replace(" wooden boards", ""))
