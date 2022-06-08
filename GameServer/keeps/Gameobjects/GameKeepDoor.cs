@@ -341,12 +341,12 @@ namespace DOL.GS.Keeps
 
 			if (!IsRelic) return;
 			
-			if (HealthPercent == 75)
+			if (HealthPercent == 25)
 			{
 				if (!m_RelicMessage25)
 				{
-					BroadcastRelicGateDamage();
 					m_RelicMessage25 = true;
+					BroadcastRelicGateDamage();
 				}
 			}
 
@@ -354,8 +354,8 @@ namespace DOL.GS.Keeps
 			{
 				if (!m_RelicMessage50)
 				{
-					BroadcastRelicGateDamage();
 					m_RelicMessage50 = true;
+					BroadcastRelicGateDamage();
 				}
 			}
 
@@ -363,8 +363,8 @@ namespace DOL.GS.Keeps
 			{
 				if (!m_RelicMessage75)
 				{
-					BroadcastRelicGateDamage();
 					m_RelicMessage75 = true;
+					BroadcastRelicGateDamage();
 				}
 			}
 		}
