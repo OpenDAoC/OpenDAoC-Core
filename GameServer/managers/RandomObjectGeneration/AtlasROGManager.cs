@@ -63,20 +63,29 @@ namespace DOL.GS {
         {
             if (living != null && living is GamePlayer)
             {
-                GamePlayer player = living as GamePlayer;
+                var player = living as GamePlayer;
 
-                ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+                var orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
-                int maxcount = Util.Random(20, 50);
+                var maxCount = Util.Random(20, 50);
                 
-                int orbBonus = (int) Math.Floor((decimal) ((maxcount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
-                player.Inventory.AddTemplate(item, maxcount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, maxcount + orbBonus);
+                var orbBonus = (int) Math.Floor((decimal) ((maxCount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
                 
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                player.Out.SendMessage("You gained an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                item.Count = maxCount + orbBonus;
+                
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", maxCount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                if (orbBonus > 0)
+                    player.Out.SendMessage($"You gained an additional {orbBonus} orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                
+                if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    player.CreateItemOnTheGround(item);
+                    player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_PopupWindow);
+                }
+                
+                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, maxCount + orbBonus);
             }
         }
         
@@ -84,20 +93,27 @@ namespace DOL.GS {
         {
             if (living != null && living is GamePlayer)
             {
-                GamePlayer player = living as GamePlayer;
+                var player = living as GamePlayer;
 
-                ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+                var orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
-                int orbBonus = (int) Math.Floor((decimal) ((amount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
-                player.Inventory.AddTemplate(item, amount + orbBonus, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, amount + orbBonus);
+                var orbBonus = (int) Math.Floor((decimal) ((amount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
+                
+                item.Count = amount + orbBonus;
                 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 if (orbBonus > 0)
-                    player.Out.SendMessage("You gained an additional " + orbBonus + " orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You gained an additional {orbBonus} orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+
+                if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    player.CreateItemOnTheGround(item);
+                    player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_PopupWindow);
+                }
                 
+                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, amount + orbBonus);
             }
         }
 
