@@ -693,28 +693,28 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "Yes, I am a Dwarf from Dellingstad, do you have a problem with that?");
 							break;
 						case 2:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [dont try] it kid.");
 							break;
 						case 3:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "Hey "+player.CharacterClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
 							break;
 						case 4:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "I wish you good luck my friend! It's not an easy mission.");
 							break;
 						case 5:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "Wow, I really never thought that you will do it. Thats great my friend! Does Jaklyr knows about it yet?");
 							break;
 						case 6:
-							Longbeard.SayTo(player, "");
+							Longbeard.SayTo(player, "Gratulations "+player.Name+", you will get your recognition!");
 							break;
 					}
 				}
 				else
 				{
-					Longbeard.SayTo(player, "");
+					Longbeard.SayTo(player, "Hey, do you have a boar pelt? I would buy it.");
 				}
 			}
 			// The player whispered to the NPC
@@ -731,6 +731,24 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "dont try":
+							Longbeard.SayTo(player, "You'll never come back alive. " +
+							                        "There has been a curse since [the crater] was formed.");
+							break;
+						case "the crater":
+							Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. Its right next to Dellingstad, thats why its called Delling Crater." +
+							                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began to hunt certain creatures. Styr and me fled." +
+							                        "If you are intelligent enough, then you shouldn't do this [challenge].");
+							Longbeard.Emote(eEmote.Induct);
+							break;
+						case "challenge":
+							if (quest.Step == 2)
+							{
+								Longbeard.SayTo(player, "Okay Adventurer, I warned you, but if you need help, then visit Jaklyr in Bjarken, he knows as much as I do about this event.\nHa det!");
+								Longbeard.Emote(eEmote.Wave);
+								quest.Step = 3;
+							}
+							break;
 					}
 				}
 			}
