@@ -1530,6 +1530,13 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("pvp", "pvp_death_con_loss", "Loose con on pvp death on PvP servertype", true)]
 		public static bool PVP_DEATH_CON_LOSS;
+
+		/// <summary>
+		/// PvP Realm Timer. # of minutes an account must wait to change realms after pvp combat. 0 disables the timer
+		/// </summary>
+		[ServerProperty("pvp", "pvp_realm_timer_minutes", "# of minutes an account must wait to change realms after PvP combat. 0 disables the timer", 0)]
+		public static int PVP_REALM_TIMER_MINUTES; 
+
 		#endregion
 
 		#region KEEPS

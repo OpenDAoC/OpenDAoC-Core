@@ -27,6 +27,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.Language;
 using log4net;
+using DOL.GS.Utils;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -154,6 +155,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 				}
+
+				//Check realmtimer and move player to bind if realm timer is not for this realm.
+				RealmTimer.CheckRealmTimer(player);
 
 				if (checkInstanceLogin)
 				{
