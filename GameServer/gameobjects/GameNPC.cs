@@ -4320,7 +4320,7 @@ namespace DOL.GS
 						{
 							GameLiving living = de.Key as GameLiving;
 							GamePlayer player = living as GamePlayer;
-							if (player != null & player.IsObjectGreyCon(this)) continue;
+							if (player != null && player.IsObjectGreyCon(this)) continue;
 							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
 							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
 								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
