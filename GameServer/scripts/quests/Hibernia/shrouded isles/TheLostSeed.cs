@@ -608,7 +608,25 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (quest.Step)
 					{
-						
+						case 1:
+							break;
+						case 2:
+							break;
+						case 3:
+							Emolia.SayTo(player, "Hello Adventurer, Jandros awaits you.");
+							break;
+						case 4:
+							Emolia.SayTo(player, "Hello Adventurer, you can find Jandros in a big tree in Aalid Feie.");
+							break;
+						case 5:
+							Emolia.SayTo(player, "Hello Adventurer, I wish you good luck finding the treant in Cothrom Gorge.");
+							break;
+						case 6:
+							Emolia.SayTo(player, "Hello Adventurer, I can send you whenever you need.");
+							break;
+						case 7:
+							Emolia.SayTo(player, "Hello Adventurer, thank you for your help in Cothrom Gorge.");
+							break;
 					}
 				}
 				else
@@ -631,7 +649,12 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						
+						case "Aalid Feie":
+							if (quest.Step == 3)
+							{
+								quest.Step = 4;
+							}
+							break;
 					}
 				}
 			}
