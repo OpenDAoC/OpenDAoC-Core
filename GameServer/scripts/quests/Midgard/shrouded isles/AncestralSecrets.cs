@@ -555,9 +555,13 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
-				{
-					
-				}
+					if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
+					{
+						if (quest.Step == 6)
+						{
+							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You deserved your [reward]!");
+						}
+					}
 			}
 		}
 		
@@ -655,7 +659,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "trapped":
 							if (quest.Step == 5)
 							{
-								Jaklyr.SayTo(player, "Take it back and return to Ota Yrling in Aegirhamn. Bring her the pendant!");
+								Jaklyr.SayTo(player, "Take it back and return to Ota Yrling in Aegirhamn. Bring her the pendant as a gift!");
 								GiveItem(player, stone_pendant);
 								quest.Step = 6;
 							}
@@ -667,9 +671,14 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
-				{
-					
-				}
+					if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
+					{
+						if (quest.Step == 5)
+						{
+							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
+							Jaklyr.Emote(eEmote.Cheer);
+						}
+					}
 			}
 		}
 		
