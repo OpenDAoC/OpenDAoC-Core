@@ -64,12 +64,13 @@ namespace DOL.GS
                     spell.CastTime = 0;
                     spell.Power = 0;
                     spell.RecastDelay = 10;
-                    spell.ClientEffect = 5700;
-                    spell.Icon = 5700;
+                    spell.ClientEffect = 2305;
+                    spell.Icon = 2305;
                     spell.Damage = 100;
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.Name = "Flame Breath";
                     spell.Range = 500;
+                    spell.Radius = 350;
                     spell.SpellID = 11933;
                     spell.Target = "Enemy";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
@@ -158,7 +159,7 @@ namespace DOL.AI.Brain
                     walkback = false;
                     if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
                     {
-                        Body.WalkTo(point2, 200);
+                        Body.WalkTo(point2, 120);
                     }
                     else
                     {
@@ -166,7 +167,7 @@ namespace DOL.AI.Brain
                         if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
                             point3check == false)
                         {
-                            Body.WalkTo(point3, 200);
+                            Body.WalkTo(point3, 120);
                         }
                         else
                         {
@@ -174,7 +175,7 @@ namespace DOL.AI.Brain
                             if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
                                 point3check == true && point4check == false)
                             {
-                                Body.WalkTo(point4, 200);
+                                Body.WalkTo(point4, 120);
                             }
                             else
                             {
@@ -183,7 +184,7 @@ namespace DOL.AI.Brain
                                     point2check == true && point3check == true && point4check == true &&
                                     point5check == false)
                                 {
-                                    Body.WalkTo(point5, 200);
+                                    Body.WalkTo(point5, 120);
                                 }
                                 else
                                 {
@@ -192,7 +193,7 @@ namespace DOL.AI.Brain
                                         point2check == true && point3check == true && point4check == true &&
                                         point5check == true && point6check == false)
                                     {
-                                        Body.WalkTo(point6, 200);
+                                        Body.WalkTo(point6, 120);
                                     }
                                     else
                                     {
@@ -201,7 +202,7 @@ namespace DOL.AI.Brain
                                             point2check == true && point3check == true && point4check == true &&
                                             point5check == true && point6check == true && walkback == false)
                                         {
-                                            Body.WalkTo(spawn, 200);
+                                            Body.WalkTo(spawn, 120);
                                         }
                                         else
                                         {
