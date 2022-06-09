@@ -613,19 +613,19 @@ namespace DOL.GS.Quests.Hibernia
 						case 2:
 							break;
 						case 3:
-							Emolia.SayTo(player, "Hello Adventurer, Jandros awaits you.");
+							Emolia.Say("Hello Adventurer, Jandros awaits you.");
 							break;
 						case 4:
-							Emolia.SayTo(player, "Hello Adventurer, you can find Jandros in a big tree in Aalid Feie.");
+							Emolia.Say("Hello Adventurer, you can find Jandros in a big tree in Aalid Feie.");
 							break;
 						case 5:
-							Emolia.SayTo(player, "Hello Adventurer, I wish you good luck finding the treant in Cothrom Gorge.");
+							Emolia.Say("Hello Adventurer, I wish you good luck finding the treant in Cothrom Gorge.");
 							break;
 						case 6:
-							Emolia.SayTo(player, "Hello Adventurer, I can send you whenever you need.");
+							Emolia.Say("Hello Adventurer, I can send you whenever you need.");
 							break;
 						case 7:
-							Emolia.SayTo(player, "Hello Adventurer, thank you for your help in Cothrom Gorge.");
+							Emolia.Say("Hello Adventurer, thank you for your help in Cothrom Gorge.");
 							break;
 					}
 				}
@@ -843,7 +843,7 @@ namespace DOL.GS.Quests.Hibernia
 				if (!Terod.GiveQuest(typeof (TheLostSeed), player, 1))
 					return;
 			}
-			Terod.SayTo(player, "Thanks, lets talk more about the Lost Seeds!");
+			Terod.SayTo(player, "Thanks, lets talk more about the Lost Seed!");
 			Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
 			                    "It likes to torture everything which tries to get in the way of it.");
 		}
