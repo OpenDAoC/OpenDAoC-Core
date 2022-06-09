@@ -461,10 +461,10 @@ namespace DOL.GS.Quests.Hibernia
 					{
 						case "help us":
 							Terod.SayTo(player, "Some friends and I have been looking for strong fighters and magicians to help us for a few days now. " +
-							                    "It's about the [lost seed].");
+							                    "It's about the [Lost Seed].");
 							break;
 						
-						case "lost seed":
+						case "Lost Seed":
 							player.Out.SendQuestSubscribeCommand(Terod, QuestMgr.GetIDForQuestType(typeof(TheLostSeed)), "Will you help Terod find [The Lost Seed]?");
 							break;
 					}
@@ -521,12 +521,33 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (quest.Step)
 					{
-						
+						case 1:
+							Kredril.SayTo(player, "Hello Adventurer, did you hear about the Lost Seed? " +
+							                      "Find Terod in Droighaid, he will tell you something about it.");
+							break;
+						case 2:
+							Kredril.SayTo(player, "Hey "+player.CharacterClass.Name+", did Terod told you about [the Lost Seed]?");
+							break;
+						case 3:
+							Kredril.SayTo(player, "Hey "+player.Name+", you can find Emolia next to Droighaid's Bindstone. She will teleport you to Aalid Feie.");
+							break;
+						case 4:
+							Kredril.SayTo(player, player.Name+" have you visited Jandros yet? You can find him in one of those big trees.");
+							break;
+						case 5:
+							Kredril.SayTo(player, "Jandros has reported to me and Terod that you face the treant Feairna-Athar. Thank you for your help and courage!");
+							break;
+						case 6:
+							Kredril.SayTo(player, "Outstanding! Now everyone can sleep well again! Bring this Glowing Red Jewel to Jandros, he will tell you what to do next.");
+							break;
+						case 7:
+							Kredril.SayTo(player, "Hey "+player.Name+", tell Terod about it, I think he will thank you in a special way.");
+							break;
 					}
 				}
 				else
 				{
-					
+					Kredril.SayTo(player, "Hey "+player.Name+", today is a beautiful day, I hope for you too.");
 				}
 			}
 			// The player whispered to the NPC
@@ -543,6 +564,18 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "the Lost Seed":
+							Kredril.SayTo(player, "Farmers of Hibernia found seeds in Cothrom Gorge, which were cursed. A Few seeds got destroyed, but one was lost. " +
+							                      "Please visit [Jandros] in Aalid Feie, he might know where the farmers found those seeds.");
+							break;
+						case "Jandros":
+							if (quest.Step == 2)
+							{
+								Kredril.SayTo(player, "Go to Emolia in Droighaid, she will teleport you to Aalid Feie. " +
+								                      "You can find Jandros in one of those big trees. Tell him that I sent you to him, he will understand.");
+								quest.Step = 3;
+							}
+							break;
 					}
 				}
 			}
