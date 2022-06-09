@@ -419,22 +419,21 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
-							                    "It likes to torture everything which tries to get in the way of it.");
+							Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. I heard it likes to torture everything that stands in its way.");
 							break;
 						case 2:
-							Terod.SayTo(player, "Kredril knows much more about this treant, go to him, you will find him outside of Droighaid.");
+							Terod.SayTo(player, "Kredril has studied this treant for years, he will know much more about it. Seek for him in the outskirts of Droighaid, he will be able to help you.");
 							break;
 						case 3:
-							Terod.SayTo(player, "Greetings "+player.CharacterClass.Name+", Kredril told me that you are on your way to visit Jandros. Is that right? " +
-							                    "You can find Emolia next to Droighaid's Bindstone, which will teleport you to Aalid Feie.");
+							Terod.SayTo(player, "Greetings "+player.CharacterClass.Name+", Kredril told me that you are on your way to visit Jandros, is that right? " +
+							                    "Emolia can be found next to Droighaid's Bindstone, she will be able to help with your journey to Aalid Feie.");
 							break;
 						case 4:
 							Terod.SayTo(player, "Hello "+player.Name+", have you visited Jandros yet? " +
-							                    "You can find Jandros in one of these big trees in Aalid Feie.");
+							                    "You can find Jandros in one of those big trees in Aalid Feie.");
 							break;
 						case 5:
-							Terod.SayTo(player, "Jandros has reported to me that you face the treant Feairna-Athar. We all stand behind you and thank you for your courage!");
+							Terod.SayTo(player, "Jandros has told me that you defeated the treant Feairna-Athar. We all stand behind and thank you for your courage!");
 							break;
 						case 6:
 							Terod.SayTo(player, "I dont know what to say, you are outstanding! Bring this Glowing Red Jewel to Jandros, he knows what to do.");
@@ -447,8 +446,8 @@ namespace DOL.GS.Quests.Hibernia
 				else
 				{
 					Terod.SayTo(player, "Hello " + player.Name +
-					                       ", do you have a moment to listen to my request?\n" +
-					                       "A cursed treant rages in Cothrom Gorge and is threatening our realm. I have a good feeling, that you could [help us]?");
+					                       ", do you have a moment to listen to my story?\n" +
+					                       "A cursed treant rages in Cothrom Gorge and is threatening our realm. I have a good feeling ..could you be the one finally able to [help us]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -476,7 +475,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "treant":
 							if (quest.Step == 1)
 							{
-								Terod.SayTo(player, "Kredril knows much more about this treant, go to him, you will find him outside of Droighaid.");
+								Terod.SayTo(player, "Kredril knows much more about this treant, go find him outside of Droighaid.");
 								quest.Step = 2;
 							}
 							break;
@@ -522,26 +521,26 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Kredril.SayTo(player, "Hello Adventurer, did you hear about the Lost Seed? " +
-							                      "Find Terod in Droighaid, he will tell you something about it.");
+							Kredril.SayTo(player, "Hello Adventurer, have you heard about the Lost Seed? " +
+							                      "Find Terod in Droighaid, he will tell you more about it.");
 							break;
 						case 2:
-							Kredril.SayTo(player, "Hey "+player.CharacterClass.Name+", did Terod told you about [the Lost Seed]?");
+							Kredril.SayTo(player, "Hey "+player.CharacterClass.Name+", has Terod told you about [the Lost Seed]?");
 							break;
 						case 3:
-							Kredril.SayTo(player, "Hey "+player.Name+", you can find Emolia next to Droighaid's Bindstone. She will teleport you to Aalid Feie.");
+							Kredril.SayTo(player, "Hey "+player.Name+", you can find Emolia around Droighaid's Bindstone. She will teleport you to Aalid Feie.");
 							break;
 						case 4:
 							Kredril.SayTo(player, player.Name+" have you visited Jandros yet? You can find him in one of those big trees.");
 							break;
 						case 5:
-							Kredril.SayTo(player, "Jandros has reported to me and Terod that you face the treant Feairna-Athar. Thank you for your help and courage!");
+							Kredril.SayTo(player, "Jandros has told Terod and I that you faced the treant Feairna-Athar. Thank you for your help and courage!");
 							break;
 						case 6:
 							Kredril.SayTo(player, "Outstanding! Now everyone can sleep well again! Bring this Glowing Red Jewel to Jandros, he will tell you what to do next.");
 							break;
 						case 7:
-							Kredril.SayTo(player, "Hey "+player.Name+", tell Terod about it, I think he will thank you in a special way.");
+							Kredril.SayTo(player, "Hey "+player.Name+", go tell Terod about it. I think he will want to thank you in a special way.");
 							break;
 					}
 				}
@@ -572,7 +571,7 @@ namespace DOL.GS.Quests.Hibernia
 							if (quest.Step == 2)
 							{
 								Kredril.SayTo(player, "Go to Emolia in Droighaid, she will teleport you to Aalid Feie. " +
-								                      "You can find Jandros in one of those big trees. Tell him that I sent you to him, he will understand.");
+								                      "You can find Jandros in one of those big trees. Tell him that I sent you, he will understand.");
 								quest.Step = 3;
 							}
 							break;
@@ -688,33 +687,33 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Jandros.SayTo(player, "Hello "+player.CharacterClass.Name+", I saw you in Aalid Feie for a few times. Have you visited Droighaid too? " +
-							                      "It's a beautiful place, my friends Kredril and Terod living there.");
+							Jandros.SayTo(player, "Hello "+player.CharacterClass.Name+", I saw you in Aalid Feie for a few times. Have you visited Droighaid yet? " +
+							                      "It's a beautiful place, my friends Kredril and Terod live there.");
 							break;
 						case 2:
 							Jandros.SayTo(player, "Hey "+player.CharacterClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seed.");
 							break;
 						case 3:
-							Jandros.SayTo(player, "Hello "+player.Name+", did Emolia sent you, because I wasn't expecting any at the moment?");
+							Jandros.SayTo(player, "Hello "+player.Name+", has Emolia sent you? I wasn't expecting you anytime soon.");
 							break;
 						case 4:
-							Jandros.SayTo(player, "Greetings "+player.Name+", I am glad that you are here, did [Kredril] sent you?");
+							Jandros.SayTo(player, "Greetings "+player.Name+", I am glad that you are here, has [Kredril] sent you?");
 							break;
 						case 5:
 							Jandros.SayTo(player, "Hey "+player.Name+", follow the path north towards Cothrom Gorge. " +
-							                      "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me a proof.");
+							                      "Once in the forest, head West. There, you will find the Treant Feairna-Athar. Kill him and bring me proof.");
 							break;
 						case 6:
 							Jandros.SayTo(player, player.Name+" you are crazy. I know that you will do it! Please hand me [the Jewel].");
 							break;
 						case 7:
-							Jandros.SayTo(player, "Hey "+player.Name+", have you visited Terod in Droighaid already? Please do it, he needs to know about it.");
+							Jandros.SayTo(player, "Hey "+player.Name+", have you visited Terod in Droighaid yet? Please do it, he needs to know about it.");
 							break;
 					}
 				}
 				else
 				{
-					Jandros.SayTo(player, "Hey "+player.Name+", I wish that it rains way more often in Aalid Feie. I love the sound and feel.");
+					Jandros.SayTo(player, "Hey "+player.Name+", I wish it rained way more often in Aalid Feie. I love the sound and feel.");
 				}
 			}
 			// The player whispered to the NPC
@@ -733,22 +732,22 @@ namespace DOL.GS.Quests.Hibernia
 					switch (wArgs.Text)
 					{
 						case "Kredril":
-							Jandros.SayTo(player, "Thank you for your courage and help, indeed we need fighter and magicians who help us finding [the Lost Seed].");
+							Jandros.SayTo(player, "Thank you for your courage and help, indeed we need fighter and magicians to help us finding [the Lost Seed].");
 							break;
 						case "the Lost Seed":
-							Jandros.SayTo(player, "I think Kredril already told you that farmers found magical seeds who were cursed. Many [died] because of them.");
+							Jandros.SayTo(player, "I think Kredril has already told you about the farmers that found some cursed magical seeds. Many [died] because of them.");
 							break;
 						case "died":
 							Jandros.Emote(eEmote.Cry);
-							Jandros.SayTo(player, "Some rangers went near the location where the farmers died and reported me that something strange " +
+							Jandros.SayTo(player, "Some rangers went near the location where the farmers died and reported that something strange " +
 							                      "is happening at this location. They saw a treant and named it [Feairna-Athar]. " +
 							                      "I think it has to do with the Lost Seed!");
 							break;
 						case "Feairna-Athar":
 							if (quest.Step == 4)
 							{
-								Jandros.SayTo(player, "Follow the path north towards Cothrom Gorge. " +
-								                      "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me a proof.");
+								Jandros.SayTo(player, "Follow the path Morth towards Cothrom Gorge. " +
+								                      "Once in the forest, head West. There, you will find the Treant Feairna-Athar. Kill him and bring me proof.");
 								quest.Step = 5;
 							}
 							break;
@@ -843,9 +842,8 @@ namespace DOL.GS.Quests.Hibernia
 				if (!Terod.GiveQuest(typeof (TheLostSeed), player, 1))
 					return;
 			}
-			Terod.SayTo(player, "Thanks, lets talk more about the Lost Seed!");
-			Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
-			                    "It likes to torture everything which tries to get in the way of it.");
+			Terod.SayTo(player, "Thanks, let's talk more about the Lost Seed!");
+			Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. I heard it likes to torture everything that stands in its way.");
 		}
 
 		//Set quest name
@@ -871,7 +869,7 @@ namespace DOL.GS.Quests.Hibernia
 						return "Speak with Jandros in Aalid Feie and ask him about the Lost Seed.";
 					case 5:
 						return "Follow the path north towards Cothrom Gorge. " +
-						       "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me the jewel.";
+						       "Once in the forest, head West. There, you will find the Treant Feairna-Athar. Kill him and bring me the jewel.";
 					case 6:
 						return "Return the Glowing Red Jewel to Jandros in Aalid Feie.";
 					case 7:
