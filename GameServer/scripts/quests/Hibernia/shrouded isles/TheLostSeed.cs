@@ -418,12 +418,37 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (quest.Step)
 					{
-						
+						case 1:
+							Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
+							                    "It likes to torture everything which tries to get in the way.");
+							break;
+						case 2:
+							Terod.SayTo(player, "Kredril knows much more about this treant, go to him, you will find him outside of Droighaid.");
+							break;
+						case 3:
+							Terod.SayTo(player, "Greetings "+player.CharacterClass.Name+", Kredril told me that you are on your way to visit Jandros. Is that right? " +
+							                    "You can find Emolia next to Droighaid's Bindstone, which will teleport you to Aalid Feie.");
+							break;
+						case 4:
+							Terod.SayTo(player, "Hello "+player.Name+", have you visited Jandros yet? " +
+							                    "You can find Jandros in one of these big trees in Aalid Feie.");
+							break;
+						case 5:
+							Terod.SayTo(player, "Jandros has reported to me that you face the treant Feairna-Athar. We all stand behind you and thank you for your courage!");
+							break;
+						case 6:
+							Terod.SayTo(player, "I dont know what to say, you are outstanding! Bring this Glowing Red Jewel to Jandros, he knows what to do.");
+							break;
+						case 7:
+							Terod.SayTo(player, "Welcome back hero of Hibernia, I think it's time for your [reward]!");
+							break;
 					}
 				}
 				else
 				{
-					
+					Terod.SayTo(player, "Hello " + player.Name +
+					                       ", do you have a moment to listen to my request?\n" +
+					                       "A cursed treant rages in Cothrom Gorge and is threatening our realm. I have a good feeling, that you could [help us]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -434,8 +459,13 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "help us":
+							Terod.SayTo(player, "Some friends and I have been looking for strong fighters and magicians to help us for a few days now. " +
+							                    "It's about the [lost seed].");
+							break;
+						
 						case "lost seed":
-							player.Out.SendQuestSubscribeCommand(Terod, QuestMgr.GetIDForQuestType(typeof(TheLostSeed)), "Will you help Terod [The Lost Seed]?");
+							player.Out.SendQuestSubscribeCommand(Terod, QuestMgr.GetIDForQuestType(typeof(TheLostSeed)), "Will you help Terod find [The Lost Seed]?");
 							break;
 					}
 				}
@@ -443,6 +473,19 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "treant":
+							if (quest.Step == 1)
+							{
+								Terod.SayTo(player, "Kredril knows much more about this treant, go to him, you will find him outside of Droighaid.");
+								quest.Step = 2;
+							}
+							break;
+						case "reward":
+							if (quest.Step == 7)
+							{
+								quest.FinishQuest();
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
