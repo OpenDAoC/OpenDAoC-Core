@@ -873,7 +873,7 @@ namespace DOL.GS.Quests.Hibernia
 						return "Follow the path north towards Cothrom Gorge. " +
 						       "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me the jewel.";
 					case 6:
-						return "Return the jewel to Jandros in Aalid Feie.";
+						return "Return the Glowing Red Jewel to Jandros in Aalid Feie.";
 					case 7:
 						return "Speak with Terod in Droighaid for your reward.";
 				}
