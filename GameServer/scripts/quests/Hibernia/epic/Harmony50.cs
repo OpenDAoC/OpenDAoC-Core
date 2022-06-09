@@ -151,10 +151,10 @@ namespace DOL.GS.Quests.Hibernia
 			npcs = WorldMgr.GetNPCsByName("Cailean", eRealm.None);
 
 			if (npcs.Length > 0)
-				foreach (Cailean npc in npcs)
+				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 479042 && npc.Y == 508134)
 					{
-						Cailean = npc;
+						Cailean = npc as Cailean;
 						break;
 					}
 
