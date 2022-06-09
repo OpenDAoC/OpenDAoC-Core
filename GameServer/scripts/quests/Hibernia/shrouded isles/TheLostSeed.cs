@@ -228,6 +228,18 @@ namespace DOL.GS.Quests.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 			
+			GameEventMgr.AddHandler(Terod, GameObjectEvent.Interact, TalkToTerod);
+			GameEventMgr.AddHandler(Terod, GameLivingEvent.WhisperReceive, TalkToTerod);
+
+			GameEventMgr.AddHandler(Kredril, GameObjectEvent.Interact, TalkToKredril);
+			GameEventMgr.AddHandler(Kredril, GameLivingEvent.WhisperReceive, TalkToKredril);
+
+			GameEventMgr.AddHandler(Emolia, GameObjectEvent.Interact, TalkToEmolia);
+			GameEventMgr.AddHandler(Emolia, GameLivingEvent.WhisperReceive, TalkToEmolia);
+			
+			GameEventMgr.AddHandler(Jandros, GameObjectEvent.Interact, TalkToJandros);
+			GameEventMgr.AddHandler(Jandros, GameLivingEvent.WhisperReceive, TalkToJandros);
+			
 			/* Now we bring to Terod the possibility to give this quest to players */
 			Terod?.AddQuestToGive(typeof (TheLostSeed));
 
@@ -248,6 +260,18 @@ namespace DOL.GS.Quests.Hibernia
 			
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			
+			GameEventMgr.RemoveHandler(Terod, GameObjectEvent.Interact, TalkToTerod);
+			GameEventMgr.RemoveHandler(Terod, GameLivingEvent.WhisperReceive, TalkToTerod);
+
+			GameEventMgr.RemoveHandler(Kredril, GameObjectEvent.Interact, TalkToKredril);
+			GameEventMgr.RemoveHandler(Kredril, GameLivingEvent.WhisperReceive, TalkToKredril);
+
+			GameEventMgr.RemoveHandler(Emolia, GameObjectEvent.Interact, TalkToEmolia);
+			GameEventMgr.RemoveHandler(Emolia, GameLivingEvent.WhisperReceive, TalkToEmolia);
+			
+			GameEventMgr.RemoveHandler(Jandros, GameObjectEvent.Interact, TalkToJandros);
+			GameEventMgr.RemoveHandler(Jandros, GameLivingEvent.WhisperReceive, TalkToJandros);
 			
 			/* Now we remove to Terod the possibility to give this quest to players */
 			Terod.RemoveQuestToGive(typeof (TheLostSeed));
@@ -423,6 +447,62 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
+		protected static void TalkToEmolia(DOLEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+
+			if(Terod.CanGiveQuest(typeof (TheLostSeed), player)  <= 0)
+				return;
+
+			//We also check if the player is already doing the quest
+			TheLostSeed quest = player.IsDoingQuest(typeof (TheLostSeed)) as TheLostSeed;
+
+			if (e == GameObjectEvent.Interact)
+			{
+				if (quest != null)
+				{
+					switch (quest.Step)
+					{
+						
+					}
+				}
+				else
+				{
+					
+				}
+			}
+			// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+						
+					}
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						
+					}
+				}
+			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					
+				}
+			}
+		}
+		
 		protected static void TalkToJandros(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
@@ -458,18 +538,14 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "lost seed":
-							player.Out.SendQuestSubscribeCommand(Terod, QuestMgr.GetIDForQuestType(typeof(TheLostSeed)), "Will you help Terod [The Lost Seed]?");
-							break;
+						
 					}
 				}
 				else
 				{
 					switch (wArgs.Text)
 					{
-						case "abort":
-							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
-							break;
+					
 					}
 				}
 			}
