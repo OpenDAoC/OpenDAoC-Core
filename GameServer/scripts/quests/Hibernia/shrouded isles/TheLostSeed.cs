@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
@@ -252,6 +253,35 @@ namespace DOL.GS.Quests.Hibernia
 			Terod.RemoveQuestToGive(typeof (TheLostSeed));
 		}
 
+		protected virtual void CreateFeairnaAthar(GamePlayer player)
+		{
+			Feairna_Athar = new GameNPC();
+			Feairna_Athar.Model = 767;
+			Feairna_Athar.Name = "Feairna-Athar";
+			Feairna_Athar.GuildName = "";
+			Feairna_Athar.Realm = eRealm.None;
+			Feairna_Athar.Race = 2007;
+			Feairna_Athar.BodyType = (ushort) NpcTemplateMgr.eBodyType.Plant;
+			Feairna_Athar.CurrentRegionID = 181;
+			Feairna_Athar.Size = 150;
+			Feairna_Athar.Level = 65;
+			Feairna_Athar.ScalingFactor = 60;
+			Feairna_Athar.X = 292515;
+			Feairna_Athar.Y = 319526;
+			Feairna_Athar.Z = 2238;
+			Feairna_Athar.MaxSpeedBase = 250;
+			Feairna_Athar.AddToWorld();
+
+			var brain = new StandardMobBrain();
+			brain.AggroLevel = 200;
+			brain.AggroRange = 500;
+			Feairna_Athar.SetOwnBrain(brain);
+
+			Feairna_Athar.AddToWorld();
+
+			Feairna_Athar.StartAttack(player);
+		}
+		
 		private static void PlayerEnterTreantArea(DOLEvent e, object sender, EventArgs args)
 		{
 			var aargs = args as AreaEventArgs;
@@ -276,7 +306,7 @@ namespace DOL.GS.Quests.Hibernia
 			SendSystemMessage(player,
 				"You feel a quiet rustling in the leaves overhead.");
 			player.Out.SendMessage("Feairna-Athar ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-			
+			quest.CreateFeairnaAthar(player);
 		}
 		
 		protected static void TalkToTerod(DOLEvent e, object sender, EventArgs args)
