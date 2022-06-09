@@ -54,7 +54,7 @@ namespace DOL.GS.Quests.Hibernia
 		private static IArea treantArea;
 
 		private static ItemTemplate paidrean_necklace;
-		private static ItemTemplate glowing_red_stone;
+		private static ItemTemplate glowing_red_jewel;
 		// Constructors
 		public TheLostSeed() : base()
 		{
@@ -584,11 +584,23 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
-			GamePlayer player = sender as GamePlayer;
+			var player = sender as GamePlayer;
 
-			if (player==null || player.IsDoingQuest(typeof (TheLostSeed)) == null)
+			if (sender != m_questPlayer)
 				return;
-			
+
+			if (player == null || player.IsDoingQuest(typeof(TheLostSeed)) == null)
+				return;
+
+			if (e == GameLivingEvent.EnemyKilled && Step == 5 && player.TargetObject.Name == Feairna_Athar.Name)
+			{
+				if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					player.Out.SendMessage(
+						"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
+						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(player, glowing_red_jewel);
+				Step = 6;
+			}
 		}
 
 		public override void AbortQuest()
