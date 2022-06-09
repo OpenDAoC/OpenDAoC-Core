@@ -753,7 +753,7 @@ public class LostStoneofArawn : BaseQuest
 
             Honaytrt.SayTo(player, "Thank you, lets talk more about the stone!");
             Honaytrt.SayTo(player,
-                "Thanks for your help! N\'chever, O\'honat and I have been looking for this stone a long time.\n" +
+                "N\'chever, O\'honat and I have been looking for this stone a long time.\n" +
                 "Speak with N\'chever in Wearyall Village, he will be able to tell you more about the [Stone of Arawn].");
         }
     }

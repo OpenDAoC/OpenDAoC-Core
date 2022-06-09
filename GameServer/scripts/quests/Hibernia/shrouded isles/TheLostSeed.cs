@@ -420,7 +420,7 @@ namespace DOL.GS.Quests.Hibernia
 					{
 						case 1:
 							Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
-							                    "It likes to torture everything which tries to get in the way.");
+							                    "It likes to torture everything which tries to get in the way of it.");
 							break;
 						case 2:
 							Terod.SayTo(player, "Kredril knows much more about this treant, go to him, you will find him outside of Droighaid.");
@@ -755,6 +755,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "the Jewel":
 							if (quest.Step == 6)
 							{
+								RemoveItem(player, glowing_red_jewel);
 								Jandros.SayTo(player, "Please go back to Droighaid and tell Terod about it!");
 								quest.Step = 7;
 							}
@@ -766,9 +767,16 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
-				{
-					
-				}
+					if (rArgs.Item.Id_nb == glowing_red_jewel.Id_nb)
+					{
+						if (quest.Step == 6)
+						{
+							Jandros.SayTo(player,
+								"Thanks " + player.Name + ", please go back to Droighaid and tell Terod about it!");
+							Jandros.Emote(eEmote.Smile);
+							quest.Step = 7;
+						}
+					}
 			}
 		}
 		
@@ -827,7 +835,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			if (response == 0x00)
 			{
-				
+				Terod.SayTo(player, "Please come back, if you changed your mind!");
 			}
 			else
 			{
@@ -835,7 +843,9 @@ namespace DOL.GS.Quests.Hibernia
 				if (!Terod.GiveQuest(typeof (TheLostSeed), player, 1))
 					return;
 			}
-			Terod.Interact(player);
+			Terod.SayTo(player, "Thanks, lets talk more about the Lost Seeds!");
+			Terod.SayTo(player, "I am very glad that you decided to help us! The [treant] in Cothrom Gorge is brutal and very aggressive. " +
+			                    "It likes to torture everything which tries to get in the way of it.");
 		}
 
 		//Set quest name
@@ -895,6 +905,7 @@ namespace DOL.GS.Quests.Hibernia
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			RemoveItem(m_questPlayer, glowing_red_jewel);
 		}
 
 		public override void FinishQuest()
