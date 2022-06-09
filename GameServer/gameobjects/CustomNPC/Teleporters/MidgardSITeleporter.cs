@@ -35,12 +35,41 @@ namespace DOL.GS
 	/// <author>Aredhel</author>
 	public class MidgardSITeleporter : GameTeleporter
 	{
+		/// <summary>
+		/// Add equipment to the teleporter.
+		/// </summary>
+		/// <returns></returns>
+		public override bool AddToWorld()
+		{
+			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 983, 26);
+			template.AddNPCEquipment(eInventorySlot.HandsArmor, 986, 26);
+			template.AddNPCEquipment(eInventorySlot.LegsArmor, 984, 26);
+			template.AddNPCEquipment(eInventorySlot.FeetArmor, 987, 26);
+			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 26);
+			Inventory = template.CloseTemplate();
+
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			VisibleActiveWeaponSlots = 34;
+			return base.AddToWorld();
+		}
+		
 		private String[] m_destination = { 
 			"Aegirhamn",
 			"Bjarken",
 			"Hagall",
 			"Knarr" };
-
+		
+		/// <summary>
+		/// Display the teleport indicator around this teleporters feet
+		/// </summary>
+		public override bool ShowTeleporterIndicator
+		{
+			get
+			{
+				return true;
+			}
+		}
 		/// <summary>
 		/// Player right-clicked the teleporter.
 		/// </summary>
