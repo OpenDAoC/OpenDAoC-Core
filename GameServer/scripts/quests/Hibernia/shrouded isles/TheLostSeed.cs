@@ -41,14 +41,16 @@ namespace DOL.GS.Quests.Hibernia
 		protected const int minimumLevel = 48;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC Terod = null; // Start NPC
-		private static GameNPC Kredril = null;
-		private static HiberniaSITeleporter Emolia = null;
-		private static GameNPC Jandros = null;
+		private static GameNPC Terod = null; // Start NPC + Finish NPC
+		private static GameNPC Kredril = null; // step 2
+		private static HiberniaSITeleporter Emolia = null; // step 3
+		private static GameNPC Jandros = null; // step 4 + 6
 		
 		private static GameNPC Feairna_Athar = null; //Mob to Kill
 		
-		private static IArea spawnArea;
+		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 292515, 319526, 2238);
+		
+		private static IArea treantArea;
 
 		private static ItemTemplate paidrean_necklace;
 		private static ItemTemplate glowing_red_stone;
@@ -216,10 +218,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			#endregion
 
-			#region defineObject
-
-			#endregion
-
+			const int radius = 1500;
+			var region = WorldMgr.GetRegion(treantLocation.RegionID);
+			treantArea = region.AddArea(new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
+				radius));
+			treantArea.RegisterPlayerEnter(PlayerEnterTreantArea);
+			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 			
@@ -238,6 +242,9 @@ namespace DOL.GS.Quests.Hibernia
 				return;
 			
 			// remove handlers
+			treantArea.UnRegisterPlayerEnter(PlayerEnterTreantArea);
+			WorldMgr.GetRegion(treantLocation.RegionID).RemoveArea(treantArea);
+			
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 			
@@ -245,6 +252,33 @@ namespace DOL.GS.Quests.Hibernia
 			Terod.RemoveQuestToGive(typeof (TheLostSeed));
 		}
 
+		private static void PlayerEnterTreantArea(DOLEvent e, object sender, EventArgs args)
+		{
+			var aargs = args as AreaEventArgs;
+			var player = aargs?.GameObject as GamePlayer;
+
+			if (player == null)
+				return;
+
+			var quest = player.IsDoingQuest(typeof(TheLostSeed)) as TheLostSeed;
+
+			if (quest is not {Step: 5}) return;
+
+			if (player.Group != null)
+				if (player.Group.Leader != player)
+					return;
+
+			var existingCopy = WorldMgr.GetNPCsByName("Feairna-Athar", eRealm.None);
+
+			if (existingCopy.Length > 0) return;
+
+			// player near treant           
+			SendSystemMessage(player,
+				"You feel a quiet rustling in the leaves overhead.");
+			player.Out.SendMessage("Feairna-Athar ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			
+		}
+		
 		protected static void TalkToTerod(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
@@ -488,7 +522,7 @@ namespace DOL.GS.Quests.Hibernia
 		//Set quest name
 		public override string Name
 		{
-			get { return "The Lost Seed"; }
+			get { return questTitle; }
 		}
 
 		// Define Steps
