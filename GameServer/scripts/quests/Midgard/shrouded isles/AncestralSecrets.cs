@@ -782,28 +782,29 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "Hey Adventurer, I am Styr and you?");
 							break;
 						case 2:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "Do you really think that this mission is easy?");
 							break;
 						case 3:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "Jaklyr will indeed help you, but it will be difficult!");
 							break;
 						case 4:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "Good luck my friend, you will need it for this mission.");
 							break;
 						case 5:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "Wait, you did it? Does Jaklyr knows about it already?");
 							break;
 						case 6:
-							Styr.SayTo(player, "");
+							Styr.SayTo(player, "I'm sorry for my laughter, you are great!");
 							break;
 						
 					}
 				}
 				else
 				{
+					Styr.SayTo(player, "Greetings, sometimes I need my walk at the port.");
 				}
 			}
 			// The player whispered to the NPC
@@ -814,7 +815,6 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						
 					}
 				}
 				else
