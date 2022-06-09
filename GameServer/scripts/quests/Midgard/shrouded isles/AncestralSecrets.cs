@@ -38,7 +38,7 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "The Lost Seed";
+		protected const string questTitle = "Ancestral Secrets";
 		protected const int minimumLevel = 48;
 		protected const int maximumLevel = 50;
 
