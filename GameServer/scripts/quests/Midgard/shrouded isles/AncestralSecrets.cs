@@ -529,7 +529,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "secrets":
 							if (quest.Step == 1)
 							{
-								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se...");
+								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se... Oh no Longbeard and his friend Styr...");
 								Longbeard.Yell("Haha, you need help from this "+player.CharacterClass.Name+" Ota Yrling?");
 								Longbeard.Emote(eEmote.Laugh);
 								Styr.Emote(eEmote.Laugh);
@@ -572,7 +572,7 @@ namespace DOL.GS.Quests.Hibernia
 			if (player == null)
 				return;
 
-			if(Jaklyr.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
+			if(OtaYrling.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -597,7 +597,7 @@ namespace DOL.GS.Quests.Hibernia
 						case 4:
 							Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
 							Jaklyr.SayTo(player,
-								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
+								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater. " +
 								"Search for Ancestral Keeper in the crater and kill it.");
 							break;
 						case 5:
@@ -639,7 +639,7 @@ namespace DOL.GS.Quests.Hibernia
 								if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
 									    eInventorySlot.LastBackpack))
 								{
-									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
+									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater. " +
 									                     "Search for Ancestral Keeper in the crater and kill it. " +
 									                     "Take this pendant with you as lucky charm!");
 									GiveItem(player, quest_pendant);
@@ -689,7 +689,7 @@ namespace DOL.GS.Quests.Hibernia
 			if (player == null)
 				return;
 
-			if(Longbeard.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
+			if(OtaYrling.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -778,7 +778,7 @@ namespace DOL.GS.Quests.Hibernia
 			if (player == null)
 				return;
 
-			if(Styr.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
+			if(OtaYrling.CanGiveQuest(typeof (AncestralSecrets), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -905,6 +905,8 @@ namespace DOL.GS.Quests.Hibernia
 					return;
 			}
 			OtaYrling.SayTo(player, "Thanks "+player.Name+", finally someone helps me!");
+			OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
+			                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are clearly visible.");
 			
 		}
 
@@ -924,9 +926,9 @@ namespace DOL.GS.Quests.Hibernia
 					case 1:
 						return "Speak to Ota Yrling in Aegirhamn.";
 					case 2:
-						return "Face the statements by Longbeard and Styr in Aegirhamn.";
+						return "Face the statements from Longbeard and Styr in Aegirhamn.";
 					case 3:
-						return "Speak to Jaklyr in Bjarken. He will give you a Pendant.";
+						return "Speak to Jaklyr in Bjarken.";
 					case 4:
 						return "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
 						       "Search for Ancestral Keeper in the crater and kill it.";
