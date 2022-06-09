@@ -369,7 +369,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToKedril(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToKredril(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -610,12 +610,25 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, 1768448, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,2,32,Util.Random(50)), "You receive {0} as a reward.");
+			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			{
+				if (m_questPlayer.Level >= 49)
+					m_questPlayer.GainExperience(eXPSource.Quest,
+						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
+				else
+					m_questPlayer.GainExperience(eXPSource.Quest,
+						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+				GiveItem(m_questPlayer, paidrean_necklace);
+				m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 
-			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			
+
+				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			} 
+			else
+			{
+				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!",
+					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
 		}
 	}
-	
 }
