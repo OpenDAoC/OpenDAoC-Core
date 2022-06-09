@@ -499,15 +499,20 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "";
+						return "Speak with Terod in Droighaid.";
 					case 2:
-						return "";
+						return "Speak with Kredril in Droighaid and tell him more about the Lost Seed.";
 					case 3:
-						return "";
+						return "Go to Emolia and port yourself to Aalid Feie.";
 					case 4:
-						return "";
+						return "Speak with Jandros in Aalid Feie and ask him about the Lost Seed.";
 					case 5:
-						return "";
+						return "Follow the path north towards Cothrom Gorge. " +
+						       "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me the jewel.";
+					case 6:
+						return "Return the jewel to Jandros in Aalid Feie.";
+					case 7:
+						return "Speak with Terod in Droighaid for your reward.";
 				}
 				return base.Description;
 			}
