@@ -411,7 +411,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			var quest = player.IsDoingQuest(typeof(AncestralSecrets)) as AncestralSecrets;
 
-			if (quest is not {Step: 5}) return;
+			if (quest is not {Step: 4}) return;
 
 			if (player.Group != null)
 				if (player.Group.Leader != player)
