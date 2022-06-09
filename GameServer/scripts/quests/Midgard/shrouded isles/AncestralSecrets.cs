@@ -448,25 +448,53 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
+							                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are clearly visible.");
 							break;
 						case 2:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
+							
+							int random = Util.Random(0, 3);
+							switch (random)
+							{
+								case 0:
+									Longbeard.Emote(eEmote.Laugh);
+									Longbeard.TurnTo(player);
+									Styr.Emote(eEmote.Laugh);
+									Longbeard.Yell("Haha, another idiot trying to help Ota Yrling.");
+									break;
+								case 1: 
+									Longbeard.Emote(eEmote.Rofl);
+									Longbeard.TurnTo(player);
+									Styr.Emote(eEmote.Laugh);
+									Longbeard.Yell("Haha, Styr look at this "+player.CharacterClass.Name+".");
+									break;
+								case 2: 
+									Longbeard.Emote(eEmote.Laugh);
+									Styr.TurnTo(player);
+									Styr.Emote(eEmote.Rofl);
+									Styr.Yell("Haha, Longbeard look at this "+player.CharacterClass.Name+".");
+									break;
+								case 3: 
+									Longbeard.Emote(eEmote.Laugh);
+									Styr.TurnTo(player);
+									Styr.Emote(eEmote.Laugh);
+									Styr.Yell("Haha, another idiot trying to help Ota Yrling.");
+									break;
+							}
+							
 							break;
 						case 3:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "Hey "+player.Name+", please visit Jaklyr in Bjarken and tell him that I sent you, he will understand.");
 							break;
 						case 4:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "Greetings, thank you for your courage, I am with you mentally. Jaklyr might told you how you find the Delling Crater, right?");
 							break;
 						case 5:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "God dag my friend, I am happy that you did it, please bring this magical pendant to Jaklyr in Bjarken.");
 							break;
 						case 6:
-							OtaYrling.SayTo(player, "");
-							break;
-						case 7:
-							OtaYrling.SayTo(player, "");
+							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You deserved your [reward]!");
 							break;
 					}
 				}
@@ -474,8 +502,8 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					OtaYrling.SayTo(player, "Hello " + player.Name +
 					                        ", I need to talk to you, do you have a moment?\n" +
-					                        "Many Dwarfs can't working in the Delling Crater anymore. " +
-					                        "They told me that there is a creature which kills everything that comes close to it. It is like a [Curse].");
+					                        "Many Dwarfs can't work in the Delling Crater anymore. " +
+					                        "I heard that there is a creature which kills everything that comes close to it. It is like a [Curse].");
 				}
 			}
 				// The player whispered to the NPC
@@ -495,6 +523,28 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "impact":
+							OtaYrling.SayTo(player, player.Name+", we need your help finding [secrets] in the Delling Crater.");
+							break;
+						case "secrets":
+							if (quest.Step == 1)
+							{
+								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se...");
+								Longbeard.Yell("Haha, you need help from this "+player.CharacterClass.Name+" Ota Yrling?");
+								Longbeard.Emote(eEmote.Laugh);
+								Styr.Emote(eEmote.Laugh);
+								quest.Step = 2;
+							}
+							break;
+						case "reward":
+							if (quest.Step == 6)
+							{
+								Longbeard.Yell("Hey "+player.Name+", thank you for your help in Delling Crater!");
+								Longbeard.Emote(eEmote.Clap);
+								Styr.Emote(eEmote.Cheer);
+								quest.FinishQuest();
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
