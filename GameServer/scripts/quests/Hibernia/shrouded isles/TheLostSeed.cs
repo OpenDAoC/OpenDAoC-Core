@@ -353,7 +353,7 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.Race = 2007;
 			Feairna_Athar.BodyType = (ushort) NpcTemplateMgr.eBodyType.Plant;
 			Feairna_Athar.CurrentRegionID = 181;
-			Feairna_Athar.Size = 150;
+			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
 			Feairna_Athar.ScalingFactor = 60;
 			Feairna_Athar.X = 292515;
@@ -692,7 +692,7 @@ namespace DOL.GS.Quests.Hibernia
 							                      "It's a beautiful place, my friends Kredril and Terod living there.");
 							break;
 						case 2:
-							Jandros.SayTo(player, "Hey "+player.CharacterClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seeds.");
+							Jandros.SayTo(player, "Hey "+player.CharacterClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seed.");
 							break;
 						case 3:
 							Jandros.SayTo(player, "Hello "+player.Name+", did Emolia sent you, because I wasn't expecting any at the moment?");
@@ -733,9 +733,9 @@ namespace DOL.GS.Quests.Hibernia
 					switch (wArgs.Text)
 					{
 						case "Kredril":
-							Jandros.SayTo(player, "Thank you for your courage and help, indeed we need fighter and magicians who help us finding [the Lost Seeds].");
+							Jandros.SayTo(player, "Thank you for your courage and help, indeed we need fighter and magicians who help us finding [the Lost Seed].");
 							break;
-						case "the Lost Seeds":
+						case "the Lost Seed":
 							Jandros.SayTo(player, "I think Kredril already told you that farmers found magical seeds who were cursed. Many [died] because of them.");
 							break;
 						case "died":
