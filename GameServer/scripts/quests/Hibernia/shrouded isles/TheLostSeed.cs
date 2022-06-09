@@ -687,12 +687,34 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (quest.Step)
 					{
-						
+						case 1:
+							Jandros.SayTo(player, "Hello "+player.CharacterClass.Name+", I saw you in Aalid Feie for a few times. Have you visited Droighaid too? " +
+							                      "It's a beautiful place, my friends Kredril and Terod living there.");
+							break;
+						case 2:
+							Jandros.SayTo(player, "Hey "+player.CharacterClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seeds.");
+							break;
+						case 3:
+							Jandros.SayTo(player, "Hello "+player.Name+", did Emolia sent you, because I wasn't expecting any at the moment?");
+							break;
+						case 4:
+							Jandros.SayTo(player, "Greetings "+player.Name+", I am glad that you are here, did [Kredril] sent you?");
+							break;
+						case 5:
+							Jandros.SayTo(player, "Hey "+player.Name+", follow the path north towards Cothrom Gorge. " +
+							                      "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me a proof.");
+							break;
+						case 6:
+							Jandros.SayTo(player, player.Name+" you are crazy. I know that you will do it! Please hand me [the Jewel].");
+							break;
+						case 7:
+							Jandros.SayTo(player, "Hey "+player.Name+", have you visited Terod in Droighaid already? Please do it, he needs to know about it.");
+							break;
 					}
 				}
 				else
 				{
-					
+					Jandros.SayTo(player, "Hey "+player.Name+", I wish that it rains way more often in Aalid Feie. I love the sound and feel.");
 				}
 			}
 			// The player whispered to the NPC
@@ -710,7 +732,33 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-					
+						case "Kredril":
+							Jandros.SayTo(player, "Thank you for your courage and help, indeed we need fighter and magicians who help us finding [the Lost Seeds].");
+							break;
+						case "the Lost Seeds":
+							Jandros.SayTo(player, "I think Kredril already told you that farmers found magical seeds who were cursed. Many [died] because of them.");
+							break;
+						case "died":
+							Jandros.Emote(eEmote.Cry);
+							Jandros.SayTo(player, "Some rangers went near the location where the farmers died and reported me that something strange " +
+							                      "is happening at this location. They saw a treant and named it [Feairna-Athar]. " +
+							                      "I think it has to do with the Lost Seed!");
+							break;
+						case "Feairna-Athar":
+							if (quest.Step == 4)
+							{
+								Jandros.SayTo(player, "Follow the path north towards Cothrom Gorge. " +
+								                      "Once in the forest, head west. You will find the Treant Feairna-Athar, kill him and bring me a proof.");
+								quest.Step = 5;
+							}
+							break;
+						case "the Jewel":
+							if (quest.Step == 6)
+							{
+								Jandros.SayTo(player, "Please go back to Droighaid and tell Terod about it!");
+								quest.Step = 7;
+							}
+							break;
 					}
 				}
 			}
