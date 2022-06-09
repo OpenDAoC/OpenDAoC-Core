@@ -581,19 +581,23 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Jaklyr.SayTo(player, "");
+							Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can i help you?");
 							break;
 						case 2:
-							Jaklyr.SayTo(player, "");
+							Jaklyr.SayTo(player, "Hey "+player.CharacterClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
+							                     "Ota Yrling said that they are annoying.");
 							break;
 						case 3:
-							Jaklyr.SayTo(player, "");
+							Jaklyr.SayTo(player, "Hey "+player.CharacterClass.Name+", how can I help you? Did someone [sent] you?");
 							break;
 						case 4:
-							Jaklyr.SayTo(player, "");
+							Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
+							Jaklyr.SayTo(player,
+								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
+								"Search for Ancestral Keeper in the crater and kill it.");
 							break;
 						case 5:
-							Jaklyr.SayTo(player, "");
+							Jaklyr.SayTo(player, "You did it! Outstanding my friend! Please hand me the [pendant]!");
 							break;
 						case 6:
 							Jaklyr.SayTo(player, "");
@@ -619,6 +623,43 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "sent":
+							Jaklyr.SayTo(player, "Oh, Ota Yrling sent you, I know why...\n" +
+							                     "After the meteorite impact, complications arose that did not exist before. The dwarves of Dellingstad were once friendly and helpful. " +
+							                     "Now you have to kill elemental creatures to be accepted. I heard of a creature named Ancestral Keeper. Times are dark at [Delling Crater]. " +
+							                     "I want you to set out and pursue this.");
+							break;
+						case "Delling Crater":
+							if (quest.Step == 3)
+							{
+								if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
+									                     "Search for Ancestral Keeper in the crater and kill it. " +
+									                     "Take this pendant with you as lucky charm!");
+									GiveItem(player, quest_pendant);
+									quest.Step = 4;
+								}
+								else
+								{
+									Jaklyr.SayTo(player, "Please make room in your inventory for a lucky charm!");
+								}
+							}
+							break;
+						case "pendant":
+							RemoveItem(player, stone_pendant);
+							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
+							Jaklyr.Emote(eEmote.Cheer);
+							break;
+						case "trapped":
+							if (quest.Step == 5)
+							{
+								Jaklyr.SayTo(player, "Take it back and return to Ota Yrling in Aegirhamn. Bring her the pendant!");
+								GiveItem(player, stone_pendant);
+								quest.Step = 6;
+							}
+							break;
 					}
 				}
 			}
