@@ -20,8 +20,10 @@ public class RealmTimer
         if (ServerProperties.Properties.PVP_REALM_TIMER_MINUTES == 0) return true;
 
         if (player == null) return false;
+
+        if (player.Client.Account.PrivLevel > 1) return true;
         
-        Account playerAccount = GameServer.Database.FindObjectByKey<Account>(player.AccountName);
+        Account playerAccount = player.Client.Account;
 
         if (playerAccount == null) return false;
 
@@ -80,6 +82,7 @@ public class RealmTimer
                 playerInRVRZone = true;
         }
 
+        //If player is in RvRZone and can't PvP due to timer, move to bind.
         if(playerInRVRZone && !CanPvP(player))
         {
             player.Out.SendMessage(
@@ -96,7 +99,7 @@ public class RealmTimer
         if(player.DuelTarget != null)
             return;
 
-        Account playerAccount = GameServer.Database.FindObjectByKey<Account>(player.AccountName);
+        Account playerAccount = player.Client.Account;
         
         DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
 
@@ -121,7 +124,7 @@ public class RealmTimer
         if(TimeLeftOnTimer(player) == 0)
             return (int)eRealm.None;
 
-        Account playerAccount = GameServer.Database.FindObjectByKey<Account>(player.AccountName);
+        Account playerAccount = player.Client.Account;
         DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
         
         //Return Realm_Timer_Realm if realm timer is active. Help prevent realm timer from switching realms on duels/etc.
@@ -134,7 +137,7 @@ public class RealmTimer
 
     public static double TimeLeftOnTimer(GamePlayer player)
     {
-        Account playerAccount = GameServer.Database.FindObjectByKey<Account>(player.AccountName);
+        Account playerAccount = player.Client.Account;
 
         double timeSinceLastCombat = (DateTime.Now - playerAccount.Realm_Timer_Last_Combat).TotalMinutes;
         //If DB realm_timer_last_combat value is within the pvp_realm_timer_minutes & this player is not the realm in DB, return the time remaing based on DB value
