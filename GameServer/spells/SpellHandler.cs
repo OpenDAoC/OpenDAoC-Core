@@ -4277,7 +4277,7 @@ namespace DOL.GS.Spells
 						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 					}
 					else
-						spellDamage *= ((pet.Intelligence) / 275.0);
+						spellDamage *= ((pet.Intelligence + 75) / 275.0);
 					
 					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
@@ -4287,7 +4287,7 @@ namespace DOL.GS.Spells
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
-					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
+					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 75) / 275;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
@@ -4311,7 +4311,7 @@ namespace DOL.GS.Spells
 			{
 				var npc = (GameNPC) Caster;
 				int manaStatValue = npc.GetModified(eProperty.Intelligence);
-				spellDamage = CapNPCSpellDamage(spellDamage, npc)*(manaStatValue + 200)/275.0;
+				spellDamage = CapNPCSpellDamage(spellDamage, npc)*(manaStatValue + 75)/275.0;
 			}
 
 			if (spellDamage < 0)
