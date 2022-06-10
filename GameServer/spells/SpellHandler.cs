@@ -4272,10 +4272,16 @@ namespace DOL.GS.Spells
 						spellDamage = CapPetSpellDamage(spellDamage, player);
 
 					if (pet is NecromancerPet nPet)
+					{
 						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
+						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
+					}
 					else
-						spellDamage *= ((pet.Intelligence + 200) / 275.0);
-
+						spellDamage *= ((pet.Intelligence) / 275.0);
+					
+					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
+					               pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + (modSkill * .005);
 				}
 				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
@@ -4294,11 +4300,11 @@ namespace DOL.GS.Spells
 				{
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					//spellDamage *= (manaStatValue + 150) / 275.0;
 					spellDamage *= (1 + manaStatValue) / 200.0;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
+					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 				}
 			}
 			else if (Caster is GameNPC)
@@ -4473,12 +4479,13 @@ namespace DOL.GS.Spells
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
 
+				/*
 				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
 				if (skillProp != eProperty.Undefined)
 				{
 					var level = m_caster.GetModifiedFromItems(skillProp);
 					spellDamage *= (1 + level / 200.0);
-				}
+				}*/
 			}
 
 			// Apply casters effectiveness
