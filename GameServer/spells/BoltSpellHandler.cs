@@ -192,7 +192,7 @@ namespace DOL.GS.Spells
 					combatMiss = true;
 				}
 
-				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
+				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.65);
 
 				int rand = 0;
 				if (caster is GamePlayer p)
@@ -222,7 +222,10 @@ namespace DOL.GS.Spells
 					return 0;
 				}
 
-				ad.Damage = (int)((double)ad.Damage * (1.0 + caster.GetModified(eProperty.SpellDamage) * 0.01));
+				ad.Damage = (int)((double)(ad.Damage) * (1.0 + caster.GetModified(eProperty.SpellDamage) * 0.01));
+				ad.Modifier = (int)(ad.Damage * (ad.Target.GetResist(ad.DamageType)) / -100.0);
+				ad.Damage += ad.Modifier;
+
 
 				// Block
 				bool blocked = false;
@@ -306,7 +309,7 @@ namespace DOL.GS.Spells
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
-					double ws = (caster.Level * 2.55 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
+					double ws = (caster.Level * 2.85 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50)/200.0));
 					double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 45 / 50d : 45;
 
 					double armorMod = (playerBaseAF + ad.Target.GetArmorAF(ad.ArmorHitLocation))/
@@ -314,8 +317,9 @@ namespace DOL.GS.Spells
 					damage *= ws / armorMod;
 					//damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20*4.67));
 					//damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-					ad.Modifier = (int)(damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) / -100.0);
-					damage += ad.Modifier;
+					int physMod = (int)(damage * (ad.Target.GetResist(ad.DamageType)) / -100.0);
+					ad.Modifier += physMod;
+					damage += physMod;
 
 					damage = damage * effectiveness;
 					damage *= (1.0 + RelicMgr.GetRelicBonusModifier(caster.Realm, eRelicType.Magic));
