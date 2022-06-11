@@ -42,8 +42,7 @@ namespace DOL.GS.Commands
 				message += "You are currently working on the following quests:\n";
 				foreach (AbstractQuest quest in client.Player.QuestList)
 				{
-					message += String.Format("On step {0} of quest '{1}'\n", quest.Step, quest.Name);
-					message += String.Format("What to do: {0}", quest.Description);
+					message += String.Format("On Quest: {0}\n", quest.Name);
 				}
 			}
 			if (client.Player.QuestListFinished.Count == 0)
