@@ -37,7 +37,7 @@ namespace DOL.GS.Commands
 			string message = "\n";
 			if (client.Player.QuestList.Count == 0)
 				message += "You have no currently pending quests.\n";
-			else
+			/*else
 			{
 				message += "You are currently working on the following quests:\n";
 				foreach (AbstractQuest quest in client.Player.QuestList)
@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 					message += String.Format("On step {0} of quest '{1}'\n", quest.Step, quest.Name);
 					message += String.Format("What to do: {0}", quest.Description);
 				}
-			}
+			}*/
 			if (client.Player.QuestListFinished.Count == 0)
 				message += "\nYou have not yet completed any quests.\n";
 			else
