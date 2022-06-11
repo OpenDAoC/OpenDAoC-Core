@@ -10384,7 +10384,7 @@ namespace DOL.GS
 
                     Stealth(false);
 
-                    if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
+                    if (spellHandler != null && spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
                         castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
