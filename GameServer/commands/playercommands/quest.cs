@@ -34,37 +34,43 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "quest"))
 				return;
 
-			string message = "\n";
-			if (client.Player.QuestList.Count == 0)
-				message += "You have no currently pending quests.\n";
+			string message = "";
+			if (client.Player.QuestList == null || client.Player.QuestList.Count == 0)
+				message = "You have no pending quests currently.";
 			else
 			{
+				message = "You are currently working on" + client.Player.QuestList.Count + " quests.";
+				/*
 				message += "You are currently working on the following quests:\n";
 				foreach (AbstractQuest quest in client.Player.QuestList)
 				{
 					message += String.Format("On step {0} of quest '{1}'\n", quest.Step, quest.Name);
 					message += String.Format("What to do: {0}", quest.Description);
-				}
+				}*/
 			}
-			if (client.Player.QuestListFinished.Count == 0)
-				message += "\nYou have not yet completed any quests.\n";
+			if (client.Player.QuestListFinished == null || client.Player.QuestListFinished.Count == 0)
+				message += "\nYou have not yet completed any quests.";
 			else
 			{
-				message += "\nYou have completed the following quests:\n";
-
-				// Need to protect from too long a list.  
-				// We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
-				foreach (AbstractQuest quest in client.Player.QuestListFinished)
+				if (client.Player.QuestListFinished.Count < 10)
 				{
-					message += quest.Name + ", completed.\n";
+					message += "\nYou have completed the following quests:";
 
-					if (message.Length > 1500)
+					foreach (AbstractQuest quest in client.Player.QuestListFinished)
 					{
-						DisplayMessage(client, message);
-						message = "";
+						// Need to protect from too long a list
+						// We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
+						if (message.Length < 1500)
+							message += "\n" + quest.Name;
+						else
+							message += "";
 					}
 				}
+				else
+					message += "\nYou have completed " + client.Player.QuestListFinished.Count + " quests.";
 			}
+
+			message += "\nUse the '/journal' command to view your ongoing and completed quests.";
 			DisplayMessage(client, message);
 		}
 	}
