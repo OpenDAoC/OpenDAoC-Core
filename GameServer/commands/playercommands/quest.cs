@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
 		"&quest",
 		new string[] {"&quests"},
 		ePrivLevel.Player,
-		"Display the players completed quests", "/quest")]
+		"Display a list of your ongoing and completed quests", "/quest")]
 	public class QuestCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -34,36 +34,51 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "quest"))
 				return;
 
-			string message = "\n";
-			if (client.Player.QuestList.Count == 0)
-				message += "You have no currently pending quests.\n";
+			string message = "";
+			if (client.Player.QuestList == null || client.Player.QuestList.Count == 0)
+				message += "You have no pending quests currently.";
 			else
 			{
-				message += "You are currently working on the following quests:\n";
-				foreach (AbstractQuest quest in client.Player.QuestList)
+				if (client.Player.QuestList.Count < 10)
 				{
-					message += String.Format("On Quest: {0}\n", quest.Name);
-				}
-			}
-			if (client.Player.QuestListFinished.Count == 0)
-				message += "\nYou have not yet completed any quests.\n";
-			else
-			{
-				message += "\nYou have completed the following quests:\n";
+					message += "You are currently working on " + client.Player.QuestList.Count + " quest(s), including:";
 
-				// Need to protect from too long a list.  
-				// We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
-				foreach (AbstractQuest quest in client.Player.QuestListFinished)
-				{
-					message += quest.Name + ", completed.\n";
-
-					if (message.Length > 1500)
+					foreach (AbstractQuest questC in client.Player.QuestList)
 					{
-						DisplayMessage(client, message);
-						message = "";
+						// Need to protect from too long a list
+						// We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
+						if (message.Length < 1500)
+							message += String.Format("\n{0}", questC.Name);
+						else
+							message += "";
 					}
 				}
+				else
+					message += "You are currently working on " + client.Player.QuestList.Count + " quests.";
 			}
+			if (client.Player.QuestListFinished == null || client.Player.QuestListFinished.Count == 0)
+				message += "\nYou have not yet completed any quests.";
+			else
+			{
+				if (client.Player.QuestListFinished.Count < 10)
+				{
+					message += "\nYou have completed the following quest(s):";
+
+					foreach (AbstractQuest questF in client.Player.QuestListFinished)
+					{
+						// Need to protect from too long a list
+						// We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
+						if (message.Length < 1500)
+							message += String.Format("\n{0}", questF.Name);
+						else
+							message += "";
+					}
+				}
+				else
+					message += "\nYou have completed " + client.Player.QuestListFinished.Count + " quests.";
+			}
+
+			message += "\nUse the '/journal' command to view your full ongoing and completed quests.";
 			DisplayMessage(client, message);
 		}
 	}
