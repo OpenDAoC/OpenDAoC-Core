@@ -1,5 +1,7 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
+using System;
 
 namespace DOL.GS
 {
@@ -95,6 +97,13 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool SpawnAdds = false;
+		public void BroadcastMessage(String message)
+		{
+			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+			{
+				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			}
+		}
 		public override void Think()
 		{
 			if(!HasAggressionTable())
@@ -110,6 +119,7 @@ namespace DOL.AI.Brain
             {
 				if (!SpawnAdds)
 				{
+					BroadcastMessage("The Amminus pilus says, \"I require assistance!\"");
 					SpawnPilusAdds();
 					SpawnAdds = true;
 				}
