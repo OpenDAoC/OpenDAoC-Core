@@ -806,6 +806,20 @@ namespace DOL.GS.Effects
                     if (effect != null)
                         EffectService.RequestImmediateCancelEffect(effect);
                 }
+                if (ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))//cancel speed on target
+                {
+                    var effect = EffectListService.GetEffectOnTarget(ad.Target, eEffect.MovementSpeedBuff);
+
+                    if (effect != null)
+                        EffectService.RequestImmediateCancelEffect(effect);
+                }
+                if (ad.Attacker.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))//cancel speed on archer
+                {
+                    var effect = EffectListService.GetEffectOnTarget(ad.Attacker, eEffect.MovementSpeedBuff);
+
+                    if (effect != null)
+                        EffectService.RequestImmediateCancelEffect(effect);
+                }
             }
         }
         #endregion
@@ -830,8 +844,23 @@ namespace DOL.GS.Effects
             if (player == null) return;
             int slot = useArgs.Slot;
             int type = useArgs.Type;
-            double attackrangeMin = player.AttackRange * 0.66;//minimum attack range
-            double attackrangeMax = player.AttackRange * 2.2;//maximum attack range
+            double attackrangeMin = 2000 * 0.66;//minimum attack range
+            double attackrangeMax = 4000;//maximum attack range
+            if (player.Realm == eRealm.Albion)
+            {
+                attackrangeMin = 2200 * 0.66;//minimum attack range
+                attackrangeMax = 4400;//maximum attack range
+            }
+            if (player.Realm == eRealm.Hibernia)
+            {
+                attackrangeMin = 2100 * 0.66;//minimum attack range
+                attackrangeMax = 4300;//maximum attack range
+            }
+            if (player.Realm == eRealm.Midgard)
+            {
+                attackrangeMin = 2000 * 0.66;//minimum attack range
+                attackrangeMax = 4200;//maximum attack range
+            }
 
             if (slot == (int)eInventorySlot.FirstQuiver)//player can't use quiver as use button anymore
                 return;
