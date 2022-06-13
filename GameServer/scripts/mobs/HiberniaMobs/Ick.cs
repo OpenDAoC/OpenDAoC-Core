@@ -178,7 +178,7 @@ namespace DOL.AI.Brain
 		public IckAddBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 400;
+			AggroRange = 1500;
 			ThinkInterval = 1500;
 		}
 		public override void Think()
