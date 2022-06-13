@@ -64,13 +64,13 @@ namespace DOL.GS
                     spell.CastTime = 0;
                     spell.Power = 0;
                     spell.RecastDelay = 10;
-                    spell.ClientEffect = 2305;
-                    spell.Icon = 2305;
+                    spell.ClientEffect = 5700;
+                    spell.Icon = 5700;
                     spell.Damage = 100;
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.Name = "Flame Breath";
                     spell.Range = 500;
-                    spell.Radius = 350;
+                    spell.Radius = 300;
                     spell.SpellID = 11933;
                     spell.Target = "Enemy";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();

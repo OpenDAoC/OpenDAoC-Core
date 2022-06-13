@@ -2,6 +2,7 @@
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using System.Collections.Generic;
+using DOL.GS.Keeps;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -21,8 +22,23 @@ namespace DOL.GS.RealmAbilities
         public override void Execute(GameLiving living)
 		{
             m_player = living as GamePlayer;
-            double attackrangeMin = m_player.AttackRange * 0.66;//minimum attack range
-            double attackrangeMax = m_player.AttackRange * 2.2;//maximum attack range
+            double attackrangeMin = 2000 * 0.66;//minimum attack range
+            double attackrangeMax = 4000;//maximum attack range
+            if (m_player.Realm == eRealm.Albion)
+            {
+                attackrangeMin = 2200 * 0.66;//minimum attack range
+                attackrangeMax = 4400;//maximum attack range
+            }
+            if (m_player.Realm == eRealm.Hibernia)
+            {
+                attackrangeMin = 2100 * 0.66;//minimum attack range
+                attackrangeMax = 4300;//maximum attack range
+            }
+            if (m_player.Realm == eRealm.Midgard)
+            {
+                attackrangeMin = 2000 * 0.66;//minimum attack range
+                attackrangeMax = 4200;//maximum attack range
+            }
             InventoryItem ammo = m_player.rangeAttackComponent.RangeAttackAmmo;
             Region rgn = WorldMgr.GetRegion(m_player.CurrentRegion.ID);
 
@@ -95,6 +111,67 @@ namespace DOL.GS.RealmAbilities
             {
                 m_player.Out.SendMessage("You can't use Volley while Longshot is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
+            }
+            Region region = WorldMgr.GetRegion(m_player.CurrentRegionID);
+            foreach(AbstractArea area in region.GetAreasOfSpot(m_player.GroundTarget))//can't use volley inside border keep
+            {
+                if (area != null)
+                {
+                    if (area is Area.Circle)
+                    {
+                        if (m_player.Realm == eRealm.Albion)
+                        {
+                            if (area.Description == "Druim Ligen" || area.Description == "Druim Cain" || area.Description == "Svasud Faste" || area.Description == "Vindsaul Faste")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Border Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                        if (m_player.Realm == eRealm.Hibernia)
+                        {
+                            if (area.Description == "Svasud Faste" || area.Description == "Vindsaul Faste" || area.Description == "Castle Sauvage" || area.Description == "Snowdonia Fortress")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Border Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                        if (m_player.Realm == eRealm.Midgard)
+                        {
+                            if (area.Description == "Druim Ligen" || area.Description == "Druim Cain" || area.Description == "Castle Sauvage" || area.Description == "Snowdonia Fortress")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Border Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                    }
+                    if(area is KeepArea)
+                    {
+                        if (m_player.Realm == eRealm.Albion)
+                        {
+                            if (area.Description == "Hibernia Portal Keep" || area.Description == "Midgard Portal Keep")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Portal Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                        if (m_player.Realm == eRealm.Hibernia)
+                        {
+                            if (area.Description == "Midgard Portal Keep" || area.Description == "Albion Portal Keep")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Portal Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                        if (m_player.Realm == eRealm.Midgard)
+                        {
+                            if (area.Description == "Albion Portal Keep" || area.Description == "Hibernia Portal Keep")
+                            {
+                                m_player.Out.SendMessage("You can't use Volley inside enemy Portal Keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+                        }
+                    }
+                }
             }
             new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(m_player, 0, 1));
             //DisableSkill(living);
