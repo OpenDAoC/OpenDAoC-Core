@@ -41,7 +41,7 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(6000))
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
 				{
 					if (player != null)
 					{
