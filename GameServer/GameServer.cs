@@ -67,6 +67,8 @@ namespace DOL.GS
 		/// </summary>
 		protected const int MAX_UDPBUF = 4096;
 
+		public DateTime StartupTime;
+
 		/// <summary>
 		/// Minute conversion from milliseconds
 		/// </summary>
@@ -812,6 +814,7 @@ namespace DOL.GS
 				//---------------------------------------------------------------
 				//Open the server, players can now connect if webhook, inform Discord!
 				m_status = eGameServerStatus.GSS_Open;
+				StartupTime = DateTime.Now;
 
 				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
 				{
