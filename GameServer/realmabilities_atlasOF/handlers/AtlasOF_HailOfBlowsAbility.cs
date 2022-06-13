@@ -45,8 +45,8 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Hail Of Blows";
-            m_dbspell.Icon = 4240;
-            m_dbspell.ClientEffect = 1692;
+            m_dbspell.Icon = 7130;
+            m_dbspell.ClientEffect = 7130;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Self";
