@@ -21,8 +21,8 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = SpellName;
-            m_dbspell.Icon = 7023;
-            m_dbspell.ClientEffect = 7023;
+            m_dbspell.Icon = 7141;
+            m_dbspell.ClientEffect = 7141;
             m_dbspell.Damage = damage;
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Group";
