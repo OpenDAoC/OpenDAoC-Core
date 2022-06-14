@@ -76,7 +76,7 @@ namespace DOL.AI.Brain
 				case (9, 0):
 				case (10, 0):
 				case (11, 0):
-				case (12, 25):
+				case (12, 0):
 				case (13, 0):
 				case (14, 0):
 				case (15, 0):
