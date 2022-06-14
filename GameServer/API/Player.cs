@@ -94,6 +94,8 @@ public class Player
                 return;
             var specs = new Dictionary<string,int>();
             var realmAbilities = new Dictionary<string,int>();
+            
+            var DBRace = DOLDB<Race>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
 
             player.SerializedSpecs.Split(';').ToList().ForEach(x =>
             {
@@ -115,14 +117,20 @@ public class Player
             
             Name = player.Name;
             Level = player.Level;
+            Realm = RealmIDtoString(player.Realm);
             Class = ScriptMgr.FindCharacterClass(player.Class).Name;
+            Race = DBRace.Name;
             Specializations = specs;
             RealmAbilities = realmAbilities;
         }
         
         public string Name { get; }
         public int Level { get; }
+        
+        public string Realm { get; }
         public string Class { get; }
+        
+        public string Race { get; }
         public Dictionary<string, int> Specializations { get; }
         public Dictionary<string, int> RealmAbilities { get; }
     }
@@ -164,29 +172,35 @@ public class Player
     {
         var _playerInfoCacheKey = "api_player_info_" + playerName;
 
-        if (!_cache.TryGetValue(_playerInfoCacheKey, out PlayerInfo playerInfo))
-        {
-            var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+        if (_cache.TryGetValue(_playerInfoCacheKey, out PlayerInfo playerInfo)) return playerInfo;
+        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
-            if (player == null)
-                return null;
+        if (player == null)
+            return null;
 
-            playerInfo = new PlayerInfo(player);
+        playerInfo = new PlayerInfo(player);
 
-            _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
-        }
+        _cache.Set(_playerInfoCacheKey, playerInfo, DateTime.Now.AddMinutes(1));
 
         return playerInfo;
     }
     
     public PlayerSpec GetPlayerSpec(string playerName)
     {
+        var _playerSpecsacheKey = "api_player_specs_" + playerName;
+
+        if (_cache.TryGetValue(_playerSpecsacheKey, out PlayerSpec specs)) return specs;
+        
         var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         if (player == null)
             return null;
 
-        var specs = new PlayerSpec(player);
+        if (player.HideSpecializationAPI)
+            return null;
+
+        specs = new PlayerSpec(player);
+        _cache.Set(_playerSpecsacheKey, specs, DateTime.Now.AddMinutes(1));
 
         return specs;
     }
@@ -195,18 +209,16 @@ public class Player
     {
         var _allPlayersCacheKey = "api_all_players";
 
-        if (!_cache.TryGetValue(_allPlayersCacheKey, out List<PlayerInfo> allPlayers))
-        {
-            var dayLimit = DateTime.Now.Subtract(TimeSpan.FromDays(31));
+        if (_cache.TryGetValue(_allPlayersCacheKey, out List<PlayerInfo> allPlayers)) return allPlayers;
+        var dayLimit = DateTime.Now.Subtract(TimeSpan.FromDays(31));
             
-            var players = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("LastPlayed").IsGreatherThan(dayLimit));
+        var players = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("LastPlayed").IsGreatherThan(dayLimit));
 
-            allPlayers = new List<PlayerInfo>(players.Count);
+        allPlayers = new List<PlayerInfo>(players.Count);
 
-            allPlayers.AddRange(players.Select(x => new PlayerInfo(x)));
+        allPlayers.AddRange(players.Select(x => new PlayerInfo(x)));
 
-            _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
-        }
+        _cache.Set(_allPlayersCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
 
         return allPlayers;
     }
@@ -214,7 +226,9 @@ public class Player
     public IList<PlayerInfo> GetPlayersByGuild(string guildName)
     {
         var _allPlayerByGuildCacheKey = "api_all_players_" + guildName;
-
+        
+        if (_cache.TryGetValue(_allPlayerByGuildCacheKey, out IList<PlayerInfo> allPlayers)) return allPlayers;
+        
         if (guildName == null)
             return null;
 
@@ -223,22 +237,19 @@ public class Player
             return null;
 
         var guildId = guild.GuildID;
+        
+        allPlayers = new List<PlayerInfo>();
+        var players = DOLDB<DOLCharacters>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
 
-        if (!_cache.TryGetValue(_allPlayerByGuildCacheKey, out IList<PlayerInfo> allPlayers))
+        foreach (var player in players)
         {
-            allPlayers = new List<PlayerInfo>();
-            var players = DOLDB<DOLCharacters>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
-
-            foreach (var player in players)
-            {
-                var thisPlayer = GetPlayerInfo(player.Name);
-                if (thisPlayer == null)
-                    continue;
-                allPlayers.Add(thisPlayer);
-            }
-
-            _cache.Set(_allPlayerByGuildCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
+            var thisPlayer = GetPlayerInfo(player.Name);
+            if (thisPlayer == null)
+                continue;
+            allPlayers.Add(thisPlayer);
         }
+
+        _cache.Set(_allPlayerByGuildCacheKey, allPlayers, DateTime.Now.AddMinutes(120));
 
         return allPlayers;
     }
