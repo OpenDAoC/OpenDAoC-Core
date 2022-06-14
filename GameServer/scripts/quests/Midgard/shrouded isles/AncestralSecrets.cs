@@ -49,7 +49,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static GameNPC AncestralKeeper = null; //Mob to Kill
 		
-		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 360810, 310933, 3931);
+		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
 		
 		private static IArea keeperArea;
 
@@ -385,9 +385,9 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.Size = 140;
 			AncestralKeeper.Level = 65;
 			AncestralKeeper.ScalingFactor = 60;
-			AncestralKeeper.X = 360810;
-			AncestralKeeper.Y = 310933;
-			AncestralKeeper.Z = 3931;
+			AncestralKeeper.X = player.X;
+			AncestralKeeper.Y = player.Y;
+			AncestralKeeper.Z = player.Z;
 			AncestralKeeper.MaxSpeedBase = 250;
 			AncestralKeeper.AddToWorld();
 
@@ -449,7 +449,7 @@ namespace DOL.GS.Quests.Hibernia
 					{
 						case 1:
 							OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
-							                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are clearly visible.");
+							                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are still clearly visible.");
 							break;
 						case 2:
 							OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
@@ -559,7 +559,7 @@ namespace DOL.GS.Quests.Hibernia
 					{
 						if (quest.Step == 6)
 						{
-							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You deserved your [reward]!");
+							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You have deserved your [reward]!");
 						}
 					}
 			}
@@ -585,7 +585,7 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can i help you?");
+							Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can I help you?");
 							break;
 						case 2:
 							Jaklyr.SayTo(player, "Hey "+player.CharacterClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
@@ -597,7 +597,7 @@ namespace DOL.GS.Quests.Hibernia
 						case 4:
 							Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
 							Jaklyr.SayTo(player,
-								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater. " +
+								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
 								"Search for Ancestral Keeper in the crater and kill it.");
 							break;
 						case 5:
@@ -639,7 +639,7 @@ namespace DOL.GS.Quests.Hibernia
 								if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
 									    eInventorySlot.LastBackpack))
 								{
-									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater. " +
+									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
 									                     "Search for Ancestral Keeper in the crater and kill it. " +
 									                     "Take this pendant with you as lucky charm!");
 									GiveItem(player, quest_pendant);
@@ -705,7 +705,7 @@ namespace DOL.GS.Quests.Hibernia
 							Longbeard.SayTo(player, "Yes, I am a Dwarf from Dellingstad, do you have a problem with that?");
 							break;
 						case 2:
-							Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [dont try] it kid.");
+							Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [don't try] it kid.");
 							break;
 						case 3:
 							Longbeard.SayTo(player, "Hey "+player.CharacterClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
@@ -714,10 +714,10 @@ namespace DOL.GS.Quests.Hibernia
 							Longbeard.SayTo(player, "I wish you good luck my friend! It's not an easy mission.");
 							break;
 						case 5:
-							Longbeard.SayTo(player, "Wow, I really never thought that you will do it. Thats great my friend! Does Jaklyr knows about it yet?");
+							Longbeard.SayTo(player, "Wow, I really never thought that you will do it. That's great my friend! Does Jaklyr know about it yet?");
 							break;
 						case 6:
-							Longbeard.SayTo(player, "Gratulations "+player.Name+", you will get your recognition!");
+							Longbeard.SayTo(player, "Congratulations "+player.Name+", you will get your recognition!");
 							break;
 					}
 				}
@@ -740,14 +740,14 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "dont try":
+						case "don't try":
 							Longbeard.SayTo(player, "You'll never come back alive. " +
-							                        "There has been a curse since [the crater] was formed.");
+							                        "There has been a curse since [the crater] has formed.");
 							break;
 						case "the crater":
-							Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. Its right next to Dellingstad, thats why its called Delling Crater." +
-							                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began to hunt certain creatures. Styr and me fled." +
-							                        "If you are intelligent enough, then you shouldn't do this [challenge].");
+							Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. It's right next to Dellingstad, that's why its called Delling Crater." +
+							                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began hunting certain creatures. Styr and I fled." +
+							                        "If you are intelligent enough, then you shouldn't accept this [challenge].");
 							Longbeard.Emote(eEmote.Induct);
 							break;
 						case "challenge":
@@ -930,7 +930,7 @@ namespace DOL.GS.Quests.Hibernia
 					case 3:
 						return "Speak to Jaklyr in Bjarken.";
 					case 4:
-						return "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards delling crater." +
+						return "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater." +
 						       "Search for Ancestral Keeper in the crater and kill it.";
 					case 5:
 						return "Return the Stone Pendant to Jaklyr in Bjarken.";
@@ -977,6 +977,7 @@ namespace DOL.GS.Quests.Hibernia
 				else
 					m_questPlayer.GainExperience(eXPSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+				RemoveItem(m_questPlayer, stone_pendant);
 				GiveItem(m_questPlayer, beaded_resisting_stone);
 				m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 

@@ -49,7 +49,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static GameNPC Feairna_Athar = null; //Mob to Kill
 		
-		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 292515, 319526, 2238);
+		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 288348, 319950, 2328);
 		
 		private static IArea treantArea;
 
@@ -356,9 +356,9 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
 			Feairna_Athar.ScalingFactor = 60;
-			Feairna_Athar.X = 292515;
-			Feairna_Athar.Y = 319526;
-			Feairna_Athar.Z = 2238;
+			Feairna_Athar.X = player.X;
+			Feairna_Athar.Y = player.Y;
+			Feairna_Athar.Z = player.Z;
 			Feairna_Athar.MaxSpeedBase = 250;
 			Feairna_Athar.AddToWorld();
 
@@ -916,6 +916,7 @@ namespace DOL.GS.Quests.Hibernia
 				else
 					m_questPlayer.GainExperience(eXPSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+				RemoveItem(m_questPlayer, glowing_red_jewel);
 				GiveItem(m_questPlayer, paidrean_necklace);
 				m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 
