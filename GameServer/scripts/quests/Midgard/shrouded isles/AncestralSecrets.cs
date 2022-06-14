@@ -455,34 +455,35 @@ namespace DOL.GS.Quests.Hibernia
 							OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
 							
 							int random = Util.Random(0, 3);
+							var message = "";
 							switch (random)
 							{
 								case 0:
 									Longbeard.Emote(eEmote.Laugh);
 									Longbeard.TurnTo(player);
 									Styr.Emote(eEmote.Laugh);
-									Longbeard.Yell("Haha, another idiot trying to help Ota Yrling.");
+									message = "Longbeard yells, \"Haha, another idiot trying to help Ota Yrling\".";
 									break;
 								case 1: 
 									Longbeard.Emote(eEmote.Rofl);
 									Longbeard.TurnTo(player);
 									Styr.Emote(eEmote.Laugh);
-									Longbeard.Yell("Haha, Styr look at this "+player.CharacterClass.Name+".");
+									message = $"Longbeard yells, \"Haha, Styr look at this \"{player.CharacterClass.Name}\"";
 									break;
 								case 2: 
 									Longbeard.Emote(eEmote.Laugh);
 									Styr.TurnTo(player);
 									Styr.Emote(eEmote.Rofl);
-									Styr.Yell("Haha, Longbeard look at this "+player.CharacterClass.Name+".");
+									message = $"Styr yells, \"Haha, Longbeard look at this \"{player.CharacterClass.Name}\"";
 									break;
 								case 3: 
 									Longbeard.Emote(eEmote.Laugh);
 									Styr.TurnTo(player);
 									Styr.Emote(eEmote.Laugh);
-									Styr.Yell("Haha, another idiot trying to help Ota Yrling.");
+									message = "Styr yells, \"Haha, another idiot trying to help Ota Yrling\".";
 									break;
 							}
-							
+							SendMessage(player, message, 0,eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 							break;
 						case 3:
 							OtaYrling.SayTo(player, "Hey "+player.Name+", please visit Jaklyr in Bjarken and tell him that I sent you, he will understand.");
