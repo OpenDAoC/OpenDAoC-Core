@@ -2731,8 +2731,9 @@ namespace DOL.GS
             }
 
             // Missrate
-            int missrate = (ad.Attacker is GamePlayer) ? 18 : 25; //player vs player tests show 20% miss on any level
+            int missrate = (ad.Attacker is GamePlayer) ? 18 : 25; 
             missrate -= ad.Attacker.GetModified(eProperty.ToHitBonus);
+            //Console.WriteLine($"ToHitBonus { ad.Attacker.GetModified(eProperty.ToHitBonus)} ");
             // PVE group missrate
             if (owner is GameNPC && ad.Attacker is GamePlayer &&
                 ((GamePlayer) ad.Attacker).Group != null &&
@@ -2740,10 +2741,12 @@ namespace DOL.GS
                 ad.Attacker.IsWithinRadius(((GamePlayer) ad.Attacker).Group.Leader, 3000))
             {
                 missrate -= (int) (5 * ((GamePlayer) ad.Attacker).Group.Leader.GetConLevel(owner));
+                //Console.WriteLine($"group leader miss bonus {(int) (5 * ((GamePlayer) ad.Attacker).Group.Leader.GetConLevel(owner))}");
             }
             else if (owner is GameNPC || ad.Attacker is GameNPC) // if target is not player use level mod
             {
                 missrate += (int) (5 * ad.Attacker.GetConLevel(owner));
+                //Console.WriteLine($"NPC missrate {(int) (5 * ad.Attacker.GetConLevel(owner))} owner {owner.Name} lvl {owner.Level} attacker {ad.Attacker.Name} lvl {ad.Attacker.Level} condiff {ad.Attacker.GetConLevel(owner)}");
             }
 
             // experimental missrate adjustment for number of attackers
@@ -2751,6 +2754,7 @@ namespace DOL.GS
             {
                 missrate -= (Math.Max(0, Attackers.Count - 1) *
                              ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS);
+                //Console.WriteLine($"Num Attacker missrate {(int) (5 * ad.Attacker.GetConLevel(owner))}");
             }
 
             // weapon/armor bonus
@@ -2764,35 +2768,42 @@ namespace DOL.GS
                 if (armor != null)
                     armorBonus = armor.Bonus;
             }
+            //Console.WriteLine($"Armor Bonus Start {armorBonus}");
 
             if (weapon != null)
             {
                 armorBonus -= weapon.Bonus;
+                //Console.WriteLine($"weapon bonus reduction of {weapon.Bonus}");
             }
 
             if (ad.Target is GamePlayer && ad.Attacker is GamePlayer)
             {
                 missrate += armorBonus;
+                //Console.WriteLine($"pvp missrate mod of armorbonus {armorBonus}");
             }
             else
             {
                 missrate += missrate * armorBonus / 100;
+                //Console.WriteLine($"pve missrate mod of armorbonus {missrate * armorBonus / 100}");
             }
 
             if (ad.Style != null)
             {
                 missrate -= ad.Style.BonusToHit; // add style bonus
+               // Console.WriteLine($"style bonus to hit {ad.Style.BonusToHit}");
             }
 
             if (lastAD != null && lastAD.AttackResult == eAttackResult.HitStyle && lastAD.Style != null)
             {
                 // add defence bonus from last executed style if any
                 missrate += lastAD.Style.BonusToDefense;
+                //Console.WriteLine($"style def bonus on target{ad.Style.BonusToDefense}");
             }
 
             if (owner is GamePlayer && ad.Attacker is GamePlayer && weapon != null)
             {
                 missrate -= (int) ((ad.Attacker.WeaponSpecLevel(weapon) - 1) * 0.1);
+                //Console.WriteLine($"spec-based missrate reduction { (int) ((ad.Attacker.WeaponSpecLevel(weapon) - 1) * 0.1)}");
             }
 
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
@@ -2815,10 +2826,11 @@ namespace DOL.GS
                     }
             }
 
-            // if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
-            // {
-            //     missrate >>= 1; //halved
-            // }
+            
+             if (owner is GamePlayer && ((GamePlayer) owner).IsSitting)
+             {
+                 missrate = 0; //no missing a sitting target
+             }
             
             //check for dirty trick fumbles before misses
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
@@ -2826,6 +2838,7 @@ namespace DOL.GS
                 return eAttackResult.Fumbled;
 
             ad.MissRate = missrate;
+            //Console.WriteLine($"Final missrate {missrate}");
             double rando = 0;
             bool skipDeckUsage = ServerProperties.Properties.OVERRIDE_DECK_RNG;
             if (missrate > 0)
