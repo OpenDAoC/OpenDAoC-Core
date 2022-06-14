@@ -330,6 +330,7 @@ namespace DOL.GS
 			Charisma = (short)(29 + Level);
 		}
 
+		/*
 		/// <summary>
 		/// Gets or Sets the effective level of the Object
 		/// </summary>
@@ -342,7 +343,7 @@ namespace DOL.GS
 					return brain.Owner.EffectiveLevel;
 				return base.EffectiveLevel;
 			}
-		}
+		}*/
 
 		/// <summary>
 		/// Gets or sets the Realm of this NPC
