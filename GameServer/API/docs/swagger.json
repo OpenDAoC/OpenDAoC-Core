@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.2.1</h3> Added `/news/all`, `/news/type/{type}` and `/news/realm/{realm}` endpoints<br>\n<h3>0.2.0</h3> Added `/realm/bg` endpoint<br>",
-    "version": "0.2.1",
+    "description": "Use this documentation to navigate the available Atlas APIs <br> <h2>Recent Changes</h2> <h3>0.2.2</h3> Added `/player/{playerName}/tradeskills` endpoint to show the detailed players tradeskills<br> Added `/player/{playerName}/specs` endpoint to show the detailed player specializations and RAs<br> Updated `player` schema to show the serialized tradeskills <h3>0.2.1</h3> Added `/news/all`, `/news/type/{type}` and `/news/realm/{realm}` endpoints<br>",
+    "version": "0.2.2",
     "title": "AtlasAPI",
     "termsOfService": "https://www.atlasfreeshard.com",
     "license": {
@@ -256,7 +256,81 @@
             }
           },
           "404": {
-            "description": "$playerName not found"
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/player/{playerName}/specs": {
+      "get": {
+        "tags": [
+          "player"
+        ],
+        "summary": "/player/{playerName}/specs",
+        "description": "Returns the player detailed specialization <br><br>[cache 1 min]",
+        "operationId": "getPlayerSpecializations",
+        "parameters": [
+          {
+            "name": "playerName",
+            "in": "path",
+            "description": "Name of the player to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/playerSpec"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/player/{playerName}/tradeskills": {
+      "get": {
+        "tags": [
+          "player"
+        ],
+        "summary": "/player/{playerName}/tradeskills",
+        "description": "Returns the player detailed tradeskills <br><br>[cache 1 min]",
+        "operationId": "getPlayerTradeskills",
+        "parameters": [
+          {
+            "name": "playerName",
+            "in": "path",
+            "description": "Name of the player to return",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/playerTradeskills"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -267,7 +341,7 @@
           "player"
         ],
         "summary": "/player/getAll",
-        "description": "Returns all players<br><br>[cache 120 min]",
+        "description": "Returns all players active in the last 31 days<br><br>[cache 120 min]",
         "operationId": "getAllPlayers",
         "responses": {
           "200": {
@@ -522,6 +596,48 @@
           "$ref": "#/components/schemas/guild"
         }
       },
+      "bgkeep": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Thidranki Faste"
+          },
+          "currentRealm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "underSiege": {
+            "type": "integer",
+            "example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "bgkeeps": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/bgkeep"
+        }
+      },
+      "df": {
+        "type": "string",
+        "enum": [
+          "Albion",
+          "Midgard",
+          "Hibernia"
+        ],
+        "example": "Midgard"
+      },
       "guild": {
         "type": "object",
         "required": [
@@ -560,6 +676,88 @@
           "members": {
             "type": "integer",
             "example": 123
+          }
+        }
+      },
+      "keep": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "example": "Arvakr Faste"
+          },
+          "originalRealm": {
+            "type": "string",
+            "example": "Midgard",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia"
+            ]
+          },
+          "currentRealm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "claimingGuild": {
+            "type": "string",
+            "example": "Cotswold Clan"
+          },
+          "Level": {
+            "type": "integer",
+            "example": 4
+          },
+          "underSiege": {
+            "type": "integer",
+            "example": 0,
+            "enum": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "news": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/newsEntry"
+        }
+      },
+      "newsEntry": {
+        "type": "object",
+        "properties": {
+          "Date": {
+            "type": "string",
+            "example": "27-05-2022 04:37 AM"
+          },
+          "Type": {
+            "type": "string",
+            "example": "RvR",
+            "enum": [
+              "RvR",
+              "PlayerRP",
+              "PlayerXP"
+            ]
+          },
+          "Realm": {
+            "type": "string",
+            "example": "Albion",
+            "enum": [
+              "Albion",
+              "Midgard",
+              "Hibernia",
+              "None"
+            ]
+          },
+          "Text": {
+            "type": "string",
+            "example": "The forces of Albion have captured Dun Crauchon!"
           }
         }
       },
@@ -668,28 +866,31 @@
           "pvpDeaths": {
             "example": 549,
             "type": "integer"
+          },
+          "primaryTradeSkill": {
+            "example": 15,
+            "type": "integer"
+          },
+          "tradeSkills": {
+            "example": "1|1250;2|1250;3|1250;4|1250;6|1250;7|1250;8|1250;9|1250;10|1250;11|1250;12|1250;13|1250;14|1250;15|1250",
+            "type": "string"
           }
         }
       },
-      "keep": {
+      "playerSpec": {
         "type": "object",
         "properties": {
-          "Name": {
+          "name": {
             "type": "string",
-            "example": "Arvakr Faste"
+            "example": "Player"
           },
-          "originalRealm": {
-            "type": "string",
-            "example": "Midgard",
-            "enum": [
-              "Albion",
-              "Midgard",
-              "Hibernia"
-            ]
+          "level": {
+            "type": "integer",
+            "example": 50
           },
-          "currentRealm": {
+          "realm": {
             "type": "string",
-            "example": "Albion",
+            "example": "Hibernia",
             "enum": [
               "Albion",
               "Midgard",
@@ -697,49 +898,102 @@
               "None"
             ]
           },
-          "claimingGuild": {
-            "type": "string",
-            "example": "Cotswold Clan"
+          "class": {
+            "example": "Enchanter",
+            "type": "string"
           },
-          "Level": {
-            "type": "integer",
-            "example": 4
+          "race": {
+            "example": "Lurikeen",
+            "type": "string"
           },
-          "underSiege": {
-            "type": "integer",
-            "example": 0,
-            "enum": [
-              0,
-              1
-            ]
+          "specializations": {
+            "example": {
+              "Light": 1,
+              "Mana": 48,
+              "Enchantments": 24
+            },
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Name": {
+                  "type": "string",
+                  "example": "Mana"
+                },
+                "Level": {
+                  "type": "integer",
+                  "example": 48
+                }
+              }
+            }
+          },
+          "realmAbilities": {
+            "example": {
+              "AtlasOF_LongWind": 1,
+              "AtlasOF_AugDex": 3,
+              "AtlasOF_AugAcuity": 3,
+              "AtlasOF_WildPower": 1,
+              "AtlasOF_Serenity": 1,
+              "AtlasOF_Concentration": 1
+            },
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Name": {
+                  "type": "string",
+                  "example": "AtlasOF_LongWind"
+                },
+                "Level": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
           }
         }
       },
-      "bgkeep": {
+      "playerTradeskills": {
         "type": "object",
         "properties": {
-          "Name": {
-            "type": "string",
-            "example": "Thidranki Faste"
-          },
-          "currentRealm": {
-            "type": "string",
-            "example": "Albion",
-            "enum": [
-              "Albion",
-              "Midgard",
-              "Hibernia",
-              "None"
-            ]
-          },
-          "underSiege": {
-            "type": "integer",
-            "example": 0,
-            "enum": [
-              0,
-              1
-            ]
+          "tradeskills": {
+            "type": "array",
+            "example": {
+              "Weaponcraft": 1250,
+              "Armorcraft": 1250,
+              "Siegecraft": 1250,
+              "Alchemy": 1250,
+              "Metalworking": 1250,
+              "Leathercrafting": 1250,
+              "Clothworking": 1250,
+              "Gemcutting": 1250,
+              "Herbcraft": 1250,
+              "Tailoring": 1250,
+              "Fletching": 1250,
+              "Spellcrafting": 1250,
+              "Woodworking": 1250,
+              "Basic Crafting": 1250
+            },
+            "items": {
+              "type": "object",
+              "properties": {
+                "Tradeskill": {
+                  "type": "string",
+                  "example": "Weaponcraft"
+                },
+                "Level": {
+                  "type": "integer",
+                  "example": 1250
+                }
+              }
+            }
           }
+        }
+      },
+      "realm": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/keep"
         }
       },
       "relic": {
@@ -773,27 +1027,6 @@
               "Hibernia"
             ]
           }
-        }
-      },
-      "df": {
-        "type": "string",
-        "enum": [
-          "Albion",
-          "Midgard",
-          "Hibernia"
-        ],
-        "example": "Midgard"
-      },
-      "realm": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/keep"
-        }
-      },
-      "bgkeeps": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/bgkeep"
         }
       },
       "serverUptime": {
@@ -845,44 +1078,6 @@
             "format": "date-time",
             "example": "08-12-2021 11:18 AM"
           }
-        }
-      },
-      "newsEntry": {
-        "type": "object",
-        "properties": {
-          "Date": {
-            "type": "string",
-            "example": "27-05-2022 04:37 AM"
-          },
-          "Type": {
-            "type": "string",
-            "example": "RvR",
-            "enum": [
-              "RvR",
-              "PlayerRP",
-              "PlayerXP"
-            ]
-          },
-          "Realm": {
-            "type": "string",
-            "example": "Albion",
-            "enum": [
-              "Albion",
-              "Midgard",
-              "Hibernia",
-              "None"
-            ]
-          },
-          "Text": {
-            "type": "string",
-            "example": "The forces of Albion have captured Dun Crauchon!"
-          }
-        }
-      },
-      "news": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/newsEntry"
         }
       }
     }
