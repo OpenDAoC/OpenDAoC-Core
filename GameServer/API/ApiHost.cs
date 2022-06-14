@@ -84,9 +84,16 @@ namespace DOL.GS.API
             });
             api.MapGet("/player/{playerName}/specs", (string playerName) =>
             {
-                var playerInfo = _player.GetPlayerSpec(playerName);
+                var playerSpecs = _player.GetPlayerSpec(playerName);
 
-                return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
+                return playerSpecs == null ? Results.NotFound("Not found") : Results.Ok(playerSpecs);
+            });
+            
+            api.MapGet("/player/{playerName}/tradeskills", (string playerName) =>
+            {
+                var playerTrades = _player.GetPlayerTradeSkills(playerName);
+
+                return playerTrades == null ? Results.NotFound("Not found") : Results.Ok(playerTrades);
             });
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
 

@@ -8,7 +8,7 @@ namespace DOL.GS.API;
 
 public class Player
 {
-    private readonly IMemoryCache _cache;
+    private static IMemoryCache _cache;
 
     public Player()
     {
@@ -122,6 +122,7 @@ public class Player
             Race = DBRace.Name;
             Specializations = specs;
             RealmAbilities = realmAbilities;
+            
         }
         
         public string Name { get; }
@@ -133,6 +134,31 @@ public class Player
         public string Race { get; }
         public Dictionary<string, int> Specializations { get; }
         public Dictionary<string, int> RealmAbilities { get; }
+    }
+    public class PlayerTradeSkills
+    {
+        public PlayerTradeSkills()
+        {
+        }
+        
+        public PlayerTradeSkills(DOLCharacters player)
+        {
+            if (player == null)
+                return;
+            var skills = new Dictionary<string,int>();
+            player.SerializedCraftingSkills.Split(';').ToList().ForEach(x =>
+            {
+                var spec = x.Split('|');
+                if (spec.Length == 2)
+                {
+                    skills.Add(CraftingMgr.getSkillbyEnum((eCraftingSkill)int.Parse(spec[0])).Name, int.Parse(spec[1]));
+                }
+            });
+            
+            Tradeskills = skills;
+        }
+        
+        public Dictionary<string, int> Tradeskills { get; }
     }
 
     private static string GetRR(int realmLevel)
@@ -187,9 +213,9 @@ public class Player
     
     public PlayerSpec GetPlayerSpec(string playerName)
     {
-        var _playerSpecsacheKey = "api_player_specs_" + playerName;
+        var _playerSpecsCacheKey = "api_player_specs_" + playerName;
 
-        if (_cache.TryGetValue(_playerSpecsacheKey, out PlayerSpec specs)) return specs;
+        if (_cache.TryGetValue(_playerSpecsCacheKey, out PlayerSpec specs)) return specs;
         
         var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
@@ -200,9 +226,23 @@ public class Player
             return null;
 
         specs = new PlayerSpec(player);
-        _cache.Set(_playerSpecsacheKey, specs, DateTime.Now.AddMinutes(1));
+        _cache.Set(_playerSpecsCacheKey, specs, DateTime.Now.AddMinutes(2));
 
         return specs;
+    }
+    
+    public PlayerTradeSkills GetPlayerTradeSkills(string playerName)
+    {
+        var _playerTradesCacheKey = "api_player_tradeskills_" + playerName;
+
+        if (_cache.TryGetValue(_playerTradesCacheKey, out PlayerTradeSkills tradeskills)) return tradeskills;
+        
+        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+
+        tradeskills = new PlayerTradeSkills(player);
+        _cache.Set(_playerTradesCacheKey, tradeskills, DateTime.Now.AddMinutes(2));
+
+        return tradeskills;
     }
 
     public List<PlayerInfo> GetAllPlayers()
