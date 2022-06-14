@@ -52,8 +52,6 @@ public class Player
             KillsMidgardSolo = player.KillsMidgardSolo;
             KillsHiberniaSolo = player.KillsHiberniaSolo;
             pvpDeaths = player.DeathsPvP;
-            PrimaryTradeSkill = player.CraftingPrimarySkill;
-            TradeSkills = player.SerializedCraftingSkills;
         }
 
         public string Name { get; }
@@ -78,8 +76,6 @@ public class Player
         public int KillsMidgardSolo { get; }
         public int KillsHiberniaSolo { get; }
         public int pvpDeaths { get; }
-        public int PrimaryTradeSkill { get; }
-        public string TradeSkills { get; }
     }
 
     public class PlayerSpec
@@ -146,7 +142,19 @@ public class Player
             if (player == null)
                 return;
             var skills = new Dictionary<string,int>();
-            player.SerializedCraftingSkills.Split(';').ToList().ForEach(x =>
+            
+            var tradeskills = DOLDB<AccountXCrafting>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.AccountName));
+
+            AccountXCrafting realmts = null;
+
+            foreach (var ts in tradeskills)
+            {
+                if (ts.Realm != player.Realm)
+                    continue;
+                realmts = ts;
+            }
+
+            realmts?.SerializedCraftingSkills.Split(';').ToList().ForEach(x =>
             {
                 var spec = x.Split('|');
                 if (spec.Length == 2)
@@ -236,7 +244,7 @@ public class Player
         var _playerTradesCacheKey = "api_player_tradeskills_" + playerName;
 
         if (_cache.TryGetValue(_playerTradesCacheKey, out PlayerTradeSkills tradeskills)) return tradeskills;
-        
+
         var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         tradeskills = new PlayerTradeSkills(player);
