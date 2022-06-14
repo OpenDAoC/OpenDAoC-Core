@@ -152,7 +152,7 @@ namespace DOL.GS
                                 {
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
-                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect)
+                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
                                         {
                                             addEffect = true;
                                         }
