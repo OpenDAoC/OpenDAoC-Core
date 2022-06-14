@@ -176,7 +176,7 @@ namespace DOL.GS
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port2c, 70))
-									player.MoveTo(CurrentRegionID, 30876, 32132, 144923, 3058);
+									player.MoveTo(CurrentRegionID, 30876, 32132, 14492, 3058);
 							}
 							break;
 						case 2:
