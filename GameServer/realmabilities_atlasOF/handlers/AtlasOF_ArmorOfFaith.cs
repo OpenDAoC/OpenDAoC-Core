@@ -48,8 +48,8 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Armor Of Faith";
-            m_dbspell.Icon = 4228;
-            m_dbspell.ClientEffect = 4787;
+            m_dbspell.Icon = 7118;
+            m_dbspell.ClientEffect = 7118;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 11;
             m_dbspell.Target = "Self";

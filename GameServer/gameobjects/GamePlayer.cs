@@ -12149,10 +12149,20 @@ namespace DOL.GS
         /// </summary>
         public override void SetGroundTarget(int groundX, int groundY, int groundZ)
         {
-            base.SetGroundTarget(groundX, groundY, groundZ);
-            Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            if (SiegeWeapon != null)
-                SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//volley check for gt
+            if (volley != null)
+            {
+                Out.SendMessage("You can't change ground target under volley effect!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            else
+            {
+                base.SetGroundTarget(groundX, groundY, groundZ);
+
+                Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                if (SiegeWeapon != null)
+                    SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
+            }
         }
 
         /// <summary>

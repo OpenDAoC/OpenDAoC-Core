@@ -62,11 +62,11 @@ namespace DOL.GS
 			Point3D port1c = new Point3D(34171, 30381, 16366); //heading 2017
 			//2nd teleports
 			Point3D port2a = new Point3D(30876, 32132, 14492); //heading 3058
-			Point3D port2b = new Point3D(30878, 32133, 16393); //heading 3042
-			Point3D port2c = new Point3D(30900, 32131, 15644); //heading 997
+			Point3D port2b = new Point3D(30878, 32133, 16410); //heading 3042
+			Point3D port2c = new Point3D(30900, 32131, 15654); //heading 997
 			//3th teleports
 			Point3D port3a = new Point3D(30112, 32645, 13980); //heading 3018
-			Point3D port3b = new Point3D(30131, 32643, 14930); //heading 1029
+			Point3D port3b = new Point3D(30131, 32643, 14940); //heading 1029
 			Point3D port3c = new Point3D(30131, 32643, 13021); //heading 865
 
 			switch(PackageID)
@@ -138,14 +138,14 @@ namespace DOL.GS
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port2a, 70))
-									player.MoveTo(CurrentRegionID, 30878, 32133, 16393, 3042);
+									player.MoveTo(CurrentRegionID, 30878, 32133, 16410, 3042);
 							}
 							break;
 						case 2:
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port2a, 70))
-									player.MoveTo(CurrentRegionID, 30900, 32131, 15644, 997);
+									player.MoveTo(CurrentRegionID, 30900, 32131, 15654, 997);
 							}
 							break;
 					}
@@ -157,14 +157,14 @@ namespace DOL.GS
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port2b, 70))
-									player.MoveTo(CurrentRegionID, 30876, 32132, 144923, 3058);
+									player.MoveTo(CurrentRegionID, 30876, 32132, 14492, 3058);
 							}
 							break;
 						case 2:
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port2b, 70))
-									player.MoveTo(CurrentRegionID, 30900, 32131, 15644, 997);
+									player.MoveTo(CurrentRegionID, 30900, 32131, 15654, 997);
 							}
 							break;
 					}
@@ -197,7 +197,7 @@ namespace DOL.GS
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port3a, 70))
-									player.MoveTo(CurrentRegionID, 30131, 32643, 14930, 1029);
+									player.MoveTo(CurrentRegionID, 30131, 32643, 14940, 1029);
 							}
 							break;
 						case 2:
@@ -242,7 +242,7 @@ namespace DOL.GS
 							foreach (GamePlayer player in GetPlayersInRadius(100))
 							{
 								if (player != null && player.IsAlive && player.IsWithinRadius(port3c, 70))
-									player.MoveTo(CurrentRegionID, 30131, 32643, 13021, 865);
+									player.MoveTo(CurrentRegionID, 30131, 32643, 14940, 1029);
 							}
 							break;
 					}

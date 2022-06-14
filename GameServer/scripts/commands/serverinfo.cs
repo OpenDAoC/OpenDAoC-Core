@@ -31,16 +31,17 @@ namespace DOL.GS.Commands
 		public void OnCommand(GameClient client, string[] args)
 		{
 			client.Out.SendMessage("Atlas", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			AssemblyName an = Assembly.GetAssembly(typeof(GameServer)).GetName();
-			client.Out.SendMessage("playing: " + WorldMgr.GetAllPlayingClientsCount(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			if (client.Player != null)
-			{
-				long sec = client.Player.CurrentRegion.Time / 1000;
-				long min = sec / 60;
-				long hours = min / 60;
-				long days = hours / 24;
-				DisplayMessage(client, string.Format("uptime: {0}d {1}h {2}m {3:00}s", days, hours % 24, min % 60, sec % 60));
-			}
+			var an = Assembly.GetAssembly(typeof(GameServer)).GetName();
+			client.Out.SendMessage("Online: " + WorldMgr.GetAllPlayingClientsCount(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (client.Player == null) return;
+			var uptime = DateTime.Now.Subtract(GameServer.Instance.StartupTime);
+				
+			var sec = uptime.TotalSeconds;
+			var min = Convert.ToInt64(sec) / 60;
+			var hours = min / 60;
+			var days = hours / 24;
+				
+			DisplayMessage(client, $"Uptime: {days}d {hours % 24}h {min % 60}m {sec % 60:00}s");
 		}
 	}
 }

@@ -377,11 +377,11 @@ namespace DOL.GS.Keeps
 				if (cl.Player.ObjectState != eObjectState.Active) continue;
 				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						
-				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
-				{
-					GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
-				}
+			}
+			
+			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			{
+				GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
 			}
 		}
 

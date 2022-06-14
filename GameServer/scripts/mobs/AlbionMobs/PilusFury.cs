@@ -88,8 +88,13 @@ namespace DOL.AI.Brain
 									GamePlayer PetOwner = pet.Owner as GamePlayer;
 									if (pet != null && !DD_Enemys.Contains(pet))
 									{
-										DD_Enemys.Add(pet);
-										PetOwner.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+										if ((pet.IsWithinRadius(point1, 400) || pet.IsWithinRadius(point2, 200) || pet.IsWithinRadius(point3, 200) || pet.IsWithinRadius(point4, 200) || pet.IsWithinRadius(point5, 400)
+										|| pet.IsWithinRadius(point6, 200) || pet.IsWithinRadius(point7, 200) || pet.IsWithinRadius(point8, 200) || pet.IsWithinRadius(point9, 200) || pet.IsWithinRadius(point10, 200)
+										|| pet.IsWithinRadius(point11, 200) || pet.IsWithinRadius(point12, 200)))
+										{
+											DD_Enemys.Add(pet);
+											PetOwner.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+										}
 									}
 								}
 							}
@@ -112,7 +117,12 @@ namespace DOL.AI.Brain
 								{
 									NecromancerPet pet = (NecromancerPet)player.ControlledBrain.Body;
 									if (pet != null && DD_Enemys.Contains(pet))
-										DD_Enemys.Remove(pet);
+									{
+										if (!pet.IsWithinRadius(point1, 400) && !pet.IsWithinRadius(point2, 200) && !pet.IsWithinRadius(point3, 200) && !pet.IsWithinRadius(point4, 200) && !pet.IsWithinRadius(point5, 400)
+										&& !pet.IsWithinRadius(point6, 200) && !pet.IsWithinRadius(point7, 200) && !pet.IsWithinRadius(point8, 200) && !pet.IsWithinRadius(point9, 200) && !pet.IsWithinRadius(point10, 200)
+										&& !pet.IsWithinRadius(point11, 200) && !pet.IsWithinRadius(point12, 200))
+											DD_Enemys.Remove(pet);
+									}
 								}
 							}
 							else
@@ -154,9 +164,37 @@ namespace DOL.AI.Brain
 							DD_Enemys.Remove(player);
 					}
 				}
+				foreach(GameNPC npc in Body.GetNPCsInRadius(10000))
+                {
+					if(npc != null && npc.IsAlive && npc is GamePet pet)
+                    {
+						if (pet is not NecromancerPet)
+						{
+							GamePlayer playerOwner = pet.Owner as GamePlayer;
+							if (!DD_Enemys.Contains(pet))
+							{
+								if ((pet.IsWithinRadius(point1, 400) || pet.IsWithinRadius(point2, 200) || pet.IsWithinRadius(point3, 200) || pet.IsWithinRadius(point4, 200) || pet.IsWithinRadius(point5, 400)
+								|| pet.IsWithinRadius(point6, 200) || pet.IsWithinRadius(point7, 200) || pet.IsWithinRadius(point8, 200) || pet.IsWithinRadius(point9, 200) || pet.IsWithinRadius(point10, 200)
+								|| pet.IsWithinRadius(point11, 200) || pet.IsWithinRadius(point12, 200)))
+									DD_Enemys.Add(pet);
+							}
+							if (DD_Enemys.Contains(pet))
+							{
+								if (!pet.IsWithinRadius(point1, 400) && !pet.IsWithinRadius(point2, 200) && !pet.IsWithinRadius(point3, 200) && !pet.IsWithinRadius(point4, 200) && !pet.IsWithinRadius(point5, 400)
+								&& !pet.IsWithinRadius(point6, 200) && !pet.IsWithinRadius(point7, 200) && !pet.IsWithinRadius(point8, 200) && !pet.IsWithinRadius(point9, 200) && !pet.IsWithinRadius(point10, 200)
+								&& !pet.IsWithinRadius(point11, 200) && !pet.IsWithinRadius(point12, 200))
+									DD_Enemys.Remove(pet);
+							}
+							if (pet != null && !pet.IsAlive && DD_Enemys.Contains(pet))
+								DD_Enemys.Remove(pet);
+							if (playerOwner != null && playerOwner.IsAlive && playerOwner.Client.Account.PrivLevel != 1 && pet.IsAlive && DD_Enemys.Contains(pet))
+								DD_Enemys.Remove(pet);
+						}
+					}
+                }
 				if (!CanDD && DD_Enemys.Count > 0)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareDD), 1000);
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareDD), 3000);
 					CanDD = true;
 				}
 			}
@@ -188,7 +226,7 @@ namespace DOL.AI.Brain
 			ad.Target = target;
 			ad.DamageType = eDamageType.Heat;
 			ad.IsSpellResisted = false;
-			ad.Damage = Util.Random(300,350);
+			ad.Damage = Util.Random(100,250);
 			ad.CausesCombat = true;
 
 			foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))

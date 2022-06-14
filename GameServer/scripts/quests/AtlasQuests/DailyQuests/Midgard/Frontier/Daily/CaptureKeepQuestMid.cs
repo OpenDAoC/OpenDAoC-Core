@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "reclaim a keep":
+						case "securing a foothold":
 							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(CaptureKeepQuestMid)), "Will you help Herou "+questTitle+"");
 							break;
 					}

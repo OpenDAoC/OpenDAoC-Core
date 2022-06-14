@@ -43,13 +43,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool PrepareStun = false;
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-			}
-		}
+
 		public override void Think()
 		{
 			if(HasAggro && Body.TargetObject != null)
@@ -58,7 +52,11 @@ namespace DOL.AI.Brain
 				if (Util.Chance(25) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) 
 					&& !target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && target.IsAlive && target != null && !PrepareStun)
                 {
-					BroadcastMessage(String.Format("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.​"));
+					foreach(GamePlayer player in Body.GetPlayersInRadius(1500))
+                    {
+						if (player != null)
+							player.Out.SendMessage("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                    }
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 2000);
 					PrepareStun = true;
                 }

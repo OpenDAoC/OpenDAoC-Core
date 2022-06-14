@@ -11,31 +11,7 @@ namespace DOL.GS
 	public class Tabor : GameNPC
 	{
 		public Tabor() : base() { }
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-		{
-			Point3D spawn = new Point3D(37256, 32460, 14437);
-			if (source is GamePlayer || source is GamePet)
-			{
-				if (!source.IsWithinRadius(spawn, 350)) //take no damage
-				{
-					GamePlayer truc;
-					if (source is GamePlayer)
-						truc = (source as GamePlayer);
-					else
-						truc = ((source as GamePet).Owner as GamePlayer);
-					if (truc != null)
-						truc.Out.SendMessage(Name + " can't be attacked from this distance!", eChatType.CT_System,
-							eChatLoc.CL_ChatWindow);
 
-					base.TakeDamage(source, damageType, 0, 0);
-					return;
-				}
-				else //take dmg
-				{
-					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-				}
-			}
-		}
 		public override bool AddToWorld()
 		{
 			foreach(GameNPC npc in GetNPCsInRadius(5000))
@@ -78,15 +54,15 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
         {
 			BroadcastMessage(String.Format("As {0} falls to the ground, you feel a breeze in the air.\nA swirl of dirt covers the area.", Name));
-			SpawnGhostOfTabor();
+			SpawnSwirlDirt();
             base.Die(killer);
         }
-		private void SpawnGhostOfTabor()
+		private void SpawnSwirlDirt()
         {
-			TaborGhost npc = new TaborGhost();
-			npc.X = X;
-			npc.Y = Y;
-			npc.Z = Z;
+			SwirlDirt npc = new SwirlDirt();
+			npc.X = 37256;
+			npc.Y = 32460;
+			npc.Z = 14437;
 			npc.Heading = Heading;
 			npc.CurrentRegion = CurrentRegion;
 			npc.AddToWorld();
@@ -102,17 +78,10 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
+			ThinkInterval = 1000;
 		}
-
-		public override void Think()
+        public override void Think()
 		{
-			if(!HasAggressionTable())
-            {
-				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166738);
-				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
-			}
-			Point3D spawn = new Point3D(37256, 32460, 14437);
 			if (HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
@@ -124,14 +93,6 @@ namespace DOL.AI.Brain
 					Body.CastSpell(Tabor_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-
-				if (!target.IsWithinRadius(spawn, 350))
-					Body.MaxSpeedBase = 0;
-				else
-				{
-					INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161293);
-					Body.MaxSpeedBase = npcTemplate.MaxSpeed;
-				}
 			}
 			base.Think();
 		}
@@ -157,7 +118,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD);
@@ -187,7 +147,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD2 = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD2);
@@ -280,36 +239,11 @@ namespace DOL.GS
 	public class TaborGhost : GameNPC
 	{
 		public TaborGhost() : base() { }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-		{
-			Point3D spawn = new Point3D(37256, 32460, 14437);
-			if (source is GamePlayer || source is GamePet)
-			{
-				if (!source.IsWithinRadius(spawn, 350)) //take no damage
-				{
-					GamePlayer truc;
-					if (source is GamePlayer)
-						truc = (source as GamePlayer);
-					else
-						truc = ((source as GamePet).Owner as GamePlayer);
-					if (truc != null)
-						truc.Out.SendMessage(Name + " can't be attacked from this distance!", eChatType.CT_System,
-							eChatLoc.CL_ChatWindow);
-
-					base.TakeDamage(source, damageType, 0, 0);
-					return;
-				}
-				else //take dmg
-				{
-					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-				}
-			}
-		}
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 			}
 		}
 		public override bool AddToWorld()
@@ -360,16 +294,8 @@ namespace DOL.AI.Brain
 			AggroRange = 400;
 			ThinkInterval = 1500;
 		}
-		private bool switchBow = false;
-		private bool switchMelee = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
-			{
-				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161293);
-				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
-			}
-			Point3D spawn = new Point3D(37256, 32460, 14437);
 			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
@@ -382,28 +308,6 @@ namespace DOL.AI.Brain
 				if (Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
-				if(!target.IsWithinRadius(spawn,350))
-                {
-					Body.MaxSpeedBase = 0;
-					if(!switchBow)
-                    {
-						Body.SwitchWeapon(eActiveWeaponSlot.Distance);
-						Body.VisibleActiveWeaponSlots = 51;
-						switchBow = true;
-                    }
-                }
-				else
-                {
-					INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161293);
-					Body.MaxSpeedBase = npcTemplate.MaxSpeed;
-					switchBow = false;
-					if (!switchMelee)
-					{
-						Body.SwitchWeapon(eActiveWeaponSlot.Standard);
-						Body.VisibleActiveWeaponSlots = 16;
-						switchMelee = true;
-					}
-				}
 			}
 			base.Think();
 		}
@@ -429,7 +333,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD);
@@ -459,7 +362,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.Enemy.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD2 = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD2);
@@ -542,6 +444,95 @@ namespace DOL.AI.Brain
 			}
 		}
 		#endregion
+	}
+}
+#endregion
+
+#region Swirl of Dirt
+namespace DOL.GS
+{
+	public class SwirlDirt : GameNPC
+	{
+		public SwirlDirt() : base() { }
+
+		public override bool AddToWorld()
+		{
+			Name = "Swirl of Dirt";
+			Level = 50;
+			Model = 665;
+			Size = 70;
+			Flags = (GameNPC.eFlags)28;
+
+			SwirlDirtBrain sbrain = new SwirlDirtBrain();
+			SetOwnBrain(sbrain);
+			LoadedFromScript = true;
+			RespawnInterval = -1;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
+			}
+			return success;
+		}
+		#region Show Effects
+		protected int Show_Effect(ECSGameTimer timer)
+		{
+			if (IsAlive)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6072, 0, false, 0x01);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnGhostTabor), 1000);
+			}
+			return 0;
+		}
+		protected int RemoveMob(ECSGameTimer timer)
+		{
+			if (IsAlive)
+				RemoveFromWorld();
+			return 0;
+		}
+		private int SpawnGhostTabor(ECSGameTimer timer)
+        {
+			SpawnGhostOfTabor();
+			return 0;
+        }
+		private void SpawnGhostOfTabor()
+		{
+			foreach (GameNPC mob in GetNPCsInRadius(5000))
+			{
+				if (mob.Brain is TaborGhostBrain)
+					return;
+			}
+			TaborGhost npc = new TaborGhost();
+			npc.X = 37256;
+			npc.Y = 32460;
+			npc.Z = 14437;
+			npc.Heading = Heading;
+			npc.CurrentRegion = CurrentRegion;
+			npc.AddToWorld();
+			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 500);
+		}
+		#endregion
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class SwirlDirtBrain : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public SwirlDirtBrain() : base()
+		{
+			AggroLevel = 0;
+			AggroRange = 0;
+			ThinkInterval = 1500;
+		}
+		public override void Think()
+		{
+			base.Think();
+		}
 	}
 }
 #endregion
