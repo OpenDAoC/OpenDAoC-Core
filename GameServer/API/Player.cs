@@ -53,7 +53,7 @@ public class Player
             KillsHiberniaSolo = player.KillsHiberniaSolo;
             pvpDeaths = player.DeathsPvP;
             PrimaryTradeSkill = player.CraftingPrimarySkill;
-            TradeSkill = player.SerializedCraftingSkills;
+            TradeSkills = player.SerializedCraftingSkills;
         }
 
         public string Name { get; }
@@ -78,8 +78,53 @@ public class Player
         public int KillsMidgardSolo { get; }
         public int KillsHiberniaSolo { get; }
         public int pvpDeaths { get; }
-        public string TradeSkill { get; }
         public int PrimaryTradeSkill { get; }
+        public string TradeSkills { get; }
+    }
+
+    public class PlayerSpec
+    {
+        public PlayerSpec()
+        {
+        }
+    
+        public PlayerSpec(DOLCharacters player)
+        {
+            if (player == null)
+                return;
+            var specs = new Dictionary<string,int>();
+            var realmAbilities = new Dictionary<string,int>();
+
+            player.SerializedSpecs.Split(';').ToList().ForEach(x =>
+            {
+                var spec = x.Split('|');
+                if (spec.Length == 2)
+                {
+                    specs.Add(spec[0], int.Parse(spec[1]));
+                }
+            });
+            
+            player.SerializedRealmAbilities.Split(';').ToList().ForEach(x =>
+            {
+                var spec = x.Split('|');
+                if (spec.Length == 2)
+                {
+                    realmAbilities.Add(spec[0], int.Parse(spec[1]));
+                }
+            });
+            
+            Name = player.Name;
+            Level = player.Level;
+            Class = ScriptMgr.FindCharacterClass(player.Class).Name;
+            Specializations = specs;
+            RealmAbilities = realmAbilities;
+        }
+        
+        public string Name { get; }
+        public int Level { get; }
+        public string Class { get; }
+        public Dictionary<string, int> Specializations { get; }
+        public Dictionary<string, int> RealmAbilities { get; }
     }
 
     private static string GetRR(int realmLevel)
@@ -132,6 +177,18 @@ public class Player
         }
 
         return playerInfo;
+    }
+    
+    public PlayerSpec GetPlayerSpec(string playerName)
+    {
+        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+
+        if (player == null)
+            return null;
+
+        var specs = new PlayerSpec(player);
+
+        return specs;
     }
 
     public List<PlayerInfo> GetAllPlayers()

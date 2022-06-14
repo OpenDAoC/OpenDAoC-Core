@@ -82,6 +82,12 @@ namespace DOL.GS.API
 
                 return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
             });
+            api.MapGet("/player/{playerName}/specs", (string playerName) =>
+            {
+                var playerInfo = _player.GetPlayerSpec(playerName);
+
+                return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
+            });
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
 
             #endregion
