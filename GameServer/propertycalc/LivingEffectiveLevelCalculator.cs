@@ -43,11 +43,11 @@ namespace DOL.GS.PropertyCalc
 			} 		
 			else if (living is GameNPC) 
 			{
-				/*
+				
 				IControlledBrain brain = ((GameNPC)living).Brain as IControlledBrain;
-				if (brain != null)
+				if (brain != null && brain.Body.effectListComponent.ContainsEffectForEffectType(eEffect.Charm))
 					return brain.Owner.Level + living.ItemBonus[(int)property] + living.BaseBuffBonusCategory[(int)property];
-					*/
+					
 				return living.Level + living.ItemBonus[(int)property] + living.BaseBuffBonusCategory[(int)property];
 			}
 			return 0;
