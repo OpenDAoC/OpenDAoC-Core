@@ -399,7 +399,8 @@ namespace DOL.GS.RealmAbilities
 			if (StyleToUse != null)
 			{
 				StyleProcessor.TryToUseStyle(living, StyleToUse);
-				DisableSkill(living);
+				AttackData lastAD = living.TempProperties.getProperty<AttackData>("LastAttackData", null);
+				if(lastAD != null && lastAD.IsHit) DisableSkill(living);
 			}
 			base.Execute(living);
 		}
