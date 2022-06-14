@@ -177,7 +177,7 @@ namespace DOL.GS.API
             
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
-                var discordStatus = _player.GetDiscord(accountName);
+                var discordStatus = Player.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
             });
             
