@@ -4490,6 +4490,8 @@ namespace DOL.GS
                 return false;
 
             bool effectRemoved = false;
+            
+            EffectService.RequestCancelEffect(this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
 
 			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
