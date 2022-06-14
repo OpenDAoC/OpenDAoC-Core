@@ -2206,7 +2206,7 @@ namespace DOL.GS.ServerRules
 			stat.Add(" ");
 			#region Keeps
 			//only show if there is a capture [by Suncheck]
-			if ((player.CapturedKeeps + player.CapturedTowers) > 0)
+			if ((player.CapturedKeeps + player.CapturedRelics) > 0)
 			{
 				stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Capture.Title"));
 				//stat.Add("Relics Taken: " + player.RelicsTaken.ToString("N0"));
@@ -2218,7 +2218,10 @@ namespace DOL.GS.ServerRules
 				//stat.Add("Albion Towers Captured: " + player.CapturedAlbionTowers.ToString("N0"));
 				//stat.Add("Midgard Towers Captured: " + player.CapturedMidgardTowers.ToString("N0"));
 				//stat.Add("Hibernia Towers Captured: " + player.CapturedHiberniaTowers.ToString("N0"));
-				if (player.CapturedTowers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Capture.Towers") + ": " + player.CapturedTowers.ToString("N0"));
+				if(player.CapturedRelics > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Capture.Relics") + ": " + player.CapturedRelics.ToString("N0"));
+				//
+				//if (player.CapturedTowers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Capture.Towers") + ": " + player.CapturedTowers.ToString("N0"));
+				//
 				//stat.Add("Tower Captains Slain: " + player.TowerCaptainsSlain.ToString("N0"));
 				//stat.Add("Realm Guard Kills Albion: " + player.RealmGuardTotalKills.ToString("N0"));
 				//stat.Add("Realm Guard Kills Midgard: " + player.RealmGuardTotalKills.ToString("N0"));

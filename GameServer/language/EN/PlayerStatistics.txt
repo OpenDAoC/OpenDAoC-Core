@@ -23,6 +23,7 @@ PlayerStatistic.Solo.TotalPlayers:			Total Solo Killed
 PlayerStatistic.Capture.Title:				Capture Report
 PlayerStatistic.Capture.Keeps:				Total Keeps Captured
 PlayerStatistic.Capture.Towers:				Total Towers Captured
+PlayerStatistic.Capture.Relics:				Total Relics Captured
 
 ## PvE Kills
 PlayerStatistic.PvE.Title:				PvE Report
