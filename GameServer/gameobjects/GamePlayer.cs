@@ -459,6 +459,16 @@ namespace DOL.GS
         }
         
         /// <summary>
+        /// Gets or sets the HideSpecializationAPI for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HideSpecializationAPI
+        {
+            get { return (DBCharacter != null ? DBCharacter.HideSpecializationAPI : false); }
+            set { if (DBCharacter != null) DBCharacter.HideSpecializationAPI = value; }
+        }
+        
+        /// <summary>
         /// Gets or sets the hardcore flag for this player
         /// (delegate to property in DBCharacter)
         /// </summary>

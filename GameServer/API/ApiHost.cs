@@ -82,6 +82,19 @@ namespace DOL.GS.API
 
                 return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
             });
+            api.MapGet("/player/{playerName}/specs", (string playerName) =>
+            {
+                var playerSpecs = _player.GetPlayerSpec(playerName);
+
+                return playerSpecs == null ? Results.NotFound("Not found") : Results.Ok(playerSpecs);
+            });
+            
+            api.MapGet("/player/{playerName}/tradeskills", (string playerName) =>
+            {
+                var playerTrades = _player.GetPlayerTradeSkills(playerName);
+
+                return playerTrades == null ? Results.NotFound("Not found") : Results.Ok(playerTrades);
+            });
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
 
             #endregion
@@ -177,7 +190,7 @@ namespace DOL.GS.API
             
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
-                var discordStatus = _player.GetDiscord(accountName);
+                var discordStatus = Player.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
             });
             

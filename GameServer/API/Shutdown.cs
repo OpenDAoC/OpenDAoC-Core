@@ -12,7 +12,7 @@ public class Shutdown
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
-    
+
     #region Shutdown
 
     public bool ShutdownServer(string password)
