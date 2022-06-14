@@ -35,12 +35,41 @@ namespace DOL.GS
 	/// <author>Aredhel</author>
 	public class HiberniaSITeleporter : GameTeleporter
 	{
+		/// <summary>
+		/// Add equipment to the teleporter.
+		/// </summary>
+		/// <returns></returns>
+		public override bool AddToWorld()
+		{
+			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008, 0);
+			template.AddNPCEquipment(eInventorySlot.HandsArmor, 396, 0);
+			template.AddNPCEquipment(eInventorySlot.FeetArmor, 402, 0);
+			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468);
+			Inventory = template.CloseTemplate();
+
+			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			VisibleActiveWeaponSlots = 34;
+			return base.AddToWorld();
+		}
+		
 		private String[] m_destination = { 
 			"Grove of Domnann",
 			"Droighaid",
 			"Aalid Feie",
 			"Necht" };
-
+		
+		/// <summary>
+		/// Display the teleport indicator around this teleporters feet
+		/// </summary>
+		public override bool ShowTeleporterIndicator
+		{
+			get
+			{
+				return true;
+			}
+		}
+		
 		/// <summary>
 		/// Player right-clicked the teleporter.
 		/// </summary>
