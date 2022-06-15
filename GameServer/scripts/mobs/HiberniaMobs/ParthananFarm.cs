@@ -25,7 +25,7 @@ namespace DOL.GS
 					else
 						truc = ((source as GamePet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage(Name + " is immune to this form of attack!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 					base.TakeDamage(source, damageType, 0, 0);
 					return;
 				}
@@ -554,11 +554,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughDerg")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughDerg")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -637,11 +632,6 @@ namespace DOL.AI.Brain
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossConnacht")
-					return;
-			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht")
 					return;
 			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
@@ -725,11 +715,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossConnacht2")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht2")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -811,11 +796,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughGur")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -895,11 +875,6 @@ namespace DOL.AI.Brain
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughGur2")
-					return;
-			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur2")
 					return;
 			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();

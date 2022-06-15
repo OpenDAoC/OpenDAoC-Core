@@ -57,7 +57,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Inaksha = null; // Start NPC
-		private static GameNPC Loken = null; // Mob to kill
+		private static Loken Loken = null; // Mob to kill
 		private static GameNPC Miri = null; // Trainer for reward
 
 		private static ItemTemplate ball_of_flame = null; //ball of flame
@@ -141,7 +141,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 636784 && npc.Y == 762433)
 					{
-						Loken = npc;
+						Loken = npc as Loken;
 						break;
 					}
 
@@ -149,7 +149,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Loken , creating it ...");
-				Loken = new GameNPC();
+				Loken = new Loken();
 				Loken.Model = 212;
 				Loken.Name = "Loken";
 				Loken.GuildName = "";
