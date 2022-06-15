@@ -28,7 +28,7 @@ public class LostStoneofArawn : BaseQuest
 
     private static readonly GameLocation demonLocation = new("Nyaegha", 51, 348381, 479838, 3320);
 
-    private static IArea demonArea;
+    private static AbstractArea demonArea;
 
     private static ItemTemplate ancient_copper_necklace;
     private static ItemTemplate scroll_wearyall_loststone;
@@ -296,8 +296,11 @@ public class LostStoneofArawn : BaseQuest
 
         const int radius = 1500;
         var region = WorldMgr.GetRegion(demonLocation.RegionID);
-        demonArea = region.AddArea(new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
-            radius));
+        demonArea = new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
+            radius);
+        demonArea.CanBroadcast = false;
+        demonArea.DisplayMessage = false;
+        region.AddArea(demonArea);
         demonArea.RegisterPlayerEnter(PlayerEnterDemonArea);
 
         GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, SubscribeQuest);

@@ -51,7 +51,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
 		
-		private static IArea keeperArea;
+		private static AbstractArea keeperArea;
 
 		private static ItemTemplate beaded_resisting_stone;
 		private static ItemTemplate stone_pendant;
@@ -315,8 +315,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			const int radius = 1000;
 			var region = WorldMgr.GetRegion(keeperLocation.RegionID);
-			keeperArea = region.AddArea(new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
-				radius));
+			keeperArea = new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
+				radius);
+			keeperArea.CanBroadcast = false;
+			keeperArea.DisplayMessage = false;
+			region.AddArea(keeperArea);
 			keeperArea.RegisterPlayerEnter(PlayerEnterKeeperArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
