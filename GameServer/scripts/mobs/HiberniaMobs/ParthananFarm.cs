@@ -554,11 +554,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughDerg")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughDerg")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -637,11 +632,6 @@ namespace DOL.AI.Brain
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossConnacht")
-					return;
-			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht")
 					return;
 			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
@@ -725,11 +715,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossConnacht2")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht2")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -811,11 +796,6 @@ namespace DOL.AI.Brain
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughGur")
 					return;
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur")
-					return;
-			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
 			boss.X = Body.X;
 			boss.Y = Body.Y;
@@ -895,11 +875,6 @@ namespace DOL.AI.Brain
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is AmalgamateParthananBrain && npc.PackageID == "ParthananBossLoughGur2")
-					return;
-			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-			{
-				if (npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur2")
 					return;
 			}
 			AmalgamateParthanan boss = new AmalgamateParthanan();
