@@ -7,8 +7,8 @@
 	[CmdAttribute(
 		"&salvage",
 		ePrivLevel.Player,
-		"You can salvage an item when you are a crafter",
-		"/salvage")]
+		"You can salvage one or multiple item(s) when you are a crafter",
+		"/salvage", "/salvage all", "/salvage <bag>", "/salvage <bag-bag>", "Add 'Qxx' to specify the minimum quality of the items to salvage (Q98)")]
 	public class SalvageCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -113,7 +113,7 @@
 					qualityInt = int.TryParse(quality, out qualityInt) ? qualityInt : 0;
 				}
 
-				for (int i = firstItem; i <= lastItem; i++)
+				for (var i = firstItem; i <= lastItem; i++)
 				{
 					var item = client.Player.Inventory.GetItem((eInventorySlot)i);
 
@@ -127,14 +127,13 @@
 					else
 						items.Add(item);
 				}
-
+				
 				if (items.Count > 0)
 					client.Player.SalvageItemList(items);
 			}
 			else
 			{
-				WorldInventoryItem item = client.Player.TargetObject as WorldInventoryItem;
-				if (item == null)
+				if (client.Player.TargetObject is not WorldInventoryItem item)
 					return;
 				client.Player.SalvageItem(item.Item);
 			}
