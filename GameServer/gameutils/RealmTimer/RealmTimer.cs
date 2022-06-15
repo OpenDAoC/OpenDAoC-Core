@@ -40,6 +40,9 @@ public class RealmTimer
 
     public static void CheckRealmTimer(GamePlayer player)
     {
+        if(player == null || player.CurrentZone == null)
+            return;
+            
         bool playerInRVRZone = false;
         if (player.CurrentZone.IsRvR)
         {
