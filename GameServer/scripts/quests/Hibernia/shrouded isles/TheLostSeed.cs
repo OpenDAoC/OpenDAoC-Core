@@ -898,6 +898,8 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				switch (Step)
 				{
+					case -1:
+						return "Quest finished!";
 					case 1:
 						return "Speak with Terod in Droighaid.";
 					case 2:

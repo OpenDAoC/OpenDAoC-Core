@@ -962,6 +962,8 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				switch (Step)
 				{
+					case -1:
+						return "Quest finished!";
 					case 1:
 						return "Speak to Ota Yrling in Aegirhamn.";
 					case 2:
