@@ -1,4 +1,5 @@
  using System.Collections.Generic;
+ using System.Linq;
  using DOL.Database;
 
  namespace DOL.GS.Commands
@@ -14,8 +15,7 @@
 		{
 			if (IsSpammingCommand(client.Player, "salvage"))
 				return;
-			int firstItem = 0, lastItem = 0, firstBag = 0, lastBag = 0;
-
+			int firstItem = 0, lastItem = 0, firstBag = 0, lastBag = 0, qualityInt = 0;
 
 			if (args.Length >= 2)
 			{
@@ -105,13 +105,26 @@
 				
 				firstItem += (int)eInventorySlot.FirstBackpack - 1;
 				lastItem += (int)eInventorySlot.FirstBackpack - 1;
-				
+
+				foreach (var arg in args)
+				{
+					if (!arg.Contains('Q')) continue;
+					var quality = arg.Replace("Q", "");
+					qualityInt = int.TryParse(quality, out qualityInt) ? qualityInt : 0;
+				}
+
 				for (int i = firstItem; i <= lastItem; i++)
 				{
 					var item = client.Player.Inventory.GetItem((eInventorySlot)i);
 
 					if (item == null) continue;
-					if (Salvage.IsAllowedToBeginWork(client.Player, item, true))
+					if (!Salvage.IsAllowedToBeginWork(client.Player, item, true)) continue;
+					if (qualityInt > 0)
+					{
+						if (item.Quality <= qualityInt)
+							items.Add(item);
+					}
+					else
 						items.Add(item);
 				}
 
