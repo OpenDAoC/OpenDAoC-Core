@@ -408,13 +408,9 @@ namespace DOL.AI.Brain
                         {
                             if (Darra.HealthPercent < 100)
                             {
-                                if (Body.TargetObject != Darra)
+                                if (!Body.IsCasting && Body.GetSkillDisabledDuration(Paladin_Heal) == 0)
                                 {
                                     Body.TargetObject = Darra;
-                                }
-                                if (!Body.IsCasting)
-                                {
-                                    Body.StopFollowing();
                                     Body.TurnTo(Darra);
                                     Body.CastSpell(Paladin_Heal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                                 }
@@ -423,7 +419,6 @@ namespace DOL.AI.Brain
                     }
                 }                
             }
-
             base.Think();
         }
         private Spell m_Paladin_Heal;
@@ -436,14 +431,14 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 4;
-                    spell.RecastDelay = 0;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
                     spell.ClientEffect = 1358;
                     spell.Icon = 1358;
                     spell.TooltipId = 360;
                     spell.Name = "Spectral Heal";
                     spell.Value = 350;
-                    spell.Range = 1800;
+                    spell.Range = 2000;
                     spell.SpellID = 11776;
                     spell.Target = eSpellTarget.Realm.ToString();
                     spell.Type = eSpellType.Heal.ToString();

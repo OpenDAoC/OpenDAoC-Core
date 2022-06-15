@@ -1,11 +1,8 @@
 ﻿using System;
-
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS
 {
@@ -14,70 +11,45 @@ namespace DOL.GS
         public Vagn() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+                default: return 90;// dmg reduction for rest resists
             }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
-        public void BroadcastMessage(String message)
-        {
-            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-            {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            }
-        }
-
-        public override void Die(GameObject killer) //on kill generate orbs
-        {
-            --VagnCount;
-            BroadcastMessage(String.Format("Protective shield fades away from Council Nokkvi"));
-            base.Die(killer);
-        }
-
-        public static int VagnCount = 0;
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159453);
@@ -91,9 +63,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            ++VagnCount;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             VagnBrain sbrain = new VagnBrain();
             SetOwnBrain(sbrain);
@@ -101,46 +71,7 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Council Vagn", 160, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Council Vagn not found, creating it...");
-
-                log.Warn("Initializing Council Vagn...");
-                Vagn TG = new Vagn();
-                TG.Name = "Council Vagn";
-                TG.PackageID = "Council Vagn";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 78;
-                TG.Size = 70;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-
-                TG.X = 24412;
-                TG.Y = 35856;
-                TG.Z = 12921;
-                TG.Heading = 1183;
-                VagnBrain ubrain = new VagnBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Council Vagn exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }  
     }
 }
 
@@ -158,65 +89,70 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
-
-        public void BroadcastMessage(String message)
-        {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-            {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            }
-        }
-
         public static bool IsPulled = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
             {
-                BroadcastMessage(String.Format(Body.Name + " casts a protective shield around Council Nokkvi"));
-                foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GameNPC Nokkvi in Body.GetNPCsInRadius(1800))
                 {
-                    foreach (GameNPC Nokkvi in Body.GetNPCsInRadius(1800))
-                    {
-                        if (Nokkvi != null && Nokkvi.IsAlive && Nokkvi.Brain is NokkviBrain)
-                        {
-                            ppl.Out.SendSpellEffectAnimation(Body, Nokkvi, 2682, 0, false, 0x01);
-                            AddAggroListTo(Nokkvi.Brain as NokkviBrain);
-                        }
-                    }
+                    if (Nokkvi != null && Nokkvi.IsAlive && Nokkvi.Brain is NokkviBrain)
+                        AddAggroListTo(Nokkvi.Brain as NokkviBrain);
                 }
-
                 IsPulled = true;
             }
-
             base.OnAttackedByEnemy(ad);
         }
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }
-
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
-            else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
-
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
+            if (HasAggro && Body.TargetObject != null)
             {
+                Body.CastSpell(VagnDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
             }
-
             base.Think();
+        }
+        private Spell m_VagnDD;
+        public Spell VagnDD
+        {
+            get
+            {
+                if (m_VagnDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 3;
+                    spell.Power = 0;
+                    spell.RecastDelay = Util.Random(10,15);
+                    spell.ClientEffect = 4075;
+                    spell.Icon = 4075;
+                    spell.Damage = 600;
+                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.Name = "Frost Shock";
+                    spell.Range = 1500;
+                    spell.SpellID = 11927;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    m_VagnDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VagnDD);
+                }
+                return m_VagnDD;
+            }
         }
     }
 }
@@ -229,40 +165,14 @@ namespace DOL.GS
         public Nokkvi() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
-            }
-        }
-
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer || source is GamePet)
-            {
-                if (Vagn.VagnCount == 1) //take no damage
-                {
-                    GamePlayer truc;
-                    if (source is GamePlayer)
-                        truc = (source as GamePlayer);
-                    else
-                        truc = ((source as GamePet).Owner as GamePlayer);
-                    if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
-
-                    base.TakeDamage(source, damageType, 0, 0);
-                    return;
-                }
-                else if (Vagn.VagnCount == 0) //take dmg
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
+                case eDamageType.Slash: return 90;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 90;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+                default: return 20;// dmg reduction for rest resists
             }
         }
 
@@ -270,42 +180,32 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
-        public override void Die(GameObject killer) //on kill generate orbs
-        {
-            base.Die(killer);
-        }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159450);
@@ -319,8 +219,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             NokkviBrain sbrain = new NokkviBrain();
             SetOwnBrain(sbrain);
@@ -328,46 +227,6 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Council Nokkvi", 160, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Council Nokkvi not found, creating it...");
-
-                log.Warn("Initializing Council Nokkvi...");
-                Nokkvi TG = new Nokkvi();
-                TG.Name = "Council Nokkvi";
-                TG.PackageID = "Council Nokkvi";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 78;
-                TG.Size = 70;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-
-                TG.X = 24075;
-                TG.Y = 35593;
-                TG.Z = 12917;
-                TG.Heading = 3094;
-                NokkviBrain ubrain = new NokkviBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn(
-                    "Council Nokkvi exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -386,27 +245,18 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
-
         public static bool IsPulled2 = false;
-
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)
             {
-                foreach (GamePlayer ppl in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GameNPC Vagn in Body.GetNPCsInRadius(1800))
                 {
-                    foreach (GameNPC Vagn in Body.GetNPCsInRadius(1800))
-                    {
-                        if (Vagn != null && Vagn.IsAlive && Vagn.Brain is VagnBrain)
-                        {
-                            AddAggroListTo(Vagn.Brain as VagnBrain);
-                        }
-                    }
+                    if (Vagn != null && Vagn.IsAlive && Vagn.Brain is VagnBrain)
+                        AddAggroListTo(Vagn.Brain as VagnBrain);
                 }
-
                 IsPulled2 = true;
             }
-
             base.OnAttackedByEnemy(ad);
         }
 
@@ -416,24 +266,19 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
             }
 
             if (Body.IsOutOfTetherRange)
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
-
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
-            {
-            }
-
             base.Think();
         }
     }

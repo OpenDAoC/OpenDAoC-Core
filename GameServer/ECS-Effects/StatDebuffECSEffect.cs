@@ -6,6 +6,7 @@ using DOL.AI.Brain;
 using DOL.GS.PropertyCalc;
 using System.Collections.Generic;
 using DOL.GS.API;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -55,6 +56,20 @@ namespace DOL.GS
 
                     //Console.WriteLine("Debuffing Speed for " + e.Owner.Name);
                     //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID, 1.0 - e.SpellHandler.Spell.Value * 0.01);
+
+                    var speedDebuffs = Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff)
+                                                                .Where(x => x.SpellHandler.Spell.ID != this.SpellHandler.Spell.ID);
+
+                    if (speedDebuffs.Any(x => x.SpellHandler.Spell.Value > this.SpellHandler.Spell.Value))
+                    {
+                        return;
+                    }
+
+                    foreach (var effect in speedDebuffs)
+                    {
+                        EffectService.RequestDisableEffect(effect);
+                    }
+
                     Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType,
                         1.0 - SpellHandler.Spell.Value * 0.01);
                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
@@ -103,6 +118,14 @@ namespace DOL.GS
                     //}
 
                     //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler.Spell.ID);
+
+                    var speedDebuff = Owner.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedDebuff);
+
+                    if (speedDebuff != null)
+                    {
+                        EffectService.RequestEnableEffect(speedDebuff);
+                    }
+
                     Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, EffectType);
                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
                 }
@@ -138,7 +161,11 @@ namespace DOL.GS
         private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value,
             double Effectiveness, bool IsSubstracted)
         {
-            int effectiveValue = (int) (Value * Effectiveness);
+            
+            int effectiveValue = (int) Value;
+
+            if (Property != eProperty.FatigueConsumption)
+                effectiveValue = (int)(Value * Effectiveness);
 
             IPropertyIndexer tblBonusCat;
             if (Property != eProperty.Undefined)

@@ -26,6 +26,16 @@ namespace DOL.GS.Scripts
         private static List<int> albionRvRZones = new List<int>() { 11, 12, 14, 15};
         private static List<int> midgardRvRZones = new List<int>() { 111, 112, 113, 115 };
         private static List<int> hiberniaRvRZones = new List<int>() { 210, 211, 212, 214 };
+        
+        // low level zone ids
+        private static List<int> albionLowbieZones = new List<int>() { 0, 1, 52, 8, 6};
+        private static List<int> midgardLowbieZones = new List<int>() {102, 104, 106, 155};
+        private static List<int> hiberniaLowbieZones = new List<int>() { 201, 202, 203, 206, 182};
+        
+        // high level zone ids
+        private static List<int> albionHighZones = new List<int>() {4, 7, 10, 53, 55, 56, 57};
+        private static List<int> midgardHighZones = new List<int>() {107, 108, 116, 152, 153, 154, 156, 158};
+        private static List<int> hiberniaHighZones = new List<int>() {204, 205, 216, 183, 184, 185, 186, 187};
 
         // PvE Zone ID's
         private static List<int> albionClassicZones = new List<int>();
@@ -158,12 +168,12 @@ namespace DOL.GS.Scripts
 
             GetNextPvEZones();
 
-            albDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(albionClassicZones[currentAlbionZone]));
-            albDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(albionSIZones[currentAlbionZoneSI]));
-            midDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(midgardClassicZones[currentMidgardZone]));
-            midDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(midgardSIZones[currentMidgardZoneSI]));
-            hibDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(hiberniaClassicZones[currentHiberniaZone]));
-            hibDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(hiberniaSIZones[currentHiberniaZoneSI]));
+            albDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
+            albDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
+            midDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
+            midDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
+            hibDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
+            hibDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
 
             // Set XP Bonuses in DB
             albDBZone.Experience = PvEExperienceBonusAmount;
@@ -182,12 +192,12 @@ namespace DOL.GS.Scripts
             GameServer.Database.SaveObject(hibDBZoneSI);
 
             // Update Bonuses In-Game
-            WorldMgr.Zones[(ushort)albionClassicZones[currentAlbionZone]].BonusExperience = PvEExperienceBonusAmount;
-            WorldMgr.Zones[(ushort)albionSIZones[currentAlbionZoneSI]].BonusExperience = PvEExperienceBonusAmount;
-            WorldMgr.Zones[(ushort)midgardClassicZones[currentMidgardZone]].BonusExperience = PvEExperienceBonusAmount;
-            WorldMgr.Zones[(ushort)midgardSIZones[currentMidgardZoneSI]].BonusExperience = PvEExperienceBonusAmount;
-            WorldMgr.Zones[(ushort)hiberniaClassicZones[currentHiberniaZone]].BonusExperience = PvEExperienceBonusAmount;
-            WorldMgr.Zones[(ushort)hiberniaSIZones[currentHiberniaZoneSI]].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentAlbionZone].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentAlbionZoneSI].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentMidgardZone].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentMidgardZoneSI].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentHiberniaZone].BonusExperience = PvEExperienceBonusAmount;
+            WorldMgr.Zones[(ushort)currentHiberniaZoneSI].BonusExperience = PvEExperienceBonusAmount;
 
             foreach (GameClient client in WorldMgr.GetAllClients())
             {
@@ -325,21 +335,200 @@ namespace DOL.GS.Scripts
             else
                 currentHiberniaZoneSI = 0;
             */
-            currentAlbionZone = Util.Random(albionClassicZones.Count - 1);
-            currentAlbionZoneSI = Util.Random(albionSIZones.Count - 1);
+            bool UseClassicAlbHighZones = Util.Chance(50);
+            if (UseClassicAlbHighZones)
+            {
+                List<int> ClassicHighZones = new List<int>();
+                foreach (var highZone in albionHighZones)
+                {
+                    if(albionClassicZones.Contains(highZone))
+                        ClassicHighZones.Add(highZone);
+                }
 
-            currentMidgardZone = Util.Random(midgardClassicZones.Count - 1);
-            currentMidgardZoneSI = Util.Random(midgardSIZones.Count - 1);
+                List<int> SILowZones = new List<int>();
+                foreach (var lowZone in albionLowbieZones)
+                {
+                    if (albionSIZones.Contains(lowZone))
+                        SILowZones.Add(lowZone);
+                }
+                
+                currentAlbionZone = ClassicHighZones[Util.Random(ClassicHighZones.Count - 1)];
+                currentAlbionZoneSI = SILowZones[Util.Random(SILowZones.Count - 1)];
+            }
+            else
+            {
+                List<int> ClassicLowZones = new List<int>();
+                foreach (var lowZone in albionLowbieZones)
+                {
+                    if(albionClassicZones.Contains(lowZone))
+                        ClassicLowZones.Add(lowZone);
+                }
 
-            currentHiberniaZone = Util.Random(hiberniaClassicZones.Count - 1);
-            currentHiberniaZoneSI = Util.Random(hiberniaSIZones.Count - 1);
+                List<int> SIHighZones = new List<int>();
+                foreach (var highZone in albionHighZones)
+                {
+                    if (albionSIZones.Contains(highZone))
+                        SIHighZones.Add(highZone);
+                }
+                
+                currentAlbionZone = ClassicLowZones[Util.Random(ClassicLowZones.Count - 1)];
+                currentAlbionZoneSI = SIHighZones[Util.Random(SIHighZones.Count - 1)];
+            }
+            //currentAlbionZone = Util.Random(albionClassicZones.Count - 1);
+            //currentAlbionZoneSI = Util.Random(albionSIZones.Count - 1);
+
+            bool UseClassicMidHighZones = Util.Chance(50);
+            if (UseClassicMidHighZones)
+            {
+                List<int> ClassicHighZones = new List<int>();
+                foreach (var highZone in midgardHighZones)
+                {
+                    if(midgardClassicZones.Contains(highZone))
+                        ClassicHighZones.Add(highZone);
+                }
+
+                List<int> SILowZones = new List<int>();
+                foreach (var lowZone in midgardLowbieZones)
+                {
+                    if (midgardSIZones.Contains(lowZone))
+                        SILowZones.Add(lowZone);
+                }
+                
+                currentMidgardZone = ClassicHighZones[Util.Random(ClassicHighZones.Count - 1)];
+                currentMidgardZoneSI = SILowZones[Util.Random(SILowZones.Count - 1)];
+            }
+            else
+            {
+                List<int> ClassicLowZones = new List<int>();
+                foreach (var lowZone in midgardLowbieZones)
+                {
+                    if(midgardClassicZones.Contains(lowZone))
+                        ClassicLowZones.Add(lowZone);
+                }
+
+                List<int> SIHighZones = new List<int>();
+                foreach (var highZone in midgardHighZones)
+                {
+                    if (midgardSIZones.Contains(highZone))
+                        SIHighZones.Add(highZone);
+                }
+                
+                currentMidgardZone = ClassicLowZones[Util.Random(ClassicLowZones.Count - 1)];
+                currentMidgardZoneSI = SIHighZones[Util.Random(SIHighZones.Count - 1)];
+            }
+            
+            //currentMidgardZone = Util.Random(midgardClassicZones.Count - 1);
+            //currentMidgardZoneSI = Util.Random(midgardSIZones.Count - 1);
+
+            bool UseClassicHibHighZones = Util.Chance(50);
+            if (UseClassicHibHighZones)
+            {
+                List<int> ClassicHighZones = new List<int>();
+                foreach (var highZone in hiberniaHighZones)
+                {
+                    if(hiberniaClassicZones.Contains(highZone))
+                        ClassicHighZones.Add(highZone);
+                }
+
+                List<int> SILowZones = new List<int>();
+                foreach (var lowZone in hiberniaLowbieZones)
+                {
+                    if (hiberniaSIZones.Contains(lowZone))
+                        SILowZones.Add(lowZone);
+                }
+                
+                currentHiberniaZone = ClassicHighZones[Util.Random(ClassicHighZones.Count - 1)];
+                currentHiberniaZoneSI = SILowZones[Util.Random(SILowZones.Count - 1)];
+            }
+            else
+            {
+                List<int> ClassicLowZones = new List<int>();
+                foreach (var lowZone in hiberniaLowbieZones)
+                {
+                    if(hiberniaClassicZones.Contains(lowZone))
+                        ClassicLowZones.Add(lowZone);
+                }
+
+                List<int> SIHighZones = new List<int>();
+                foreach (var highZone in hiberniaHighZones)
+                {
+                    if (hiberniaSIZones.Contains(highZone))
+                        SIHighZones.Add(highZone);
+                }
+                
+                currentHiberniaZone = ClassicLowZones[Util.Random(ClassicLowZones.Count - 1)];
+                currentHiberniaZoneSI = SIHighZones[Util.Random(SIHighZones.Count - 1)];
+            }
+            //currentHiberniaZone = Util.Random(hiberniaClassicZones.Count - 1);
+            //currentHiberniaZoneSI = Util.Random(hiberniaSIZones.Count - 1);
 
         }
 
 
         private static void TellClient(GameClient client)
         {
-            client.Out.SendMessage(GetText(), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            // client.Out.SendMessage(GetText(), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("Bonus zones updated.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+        }
+
+        private static string GetLevelRange(int zoneID)
+        {
+            switch (zoneID)
+            {
+                case 0:
+                case 8:
+                case 100:
+                case 103:
+                case 181:
+                    return "[1-20]";
+                case 1:
+                case 201:
+                case 202:
+                case 102:
+                    return "[10-30]";
+                case 52:
+                case 206:
+                    return "[15-35]";
+                case 6:
+                case 203:
+                case 182:
+                case 204:
+                case 104:
+                case 106:
+                case 155:
+                    return "[20-35]";
+                case 186:
+                case 152:
+                case 116:
+                    return "[25-45]";
+                case 4:
+                case 10:
+                case 53:
+                case 57:
+                case 216:
+                case 183:
+                case 187:
+                    return "[35-50]";
+                case 205:
+                case 107:
+                case 153:
+                case 158:
+                    return "[30-50]";
+                case 7:
+                    return "[25-50]";
+                case 184:
+                case 185:
+                case 108:
+                case 154:
+                case 156:
+                case 54:
+                case 55:
+                case 56:
+                    return "[40-50+]";
+            }
+
+            return "";
         }
 
         public static string GetText()
@@ -388,16 +577,16 @@ namespace DOL.GS.Scripts
             temp.Add("Bonus XP: " + RvRExperienceBonusAmount + "%");
             temp.Add("");
             temp.Add("Current Albion Zones: ");
-            temp.Add("Classic Zone: " + albDBZone.Name + " (XP +" + albDBZone.Experience + "%)");
-            temp.Add("SI Zone: " + albDBZoneSI.Name + " (XP +" + albDBZoneSI.Experience + "%)");
+            temp.Add("Classic Zone: " + albDBZone.Name + " " + GetLevelRange(albDBZone.ZoneID) + " (XP +" + albDBZone.Experience + "%)");
+            temp.Add("SI Zone: " + albDBZoneSI.Name + " " + GetLevelRange(albDBZoneSI.ZoneID) + " (XP +" + albDBZoneSI.Experience + "%)");
             temp.Add("");
             temp.Add("Current Midgard Zones: ");
-            temp.Add("Classic Zone: " + midDBZone.Name + " (XP +" + midDBZone.Experience + "%)");
-            temp.Add("SI Zone: " + midDBZoneSI.Name + " (XP +" + midDBZoneSI.Experience + "%)");
+            temp.Add("Classic Zone: " + midDBZone.Name + " " + GetLevelRange(midDBZone.ZoneID) + " (XP +" + midDBZone.Experience + "%)");
+            temp.Add("SI Zone: " + midDBZoneSI.Name + " " + GetLevelRange(midDBZoneSI.ZoneID) + " (XP +" + midDBZoneSI.Experience + "%)");
             temp.Add("");
             temp.Add("Current Hibernia Zones: ");
-            temp.Add("Classic Zone: " + hibDBZone.Name + " (XP +" + hibDBZone.Experience + "%)");
-            temp.Add("SI Zone: " + hibDBZoneSI.Name + " (XP +" + hibDBZoneSI.Experience + "%)");
+            temp.Add("Classic Zone: " + hibDBZone.Name + " " + GetLevelRange(hibDBZone.ZoneID) + " (XP +" + hibDBZone.Experience + "%)");
+            temp.Add("SI Zone: " + hibDBZoneSI.Name + " " + GetLevelRange(hibDBZoneSI.ZoneID) + " (XP +" + hibDBZoneSI.Experience + "%)");
 
             temp.Add("");
             var rvr = _lastRvRChangeTick + RvRTimer - GameLoop.GameLoopTime;
@@ -473,12 +662,12 @@ namespace DOL.GS.Scripts
         private static void ClearPvEZones()
         {
             // Clear PvE Zones
-            albDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(albionClassicZones[currentAlbionZone]));
-            albDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(albionSIZones[currentAlbionZoneSI]));
-            midDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(midgardClassicZones[currentMidgardZone]));
-            midDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(midgardSIZones[currentMidgardZoneSI]));
-            hibDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(hiberniaClassicZones[currentHiberniaZone]));
-            hibDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(hiberniaSIZones[currentHiberniaZoneSI]));
+            albDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
+            albDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
+            midDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
+            midDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
+            hibDBZone = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
+            hibDBZoneSI = DOLDB<Zones>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
 
             albDBZone.Experience = 0;
             albDBZoneSI.Experience = 0;

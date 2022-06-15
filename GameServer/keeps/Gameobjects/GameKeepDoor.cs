@@ -42,6 +42,10 @@ namespace DOL.GS.Keeps
 		protected int m_oldMaxHealth;
 
 		protected byte m_oldHealthPercent;
+		
+		private bool m_RelicMessage75 = false;
+		private bool m_RelicMessage50 = false;
+		private bool m_RelicMessage25 = false;
 
 		protected int m_doorID;
 		/// <summary>
@@ -151,6 +155,14 @@ namespace DOL.GS.Keeps
 			}
 		}
 
+		public bool IsRelic
+		{
+			get
+			{
+				return Component.Keep.IsRelic;
+			}
+		}
+
 		public void UpdateLevel()
 		{
 			if (MaxHealth != m_oldMaxHealth)
@@ -185,20 +197,29 @@ namespace DOL.GS.Keeps
 				}
 				else if (Component.Keep is GameKeep)
 				{
-					if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
-					{
-						if (DoorIndex == 1)
-							return true;
-					}
-					if (Component.Skin == 0 || Component.Skin == 24)//old and new main gate
-					{
-						if (DoorIndex == 1 ||
-							DoorIndex == 2)
-							return true;
-					}
+					// if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
+					// {
+					// 	if (DoorIndex == 1)
+					// 		return true;
+					// }
+					// if (Component.Skin == 0 || Component.Skin == 24)//old and new main gate
+					// {
+					// 	if (DoorIndex == 1 ||
+					// 		DoorIndex == 2)
+					// 		return true;
+					// }
 					
-				}
-				return false;
+					var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+					if (door == null) return false;
+					return !door.IsPostern;
+					
+				} 
+                else if (Component.Keep is RelicGameKeep)
+                {
+	                var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
+	                return !door.IsPostern;
+                }
+                return false;
 			}
 		}
 
@@ -245,7 +266,7 @@ namespace DOL.GS.Keeps
 
 				if (IsAttackableDoor)
 				{
-					name = "Keep Door";
+					name = IsRelic ? "Relic Gate" : "Keep Door";
 				}
 				else
 				{
@@ -302,7 +323,7 @@ namespace DOL.GS.Keeps
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (damageAmount > 0)
+			if (damageAmount > 0 && IsAlive)
 			{
 				Component.Keep.LastAttackedByEnemyTick = CurrentRegion.Time;
 				base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -316,6 +337,51 @@ namespace DOL.GS.Keeps
 						client.Out.SendObjectUpdate(this);
 					}
 				}
+			}
+
+			if (!IsRelic) return;
+			
+			if (HealthPercent == 25)
+			{
+				if (!m_RelicMessage25)
+				{
+					m_RelicMessage25 = true;
+					BroadcastRelicGateDamage();
+				}
+			}
+
+			if (HealthPercent == 50)
+			{
+				if (!m_RelicMessage50)
+				{
+					m_RelicMessage50 = true;
+					BroadcastRelicGateDamage();
+				}
+			}
+
+			if (HealthPercent == 75)
+			{
+				if (!m_RelicMessage75)
+				{
+					m_RelicMessage75 = true;
+					BroadcastRelicGateDamage();
+				}
+			}
+		}
+
+		private void BroadcastRelicGateDamage()
+		{
+			var message = $"{Component.Keep.Name} is under attack!";
+			foreach (var cl in WorldMgr.GetClientsOfRealm(Realm))
+			{
+				if (cl.Player.ObjectState != eObjectState.Active) continue;
+				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+			
+			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			{
+				GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
 			}
 		}
 
@@ -743,7 +809,7 @@ namespace DOL.GS.Keeps
 			base.Die(killer);
 
 			foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-				player.Out.SendMessage("The Keep Gate is broken!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage($"The {Name} is broken!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 			m_state = eDoorState.Open;
 			BroadcastDoorStatus();
@@ -792,6 +858,15 @@ namespace DOL.GS.Keeps
 		public void Repair(int amount)
 		{
 			Health += amount;
+
+			if (HealthPercent > 25)
+				m_RelicMessage25 = false;
+			if (HealthPercent > 50)
+				m_RelicMessage50 = false;
+			if (HealthPercent > 75)
+				m_RelicMessage75 = false;
+
+			BroadcastDoorStatus();
 		}
 		/// <summary>
 		/// This Function is called when keep is taken to repair door
@@ -802,6 +877,9 @@ namespace DOL.GS.Keeps
 			Realm = realm;
 			Health = MaxHealth;
 			m_oldHealthPercent = HealthPercent;
+			m_RelicMessage25 = false;
+			m_RelicMessage50 = false;
+			m_RelicMessage75 = false;
 			CloseDoor();
 		}
 

@@ -28,6 +28,7 @@ using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -98,7 +99,7 @@ namespace DOL.GS.Commands
                         info.Add(" + Is Pet ");
 						info.Add(" + Pet Owner:   " + targetP.Owner);
 						info.Add(" ");
-						info.Add(" + Pet target:   " + targetP.TargetObject.Name);
+						info.Add(" + Pet target:   " + targetP.TargetObject?.Name);
 					}
 					
 					if (client.Player.TargetObject is GameMovingObject)
@@ -368,7 +369,7 @@ namespace DOL.GS.Commands
 					info.Add("HP Regen: " + target.GetModified(eProperty.HealthRegenerationRate)+ " | End Regen: " + target.GetModified(eProperty.EnduranceRegenerationRate) + " | Pow Regen: " + target.GetModified(eProperty.PowerRegenerationRate));
 					info.Add("HP: " + target.Health + "/" + target.GetModified(eProperty.MaxHealth)+ " " + Math.Round(((double)target.Health/(double)target.MaxHealth)*100, 2) + "%"
 					         + " | Power: " + target.Mana + "/" + target.GetModified(eProperty.MaxMana)+ " " +  Math.Round(((double)target.Mana/(double)target.MaxMana)*100, 2) + "%");
-					info.Add("Player has Tireless: " + target.HasAbility(Abilities.Tireless));
+					info.Add("End Regen Rate: " + target.GetModified(eProperty.EnduranceRegenerationRate));
 					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
 					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
 					info.Add("Combat flag: " + target.InCombat);
@@ -676,6 +677,24 @@ namespace DOL.GS.Commands
 				}
 
 				#endregion Keep
+
+				#region Ram
+				if(client.Player.TargetObject is GameSiegeRam)
+				{
+					var target = client.Player.TargetObject as GameSiegeRam;
+
+						
+					info.Add( "  ------- SIEGE RAM ------\n");
+					info.Add( " + Max # Riders: " + target.Riders.Length);
+					foreach (GamePlayer rider in target.Riders)
+					{
+						if(rider != null)
+							info.Add( " + Rider slot: " + target.RiderSlot(rider) + " Player Name: " + rider.Name);
+					}
+					
+				}
+
+				#endregion Ram
 
 				client.Out.SendCustomTextWindow("[ " + name + " ]", info);
 				return;

@@ -51,10 +51,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -125,16 +125,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 300000; }
         }
         #region BroadcastMessage & Die()
         public void BroadcastMessage(String message)
@@ -184,7 +184,8 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            Styles.Add(taunt);
+            if (!Styles.Contains(taunt))
+                Styles.Add(taunt);
             ++QueenKulaCount;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -203,43 +204,7 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Queen Kula", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Queen Kula not found, creating it...");
-
-                log.Warn("Initializing Queen Kula ...");
-                QueenKula TG = new QueenKula();
-                TG.Name = "Queen Kula";
-                TG.Model = 945;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 80;
-                TG.CurrentRegionID = 160;//tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 34136;
-                TG.Y = 57202;
-                TG.Z = 12025;
-                TG.Heading = 2107;
-                QueenKulaBrain ubrain = new QueenKulaBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Queen Kula exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }    
         #endregion
     }
 }
@@ -386,7 +351,9 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                IsTargetPicked=false;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165083);
+                Body.Strength = npcTemplate.Strength;
+                IsTargetPicked =false;
                 IsPulled1 = false;
             }
             if (Body.IsOutOfTetherRange)
@@ -403,7 +370,7 @@ namespace DOL.AI.Brain
                 PlayerInCenter();//method that check if player enter to frozen circle
                 if (message1 == false)
                 {
-                    BroadcastMessage(String.Format("'Queen Kula grins maliciously: So you got past all my Hrimthursa Guardians!" +
+                    BroadcastMessage(String.Format("Queen Kula grins maliciously, 'So you got past all my Hrimthursa Guardians!" +
                         " These Hrimthursa are useless and arrogant! I'm going to show you what I've been wanting to teach you for a long time." +
                         " The merciless who are not afraid of death will survive in this brutal world! I am merciless I'm not afraid of death!'"));
                     message1 = true;
@@ -433,11 +400,11 @@ namespace DOL.AI.Brain
                     }
                     if (KingTuscar.KingTuscarCount == 1)
                     {
-                        Body.Strength = 400;//if king is up it will deal less dmg
+                        Body.Strength = 350;//if king is up it will deal less dmg
                     }
-                    else if (KingTuscar.KingTuscarCount == 0)
+                    if (KingTuscar.KingTuscarCount == 0 || Body.HealthPercent <= 50)
                     {
-                        Body.Empathy = 600;//king is dead so more dmg
+                        Body.Strength = 500;//king is dead so more dmg
                     }
                     Body.styleComponent.NextCombatStyle = QueenKula.taunt;
                 }
@@ -538,10 +505,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 80;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80;// dmg reduction for melee dmg
-                default: return 80;// dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -611,16 +578,16 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.65;
+            return 0.20;
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 300000; }
         }
         public static int KingTuscarCount = 0;
         public override void Die(GameObject killer)//on kill generate orbs
@@ -687,10 +654,14 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            Styles.Add(taunt);
-            Styles.Add(after_parry);
-            Styles.Add(parry_followup);
-            Styles.Add(after_block);
+            if(!Styles.Contains(taunt))
+                Styles.Add(taunt);
+            if (!Styles.Contains(after_parry))
+                Styles.Add(after_parry);
+            if (!Styles.Contains(parry_followup))
+                Styles.Add(parry_followup);
+            if (!Styles.Contains(after_block))
+                Styles.Add(after_block);
             ++KingTuscarCount;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -709,43 +680,7 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("King Tuscar", 160, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("King Tuscarnot found, creating it...");
-
-                log.Warn("Initializing King Tuscar ...");
-                KingTuscar TG = new KingTuscar();
-                TG.Name = "King Tuscar";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 90;
-                TG.CurrentRegionID = 160;//tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 32073;
-                TG.Y = 53569;
-                TG.Z = 11886;
-                TG.Heading = 33;
-                KingTuscarBrain ubrain = new KingTuscarBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("King Tuscar exist ingame, remove it and restart server if you want to add by script code.");
-        }
+        }       
         #endregion
         #region Spells
         private Spell m_Hammers_aoe;
@@ -895,6 +830,8 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162909);
+                Body.Strength = npcTemplate.Strength;
                 TuscarRage = false;
                 IsPulled2 = false;
             }
@@ -925,11 +862,11 @@ namespace DOL.AI.Brain
                     GameLiving living = Body.TargetObject as GameLiving;
                     if(QueenKula.QueenKulaCount == 1)
                     {
-                        Body.Strength = 500;
+                        Body.Strength = 350;
                     }
-                    else if (QueenKula.QueenKulaCount == 0 || Body.HealthPercent <=50)
+                    if (QueenKula.QueenKulaCount == 0 || Body.HealthPercent <= 50)
                     {
-                        Body.Empathy = 700;
+                        Body.Strength = 500;
                     }
                 }
             }

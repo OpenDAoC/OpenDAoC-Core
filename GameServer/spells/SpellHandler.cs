@@ -27,6 +27,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
@@ -792,7 +793,7 @@ namespace DOL.GS.Spells
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
-				if (nextSpellAvailTime > m_caster.CurrentRegion.Time)
+				if (nextSpellAvailTime > m_caster.CurrentRegion.Time && Spell.CastTime > 0) // instant spells ignore the potion cast delay
 				{
 					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -2384,6 +2385,8 @@ namespace DOL.GS.Spells
             {
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
             }*/
+			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing && Caster is GamePlayer {CharacterClass: not ClassSavage})
+				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}
@@ -3174,6 +3177,7 @@ namespace DOL.GS.Spells
 						case (byte)eSpellType.DirectDamage:
 						case (byte)eSpellType.MagicalStrike:
 						case (byte)eSpellType.SiegeArrow:
+						case (byte)eSpellType.Lifedrain:
 						case (byte)eSpellType.SiegeDirectDamage:
 						case (byte)eSpellType.SummonTheurgistPet:
 						case (byte)eSpellType.DirectDamageWithDebuff:
@@ -3203,13 +3207,22 @@ namespace DOL.GS.Spells
 			}
 			
 			if (Spell.Radius == 0 &&
-				(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
-				m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
-				m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
+				//(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
+				(m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
+				//m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
 				m_spellLine.KeyName == Specs.Savagery || 
 				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
 				m_spellLine.KeyName == "OffensiveProc"))
 				effectiveness = 1.0; // TODO player.PlayerEffectiveness
+
+
+			if (Spell.Radius == 0 &&
+			    (m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
+			    m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
+			    && effectiveness < 1)
+			{
+				effectiveness = 1.0;
+			}
 
 			if (effectiveness <= 0)
 				return; // no effect
@@ -4259,10 +4272,23 @@ namespace DOL.GS.Spells
 						spellDamage = CapPetSpellDamage(spellDamage, player);
 
 					if (pet is NecromancerPet nPet)
-						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
+					{
+						int ownerIntMod = 125;
+						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence;
+						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + ownerIntMod) / 275.0);
+						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
+					}
 					else
-						spellDamage *= ((pet.Intelligence + 200) / 275.0);
-
+					{
+						int ownerIntMod = 125;
+						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence / 2;
+						spellDamage *= ((pet.Intelligence + ownerIntMod ) / 275.0);
+					}
+						
+					
+					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
+					               pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + (modSkill * .005);
 				}
 				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
@@ -4279,8 +4305,13 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
+					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue + 200) / 250.0;
+					spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
+					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
+					               player.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + (modSkill * .005);
+					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 				}
 			}
 			else if (Caster is GameNPC)
@@ -4331,7 +4362,8 @@ namespace DOL.GS.Spells
 
 			if (playerCaster != null && (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith)))
 			{
-				spellLevel = Math.Min(playerCaster.MaxLevel, target.Level);
+				AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
+				spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
 			}
 			//Console.WriteLine($"Spell level {spellLevel}");
 
@@ -4455,12 +4487,13 @@ namespace DOL.GS.Spells
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
 
+				/*
 				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
 				if (skillProp != eProperty.Undefined)
 				{
 					var level = m_caster.GetModifiedFromItems(skillProp);
 					spellDamage *= (1 + level / 200.0);
-				}
+				}*/
 			}
 
 			// Apply casters effectiveness
@@ -5279,6 +5312,9 @@ namespace DOL.GS.Spells
 				//	break;
 				case eSpellType.FatigueConsumptionBuff:
 					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% less endurance.");
+					break;
+				case eSpellType.FatigueConsumptionDebuff:
+					dw.AddKeyValuePair("delve_string", $"The target's actions require {(int)Spell.Value}% more endurance.");
 					break;
 				case eSpellType.MeleeDamageBuff:
 					dw.AddKeyValuePair("delve_string", $"Increases your melee damage by {(int)Spell.Value}%.");

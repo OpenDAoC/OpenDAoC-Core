@@ -1,6 +1,9 @@
 using System;
+using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.RealmAbilities;
+using DOL.GS.ServerProperties;
+using log4net.Core;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -69,6 +72,10 @@ namespace DOL.GS.PropertyCalc
 
 				if (keepdoor.Component != null && keepdoor.Component.Keep != null)
 				{
+					if (keepdoor.IsRelic)
+					{
+						return Properties.RELIC_DOORS_HEALTH;
+					}
 					return (keepdoor.Component.Keep.EffectiveLevel(keepdoor.Component.Keep.Level) + 1) * keepdoor.Component.Keep.BaseLevel * 200;
 				}
 
@@ -187,8 +194,14 @@ namespace DOL.GS.PropertyCalc
 				}
 				else
 				{
+					double levelScalar = .5;
+					if (living.Level > 40)
+					{
+						//Console.WriteLine($"Scalar before {levelScalar} adding {(living.Level - 40) * .01} after {levelScalar + ((living.Level - 40) * .01)}");
+						levelScalar += (living.Level - 40) * .005;
+					}
 					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 15*living.Level + 0.55 * living.Level * (living.Level)) + (living as GameNPC).Constitution;
+					hp = (int)(50 + 13*living.Level + levelScalar * living.Level * (living.Level)) + (living as GameNPC).Constitution;
 					if (living.Level < 25)
 						hp += 20;
 				}

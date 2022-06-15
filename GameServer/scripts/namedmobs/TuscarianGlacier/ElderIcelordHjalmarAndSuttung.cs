@@ -6,6 +6,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 
+#region Suttung
 namespace DOL.GS
 {
     public class Suttung : GameEpicBoss
@@ -13,15 +14,14 @@ namespace DOL.GS
         public Suttung() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -46,18 +46,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override bool AddToWorld()
@@ -73,8 +73,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = -1; 
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -82,54 +81,63 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
             SuttungBrain.message1 = false;
+            SuttungBrain.message2 = false;
+            SuttungCount = 1;
 
             VisibleActiveWeaponSlots = 16;
             SuttungBrain sbrain = new SuttungBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false; //load from database
-            SaveIntoDatabase();
+            LoadedFromScript = true; 
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static int SuttungCount = 0;
+        public override void Die(GameObject killer)
         {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Suttung", 160, (eRealm)0);
-            if (npcs.Length == 0)
+            SuttungCount = 0;
+            base.Die(killer);
+        }
+        public override void OnAttackEnemy(AttackData ad) //on enemy actions
+        {
+            if (Util.Chance(15))
             {
-                log.Warn("Elder Icelord Suttung not found, creating it...");
-
-                log.Warn("Initializing Elder Icelord Suttung ...");
-                Suttung TG = new Suttung();
-                TG.Name = "Elder Icelord Suttung";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 81;
-                TG.Size = 65;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 32090;
-                TG.Y = 54204;
-                TG.Z = 11884;
-                TG.Heading = 2056;
-                SuttungBrain ubrain = new SuttungBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
+                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+                    CastSpell(SuttungDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-            else
-                log.Warn(
-                    "Elder Icelord Suttung exist ingame, remove it and restart server if you want to add by script code.");
+            base.OnAttackEnemy(ad);
+        }
+        private Spell m_SuttungDisease;
+        private Spell SuttungDisease
+        {
+            get
+            {
+                if (m_SuttungDisease == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 731;
+                    spell.Icon = 731;
+                    spell.Name = "Valnir Mordeth's Plague";
+                    spell.Message1 = "You are diseased!";
+                    spell.Message2 = "{0} is diseased!";
+                    spell.Message3 = "You look healthy.";
+                    spell.Message4 = "{0} looks healthy again.";
+                    spell.TooltipId = 731;
+                    spell.Range = 400;
+                    spell.Duration = 60;
+                    spell.SpellID = 11928;
+                    spell.Target = "Enemy";
+                    spell.Type = "Disease";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    m_SuttungDisease = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SuttungDisease);
+                }
+                return m_SuttungDisease;
+            }
         }
     }
 }
@@ -165,13 +173,11 @@ namespace DOL.AI.Brain
             {
                 BroadcastMessage(String.Format(Body.Name + " goes into berserker stance!"));
                 Body.Emote(eEmote.MidgardFrenzy);
-                Body.Empathy = 340;
+                Body.Strength = 850;
                 Body.MaxSpeedBase = 200; //slow under zerk mode
                 Body.Size = 75;
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndBerserkerPhase),
-                    Util.Random(10000, 20000)); //10-20s in berserk stance
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndBerserkerPhase),Util.Random(10000, 20000)); //10-20s in berserk stance
             }
-
             return 0;
         }
 
@@ -180,7 +186,7 @@ namespace DOL.AI.Brain
             if (Body.IsAlive)
             {
                 BroadcastMessage(String.Format(Body.Name + " berserker stance fades away!"));
-                Body.Empathy = Body.NPCTemplate.Empathy;
+                Body.Strength = Body.NPCTemplate.Strength;
                 Body.Size = Convert.ToByte(Body.NPCTemplate.Size);
                 Body.MaxSpeedBase = Body.NPCTemplate.MaxSpeed;
                 IsBerserker = false;
@@ -190,15 +196,31 @@ namespace DOL.AI.Brain
         }
 
         public static bool message1 = false;
+        public static bool message2 = false;
+        public static bool AggroText = false;
 
         public override void Think()
         {
+            Point3D point = new Point3D(31088, 53870, 11886);
+            if(Body.IsAlive)
+            {
+                foreach(GamePlayer player in Body.GetPlayersInRadius(8000))
+                {
+                    if(player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && !message2 && player.IsWithinRadius(point, 400))
+                        message2=true;
+                }
+                if(message2 && !message1)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    message1 = true;
+                }
+            }
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                message1 = false;
+                AggroText = false;
             }
 
             if (Body.IsOutOfTetherRange)
@@ -211,17 +233,15 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat && HasAggro)
+            if (HasAggro)
             {
-                if (message1 == false)
+                if(!AggroText)
                 {
-                    BroadcastMessage(String.Format(
-                        Body.Name + " says, 'The price of your invading our frozen fortress is death!" +
-                        " Death to you and your allies! Your presence here mocks the pacifist philosophy of my opponents on the Council." +
-                        " I weep for no council member who has perished!'"));
-                    message1 = true;
+                    BroadcastMessage(String.Format(Body.Name + " says, 'The price of your invading our frozen fortress is death!" +
+                    " Death to you and your allies! Your presence here mocks the pacifist philosophy of my opponents on the Council." +
+                    " I weep for no council member who has perished!'"));
+                    AggroText = true;
                 }
-
                 if (IsBerserker == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
@@ -234,6 +254,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(IcelordHjalmar_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             }
             base.Think();
+        }
+        private int Announce(ECSGameTimer timer)
+        {
+            BroadcastMessage("an otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompained by word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier");
+            return 0;
         }
         private Spell m_IcelordHjalmar_aoe;
         private Spell IcelordHjalmar_aoe
@@ -267,8 +292,9 @@ namespace DOL.AI.Brain
         }
     }
 }
+#endregion
 
-///////////////////////////////////////////////Elder Icelord Hjalmar/////////////////////////////////////////
+#region Hjalmar
 namespace DOL.GS
 {
     public class Hjalmar : GameEpicBoss
@@ -289,10 +315,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 60; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
@@ -317,33 +343,32 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
+        public static int HjalmarCount = 0;
         public override void Die(GameObject killer) //on kill generate orbs
         {
+            HjalmarCount = 0;
             base.Die(killer);
         }
 
         public override void OnAttackEnemy(AttackData ad)
         {
-            if (ad.AttackResult == eAttackResult.HitStyle)
+            if (ad != null && (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled))
             {
-                if (Util.Chance(25))
-                {
+                if (Util.Chance(20))
                     SpawnAdds();
-                }
             }
             base.OnAttackEnemy(ad);
         }
@@ -361,67 +386,40 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = -1;
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            Styles.Add(taunt);
-            Styles.Add(back_style);
+            HjalmarBrain.message1 = false;
+            HjalmarBrain.message2 = false;
+            HjalmarCount = 1;
+
+            if(!Styles.Contains(taunt))
+                Styles.Add(taunt);
+            if (!Styles.Contains(back_style))
+                Styles.Add(back_style);
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 572, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            HjalmarBrain.message2 = false;
 
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Slash;
             HjalmarBrain sbrain = new HjalmarBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = false; //load from database
-            SaveIntoDatabase();
+            LoadedFromScript = true;
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public void BroadcastMessage(String message)
         {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Elder Icelord Hjalmar", 160, (eRealm)0);
-            if (npcs.Length == 0)
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                log.Warn("Elder Icelord Hjalmar not found, creating it...");
-
-                log.Warn("Initializing Elder Icelord Hjalmar ...");
-                Hjalmar TG = new Hjalmar();
-                TG.Name = "Elder Icelord Hjalmar";
-                TG.Model = 918;
-                TG.Realm = 0;
-                TG.Level = 81;
-                TG.Size = 65;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-
-                TG.X = 32073;
-                TG.Y = 53569;
-                TG.Z = 11886;
-                TG.Heading = 33;
-                HjalmarBrain ubrain = new HjalmarBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
-            else
-                log.Warn(
-                    "Elder Icelord Hjalmar exist ingame, remove it and restart server if you want to add by script code.");
         }
-
         public void SpawnAdds()
         {
+            BroadcastMessage(Name + " spasms as dark energies swirl around his body!");
             Morkimma npc = new Morkimma();
             npc.X = TargetObject.X + Util.Random(-100, 100);
             npc.Y = TargetObject.Y + Util.Random(-100, 100);
@@ -457,15 +455,33 @@ namespace DOL.AI.Brain
             }
         }
 
+        public static bool message1 = false;
         public static bool message2 = false;
+        public static bool AggroText = false;
 
         public override void Think()
         {
+            Point3D point = new Point3D(31088, 53870, 11886);
+            if (Body.IsAlive)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(8000))
+                {
+                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && !message2 && player.IsWithinRadius(point, 400))
+                        message2 = true;
+                }
+                if (message2 && !message1)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    message1 = true;
+                }
+            }
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
+                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160394);
+                Body.Strength = npcTemplate.Strength;
                 message2 = false;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {
@@ -474,9 +490,7 @@ namespace DOL.AI.Brain
                         if (npc.IsAlive)
                         {
                             if (npc.Brain is MorkimmaBrain)
-                            {
                                 npc.Die(Body);
-                            }
                         }
                     }
                 }
@@ -492,13 +506,12 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat && HasAggro)
+            if (HasAggro)
             {
                 if (message2 == false)
                 {
-                    BroadcastMessage(String.Format(
-                        Body.Name +
-                        " says, I have warned the Council that if we do not destroy those who threaten us before they destroy us, we will perish." +
+                    BroadcastMessage(Body.Name + " bellows 'I am amazed that you have made it this far! I'm afraid that your journey ends here with all of your death, however, I will show you no mercy!'");
+                    BroadcastMessage(String.Format(Body.Name +" says, I have warned the Council that if we do not destroy those who threaten us before they destroy us, we will perish." +
                         " You deserve this fate more than I do. I will not mourn her death beyond the grave!"));
                     message2 = true;
                 }
@@ -511,19 +524,23 @@ namespace DOL.AI.Brain
                     {
                         if (angle >= 150 && angle < 210)
                         {
-                            Body.Empathy = 240;
+                            Body.Strength = 740;
                             Body.styleComponent.NextCombatStyle = Hjalmar.back_style;
                         }
                         else
                         {
-                            Body.Empathy = 200;
+                            Body.Strength = 600;
                             Body.styleComponent.NextCombatStyle = Hjalmar.taunt;
                         }
                     }
                 }
             }
-
             base.Think();
+        }
+        private int Announce(ECSGameTimer timer)
+        {
+            BroadcastMessage("an otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompained by word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier");
+            return 0;
         }
     }
 }
@@ -555,48 +572,37 @@ namespace DOL.GS
 
         protected int Show_Effect(ECSGameTimer timer)
         {
-            if (this.IsAlive)
+            if (IsAlive)
             {
-                foreach (GamePlayer player in this.GetPlayersInRadius(8000))
+                foreach (GamePlayer player in GetPlayersInRadius(8000))
                 {
                     if (player != null)
-                    {
                         player.Out.SendSpellEffectAnimation(this, this, 4323, 0, false, 0x01);
-                    }
                 }
-
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
 
             return 0;
         }
-
         protected int DoCast(ECSGameTimer timer)
         {
             if (IsAlive)
-            {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-            }
-
             return 0;
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 400;
+            return 200;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.25;
         }
-
         public override int MaxHealth
         {
-            get { return 2000; }
+            get { return 1000; }
         }
-
         public override bool AddToWorld()
         {
             Model = 665;
@@ -621,8 +627,43 @@ namespace DOL.GS
             {
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
             }
-
             return success;
+        }
+        public override void OnAttackEnemy(AttackData ad) //on enemy actions
+        {
+            if (Util.Chance(15))
+            {
+                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && HealthPercent < 100)
+                    CastSpell(MorkimmaHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.OnAttackEnemy(ad);
+        }
+        private Spell m_MorkimmaHeal;
+        private Spell MorkimmaHeal
+        {
+            get
+            {
+                if (m_MorkimmaHeal == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 10;
+                    spell.ClientEffect = 1340;
+                    spell.Icon = 1340;
+                    spell.TooltipId = 1340;
+                    spell.Value = 200;
+                    spell.Name = "Morkimma's Heal";
+                    spell.Range = 1500;
+                    spell.SpellID = 11930;
+                    spell.Target = "Self";
+                    spell.Type = eSpellType.Heal.ToString();
+                    spell.Uninterruptible = true;
+                    m_MorkimmaHeal = new Spell(spell, 50);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MorkimmaHeal);
+                }
+                return m_MorkimmaHeal;
+            }
         }
     }
 }
@@ -641,10 +682,150 @@ namespace DOL.AI.Brain
             AggroRange = 800;
             ThinkInterval = 1500;
         }
-
         public override void Think()
         {
             base.Think();
+        }     
+    }
+}
+#endregion
+
+#region Hjalmar and Suttung Controller
+namespace DOL.GS
+{
+    public class HjalmarSuttungController : GameNPC
+    {
+        public HjalmarSuttungController() : base()
+        {
+        }
+        public override bool IsVisibleToPlayers => true;
+        public override bool AddToWorld()
+        {
+            Name = "HjalmarSuttung Controller";
+            GuildName = "DO NOT REMOVE";
+            Level = 50;
+            Model = 665;
+            RespawnInterval = 5000;
+            Flags = (GameNPC.eFlags)28;
+            SpawnBoss();
+
+            HjalmarSuttungControllerBrain sbrain = new HjalmarSuttungControllerBrain();
+            SetOwnBrain(sbrain);
+            base.AddToWorld();
+            return true;
+        }
+        private void SpawnBoss()
+        {
+            switch (Util.Random(1, 2))
+            {
+                case 1: SpawnSuttung(); break;
+                case 2: SpawnHjalmar(); break;
+            }
+        }
+        private void SpawnSuttung()
+        {
+            if (Suttung.SuttungCount == 0)
+            {
+                Suttung boss = new Suttung();
+                boss.X = 32055;
+                boss.Y = 54253;
+                boss.Z = 11883;
+                boss.Heading = 2084;
+                boss.CurrentRegion = CurrentRegion;
+                boss.AddToWorld();
+                HjalmarSuttungControllerBrain.Spawn_Boss = false;
+            }
+        }
+        private void SpawnHjalmar()
+        {
+            if (Hjalmar.HjalmarCount == 0)
+            {
+                Hjalmar boss = new Hjalmar();
+                boss.X = 32079;
+                boss.Y = 53415;
+                boss.Z = 11885;
+                boss.Heading = 21;
+                boss.CurrentRegion = CurrentRegion;
+                boss.AddToWorld();
+                HjalmarSuttungControllerBrain.Spawn_Boss = false;
+            }
         }
     }
 }
+
+namespace DOL.AI.Brain
+{
+    public class HjalmarSuttungControllerBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public HjalmarSuttungControllerBrain()
+            : base()
+        {
+            AggroLevel = 0; //neutral
+            AggroRange = 0;
+            ThinkInterval = 1000;
+        }
+        public static bool Spawn_Boss = false;
+        public override void Think()
+        {
+            int respawn = GS.ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
+            if (Body.IsAlive)
+            {
+                if (Suttung.SuttungCount == 1 || Hjalmar.HjalmarCount == 1)//one of them is up
+                {
+                    //log.Warn("Suttung or Hjalmar is around");
+                }
+                if(Suttung.SuttungCount == 0 && Hjalmar.HjalmarCount == 0)//noone of them is up
+                {
+                    if (!Spawn_Boss)
+                    {
+                        //log.Warn("Trying to respawn Suttung or Hjalmar");
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBoss), respawn);
+                        Spawn_Boss = true;
+                    }
+                }
+            }
+            base.Think();
+        }
+        private int SpawnBoss(ECSGameTimer timer)
+        {
+            switch(Util.Random(1,2))
+            {
+                case 1: SpawnSuttung(); break;
+                case 2: SpawnHjalmar(); break;
+            }
+            return 0;
+        }
+        private void SpawnSuttung()
+        {
+            if (Suttung.SuttungCount == 0)
+            {
+                Suttung boss = new Suttung();
+                boss.X = 32055;
+                boss.Y = 54253;
+                boss.Z = 11883;
+                boss.Heading = 2084;
+                boss.CurrentRegion = Body.CurrentRegion;
+                boss.AddToWorld();
+                Spawn_Boss = false;
+            }
+        }
+        private void SpawnHjalmar()
+        {
+            if (Hjalmar.HjalmarCount == 0)
+            {
+                Hjalmar boss = new Hjalmar();
+                boss.X = 32079;
+                boss.Y = 53415;
+                boss.Z = 11885;
+                boss.Heading = 21;
+                boss.CurrentRegion = Body.CurrentRegion;
+                boss.AddToWorld();
+                Spawn_Boss = false;
+            }
+        }
+    }
+}
+#endregion

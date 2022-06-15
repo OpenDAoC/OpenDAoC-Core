@@ -200,8 +200,12 @@ public class StandardMobState_AGGRO : StandardMobState
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             return;
         }
+        
+        if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
+            _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
 
         _brain.AttackMostWanted();
+        _brain.Body.TurnTo(_brain.Body.TargetObject);
 
         base.Think();
     }
@@ -289,7 +293,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
             Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
         }
         if (_brain.Body.WasStealthed)
-            _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
+            _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
         _brain.ClearAggroList();
         _brain.CheckForProximityAggro = false;
         _brain.Body.WalkToSpawn();

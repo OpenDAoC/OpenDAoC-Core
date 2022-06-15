@@ -145,7 +145,7 @@ namespace DOL.GS
 
 			if (centerObject != null)
 			{
-				foreach (GamePlayer player in centerObject.GetPlayersInRadius(distance)) // Send message to each GamePlayer within the specified distance of the centerObject
+				foreach (GamePlayer player in centerObject?.GetPlayersInRadius(distance)) // Send message to each GamePlayer within the specified distance of the centerObject
 				{
 					var excluded = false;
 
@@ -162,7 +162,7 @@ namespace DOL.GS
 					}
 					if (excluded == false)
 					{
-						player.MessageFromArea(centerObject, message, chatType, chatLoc); // If no excludes are specified (i.e., 'null'), send message to everyone in radius
+						player?.MessageFromArea(centerObject, message, chatType, chatLoc); // If no excludes are specified (i.e., 'null'), send message to everyone in radius
 					}
 				}
 			}

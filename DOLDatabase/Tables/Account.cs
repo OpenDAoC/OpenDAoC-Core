@@ -45,6 +45,9 @@ namespace DOL.Database
 		private bool m_isTester;
 		private int m_charactersTraded;
 		private int m_soloCharactersTraded;
+		private string m_discordID;
+		private int m_realm_timer_realm;
+		private DateTime m_realm_timer_last_combat;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -267,6 +270,50 @@ namespace DOL.Database
 		{
 			get { return m_soloCharactersTraded; }
 			set { Dirty = true; m_soloCharactersTraded = value; }
+		}
+		
+		/// <summary>
+		/// Gets the account DiscordID
+		/// </summary>
+		[DataElement(AllowDbNull = true)]
+		public string DiscordID
+		{
+			get { return m_discordID; }
+			set { m_discordID = value; }
+		}
+
+		/// <summary>
+		/// The realm timer current realm of this account
+		/// </summary>
+		[DataElement(AllowDbNull=false)]
+		public int Realm_Timer_Realm
+		{
+			get
+			{
+				return m_realm_timer_realm;
+			}
+			set
+			{
+				Dirty = true;
+				m_realm_timer_realm = value;
+			}
+		}
+
+		/// <summary>
+		/// The date time of the last pvp combat of this account
+		/// </summary>
+		[DataElement(AllowDbNull=true)]
+		public DateTime Realm_Timer_Last_Combat
+		{
+			get
+			{
+				return m_realm_timer_last_combat;
+			}
+			set
+			{
+				Dirty = true;
+				m_realm_timer_last_combat = value;
+			}
 		}
 
 		/// <summary>

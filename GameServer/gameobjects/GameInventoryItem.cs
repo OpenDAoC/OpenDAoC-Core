@@ -1619,6 +1619,8 @@ namespace DOL.GS {
         {
             double itemDPS = DPS_AF / 10.0;
             double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * player.Level);
+            if (player.RealmLevel > 39)
+                clampedDPS += 0.3;
             double itemSPD = SPD_ABS / 10.0;
             double effectiveDPS = clampedDPS * Quality / 100.0 * Condition / MaxCondition;
 

@@ -51,7 +51,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Changes players target
 		/// </summary>
-		protected class ChangeTargetAction : RegionAction
+		protected class ChangeTargetAction : RegionECSAction
 		{
 			/// <summary>
 			/// The 'examine target' bit
@@ -86,7 +86,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
@@ -131,6 +131,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				GameEventMgr.Notify(GamePlayerEvent.ChangeTarget, player, null);
+
+				return 0;
 			}
 		}
 	}

@@ -305,7 +305,7 @@ namespace DOL.GS.Quests
 				player.Out.SendMessage("Sorry, I couldn't find any mob kill order. Come back later!",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 				return false;
 			}
-			
+
 			if (!GameServer.ServerRules.IsAllowedToAttack(player,Mob,true) || string.IsNullOrEmpty(Mob.Name))
 			{
 				player.Out.SendMessage("I have no task for you, come back later",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
@@ -358,7 +358,7 @@ namespace DOL.GS.Quests
 			int maxLevel = Player.Level;
 			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, minLevel,maxLevel);
 			
-			return npc;
+			return npc != null && npc.Name.ToLower().Equals(npc.Name) ? npc : null;
 		}
 
 		/// <summary>
@@ -402,7 +402,7 @@ namespace DOL.GS.Quests
 
 			String name = living.Name;
 
-			if (name.IndexOf("Guard")>=0)
+			if (name?.IndexOf("Guard")>=0)
 			{
 				
 				if (name =="Guardian") return false;
@@ -452,7 +452,7 @@ namespace DOL.GS.Quests
 			}
 
 
-			if (name.IndexOf("Viking")>=0)
+			if (name?.IndexOf("Viking")>=0)
 			{
 				if (name.EndsWith("Archer")) return false;
 				if (name.EndsWith("Dreng")) return false;

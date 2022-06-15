@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.Events;
-using DOL.Database;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using System.Reflection;
+using JNogueira.Discord.Webhook.Client;
 using log4net;
 
 namespace DOL.GS
@@ -132,6 +129,50 @@ namespace DOL.GS
 		{
 			return m_mountedRelic == relic;
 		}
+		
+		/// <summary>
+		/// Method to broadcast RvR messages over Discord
+		/// </summary>
+		/// <param name="message">The message</param>
+		/// <param name="realm">The realm</param>
+		public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
+		{
+			int color = 0;
+			string avatarUrl = "";
+			switch (realm)
+			{
+				case eRealm._FirstPlayerRealm:
+					color = 16711680;
+					avatarUrl = "https://cdn.discordapp.com/attachments/879754382231613451/977721734948081684/relic_alb.png";
+					break;
+				case eRealm._LastPlayerRealm:
+					color = 32768;
+					avatarUrl = "https://cdn.discordapp.com/attachments/879754382231613451/977721735153606686/relic_hib.png";
+					break;
+				default:
+					color = 255;
+					avatarUrl = "https://cdn.discordapp.com/attachments/879754382231613451/977721735153606686/relic_hib.png";
+					break;
+			}
+			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+			// Create your DiscordMessage with all parameters of your message.
+			var discordMessage = new DiscordMessage(
+				"",
+				username: "Atlas RvR",
+				avatarUrl: avatarUrl,
+				tts: false,
+				embeds: new[]
+				{
+					new DiscordMessageEmbed(
+						author: new DiscordMessageEmbedAuthor(keepName),
+						color: color,
+						description: message
+					)
+				}
+			);
+			
+			client.SendToDiscord(discordMessage);
+		}
 
 		public void MountRelic(GameRelic relic, bool returning)
 		{
@@ -148,12 +189,31 @@ namespace DOL.GS
 					cl.Out.SendMessage(message + "\n" + message + "\n" + message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				
+				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+				{
+					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
+				}
 
 				/* Increasing of CapturedRelics */
 				//select targets to increase CapturedRelics
 				//TODO increase stats
-
+				
+				BattleGroup relicBG = (BattleGroup)relic.CurrentCarrier?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				List<GamePlayer> targets = new List<GamePlayer>();
+
+				if (relicBG != null && (relicBG.Members.Contains(relic.CurrentCarrier) || (bool) relicBG.Members[relic.CurrentCarrier]!))
+				{
+					foreach (GamePlayer bgPlayer in relicBG.GetPlayersInTheBattleGroup())
+					{
+						if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+						{
+							targets.Add(bgPlayer);
+
+						}
+					}
+				}
+				else 
 				if (relic.CurrentCarrier.Group != null)
 				{
 					foreach (GamePlayer p in relic.CurrentCarrier.Group.GetPlayersInTheGroup())
@@ -201,6 +261,11 @@ namespace DOL.GS
 					cl.Out.SendMessage(message + "\n" + message + "\n" + message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				
+				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+				{
+					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
+				}
 
 				Notify(RelicPadEvent.RelicStolen, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
 			}
@@ -252,7 +317,9 @@ namespace DOL.GS
 					return;
 				}
 
-				if (relicOnPlayer.RelicType != m_parent.PadType || m_parent.MountedRelic != null)
+				if (relicOnPlayer.RelicType != m_parent.PadType
+				    // || m_parent.MountedRelic != null
+				    )
 				{
                     player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					log.DebugFormat("Player {0} needs to find an empty {1} relic pad in order to place {2}.", player.Name, relicOnPlayer.RelicType, relicOnPlayer.Name);

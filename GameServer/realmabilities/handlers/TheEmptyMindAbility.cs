@@ -74,12 +74,12 @@ namespace DOL.GS.RealmAbilities
             }
         }
         
-        public virtual SpellHandler CreateSpell(GameLiving caster)
+        private SpellHandler CreateSpell(GameLiving caster)
         {
 	        DBSpell dbspell = new DBSpell();
 	        dbspell.Name = "The Empty Mind";
-	        dbspell.Icon = 4232;
-	        dbspell.ClientEffect = 4232;
+	        dbspell.Icon = 7122;
+	        dbspell.ClientEffect = 7122;
 	        dbspell.Damage = 0;
 	        dbspell.DamageType = 0;
 	        dbspell.Target = "Self";

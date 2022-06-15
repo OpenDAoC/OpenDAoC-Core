@@ -128,11 +128,5 @@ namespace DOL.GS.Keeps
 			if (!m_towers.Contains(tower))
 				m_towers.Add(tower);
 		}
-
-		public override void Reset(eRealm realm)
-		{
-			base.Reset(realm);
-			RelicGateMgr.CheckKeeps();
-		}
 	}
 }

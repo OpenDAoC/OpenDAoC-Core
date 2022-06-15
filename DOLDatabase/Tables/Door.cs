@@ -42,6 +42,7 @@ namespace DOL.Database
 		private int m_locked;
 		private int m_health;
 		private int m_maxHealth;
+		private bool m_isPostern;
 		
 		/// <summary>
 		/// Create a door row
@@ -279,6 +280,21 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_maxHealth = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull = false)]
+
+		public bool IsPostern
+		{
+			get
+			{
+				return m_isPostern;
+			}
+			set
+			{
+				Dirty = true;
+				m_isPostern = value;
 			}
 		}
 	}

@@ -38,10 +38,10 @@ namespace DOL.GS
 		public Faction()
 		{
 			m_name = String.Empty;
-			m_friendFactions = new ArrayList(1);
-			m_enemyFactions = new ArrayList(1);
-			m_playerxFaction = new Hashtable(1);
-			m_updatePlayer = new ArrayList(1);
+			m_friendFactions = new ArrayList();
+			m_enemyFactions = new ArrayList();
+			m_playerxFaction = new Hashtable();
+			m_updatePlayer = new ArrayList();
 		}
 
 		#region DB
@@ -73,6 +73,7 @@ namespace DOL.GS
 
 		public void SaveAggroToFaction(string charID)
 		{
+			if (charID == null) return;
 			var dbfactionAggroLevel = DOLDB<DBFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(charID).And(DB.Column("FactionID").IsEqualTo(ID)));
 			if (dbfactionAggroLevel == null)
 			{
@@ -266,20 +267,22 @@ namespace DOL.GS
 			// check if changed
 			if (newAggro != oldAggro)
 			{
+				
 				// save the change
-				m_playerxFaction[player.ObjectId] = newAggro;
-				// tell the player
-				string msg = "Your relationship with " + this.Name + " has ";
-				if (amount > 0)
-				{
-					msg += "decreased.";
-				}
-				else
-				{
-					msg += "increased.";
-				}
-				player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if(Util.Chance(20))
+					m_playerxFaction[player.ObjectId] = newAggro;
 			}
+			// tell the player
+			string msg = "Your relationship with " + this.Name + " has ";
+			if (amount > 0)
+			{
+				msg += "decreased.";
+			}
+			else
+			{
+				msg += "increased.";
+			}
+			player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

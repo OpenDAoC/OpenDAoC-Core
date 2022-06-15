@@ -1,30 +1,6 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * Author: clait
- * Server: Atlas Freeshard
- */
-
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using System.Net.Http;
 
 namespace DOL.GS.Commands
 {
@@ -36,38 +12,17 @@ namespace DOL.GS.Commands
         "Usage: /servernews")]
     public class ServerNewsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-
-        public class ClassToCount
-        {
-            public string name;
-            public int count;
-
-            public ClassToCount(string name, int count)
-            {
-                this.name = name;
-                this.count = count;
-            }
-        }
-
-        private List<ClassToCount> classcount = new List<ClassToCount>();
-
         public void OnCommand(GameClient client, string[] args)
         {
-            DateTime thisDay = DateTime.Today;
+            var today = DateTime.Today;
 
-            //news = "18/06/2021\n- Website launched at www.atlasfreeshard.com\n\n17/06/2021\n- Added Stygia Haven as teleport location for all realms as end-game farming zone\n- Various teleports, hastener and trainer improvements\n\n16/06/2021\n - Hibernia Classic cities now all have basic NPCs in place (teleporter, smith, healer, master trainer)\n - Implemented Atlas Orbs (xp items)".Split('\n');
-
-            using (WebClient newsClient = new WebClient())
-            {
-                string newsTxt;
-                var news = new List<string>();
-                string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
-                newsTxt = newsClient.DownloadString(url);
-                news.Add(newsTxt);
-                client.Out.SendCustomTextWindow("Server News " + thisDay.ToString("d"), news);
-            }
-            return;
-
+            using var newsClient = new HttpClient();
+            string newsTxt;
+            var news = new List<string>();
+            const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
+            newsTxt = newsClient.GetStringAsync(url).Result;
+            news.Add(newsTxt);
+            client.Out.SendCustomTextWindow("Server News " + today.ToString("d"), news);
         }
     }
 }

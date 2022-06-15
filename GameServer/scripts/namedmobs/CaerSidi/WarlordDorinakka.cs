@@ -10,25 +10,25 @@ namespace DOL.GS.Scripts
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-				default: return 55; // dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 850;
+			return 350;
 		}
 
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.55;
+			return 0.20;
 		}
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == "CCImmunity")
+			if (IsAlive && keyName == "CCImmunity")
 				return true;
 
 			return base.HasAbility(keyName);
@@ -38,7 +38,7 @@ namespace DOL.GS.Scripts
 			get => (short)(191 + (Level * 2));
 			set => m_maxSpeedBase = value;
 		}
-		public override int MaxHealth => 20000;
+		public override int MaxHealth => 200000;
 
 		public override int AttackRange
 		{
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 BafMobs = false;
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
             if (Body.InCombat && HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"

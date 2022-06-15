@@ -67,7 +67,7 @@ namespace DOL.GS
 		/// <summary>
 		/// BaseHP for hp calculation
 		/// </summary>
-		protected int m_baseHP = 600;
+		protected int m_baseHP = 700;
 
 		/// <summary>
 		/// Stat gained every level.

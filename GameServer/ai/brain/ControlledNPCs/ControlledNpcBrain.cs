@@ -425,13 +425,13 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckAbilities()
 		{
-			Console.WriteLine($"Loading abilities for {this}");
+			//Console.WriteLine($"Loading abilities for {this}");
 			////load up abilities
 			if (Body.Abilities != null && Body.Abilities.Count > 0)
 			{
 				foreach (Ability ab in Body.Abilities.Values)
 				{
-					Console.WriteLine($"Ability: {ab}");
+					//Console.WriteLine($"Ability: {ab}");
 					switch (ab.KeyName)
 					{
 						case Abilities.Intercept:

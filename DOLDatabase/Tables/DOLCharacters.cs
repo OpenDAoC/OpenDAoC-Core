@@ -191,6 +191,9 @@ namespace DOL.Database
 		
 		// What should the Herald display of this character?
 		private byte m_notDisplayedInHerald = 0;
+		
+		// Should we hide the detailed specialization of this player in the APIs?
+		private bool m_hideSpecializationAPI;
 
 		private byte m_activeSaddleBags = 0;
 
@@ -2291,6 +2294,20 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_notDisplayedInHerald = value;
+			}
+		}
+
+		/// <summary>
+		/// Should we hide the detailed specialization of this player in the APIs?
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool HideSpecializationAPI 
+		{
+			get { return m_hideSpecializationAPI; }
+			set 
+			{
+				Dirty = true;
+				m_hideSpecializationAPI = value;
 			}
 		}
 

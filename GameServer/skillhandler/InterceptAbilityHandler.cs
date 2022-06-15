@@ -86,7 +86,7 @@ namespace DOL.GS.SkillHandler
 
 			// check if someone is already intercepting for that target
 			//foreach (InterceptEffect intercept in interceptTarget.EffectList.GetAllOfType<InterceptEffect>())
-			foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+			foreach (InterceptECSGameEffect intercept in interceptTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
 			{
 				if (intercept.InterceptTarget != interceptTarget)
 					continue;

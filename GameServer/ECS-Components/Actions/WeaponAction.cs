@@ -133,6 +133,7 @@ namespace DOL.GS
             }*/
 
             bool usingOH = false;
+            owner.attackComponent.LastAttackWasDualWield = false;
             if (leftHandSwingCount > 0)
             {
                 if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || 
@@ -146,6 +147,9 @@ namespace DOL.GS
 
                 if (owner is GameNPC)
                     usingOH = false;
+
+                if (usingOH)
+                    owner.attackComponent.LastAttackWasDualWield = true;
                 
                 // both hands are used for attack
                 mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);

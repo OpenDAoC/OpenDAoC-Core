@@ -116,7 +116,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Delayed action when arrow reach the target
 		/// </summary>
-		protected class ArrowOnTargetAction : RegionAction
+		protected class ArrowOnTargetAction : RegionECSAction
 		{
 			/// <summary>
 			/// The arrow target
@@ -145,20 +145,11 @@ namespace DOL.GS.Spells
 				m_handler = spellHandler;
 			}
 
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			public virtual void OnTickBase()
-			{
-				OnTick();
-			}
-
-
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_arrowTarget;
 				GameLiving caster = (GameLiving)m_actionSource;
-				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID) return;
+				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID) return 0;
 
 				int missrate = 100 - m_handler.CalculateToHitChance(target);
 				// add defence bonus from last executed style if any
@@ -177,7 +168,7 @@ namespace DOL.GS.Spells
 				// check for bladeturn miss
 				if (ad.AttackResult == eAttackResult.Missed)
 				{
-					return;
+					return 0;
 				}
 
 				if (Util.Chance(missrate))
@@ -193,7 +184,7 @@ namespace DOL.GS.Spells
 						if (aggroBrain != null)
 							aggroBrain.AddToAggroList(caster, 1);
 					}
-					return;
+					return 0;
 				}
 
 				ad.Damage = (int)((double)ad.Damage * (1.0 + caster.GetModified(eProperty.SpellDamage) * 0.01));
@@ -356,6 +347,8 @@ namespace DOL.GS.Spells
 						caster.CheckWeaponMagicalEffect(ad, m_handler.Caster.AttackWeapon);
 					}
 				}
+
+				return 0;
 			}
 		}
 

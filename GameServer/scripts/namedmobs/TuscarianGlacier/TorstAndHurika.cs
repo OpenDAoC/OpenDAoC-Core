@@ -4,7 +4,9 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
+#region Torst
 namespace DOL.GS
 {
     public class Torst : GameEpicBoss
@@ -12,79 +14,74 @@ namespace DOL.GS
         public Torst() : base()
         {
         }
-
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 55; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
-
         public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-
         public override int AttackRange
         {
             get { return 350; }
             set { }
         }
-
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
         }
-
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
-
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
-
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
-
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 160) //if region is tuscaran glacier
+            if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
-
+        #region Stats
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
+        public override short Strength { get => base.Strength; set => base.Strength = 350; }
+        #endregion
         public override bool AddToWorld()
         {
-            Strength = 5;
-            Dexterity = 200;
-            Constitution = 100;
-            Quickness = 125;
-            Piety = 100;
-            Intelligence = 100;
-            Empathy = 280;
+            Name = "Torst";
+            Level = 80;
+            Size = 90;
+            Model = 696;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             MaxSpeedBase = 250;
             Flags = eFlags.FLYING;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             TorstBrain sbrain = new TorstBrain();
             SetOwnBrain(sbrain);
@@ -93,44 +90,52 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public override void Die(GameObject killer)
         {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Torst", 160, (eRealm) 0);
-            if (npcs.Length == 0)
+            foreach (GameNPC npc in GetNPCsInRadius(5000))
             {
-                log.Warn("Torst not found, creating it...");
-
-                log.Warn("Initializing Torst...");
-                Torst TG = new Torst();
-                TG.Name = "Torst";
-                TG.Model = 696;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 90;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.Flags = eFlags.FLYING;
-
-                TG.X = 50778;
-                TG.Y = 35997;
-                TG.Z = 16154;
-                TG.Heading = 3154;
-                TorstBrain ubrain = new TorstBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
+                if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
+                    npc.RemoveFromWorld();
             }
-            else
-                log.Warn("Torst exist ingame, remove it and restart server if you want to add by script code.");
+            base.Die(killer);
+        }
+        public override void OnAttackEnemy(AttackData ad) //on enemy actions
+        {
+            if (Util.Chance(20))
+            {
+                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+                    CastSpell(TorstDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.OnAttackEnemy(ad);
+        }
+        public Spell m_TorstDD;
+        public Spell TorstDD
+        {
+            get
+            {
+                if (m_TorstDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = Util.Random(25, 45);
+                    spell.ClientEffect = 228;
+                    spell.Icon = 208;
+                    spell.TooltipId = 479;
+                    spell.Damage = 550;
+                    spell.Range = 500;
+                    spell.Radius = 400;
+                    spell.SpellID = 11743;
+                    spell.Target = "Enemy";
+                    spell.Type = "DirectDamageNoVariance";
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Cold;
+                    m_TorstDD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstDD);
+                }
+                return m_TorstDD;
+            }
         }
     }
 }
@@ -139,8 +144,7 @@ namespace DOL.AI.Brain
 {
     public class TorstBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TorstBrain()
             : base()
@@ -159,6 +163,7 @@ namespace DOL.AI.Brain
         public static bool point6check = false;
         public static bool walkback = false;
 
+        #region Torst Flying Path
         public void TorstFlyingPath()
         {
             Point3D point1 = new Point3D();
@@ -192,73 +197,70 @@ namespace DOL.AI.Brain
 
             if (!Body.InCombat && !HasAggro)
             {
-                if (Body.CurrentRegionID == 160) //tuscaran glacier
+                if (!Body.IsWithinRadius(point1, 30) && point1check == false)
                 {
-                    if (!Body.IsWithinRadius(point1, 30) && point1check == false)
+                    Body.WalkTo(point1, 200);
+                }
+                else
+                {
+                    point1check = true;
+                    walkback = false;
+                    if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
                     {
-                        Body.WalkTo(point1, 200);
+                        Body.WalkTo(point2, 200);
                     }
                     else
                     {
-                        point1check = true;
-                        walkback = false;
-                        if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
+                        point2check = true;
+                        if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
+                            point3check == false)
                         {
-                            Body.WalkTo(point2, 200);
+                            Body.WalkTo(point3, 200);
                         }
                         else
                         {
-                            point2check = true;
-                            if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-                                point3check == false)
+                            point3check = true;
+                            if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
+                                point3check == true && point4check == false)
                             {
-                                Body.WalkTo(point3, 200);
+                                Body.WalkTo(point4, 200);
                             }
                             else
                             {
-                                point3check = true;
-                                if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-                                    point3check == true && point4check == false)
+                                point4check = true;
+                                if (!Body.IsWithinRadius(point5, 30) && point1check == true &&
+                                    point2check == true && point3check == true && point4check == true &&
+                                    point5check == false)
                                 {
-                                    Body.WalkTo(point4, 200);
+                                    Body.WalkTo(point5, 200);
                                 }
                                 else
                                 {
-                                    point4check = true;
-                                    if (!Body.IsWithinRadius(point5, 30) && point1check == true &&
+                                    point5check = true;
+                                    if (!Body.IsWithinRadius(point6, 30) && point1check == true &&
                                         point2check == true && point3check == true && point4check == true &&
-                                        point5check == false)
+                                        point5check == true && point6check == false)
                                     {
-                                        Body.WalkTo(point5, 200);
+                                        Body.WalkTo(point6, 200);
                                     }
                                     else
                                     {
-                                        point5check = true;
-                                        if (!Body.IsWithinRadius(point6, 30) && point1check == true &&
+                                        point6check = true;
+                                        if (!Body.IsWithinRadius(spawn, 30) && point1check == true &&
                                             point2check == true && point3check == true && point4check == true &&
-                                            point5check == true && point6check == false)
+                                            point5check == true && point6check == true && walkback == false)
                                         {
-                                            Body.WalkTo(point6, 200);
+                                            Body.WalkTo(spawn, 200);
                                         }
                                         else
                                         {
-                                            point6check = true;
-                                            if (!Body.IsWithinRadius(spawn, 30) && point1check == true &&
-                                                point2check == true && point3check == true && point4check == true &&
-                                                point5check == true && point6check == true && walkback == false)
-                                            {
-                                                Body.WalkTo(spawn, 200);
-                                            }
-                                            else
-                                            {
-                                                walkback = true;
-                                                point1check = false;
-                                                point2check = false;
-                                                point3check = false;
-                                                point4check = false;
-                                                point5check = false;
-                                                point6check = false;
-                                            }
+                                            walkback = true;
+                                            point1check = false;
+                                            point2check = false;
+                                            point3check = false;
+                                            point4check = false;
+                                            point5check = false;
+                                            point6check = false;
                                         }
                                     }
                                 }
@@ -266,13 +268,18 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                else //not TG
-                {
-                    //mob will not roam
-                }
             }
         }
+        #endregion
 
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        private bool SpawnEddies = false;
         public override void Think()
         {
             TorstFlyingPath();
@@ -285,60 +292,65 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.FLYING; //fly
+                SpawnEddies = false;
+                foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
+                {
+                    if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
+                        npc.RemoveFromWorld();
+                }
             }
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat && HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                if (!SpawnEddies)
+                {
+                    CreateEddies();
+                    SpawnEddies = true;
+                }
                 foreach (GamePlayer gamePlayer in Body.GetPlayersInRadius(1500))
                 {
-                    if (gamePlayer != null)
+                    if (gamePlayer != null && gamePlayer.IsAlive && gamePlayer.Client.Account.PrivLevel == 1)
                     {
-                        if (gamePlayer.IsAlive)
-                        {
-                            if (gamePlayer.Client.Account.PrivLevel == 1)
-                            {
-                                if (!PlayersToAttack.Contains(gamePlayer))
-                                {
-                                    PlayersToAttack.Add(gamePlayer);
-                                }
-                            }
-                        }
+                        if (!PlayersToAttack.Contains(gamePlayer))
+                            PlayersToAttack.Add(gamePlayer);
                     }
                 }
 
                 PickNotRottedTarget();
-                if (Body.TargetObject != null)
-                {
-                    if (Util.Chance(10))
-                    {
-                        Body.CastSpell(TorstRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
 
-                    if (Util.Chance(15))
-                    {
-                        Body.CastSpell(TorstDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                    }
-                }
+                if (Util.Chance(10))
+                    Body.CastSpell(TorstRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-
             base.Think();
+        }
+        private void CreateEddies()
+        {
+            BroadcastMessage(String.Format("{0}'s powerful wings stir swirling eddies of air that threaten to freeze anyone caught in their wake!",Body.Name));
+            for (int i = 0; i < 5; i++)
+            {
+                TorstEddies add = new TorstEddies();
+                add.X = Body.X + Util.Random(-200, 200);
+                add.Y = Body.Y + Util.Random(-200, 200);
+                add.Z = Body.Z;
+                add.Heading = Body.Heading;
+                add.CurrentRegion = Body.CurrentRegion;
+                add.AddToWorld();
+            }
         }
 
         public GameLiving randomtarget = null;
-
         public GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-
         public void PickNotRottedTarget()
         {
             if (PlayersToAttack.Count == 0)
@@ -351,12 +363,11 @@ namespace DOL.AI.Brain
                 {
                     GameLiving target = Body.TargetObject as GameLiving; //mob target
                     RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)]; //mob next random target
-                    if (target.effectListComponent
-                        .ContainsEffectForEffectType(eEffect.MovementSpeedDebuff)) //if target got root
+                    if (target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff)) //if target got root
                     {
                         Body.StopAttack();
                         m_aggroTable.Clear(); //clear aggro list
-                        if (RandomTarget != null)
+                        if (RandomTarget != null && RandomTarget.IsAlive)
                         {
                             m_aggroTable.Add(RandomTarget, 50); //add to aggro list our new random target
                             Body.StartAttack(RandomTarget);
@@ -365,9 +376,8 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
+        #region Spell root
         private Spell m_TorstRoot;
-
         private Spell TorstRoot
         {
             get
@@ -393,46 +403,15 @@ namespace DOL.AI.Brain
                     m_TorstRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstRoot);
                 }
-
                 return m_TorstRoot;
             }
         }
-
-        public Spell m_TorstDD;
-
-        public Spell TorstDD
-        {
-            get
-            {
-                if (m_TorstDD == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(25, 45);
-                    spell.ClientEffect = 228;
-                    spell.Icon = 208;
-                    spell.TooltipId = 479;
-                    spell.Damage = 550;
-                    spell.Range = 1500;
-                    spell.Radius = 400;
-                    spell.SpellID = 11743;
-                    spell.Target = "Enemy";
-                    spell.Type = "DirectDamageNoVariance";
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
-                    m_TorstDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstDD);
-                }
-
-                return m_TorstDD;
-            }
-        }
+        #endregion
     }
 }
+#endregion
 
-////////////////////////////////////////////////////////////Hurika///////////////////////////////////////////////////////////////
+#region Hurika
 namespace DOL.GS
 {
     public class Hurika : GameEpicBoss
@@ -445,21 +424,20 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 80; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 80; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 80; // dmg reduction for melee dmg
-                default: return 80; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
 
         public override void WalkToSpawn()
         {
-            if (this.CurrentRegionID == 160) //if region is tuscaran glacier
+            if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-
             base.WalkToSpawn();
         }
 
@@ -476,7 +454,7 @@ namespace DOL.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);
@@ -484,18 +462,18 @@ namespace DOL.GS
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 200000; }
         }
 
         public override void Die(GameObject killer) //on kill generate orbs
@@ -517,8 +495,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             Flags = eFlags.FLYING;
-            RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             HurikaBrain sbrain = new HurikaBrain();
             SetOwnBrain(sbrain);
@@ -526,46 +503,6 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Hurika", 160, (eRealm) 0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Hurika not found, creating it...");
-
-                log.Warn("Initializing Hurika...");
-                Hurika TG = new Hurika();
-                TG.Name = "Hurika";
-                TG.PackageID = "Hurika";
-                TG.Model = 696;
-                TG.Realm = 0;
-                TG.Level = 85;
-                TG.Size = 90;
-                TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
-                TG.RespawnInterval =
-                    ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                    60000; //1min is 60000 miliseconds
-                TG.Faction = FactionMgr.GetFactionByID(140);
-                TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.Flags = eFlags.FLYING;
-
-                TG.X = 50781;
-                TG.Y = 35680;
-                TG.Z = 16154;
-                TG.Heading = 3154;
-                HurikaBrain ubrain = new HurikaBrain();
-                TG.SetOwnBrain(ubrain);
-                TG.AddToWorld();
-                TG.SaveIntoDatabase();
-                TG.Brain.Start();
-            }
-            else
-                log.Warn("Hurika exist ingame, remove it and restart server if you want to add by script code.");
         }
     }
 }
@@ -591,6 +528,7 @@ namespace DOL.AI.Brain
         public static bool point_4 = false;
         public static bool point_5 = false;
 
+        #region Hurika Flying Path
         public void HurikaFlyingPath()
         {
             Point3D point1 = new Point3D();
@@ -673,7 +611,21 @@ namespace DOL.AI.Brain
                 }
             }
         }
-
+        #endregion
+        private protected static bool IsTargetPicked = false;
+        private protected static GamePlayer randomtarget = null;
+        private protected static GamePlayer RandomTarget
+        {
+            get { return randomtarget; }
+            set { randomtarget = value; }
+        }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void Think()
         {
             HurikaFlyingPath();
@@ -686,20 +638,245 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.FLYING; //fly
+                IsTargetPicked = false;
+                RandomTarget = null;
             }
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
-                this.Body.Health = this.Body.MaxHealth;
-            }
-
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
-            {
+                Body.Health = Body.MaxHealth;
             }
 
             base.Think();
         }
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+            if (ad != null && Util.Chance(15) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
+            {
+                RandomTarget = ad.Attacker as GamePlayer;
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(15000, 20000));
+                IsTargetPicked = true;
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        private protected int TeleportPlayer(ECSGameTimer timer)
+        {
+            if (RandomTarget.IsAlive && RandomTarget != null && HasAggro)
+            {
+                RandomTarget.MoveTo(Body.CurrentRegionID, Body.X, Body.Y, Body.Z + Util.Random(500, 700), Body.Heading);
+                BroadcastMessage(String.Format("A powerful gust of wind generated by {0}'s wings sends {1} flying into the air!", Body.Name, RandomTarget.Name));
+            }
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+            return 0;
+        }
+        private protected int ResetPort(ECSGameTimer timer)
+        {
+            RandomTarget = null;//reset random target to null
+            IsTargetPicked = false;
+            return 0;
+        }
     }
 }
+#endregion
+
+#region Torst eddies
+namespace DOL.GS
+{
+    public class TorstEddies : GameNPC
+    {
+        public TorstEddies() : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 15;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 15;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 15;// dmg reduction for melee dmg
+                default: return 15;// dmg reduction for rest resists
+            }
+        }
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+        public override int MaxHealth
+        {
+            get { return 10000; }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 200;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.10;
+        }
+        public override void StopFollowing()
+        {
+            if (IsAlive)
+                return;
+            base.StopFollowing();
+        }
+        public override void Follow(GameObject target, int minDistance, int maxDistance)
+        {
+            if (IsAlive)
+                return;
+            base.Follow(target, minDistance, maxDistance);
+        }
+        public override void FollowTargetInRange()
+        {
+            if (IsAlive)
+                return;
+            base.FollowTargetInRange();
+        }
+        public override void WalkToSpawn(short speed)
+        {
+            if (IsAlive)
+                return;
+            base.WalkToSpawn(speed);
+        }
+        public override void StartAttack(GameObject target)
+        {
+        }
+        #region Stats
+        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
+        public override short Piety { get => base.Piety; set => base.Piety = 200; }
+        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
+        public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
+        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+        #endregion
+        public override bool AddToWorld()
+        {
+            Model = 665;
+            Name = "eddie";
+            Level = (byte)Util.Random(55, 58);
+            Size = 50;
+            RespawnInterval = -1;
+            Flags = (GameNPC.eFlags)44;//noname notarget flying
+            Faction = FactionMgr.GetFactionByID(140);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
+            MaxSpeedBase = 300;
+
+            LoadedFromScript = true;
+            TorstEddiesBrain sbrain = new TorstEddiesBrain();
+            SetOwnBrain(sbrain);
+            bool success = base.AddToWorld();
+            if (success)
+            {
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+            }
+            return success;
+        }
+        #region Effect
+        protected int Show_Effect(ECSGameTimer timer)
+        {
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(3000))
+                {
+                    if (player != null)
+                        player.Out.SendSpellEffectAnimation(this, this, 4168, 0, false, 0x01);
+                }
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 800);
+            }
+            return 0;
+        }
+        protected int DoCast(ECSGameTimer timer)
+        {
+            if (IsAlive)
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 800);
+            return 0;
+        }
+        #endregion
+        public override void Die(GameObject killer)
+        {
+            base.Die(killer);
+        }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class TorstEddiesBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public TorstEddiesBrain() : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 800;
+            ThinkInterval = 1500;
+        }
+        private protected bool Point1check = false;
+        private protected bool Point2check = false;
+        public override void Think()
+        {
+            Body.CurrentSpeed = 300;
+            foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
+            {
+                if(npc != null && npc.IsAlive && npc.Brain is TorstBrain)
+                {
+                    Point3D oldPoint = new Point3D(npc.X + Util.Random(-200, 200), npc.Y + Util.Random(-200, 200), npc.Z + Util.Random(0, 100));
+                    Point3D newPoint = new Point3D(npc.X + Util.Random(-200, 200), npc.Y + Util.Random(-200, 200), npc.Z + Util.Random(0, 100));
+                    if (!Body.IsWithinRadius(oldPoint, 20) && !Point1check)
+                    {
+                        Body.WalkTo(oldPoint, 300);                  
+                    }
+                    else
+                    {
+                        Point1check = true;
+                        Point2check = false;
+                        if (!Body.IsWithinRadius(newPoint, 20) && Point1check && !Point2check)
+                        {
+                            Body.WalkTo(newPoint, 300);
+                        }
+                        else 
+                        { 
+                            Point2check = true;
+                            Point1check = false;
+                        }
+                    }
+                }
+            }
+            if(HasAggro && Body.TargetObject != null)
+            {
+                Body.CastSpell(ColdGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+            }
+            base.Think();
+        }
+        private Spell m_ColdGroundDD;
+        private Spell ColdGroundDD
+        {
+            get
+            {
+                if (m_ColdGroundDD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = Util.Random(5,12);
+                    spell.ClientEffect = 161;
+                    spell.Icon = 161;
+                    spell.TooltipId = 368;
+                    spell.Name = "Cold Snap";
+                    spell.Damage = 110;
+                    spell.Range = 200;
+                    spell.Radius = 300;
+                    spell.SpellID = 11926;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Cold;
+                    m_ColdGroundDD = new Spell(spell, 60);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ColdGroundDD);
+                }
+                return m_ColdGroundDD;
+            }
+        }
+    }
+}
+#endregion

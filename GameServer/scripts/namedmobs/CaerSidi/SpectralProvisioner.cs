@@ -9,14 +9,16 @@ namespace DOL.GS.Scripts
 {
     public class SpectralProvisioner : GameEpicBoss
     {
+	public SpectralProvisioner()
+		: base() { }
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 65; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 65; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 65; // dmg reduction for melee dmg
-				default: return 55; // dmg reduction for rest resists
+				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				default: return 70;// dmg reduction for rest resists
 			}
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -44,11 +46,11 @@ namespace DOL.GS.Scripts
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 	    {
-		    return 800;
+		    return 350;
 	    }
 		public override bool HasAbility(string keyName)
 		{
-			if (this.IsAlive && keyName == "CCImmunity")
+			if (IsAlive && keyName == "CCImmunity")
 				return true;
 
 			return base.HasAbility(keyName);
@@ -56,7 +58,7 @@ namespace DOL.GS.Scripts
 		public override double GetArmorAbsorb(eArmorSlot slot)
 	    {
 		    // 85% ABS is cap.
-		    return 0.45;
+		    return 0.20;
 	    }
 
 	    public override short MaxSpeedBase
@@ -64,14 +66,14 @@ namespace DOL.GS.Scripts
 		    get => (short)(191 + (Level * 2));
 		    set => m_maxSpeedBase = value;
 	    }
-	    public override int MaxHealth => 20000;
+	    public override int MaxHealth => 200000;
 
 	    public override int AttackRange
 	    {
 		    get => 180;
 		    set { }
 	    }
-	    public override bool AddToWorld()
+		public override bool AddToWorld()
 		{
 			Level = 77;
 			Gender = eGender.Neutral;
@@ -85,16 +87,18 @@ namespace DOL.GS.Scripts
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
 			LoadTemplate(npcTemplate);
-			SpectralProvisionerBrain.point7check = false;
 			SpectralProvisionerBrain.point1check = false;
 			SpectralProvisionerBrain.point2check = false;
 			SpectralProvisionerBrain.point3check = false;
 			SpectralProvisionerBrain.point4check = false;
 			SpectralProvisionerBrain.point5check = false;
 			SpectralProvisionerBrain.point6check = false;
-			SpectralProvisionerBrain.ToSpawn = false;
+			SpectralProvisionerBrain.point7check = false;
+			SpectralProvisionerBrain.point8check = false;
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
-			SetOwnBrain(sBrain);		
+			SetOwnBrain(sBrain);
+			LoadedFromScript = false;//load from database
+			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
@@ -105,21 +109,19 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
 		}
-		public override void WalkToSpawn(short speed)
+		public override void WalkToSpawn()
 		{
-			if (this.CurrentRegionID == 60) //if region is caer sidi
+			if (CurrentRegionID == 60) //if region is caer sidi
 			{
-				if (SkeletalSacristanBrain.ToSpawn == true)
-				{
+				if (IsAlive)
 					return;
-				}
-				else
-				{
-					speed = 300;
-					base.WalkToSpawn(speed);
-				}
 			}
+			base.WalkToSpawn();
 		}
+		public override void StartAttack(GameObject target)
+        {
+        }
+		public override bool IsVisibleToPlayers => true;
 	}  
 }
 
@@ -131,11 +133,13 @@ namespace DOL.AI.Brain
 				: base()
 		{
 			AggroLevel = 100;
+			AggroRange = 500;
 			ThinkInterval = 2000;
 		}
-		public override void AttackMostWanted()
+		private bool CanAddJunk = false;
+        public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (Util.Chance(50))
+			if (Util.Chance(30) && ad != null && !CanAddJunk && ad.Attacker is GamePlayer)
 			{
 				ItemTemplate sackJunk = GameServer.Database.FindObjectByKey<ItemTemplate>("sack_of_decaying_junk");
 				InventoryItem item = GameInventoryItem.Create(sackJunk);
@@ -143,15 +147,18 @@ namespace DOL.AI.Brain
 				foreach (GamePlayer player in Body.GetPlayersInRadius(500))
 				{
 					if (player.IsAlive)
-					{
 						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
-					}
 				}
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDecayingJunk), Util.Random(25000,35000));
+				CanAddJunk = true;
 			}
+			base.OnAttackedByEnemy(ad);
 		}
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-		}
+		private int ResetDecayingJunk(ECSGameTimer timer)
+        {
+			CanAddJunk = false;
+			return 0;
+        }
 		public static bool point1check = false;
 		public static bool point2check = false;
 		public static bool point3check = false;
@@ -159,11 +166,12 @@ namespace DOL.AI.Brain
 		public static bool point5check = false;
 		public static bool point6check = false;
 		public static bool point7check = false;
-		public static bool ToSpawn = false;
+		public static bool point8check = false;
 		public override void Think()
 		{
 			if (Body.IsAlive)
 			{
+				Point3D spawn = new Point3D(30049, 40799, 17004);
 				Body.MaxSpeedBase = 300;
 				Body.CurrentSpeed = 300;
 				Point3D point1 = new Point3D(30062, 39454, 17004);
@@ -173,118 +181,90 @@ namespace DOL.AI.Brain
 				Point3D point5 = new Point3D(32089, 40241, 17004);
 				Point3D point6 = new Point3D(33021, 39384, 17004);
 				Point3D point7 = new Point3D(32059, 38549, 17004);
-				foreach(GameNPC npc in Body.GetNPCsInRadius(800))
+				Point3D point8 = new Point3D(31124, 39405, 17004);
+				foreach (GameNPC npc in Body.GetNPCsInRadius(800))
                 {
 					if(HasAggressionTable())
                     {
 						if(npc != null)
                         {
 							if(npc.IsAlive && npc.PackageID =="ProvisionerBaf")
-                            {
 								AddAggroListTo(npc.Brain as StandardMobBrain);
-							}
                         }
                     }
                 }
-				foreach (GamePlayer player in Body.GetPlayersInRadius(800))
+
+				#region Walk path
+				if (!Body.IsWithinRadius(point1, 30) && point1check == false)
 				{
-					if (player != null)
-					{
-						if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-						{
-							if (!AggroTable.ContainsKey(player))
-							{
-								AggroTable.Add(player, 10);
-							}
-						}
-					}
-					if (player == null || player.Client.Account.PrivLevel != 1 || player.IsAlive == false)
-					{
-						if (AggroTable.Count > 0)
-						{
-							ClearAggroList();
-						}
-					}
+					Body.WalkTo(point1, (short)Util.Random(195, 300));
 				}
-				if (!HasAggressionTable())
+				else
 				{
-					point7check = false;
-					point1check = false;
-					point2check = false;
-					point3check = false;
-					point4check = false;
-					point5check = false;
-					point6check = false;
-					ToSpawn = false;
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-				}
-				if (HasAggressionTable())
-				{
-					ToSpawn = true;
-					if (Body.CurrentRegionID == 60) //caer sidi
+					point1check = true;
+					point8check = false;
+					if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
 					{
-						if (!Body.IsWithinRadius(point1, 30) && point1check == false)
+						Body.WalkTo(point2, (short)Util.Random(195, 300));
+					}
+					else
+					{
+						point2check = true;
+						if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
+							point3check == false)
 						{
-							Body.WalkTo(point1, (short)Util.Random(195, 250));
+							Body.WalkTo(point3, (short)Util.Random(195, 300));
 						}
 						else
 						{
-							point1check = true;
-							point7check = false;
-							if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
+							point3check = true;
+							if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
+								point3check == true && point4check == false)
 							{
-								Body.WalkTo(point2, (short)Util.Random(195, 250));
+								Body.WalkTo(point4, (short)Util.Random(195, 300));
 							}
 							else
 							{
-								point2check = true;
-								if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-									point3check == false)
+								point4check = true;
+								if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
+									point3check == true && point4check == true && point5check == false)
 								{
-									Body.WalkTo(point3, (short)Util.Random(195, 250));
+									Body.WalkTo(point5, (short)Util.Random(195, 300));
 								}
 								else
 								{
-									point3check = true;
-									if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-										point3check == true && point4check == false)
+									point5check = true;
+									if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
+									point3check == true && point4check == true && point5check == true && point6check == false)
 									{
-										Body.WalkTo(point4, (short)Util.Random(195, 250));
+										Body.WalkTo(point6, (short)Util.Random(195, 300));
 									}
 									else
 									{
-										point4check = true;
-										if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
-											point3check == true && point4check == true && point5check == false)
+										point6check = true;
+										if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
+										point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
 										{
-											Body.WalkTo(point5, (short)Util.Random(195, 250));
+											Body.WalkTo(point7, (short)Util.Random(195, 300));
 										}
 										else
 										{
-											point5check = true;
-											if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
-											point3check == true && point4check == true && point5check == true && point6check == false)
+											point7check = true;
+											if (!Body.IsWithinRadius(point8, 30) && point1check == true && point2check == true &&
+											point3check == true && point4check == true && point5check == true && point6check == true && point7check == true && !point8check)
 											{
-												Body.WalkTo(point6, (short)Util.Random(195, 250));
+												Body.WalkTo(point8, (short)Util.Random(195, 300));
 											}
 											else
 											{
-												point6check = true;
-												if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
-												point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
-												{
-													Body.WalkTo(point7, (short)Util.Random(195, 250));
-												}
-												else
-												{
-													point7check = true;
-													point1check = false;
-													point2check = false;
-													point3check = false;
-													point4check = false;
-													point5check = false;
-													point6check = false;
-												}
+												point8check = true;
+												point7check = false;
+												point1check = false;
+												point2check = false;
+												point3check = false;
+												point4check = false;
+												point5check = false;
+												point6check = false;
 											}
 										}
 									}
@@ -292,18 +272,16 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					else //not sidi
-					{
-						//mob will not roam
-					}
 				}
-				if (Body.InCombatInLast(40 * 1000) == false && this.Body.InCombatInLast(45 * 1000))
+                #endregion
+
+                if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
 				{
 					ClearAggroList();
+					Body.Health = Body.MaxHealth;
 				}
 			}
 			base.Think();
-		}
-		
+		}		
 	}
 }

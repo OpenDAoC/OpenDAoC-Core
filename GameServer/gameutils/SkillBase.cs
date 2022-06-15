@@ -2008,6 +2008,8 @@ namespace DOL.GS
 			if (damage < 0 || damage > eDamageType._LastResist - eDamageType._FirstResist) return 0;
 
 			const int realmBits = DAMAGETYPE_BITCOUNT + ARMORTYPE_BITCOUNT;
+			
+			//Console.WriteLine($"Realm {realm} armorType {armorType} damage {damage} input {(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage} resistoutput {m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage]}");
 
 			return m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage];
 		}
@@ -2015,7 +2017,7 @@ namespace DOL.GS
 		private static void InitArmorResists()
 		{
 			const int resistant		= 10;
-			const int vulnerable	= -5;
+			const int vulnerable	= -10;
 
 			// melee resists (slash, crush, thrust)
 

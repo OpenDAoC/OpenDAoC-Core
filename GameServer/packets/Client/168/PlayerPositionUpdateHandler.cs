@@ -28,6 +28,7 @@ using DOL.Events;
 using DOL.Language;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Utils;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -368,15 +369,31 @@ namespace DOL.GS.PacketHandler.Client.v168
 				// Check for left areas
 				if (oldAreas != null)
 					foreach (IArea area in oldAreas)
+					{
 						if (!newAreas.Contains(area))
+						{
 							area.OnPlayerLeave(client.Player);
+							
+							//Check if leaving Border Keep areas so we can check RealmTimer
+							AbstractArea checkrvrarea = area as AbstractArea;
+							if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
+								checkrvrarea.Description.Equals("Snowdonia Fortress") || 
+								checkrvrarea.Description.Equals("Svasud Faste") ||
+								checkrvrarea.Description.Equals("Vindsaul Faste") ||
+								checkrvrarea.Description.Equals("Druim Ligen") ||
+								checkrvrarea.Description.Equals("Druim Cain")))
+							{
+								RealmTimer.CheckRealmTimer(client.Player);
+							}
+						}
+					}
 				// Check for entered areas
 				foreach (IArea area in newAreas)
 					if (oldAreas == null || !oldAreas.Contains(area))
 						area.OnPlayerEnter(client.Player);
 				// set current areas to new one...
 				client.Player.CurrentAreas = newAreas;
-				client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 2000; // update every 2 seconds
+				client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 750; // update every .75 seconds
 			}
 			// End ---------- New Area System -----------
 
@@ -1071,6 +1088,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (!newAreas.Contains(area))
 						{
 							area.OnPlayerLeave(client.Player);
+
+							//Check if leaving Border Keep areas so we can check RealmTimer
+							AbstractArea checkrvrarea = area as AbstractArea;
+							if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
+								checkrvrarea.Description.Equals("Snowdonia Fortress") || 
+								checkrvrarea.Description.Equals("Svasud Faste") ||
+								checkrvrarea.Description.Equals("Vindsaul Faste") ||
+								checkrvrarea.Description.Equals("Druim Ligen") ||
+								checkrvrarea.Description.Equals("Druim Cain")))
+							{
+								RealmTimer.CheckRealmTimer(client.Player);
+							}
 						}
 					}
 				}
@@ -1202,6 +1231,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				client.Player.Heading = client.Player.Steed.Heading;
 				newHeading = (ushort)client.Player.Steed.ObjectID;
+				steedSeatPosition = (ushort)client.Player.Steed.RiderSlot(client.Player);
 			}
 			else if ((playerState >> 10) == 4) // patch 0062 fix bug on release preventing players from receiving res sickness
 				client.Player.IsSitting = true;

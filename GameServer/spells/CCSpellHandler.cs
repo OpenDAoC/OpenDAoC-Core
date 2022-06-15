@@ -152,7 +152,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-
 			return (int)duration;
 		}
 
@@ -567,7 +566,7 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
-			if (target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GamePet)))//target.HasAbility(Abilities.StunImmunity))
+			if ((target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GamePet)))//target.HasAbility(Abilities.StunImmunity))
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
@@ -601,6 +600,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = base.CalculateEffectDuration(target, effectiveness);
+			duration *= target.GetModified(eProperty.StunDurationReduction) * 0.01;
 			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 			if (npcImmune != null)
 				duration = npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;

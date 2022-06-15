@@ -88,7 +88,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				ChatUtil.SendSystemMessage(target,
 				                           player.Name + " has invited you to join " + player.GetPronoun(1, false) + " group.");
 
-				return Interval;
+				return 0;
 			}
 		}
 	}

@@ -170,7 +170,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Checks effect owner distance and cancels the effect if too far
 		/// </summary>
-		private sealed class RangeCheckAction : RegionAction
+		private sealed class RangeCheckAction : RegionECSAction
 		{
 			/// <summary>
 			/// The list of effects
@@ -190,7 +190,7 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				IDictionary effects = m_handler.m_concEffects;
 				GameLiving caster = (GameLiving)m_actionSource;
@@ -199,7 +199,7 @@ namespace DOL.GS.Spells
 					if (effects.Count <= 0)
 					{
 						Stop(); // all effects were canceled, stop the timer
-						return;
+						return 0;
 					}
 
 					ArrayList disableEffects = null;
@@ -238,6 +238,8 @@ namespace DOL.GS.Spells
 						foreach (GameSpellEffect fx in disableEffects)
 							m_handler.DisableEffect(fx);
 				}
+
+				return Interval;
 			}
 		}
 

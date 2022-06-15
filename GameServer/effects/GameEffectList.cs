@@ -207,7 +207,7 @@ namespace DOL.GS.Effects
 					GameSpellEffect e;
 					e = new GameSpellEffect(handler, eff.Duration, spell.Frequency);
 					e.RestoredEffect = true;
-					int[] vars = { eff.Var1, eff.Var2, eff.Var3, eff.Var4, eff.Var5, eff.Var6 };
+					int[] vars = { eff.Var1, (int)eff.Var2, eff.Var3, eff.Var4, eff.Var5, eff.Var6 };
 					e.RestoreVars = vars;
 					e.Start(player);
 				}

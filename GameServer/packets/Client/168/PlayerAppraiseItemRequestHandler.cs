@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles item apprise actions
 		/// </summary>
-		protected class AppraiseActionHandler : RegionAction
+		protected class AppraiseActionHandler : RegionECSAction
 		{
 			/// <summary>
 			/// The item slot
@@ -57,12 +57,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
 				if (player.TargetObject == null)
-					return;
+					return 0;
 
 				InventoryItem item = player.Inventory.GetItem((eInventorySlot) m_slot);
 
@@ -70,6 +70,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					merchant.OnPlayerAppraise(player, item, false);
 				else if (player.TargetObject is GameLotMarker lot)
 					lot.OnPlayerAppraise(player, item, false);
+
+				return 0;
 			}
 		}
 	}

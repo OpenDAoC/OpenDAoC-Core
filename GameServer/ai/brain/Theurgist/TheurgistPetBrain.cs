@@ -157,40 +157,46 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
-				foreach (Spell spell in Body.Spells)
+				//Check Offensive Instant Casts
+				if (Body.CanCastInstantHarmfulSpells)
 				{
-      //              if (Body.IsBeingInterrupted)
-      //              {
-						//m_melee = true;
-						//break;
-      //              }
-					if (Body.GetSkillDisabledDuration(spell) == 0)
+					foreach (Spell spell in Body.InstantHarmfulSpells)
 					{
-						if (spell.CastTime > 0)
+						if (Body.GetSkillDisabledDuration(spell) == 0)
 						{
-							if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spell))
+							if (Body.Name.Contains("air"))
 							{
-								casted = true;
-								break;
+								if (Util.Chance(25))
+								{
+									if(CheckInstantSpells(spell))
+										break;
+								}
+							}
+							else
+							{
+								if(CheckInstantSpells(spell))
+									break;
 							}
 						}
-						else if (Body.Name.Contains("air"))
+					}
+				}
+				//Check Offensive Casts
+				if (Body.CanCastHarmfulSpells)
+				{
+					foreach (Spell spell in Body.HarmfulSpells)
+					{
+						if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spell))
 						{
-							if (Util.Chance(25))
-							{
-								CheckInstantSpells(spell);
-							}
-						}
-						else
-						{
-							CheckInstantSpells(spell);
+							casted = true;
+							break;
 						}
 					}
 				}
 			}
 			//if (this is IControlledBrain && !Body.attackComponent.AttackState)
 			//	((IControlledBrain)this).Follow(((IControlledBrain)this).Owner);
-			return casted;
+			bool checkingSpellLOS = Body.TempProperties.getProperty<Spell>("LOSCURRENTSPELL", null) != null; //Check if pet is checking for spell LoS
+			return casted || Body.IsCasting || checkingSpellLOS;
 		}
 
 		#region IControlledBrain Members

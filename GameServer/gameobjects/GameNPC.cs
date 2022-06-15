@@ -330,6 +330,7 @@ namespace DOL.GS
 			Charisma = (short)(29 + Level);
 		}
 
+		/*
 		/// <summary>
 		/// Gets or Sets the effective level of the Object
 		/// </summary>
@@ -342,7 +343,7 @@ namespace DOL.GS
 					return brain.Owner.EffectiveLevel;
 				return base.EffectiveLevel;
 			}
-		}
+		}*/
 
 		/// <summary>
 		/// Gets or sets the Realm of this NPC
@@ -1608,7 +1609,7 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget.Target==target)
+				if (m_followTimer.IsAlive && m_followTarget.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
 				else
 				{
@@ -1660,7 +1661,7 @@ namespace DOL.GS
 			//sirru
 			else if (attackComponent.Attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
 			{
-				if (TargetObject.Realm == 0 || Realm == 0)
+				if (TargetObject?.Realm == 0 || Realm == 0)
 					m_lastAttackTickPvE = m_CurrentRegion.Time;
 				else m_lastAttackTickPvP = m_CurrentRegion.Time;
 				if (this.CurrentRegion.Time - LastAttackedByEnemyTick > 10 * 1000)
@@ -1767,7 +1768,7 @@ namespace DOL.GS
 				else if (brain.CheckFormation(ref newX, ref newY, ref newZ))
 				{
 					short followspeed= (short) Math.Max(Math.Min(MaxSpeed,GetDistance(new Point2D(newX, newY))*followSpeedScaler),50);
-					log.Debug($"Followspeed: {followspeed}");
+					//log.Debug($"Followspeed: {followspeed}");
 					WalkTo(newX, newY, (ushort) newZ, followspeed);
 					//WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
 					
@@ -3730,6 +3731,13 @@ namespace DOL.GS
 				if (this is GameSiegeRam)
 					name = "ram";
 
+				if (this is GameSiegeRam && player.Realm != this.Realm)
+				{
+					player.Out.SendMessage($"This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
+				
+
 				if (RiderSlot(player) != -1)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.AlreadyRiding", name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -4313,7 +4321,7 @@ namespace DOL.GS
 						{
 							GameLiving living = de.Key as GameLiving;
 							GamePlayer player = living as GamePlayer;
-
+							if (player != null && player.IsObjectGreyCon(this)) continue;
 							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
 							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
 								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
@@ -5652,6 +5660,11 @@ namespace DOL.GS
 					else if (pet.Owner is CommanderPet petComm && petComm.Owner is GamePlayer owner)
 						LOSChecker = owner;
 				}
+				else if (LOSChecker == null && this.Brain is IControlledBrain brain) // Check for charmed pets
+				{
+					if (brain.Owner is GamePlayer player)
+						LOSChecker = player;
+				}
 
 				if (LOSChecker == null)
 				{
@@ -5774,8 +5787,8 @@ namespace DOL.GS
 
 			if (TargetObject == null)
 			{
-				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
-					.Replace("{targetname}", living.Name) // '{targetname}' returns the mob/NPC target's name
+				text = chosen.Text.Replace("{sourcename}", Brain?.Body?.Name) // '{sourcename}' returns the mob or NPC name
+					.Replace("{targetname}", living?.Name) // '{targetname}' returns the mob/NPC target's name
 					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
 				
 				// Replace trigger keywords

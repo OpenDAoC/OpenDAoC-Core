@@ -140,18 +140,19 @@ namespace DOL.GS
                                 effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
-                                effect.NextTick += effect.TickInterval;
+                                effect.NextTick = GameLoop.GameLoopTime + effect.TickInterval;
                                 if (factor <= 0)
                                     effect.ExpireTick = GameLoop.GameLoopTime - 1;
                             }
                         }
 
-                        if (effect.NextTick != 0 && tick >= effect.NextTick)
+                        if (effect.NextTick != 0 && tick >= effect.NextTick && tick < effect.ExpireTick)
                         {
                             effect.OnEffectPulse();
                         }
                         if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                         {
+                            //Check if player is too far away from Caster for Concentration buff.
                             if (!effect.SpellHandler.Caster.
                                 IsWithinRadius(effect.Owner,
                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
@@ -166,32 +167,37 @@ namespace DOL.GS
                                 if (disabled != null)
                                     EffectService.RequestEnableEffect(disabled);
                             }
+                            //Check if player is back in range of Caster for Concentration buff.
                             else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
                                 effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                                 && effect.IsDisabled)
                             {
+                                //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                                 ECSGameSpellEffect enabled = null;
-                                List<ECSGameEffect> concEffects;
-                                effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out concEffects);
+                                List<ECSGameEffect> sameEffectTypeEffects;
+                                effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out sameEffectTypeEffects);
                                 bool isBest = false;
-                                if (concEffects.Count == 1)
+                                if (sameEffectTypeEffects.Count == 1)
                                     isBest = true;
-                                else if (concEffects.Count > 1)
+                                else if (sameEffectTypeEffects.Count > 1)
                                 {
-                                    foreach (var tmpEff in effects)
+                                    foreach (var tmpEff in sameEffectTypeEffects)
                                     {
                                         if (tmpEff is ECSGameSpellEffect eff)
                                         {
+                                            //Check only against enabled spells
                                             if (!eff.IsDisabled)
+                                            {
                                                 enabled = eff;
-                                            if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
-                                            {
-                                                isBest = true;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                isBest = false;
+                                                if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
+                                                {
+                                                    isBest = true;
+                                                    //break;
+                                                }
+                                                else
+                                                {
+                                                    isBest = false;
+                                                }
                                             }
                                         }
                                     }
@@ -205,9 +211,9 @@ namespace DOL.GS
                                         EffectService.RequestDisableEffect(enabled);
                                     }
                                 }
-
-                                effect.NextTick += effect.PulseFreq;
+                     
                             }
+                            effect.NextTick = GameLoop.GameLoopTime + effect.PulseFreq;
                         }
                     }
                 }

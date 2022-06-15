@@ -54,7 +54,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 40000; }
 		}
 		public static Style Taunt2h = SkillBase.GetStyleByID(103, 2);//2h style taunt
 		public static Style AfterParry = SkillBase.GetStyleByID(108, 2); // after parry

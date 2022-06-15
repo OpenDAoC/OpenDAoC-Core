@@ -105,40 +105,43 @@ namespace DOL.GS.Keeps
 						continue;
 				
 					AbstractGameKeep keep;
-					if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
-					{
-						keep = keepRegion.CreateGameKeepTower();
-					}
-					else
-					{
-						keep = keepRegion.CreateGameKeep();
-					}
+					// if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
+					// {
+					// 	keep = keepRegion.CreateGameKeepTower();
+					// }
+					// else
+					// {
+					
+					// set SkinType to 99 for relic keeps
+					keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
+						
+					// }
 
 					keep.Load(datakeep);
 					RegisterKeep(datakeep.KeepID, keep);
 				}
 
 				// This adds owner keeps to towers / portal keeps
-				foreach (AbstractGameKeep keep in m_keepList.Values)
-				{
-					GameKeepTower tower = keep as GameKeepTower;
-					if (tower != null)
-					{
-						int index = tower.KeepID & 0xFF;
-						GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
-						if (ownerKeep != null)
-						{
-							ownerKeep.AddTower(tower);
-						}
-						tower.Keep = ownerKeep;
-						tower.OwnerKeepID = index;
-
-						if (tower.OwnerKeepID < 10)
-						{
-							log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
-						}
-					}
-				}
+				// foreach (AbstractGameKeep keep in m_keepList.Values)
+				// {
+				// 	GameKeepTower tower = keep as GameKeepTower;
+				// 	if (tower != null)
+				// 	{
+				// 		int index = tower.KeepID & 0xFF;
+				// 		GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
+				// 		if (ownerKeep != null)
+				// 		{
+				// 			ownerKeep.AddTower(tower);
+				// 		}
+				// 		tower.Keep = ownerKeep;
+				// 		tower.OwnerKeepID = index;
+				//
+				// 		if (tower.OwnerKeepID < 10)
+				// 		{
+				// 			log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
+				// 		}
+				// 	}
+				// }
 				if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
 					log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
 				    
@@ -672,7 +675,7 @@ namespace DOL.GS.Keeps
 		/// <returns>true if the player is an enemy of the door</returns>
 		public virtual bool IsEnemy(GameKeepDoor checker, GamePlayer target)
 		{
-			return IsEnemy(checker.Component.Keep, target);
+			return IsEnemy(checker.Component?.Keep, target);
 		}
 
 		/// <summary>

@@ -155,10 +155,17 @@ namespace DOL.GS
                 }
                 else
                 {
+                    //fix for Buff Pot Barrel not showing all icons when used
                     if (e is ECSGameSpellEffect spellEffect && AllStatsBarrel.BuffList.Contains(spellEffect.SpellHandler.Spell.ID))
                     {
                         List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
                         ecsList.AddRange(playerEffects.Skip(playerEffects.Count - AllStatsBarrel.BuffList.Count));
+                    }
+                    //fix for Regen Pot not showing all icons when used
+                    else if (e is ECSGameSpellEffect regenEffect && AllRegenBuff.RegenList.Contains(regenEffect.SpellHandler.Spell.ID))
+                    {
+                        List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
+                        ecsList.AddRange(playerEffects.Skip(playerEffects.Count - AllRegenBuff.RegenList.Count));
                     }
                     else
                         ecsList.Add(e);
@@ -508,6 +515,7 @@ namespace DOL.GS
                 case (byte)eSpellType.Charm:
                     return eEffect.Charm;
                 case (byte)eSpellType.DamageSpeedDecrease:
+                case (byte)eSpellType.DamageSpeedDecreaseNoVariance:
                 case (byte)eSpellType.StyleSpeedDecrease:
                 case (byte)eSpellType.SpeedDecrease:
                 case (byte)eSpellType.UnbreakableSpeedDecrease:
@@ -595,6 +603,8 @@ namespace DOL.GS
                     return eEffect.FacilitatePainworking;
                 case (byte)eSpellType.FatigueConsumptionBuff:
                     return eEffect.FatigueConsumptionBuff;
+                case (byte)eSpellType.FatigueConsumptionDebuff:
+                    return eEffect.FatigueConsumptionDebuff;
                 case (byte)eSpellType.DirectDamageWithDebuff:
                     if (spell.DamageType == eDamageType.Body)
                         return eEffect.BodyResistDebuff;
@@ -802,8 +812,10 @@ namespace DOL.GS
                     list.Add(eProperty.MesmerizeDurationReduction);
                     return list;
                 case eEffect.FatigueConsumptionBuff:
+                case eEffect.FatigueConsumptionDebuff:
                     list.Add(eProperty.FatigueConsumption);
                     return list;
+                
                 default:
                     //Console.WriteLine($"Unable to find property mapping for: {e}");
                     return list;
@@ -917,9 +929,13 @@ namespace DOL.GS
                 if (good)
                 {
                     ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
-                    ECSGameEffect e;
-                    e = new ECSGameSpellEffect(new ECSGameEffectInitParams(p, eff.Duration, eff.Var3, handler));
-                    RequestStartEffect(e);
+                    //Console.WriteLine($"Spell {spell} handler {handler}");
+                    handler.Spell.Duration = eff.Duration;
+                    handler.Spell.CastTime = 1;
+                    handler.StartSpell(player);
+                    //ECSGameEffect e = new ECSGameSpellEffect(new ECSGameEffectInitParams(p, eff.Duration, eff.Var2, handler));
+                    //Console.WriteLine($"Created ECS effect: {e} effectiveness {e.Effectiveness} type {e.EffectType} ownerplayer {e.OwnerPlayer} spellVal {handler.Spell.Value}");
+                    player.Out.SendStatusUpdate();
                 }
             }
         }
@@ -933,6 +949,10 @@ namespace DOL.GS
 			
             if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
                 return;
+            
+            var effs = DOLDB<PlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+            if (effs != null)
+                GameServer.Database.DeleteObject(effs);
 
             lock (player.effectListComponent._effectsLock)
             {

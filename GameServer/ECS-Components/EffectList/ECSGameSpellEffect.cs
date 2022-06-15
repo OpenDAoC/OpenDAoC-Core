@@ -33,7 +33,8 @@ namespace DOL.GS
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                TriggersImmunity = true;
+                if(!SpellHandler.Spell.Name.Equals("Prevent Flight"))
+					TriggersImmunity = true;
             }
             else if (SpellHandler.Spell.IsConcentration)
             {
@@ -82,7 +83,7 @@ namespace DOL.GS
             {
                 if (OwnerPlayer != null)
                 {
-                    if (EffectType == eEffect.Stun && SpellHandler.Caster is GamePet)
+                    if ((EffectType == eEffect.Stun && SpellHandler.Caster is GamePet) || SpellHandler is UnresistableStunSpellHandler)
                         return;
 
                     new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
@@ -196,6 +197,8 @@ namespace DOL.GS
 			
 			PlayerXEffect eff = new PlayerXEffect();
 			eff.Var1 = SpellHandler.Spell.ID;
+			eff.Var2 = Effectiveness;
+			eff.Var3 = (int)SpellHandler.Spell.Value;
 			
 			if (Duration > 0)
 				eff.Duration = (int)(ExpireTick - GameLoop.GameLoopTime);

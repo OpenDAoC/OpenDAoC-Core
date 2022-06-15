@@ -11,19 +11,19 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 55; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 55; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 55; // dmg reduction for melee dmg
-                default: return 35; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
             }
         }
         public override int MaxHealth
         {
-            get { return 15000; }
+            get { return 200000; }
         }
         public override bool HasAbility(string keyName)
         {         
-            if (this.IsAlive && keyName == "CCImmunity")
+            if (IsAlive && keyName == "CCImmunity")
                 return true;
 
             return base.HasAbility(keyName);
@@ -31,13 +31,13 @@ namespace DOL.GS.Scripts
 
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 800;
+            return 350;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.45;
+            return 0.20;
         }
         public override bool AddToWorld()
 		{
@@ -79,19 +79,14 @@ namespace DOL.GS.Scripts
 
         public override void WalkToSpawn(short speed)
         {
-            if (this.CurrentRegionID == 60) //if region is caer sidi
-            {
-                if (SkeletalSacristanBrain.ToSpawn == true)
-                {
-                    return;
-                }
-                else
-                {
-                    speed = 250;
-                    base.WalkToSpawn(speed);
-                }
-            }
+            if (IsAlive)
+                return;
+            base.WalkToSpawn(speed);
         }
+        public override void StartAttack(GameObject target)
+        {
+        }
+        public override bool IsVisibleToPlayers => true;
     }
     
 }
@@ -107,12 +102,7 @@ namespace DOL.AI.Brain
 		public static bool point6check = false;
 		public static bool point7check = false;
         public static bool ToSpawn = false;
-        public override void AttackMostWanted()
-        {
-        }
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-        }
+
         public override void Think()
 		{
 			Point3D point1 = new Point3D(31826, 32256, 16750);
@@ -122,106 +112,70 @@ namespace DOL.AI.Brain
 			Point3D point5 = new Point3D(33112, 35808, 16750);
 			Point3D point6 = new Point3D(30259, 35800, 16750);
 			Point3D point7 = new Point3D(30238, 32269, 16750);
-            foreach(GamePlayer player in Body.GetPlayersInRadius(1000))
+
+            if (Body.IsAlive)
             {
-                if(player != null)
+                if (!Body.IsWithinRadius(point1, 30) && point1check == false)
                 {
-                    if(player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-                        if(!AggroTable.ContainsKey(player))
-                        {
-                            AggroTable.Add(player,10);
-                        }
-                    }
+                    Body.WalkTo(point1, (short)Util.Random(195, 250));
                 }
-                if(player == null || player.Client.Account.PrivLevel != 1 || player.IsAlive==false)
+                else
                 {
-                    if(AggroTable.Count > 0)
+                    point1check = true;
+                    point7check = false;
+                    if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
                     {
-                        ClearAggroList();
-                    }
-                }
-            }
-            if(!HasAggressionTable())
-            {
-                point7check = false;
-                point1check = false;
-                point2check = false;
-                point3check = false;
-                point4check = false;
-                point5check = false;
-                point6check = false;
-                ToSpawn = false;
-                this.Body.Health = this.Body.MaxHealth;
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-            }
-			if (HasAggressionTable())
-			{
-                ToSpawn = true;
-                if (Body.CurrentRegionID == 60) //caer sidi
-                {
-                    if (!Body.IsWithinRadius(point1, 30) && point1check == false)
-                    {
-                        Body.WalkTo(point1, (short)Util.Random(195,250));
+                        Body.WalkTo(point2, (short)Util.Random(195, 250));
                     }
                     else
                     {
-                        point1check = true;
-                        point7check = false;
-                        if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
+                        point2check = true;
+                        if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
+                            point3check == false)
                         {
-                            Body.WalkTo(point2, (short)Util.Random(195, 250));
+                            Body.WalkTo(point3, (short)Util.Random(195, 250));
                         }
                         else
                         {
-                            point2check = true;
-                            if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-                                point3check == false)
+                            point3check = true;
+                            if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
+                                point3check == true && point4check == false)
                             {
-                                Body.WalkTo(point3, (short)Util.Random(195, 250));
+                                Body.WalkTo(point4, (short)Util.Random(195, 250));
                             }
                             else
                             {
-                                point3check = true;
-                                if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-                                    point3check == true && point4check == false)
+                                point4check = true;
+                                if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
+                                    point3check == true && point4check == true && point5check == false)
                                 {
-                                    Body.WalkTo(point4, (short)Util.Random(195, 250));
+                                    Body.WalkTo(point5, (short)Util.Random(195, 250));
                                 }
                                 else
                                 {
-                                    point4check = true;
-                                    if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
-                                        point3check == true && point4check == true && point5check == false)
+                                    point5check = true;
+                                    if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
+                                    point3check == true && point4check == true && point5check == true && point6check == false)
                                     {
-                                        Body.WalkTo(point5, (short)Util.Random(195, 250));
+                                        Body.WalkTo(point6, (short)Util.Random(195, 250));
                                     }
                                     else
                                     {
-                                        point5check = true;
-                                        if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
-                                        point3check == true && point4check == true && point5check == true && point6check==false)
+                                        point6check = true;
+                                        if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
+                                        point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
                                         {
-                                            Body.WalkTo(point6, (short)Util.Random(195, 250));
+                                            Body.WalkTo(point7, (short)Util.Random(195, 250));
                                         }
                                         else
                                         {
-                                            point6check = true;
-                                            if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
-                                            point3check == true && point4check == true && point5check == true && point6check ==true && point7check==false)
-                                            {
-                                                Body.WalkTo(point7, (short)Util.Random(195, 250));
-                                            }
-                                            else
-                                            {
-                                                point7check = true;
-                                                point1check = false;
-                                                point2check = false;
-                                                point3check = false;
-                                                point4check = false;
-                                                point5check = false;
-                                                point6check = false;
-                                            }
+                                            point7check = true;
+                                            point1check = false;
+                                            point2check = false;
+                                            point3check = false;
+                                            point4check = false;
+                                            point5check = false;
+                                            point6check = false;
                                         }
                                     }
                                 }
@@ -229,14 +183,11 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                else //not sidi
-                {
-                    //mob will not roam
-                }
             }
-            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             {
                 ClearAggroList();
+                Body.Health = Body.MaxHealth;
             }
             base.Think();
 		}

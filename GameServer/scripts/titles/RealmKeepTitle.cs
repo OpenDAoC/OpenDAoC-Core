@@ -60,7 +60,7 @@ namespace GameServerScripts.Titles
 	{
 		public override DOLEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Stronghold.StrongholdSoldier", "Titles.Claim.Stronghold.StrongholdSoldier"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedKeeps >= 100 && player.CapturedKeeps < 1000; }}
+		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedTowers >= 100 && player.CapturedTowers < 1000; }}
 	}
 	/// <summary>
 	/// "Stronghold Chief" title granted to everyone who captured 1000+ towers.
@@ -69,7 +69,7 @@ namespace GameServerScripts.Titles
 	{
 		public override DOLEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Stronghold.StrongholdChief", "Titles.Claim.Stronghold.StrongholdChief"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedKeeps >= 1000; }}
+		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedTowers >= 1000; }}
 	}
 	#endregion
 }

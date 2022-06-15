@@ -133,10 +133,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (!player.AddToWorld())
 				{
 					log.ErrorFormat("Failed to add player to the region! {0}", player.ToString());
-					player.Client.Out.SendPlayerQuit(true);
-					player.Client.Player.SaveIntoDatabase();
-					player.Client.Player.Quit(true);
-					player.Client.Disconnect();
+					player.Client?.Out.SendPlayerQuit(true);
+					player.Client?.Player.SaveIntoDatabase();
+					player.Client?.Player.Quit(true);
+					player.Client?.Disconnect();
 
 					return 0;
 				}

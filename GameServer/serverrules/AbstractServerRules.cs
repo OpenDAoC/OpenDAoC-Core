@@ -191,6 +191,19 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
+			
+			if (Properties.FORCE_DISCORD_LINK)
+			{
+				if (account == null || account.PrivLevel == 1 && account.DiscordID is (null or ""))
+				{
+					// GMs are still allowed to enter server
+					// Normal Players will not be allowed to Log in unless they have linked their Discord
+					client.IsConnected = false;
+					client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
+					log.Debug("Denied access, account is not linked to Discord");
+					return false;
+				}
+			}
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
@@ -450,7 +463,7 @@ namespace DOL.GS.ServerRules
 		{
 			//we only allow certain spell targets to be cast when targeting a keep component
 			//tolakram - live allows most damage spells to be cast on doors. This should be handled in spell handlers
-			if (target is GameKeepComponent || target is GameKeepDoor)
+			if (target is GameKeepComponent || target is GameKeepDoor || target is GameSiegeWeapon)
 			{
 				bool isAllowed = false;
 
@@ -1917,9 +1930,11 @@ namespace DOL.GS.ServerRules
 								}
 								break;
 						}
-						killedPlayer.DeathsPvP++;
+						
 					}
 				}
+                
+                killedPlayer.DeathsPvP++;
 
 				//for each group member, a 50% chance to get a ROG
                 foreach (var grp in groupsToAward)
@@ -1927,7 +1942,7 @@ namespace DOL.GS.ServerRules
 					List<GamePlayer> players = new List<GamePlayer>();
 					foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
                     {
-                        if (Util.Chance(50) && !playersToAward.Contains(pla))
+                        if (!playersToAward.Contains(pla))
                         {
 							playersToAward.Add(pla);
 						}
@@ -2447,7 +2462,21 @@ namespace DOL.GS.ServerRules
 					items = HouseTemplateMgr.OutdoorShopItems;
 					break;
 				case eMerchantWindowType.HousingBindstoneHookpoint:
-					items = HouseTemplateMgr.IndoorBindstoneShopItems;
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsAlb;
+							break;
+						case eRealm.Hibernia:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsHib;
+							break;
+						case eRealm.Midgard:
+							items = HouseTemplateMgr.IndoorBindstoneShopItemsMid;
+							break;
+						default:
+							items = HouseTemplateMgr.IndoorBindstoneShopItems;
+							break;
+					}
 					break;
 				case eMerchantWindowType.HousingCraftingHookpoint:
 					items = HouseTemplateMgr.IndoorCraftShopItems;
@@ -2456,7 +2485,21 @@ namespace DOL.GS.ServerRules
 					items = HouseTemplateMgr.GetNpcShopItems(player);
 					break;
 				case eMerchantWindowType.HousingVaultHookpoint:
-					items = HouseTemplateMgr.IndoorVaultShopItems;
+					switch (player.Realm)
+					{
+						case eRealm.Albion:
+							items = HouseTemplateMgr.IndoorVaultShopItemsAlb;
+							break;
+						case eRealm.Hibernia:
+							items = HouseTemplateMgr.IndoorVaultShopItemsHib;
+							break;
+						case eRealm.Midgard:
+							items = HouseTemplateMgr.IndoorVaultShopItemsMid;
+							break;
+						default:
+							items = HouseTemplateMgr.IndoorVaultShopItems;
+							break;
+					}
 					break;
 			}
 

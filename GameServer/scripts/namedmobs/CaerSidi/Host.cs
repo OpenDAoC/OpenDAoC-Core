@@ -137,8 +137,7 @@ namespace DOL.GS
 
         public void RespawnChecker()
         {
-            int time = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
-                       60000; //1min is 60000miliseconds        
+            int time = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000miliseconds        
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RespawnTime), time);
         }
 
@@ -229,7 +228,7 @@ namespace DOL.GS
 
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 150;
         }
 
         public override int AttackRange
@@ -242,24 +241,24 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 75; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 75; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 75; // dmg reduction for melee dmg
-                default: return 65; // dmg reduction for rest resists
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 50;// dmg reduction for rest resists
             }
         }
         public override int MaxHealth
         {
-            get { return 15000; }
+            get { return 30000; }
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 750;
+            return 250;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.55;
+            return 0.20;
         }
 
         public override void Die(GameObject killer)
@@ -326,7 +325,7 @@ namespace DOL.GS
             Quickness = 125;
             Piety = 220;
             Intelligence = 220;
-            Empathy = 100;
+            Empathy = 200;
 
             HostBrain.walkback = false;
             HostBrain.path1 = false;

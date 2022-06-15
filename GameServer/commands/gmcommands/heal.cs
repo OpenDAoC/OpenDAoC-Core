@@ -17,6 +17,7 @@
  *
  */
 using System;
+using System.Linq;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -41,6 +42,16 @@ namespace DOL.GS.Commands
 				target.Health = target.MaxHealth;
 				target.Endurance = target.MaxEndurance;
 				target.Mana = target.MaxMana;
+
+				if (target.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+				{
+					EffectService.RequestCancelEffect(target.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.ResurrectionIllness));
+				}
+				
+				if (target.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+				{
+					EffectService.RequestCancelEffect(target.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.RvrResurrectionIllness));
+				}
 			}
 			catch (Exception)
 			{

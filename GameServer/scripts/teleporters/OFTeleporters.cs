@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DOL.Database;
 using DOL.GS.Spells;
-using DOL.AI;
 using DOL.GS.Effects;
 using DOL.AI.Brain;
 using DOL.GS.Housing;
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
@@ -68,38 +66,41 @@ namespace DOL.GS.Scripts
     public class OFTeleporter : GameNPC
     {
         //Re-Port every 45 seconds.
-        public const int ReportInterval = 45;
+        private const int ReportInterval = 45;
 
         //RvR medallions
-        public const string HadrianID = "hadrian_necklace";
-        public const string EmainID = "emain_necklace";
-        public const string OdinID = "odin_necklace";
-        public const string VindsaulID = "vindsaul_necklace";
-        public const string CainID = "druimcain_necklace";
-        public const string SnowdoniaID = "snowdonia_necklace";
-        public const string HomeID = "home_necklace";
+        private const string HadrianID = "hadrian_necklace";
+        private const string EmainID = "emain_necklace";
+        private const string OdinID = "odin_necklace";
+        private const string VindsaulID = "vindsaul_necklace";
+        private const string CainID = "druimcain_necklace";
+        private const string SnowdoniaID = "snowdonia_necklace";
+        private const string HomeID = "home_necklace";
 
         //QoL medallions
-        public const string BindID = "bind_necklace";
-        public const string CityID = "city_necklace";
+        private const string BindID = "bind_necklace";
+        private const string CityID = "city_necklace";
+        
+        //Beta medallions
+        private const string KeepID = "keep_necklace";
 
         //housing medallions
-        public const string AlbionHousingEntID = "housing_entrance_necklace";
-        public const string HiberniaHousingEntID = "housing_entrance_necklace";
-        public const string MidgardHousingEntID = "housing_entrance_necklace";
-        public const string GuildHouseID = "guild_house_necklace";
-        public const string HearthBindID = "hearth_bind_necklace";
-        public const string PersonalHouseID = "personal_house_necklace";
+        private const string AlbionHousingEntID = "housing_entrance_necklace";
+        private const string HiberniaHousingEntID = "housing_entrance_necklace";
+        private const string MidgardHousingEntID = "housing_entrance_necklace";
+        private const string GuildHouseID = "guild_house_necklace";
+        private const string HearthBindID = "hearth_bind_necklace";
+        private const string PersonalHouseID = "personal_house_necklace";
 
         //BG medallions
-        public const string BattlegroundsID = "battlegrounds_necklace";
+        private const string BattlegroundsID = "battlegrounds_necklace";
 
         //Other medallions
-        public const string DarknessFallsID = "df_necklace";
+        private const string DarknessFallsID = "df_necklace";
 
         private IList<OFAssistant> m_ofAssistants;
 
-        public IList<OFAssistant> Assistants
+        private IList<OFAssistant> Assistants
         {
             get { return m_ofAssistants; }
             set { m_ofAssistants = value; }
@@ -110,7 +111,7 @@ namespace DOL.GS.Scripts
 
         private ECSGameTimer castTimer;
 
-        public Spell PortSpell
+        private Spell PortSpell
         {
             get
             {
@@ -241,18 +242,26 @@ namespace DOL.GS.Scripts
                                 case CityID:
                                     PortLocation = new GameLocation("City Alb", 10, 36226, 29820, 7971);
                                     break;
+                                case KeepID:
+                                    if (!IsAllowedToKeepJump(player))
+                                    {
+                                        break;
+                                    }
+                                    PortLocation = new GameLocation("Caer Berkstead", 1, 584271, 390681,  5848, 2160);
+                                    break;
                                 case BattlegroundsID:
                                 {
-                                    if (player.Level is >= 15 and <= 19)
-                                    {
-                                        if (player.RealmPoints >= 125)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Abermenai Alb", 253, 38113, 53507, 4160, 3268);
-                                    }
-                                    else if (player.Level is >= 20 and <= 24)
+                                    // if (player.Level is >= 15 and <= 19)
+                                    // {
+                                    //     if (player.RealmPoints >= 125)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Abermenai Alb", 253, 38113, 53507, 4160, 3268);
+                                    // }
+                                    // else 
+                                    if (player.Level is >= 20 and <= 24)
                                     {
                                         if (player.RealmPoints >= 350)
                                         {
@@ -261,16 +270,16 @@ namespace DOL.GS.Scripts
 
                                         PortLocation = new GameLocation("Thidranki Alb", 252, 38113, 53507, 4160, 3268);
                                     }
-                                    else if (player.Level is >= 25 and <= 29)
-                                    {
-                                        if (player.RealmPoints >= 1375)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Murdaigean Alb", 251, 38113, 53507, 4160,
-                                            3268);
-                                    }
+                                    // else if (player.Level is >= 25 and <= 29)
+                                    // {
+                                    //     if (player.RealmPoints >= 1375)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Murdaigean Alb", 251, 38113, 53507, 4160,
+                                    //         3268);
+                                    // }
                                     else if (player.Level is >= 30 and <= 34)
                                     {
                                         if (player.RealmPoints >= 7125)
@@ -392,18 +401,26 @@ namespace DOL.GS.Scripts
                                 case CityID:
                                     PortLocation = new GameLocation("City Mid", 101, 31746, 27429, 8792);
                                     break;
+                                case KeepID:
+                                    if (!IsAllowedToKeepJump(player))
+                                    {
+                                        break;
+                                    }
+                                    PortLocation = new GameLocation("Glenlock Faste", 100, 707024, 657565, 5184, 2050);
+                                    break;
                                 case BattlegroundsID:
                                 {
-                                    if (player.Level >= 15 && player.Level <= 19)
-                                    {
-                                        if (player.RealmPoints >= 125)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Abermenai Mid", 253, 53568, 23643, 4530);
-                                    }
-                                    else if (player.Level >= 20 && player.Level <= 24)
+                                    // if (player.Level >= 15 && player.Level <= 19)
+                                    // {
+                                    //     if (player.RealmPoints >= 125)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Abermenai Mid", 253, 53568, 23643, 4530);
+                                    // }
+                                    // else 
+                                    if (player.Level >= 20 && player.Level <= 24)
                                     {
                                         if (player.RealmPoints >= 350)
                                         {
@@ -412,15 +429,15 @@ namespace DOL.GS.Scripts
 
                                         PortLocation = new GameLocation("Thidranki Mid", 252, 53568, 23643, 4530);
                                     }
-                                    else if (player.Level >= 25 && player.Level <= 29)
-                                    {
-                                        if (player.RealmPoints >= 1375)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Murdaigean Mid", 251, 53568, 23643, 4530);
-                                    }
+                                    // else if (player.Level >= 25 && player.Level <= 29)
+                                    // {
+                                    //     if (player.RealmPoints >= 1375)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Murdaigean Mid", 251, 53568, 23643, 4530);
+                                    // }
                                     else if (player.Level >= 30 && player.Level <= 34)
                                     {
                                         if (player.RealmPoints >= 7125)
@@ -541,18 +558,26 @@ namespace DOL.GS.Scripts
                                 case CityID:
                                     PortLocation = new GameLocation("City Hib", 201, 34140, 32058, 8047);
                                     break;
+                                case KeepID:
+                                    if (!IsAllowedToKeepJump(player))
+                                    {
+                                        break;
+                                    }
+                                    PortLocation = new GameLocation("Dun nGed", 200, 397316, 399496, 4328,3030);
+                                    break;
                                 case BattlegroundsID:
                                 {
-                                    if (player.Level >= 15 && player.Level <= 19)
-                                    {
-                                        if (player.RealmPoints >= 125)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Abermenai Hib", 253, 17367, 18248, 4320);
-                                    }
-                                    else if (player.Level >= 20 && player.Level <= 24)
+                                    // if (player.Level >= 15 && player.Level <= 19)
+                                    // {
+                                    //     if (player.RealmPoints >= 125)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Abermenai Hib", 253, 17367, 18248, 4320);
+                                    // }
+                                    // else 
+                                    if (player.Level >= 20 && player.Level <= 24)
                                     {
                                         if (player.RealmPoints >= 350)
                                         {
@@ -561,15 +586,15 @@ namespace DOL.GS.Scripts
 
                                         PortLocation = new GameLocation("Thidranki Hib", 252, 17367, 18248, 4320);
                                     }
-                                    else if (player.Level >= 25 && player.Level <= 29)
-                                    {
-                                        if (player.RealmPoints >= 1375)
-                                        {
-                                            break;
-                                        }
-
-                                        PortLocation = new GameLocation("Murdaigean Hib", 251, 17367, 18248, 4320);
-                                    }
+                                    // else if (player.Level >= 25 && player.Level <= 29)
+                                    // {
+                                    //     if (player.RealmPoints >= 1375)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    //
+                                    //     PortLocation = new GameLocation("Murdaigean Hib", 251, 17367, 18248, 4320);
+                                    // }
                                     else if (player.Level >= 30 && player.Level <= 34)
                                     {
                                         if (player.RealmPoints >= 7125)
@@ -719,6 +744,40 @@ namespace DOL.GS.Scripts
             SetOwnBrain(new MainTeleporterBrain());
 
             return true;
+        }
+
+        private bool IsAllowedToKeepJump(GamePlayer player)
+        {
+            var keeps = new List<int>();
+            switch (player.Realm)
+            {
+                case eRealm.Albion:
+                    keeps.Add(55); // Caer Hurbury
+                    keeps.Add(56); // Caer Renaris
+                    keeps.Add(51); // Caer Berkstead
+                    break;
+                case eRealm.Midgard:
+                    keeps.Add(81); // Arvakr Faste
+                    keeps.Add(80); // Fensalir Faste
+                    keeps.Add(79); // Glenlock Faste
+                    break;
+                case eRealm.Hibernia:
+                    keeps.Add(105); // Dun Scathaig
+                    keeps.Add(106); // Dun Ailinne
+                    keeps.Add(103); // Dun nGed
+                    break;
+            }
+
+            var allowed = true;
+            foreach (var keep in keeps)
+            {
+                var keepToCheck = GameServer.KeepManager.GetKeepByID(keep);
+                if (keepToCheck.Realm == player.Realm && !keepToCheck.InCombat) continue;
+                allowed = false;
+                break;
+            }
+
+            return allowed;
         }
     }
 

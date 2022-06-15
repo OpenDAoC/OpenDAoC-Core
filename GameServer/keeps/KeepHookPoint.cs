@@ -125,7 +125,7 @@ namespace DOL.GS.Keeps
 		}
 	}
 
-	public class HookpointTimer : RegionAction
+	public class HookpointTimer : RegionECSAction
 	{
 		private GameKeepHookPoint m_hookpoint;
 
@@ -135,17 +135,19 @@ namespace DOL.GS.Keeps
 			m_hookpoint = hookpoint;
 		}
 
-		protected override void OnTick()
+		protected override int OnTick(ECSGameTimer timer)
 		{
 			if (m_hookpoint.Object is GameSiegeWeapon)
 				(m_hookpoint.Object as GameSiegeWeapon).ReleaseControl();
 			if (m_hookpoint.Object.ObjectState != GameObject.eObjectState.Deleted)
 			{
 				m_hookpoint.Object.Delete();
-				this.Start(300000);//5*60*1000 = 5 min
+				return 300000;//5*60*1000 = 5 min
 			}
 			else
 				m_hookpoint.Object = null;
+
+			return 0;
 		}
 	}
 }

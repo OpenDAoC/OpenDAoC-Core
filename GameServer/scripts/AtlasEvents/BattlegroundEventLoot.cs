@@ -177,6 +177,10 @@ namespace DOL.GS.Scripts
 					List<ItemTemplate> atlasCloak = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_cloak")));
 					InventoryItem invitem2 = GameInventoryItem.Create<ItemUnique>(atlasCloak.FirstOrDefault());
 					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem2);
+					
+					List<ItemTemplate> atlasRing = new List<ItemTemplate>(DOLDB<ItemTemplate>.SelectObjects(DB.Column("Id_nb").IsEqualTo("atlas_ring")));
+					InventoryItem invitem3 = GameInventoryItem.Create<ItemUnique>(atlasRing.FirstOrDefault());
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem3);
 				}
 				
 				
