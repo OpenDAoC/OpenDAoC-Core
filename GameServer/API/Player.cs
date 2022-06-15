@@ -219,11 +219,11 @@ public class Player
         return playerInfo;
     }
     
-    public PlayerSpec GetPlayerSpec(string playerName)
+    public List<PlayerSpec> GetPlayerSpec(string playerName)
     {
         var _playerSpecsCacheKey = "api_player_specs_" + playerName;
 
-        if (_cache.TryGetValue(_playerSpecsCacheKey, out PlayerSpec specs)) return specs;
+        if (_cache.TryGetValue(_playerSpecsCacheKey, out List<PlayerSpec> specs)) return specs;
         
         var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
@@ -233,7 +233,8 @@ public class Player
         if (player.HideSpecializationAPI)
             return null;
 
-        specs = new PlayerSpec(player);
+        specs = new List<PlayerSpec> {new (player)};
+        
         _cache.Set(_playerSpecsCacheKey, specs, DateTime.Now.AddMinutes(2));
 
         return specs;
@@ -248,6 +249,7 @@ public class Player
         var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         tradeskills = new PlayerTradeSkills(player);
+        
         _cache.Set(_playerTradesCacheKey, tradeskills, DateTime.Now.AddMinutes(2));
 
         return tradeskills;

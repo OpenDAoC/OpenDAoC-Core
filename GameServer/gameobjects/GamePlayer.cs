@@ -15332,6 +15332,11 @@ namespace DOL.GS
         {
             Salvage.BeginWork(this, item);
         }
+        
+        public virtual void SalvageItemList(IList<InventoryItem> itemList)
+        {
+            Salvage.BeginWorkList(this, itemList);
+        }
 
         /// <summary>
         /// This function is called each time a player try to repair a item
