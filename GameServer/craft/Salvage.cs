@@ -165,6 +165,7 @@ namespace DOL.GS
 			player.TempProperties.setProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
+			if (itemList == null || itemList.Count == 0) return 0;
 			return BeginWork(player, itemList[0]);
 		}
 
