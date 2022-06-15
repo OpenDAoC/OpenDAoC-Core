@@ -384,8 +384,6 @@ namespace DOL.GS.Quests.Hibernia
         
 			if (player.Group != null)
 			{
-				if (player.Group.Leader != player) return;
-
 				foreach (var gpl in player.Group.GetPlayersInTheGroup())
 				{
 					AdvanceAfterKill(gpl);
