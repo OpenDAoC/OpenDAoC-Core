@@ -341,7 +341,8 @@ namespace DOL.GS
 			player.CraftTimer?.Stop();
 			player.CraftTimer = null;
 			itemList.RemoveAt(0);
-			BeginWorkList(player, itemList);
+			if (itemList.Count > 0)
+				BeginWorkList(player, itemList);
 			
 			return 1;
 		}
@@ -356,7 +357,63 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item)
+		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item, bool mute = false)
+		{
+			if (player.InCombat)
+			{
+				if (!mute)
+					player.Out.SendMessage("You can't salvage while in combat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (item.IsNotLosingDur || item.IsIndestructible)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			// using negative numbers to indicate item cannot be salvaged
+			if (item.SalvageYieldID < 0)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			
+			if(item.SlotPosition < (int)eInventorySlot.FirstBackpack || item.SlotPosition > (int)eInventorySlot.LastBackpack)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if(skill == eCraftingSkill.NoCrafting)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (player.IsCrafting)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (player.GetCraftingSkillValue(skill) < (0.75 * CraftingMgr.GetItemCraftLevel(item)))
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			return true;
+		}
+		
+		public static bool IsAllowedToBeginWorkSilent(GamePlayer player, InventoryItem item)
 		{
 			if (player.InCombat)
 			{
