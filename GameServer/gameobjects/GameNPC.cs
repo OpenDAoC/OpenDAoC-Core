@@ -2892,6 +2892,7 @@ namespace DOL.GS
 
 			Notify(GameNPCEvent.RiderMount, this, new RiderMountEventArgs(rider, this));
 			int slot = GetFreeArrayLocation();
+			if(slot == -1) return false; //full
 			Riders[slot] = rider;
 			rider.Steed = this;
 			return true;
