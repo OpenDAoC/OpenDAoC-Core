@@ -1930,9 +1930,11 @@ namespace DOL.GS.ServerRules
 								}
 								break;
 						}
-						killedPlayer.DeathsPvP++;
+						
 					}
 				}
+                
+                killedPlayer.DeathsPvP++;
 
 				//for each group member, a 50% chance to get a ROG
                 foreach (var grp in groupsToAward)

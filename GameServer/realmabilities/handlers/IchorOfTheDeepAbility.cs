@@ -26,30 +26,68 @@ namespace DOL.GS.RealmAbilities
 			if (caster == null)
 				return;
 
+			// Player must have a target
 			if (caster.TargetObject == null)
 			{
-				caster.Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You must select a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
 
-			if (!caster.TargetInView)
+			var target = caster.TargetObject as GameLiving;
+
+			// So they can't use Admins or objects as a target
+			if (target == null || !GameServer.ServerRules.IsAllowedToAttack(caster, target, true))
 			{
-				caster.Out.SendMessage(caster.TargetObject.Name + " is not in view.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You have an invalid target!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
 
-			if (!caster.IsWithinRadius( caster.TargetObject, 1875 ))
+			// Can't target self
+			if (caster == target)
 			{
-				caster.Out.SendMessage(caster.TargetObject.Name + " is too far away.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You can't attack yourself!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
 
+			// Target must be in front of the Player
+			if (!caster.IsObjectInFront(target, 150))
+			{
+				caster.Out.SendMessage(target.Name + " is not in view!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.DisableSkill(this, 3 * 1000);
+				return;
+			}
+
+			// Target must be alive
+			if (!target.IsAlive)
+			{
+				caster.Out.SendMessage(target.Name + " is dead!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.DisableSkill(this, 3 * 1000);
+				return;
+			}
+
+			// Target must be within range
+			if (!caster.IsWithinRadius(caster.TargetObject, 1875))
+			{
+				caster.Out.SendMessage(caster.TargetObject.Name + " is too far away!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.DisableSkill(this, 3 * 1000);
+				return;
+			}
+
+			// Target cannot be an ally or friendly
+			if (caster != target && caster.Realm == target.Realm)
+			{
+				caster.Out.SendMessage("You can't attack a member of your realm!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.DisableSkill(this, 3 * 1000);
+				return;
+			}
+
+			// Cannot use ability if timer is not expired
 			if (m_expireTimerID != null && m_expireTimerID.IsAlive)
 			{
-				caster.Out.SendMessage("You are already casting this ability.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You must wait" + m_expireTimerID.TimeUntilElapsed / 1000 + " seconds to recast this type of ability!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -77,170 +115,51 @@ namespace DOL.GS.RealmAbilities
 				}
 				*/
 
-			dmgValue = 400;
-			duration = 20000;
-
-			#region resist and det
-			GameLiving m_target = caster.TargetObject as GameLiving;
-
-			int primaryResistModifier = m_target.GetResist(eDamageType.Spirit);
-			int secondaryResistModifier = m_target.SpecBuffBonusCategory[(int)eProperty.Resist_Spirit];
-			int rootdet = ((m_target.GetModified(eProperty.SpeedDecreaseDurationReduction) - 100) * -1);
-
-			int ResistModifier = 0;
-			ResistModifier += (int)((dmgValue * (double)primaryResistModifier) * -0.01);
-			ResistModifier += (int)((dmgValue + (double)ResistModifier) * (double)secondaryResistModifier * -0.01);
-
-
-			if (m_target is GamePlayer)
-			{
-				dmgValue += ResistModifier;
-			}
-			if (m_target is GameNPC)
-			{
-				dmgValue += ResistModifier;
-			}
-			
-			int rootmodifier = 0;
-			rootmodifier += (int)((duration * (double)primaryResistModifier) * -0.01);
-			rootmodifier += (int)((duration + (double)primaryResistModifier) * (double)secondaryResistModifier * -0.01);
-			rootmodifier += (int)((duration + (double)rootmodifier) * (double)rootdet * -0.01);
-			
-			duration += rootmodifier;
-
-			if (duration < 1)
-				duration = 1;
-			#endregion
-
-
-			foreach (GamePlayer i_player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-			{
-				if (i_player == caster)
-				{
-					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
-				}
-				else
-				{
-					i_player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				}
-
-				//i_player.Out.SendSpellCastAnimation(caster, 7029, 0);
-			}
-
+			// Do the effect and damage if all went well... not sure why this is a timer
 			m_expireTimerID = new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(EndCast), 1);
+			m_expireTimerID.Start();
 		}
 
 		protected virtual int EndCast(ECSGameTimer timer)
 		{
-			if (caster.TargetObject == null)
-			{
-				caster.Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				caster.DisableSkill(this, 3 * 1000);
-				return 0;
-			}
-
-			if (caster.IsMoving)
-			{
-                caster.Out.SendMessage(LanguageMgr.GetTranslation(caster.Client, "SpellHandler.CasterMove"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-				caster.DisableSkill(this, 3000);
-				return 0;
-			}
-
-			if ( !caster.IsWithinRadius( caster.TargetObject, 1875 ) )
-			{
-				caster.Out.SendMessage(caster.TargetObject.Name + " is too far away.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				caster.DisableSkill(this, 3 * 1000);
-				return 0;
-			}
-
 			GameLiving living = caster.TargetObject as GameLiving;
-			
-			if(living==null)
+
+			if (living == null)
 			{
 				timer.Stop();
 				timer = null;
 				return 0;
 			}
 
-			if (living.EffectList.GetOfType<ChargeEffect>() == null && living.EffectList.GetOfType<SpeedOfSoundEffect>() != null)
+			foreach (GamePlayer i_player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
-				living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-				m_rootExpire = new ECSGameTimer(living, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
-				GameEventMgr.AddHandler(living, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-				SendUpdates(living);
+				if (i_player == caster)
+					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
+				else
+					i_player.Out.SendMessage(caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 			}
 
-			foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			/*if (living = caster && living.Realm != caster.Realm)
 			{
-				player.Out.SendSpellEffectAnimation(caster, (caster.TargetObject as GameLiving), 7029, 0, false, 1);
+				IchorEffect(living, living);
 			}
+			else
+			{
+				timer.Stop();
+				timer = null;
+				return 0;
+			}*/
 
+			// Hit all non-friendly mobs in radius, including the target
 			foreach (GameNPC mob in living.GetNPCsInRadius(500))
 			{
-				if (!GameServer.ServerRules.IsAllowedToAttack(caster, mob, true))
-					continue;
-
-				if (mob.HasAbility(Abilities.CCImmunity) || mob.HasAbility(Abilities.RootImmunity) || mob.HasAbility(Abilities.DamageImmunity))
-					continue;
-				
-				//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(mob, "Mesmerize");
-				ECSGameEffect mez = EffectListService.GetEffectOnTarget(mob, eEffect.Mez);
-				if (mez != null)
-					EffectService.RequestCancelEffect(mez);
-					//mez.Cancel(false);
-					
-				//falloff
-				int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, mob);
-				
-				mob.TakeDamage(caster, eDamageType.Spirit, dmgWithFalloff, 0);
-
-				if (mob.EffectList.GetOfType<ChargeEffect>() == null && mob.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
-				{
-					mob.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-					m_rootExpire = new ECSGameTimer(mob, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
-					GameEventMgr.AddHandler(mob, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-					SendUpdates(mob);
-				}
-
-				caster.Out.SendMessage("You hit the " + mob.Name + " for " + dmgWithFalloff + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-
-				foreach (GamePlayer player2 in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					player2.Out.SendSpellEffectAnimation(caster, mob, 7029, 0, false, 1);
-				}
+				IchorEffect(living, mob);
 			}
 
+			// Do everything for GamePlayer now
 			foreach (GamePlayer aeplayer in living.GetPlayersInRadius(500))
 			{
-				if (!GameServer.ServerRules.IsAllowedToAttack(caster, aeplayer, true))
-					continue;
-
-				//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
-				ECSGameEffect mez = EffectListService.GetEffectOnTarget(aeplayer, eEffect.Mez);
-				if (mez != null)
-					EffectService.RequestCancelEffect(mez);
-					//mez.Cancel(false);
-					
-				//falloff
-				int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, aeplayer);
-					
-				aeplayer.TakeDamage(caster, eDamageType.Spirit, dmgWithFalloff, 0);
-				aeplayer.StartInterruptTimer(3000, AttackData.eAttackType.Spell, caster);
-
-				if (aeplayer.EffectList.GetOfType<ChargeEffect>() == null && aeplayer.EffectList.GetOfType<SpeedOfSoundEffect>() == null)
-				{
-					(aeplayer as GameLiving).BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
-					m_rootExpire = new ECSGameTimer(aeplayer, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
-					GameEventMgr.AddHandler(aeplayer, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-					SendUpdates(aeplayer);
-				}
-
-				caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + dmgWithFalloff + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-
-				foreach (GamePlayer player3 in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					player3.Out.SendSpellEffectAnimation(caster, aeplayer, 7029, 0, false, 1);
-				}
+				IchorEffect(living, aeplayer);
 			}
 
 			DisableSkill(caster);
@@ -312,6 +231,99 @@ namespace DOL.GS.RealmAbilities
 					break;
 			}
 		}
+
+		protected void IchorEffect(GameLiving centerTarget, GameLiving aoeTarget)
+		{
+			var living = centerTarget;
+			var target = aoeTarget;
+
+			if (living == null || target == null)
+				return;
+
+			dmgValue = 400;
+			duration = 20000;
+
+			#region Resists and Determination
+			var primaryResistModifier = target.GetResist(eDamageType.Spirit);
+			var secondaryResistModifier = target.SpecBuffBonusCategory[(int)eProperty.Resist_Spirit];
+			var rootdet = ((target.GetModified(eProperty.SpeedDecreaseDurationReduction) - 100) * -1);
+
+			var resistModifier = 0;
+			resistModifier += (int)((dmgValue * (double)primaryResistModifier) * -0.01);
+			resistModifier += (int)((dmgValue + (double)resistModifier) * (double)secondaryResistModifier * -0.01);
+
+			if (target is GamePlayer)
+				dmgValue += resistModifier;
+			else if (target is GameNPC)
+				dmgValue += resistModifier;
+
+			var rootmodifier = 0;
+			rootmodifier += (int)((duration * (double)primaryResistModifier) * -0.01);
+			rootmodifier += (int)((duration + (double)primaryResistModifier) * (double)secondaryResistModifier * -0.01);
+			rootmodifier += (int)((duration + (double)rootmodifier) * (double)rootdet * -0.01);
+
+			duration += rootmodifier;
+
+			if (duration < 1)
+				duration = 1;
+			#endregion Resists and Determination
+
+			// Ignore friendly players
+			if (target.Realm == caster.Realm || target == caster)
+				return;
+
+			if (!GameServer.ServerRules.IsAllowedToAttack(caster, target, true))
+				return;
+
+			//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
+			ECSGameEffect mez = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+			if (mez != null)
+				EffectService.RequestCancelEffect(mez);
+				//mez.Cancel(false);
+
+			// Falloff damage
+			int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, target);
+
+			target.TakeDamage(caster, eDamageType.Spirit, dmgWithFalloff, 0);
+			target.StartInterruptTimer(3000, AttackData.eAttackType.Spell, caster);
+
+			// Spell damage messages
+			caster.Out.SendMessage("You hit " + target.GetName(0, false) + " for " + dmgWithFalloff + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+			// Display damage message to target if any damage is actually caused
+			if (dmgWithFalloff > 0 && target is GamePlayer gpTarget)
+				gpTarget.Out.SendMessage(caster.Name + " hits you for " + dmgWithFalloff + " damage!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+
+			// Make sure they're not using SoS (needs fixing), Charge, or in Shade form
+			var targetCharge = EffectListService.GetEffectOnTarget(target, eEffect.Charge);
+			var targetShade = EffectListService.GetEffectOnTarget(target, eEffect.Shade);
+			if (targetCharge == null && target.EffectList.GetOfType<SpeedOfSoundEffect>() == null && targetShade == null)
+			{
+				// Send spell message to player if applicable
+				if (target is GamePlayer gpMessage)
+					gpMessage.Out.SendMessage("Constricting bonds surround your body!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+				// Apply the snare
+				target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
+				m_rootExpire = new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
+				GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+				SendUpdates(target);
+
+				// Send root animation and spell message
+				foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					player.Out.SendSpellEffectAnimation(caster, target, 7029, 0, false, 1);
+
+					if (player.IsWithinRadius(target, WorldMgr.INFO_DISTANCE) && player != target)
+						player.Out.SendMessage(target.GetName(0, false) + " is surrounded by constricting bonds!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				}
+			}
+			else
+				// Send resist animation if they cannot be rooted
+				foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(caster, target, 7029, 0, false, 0);
+
+		}
+
 		public override int GetReUseDelay(int level)
 		{
 			return 600;

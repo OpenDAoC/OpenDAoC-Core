@@ -330,6 +330,7 @@ namespace DOL.GS
 			Charisma = (short)(29 + Level);
 		}
 
+		/*
 		/// <summary>
 		/// Gets or Sets the effective level of the Object
 		/// </summary>
@@ -342,7 +343,7 @@ namespace DOL.GS
 					return brain.Owner.EffectiveLevel;
 				return base.EffectiveLevel;
 			}
-		}
+		}*/
 
 		/// <summary>
 		/// Gets or sets the Realm of this NPC
@@ -4320,7 +4321,7 @@ namespace DOL.GS
 						{
 							GameLiving living = de.Key as GameLiving;
 							GamePlayer player = living as GamePlayer;
-
+							if (player != null && player.IsObjectGreyCon(this)) continue;
 							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
 							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
 								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();

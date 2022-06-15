@@ -27,6 +27,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.Language;
 using log4net;
+using DOL.GS.Utils;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -78,6 +79,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				bool checkInstanceLogin = false;
 				bool updateTempProperties = false;
+				// if player is entering the game on this playerinit
 				if (!player.EnteredGame)
 				{
 					updateTempProperties = true;
@@ -85,6 +87,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Notify(GamePlayerEvent.GameEntered, player);
 					// ShowPatchNotes(player);
 					//player.EffectList.RestoreAllEffects();
+					EffectService.RestoreAllEffects(player);
 					checkInstanceLogin = true;
 				}
 				else
@@ -97,7 +100,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Notify(GamePlayerEvent.Revive, player);
 					player.Notify(GamePlayerEvent.Released, player);
 				}
-				EffectService.RestoreAllEffects(player);
+				
 				if (player.Group != null)
 				{
 					player.Group.UpdateGroupWindow();
@@ -152,6 +155,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 				}
+
+				//Check realmtimer and move player to bind if realm timer is not for this realm.
+				RealmTimer.CheckRealmTimer(player);
 
 				if (checkInstanceLogin)
 				{

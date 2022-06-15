@@ -28,6 +28,7 @@ using DOL.Events;
 using DOL.Language;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Utils;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -368,8 +369,24 @@ namespace DOL.GS.PacketHandler.Client.v168
 				// Check for left areas
 				if (oldAreas != null)
 					foreach (IArea area in oldAreas)
+					{
 						if (!newAreas.Contains(area))
+						{
 							area.OnPlayerLeave(client.Player);
+							
+							//Check if leaving Border Keep areas so we can check RealmTimer
+							AbstractArea checkrvrarea = area as AbstractArea;
+							if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
+								checkrvrarea.Description.Equals("Snowdonia Fortress") || 
+								checkrvrarea.Description.Equals("Svasud Faste") ||
+								checkrvrarea.Description.Equals("Vindsaul Faste") ||
+								checkrvrarea.Description.Equals("Druim Ligen") ||
+								checkrvrarea.Description.Equals("Druim Cain")))
+							{
+								RealmTimer.CheckRealmTimer(client.Player);
+							}
+						}
+					}
 				// Check for entered areas
 				foreach (IArea area in newAreas)
 					if (oldAreas == null || !oldAreas.Contains(area))
@@ -1071,6 +1088,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (!newAreas.Contains(area))
 						{
 							area.OnPlayerLeave(client.Player);
+
+							//Check if leaving Border Keep areas so we can check RealmTimer
+							AbstractArea checkrvrarea = area as AbstractArea;
+							if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
+								checkrvrarea.Description.Equals("Snowdonia Fortress") || 
+								checkrvrarea.Description.Equals("Svasud Faste") ||
+								checkrvrarea.Description.Equals("Vindsaul Faste") ||
+								checkrvrarea.Description.Equals("Druim Ligen") ||
+								checkrvrarea.Description.Equals("Druim Cain")))
+							{
+								RealmTimer.CheckRealmTimer(client.Player);
+							}
 						}
 					}
 				}

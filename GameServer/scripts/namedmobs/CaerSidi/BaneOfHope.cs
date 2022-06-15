@@ -92,7 +92,6 @@ namespace DOL.AI.Brain
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(25))
                 {
-                    log.Warn("ad.attacker=" + ad.Attacker.Name);
                     GameObject oldTarget = Body.TargetObject;
                     Body.TurnTo(ad.Attacker);
                     Body.TargetObject = ad.Attacker;
@@ -110,37 +109,33 @@ namespace DOL.AI.Brain
         }
         public int TeleportEnemy(ECSGameTimer timer)
         {
-            if (TeleportTarget != null)
+            if (TeleportTarget != null && HasAggro)
             {
                 switch (Util.Random(1, 3))
                 {
-                    case 1:
-                        {
-                            TeleportTarget.MoveTo(Body.CurrentRegionID, 34496, 30879, 14551, 1045);
-                            CanPoison = false;
-                            TeleportTarget = null;
-                        }
-                        break;
-                    case 2:
-                        {
-                            TeleportTarget.MoveTo(Body.CurrentRegionID, 37377, 30154, 13973, 978);
-                            CanPoison = false;
-                            TeleportTarget = null;
-                        }
-                        break;
-                    case 3:
-                        {
-                            TeleportTarget.MoveTo(Body.CurrentRegionID, 38292, 31794, 13940, 986);
-                            CanPoison = false;
-                            TeleportTarget = null;
-                        }
-                        break;
+                    case 1: TeleportTarget.MoveTo(Body.CurrentRegionID, 34496, 30879, 14551, 1045); break;
+                    case 2: TeleportTarget.MoveTo(Body.CurrentRegionID, 37377, 30154, 13973, 978); break;
+                    case 3: TeleportTarget.MoveTo(Body.CurrentRegionID, 38292, 31794, 13940, 986); break;
                 }
             }
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTeleport), Util.Random(25000,35000));
+            return 0;
+        }
+        private int ResetTeleport(ECSGameTimer timer)
+        {
+            CanPoison = false;
+            TeleportTarget = null;
             return 0;
         }
         public override void Think()
         {
+            if(!HasAggressionTable())
+            {
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                Body.Health = Body.MaxHealth;
+                CanPoison = false;
+                TeleportTarget = null;
+            }
             base.Think();
         }
         private Spell m_BaneOfHope_Aoe_Dot;
@@ -156,7 +151,7 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 0;
                     spell.ClientEffect = 4445;
                     spell.Icon = 4445;
-                    spell.Damage = 200;
+                    spell.Damage = 150;
                     spell.Name = "Essense of Souls";
                     spell.Description = "Inflicts powerfull magic damage to the target, then target dies in painfull agony";
                     spell.Message1 = "You are wracked with pain!";
@@ -164,8 +159,8 @@ namespace DOL.AI.Brain
                     spell.Message3 = "You look healthy again.";
                     spell.Message4 = "{0} looks healthy again.";
                     spell.TooltipId = 4445;
-                    spell.Range = 1800;
-                    spell.Radius = 1500;
+                    spell.Range = 1500;
+                    spell.Radius = 600;
                     spell.Duration = 45;
                     spell.Frequency = 40; //dot tick every 4s
                     spell.SpellID = 11783;

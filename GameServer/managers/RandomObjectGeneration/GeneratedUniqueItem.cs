@@ -4754,13 +4754,16 @@ namespace DOL.GS {
         private void CapUtility(int mobLevel)
         {
             int cap = 0;
-            if (mobLevel > 80)
-                cap = 80;
+            
+            if (mobLevel > 57)
+                cap = mobLevel + (Util.Random(1, 5));
             else 
-                cap = mobLevel - 10;
+                cap = mobLevel - (Util.Random(1, 10));
+
+            if (cap > 80) cap = 80;
 
             //randomize cap to be 80-105% of normal value
-            double random = (75 + Util.Random(30)) / 100.0;
+            double random = (80 + Util.Random(25)) / 100.0;
             cap = (int)Math.Floor(cap * random);
 
             if (cap < 15)

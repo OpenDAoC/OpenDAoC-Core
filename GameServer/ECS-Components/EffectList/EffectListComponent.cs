@@ -152,7 +152,7 @@ namespace DOL.GS
                                 {
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
-                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect)
+                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
                                         {
                                             addEffect = true;
                                         }
@@ -361,9 +361,14 @@ namespace DOL.GS
                     {
                         if (effect.CancelEffect)
                         {
-                            Effects[effect.EffectType].Remove(effect);
-                            EffectIdToEffect.Remove(effect.Icon);
+                            List<ECSGameEffect> existingEffects = Effects[effect.EffectType];
+                            
+                            //Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
+                            ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
+                            Effects[effect.EffectType].Remove(effectToRemove);
 
+                            EffectIdToEffect.Remove(effect.Icon);
+                            
                             if (Effects[effect.EffectType].Count == 0)
                             {
                                 EffectIdToEffect.Remove(effect.Icon);

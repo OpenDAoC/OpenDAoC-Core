@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
         {
             m_dbspell = new DBSpell();
             m_dbspell.Name = "Avoid Pain";
-            m_dbspell.Icon = 4227;
+            m_dbspell.Icon = 7117;
             m_dbspell.ClientEffect = 10654;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 11;

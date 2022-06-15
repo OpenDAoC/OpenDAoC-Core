@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
     {
         public AtlasOF_BatteryOfLife(DBAbility dba, int level) : base(dba, level) { }
         
-        int m_duration = 30000; // 30s
+        int m_duration = 0; // 30s
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 10; }
@@ -38,12 +38,13 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.Icon = 4274;
             tmpSpell.ClientEffect = 7009;
             tmpSpell.Damage = 0;
+            tmpSpell.Concentration = 1;
             tmpSpell.DamageType = 0;
             tmpSpell.Target = "Self";
             tmpSpell.Radius = 0;
             tmpSpell.Type = eSpellType.DefensiveProc.ToString();
             tmpSpell.Value = 0;
-            tmpSpell.Duration = 30;
+            tmpSpell.Duration = 0;
             tmpSpell.Pulse = 0;
             tmpSpell.PulsePower = 0;
             tmpSpell.Power = 0;

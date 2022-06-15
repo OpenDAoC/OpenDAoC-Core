@@ -3713,7 +3713,8 @@ namespace DOL.GS
                     evadeChance += 15 * 0.01;
                 }
 
-                evadeChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
+                //Console.WriteLine($"evade before {evadeChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after evade {evadeChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
+                evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100; //reduce chance by attacker's defense penetration
 
 				if ( ad.AttackType == AttackData.eAttackType.Ranged )
 					evadeChance /= 5.0;
@@ -3833,7 +3834,8 @@ namespace DOL.GS
 						parryChance += 25 * 0.01;
 					}
 
-					parryChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
+					//Console.WriteLine($"parry before {parryChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after parry {parryChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
+					parryChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
 
 					if ( parryChance < 0.01 )
 						parryChance = 0.01;
@@ -3924,7 +3926,8 @@ namespace DOL.GS
 					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
 				}
 					
-				blockChance -= GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
+				//Console.WriteLine($"block before {blockChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after block {blockChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
+				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
@@ -4017,15 +4020,16 @@ namespace DOL.GS
 			if (living is GamePlayer p)
             {
 	            double skillBasedReduction = living.WeaponSpecLevel(weapon) * 0.15;
+	            double statBasedReduction = living.GetWeaponStat(weapon) * .05;
 				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
 				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
 				//divide by final 2 to use the 2.0 damage table as our anchor. classes below 2.0 damage table will have slightly reduced penetration, above 2.0 will have increased penetration
-				skillBasedReduction *= p.CharacterClass.WeaponSkillBase / 200.0 / 1.8;
-				totalReduction = skillBasedReduction;
+				double tableMod = p.CharacterClass.WeaponSkillBase / 200.0 / 1.8;
+				totalReduction = (skillBasedReduction + statBasedReduction) * tableMod;
             }
 			else
 			{
-				double NPCReduction = 7.5 * (living.Level / 50.0); //10% penetration at level 50
+				double NPCReduction = 15 * (living.Level / 50.0); //10% penetration at level 50
 				totalReduction = NPCReduction;
 				if(totalReduction < 0) totalReduction = 0;
 			}
@@ -4486,6 +4490,8 @@ namespace DOL.GS
                 return false;
 
             bool effectRemoved = false;
+            
+            EffectService.RequestCancelEffect(this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
 
 			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{

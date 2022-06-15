@@ -57,4 +57,31 @@ namespace DOL.GS.RealmAbilities
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override bool CheckRequirement(GamePlayer player) { return true; } // Override NF level 40 requirement.
     }
+	
+	public class AtlasOF_RAEndRegenEnhancer : RAEndRegenEnhancer
+	{
+		public AtlasOF_RAEndRegenEnhancer(DBAbility dba, int level) : base(dba, level) { }
+		
+		public override int MaxLevel
+		{
+			get
+			{
+				return 1;
+			}
+		}
+		public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+		public override int GetAmountForLevel(int level) { return 1; }
+		public override bool CheckRequirement(GamePlayer player) { return true; } // Override NF level 40 requirement.
+
+		public override IList<string> DelveInfo { 			
+			get
+			{
+				var delveInfoList = new List<string>();
+				delveInfoList.Add(m_description);
+
+				return delveInfoList;
+			}
+			
+		}
+	}
 }

@@ -143,6 +143,9 @@ namespace DOL.GS
         public static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
         public static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
 
+        public static readonly string DUEL_PREVIOUS_LASTATTACKTICKPVP = "DUEL_PREVIOUS_LASTATTACKTICKPVP";
+        public static readonly string DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP= "DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP";
+
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
         /// </summary>
@@ -166,7 +169,12 @@ namespace DOL.GS
         /// </summary>
         public override bool TargetInView
         {
-            get { return m_targetInView; }
+            get {
+                if(TargetObject != null 
+                   && GetDistanceTo(TargetObject) < 64)
+                    return true; 
+                else
+                    return m_targetInView; }
             set { m_targetInView = value; }
         }
 
@@ -448,6 +456,16 @@ namespace DOL.GS
         {
             get { return (DBCharacter != null ? DBCharacter.HCFlag : true); }
             set { if (DBCharacter != null) DBCharacter.HCFlag = value; }
+        }
+        
+        /// <summary>
+        /// Gets or sets the HideSpecializationAPI for this player
+        /// (delegate to property in DBCharacter)
+        /// </summary>
+        public bool HideSpecializationAPI
+        {
+            get { return (DBCharacter != null ? DBCharacter.HideSpecializationAPI : false); }
+            set { if (DBCharacter != null) DBCharacter.HideSpecializationAPI = value; }
         }
         
         /// <summary>
@@ -845,8 +863,9 @@ namespace DOL.GS
                 if (m_quitTimer == null)
                 {
                     // dirty trick ;-) (20sec min quit time)
-                    if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
-                        LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
+                    //Commenting out the LastAttackTickPvP part as it was messing up the Realm Timer.
+                    // if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
+                    //     LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
                     if (GameLoop.GameLoopTime - LastAttackTickPvE > 40000)
                         LastAttackTickPvE = GameLoop.GameLoopTime - 40000;
                 }
@@ -855,6 +874,7 @@ namespace DOL.GS
                 {
                     lastCombatAction = LastAttackedByEnemyTick;
                 }
+
                 return (int)(60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
             }
             set
@@ -8778,6 +8798,10 @@ namespace DOL.GS
 
             Duel = new GameDuel(this, duelTarget);
             Duel.Start();
+
+            //Get PvP Combat ticks before duel.
+            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKTICKPVP, LastAttackTickPvP);
+            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP, LastAttackedByEnemyTickPvP);
         }
 
         /// <summary>
@@ -8790,6 +8814,10 @@ namespace DOL.GS
 			
             Duel.Stop();
             Duel = null;
+
+            //Set PvP Combat ticks to that they were before duel.
+            LastAttackTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKTICKPVP);
+            LastAttackedByEnemyTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP);
         }
         #endregion
 
@@ -10366,7 +10394,7 @@ namespace DOL.GS
 
                     Stealth(false);
 
-                    if (spellHandler.CheckBeginCast(TargetObject as GameLiving))
+                    if (spellHandler != null && spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
                         castingComponent.StartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
@@ -12131,10 +12159,20 @@ namespace DOL.GS
         /// </summary>
         public override void SetGroundTarget(int groundX, int groundY, int groundZ)
         {
-            base.SetGroundTarget(groundX, groundY, groundZ);
-            Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            if (SiegeWeapon != null)
-                SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//volley check for gt
+            if (volley != null)
+            {
+                Out.SendMessage("You can't change ground target under volley effect!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+            else
+            {
+                base.SetGroundTarget(groundX, groundY, groundZ);
+
+                Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                if (SiegeWeapon != null)
+                    SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
+            }
         }
 
         /// <summary>
@@ -13969,6 +14007,9 @@ namespace DOL.GS
                 //cache all active effects
                 EffectService.SaveAllEffects(this);
 
+                //Save realmtimer
+                RealmTimer.SaveRealmTimer(this);
+
                 SaveSkillsToCharacter();
                 SaveCraftingSkills();
                 DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
@@ -15290,6 +15331,11 @@ namespace DOL.GS
         public virtual void SalvageItem(InventoryItem item)
         {
             Salvage.BeginWork(this, item);
+        }
+        
+        public virtual void SalvageItemList(IList<InventoryItem> itemList)
+        {
+            Salvage.BeginWorkList(this, itemList);
         }
 
         /// <summary>

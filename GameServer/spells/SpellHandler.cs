@@ -4272,10 +4272,23 @@ namespace DOL.GS.Spells
 						spellDamage = CapPetSpellDamage(spellDamage, player);
 
 					if (pet is NecromancerPet nPet)
-						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + 200) / 275.0);
+					{
+						int ownerIntMod = 125;
+						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence;
+						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + ownerIntMod) / 275.0);
+						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
+					}
 					else
-						spellDamage *= ((pet.Intelligence + 200) / 275.0);
-
+					{
+						int ownerIntMod = 125;
+						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence / 2;
+						spellDamage *= ((pet.Intelligence + ownerIntMod ) / 275.0);
+					}
+						
+					
+					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
+					               pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + (modSkill * .005);
 				}
 				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
@@ -4292,8 +4305,13 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
+					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue + 200) / 250.0;
+					spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
+					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
+					               player.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + (modSkill * .005);
+					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 				}
 			}
 			else if (Caster is GameNPC)
@@ -4344,7 +4362,8 @@ namespace DOL.GS.Spells
 
 			if (playerCaster != null && (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith)))
 			{
-				spellLevel = Math.Min(playerCaster.MaxLevel, target.Level);
+				AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
+				spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
 			}
 			//Console.WriteLine($"Spell level {spellLevel}");
 
@@ -4468,12 +4487,13 @@ namespace DOL.GS.Spells
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
 
+				/*
 				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
 				if (skillProp != eProperty.Undefined)
 				{
 					var level = m_caster.GetModifiedFromItems(skillProp);
 					spellDamage *= (1 + level / 200.0);
-				}
+				}*/
 			}
 
 			// Apply casters effectiveness

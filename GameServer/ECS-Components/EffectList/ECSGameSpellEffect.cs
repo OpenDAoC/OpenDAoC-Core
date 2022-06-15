@@ -33,7 +33,8 @@ namespace DOL.GS
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                TriggersImmunity = true;
+                if(!SpellHandler.Spell.Name.Equals("Prevent Flight"))
+					TriggersImmunity = true;
             }
             else if (SpellHandler.Spell.IsConcentration)
             {

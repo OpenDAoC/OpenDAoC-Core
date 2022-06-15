@@ -27,7 +27,10 @@ namespace DOL.GS
 
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestDisableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
+                foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+                {
+                    EffectService.RequestDisableEffect(speedBuff);
+                }
             }
             // Cancel pulse effect
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
@@ -78,7 +81,13 @@ namespace DOL.GS
             }
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
-                EffectService.RequestEnableEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.MovementSpeedBuff));
+                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedBuff);
+
+                if (speedBuff != null)
+                {
+                    speedBuff.IsBuffActive = false;
+                    EffectService.RequestEnableEffect(speedBuff);                   
+                }
             }
 
             StealthStateChanged();

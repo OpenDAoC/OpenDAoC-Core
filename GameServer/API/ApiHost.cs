@@ -18,7 +18,6 @@ namespace DOL.GS.API
             var builder = WebApplication.CreateBuilder();
 
             var contentRoot = Directory.GetCurrentDirectory();
-            var startupTime = DateTime.Now;
 
             // builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(9874));
 
@@ -70,7 +69,7 @@ namespace DOL.GS.API
                 return TopRpPlayers == null ? Results.NotFound() : Results.Ok(TopRpPlayers);
             });
             api.MapGet("/stats/uptime", async c =>
-                await c.Response.WriteAsJsonAsync(_utils.GetUptime(startupTime)));
+                await c.Response.WriteAsJsonAsync(_utils.GetUptime(GameServer.Instance.StartupTime)));
 
             #endregion
 
@@ -83,6 +82,10 @@ namespace DOL.GS.API
 
                 return playerInfo == null ? Results.NotFound("Not found") : Results.Ok(playerInfo);
             });
+            api.MapGet("/player/{playerName}/specs", async c  => await c.Response.WriteAsJsonAsync(_player.GetPlayerSpec(c.Request.RouteValues["playerName"].ToString())));
+            
+            api.MapGet("/player/{playerName}/tradeskills", async c  => await c.Response.WriteAsJsonAsync(_player.GetPlayerTradeSkills(c.Request.RouteValues["playerName"].ToString())));
+            
             api.MapGet("/player/getAll", async c => await c.Response.WriteAsJsonAsync(_player.GetAllPlayers()));
 
             #endregion
@@ -178,7 +181,7 @@ namespace DOL.GS.API
             
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
-                var discordStatus = _player.GetDiscord(accountName);
+                var discordStatus = Player.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
             });
             
