@@ -370,8 +370,44 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.AddToWorld();
 
 			Feairna_Athar.StartAttack(player);
+			
+			GameEventMgr.AddHandler(Feairna_Athar,GameLivingEvent.Dying, FaeiarnaAtharDying);
 		}
-		
+		private void FaeiarnaAtharDying(DOLEvent e, object sender, EventArgs arguments)
+		{
+			var args = (DyingEventArgs) arguments;
+        
+			var player = args.Killer as GamePlayer;
+        
+			if (player == null)
+				return;
+        
+			if (player.Group != null)
+			{
+				foreach (var gpl in player.Group.GetPlayersInTheGroup())
+				{
+					AdvanceAfterKill(gpl);
+				}
+			}
+			else
+			{
+				AdvanceAfterKill(player);
+			}
+        
+			GameEventMgr.RemoveHandler(Feairna_Athar, GameLivingEvent.Dying, FaeiarnaAtharDying);
+			Feairna_Athar.Delete();
+		}
+		private static void AdvanceAfterKill(GamePlayer player)
+		{
+			var quest = player.IsDoingQuest(typeof(TheLostSeed)) as TheLostSeed;
+			if (quest is not {Step: 5}) return;
+			if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				player.Out.SendMessage(
+					"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
+					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			GiveItem(player, glowing_red_jewel);
+			quest.Step = 6;
+		}
 		private static void PlayerEnterTreantArea(DOLEvent e, object sender, EventArgs args)
 		{
 			var aargs = args as AreaEventArgs;
@@ -878,28 +914,6 @@ namespace DOL.GS.Quests.Hibernia
 				return base.Description;
 			}
 		}
-
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-			var player = sender as GamePlayer;
-
-			if (sender != m_questPlayer)
-				return;
-
-			if (player == null || player.IsDoingQuest(typeof(TheLostSeed)) == null)
-				return;
-
-			if (e == GameLivingEvent.EnemyKilled && Step == 5 && player.TargetObject.Name == Feairna_Athar.Name)
-			{
-				if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-					player.Out.SendMessage(
-						"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
-						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				GiveItem(player, glowing_red_jewel);
-				Step = 6;
-			}
-		}
-
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...

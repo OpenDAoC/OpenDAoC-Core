@@ -165,6 +165,7 @@ namespace DOL.GS
 			player.TempProperties.setProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
+			if (itemList == null || itemList.Count == 0) return 0;
 			return BeginWork(player, itemList[0]);
 		}
 
@@ -340,10 +341,12 @@ namespace DOL.GS
 			if (itemList == null) return 0;
 			player.CraftTimer?.Stop();
 			player.CraftTimer = null;
-			itemList.RemoveAt(0);
 			if (itemList.Count > 0)
+			{
+				itemList.RemoveAt(0);
 				BeginWorkList(player, itemList);
-			
+			}
+
 			return 1;
 		}
 		
