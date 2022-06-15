@@ -338,6 +338,8 @@ namespace DOL.GS
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 			if (itemList == null) return 0;
+			player.CraftTimer?.Stop();
+			player.CraftTimer = null;
 			itemList.RemoveAt(0);
 			BeginWorkList(player, itemList);
 			

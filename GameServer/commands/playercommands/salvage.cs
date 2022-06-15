@@ -44,6 +44,7 @@
 					{
 						items.Add(item);
 					}
+
 					// for (int i = firstItem; i <= lastItem; i++)
 					// {
 					// 	InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)i);
@@ -51,7 +52,8 @@
 					// 		merchant.OnPlayerSell(player, item);
 					// }
 					// client.Player.SalvageAllItems();
-					client.Player.SalvageItemList(items);
+					if (items.Count > 0)
+						client.Player.SalvageItemList(items);
 					return;
 				}
 			}
