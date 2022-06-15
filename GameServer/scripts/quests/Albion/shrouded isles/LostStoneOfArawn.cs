@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -372,6 +373,45 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.AddToWorld();
 
         Nyaegha.StartAttack(player);
+        
+        GameEventMgr.AddHandler(Nyaegha, GameLivingEvent.Dying, NyaeghaDying);
+    }
+    private void NyaeghaDying(DOLEvent e, object sender, EventArgs arguments)
+    {
+        var args = (DyingEventArgs) arguments;
+        
+        var player = args.Killer as GamePlayer;
+        
+        if (player == null)
+            return;
+        
+        if (player.Group != null)
+        {
+            if (player.Group.Leader != player) return;
+
+            foreach (var gpl in player.Group.GetPlayersInTheGroup())
+            {
+                AdvanceAfterKill(gpl);
+            }
+        }
+        else
+        {
+            AdvanceAfterKill(player);
+        }
+        
+        GameEventMgr.RemoveHandler(Nyaegha, GameLivingEvent.Dying, NyaeghaDying);
+        Nyaegha.Delete();
+    }
+    private static void AdvanceAfterKill(GamePlayer player)
+    {
+        var quest = player.IsDoingQuest(typeof(LostStoneofArawn)) as LostStoneofArawn;
+        if (quest is not {Step: 4}) return;
+        if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            player.Out.SendMessage(
+                "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
+                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        GiveItem(player, lost_stone_of_arawn);
+        quest.Step = 5;
     }
 
     private static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
@@ -757,28 +797,6 @@ public class LostStoneofArawn : BaseQuest
                 "Speak with N\'chever in Wearyall Village, he will be able to tell you more about the [Stone of Arawn].");
         }
     }
-
-    public override void Notify(DOLEvent e, object sender, EventArgs args)
-    {
-        var player = sender as GamePlayer;
-
-        if (sender != m_questPlayer)
-            return;
-
-        if (player == null || player.IsDoingQuest(typeof(LostStoneofArawn)) == null)
-            return;
-
-        if (e == GameLivingEvent.EnemyKilled && Step == 4 && player.TargetObject.Name == Nyaegha.Name)
-        {
-            if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-                player.Out.SendMessage(
-                    "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
-                    eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            GiveItem(player, lost_stone_of_arawn);
-            Step = 5;
-        }
-    }
-
     public override void AbortQuest()
     {
         base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...

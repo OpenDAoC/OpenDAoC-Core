@@ -399,6 +399,43 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.AddToWorld();
 
 			AncestralKeeper.StartAttack(player);
+			
+			GameEventMgr.AddHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+		}
+		private void AncestralKeeperDying(DOLEvent e, object sender, EventArgs arguments)
+		{
+			var args = (DyingEventArgs) arguments;
+        
+			var player = args.Killer as GamePlayer;
+        
+			if (player == null)
+				return;
+        
+			if (player.Group != null)
+			{
+				if (player.Group.Leader != player) return;
+
+				foreach (var gpl in player.Group.GetPlayersInTheGroup())
+				{
+					AdvanceAfterKill(gpl);
+				}
+			}
+			else
+			{
+				AdvanceAfterKill(player);
+			}
+        
+			GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+			AncestralKeeper.Delete();
+		}
+		private static void AdvanceAfterKill(GamePlayer player)
+		{
+			var quest = player.IsDoingQuest(typeof(AncestralSecrets)) as AncestralSecrets;
+			if (quest is not {Step: 4}) return;
+			RemoveItem(player, quest_pendant);
+			SendMessage(player,"You feel the curse lift and the pendant turn into a powerful chain.", 0, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			GiveItem(player, stone_pendant);
+			quest.Step = 5;
 		}
 		
 		private static void PlayerEnterKeeperArea(DOLEvent e, object sender, EventArgs args)
@@ -941,26 +978,6 @@ namespace DOL.GS.Quests.Hibernia
 				return base.Description;
 			}
 		}
-
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-			var player = sender as GamePlayer;
-
-			if (sender != m_questPlayer)
-				return;
-
-			if (player == null || player.IsDoingQuest(typeof(AncestralSecrets)) == null)
-				return;
-
-			if (e == GameLivingEvent.EnemyKilled && Step == 4 && player.TargetObject.Name == AncestralKeeper.Name)
-			{
-				RemoveItem(player, quest_pendant);
-				SendSystemMessage("You feel the curse lift and the pendant turn into a powerful chain.");
-				GiveItem(player, stone_pendant);
-				Step = 5;
-			}
-		}
-
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
