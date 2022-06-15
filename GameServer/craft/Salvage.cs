@@ -50,6 +50,8 @@ namespace DOL.GS
 		/// The item being salvaged
 		/// </summary>
 		protected const string SALVAGED_ITEM = "SALVAGED_ITEM";
+		
+		protected const string SALVAGE_QUEUE = "SALVAGE_QUEUE";
 
 		#endregion
 
@@ -157,6 +159,14 @@ namespace DOL.GS
 			player.CraftTimer.Start(yield.Count * 1000);
 			return 1;
 		}
+		
+		public static int BeginWorkList(GamePlayer player, IList<InventoryItem> itemList)
+		{
+			player.TempProperties.setProperty(SALVAGE_QUEUE,itemList);
+			player.CraftTimer?.Stop();
+			player.Out.SendCloseTimerWindow();
+			return BeginWork(player, itemList[0]);
+		}
 
 		/// <summary>
 		/// Begin salvaging a siege weapon
@@ -234,6 +244,7 @@ namespace DOL.GS
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
 			InventoryItem itemToSalvage = timer.Properties.getProperty<InventoryItem>(SALVAGED_ITEM, null);
 			SalvageYield yield = timer.Properties.getProperty<SalvageYield>(SALVAGE_YIELD, null);
+			IList<InventoryItem> itemList = player.TempProperties.getProperty<IList<InventoryItem>>(SALVAGE_QUEUE, null);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
@@ -325,8 +336,15 @@ namespace DOL.GS
 
 			player.Inventory.CommitChanges();
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+			if (itemList == null) return 0;
+			player.CraftTimer?.Stop();
+			player.CraftTimer = null;
+			itemList.RemoveAt(0);
+			if (itemList.Count > 0)
+				BeginWorkList(player, itemList);
 			
-			return 0;
+			return 1;
 		}
 		
 		#endregion
@@ -339,7 +357,63 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item)
+		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item, bool mute = false)
+		{
+			if (player.InCombat)
+			{
+				if (!mute)
+					player.Out.SendMessage("You can't salvage while in combat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (item.IsNotLosingDur || item.IsIndestructible)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			// using negative numbers to indicate item cannot be salvaged
+			if (item.SalvageYieldID < 0)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			
+			if(item.SlotPosition < (int)eInventorySlot.FirstBackpack || item.SlotPosition > (int)eInventorySlot.LastBackpack)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if(skill == eCraftingSkill.NoCrafting)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (player.IsCrafting)
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			if (player.GetCraftingSkillValue(skill) < (0.75 * CraftingMgr.GetItemCraftLevel(item)))
+			{
+				if (!mute)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			return true;
+		}
+		
+		public static bool IsAllowedToBeginWorkSilent(GamePlayer player, InventoryItem item)
 		{
 			if (player.InCombat)
 			{
