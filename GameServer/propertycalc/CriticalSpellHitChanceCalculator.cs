@@ -45,4 +45,28 @@ namespace DOL.GS.PropertyCalc
 			return Math.Min(chance, 50);
 		}
 	}
+
+
+	/// <summary>
+	/// The critical hit chance calculator. Returns 0 .. 100 chance.
+	/// 
+	/// BuffBonusCategory1 unused
+	/// BuffBonusCategory2 unused
+	/// BuffBonusCategory3 unused
+	/// BuffBonusCategory4 unused
+	/// BuffBonusMultCategory1 unused
+	/// AbilityBonus used
+	/// </summary>
+	[PropertyCalculator(eProperty.CriticalDotHitChance)]
+	public class CriticalDotHitChanceCalculator : PropertyCalculator
+	{
+		public CriticalDotHitChanceCalculator() { }
+
+		public override int CalcValue(GameLiving living, eProperty property)
+		{
+			int chance = living.AbilityBonus[(int)property];
+
+			return Math.Min(chance, 50);
+		}
+	}
 }
