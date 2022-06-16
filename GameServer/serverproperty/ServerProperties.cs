@@ -466,10 +466,28 @@ namespace DOL.GS.ServerProperties
 		public static bool TESTER_LOGIN;
 		
 		/// <summary>
-		/// Tester Role
+		/// The toughness of the boss for the SI necklace quest
 		/// </summary>
-		[ServerProperty("atlas", "neck_boss_scaling", "The toughness of the boss for the SI necklace quest", 70)]
+		[ServerProperty("atlas", "neck_boss_scaling", "The toughness of the boss for the SI necklace quest", 80)]
 		public static int NECK_BOSS_SCALING;
+		
+		/// <summary>
+		/// The toughness of GameNPCs
+		/// </summary>
+		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 16)]
+		public static int GAMENPC_SCALING;
+		
+		/// <summary>
+		/// The first factor in the PVE mob damage equation. Lower hits harder.
+		/// </summary>
+		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 3.2)]
+		public static double PVE_MOB_DAMAGE_F1;
+		
+		/// <summary>
+		/// The second factor in the PVE mob damage equation. Lower hits harder.
+		/// </summary>
+		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 150.0)]
+		public static double PVE_MOB_DAMAGE_F2;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?

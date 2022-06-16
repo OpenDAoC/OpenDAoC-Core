@@ -593,7 +593,7 @@ namespace DOL.GS
             {
                 double effectiveness = 1.00;
                 //double effectiveness = Effectiveness;
-                double damage = (1.0 + owner.Level / 3.2 + owner.Level * owner.Level / 150.0) * AttackSpeed(weapon) *
+                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * AttackSpeed(weapon) *
                                 0.001;
                 if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND ||
                     weapon.Item_Type == Slot.TWOHAND)

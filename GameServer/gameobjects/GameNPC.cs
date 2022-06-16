@@ -4050,7 +4050,7 @@ namespace DOL.GS
 
 		//}
 
-		private int scalingFactor = 16;
+		private int scalingFactor = Properties.GAMENPC_SCALING;
 
 		private int orbsReward = 0;
 		
