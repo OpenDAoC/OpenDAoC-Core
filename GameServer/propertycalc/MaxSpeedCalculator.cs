@@ -17,6 +17,7 @@
  *
  */
 using System;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
@@ -45,7 +46,7 @@ namespace DOL.GS.PropertyCalc
 
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			if (living.IsMezzed || living.IsStunned) return 0;
+			if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null) return 0;
 
 			double speed = living.BuffBonusMultCategory1.Get((int)property);
 
