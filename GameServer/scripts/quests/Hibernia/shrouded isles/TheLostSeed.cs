@@ -341,7 +341,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateFeairnaAthar(GamePlayer player)
 		{
-			Feairna_Athar = new GameNPC();
+			Feairna_Athar = new SINeckBoss();
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
 			Feairna_Athar.GuildName = "";
@@ -358,7 +358,7 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.MaxSpeedBase = 250;
 			Feairna_Athar.AddToWorld();
 
-			var brain = new StandardMobBrain();
+			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Feairna_Athar.SetOwnBrain(brain);

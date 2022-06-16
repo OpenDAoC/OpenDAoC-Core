@@ -347,7 +347,7 @@ public class LostStoneofArawn : BaseQuest
 
     protected virtual void CreateNyaegha(GamePlayer player)
     {
-        Nyaegha = new GameNPC();
+        Nyaegha = new SINeckBoss();
         Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
@@ -366,7 +366,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.MaxSpeedBase = 250;
         Nyaegha.AddToWorld();
 
-        var brain = new StandardMobBrain();
+        var brain = new SINeckBossBrain();
         brain.AggroLevel = 200;
         brain.AggroRange = 500;
         Nyaegha.SetOwnBrain(brain);

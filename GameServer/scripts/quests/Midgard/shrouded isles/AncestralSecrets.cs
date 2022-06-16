@@ -370,7 +370,7 @@ namespace DOL.GS.Quests.Hibernia
 		protected virtual void CreateAncestralKeeper(GamePlayer player)
 		{
 		
-			AncestralKeeper = new GameNPC();
+			AncestralKeeper = new SINeckBoss();
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
 			AncestralKeeper.GuildName = "";
@@ -387,7 +387,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.MaxSpeedBase = 250;
 			AncestralKeeper.AddToWorld();
 
-			var brain = new StandardMobBrain();
+			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			AncestralKeeper.SetOwnBrain(brain);
