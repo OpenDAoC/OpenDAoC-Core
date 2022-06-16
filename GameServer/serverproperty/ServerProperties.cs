@@ -464,6 +464,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "tester_login", "Allow only testers and staff to login", false)]
 		public static bool TESTER_LOGIN;
+		
+		/// <summary>
+		/// Tester Role
+		/// </summary>
+		[ServerProperty("atlas", "neck_boss_scaling", "The toughness of the boss for the SI necklace quest", 70)]
+		public static int NECK_BOSS_SCALING;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?

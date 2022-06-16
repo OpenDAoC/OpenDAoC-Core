@@ -1,11 +1,9 @@
 using System;
-using System.Net;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.GS.Quests.Albion;
@@ -65,8 +63,6 @@ public class LostStoneofArawn : BaseQuest
         {
             switch (Step)
             {
-                case -1:
-                    return "Quest finished!";
                 case 1:
                     return "Speak to Honayt\'rt in Wearyall Village.";
                 case 2:
@@ -89,7 +85,7 @@ public class LostStoneofArawn : BaseQuest
     [ScriptLoadedEvent]
     public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
-        if (!Properties.LOAD_QUESTS)
+        if (!ServerProperties.Properties.LOAD_QUESTS)
             return;
 
 
@@ -362,7 +358,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.CurrentRegionID = 51;
         Nyaegha.Size = 150;
         Nyaegha.Level = 65;
-        Nyaegha.ScalingFactor = 60;
+        Nyaegha.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
         Nyaegha.X = 348381;
         Nyaegha.Y = 479838;
         Nyaegha.Z = 3320;

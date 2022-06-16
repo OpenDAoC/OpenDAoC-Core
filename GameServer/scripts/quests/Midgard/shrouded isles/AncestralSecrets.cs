@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -38,9 +31,9 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "Ancestral Secrets";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "Ancestral Secrets";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC OtaYrling = null; // Start NPC + Finish NPC
 		private static GameNPC Jaklyr = null; // 
@@ -387,7 +380,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.CurrentRegionID = 151;
 			AncestralKeeper.Size = 140;
 			AncestralKeeper.Level = 65;
-			AncestralKeeper.ScalingFactor = 60;
+			AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
 			AncestralKeeper.X = player.X;
 			AncestralKeeper.Y = player.Y;
 			AncestralKeeper.Z = player.Z;
@@ -962,8 +955,6 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				switch (Step)
 				{
-					case -1:
-						return "Quest finished!";
 					case 1:
 						return "Speak to Ota Yrling in Aegirhamn.";
 					case 2:
