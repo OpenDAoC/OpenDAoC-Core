@@ -51,7 +51,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 288348, 319950, 2328);
 		
-		private static IArea treantArea;
+		private static AbstractArea treantArea;
 
 		private static ItemTemplate paidrean_necklace;
 		private static ItemTemplate glowing_red_jewel;
@@ -287,8 +287,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			const int radius = 1500;
 			var region = WorldMgr.GetRegion(treantLocation.RegionID);
-			treantArea = region.AddArea(new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
-				radius));
+			treantArea = new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
+				radius);
+			treantArea.CanBroadcast = false;
+			treantArea.DisplayMessage = false;
+			region.AddArea(treantArea);
 			treantArea.RegisterPlayerEnter(PlayerEnterTreantArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -895,6 +898,8 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				switch (Step)
 				{
+					case -1:
+						return "Quest finished!";
 					case 1:
 						return "Speak with Terod in Droighaid.";
 					case 2:

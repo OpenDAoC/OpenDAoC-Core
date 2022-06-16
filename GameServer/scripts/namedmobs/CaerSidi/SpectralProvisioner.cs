@@ -182,17 +182,15 @@ namespace DOL.AI.Brain
 				Point3D point6 = new Point3D(33021, 39384, 17004);
 				Point3D point7 = new Point3D(32059, 38549, 17004);
 				Point3D point8 = new Point3D(31124, 39405, 17004);
-				foreach (GameNPC npc in Body.GetNPCsInRadius(800))
-                {
-					if(HasAggressionTable())
-                    {
-						if(npc != null)
-                        {
-							if(npc.IsAlive && npc.PackageID =="ProvisionerBaf")
-								AddAggroListTo(npc.Brain as StandardMobBrain);
-                        }
-                    }
-                }
+
+				if (HasAggro && Body.TargetObject != null)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(800))
+					{
+						if (npc != null && npc.IsAlive && npc.PackageID == "ProvisionerBaf")
+							AddAggroListTo(npc.Brain as StandardMobBrain);
+					}
+				}
 
 				#region Walk path
 				if (!Body.IsWithinRadius(point1, 30) && point1check == false)
