@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -358,7 +351,7 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.CurrentRegionID = 181;
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
-			Feairna_Athar.ScalingFactor = 60;
+			Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
 			Feairna_Athar.X = player.X;
 			Feairna_Athar.Y = player.Y;
 			Feairna_Athar.Z = player.Z;
