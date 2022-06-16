@@ -14,9 +14,9 @@ public class PlayerDeck
     private const int NUM_BONUS_DECKS = 1;
     private const int NUM_NORMAL_DECKS = 1;
     private const int BONUS_DECK_SIZE = 25;
-    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE + 1;
+    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE;
 
-    private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
+    private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE + 1);
 
     public PlayerDeck()
     {
@@ -57,10 +57,24 @@ public class PlayerDeck
     
     private void Shuffle()
     {
+        int[] preshuffle = _cards.ToArray();
+        //Fisher-Yates shuffle algorithm
+        // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        int cardsLength = _cards.Count;
+        while (cardsLength > 1)
+        {
+            cardsLength--;
+            int k = Util.CryptoNextInt(cardsLength + 1);
+            var currentItem = preshuffle[k];
+            preshuffle[k] = preshuffle[cardsLength];
+            preshuffle[cardsLength] = currentItem;
+        }
+        /*
         //randomly order the contents of the array, then reassign the array
-        int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(PLAYER_DECK_SIZE-1)).ToArray();
+        int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(cardsLength-1)).ToArray();
+        */
         _cards.Clear();
-        foreach (var i in shuffled)
+        foreach (var i in preshuffle)
         {
             _cards.Push(i);
         }
