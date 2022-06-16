@@ -29,4 +29,4 @@ PlayerStatistic.Capture.Relics:				Relics Captured
 PlayerStatistic.PvE.Title:				PvE Report
 PlayerStatistic.PvE.KillsDragon:			Dragons Killed
 PlayerStatistic.PvE.KillsEpic:				Epic Boss Kills
-PlayerStatistic.PvE.KillsLegion:			Legion Kills
+PlayerStatistic.PvE.KillsLegion:			Legion Defeated
