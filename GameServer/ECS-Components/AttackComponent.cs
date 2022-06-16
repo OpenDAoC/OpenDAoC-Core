@@ -593,7 +593,7 @@ namespace DOL.GS
             {
                 double effectiveness = 1.00;
                 //double effectiveness = Effectiveness;
-                double damage = (1.0 + owner.Level / 3.7 + owner.Level * owner.Level / 175.0) * AttackSpeed(weapon) *
+                double damage = (1.0 + owner.Level / 3.2 + owner.Level * owner.Level / 150.0) * AttackSpeed(weapon) *
                                 0.001;
                 if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND ||
                     weapon.Item_Type == Slot.TWOHAND)
@@ -1650,7 +1650,7 @@ namespace DOL.GS
                        // 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 27 / 50d : 1;
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 27 / 50d : 5;
                     if (playerBaseAF < 1)
                         playerBaseAF = 1;
 
@@ -1719,11 +1719,12 @@ namespace DOL.GS
                     //Console.WriteLine($"spec: {spec} stylespec: {styleSpec} specMod: {specModifier}");
                     int range = upperboundary - lowerboundary;
                     damage *= (lowerboundary + Util.Random(range)) * 0.01;
-                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 45/50d);
-                    double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 45/50d) * (1 +
+                    double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 65/50d);
+                    double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 30/50d) * (1 +
                         ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     if (armorCalc <= 0) armorCalc = 0.1;
                     double DamageMod = weaponskillCalc / armorCalc;
+                    //Console.WriteLine($"wscalc {weaponskillCalc} af {armorCalc} npc mod {DamageMod} aftop {ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * 30/50d} absbot {1 + ad.Target.GetArmorAbsorb(ad.ArmorHitLocation)}");
                     if (DamageMod > 3.0) DamageMod = 3.0;
                     if (owner is GameEpicBoss)
                         damage *= DamageMod + (boss.Strength / 200);//only if it's EpicBoss
