@@ -96,17 +96,22 @@ namespace DOL.GS.Spells
 					}
 			}
 
-            /*
+            
             if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
             {
-	            if (Util.Chance(Caster.SpellCriticalChance))
-	            {
-		            double preModEffectiveness = effectiveness;
+	            if (Util.Chance(Caster.DotCriticalChance))
+				{
+					if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && Caster.DotCriticalChance > 0)
+					{
+						spellCaster.Out.SendMessage($"debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					}
+
+					double preModEffectiveness = effectiveness;
 		            effectiveness *= 1 + Util.Random(1, 10) * .1;
 		            if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(effectiveness-preModEffectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 	            }
             }
-			*/
+			
 			base.ApplyEffectOnTarget(target, effectiveness);
 
 			if (target.Realm == 0 || Caster.Realm == 0)

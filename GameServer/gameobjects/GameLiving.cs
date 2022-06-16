@@ -973,19 +973,28 @@ namespace DOL.GS
 			get { return GetModified(eProperty.CriticalSpellHitChance); }
 			set { }
 		}
-        ///// <summary>
-        ///// Returns the damage type of the current attack
-        ///// </summary>
-        ///// <param name="weapon">attack weapon</param>
-        //public virtual eDamageType AttackDamageType(InventoryItem weapon)
-        //{
-        //	return eDamageType.Natural;
-        //}
 
-        /// <summary>
-        /// Gets the attack-state of this living
-        /// </summary>
-        public virtual bool AttackState { get; set; }
+		/// <summary>
+		/// Returns the chance for a critical hit with a spell
+		/// </summary>
+		public virtual int DotCriticalChance
+		{
+			get { return GetModified(eProperty.CriticalDotHitChance); }
+			set { }
+		}
+		///// <summary>
+		///// Returns the damage type of the current attack
+		///// </summary>
+		///// <param name="weapon">attack weapon</param>
+		//public virtual eDamageType AttackDamageType(InventoryItem weapon)
+		//{
+		//	return eDamageType.Natural;
+		//}
+
+		/// <summary>
+		/// Gets the attack-state of this living
+		/// </summary>
+		public virtual bool AttackState { get; set; }
 
         /// <summary>
         /// Whether or not the living can be attacked.
