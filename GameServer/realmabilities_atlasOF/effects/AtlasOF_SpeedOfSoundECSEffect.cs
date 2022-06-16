@@ -14,7 +14,8 @@ namespace DOL.GS.Effects
             EffectService.RequestStartEffect(this);
         }
 
-        DOLEventHandler m_attackFinished = new DOLEventHandler(AttackFinished);
+        // removed handler as OF SOS doesn't break on attack - yay minstrels..
+        // DOLEventHandler m_attackFinished = new DOLEventHandler(AttackFinished);
 
         /// <summary>
         /// Called when the effectowner attacked an enemy
@@ -60,7 +61,8 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
             
-            GameEventMgr.AddHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
+            // removed handler as OF SOS doesn't break on attack - yay minstrels..
+            // GameEventMgr.AddHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
             OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this,
                 PropertyCalc.MaxSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
@@ -73,7 +75,9 @@ namespace DOL.GS.Effects
 
             OwnerPlayer.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
-            GameEventMgr.RemoveHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
+            
+            // removed handler as OF SOS doesn't break on attack - yay minstrels..
+            // GameEventMgr.RemoveHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
         }
     }
 }
