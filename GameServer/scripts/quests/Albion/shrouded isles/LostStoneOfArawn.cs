@@ -63,8 +63,6 @@ public class LostStoneofArawn : BaseQuest
         {
             switch (Step)
             {
-                case -1:
-                    return "Quest finished!";
                 case 1:
                     return "Speak to Honayt\'rt in Wearyall Village.";
                 case 2:

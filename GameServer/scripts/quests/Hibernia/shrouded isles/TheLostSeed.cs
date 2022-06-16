@@ -31,9 +31,9 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "The Lost Seed";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "The Lost Seed";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC Terod = null; // Start NPC + Finish NPC
 		private static GameNPC Kredril = null; // step 2
@@ -891,8 +891,6 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				switch (Step)
 				{
-					case -1:
-						return "Quest finished!";
 					case 1:
 						return "Speak with Terod in Droighaid.";
 					case 2:
