@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Database;
@@ -122,7 +123,7 @@ namespace DOL.GS.Spells
 			if (target.EffectList.GetOfType<ArmsLengthEffect>() != null)
 				return;
 
-			if (target.EffectList.GetOfType<SpeedOfSoundEffect>() != null)
+			if (target.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
 				return;
 
 			if (target is GamePlayer && (target as GamePlayer).IsRiding)
@@ -244,6 +245,9 @@ namespace DOL.GS.Spells
 				return;
 			}
 
+			if (living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+				return;
+			
 			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
 			ECSGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
 			if (speed != null)

@@ -293,7 +293,10 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsMezzed
 		{
-			get { return m_mezzed; }
+			get
+			{
+				return m_mezzed;
+			}
 			set { m_mezzed = value; }
 		}
 
@@ -389,7 +392,12 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsTurningDisabled
 		{
-			get { return m_turningDisabledCount > 0; }
+			get
+			{
+				if (this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+					return false;
+				return m_turningDisabledCount > 0;
+			}
 		}
 		/// <summary>
 		/// Disables the turning for this living
@@ -4490,10 +4498,8 @@ namespace DOL.GS
                 return false;
 
             bool effectRemoved = false;
-            
-            EffectService.RequestCancelEffect(this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
 
-			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 

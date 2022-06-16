@@ -35,7 +35,7 @@ namespace DOL.GS.Effects
                 //cancel if the effectowner casts a non-positive spell
                 if (!cfea.SpellHandler.HasPositiveEffect)
                 {
-                    EffectService.RequestCancelEffect(player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
+                    EffectService.RequestCancelEffect(player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)));
                 }
             }
         }
