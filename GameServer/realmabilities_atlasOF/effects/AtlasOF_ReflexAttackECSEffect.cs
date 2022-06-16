@@ -30,6 +30,7 @@ namespace DOL.GS.Effects
                 {
                     t_player.Out.SendMessage(OwnerPlayer.Name + " starts automatically counter-attacking melee attacks!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                 }
+                OwnerPlayer.Out.SendSpellEffectAnimation(OwnerPlayer, OwnerPlayer, 7012, 0, false, 1);
             }
         }
 
