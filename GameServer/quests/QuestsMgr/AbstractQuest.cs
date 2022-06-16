@@ -214,7 +214,16 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public virtual string Description
 		{
-			get { return "QUEST DESCRIPTION UNDEFINED!"; }
+			get
+			{
+				switch (Step)
+				{
+					case -2: return "You have completed the quest!";
+					case -1: return "You have failed the quest!";
+					default: return "QUEST DESCRIPTION UNDEFINED!";
+				}
+				
+			}
 		}
 
 		/// <summary>
@@ -270,7 +279,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public virtual void FinishQuest()
 		{
-			Step = -1; // -1 indicates finished or aborted quests etc, they won't show up in the list
+			Step = -2; // -1 indicates finished or aborted quests etc, they won't show up in the list
 			m_questPlayer.Out.SendMessage(String.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 
 			// move quest from active list to finished list...
