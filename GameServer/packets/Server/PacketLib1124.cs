@@ -2858,7 +2858,7 @@ namespace DOL.GS.PacketHandler
 							break;
 						}
 
-						if (q.Step != -1)
+						if (q.Step != -1 || q.Step != -2)
 							questIndex++;
 					}
 				}
@@ -2878,7 +2878,7 @@ namespace DOL.GS.PacketHandler
 			{
 				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 				{
-					SendQuestPacket((quest.Step == 0 || quest == null) ? null : quest, questIndex++);
+					SendQuestPacket((quest.Step == 0 || quest.Step == -1 || quest.Step == -2) ? null : quest, questIndex++);
 				}
 			}
 		}
