@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("DamageOverTime")]
 	public class DoTSpellHandler : SpellHandler
 	{
-		private int criticalDamage = 0;
+		public int CriticalDamage { get; protected set; }
 		private bool firstTick = true;
 
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
@@ -76,7 +76,8 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public override bool IsOverwritable(GameSpellEffect compare)
 		{
-			return Spell.SpellType == compare.Spell.SpellType && Spell.DamageType == compare.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
+			return Spell.SpellType == compare.Spell.SpellType && Spell.DamageType == compare.Spell.DamageType && 
+				   SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}
 
 		/// <summary>
@@ -181,13 +182,13 @@ namespace DOL.GS.Spells
             //    MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
             //        Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
 
-			if (ad.CriticalDamage > 0 && criticalDamage <= 0) // on first crit, record the damage and use for subsequent ticks
+			if (ad.CriticalDamage > 0 && this.CriticalDamage <= 0) // on first crit, record the damage and use for subsequent ticks
             {
-				criticalDamage = ad.CriticalDamage;
+				this.CriticalDamage = ad.CriticalDamage;
             }
 
-			if (criticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + criticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", eChatType.CT_YouHit);
+			if (this.CriticalDamage > 0)
+				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", eChatType.CT_YouHit);
 
 			//			if (ad.Damage > 0)
 			//			{
@@ -338,7 +339,9 @@ namespace DOL.GS.Spells
 
 		public int GetCriticalChance()
         {
-			if (!firstTick || criticalDamage > 0)
+			return 0;
+
+			if (!firstTick || this.CriticalDamage > 0)
 				return 0;
 
 			return this.Caster.DotCriticalChance;

@@ -4583,6 +4583,7 @@ namespace DOL.GS.Spells
 			if (this is DoTSpellHandler dot)
             {
 				criticalchance = dot.GetCriticalChance();
+				cdamage = dot.CriticalDamage;
             }
             else
             {
