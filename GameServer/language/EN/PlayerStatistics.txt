@@ -14,19 +14,19 @@ PlayerStatistic.Deathblows.MidgardPlayer:		Midgard Deathblows
 PlayerStatistic.Deathblows.TotalPlayers:		Total Deathblows
 
 ## Solo Kills
-PlayerStatistic.Solo.AlbionPlayer:			Albion Solo Killed
-PlayerStatistic.Solo.HiberniaPlayer:			Hibernia Solo Killed
-PlayerStatistic.Solo.MidgardPlayer:			Midgard Solo Killed
-PlayerStatistic.Solo.TotalPlayers:			Total Solo Killed
+PlayerStatistic.Solo.AlbionPlayer:			Albion Solo Kills
+PlayerStatistic.Solo.HiberniaPlayer:			Hibernia Solo Kills
+PlayerStatistic.Solo.MidgardPlayer:			Midgard Solo Kills
+PlayerStatistic.Solo.TotalPlayers:			Total Solo Kills
 
 ## Keep Captures
 PlayerStatistic.Capture.Title:				Capture Report
-PlayerStatistic.Capture.Keeps:				Total Keeps Captured
-PlayerStatistic.Capture.Towers:				Total Towers Captured
-PlayerStatistic.Capture.Relics:				Total Relics Captured
+PlayerStatistic.Capture.Keeps:				Keeps Captured
+PlayerStatistic.Capture.Towers:				Towers Captured
+PlayerStatistic.Capture.Relics:				Relics Captured
 
 ## PvE Kills
 PlayerStatistic.PvE.Title:				PvE Report
-PlayerStatistic.PvE.KillsDragon:			Dragon Kills
+PlayerStatistic.PvE.KillsDragon:			Dragons Killed
 PlayerStatistic.PvE.KillsEpic:				Epic Boss Kills
 PlayerStatistic.PvE.KillsLegion:			Legion Kills
