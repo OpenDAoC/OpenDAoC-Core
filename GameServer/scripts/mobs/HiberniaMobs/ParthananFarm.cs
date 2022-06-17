@@ -163,7 +163,7 @@ namespace DOL.GS
 				ParthananFarmController1Brain.ActuallParthsAllive = 0;
 				ParthananFarmController1Brain.ParthKilledUnderPhase1 = 0;
 				ParthananFarmController1Brain.BossIsUP = false;
-				ParthananFarmController1Brain.MobsToKillLoughDerg = Util.Random(60, 80);
+				ParthananFarmController1Brain.MobsToKillLoughDerg = Util.Random(60, 120);
 			}
             #endregion
             #region Connacht
@@ -173,7 +173,7 @@ namespace DOL.GS
 				ParthananFarmController2Brain.ActuallParthsAllive2 = 0;
 				ParthananFarmController2Brain.ParthKilledUnderPhase2 = 0;
 				ParthananFarmController2Brain.BossIsUP2 = false;
-				ParthananFarmController2Brain.MobsToKillConnacht= Util.Random(60, 80);
+				ParthananFarmController2Brain.MobsToKillConnacht= Util.Random(60, 120);
 			}
 			//2nd farm
 			if (PackageID == "ParthananBossConnacht2")
@@ -192,7 +192,7 @@ namespace DOL.GS
 				ParthananFarmController3Brain.ActuallParthsAllive3 = 0;
 				ParthananFarmController3Brain.ParthKilledUnderPhase3 = 0;
 				ParthananFarmController3Brain.BossIsUP3 = false;
-				ParthananFarmController3Brain.MobsToKillLoughGur = Util.Random(60, 80);
+				ParthananFarmController3Brain.MobsToKillLoughGur = Util.Random(60, 120);
 			}
 			//2nd farm
 			if (PackageID == "ParthananBossLoughGur2")
@@ -201,7 +201,7 @@ namespace DOL.GS
 				ParthananFarmController3bBrain.ActuallParthsAllive3b = 0;
 				ParthananFarmController3bBrain.ParthKilledUnderPhase3b = 0;
 				ParthananFarmController3bBrain.BossIsUP3b = false;
-				ParthananFarmController3bBrain.MobsToKillLoughGur2 = Util.Random(60, 80);
+				ParthananFarmController3bBrain.MobsToKillLoughGur2 = Util.Random(60, 120);
 			}
             #endregion
             base.Die(killer);
