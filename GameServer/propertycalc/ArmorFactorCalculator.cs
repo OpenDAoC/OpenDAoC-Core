@@ -19,6 +19,7 @@
 using System;
 
 using DOL.GS.Keeps;
+using log4net.Core;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -119,6 +120,9 @@ namespace DOL.GS.PropertyCalc
 
 				if (living is NecromancerPet)
 					baseVal += 10;
+
+				if (living is GuardLord)
+					baseVal += 20 * living.Level / 50;
 				
 				return baseVal;
 			}
