@@ -155,5 +155,6 @@ namespace DOL.GS
         Juggernaut,
         ForestheartAmbusher,
         Volley,
+        StrikingTheSoul
     }
 }
