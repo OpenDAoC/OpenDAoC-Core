@@ -474,7 +474,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The toughness of GameNPCs
 		/// </summary>
-		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 16)]
+		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 15)]
 		public static int GAMENPC_SCALING;
 		
 		/// <summary>
