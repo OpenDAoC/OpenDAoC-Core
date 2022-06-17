@@ -70,8 +70,10 @@ namespace DOL.GS
                         EffectService.RequestDisableEffect(effect);
                     }
 
+                    var effectiveValue = SpellHandler.Spell.Value * Effectiveness;
+
                     Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType,
-                        1.0 - SpellHandler.Spell.Value * 0.01);
+                        1.0 - effectiveValue * 0.01);
                     UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
 
                 }

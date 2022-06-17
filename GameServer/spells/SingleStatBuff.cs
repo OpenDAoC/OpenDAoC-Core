@@ -21,6 +21,7 @@ using System.Reflection;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
+using DOL.GS.RealmAbilities;
 using log4net;
 
 namespace DOL.GS.Spells
@@ -55,7 +56,7 @@ namespace DOL.GS.Spells
             {
                 effectiveness = 1;
             }
-			else if (Caster is GamePlayer && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage)
+			else if (Caster is GamePlayer && Spell.Level > 0 && ((GamePlayer)Caster).CharacterClass.ID != (int)eCharacterClass.Savage && Spell.Target != "Enemy")
             {
                 if (Spell.Level > 0)
                 {
@@ -83,6 +84,7 @@ namespace DOL.GS.Spells
                     effectiveness = Math.Max(0.75, effectiveness);
                     effectiveness = Math.Min(1.25, effectiveness);
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+
                     if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                     {
                         spellCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -92,7 +94,7 @@ namespace DOL.GS.Spells
 				{
 					effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
 					effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-				}
+                }
 			}
             else if (Caster is NecromancerPet nPet && Spell.Level > 0 && Spell.Target == "Enemy")
             {
@@ -102,7 +104,7 @@ namespace DOL.GS.Spells
                 effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
                 effectiveness = Math.Max(0.75, effectiveness);
                 effectiveness = Math.Min(1.25, effectiveness);
-                effectiveness *= (1.0 + caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+                effectiveness *= (1.0 + caster.GetModified(eProperty.DebuffEffectivness) * 0.01);                
 
                 if (Spell.SpellType == (byte)eSpellType.ArmorFactorDebuff)
                 {
@@ -128,6 +130,10 @@ namespace DOL.GS.Spells
                     spellCaster2.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
             }
+            else
+            {
+                effectiveness *= GetCritBonus();
+            }
             
             target.StartHealthRegeneration();
             base.ApplyEffectOnTarget(target, effectiveness);
@@ -151,6 +157,26 @@ namespace DOL.GS.Spells
                 SpellLine.IsBaseLine;
         }
 
+        private double GetCritBonus()
+        {
+            double critMod = 1;
+
+            if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+            {
+                if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && Caster.DotCriticalChance > 0)
+                {
+                    spellCaster.Out.SendMessage($"debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                }
+
+                if (Util.Chance(Caster.DotCriticalChance))
+                {                    
+                    critMod *= 1 + Util.Random(1, 10) * .1;
+                    if (Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                }
+            }
+
+            return critMod;
+        }
 
         // constructor
         protected SingleStatBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
