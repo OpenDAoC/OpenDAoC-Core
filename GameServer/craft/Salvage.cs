@@ -640,8 +640,8 @@ namespace DOL.GS
                 maxCount = usureoverall;
             }
 
-            if (item.IsROG)
-	            maxCount = (long)Math.Round(maxCount / 10d);
+            if (item.Description.Contains("Atlas ROG"))
+	            maxCount = 2;
 
             if (maxCount < 1)
                 maxCount = 1;
