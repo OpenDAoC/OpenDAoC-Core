@@ -33,6 +33,9 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("DamageOverTime")]
 	public class DoTSpellHandler : SpellHandler
 	{
+		private int criticalDamage = 0;
+		private bool firstTick = true;
+
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			new DamageOverTimeECSGameEffect(initParams);
@@ -96,7 +99,7 @@ namespace DOL.GS.Spells
             }
 
             //dots can only crit through Wild Arcana RA, which is handled elsewhere
-            if (ad.CriticalDamage > 0) ad.CriticalDamage = 0;
+            //if (ad.CriticalDamage > 0) ad.CriticalDamage = 0;
             
             
 	            //GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
@@ -174,23 +177,31 @@ namespace DOL.GS.Spells
                 MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourHitsFor",
                     Spell.Name, ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_YouHit);
             }
-            if (ad.CriticalDamage > 0)
-                MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
-                    Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
+            //if (ad.CriticalDamage > 0)
+            //    MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
+            //        Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
 
-                //			if (ad.Damage > 0)
-                //			{
-                //				string modmessage = "";
-                //				if (ad.Modifier > 0) modmessage = " (+"+ad.Modifier+")";
-                //				if (ad.Modifier < 0) modmessage = " ("+ad.Modifier+")";
-                //				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
-                //			}
-                //			else
-                //			{
-                //				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
-                //				MessageToCaster(ad.Target.GetName(0, true) + " resists the effect!", eChatType.CT_SpellResisted);
-                //				MessageToLiving(ad.Target, "You resist the effect!", eChatType.CT_SpellResisted);
-                //			}
+			if (ad.CriticalDamage > 0 && criticalDamage <= 0) // on first crit, record the damage and use for subsequent ticks
+            {
+				criticalDamage = ad.CriticalDamage;
+            }
+
+			if (criticalDamage > 0)
+				MessageToCaster("You critically hit for an additional " + criticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", eChatType.CT_YouHit);
+
+			//			if (ad.Damage > 0)
+			//			{
+			//				string modmessage = "";
+			//				if (ad.Modifier > 0) modmessage = " (+"+ad.Modifier+")";
+			//				if (ad.Modifier < 0) modmessage = " ("+ad.Modifier+")";
+			//				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
+			//			}
+			//			else
+			//			{
+			//				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
+			//				MessageToCaster(ad.Target.GetName(0, true) + " resists the effect!", eChatType.CT_SpellResisted);
+			//				MessageToLiving(ad.Target, "You resist the effect!", eChatType.CT_SpellResisted);
+			//			}
 		}
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
@@ -235,6 +246,8 @@ namespace DOL.GS.Spells
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 				OnDirectEffect(effect.Owner, effect.Effectiveness);
 			}
+
+			
 		}
 
 		/// <summary>
@@ -276,6 +289,8 @@ namespace DOL.GS.Spells
 				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
 			DamageTarget(ad, false);
+
+			if (firstTick) firstTick = false;
 		}
 
 		public void OnDirectEffect(GameLiving target, double effectiveness, bool causesCombat)
@@ -320,5 +335,13 @@ namespace DOL.GS.Spells
 
 		// constructor
 		public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+		public int GetCriticalChance()
+        {
+			if (!firstTick || criticalDamage > 0)
+				return 0;
+
+			return this.Caster.DotCriticalChance;
+        }
 	}
 }

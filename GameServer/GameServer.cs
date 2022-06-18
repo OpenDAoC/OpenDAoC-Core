@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -146,6 +147,8 @@ namespace DOL.GS
 		{
 			get { return log; }
 		}
+
+		public List<String> PatchNotes;
 
 		#endregion
 
@@ -590,7 +593,6 @@ namespace DOL.GS
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
 				//---------------------------------------------------------------
 				//Try to compile the Scripts
 				if (!InitComponent(CompileScripts(), "Script compilation"))
@@ -847,7 +849,8 @@ namespace DOL.GS
 					var webserver = new DOL.GS.API.ApiHost();
 					log.Info("Game WebAPI open for connections.");
 				}
-
+				
+				GetPatchNotes();
 
 				//INIT WAS FINE!
 				return true;
@@ -859,6 +862,28 @@ namespace DOL.GS
 
 				return false;
 			}
+		}
+
+		public async void GetPatchNotes()
+		{
+			var news = new List<string>();
+
+			try
+			{
+				using var newsClient = new HttpClient();
+				const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
+				var newsResult = await newsClient.GetStringAsync(url);
+				news.Add(newsResult);
+				log.Debug("Patch notes updated.");
+				newsClient.Dispose();
+			}
+			catch (Exception)
+			{
+				news.Add("No patch notes available.");
+				log.Debug("Cannot retrieve patch notes.");
+
+			}
+			PatchNotes = news;
 		}
 
 		/// <summary>

@@ -170,8 +170,7 @@ namespace DOL.GS
         public override bool TargetInView
         {
             get {
-                if(TargetObject != null 
-                   && GetDistanceTo(TargetObject) < 64)
+                if(TargetObject != null && ((TargetObject is GamePlayer {IsMoving: true} p && GetDistanceTo(p) < 100) || GetDistanceTo(TargetObject) < 64))
                     return true; 
                 else
                     return m_targetInView; }
