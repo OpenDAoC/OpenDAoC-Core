@@ -6115,8 +6115,13 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort)m_gameClient.Player?.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort)m_gameClient.Player?.Encumberance); // encumb used
+				//check if maxencumberance or encumberance is null before sending packet.
+				int? maxencumberance = m_gameClient.Player?.MaxEncumberance;
+				int? encumberance = m_gameClient.Player?.Encumberance;
+				if(maxencumberance == null || encumberance == null)
+					return;
+				pak.WriteShort((ushort)maxencumberance); // encumb total
+				pak.WriteShort((ushort)encumberance); // encumb used
 				SendTCP(pak);
 			}
 		}
