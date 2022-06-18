@@ -3198,7 +3198,11 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
 				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for 
 				//clientside positions of objects.
-				pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				if(m_gameClient.Player.CurrentZone != null) //Check if CurrentZone is not null
+					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				else
+					pak.WriteShort(0x00);
+
 				pak.WriteShort(0x00); // ?
 				pak.WriteShort(0x01); // cause region change ?
 				pak.WriteByte(0x0C); //Server ID
@@ -6111,8 +6115,13 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort)m_gameClient.Player?.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort)m_gameClient.Player?.Encumberance); // encumb used
+				//check if maxencumberance or encumberance is null before sending packet.
+				int? maxencumberance = m_gameClient.Player?.MaxEncumberance;
+				int? encumberance = m_gameClient.Player?.Encumberance;
+				if(maxencumberance == null || encumberance == null)
+					return;
+				pak.WriteShort((ushort)maxencumberance); // encumb total
+				pak.WriteShort((ushort)encumberance); // encumb used
 				SendTCP(pak);
 			}
 		}

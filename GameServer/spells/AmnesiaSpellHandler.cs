@@ -94,6 +94,15 @@ namespace DOL.GS.Spells
 	            EffectListService.TryCancelFirstEffectOfTypeOnTarget(target, eEffect.Pulse);
             }
 
+			//Cancel Mez on target if Amnesia hits.
+			if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+			{
+				var effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
+			}
+
 			if (target is GameNPC)
 			{
 				GameNPC npc = (GameNPC)target;
