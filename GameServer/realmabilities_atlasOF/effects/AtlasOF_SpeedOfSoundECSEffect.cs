@@ -10,13 +10,14 @@ namespace DOL.GS.Effects
         public SpeedOfSoundECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.MovementSpeedBuff;
+            EffectType = eEffect.SpeedOfSound;
             EffectService.RequestStartEffect(this);
         }
 
         // removed handler as OF SOS doesn't break on attack - yay minstrels..
         // DOLEventHandler m_attackFinished = new DOLEventHandler(AttackFinished);
 
+        /*
         /// <summary>
         /// Called when the effectowner attacked an enemy
         /// </summary>
@@ -39,7 +40,7 @@ namespace DOL.GS.Effects
                     EffectService.RequestCancelEffect(player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
                 }
             }
-        }
+        }*/
 
         public override ushort Icon
         {
@@ -63,6 +64,12 @@ namespace DOL.GS.Effects
             
             // removed handler as OF SOS doesn't break on attack - yay minstrels..
             // GameEventMgr.AddHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
+            foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            {
+                if(speedBuff.GetType() != typeof(SpeedOfSoundECSEffect))
+                    EffectService.RequestDisableEffect(speedBuff);
+            }
+            
             OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this,
                 PropertyCalc.MaxSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
@@ -74,6 +81,17 @@ namespace DOL.GS.Effects
                 return;
 
             OwnerPlayer.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            {
+                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedBuff);
+
+                if (speedBuff != null)
+                {
+                    speedBuff.IsBuffActive = false;
+                    EffectService.RequestEnableEffect(speedBuff);                   
+                }
+            }
+            
             OwnerPlayer.Out.SendUpdateMaxSpeed();
             
             // removed handler as OF SOS doesn't break on attack - yay minstrels..

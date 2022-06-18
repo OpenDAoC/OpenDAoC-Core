@@ -249,7 +249,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				//move the player
-				player.MoveTo(m_zonePoint.TargetRegion, m_zonePoint.TargetX, m_zonePoint.TargetY, m_zonePoint.TargetZ, m_zonePoint.TargetHeading);
+				player?.MoveTo(m_zonePoint.TargetRegion, m_zonePoint.TargetX, m_zonePoint.TargetY, m_zonePoint.TargetZ, m_zonePoint.TargetHeading);
 				return 0;
 			}
 		}
