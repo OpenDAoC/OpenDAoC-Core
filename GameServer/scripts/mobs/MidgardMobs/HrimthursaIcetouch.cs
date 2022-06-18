@@ -48,11 +48,11 @@ namespace DOL.AI.Brain
 			else
 				base.AttackMostWanted();
         }
-		private protected bool CanHeal = false;
-		private protected bool LockNpc = false;
-		private protected List<GameNPC> NpcToHeal = new List<GameNPC>();
-		private protected static GameNPC healnpc = null;
-		private protected static GameNPC HealNpc
+		private bool CanHeal = false;
+		private bool LockNpc = false;
+		private bool ResetNoTarget;
+		private GameNPC healnpc = null;
+		private GameNPC HealNpc
 		{
 			get { return healnpc; }
 			set { healnpc = value; }
@@ -61,8 +61,10 @@ namespace DOL.AI.Brain
 		{
 			if(Body.IsAlive)
             {
-                #region Heal mobs
-                foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+				#region Heal mobs				
+				List<GameNPC> NpcToHeal = new List<GameNPC>();
+				GameLiving target = Body.TargetObject as GameLiving;
+                foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
                 {
 					if (npc != null && npc.IsAlive && npc.Faction == Body.Faction )
 					{
@@ -79,33 +81,48 @@ namespace DOL.AI.Brain
 						LockNpc = true;
 					}
 				}
-				if(HealNpc != null && HealNpc.IsAlive && HealNpc.HealthPercent < 80 && !Body.IsCasting)//start heal
+				if(HealNpc != null && HealNpc.IsAlive)//start heal
                 {
-					CanHeal = true;
-					ClearAggroList();
-					Body.attackComponent.NPCStopAttack();
-					Body.TargetObject = HealNpc;
-					Body.CastSpell(IcetouchHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+					if (HealNpc.HealthPercent < 80)
+					{
+						if (HealNpc.IsWithinRadius(Body, 1000))
+						{
+							CanHeal = true;
+							ClearAggroList();
+							Body.attackComponent.NPCStopAttack();
+							Body.TargetObject = HealNpc;
+							Body.CastSpell(IcetouchHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+							ResetNoTarget = false;
+						}
+					}
+					else
+                    {
+						//HealNpc = null;
+						LockNpc = false;
+						CanHeal = false;
+						if (!HasAggro)
+						{
+							if (!ResetNoTarget)
+							{
+								Body.TargetObject = null;
+								ResetNoTarget = true;
+							}
+							FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+						}
+					}
 				}
-				if (HealNpc != null && HealNpc.IsAlive && HealNpc.HealthPercent > 80 && NpcToHeal.Contains(HealNpc))//remove healed mob from list
-				{
-					NpcToHeal.Remove(HealNpc);
-					HealNpc = null;
-					LockNpc = false;
-					CanHeal = false;
-				}
-				if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))//reset checks if not in aggro after x sec
+				if (Body.InCombatInLast(20 * 1000) == false && this.Body.InCombatInLast(25 * 1000))//reset checks if not in aggro after x sec
                 {
 					CanHeal = false;
 					HealNpc = null;
 					LockNpc = false;
 					if (NpcToHeal.Count > 0)
 						NpcToHeal.Clear();
-                }
+				}
 				#endregion
 				if (HasAggro && Body.TargetObject != null)
                 {
-					GameLiving target = Body.TargetObject as GameLiving;
+					ResetNoTarget = false;
 					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) && !Body.IsCasting && Util.Chance(30))
 						Body.CastSpell(IcetouchMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (!Body.IsCasting && Util.Chance(30))
@@ -115,8 +132,8 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Spells
-		private protected Spell m_IcetouchHeal;
-		private protected Spell IcetouchHeal
+		private Spell m_IcetouchHeal;
+		private Spell IcetouchHeal
 		{
 			get
 			{
