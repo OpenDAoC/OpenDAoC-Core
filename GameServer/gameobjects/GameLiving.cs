@@ -4178,9 +4178,6 @@ namespace DOL.GS
 			{
 				if (wasAlive)
 					Die(source);
-
-				lock (m_xpGainers.SyncRoot)
-					m_xpGainers.Clear();
 			}
 			else
 			{
@@ -4781,6 +4778,11 @@ namespace DOL.GS
 		/// Called when this living dies
 		/// </summary>
 		public virtual void Die(GameObject killer)
+		{
+			ReaperService.KillLiving(this, killer);
+		}
+
+		public virtual void ProcessDeath(GameObject killer)
 		{
 			if (this is GameNPC == false && this is GamePlayer == false)
 			{
