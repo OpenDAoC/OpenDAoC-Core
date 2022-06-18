@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 		}
 		public int CastBolt(ECSGameTimer timer)
 		{
-			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+			GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
 			{
 				Body.TargetObject = RandomTarget;
