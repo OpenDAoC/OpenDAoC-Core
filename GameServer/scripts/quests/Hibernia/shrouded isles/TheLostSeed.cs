@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -38,9 +31,9 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "The Lost Seed";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "The Lost Seed";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC Terod = null; // Start NPC + Finish NPC
 		private static GameNPC Kredril = null; // step 2
@@ -51,7 +44,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 288348, 319950, 2328);
 		
-		private static IArea treantArea;
+		private static AbstractArea treantArea;
 
 		private static ItemTemplate paidrean_necklace;
 		private static ItemTemplate glowing_red_jewel;
@@ -287,8 +280,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			const int radius = 1500;
 			var region = WorldMgr.GetRegion(treantLocation.RegionID);
-			treantArea = region.AddArea(new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
-				radius));
+			treantArea = new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
+				radius);
+			treantArea.CanBroadcast = false;
+			treantArea.DisplayMessage = false;
+			region.AddArea(treantArea);
 			treantArea.RegisterPlayerEnter(PlayerEnterTreantArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -345,7 +341,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateFeairnaAthar(GamePlayer player)
 		{
-			Feairna_Athar = new GameNPC();
+			Feairna_Athar = new SINeckBoss();
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
 			Feairna_Athar.GuildName = "";
@@ -355,14 +351,14 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.CurrentRegionID = 181;
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
-			Feairna_Athar.ScalingFactor = 60;
+			Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
 			Feairna_Athar.X = player.X;
 			Feairna_Athar.Y = player.Y;
 			Feairna_Athar.Z = player.Z;
 			Feairna_Athar.MaxSpeedBase = 250;
 			Feairna_Athar.AddToWorld();
 
-			var brain = new StandardMobBrain();
+			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Feairna_Athar.SetOwnBrain(brain);

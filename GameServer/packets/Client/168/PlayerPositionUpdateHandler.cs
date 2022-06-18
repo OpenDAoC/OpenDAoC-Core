@@ -19,6 +19,7 @@
 //#define OUTPUT_DEBUG_INFO
 using System;
 using System.Collections;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -27,6 +28,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.Language;
 using DOL.GS;
+using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Utils;
 using log4net;
@@ -80,7 +82,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if ((speedData & 0x200) != 0)
 				speed = -speed;
 
-			if (client.Player.IsMezzed || client.Player.IsStunned)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
 				// Nidel: updating client.Player.CurrentSpeed instead of speed
 				client.Player.CurrentSpeed = 0;
 			else
@@ -832,7 +834,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//int speed = (newPlayerSpeed & 0x1FF);
 			//Flags1 = (eFlags1)playerState;
 			//Flags2 = (eFlags2)playerAction;                        
-			if (client.Player.IsMezzed || client.Player.IsStunned)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
 				client.Player.CurrentSpeed = 0;
 			else
             {

@@ -293,7 +293,10 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsMezzed
 		{
-			get { return m_mezzed; }
+			get
+			{
+				return m_mezzed;
+			}
 			set { m_mezzed = value; }
 		}
 
@@ -389,7 +392,12 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsTurningDisabled
 		{
-			get { return m_turningDisabledCount > 0; }
+			get
+			{
+				if (this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+					return false;
+				return m_turningDisabledCount > 0;
+			}
 		}
 		/// <summary>
 		/// Disables the turning for this living
@@ -965,19 +973,28 @@ namespace DOL.GS
 			get { return GetModified(eProperty.CriticalSpellHitChance); }
 			set { }
 		}
-        ///// <summary>
-        ///// Returns the damage type of the current attack
-        ///// </summary>
-        ///// <param name="weapon">attack weapon</param>
-        //public virtual eDamageType AttackDamageType(InventoryItem weapon)
-        //{
-        //	return eDamageType.Natural;
-        //}
 
-        /// <summary>
-        /// Gets the attack-state of this living
-        /// </summary>
-        public virtual bool AttackState { get; set; }
+		/// <summary>
+		/// Returns the chance for a critical hit with a spell
+		/// </summary>
+		public virtual int DotCriticalChance
+		{
+			get { return GetModified(eProperty.CriticalDotHitChance); }
+			set { }
+		}
+		///// <summary>
+		///// Returns the damage type of the current attack
+		///// </summary>
+		///// <param name="weapon">attack weapon</param>
+		//public virtual eDamageType AttackDamageType(InventoryItem weapon)
+		//{
+		//	return eDamageType.Natural;
+		//}
+
+		/// <summary>
+		/// Gets the attack-state of this living
+		/// </summary>
+		public virtual bool AttackState { get; set; }
 
         /// <summary>
         /// Whether or not the living can be attacked.
@@ -4487,10 +4504,8 @@ namespace DOL.GS
                 return false;
 
             bool effectRemoved = false;
-            
-            EffectService.RequestCancelEffect(this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.Name.Equals("Speed Of Sound")));
 
-			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 

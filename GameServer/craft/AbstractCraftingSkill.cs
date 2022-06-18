@@ -228,7 +228,6 @@ namespace DOL.GS
 					if (player.Client.Account.PrivLevel == 1)
 						return 0;
 				}
-
 				BuildCraftedItem(player, recipe);
 				GainCraftingSkillPoints(player, recipe);
 			}
@@ -240,10 +239,17 @@ namespace DOL.GS
 
 			if (remainingToCraft >= 1)
 			{
-				player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
-				StartCraftingTimerAndSetCallBackMethod(player, recipe, GetCraftingTime(player, recipe));
-				player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), GetCraftingTime(player, recipe));
-				finishedCraft = false;
+				if (CheckRawMaterials(player, recipe))
+				{
+					player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
+					StartCraftingTimerAndSetCallBackMethod(player, recipe, GetCraftingTime(player, recipe));
+					player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), GetCraftingTime(player, recipe));
+					finishedCraft = false;
+				}
+				else
+				{ 
+					finishedCraft = true;
+				}
 			}
 			else
 			{

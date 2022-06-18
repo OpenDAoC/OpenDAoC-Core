@@ -1,6 +1,8 @@
+using System.Linq;
 using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
+using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -16,7 +18,8 @@ namespace DOL.GS
             Owner.DisableTurning(true);
             if (Owner is GameNPC npc)
                 npc.StopMoving();
-            UpdatePlayerStatus();
+            if(Owner.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+                UpdatePlayerStatus();
         }
 
         protected void OnHardCCStop()

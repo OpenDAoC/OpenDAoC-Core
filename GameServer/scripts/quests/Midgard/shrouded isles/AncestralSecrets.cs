@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -38,9 +31,9 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "Ancestral Secrets";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "Ancestral Secrets";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC OtaYrling = null; // Start NPC + Finish NPC
 		private static GameNPC Jaklyr = null; // 
@@ -51,7 +44,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
 		
-		private static IArea keeperArea;
+		private static AbstractArea keeperArea;
 
 		private static ItemTemplate beaded_resisting_stone;
 		private static ItemTemplate stone_pendant;
@@ -315,8 +308,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			const int radius = 1000;
 			var region = WorldMgr.GetRegion(keeperLocation.RegionID);
-			keeperArea = region.AddArea(new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
-				radius));
+			keeperArea = new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
+				radius);
+			keeperArea.CanBroadcast = false;
+			keeperArea.DisplayMessage = false;
+			region.AddArea(keeperArea);
 			keeperArea.RegisterPlayerEnter(PlayerEnterKeeperArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -374,7 +370,7 @@ namespace DOL.GS.Quests.Hibernia
 		protected virtual void CreateAncestralKeeper(GamePlayer player)
 		{
 		
-			AncestralKeeper = new GameNPC();
+			AncestralKeeper = new SINeckBoss();
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
 			AncestralKeeper.GuildName = "";
@@ -384,14 +380,14 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.CurrentRegionID = 151;
 			AncestralKeeper.Size = 140;
 			AncestralKeeper.Level = 65;
-			AncestralKeeper.ScalingFactor = 60;
+			AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
 			AncestralKeeper.X = player.X;
 			AncestralKeeper.Y = player.Y;
 			AncestralKeeper.Z = player.Z;
 			AncestralKeeper.MaxSpeedBase = 250;
 			AncestralKeeper.AddToWorld();
 
-			var brain = new StandardMobBrain();
+			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			AncestralKeeper.SetOwnBrain(brain);

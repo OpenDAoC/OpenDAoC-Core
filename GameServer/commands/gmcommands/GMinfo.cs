@@ -357,26 +357,30 @@ namespace DOL.GS.Commands
 					// }
 					// info.Add("");
 					
-					info.Add("ENDURANCE INFORMATION");
-					info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
-					info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
-					info.Add("Last Regen amount: " + target.Regen);
-					info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
-					info.Add("Last Regen at change: " + target.RegenRateAtChange);
-					info.Add(" ");
-					info.Add("REGEN INFORMATION");
-					info.Add("Last EnduDebuff:" + target.EnduDebuff + " | " + "Last RegenBuff: " + target.RegenBuff);
-					info.Add("HP Regen: " + target.GetModified(eProperty.HealthRegenerationRate)+ " | End Regen: " + target.GetModified(eProperty.EnduranceRegenerationRate) + " | Pow Regen: " + target.GetModified(eProperty.PowerRegenerationRate));
-					info.Add("HP: " + target.Health + "/" + target.GetModified(eProperty.MaxHealth)+ " " + Math.Round(((double)target.Health/(double)target.MaxHealth)*100, 2) + "%"
-					         + " | Power: " + target.Mana + "/" + target.GetModified(eProperty.MaxMana)+ " " +  Math.Round(((double)target.Mana/(double)target.MaxMana)*100, 2) + "%");
-					info.Add("End Regen Rate: " + target.GetModified(eProperty.EnduranceRegenerationRate));
-					info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
-					info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
-					info.Add("Combat flag: " + target.InCombat);
-					info.Add("Last Combat Regen: " + target.CombatRegen);
-					info.Add(" ");
-					info.Add("DETERMINATION INFORMATION");
-					info.Add("CC reduction: " + target.AbilityBonus[(int)eProperty.MesmerizeDurationReduction]);
+					// info.Add("ENDURANCE INFORMATION");
+					// info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
+					// info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
+					// info.Add("Last Regen amount: " + target.Regen);
+					// info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
+					// info.Add("Last Regen at change: " + target.RegenRateAtChange);
+					// info.Add(" ");
+					// info.Add("REGEN INFORMATION");
+					// info.Add("Last EnduDebuff:" + target.EnduDebuff + " | " + "Last RegenBuff: " + target.RegenBuff);
+					// info.Add("HP Regen: " + target.GetModified(eProperty.HealthRegenerationRate)+ " | End Regen: " + target.GetModified(eProperty.EnduranceRegenerationRate) + " | Pow Regen: " + target.GetModified(eProperty.PowerRegenerationRate));
+					// info.Add("HP: " + target.Health + "/" + target.GetModified(eProperty.MaxHealth)+ " " + Math.Round(((double)target.Health/(double)target.MaxHealth)*100, 2) + "%"
+					//          + " | Power: " + target.Mana + "/" + target.GetModified(eProperty.MaxMana)+ " " +  Math.Round(((double)target.Mana/(double)target.MaxMana)*100, 2) + "%");
+					// info.Add("End Regen Rate: " + target.GetModified(eProperty.EnduranceRegenerationRate));
+					// info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
+					// info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
+					// info.Add("Combat flag: " + target.InCombat);
+					// info.Add("Last Combat Regen: " + target.CombatRegen);
+					// info.Add(" ");
+					// info.Add("DETERMINATION INFORMATION");
+					// info.Add("CC reduction: " + target.AbilityBonus[(int)eProperty.MesmerizeDurationReduction]);
+					// info.Add(" ");
+					
+					info.Add("MELEE SPEED INFORMATION");
+					info.Add("MeleeSpeed: " + target.attackComponent.AttackSpeed(target.AttackWeapon));
 					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);

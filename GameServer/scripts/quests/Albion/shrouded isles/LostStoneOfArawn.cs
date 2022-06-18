@@ -1,11 +1,9 @@
 using System;
-using System.Net;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.GS.Quests.Albion;
@@ -28,7 +26,7 @@ public class LostStoneofArawn : BaseQuest
 
     private static readonly GameLocation demonLocation = new("Nyaegha", 51, 348381, 479838, 3320);
 
-    private static IArea demonArea;
+    private static AbstractArea demonArea;
 
     private static ItemTemplate ancient_copper_necklace;
     private static ItemTemplate scroll_wearyall_loststone;
@@ -87,7 +85,7 @@ public class LostStoneofArawn : BaseQuest
     [ScriptLoadedEvent]
     public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
-        if (!Properties.LOAD_QUESTS)
+        if (!ServerProperties.Properties.LOAD_QUESTS)
             return;
 
 
@@ -296,8 +294,11 @@ public class LostStoneofArawn : BaseQuest
 
         const int radius = 1500;
         var region = WorldMgr.GetRegion(demonLocation.RegionID);
-        demonArea = region.AddArea(new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
-            radius));
+        demonArea = new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
+            radius);
+        demonArea.CanBroadcast = false;
+        demonArea.DisplayMessage = false;
+        region.AddArea(demonArea);
         demonArea.RegisterPlayerEnter(PlayerEnterDemonArea);
 
         GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, SubscribeQuest);
@@ -346,7 +347,7 @@ public class LostStoneofArawn : BaseQuest
 
     protected virtual void CreateNyaegha(GamePlayer player)
     {
-        Nyaegha = new GameNPC();
+        Nyaegha = new SINeckBoss();
         Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
@@ -357,7 +358,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.CurrentRegionID = 51;
         Nyaegha.Size = 150;
         Nyaegha.Level = 65;
-        Nyaegha.ScalingFactor = 60;
+        Nyaegha.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
         Nyaegha.X = 348381;
         Nyaegha.Y = 479838;
         Nyaegha.Z = 3320;
@@ -365,7 +366,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.MaxSpeedBase = 250;
         Nyaegha.AddToWorld();
 
-        var brain = new StandardMobBrain();
+        var brain = new SINeckBossBrain();
         brain.AggroLevel = 200;
         brain.AggroRange = 500;
         Nyaegha.SetOwnBrain(brain);

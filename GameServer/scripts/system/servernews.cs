@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
 
 namespace DOL.GS.Commands
 {
@@ -16,13 +14,13 @@ namespace DOL.GS.Commands
         {
             var today = DateTime.Today;
 
-            using var newsClient = new HttpClient();
-            string newsTxt;
-            var news = new List<string>();
-            const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
-            newsTxt = newsClient.GetStringAsync(url).Result;
-            news.Add(newsTxt);
-            client.Out.SendCustomTextWindow("Server News " + today.ToString("d"), news);
+            if (client.Account.PrivLevel > 1 && args.Length > 1 && args[1] == "update")
+            {
+                GameServer.Instance.GetPatchNotes();
+                return;
+            } 
+            
+            client.Out.SendCustomTextWindow("Server News " + today.ToString("d"), GameServer.Instance.PatchNotes);
         }
     }
 }

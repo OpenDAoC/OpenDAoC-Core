@@ -4578,7 +4578,16 @@ namespace DOL.GS.Spells
 			if (finalDamage < 0)
 				finalDamage = 0;
 
-			int criticalchance = (this as DoTSpellHandler) != null ? m_caster.SpellCriticalChance - 10 :(m_caster.SpellCriticalChance);
+			int criticalchance;
+
+			if (this is DoTSpellHandler dot)
+            {
+				criticalchance = dot.GetCriticalChance();
+            }
+            else
+            {
+				criticalchance = m_caster.SpellCriticalChance;
+            }			
 
 			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
 			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%

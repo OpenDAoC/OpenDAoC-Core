@@ -170,8 +170,7 @@ namespace DOL.GS
         public override bool TargetInView
         {
             get {
-                if(TargetObject != null 
-                   && GetDistanceTo(TargetObject) < 64)
+                if(TargetObject != null && ((TargetObject is GamePlayer {IsMoving: true} p && GetDistanceTo(p) < 100) || GetDistanceTo(TargetObject) < 64))
                     return true; 
                 else
                     return m_targetInView; }
@@ -8647,36 +8646,11 @@ namespace DOL.GS
 
             if (HCFlag)
             {
-                string realm = "";
-                    if (Realm == eRealm._FirstPlayerRealm)
-                        realm = "Albion";
-                    else if (Realm == eRealm._LastPlayerRealm)
-                        realm = "Hibernia";
-                    else
-                        realm = "Midgard";
-                    
-                Out.SendCustomDialog($"Today is a bad day for {realm}.\n This character will be automatically deleted.", new CustomDialogResponse(HCDeathResponse));
+                DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(Name));
+                if (cha == null) return;
+                Client.Out.SendPlayerQuit(true);
+                GameServer.Database.DeleteObject(cha);
             }
-            
-            
-        }
-        
-        protected virtual void HCDeathResponse(GamePlayer player, byte response)
-        {
-            DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
-
-            // If no character exists that matches the exact name entered
-            if (cha == null)
-            {
-                return;
-            }
-            // If the character is logged in, remove them from the game
-            // player.Release(eReleaseType.Normal, true);
-            // player.Quit(true);
-            GameServer.Database.DeleteObject(cha);
-            player.Client.Out.SendPlayerQuit(true);
-            
-            
         }
 
         public override void EnemyKilled(GameLiving enemy)
