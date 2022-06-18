@@ -16,10 +16,11 @@ public class PlayerDeck
     private const int BONUS_DECK_SIZE = 25;
     private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE;
 
-    private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE + 1);
+    private Stack<int> _cards;
 
     public PlayerDeck()
     {
+        _cards = new Stack<int>();
         ResetDeck();
     }
 
