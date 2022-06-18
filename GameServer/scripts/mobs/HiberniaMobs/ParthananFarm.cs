@@ -164,7 +164,7 @@ namespace DOL.GS
 				ParthananFarmController1Brain.ParthansCanDie = false;
 				if (ParthananFarmController1Brain.MinParthAround.Count > 0)
 					ParthananFarmController1Brain.MinParthAround.Clear();
-				ParthananFarmController1Brain.MobsToKillLoughDerg = 5;//Util.Random(60, 120);
+				ParthananFarmController1Brain.MobsToKillLoughDerg = Util.Random(60, 120);
 			}
             #endregion
             #region Connacht
@@ -175,7 +175,7 @@ namespace DOL.GS
 				ParthananFarmController2Brain.ParthansCanDie2 = false;
 				if (ParthananFarmController2Brain.MinParthAround2.Count > 0)
 					ParthananFarmController2Brain.MinParthAround2.Clear();
-				ParthananFarmController2Brain.MobsToKillConnacht = 5;//Util.Random(60, 120);
+				ParthananFarmController2Brain.MobsToKillConnacht = Util.Random(60, 120);
 			}
 			//2nd farm
 			if (PackageID == "ParthananBossConnacht2")
@@ -185,7 +185,7 @@ namespace DOL.GS
 				ParthananFarmController2bBrain.ParthansCanDie2b = false;
 				if (ParthananFarmController2bBrain.MinParthAround2b.Count > 0)
 					ParthananFarmController2bBrain.MinParthAround2b.Clear();
-				ParthananFarmController2bBrain.MobsToKillConnacht2 = 5;// Util.Random(60, 80);
+				ParthananFarmController2bBrain.MobsToKillConnacht2 = Util.Random(60, 80);
 			}
             #endregion
             #region Lough Gur
@@ -196,7 +196,7 @@ namespace DOL.GS
 				ParthananFarmController3Brain.ParthansCanDie3 = false;
 				if (ParthananFarmController3Brain.MinParthAround3.Count > 0)
 					ParthananFarmController3Brain.MinParthAround3.Clear();
-				ParthananFarmController3Brain.MobsToKillLoughGur = 5;// Util.Random(60, 120);
+				ParthananFarmController3Brain.MobsToKillLoughGur = Util.Random(60, 120);
 			}
 			//2nd farm
 			if (PackageID == "ParthananBossLoughGur2")
@@ -206,7 +206,7 @@ namespace DOL.GS
 				ParthananFarmController3bBrain.ParthansCanDie3b = false;
 				if (ParthananFarmController3bBrain.MinParthAround3b.Count > 0)
 					ParthananFarmController3bBrain.MinParthAround3b.Clear();
-				ParthananFarmController3bBrain.MobsToKillLoughGur2 = 5;// Util.Random(60, 120);
+				ParthananFarmController3bBrain.MobsToKillLoughGur2 = Util.Random(60, 120);
 			}
             #endregion
             base.Die(killer);
@@ -853,7 +853,7 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> MinParthAround = new List<GameNPC>();
 		public static bool ParthansCanDie = false;
 
-		public static int MobsToKillLoughDerg = 5;
+		public static int MobsToKillLoughDerg = 60;
 		public static int m_mobstokillloughderg
 		{
 			get { return m_mobstokillloughderg; }
@@ -953,7 +953,7 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> MinParthAround2 = new List<GameNPC>();
 		public static bool ParthansCanDie2 = false;
 
-		public static int MobsToKillConnacht = 5;
+		public static int MobsToKillConnacht = 60;
 		public static int m_mobstokillconnacht
 		{
 			get { return m_mobstokillconnacht; }
@@ -1053,7 +1053,7 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> MinParthAround2b = new List<GameNPC>();
 		public static bool ParthansCanDie2b = false;
 
-		public static int MobsToKillConnacht2 = 5;
+		public static int MobsToKillConnacht2 = 60;
 		public static int m_mobstokillconnacht2
 		{
 			get { return m_mobstokillconnacht2; }
@@ -1152,7 +1152,7 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> MinParthAround3 = new List<GameNPC>();
 		public static bool ParthansCanDie3 = false;
 
-		public static int MobsToKillLoughGur = 5;
+		public static int MobsToKillLoughGur = 60;
 		public static int m_mobstokillloughgur
 		{
 			get { return m_mobstokillloughgur; }
@@ -1252,7 +1252,7 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> MinParthAround3b = new List<GameNPC>();
 		public static bool ParthansCanDie3b = false;
 
-		public static int MobsToKillLoughGur2 = 5;
+		public static int MobsToKillLoughGur2 = 60;
 		public static int m_mobstokillloughgur2
 		{
 			get { return m_mobstokillloughgur2; }
