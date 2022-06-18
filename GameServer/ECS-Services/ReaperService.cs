@@ -30,10 +30,10 @@ public class ReaperService
         if (KilledToKillerDict.Keys.Count > 0)
         {
             //kill everything on multiple threads
-            Parallel.ForEach(KilledToKillerDict, timer =>
+            Parallel.ForEach(KilledToKillerDict, killed =>
             {
-                timer.Key.ProcessDeath(timer.Value);
-                DeadLivings.Add(timer.Key);
+                killed.Key.ProcessDeath(killed.Value);
+                DeadLivings.Add(killed.Key);
             });
 
             //remove everything we killed
