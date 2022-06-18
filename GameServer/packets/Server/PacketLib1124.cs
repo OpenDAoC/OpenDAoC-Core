@@ -3198,7 +3198,11 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
 				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for 
 				//clientside positions of objects.
-				pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				if(m_gameClient.Player.CurrentZone != null) //Check if CurrentZone is not null
+					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				else
+					pak.WriteShort(0x00);
+
 				pak.WriteShort(0x00); // ?
 				pak.WriteShort(0x01); // cause region change ?
 				pak.WriteByte(0x0C); //Server ID
