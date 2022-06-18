@@ -24,6 +24,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Keeps;
+using DOL.GS.Commands;
 
 namespace DOL.GS
 {
@@ -455,8 +456,9 @@ namespace DOL.GS
 			index level value1  value2 hand  objecttype damagetype weight conc dur qual bonnus model color effect
 		*/
 
-		public void Repair()
+		public void TryRepair()
 		{
+			if (Owner == null) return;
 			if (TimesRepaired <= 3)
 			{
 				if (Owner.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < 301)
@@ -464,12 +466,34 @@ namespace DOL.GS
 					Owner.Out.SendMessage("You must have woodworking skill to repair a siege weapon.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 					return;
 				}
-				TimesRepaired = TimesRepaired + 1;
-				Health += (int)(this.MaxHealth * 0.15);
 			}
 			else
 			{
 				this.Owner.Out.SendMessage("The siegeweapon has decayed beyond repairs!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			RepairCommandHandler repairCommand = new RepairCommandHandler();
+			if (!repairCommand.PreFireChecks(Owner, this)) return;
+			repairCommand.StartRepair(Owner, this);
+		}
+		public bool Repair()
+		{
+			if (TimesRepaired <= 3)
+			{
+				// if (Owner.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < 301)
+				// {
+				// 	Owner.Out.SendMessage("You must have woodworking skill to repair a siege weapon.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				// 	return false;
+				// }
+				TimesRepaired = TimesRepaired + 1;
+				Health += (int)(this.MaxHealth * 0.15);
+				return true;
+			}
+			else
+			{
+				// this.Owner.Out.SendMessage("The siegeweapon has decayed beyond repairs!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return false;
 			}
 		}
 
