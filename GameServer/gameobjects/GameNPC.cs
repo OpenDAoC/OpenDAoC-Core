@@ -4724,11 +4724,10 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			int period = m_healthRegenerationPeriod;
+			int period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 			if (!InCombat)
 			{
 				int oldPercent = HealthPercent;
-				period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 				if (oldPercent != HealthPercent)
 					BroadcastUpdate();
 			}

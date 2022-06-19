@@ -1107,17 +1107,17 @@ namespace DOL.GS
 		{
 			get
 			{
-				if ((InCombatPvE || InCombatPvP) == false)
+				if ((InCombatPvE || InCombatPvP))
 				{
-					if (attackComponent.Attackers.Count > 0)
-					{
-						attackComponent.Attackers.Clear();
-					}
-
-					return false;
+					return true;
+				}
+				
+				if (attackComponent.Attackers.Count > 0)
+				{
+					attackComponent.Attackers.Clear();
 				}
 
-				return true;
+				return false;
 			}
 		}
 
@@ -1126,7 +1126,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool InCombatInLast(int milliseconds)
 		{
-			if ((InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds)) == false)
+			if ((InCombatPvEInLast(milliseconds) && InCombatPvPInLast(milliseconds)) == false)
 			{
 				if (attackComponent.Attackers.Count > 0)
 				{
@@ -5700,6 +5700,7 @@ namespace DOL.GS
 
 			if (InCombat)
 			{
+				Console.WriteLine($"Health Regen time {HealthRegenerationPeriod * 5}");
 				// in combat each tic is aprox 15 seconds - tolakram
 				return HealthRegenerationPeriod * 5;
 			}
