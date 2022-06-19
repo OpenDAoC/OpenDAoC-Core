@@ -5700,7 +5700,6 @@ namespace DOL.GS
 
 			if (InCombat)
 			{
-				Console.WriteLine($"Health Regen time {HealthRegenerationPeriod * 5}");
 				// in combat each tic is aprox 15 seconds - tolakram
 				return HealthRegenerationPeriod * 5;
 			}
