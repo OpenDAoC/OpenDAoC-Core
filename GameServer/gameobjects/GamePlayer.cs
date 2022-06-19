@@ -8347,7 +8347,7 @@ namespace DOL.GS
         /// Called when the player dies
         /// </summary>
         /// <param name="killer">the killer</param>
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             // Ambient trigger upon killing player
             if (killer is GameNPC)

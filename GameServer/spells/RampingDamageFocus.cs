@@ -85,7 +85,7 @@ namespace DOL.GS.Spells
 			if (Caster.IsStunned || Caster.IsMezzed)
 				return;
 
-			(Caster as GamePlayer).Out.SendCheckLOS(Caster, m_spellTarget, CheckLOSPlayerToTarget);
+			//(Caster as GamePlayer).Out.SendCheckLOS(Caster, m_spellTarget, CheckLOSPlayerToTarget);
 
 			if (Caster.Mana >= Spell.PulsePower)
 			{

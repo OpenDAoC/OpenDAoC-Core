@@ -190,7 +190,7 @@ namespace DOL.GS.PropertyCalc
 					//14 hp per level
 					//30 base
 					//con * level HP, scaled by level
-					hp = (int)((living.Level * 14) + 30 + (Math.Floor((double)((living as GameNPC).Constitution * living.Level) / (1 + (20-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+					hp = (int)((living.Level * 11) + 20 + (Math.Floor((double)((living as GameNPC).Constitution * living.Level) / (1 + (20-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
 				}
 				else
 				{

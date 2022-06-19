@@ -1111,12 +1111,12 @@ namespace DOL.GS.Spells
 		/// <param name="player">The player</param>
 		/// <param name="response">The result</param>
 		/// <param name="targetOID">The target OID</param>
-		public virtual void CheckLOSPlayerToTarget(GamePlayer player, ushort response, ushort targetOID)
+		public virtual void CheckLOSPlayerToTarget(GamePlayer player, GameObject source, GameObject target, bool losOk, EventArgs args, PropertyCollection tempProperties)
 		{
 			if (player == null) // Hmm
 				return;
 
-			if ((response & 0x100) == 0x100) // In view?
+			if (losOk) // In view?
 				return;
 
 			if (ServerProperties.Properties.ENABLE_DEBUG)
@@ -1143,12 +1143,12 @@ namespace DOL.GS.Spells
 		/// <param name="player">The player</param>
 		/// <param name="response">The result</param>
 		/// <param name="targetOID">The target OID</param>
-		public virtual void CheckLOSNPCToTarget(GamePlayer player, ushort response, ushort targetOID)
+		public virtual void CheckLOSNPCToTarget(GamePlayer player, GameObject source, GameObject target, bool losOk, EventArgs args, PropertyCollection tempProperties)
 		{
 			if (player == null) // Hmm
 				return;
 
-			if ((response & 0x100) == 0x100) // In view?
+			if (losOk) // In view?
 				return;
 
 			if (ServerProperties.Properties.ENABLE_DEBUG)
@@ -1407,7 +1407,7 @@ namespace DOL.GS.Spells
 				{
 					case "enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50) &&
+						if (Caster is GamePlayer && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 64) &&
 							m_spell.SpellType != (byte)eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
@@ -1439,11 +1439,15 @@ namespace DOL.GS.Spells
 
 								if (Caster is GamePlayer)
 								{
-									playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(CheckLOSPlayerToTarget));
+									//playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSMgrResponse(CheckLOSPlayerToTarget));
+									LosCheckMgr chk = new LosCheckMgr();
+									chk.LosCheck(playerChecker, Caster, target, new LosMgrResponse(CheckLOSPlayerToTarget), false, Spell.CastTime);
 								}
 								else if (target is GamePlayer || MustCheckLOS(Caster))
 								{
-									playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(CheckLOSNPCToTarget));
+									//playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSMgrResponse(CheckLOSNPCToTarget));
+									LosCheckMgr chk = new LosCheckMgr();
+									chk.LosCheck(playerChecker, Caster, target, new LosMgrResponse(CheckLOSNPCToTarget), false, Spell.CastTime);
 								}
 							}
 						}

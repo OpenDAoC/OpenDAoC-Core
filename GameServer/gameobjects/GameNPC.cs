@@ -4286,7 +4286,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Called when this living dies
 		/// </summary>
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Brain?.KillFSM();
 
@@ -4339,6 +4339,9 @@ namespace DOL.GS
 				GameServer.ServerRules.OnNPCKilled(this, killer);
 				base.Die(killer);
 			}
+			
+			lock (this.XPGainers.SyncRoot)
+				this.XPGainers.Clear();
 
 			Delete();
 
@@ -4721,11 +4724,10 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			int period = m_healthRegenerationPeriod;
+			int period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 			if (!InCombat)
 			{
 				int oldPercent = HealthPercent;
-				period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 				if (oldPercent != HealthPercent)
 					BroadcastUpdate();
 			}
@@ -4814,7 +4816,7 @@ namespace DOL.GS
 			ArrayList droplist = new ArrayList();
 			ArrayList autolootlist = new ArrayList();
 			ArrayList aplayer = new ArrayList();
-
+			
 			lock (m_xpGainers.SyncRoot)
 			{
 				if (m_xpGainers.Keys.Count == 0) return;

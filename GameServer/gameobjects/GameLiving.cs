@@ -1107,17 +1107,17 @@ namespace DOL.GS
 		{
 			get
 			{
-				if ((InCombatPvE || InCombatPvP) == false)
+				if ((InCombatPvE || InCombatPvP))
 				{
-					if (attackComponent.Attackers.Count > 0)
-					{
-						attackComponent.Attackers.Clear();
-					}
-
-					return false;
+					return true;
+				}
+				
+				if (attackComponent.Attackers.Count > 0)
+				{
+					attackComponent.Attackers.Clear();
 				}
 
-				return true;
+				return false;
 			}
 		}
 
@@ -1126,7 +1126,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool InCombatInLast(int milliseconds)
 		{
-			if ((InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds)) == false)
+			if ((InCombatPvEInLast(milliseconds) && InCombatPvPInLast(milliseconds)) == false)
 			{
 				if (attackComponent.Attackers.Count > 0)
 				{
@@ -4178,9 +4178,6 @@ namespace DOL.GS
 			{
 				if (wasAlive)
 					Die(source);
-
-				lock (m_xpGainers.SyncRoot)
-					m_xpGainers.Clear();
 			}
 			else
 			{
@@ -4449,7 +4446,8 @@ namespace DOL.GS
                 }
 				// Non-Damaging, non-resisted spells that break mez.
 				else if (ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler is AmnesiaSpellHandler || ad.SpellHandler is DiseaseSpellHandler
-						 || ad.SpellHandler is SpeedDecreaseSpellHandler || ad.SpellHandler is StunSpellHandler || ad.SpellHandler is ConfusionSpellHandler) 
+						 || ad.SpellHandler is SpeedDecreaseSpellHandler || ad.SpellHandler is StunSpellHandler || ad.SpellHandler is ConfusionSpellHandler
+						 || ad.SpellHandler is AbstractResistDebuff) 
 				{
 					removeMez = true;
 				}
@@ -4780,6 +4778,11 @@ namespace DOL.GS
 		/// Called when this living dies
 		/// </summary>
 		public virtual void Die(GameObject killer)
+		{
+			ReaperService.KillLiving(this, killer);
+		}
+
+		public virtual void ProcessDeath(GameObject killer)
 		{
 			if (this is GameNPC == false && this is GamePlayer == false)
 			{

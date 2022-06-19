@@ -230,7 +230,7 @@ namespace DOL.GS {
             this.Quality = Util.Random(minQuality, maxQuality);
 
             this.Price = Money.SetAutoPrice(this.Level, this.Quality);
-            this.Price /= 10;
+            this.Price /= 8;
             if (this.Price <= 0)
                 this.Price = 2; // 2c as sell price is 50%
         }

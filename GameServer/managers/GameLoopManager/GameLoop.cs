@@ -85,6 +85,8 @@ namespace DOL.GS
             PredatorService.Tick(GameLoopTime);
             currentServiceTick = "TimerService";
             TimerService.Tick(GameLoopTime);
+            currentServiceTick = "ReaperService";
+            ReaperService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;

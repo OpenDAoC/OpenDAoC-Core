@@ -111,6 +111,16 @@ namespace DOL.GS.Commands
 				}
 			}
 
+			if (obj is GameSiegeWeapon)
+			{
+				GameSiegeWeapon siegeweapon = obj as GameSiegeWeapon;
+				if(siegeweapon.TimesRepaired > 3)
+				{
+					DisplayMessage(player,"The siegeweapon has decayed beyond repairs!");
+					return false;
+				}
+			}
+
 			if (player.IsCrafting)
 			{
 				DisplayMessage(player, "You must end your current action before you repair anything!");
@@ -212,7 +222,12 @@ namespace DOL.GS.Commands
 				if (obj is GameSiegeWeapon)
 				{
 					GameSiegeWeapon weapon = obj as GameSiegeWeapon;
-					weapon.Repair();
+					if(weapon.Repair())
+					{
+						RemoveWU(player,(GetTotalWoodForLevel(obj.Level) / 100) * 5);
+						DisplayMessage(player, "You successfully repair the siege weapon by 15%!");
+					}
+					return 0;
 				}
 				int finish = obj.HealthPercent;
 				
