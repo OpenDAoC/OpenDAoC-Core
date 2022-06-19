@@ -177,7 +177,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				CanWalk = false;
 			}
-			if (HasAggro)
+			if (Body.IsAlive && HasAggro)
 			{
 				if (Body.TargetObject != null)
 				{
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
 		}
 		private int WalkSide(ECSGameTimer timer)
 		{
-			if (HasAggro && Body.TargetObject != null && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
 			{
 				if (Body.TargetObject is GameLiving)
 				{
