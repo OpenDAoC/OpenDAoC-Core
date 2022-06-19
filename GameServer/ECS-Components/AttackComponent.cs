@@ -1650,7 +1650,7 @@ namespace DOL.GS
                        // 0.9 + (0.1 * Math.Max(1.0, RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength)));
                     double specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
 
-                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 32 / 50d : 5;
+                    double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 32 / 50d : 2;
                     if (playerBaseAF < 1)
                         playerBaseAF = 1;
 
@@ -1722,6 +1722,7 @@ namespace DOL.GS
                     int AFLevelScalar = 30;
                     if (ad.Target.Level < 21) AFLevelScalar += (20 - ad.Target.Level);
                     double weaponskillCalc = (owner.GetWeaponSkill(weapon) + ad.Attacker.Level * 65/50d);
+                    if (owner.Level < 10) weaponskillCalc *= 1 - (.05 * (10 - owner.Level));
                     double armorCalc = (ad.Target.GetArmorAF(ad.ArmorHitLocation) + ad.Target.Level * AFLevelScalar/50d) * (1 +
                         ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     if (armorCalc <= 0) armorCalc = 0.1;
