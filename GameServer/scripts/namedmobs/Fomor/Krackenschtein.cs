@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (CanCast == false)
+			if (CanCast == false && Enemys_To_DD.Count > 0)
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
