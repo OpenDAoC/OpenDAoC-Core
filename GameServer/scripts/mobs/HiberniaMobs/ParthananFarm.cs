@@ -1,8 +1,8 @@
 ﻿using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using System;
+using System.Collections.Generic;
 
 #region Amalgamate Parthanan
 namespace DOL.GS
@@ -10,11 +10,12 @@ namespace DOL.GS
 	public class AmalgamateParthanan : GameNPC
 	{
 		public AmalgamateParthanan() : base() { }
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        #region Immune to specific dammage/range attack
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GamePet)
 			{
-				GameLiving target = source as GameLiving;			
+				GameLiving target = source as GameLiving;
 				if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
 					damageType == eDamageType.Energy || damageType == eDamageType.Heat
 					|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || target.AttackWeapon.Object_Type == (int)eObjectType.RecurvedBow || target.AttackWeapon.Object_Type == (int)eObjectType.Fired)
@@ -34,7 +35,7 @@ namespace DOL.GS
 					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 				}
 			}
-			if (source is GameNPC)
+			if (source is GameNPC)//for charmed pets or other faction mobs
 			{
 				GameNPC npc = source as GameNPC;
 				if (npc.AttackWeapon != null && npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
@@ -55,6 +56,77 @@ namespace DOL.GS
 				}
 			}
 		}
+		#endregion
+
+		public override void StartAttack(GameObject target)//dont attack in initial phase after spawn
+		{
+			#region Lough Derg
+			if (PackageID == "ParthananBossLoughDerg")
+			{
+				if (ParthananFarmController1Brain.SacrificeParthanan1)
+					return;
+				else
+					base.StartAttack(target);
+			}
+			#endregion
+			#region Connacht
+			if (PackageID == "ParthananBossConnacht")
+			{
+				if (ParthananFarmController2Brain.SacrificeParthanan2)
+					return;
+				else
+					base.StartAttack(target);
+			}
+			//2nd farm
+			if (PackageID == "ParthananBossConnacht2")
+			{
+				if (ParthananFarmController2bBrain.SacrificeParthanan2b)
+					return;
+				else
+					base.StartAttack(target);
+			}
+			#endregion
+			#region Lough Gur
+			if (PackageID == "ParthananBossLoughGur")
+			{
+				if (ParthananFarmController3Brain.SacrificeParthanan3)
+					return;
+				else
+					base.StartAttack(target);
+			}
+			//2nd farm
+			if (PackageID == "ParthananBossLoughGur2")
+			{
+				if (ParthananFarmController3bBrain.SacrificeParthanan3b)
+					return;
+				else
+					base.StartAttack(target);
+			}
+            #endregion
+        }
+        public override bool HasAbility(string keyName)//immune to cc and dmg(in certain situation only)
+		{
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
+				return true;
+            #region Lough Derg
+            if (ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
+            #endregion
+            #region Connacht
+            if (ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
+			if (ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
+            #endregion
+            #region Lough Gur
+            if (ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
+			if (ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
+            #endregion
+            return base.HasAbility(keyName);
+		}
+
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157792);
@@ -71,8 +143,12 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
-			base.AddToWorld();
-			return true;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+			}
+			return success;
 		}
 		public override int MaxHealth
 		{
@@ -80,34 +156,219 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
         {
+			#region Lough Derg
 			if (PackageID == "ParthananBossLoughDerg")
 			{
 				ParthananFarmController1Brain.LoughDergBoss = 0;
-				ParthananFarmController1Brain.MobsToKillLoughDerg = Util.Random(60, 80);
+				ParthananFarmController1Brain.BossIsUP = false;
+				ParthananFarmController1Brain.ParthansCanDie = false;
+				if (ParthananFarmController1Brain.MinParthAround.Count > 0)
+					ParthananFarmController1Brain.MinParthAround.Clear();
+				ParthananFarmController1Brain.MobsToKillLoughDerg = Util.Random(60, 120);
 			}
-			if (PackageID == "ParthananBossConnacht")
+            #endregion
+            #region Connacht
+            if (PackageID == "ParthananBossConnacht")
 			{
 				ParthananFarmController2Brain.ConnachtBoss = 0;
-				ParthananFarmController2Brain.MobsToKillConnacht= Util.Random(60, 80);
+				ParthananFarmController2Brain.BossIsUP2 = false;
+				ParthananFarmController2Brain.ParthansCanDie2 = false;
+				if (ParthananFarmController2Brain.MinParthAround2.Count > 0)
+					ParthananFarmController2Brain.MinParthAround2.Clear();
+				ParthananFarmController2Brain.MobsToKillConnacht = Util.Random(60, 120);
 			}
+			//2nd farm
 			if (PackageID == "ParthananBossConnacht2")
 			{
 				ParthananFarmController2bBrain.Connacht2Boss = 0;
+				ParthananFarmController2bBrain.BossIsUP2b = false;
+				ParthananFarmController2bBrain.ParthansCanDie2b = false;
+				if (ParthananFarmController2bBrain.MinParthAround2b.Count > 0)
+					ParthananFarmController2bBrain.MinParthAround2b.Clear();
 				ParthananFarmController2bBrain.MobsToKillConnacht2 = Util.Random(60, 80);
 			}
-			if (PackageID == "ParthananBossLoughGur")
+            #endregion
+            #region Lough Gur
+            if (PackageID == "ParthananBossLoughGur")
 			{
 				ParthananFarmController3Brain.LoughGurBoss = 0;
-				ParthananFarmController3Brain.MobsToKillLoughGur = Util.Random(60, 80);
+				ParthananFarmController3Brain.BossIsUP3 = false;
+				ParthananFarmController3Brain.ParthansCanDie3 = false;
+				if (ParthananFarmController3Brain.MinParthAround3.Count > 0)
+					ParthananFarmController3Brain.MinParthAround3.Clear();
+				ParthananFarmController3Brain.MobsToKillLoughGur = Util.Random(60, 120);
 			}
+			//2nd farm
 			if (PackageID == "ParthananBossLoughGur2")
 			{
 				ParthananFarmController3bBrain.LoughGur2Boss = 0;
-				ParthananFarmController3bBrain.MobsToKillLoughGur2 = Util.Random(60, 80);
+				ParthananFarmController3bBrain.BossIsUP3b = false;
+				ParthananFarmController3bBrain.ParthansCanDie3b = false;
+				if (ParthananFarmController3bBrain.MinParthAround3b.Count > 0)
+					ParthananFarmController3bBrain.MinParthAround3b.Clear();
+				ParthananFarmController3bBrain.MobsToKillLoughGur2 = Util.Random(60, 120);
 			}
-			base.Die(killer);
+            #endregion
+            base.Die(killer);
         }
-    }
+        #region Effects
+        protected int Show_Effect(ECSGameTimer timer)
+		{
+            #region Lough Derg
+            if (IsAlive && ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellCastAnimation(this, 2909, 1);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			if (IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+            #endregion
+            #region Connacht
+            if (IsAlive && ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellCastAnimation(this, 2909, 1);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+
+			//2nd farm
+			if (IsAlive && ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellCastAnimation(this, 2909, 1);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			if (IsAlive && !ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+			#endregion
+			#region Lough Gur
+			if (IsAlive && ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellCastAnimation(this, 2909, 1);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossLoughGur")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+
+			//2nd farm
+			if (IsAlive && ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellCastAnimation(this, 2909, 1);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			if (IsAlive && !ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+			#endregion
+			return 0;
+		}
+		protected int DoCast(ECSGameTimer timer)
+		{
+            #region Lough Derg
+            if (IsAlive && ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			if(IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+            #endregion
+            #region Connacht
+            if (IsAlive && ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+
+			//2nd farm
+			if (IsAlive && ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			if (IsAlive && !ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+			#endregion
+			#region Lough Gur
+			if (IsAlive && ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			if (IsAlive && !ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+
+			//2nd farm
+			if (IsAlive && ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			if (IsAlive && !ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+			#endregion
+			return 0;
+		}
+		protected int DoEndCast(ECSGameTimer timer)
+		{
+            #region Lough Derg
+            if (IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6159, 0, false, 0x01);
+				}
+			}
+            #endregion
+            #region Connacht
+            if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6159, 0, false, 0x01);
+				}
+			}
+			//2nd farm
+			if (IsAlive && !ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6159, 0, false, 0x01);
+				}
+			}
+			#endregion
+			#region Lough Gur
+			if (IsAlive && !ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6159, 0, false, 0x01);
+				}
+			}
+			//2nd farm
+			if (IsAlive && !ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 6159, 0, false, 0x01);
+				}
+			}
+			#endregion
+			return 0;
+		}
+		#endregion
+	}
 }
 namespace DOL.AI.Brain
 {
@@ -157,32 +418,80 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			if (!ParthananFarmController1Brain.SacrificeParthanan1)
+            #region Lough Derg
+            if (!ParthananFarmController1Brain.SacrificeParthanan1)
 			{
 				if (PackageID == "ParthananLoughDerg")
 					++ParthananFarmController1Brain.ParthanansKilledFarm1;
 			}
-			if (!ParthananFarmController2Brain.SacrificeParthanan2)
+			else
+            {
+				if (PackageID == "ParthananLoughDerg")
+				{
+					if (ParthananFarmController1Brain.MinParthAround.Contains(this))
+						ParthananFarmController1Brain.MinParthAround.Remove(this);
+				}
+			}
+            #endregion
+            #region Connacht
+            if (!ParthananFarmController2Brain.SacrificeParthanan2)
 			{
 				if (PackageID == "ParthananConnacht")
 					++ParthananFarmController2Brain.ParthanansKilledFarm2;
 			}
+			else
+			{
+				if (PackageID == "ParthananConnacht")
+				{
+					if (ParthananFarmController2Brain.MinParthAround2.Contains(this))
+						ParthananFarmController2Brain.MinParthAround2.Remove(this);
+				}
+			}
+			//2nd farm
 			if (!ParthananFarmController2bBrain.SacrificeParthanan2b)
 			{
 				if (PackageID == "ParthananConnacht2")
 					++ParthananFarmController2bBrain.ParthanansKilledFarm2b;
 			}
-			if (!ParthananFarmController3Brain.SacrificeParthanan3)
+			else
+			{
+				if (PackageID == "ParthananConnacht2")
+				{
+					if (ParthananFarmController2bBrain.MinParthAround2b.Contains(this))
+						ParthananFarmController2bBrain.MinParthAround2b.Remove(this);
+				}
+			}
+            #endregion
+            #region Lough Gur
+            if (!ParthananFarmController3Brain.SacrificeParthanan3)
 			{
 				if (PackageID == "ParthananLoughGur")
 					++ParthananFarmController3Brain.ParthanansKilledFarm3;
 			}
+			else
+			{
+				if (PackageID == "ParthananLoughGur")
+				{
+					if (ParthananFarmController3Brain.MinParthAround3.Contains(this))
+						ParthananFarmController3Brain.MinParthAround3.Remove(this);
+				}
+			}
+			//2nd farm
 			if (!ParthananFarmController3bBrain.SacrificeParthanan3b)
 			{
 				if (PackageID == "ParthananLoughGur2")
 					++ParthananFarmController3bBrain.ParthanansKilledFarm3b;
 			}
-			base.Die(killer);
+			else
+			{
+				if (PackageID == "ParthananLoughGur2")
+				{
+					if (ParthananFarmController3bBrain.MinParthAround3b.Contains(this))
+						ParthananFarmController3bBrain.MinParthAround3b.Remove(this);
+				}
+			}
+            #endregion
+            base.Die(killer);
 		}
     }
 }
@@ -201,46 +510,55 @@ namespace DOL.AI.Brain
         {
 			if (!Body.IsControlledNPC(Body))
 			{
-				if (Body.PackageID == "ParthananLoughDerg")
+                #region Lough Derg
+                if (Body.PackageID == "ParthananLoughDerg")
 				{
-					if (ParthananFarmController1Brain.SacrificeParthanan1)
+					if (ParthananFarmController1Brain.SacrificeParthanan1 && ParthananFarmController1Brain.ParthansCanDie)
 						return;
 					else
 						base.AttackMostWanted();
 				}
-				if (Body.PackageID == "ParthananConnacht")
+                #endregion
+                #region Connacht
+                if (Body.PackageID == "ParthananConnacht")
 				{
-					if (ParthananFarmController2Brain.SacrificeParthanan2)
+					if (ParthananFarmController2Brain.SacrificeParthanan2 && ParthananFarmController2Brain.ParthansCanDie2)
 						return;
 					else
 						base.AttackMostWanted();
 				}
+				//2nd farm
 				if (Body.PackageID == "ParthananConnacht2")
 				{
-					if (ParthananFarmController2bBrain.SacrificeParthanan2b)
+					if (ParthananFarmController2bBrain.SacrificeParthanan2b && ParthananFarmController2bBrain.ParthansCanDie2b)
 						return;
 					else
 						base.AttackMostWanted();
 				}
-				if (Body.PackageID == "ParthananLoughGur")
+                #endregion
+                #region Lough Gur
+                if (Body.PackageID == "ParthananLoughGur")
 				{
-					if (ParthananFarmController3Brain.SacrificeParthanan3)
+					if (ParthananFarmController3Brain.SacrificeParthanan3 && ParthananFarmController3Brain.ParthansCanDie3)
 						return;
 					else
 						base.AttackMostWanted();
 				}
+				//2nd farm
 				if (Body.PackageID == "ParthananLoughGur2")
 				{
-					if (ParthananFarmController3bBrain.SacrificeParthanan3b)
+					if (ParthananFarmController3bBrain.SacrificeParthanan3b && ParthananFarmController3bBrain.ParthansCanDie3b)
 						return;
 					else
 						base.AttackMostWanted();
 				}
-			}
-		}
+                #endregion
+            }
+        }
 		ushort oldModel;
 		GameNPC.eFlags oldFlags;
 		bool changed;
+		private protected bool setbrain = false;
 		public override void Think()
 		{
 			if (Body.IsAlive && !Body.IsControlledNPC(Body))
@@ -275,7 +593,7 @@ namespace DOL.AI.Brain
 						}
 					}
 
-					if (ParthananFarmController1Brain.SacrificeParthanan1)
+					if (ParthananFarmController1Brain.SacrificeParthanan1 && ParthananFarmController1Brain.ParthansCanDie)
 					{
 						ClearAggroList();
 						Body.StopAttack();
@@ -322,7 +640,7 @@ namespace DOL.AI.Brain
 						}
 					}
 
-					if (ParthananFarmController2Brain.SacrificeParthanan2)
+					if (ParthananFarmController2Brain.SacrificeParthanan2 && ParthananFarmController2Brain.ParthansCanDie2)
 					{
 						ClearAggroList();
 						Body.StopAttack();
@@ -370,7 +688,7 @@ namespace DOL.AI.Brain
 						}
 					}
 
-					if (ParthananFarmController2bBrain.SacrificeParthanan2b)
+					if (ParthananFarmController2bBrain.SacrificeParthanan2b && ParthananFarmController2bBrain.ParthansCanDie2b)
 					{
 						ClearAggroList();
 						Body.StopAttack();
@@ -416,7 +734,7 @@ namespace DOL.AI.Brain
 							changed = false;
 						}
 					}
-					if (ParthananFarmController3Brain.SacrificeParthanan3)
+					if (ParthananFarmController3Brain.SacrificeParthanan3 && ParthananFarmController3Brain.ParthansCanDie3)
 					{
 						ClearAggroList();
 						Body.StopAttack();
@@ -463,7 +781,7 @@ namespace DOL.AI.Brain
 							changed = false;
 						}
 					}
-					if (ParthananFarmController3bBrain.SacrificeParthanan3b)
+					if (ParthananFarmController3bBrain.SacrificeParthanan3b && ParthananFarmController3bBrain.ParthansCanDie3b)
 					{
 						ClearAggroList();
 						Body.StopAttack();
@@ -481,7 +799,7 @@ namespace DOL.AI.Brain
 				}
 				#endregion
 			}
-            base.Think();
+			base.Think();
 		}
 	}
 }
@@ -528,9 +846,12 @@ namespace DOL.AI.Brain
 			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
+		public static bool BossIsUP = false;
 		public static int ParthanansKilledFarm1 = 0; // Lough Derg
 		public static bool SacrificeParthanan1 = false;
 		public static int LoughDergBoss = 0;
+		public static List<GameNPC> MinParthAround = new List<GameNPC>();
+		public static bool ParthansCanDie = false;
 
 		public static int MobsToKillLoughDerg = 60;
 		public static int m_mobstokillloughderg
@@ -543,8 +864,25 @@ namespace DOL.AI.Brain
 			if (ParthanansKilledFarm1 >= MobsToKillLoughDerg)
 			{
 				SacrificeParthanan1 = true;
-				SpawnBigOne();
+				if (SacrificeParthanan1)
+				{
+					foreach(GameNPC npc in Body.GetNPCsInRadius(3000))
+                    {
+						if (npc != null && npc.IsAlive && npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughDerg" && !MinParthAround.Contains(npc))
+							MinParthAround.Add(npc);
+                    }
+					if(MinParthAround.Count >= 5)
+						SpawnBigOne();
+					if(MinParthAround.Count >= 5)
+						ParthansCanDie = true;
+				}
 			}
+			if (SacrificeParthanan1 && MinParthAround.Count == 0 && BossIsUP)
+			{
+				SacrificeParthanan1 = false;
+				LoughDergBoss = 1;
+			}
+
 			base.Think();
 		}
 		public void SpawnBigOne()
@@ -563,8 +901,7 @@ namespace DOL.AI.Brain
 			boss.PackageID = "ParthananBossLoughDerg";
 			boss.AddToWorld();
 			ParthanansKilledFarm1 = 0;
-			LoughDergBoss = 1;
-			SacrificeParthanan1 = false;
+			BossIsUP = true;
 		}
 	}
 }
@@ -609,9 +946,13 @@ namespace DOL.AI.Brain
 			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
+		public static bool BossIsUP2 = false;
 		public static int ParthanansKilledFarm2 = 0; // Connacht
 		public static bool SacrificeParthanan2 = false;
 		public static int ConnachtBoss = 0;
+		public static List<GameNPC> MinParthAround2 = new List<GameNPC>();
+		public static bool ParthansCanDie2 = false;
+
 		public static int MobsToKillConnacht = 60;
 		public static int m_mobstokillconnacht
 		{
@@ -623,7 +964,23 @@ namespace DOL.AI.Brain
 			if (ParthanansKilledFarm2 >= MobsToKillConnacht)
 			{
 				SacrificeParthanan2 = true;
-				SpawnBigOne();
+				if (SacrificeParthanan2)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht" && !MinParthAround2.Contains(npc))
+							MinParthAround2.Add(npc);
+					}
+					if (MinParthAround2.Count >= 5)
+						SpawnBigOne();
+					if (MinParthAround2.Count >= 5)
+						ParthansCanDie2 = true;
+				}
+			}
+			if (SacrificeParthanan2 && MinParthAround2.Count == 0 && BossIsUP2)
+			{
+				SacrificeParthanan2 = false;
+				ConnachtBoss = 1;
 			}
 			base.Think();
 		}
@@ -643,8 +1000,7 @@ namespace DOL.AI.Brain
 			boss.PackageID = "ParthananBossConnacht";
 			boss.AddToWorld();
 			ParthanansKilledFarm2 = 0;
-			ConnachtBoss = 1;
-			SacrificeParthanan2 = false;
+			BossIsUP2 = true;
 		}
 	}
 }
@@ -690,9 +1046,13 @@ namespace DOL.AI.Brain
 			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
+		public static bool BossIsUP2b = false;
 		public static int ParthanansKilledFarm2b = 0; // Connacht
 		public static bool SacrificeParthanan2b = false;
 		public static int Connacht2Boss = 0;
+		public static List<GameNPC> MinParthAround2b = new List<GameNPC>();
+		public static bool ParthansCanDie2b = false;
+
 		public static int MobsToKillConnacht2 = 60;
 		public static int m_mobstokillconnacht2
 		{
@@ -704,7 +1064,23 @@ namespace DOL.AI.Brain
 			if (ParthanansKilledFarm2b >= MobsToKillConnacht2)
 			{
 				SacrificeParthanan2b = true;
-				SpawnBigOne();
+				if(SacrificeParthanan2b)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is ParthananBrain && npc.PackageID == "ParthananConnacht2" && !MinParthAround2b.Contains(npc))
+							MinParthAround2b.Add(npc);
+					}
+					if (MinParthAround2b.Count >= 5)
+						SpawnBigOne();
+					if (MinParthAround2b.Count >= 5)
+						ParthansCanDie2b = true;
+				}
+			}
+			if (SacrificeParthanan2b && MinParthAround2b.Count == 0 && BossIsUP2b)
+			{
+				SacrificeParthanan2b = false;
+				Connacht2Boss = 1;
 			}
 			base.Think();
 		}
@@ -724,8 +1100,7 @@ namespace DOL.AI.Brain
 			boss.PackageID = "ParthananBossConnacht2";
 			boss.AddToWorld();
 			ParthanansKilledFarm2b = 0;
-			Connacht2Boss = 1;
-			SacrificeParthanan2b = false;
+			BossIsUP2b = true;
 		}
 	}
 }
@@ -770,10 +1145,13 @@ namespace DOL.AI.Brain
 			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
-
+		public static bool BossIsUP3 = false;
 		public static int ParthanansKilledFarm3 = 0; // Lough Gur
 		public static bool SacrificeParthanan3 = false;
 		public static int LoughGurBoss = 0;
+		public static List<GameNPC> MinParthAround3 = new List<GameNPC>();
+		public static bool ParthansCanDie3 = false;
+
 		public static int MobsToKillLoughGur = 60;
 		public static int m_mobstokillloughgur
 		{
@@ -785,8 +1163,24 @@ namespace DOL.AI.Brain
 			if(ParthanansKilledFarm3 >= MobsToKillLoughGur)
             {
 				SacrificeParthanan3 = true;
-				SpawnBigOne();
-            }
+				if(SacrificeParthanan3)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur" && !MinParthAround3.Contains(npc))
+							MinParthAround3.Add(npc);
+					}
+					if (MinParthAround3.Count >= 5)
+						SpawnBigOne();
+					if (MinParthAround3.Count >= 5)
+						ParthansCanDie3 = true;
+				}
+			}
+			if (SacrificeParthanan3 && MinParthAround3.Count == 0 && BossIsUP3)
+			{
+				SacrificeParthanan3 = false;
+				LoughGurBoss = 1;
+			}
 			base.Think();
 		}
 		public void SpawnBigOne()
@@ -804,9 +1198,8 @@ namespace DOL.AI.Brain
 			boss.CurrentRegion = Body.CurrentRegion;
 			boss.PackageID = "ParthananBossLoughGur";
 			boss.AddToWorld();
-			LoughGurBoss = 1;
 			ParthanansKilledFarm3 = 0;
-			SacrificeParthanan3 = false;
+			BossIsUP3 = true;
 		}
 	}
 }
@@ -852,9 +1245,13 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1000;
 		}
 
+		public static bool BossIsUP3b = false;
 		public static int ParthanansKilledFarm3b = 0; // Lough Gur
 		public static bool SacrificeParthanan3b = false;
 		public static int LoughGur2Boss = 0;
+		public static List<GameNPC> MinParthAround3b = new List<GameNPC>();
+		public static bool ParthansCanDie3b = false;
+
 		public static int MobsToKillLoughGur2 = 60;
 		public static int m_mobstokillloughgur2
 		{
@@ -866,7 +1263,23 @@ namespace DOL.AI.Brain
 			if (ParthanansKilledFarm3b >= MobsToKillLoughGur2)
 			{
 				SacrificeParthanan3b = true;
-				SpawnBigOne();
+				if(SacrificeParthanan3b)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is ParthananBrain && npc.PackageID == "ParthananLoughGur2" && !MinParthAround3b.Contains(npc))
+							MinParthAround3b.Add(npc);
+					}
+					if (MinParthAround3b.Count >= 5)
+						SpawnBigOne();
+					if (MinParthAround3b.Count >= 5)
+						ParthansCanDie3b = true;
+				}
+			}
+			if (SacrificeParthanan3b && MinParthAround3b.Count == 0 && BossIsUP3b)
+			{
+				SacrificeParthanan3b = false;
+				LoughGur2Boss = 1;
 			}
 			base.Think();
 		}
@@ -885,9 +1298,8 @@ namespace DOL.AI.Brain
 			boss.CurrentRegion = Body.CurrentRegion;
 			boss.PackageID = "ParthananBossLoughGur2";
 			boss.AddToWorld();
-			LoughGur2Boss = 1;
 			ParthanansKilledFarm3b = 0;
-			SacrificeParthanan3b = false;
+			BossIsUP3b = true;
 		}
 	}
 }
