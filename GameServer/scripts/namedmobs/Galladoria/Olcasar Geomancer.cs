@@ -309,7 +309,7 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && RandomTarget2 != null)
             {
-                GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+                GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
                 if (RandomTarget2 != null && RandomTarget2.IsAlive)
                 {
                     Body.TargetObject = RandomTarget2;
