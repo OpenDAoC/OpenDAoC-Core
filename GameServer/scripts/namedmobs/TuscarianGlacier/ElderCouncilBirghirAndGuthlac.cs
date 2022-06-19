@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
                         RandomTarget = Target; //randomly picked target is now RandomTarget
                         if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView && RandomTarget != null && RandomTarget.IsAlive)
                         {
-                            GamePlayer oldTarget = (GamePlayer)Body.TargetObject; //old target
+                            GameLiving oldTarget = Body.TargetObject as GameLiving; //old target
                             Body.TargetObject = RandomTarget; //set target to randomly picked
                             Body.TurnTo(RandomTarget);
                             switch (Util.Random(1, 2)) //pick one of 2 spells to cast
@@ -229,11 +229,14 @@ namespace DOL.AI.Brain
             {
                 if (message1 == false)
                 {
-                    GamePlayer player = Body.TargetObject as GamePlayer;
-                    if (player != null && player.IsAlive)
+                    if (Body.TargetObject is GamePlayer && Body.TargetObject != null)
                     {
-                        BroadcastMessage(String.Format(Body.Name + " Impossible! An ugly "+player.CharacterClass.Name+" there? How could this be? Guthlac, we must defend our Queen and King!"));
-                        message1 = true;
+                        GamePlayer player = Body.TargetObject as GamePlayer;
+                        if (player != null && player.IsAlive)
+                        {
+                            BroadcastMessage(String.Format(Body.Name + " Impossible! An ugly " + player.CharacterClass.Name + " there? How could this be? Guthlac, we must defend our Queen and King!"));
+                            message1 = true;
+                        }
                     }
                 }
                 if (IsTargetPicked == false)
@@ -547,7 +550,7 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && RandomTarget2 != null)
             {
-                GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+                GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
                 if (RandomTarget2 != null && RandomTarget2.IsAlive)
                 {
                     Body.TargetObject = RandomTarget2;

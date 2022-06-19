@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
 						RandomTarget = Target; //randomly picked target is now RandomTarget
 						if (RandomTarget != null && RandomTarget.IsAlive)
 						{
-							GamePlayer oldTarget = (GamePlayer)Body.TargetObject; //old target
+							GameLiving oldTarget = Body.TargetObject as GameLiving; //old target
 							Body.TargetObject = RandomTarget; //set target to randomly picked
 							Body.TurnTo(RandomTarget);
 							switch (Util.Random(1, 2)) //pick one of 2 spells to cast

@@ -292,7 +292,7 @@ namespace DOL.AI.Brain
                 {
                     if (player.IsAlive && player.IsWithinRadius(FrostPoint, 300))
                     {
-                        GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+                        GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
                         Body.TargetObject = player;//set target to randomly picked
                         switch (Util.Random(1, 2))
                         {
@@ -389,14 +389,17 @@ namespace DOL.AI.Brain
                 }
                 if(Body.TargetObject != null)
                 {
-                    GamePlayer player = Body.TargetObject as GamePlayer;
-                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                    if (Body.TargetObject is GamePlayer)
                     {
-                        RemoveFromAggroList(player);
-                    }
-                    if(player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
-                    {
-                        RemoveFromAggroList(player);
+                        GamePlayer player = Body.TargetObject as GamePlayer;
+                        if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                        {
+                            RemoveFromAggroList(player);
+                        }
+                        if (player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+                        {
+                            RemoveFromAggroList(player);
+                        }
                     }
                     if (KingTuscar.KingTuscarCount == 1)
                     {
