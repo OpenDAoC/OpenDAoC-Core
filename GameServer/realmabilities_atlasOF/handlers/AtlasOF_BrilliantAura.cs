@@ -49,6 +49,11 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         foreach (GamePlayer target in targets)
         {
             new StatBuffECSEffect(new ECSGameEffectInitParams(target, 30000, 1, m_handler));
+            foreach (GamePlayer pl in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                pl.Out.SendSpellEffectAnimation(target,target,4317,20000,false,1);
+                pl.Out.SendSpellEffectAnimation(target,target,5208,20000,false,1);
+            }
         }
 
         DisableSkill(living);
@@ -58,8 +63,8 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
     {
         m_dbspell = new DBSpell();
         m_dbspell.Name = "Brilliant Aura of Deflection";
-        m_dbspell.Icon = 4259;
-        m_dbspell.ClientEffect = 4259;
+        m_dbspell.Icon = 7149;
+        m_dbspell.ClientEffect = 7009;
         m_dbspell.Damage = 0;
         m_dbspell.DamageType = 0;
         m_dbspell.Target = "Realm";

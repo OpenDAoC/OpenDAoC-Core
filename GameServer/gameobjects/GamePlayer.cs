@@ -9945,6 +9945,12 @@ namespace DOL.GS
                                                             return;
                                                         }
                                                     }
+                                                    
+                                                    if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                    {
+                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        return;
+                                                    }
 
                                                     Stealth(false);
 

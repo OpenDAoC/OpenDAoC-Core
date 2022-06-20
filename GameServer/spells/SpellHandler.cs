@@ -2574,7 +2574,7 @@ namespace DOL.GS.Spells
 							break;
 						}
 
-						GameNPC petBody = target as GameNPC;
+						var petBody = target as GameNPC;
 						// check target
 						if (petBody != null && Caster.IsWithinRadius(petBody, Spell.Range))
 						{
@@ -2586,10 +2586,28 @@ namespace DOL.GS.Spells
 						//check controllednpc if target isn't pet (our pet)
 						if (list.Count < 1 && Caster.ControlledBrain != null)
 						{
-							petBody = Caster.ControlledBrain.Body;
-							if (petBody != null && Caster.IsWithinRadius(petBody, Spell.Range))
+							if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
 							{
-								list.Add(petBody);
+								foreach (var pet in player.GetNPCsInRadius((ushort) Spell.Range))
+								{
+									if (pet is CommanderPet commander && commander.Owner == player)
+									{
+										list.Add(commander);
+									}
+									else if (pet is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
+									{
+										if (!Spell.IsHealing)
+											list.Add(subpet);
+									}
+								}
+							}
+							else
+							{
+								petBody = Caster.ControlledBrain.Body;
+								if (petBody != null && Caster.IsWithinRadius(petBody, Spell.Range))
+								{
+									list.Add(petBody);
+								}
 							}
 						}
 
@@ -4616,7 +4634,8 @@ namespace DOL.GS.Spells
 
 			if (this is DoTSpellHandler dot)
             {
-				criticalchance = dot.GetCriticalChance();
+				criticalchance = 0; //atlas - DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly
+				cdamage = 0;
             }
             else
             {

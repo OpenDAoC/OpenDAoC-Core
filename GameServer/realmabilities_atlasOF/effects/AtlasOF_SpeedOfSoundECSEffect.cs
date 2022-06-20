@@ -44,7 +44,7 @@ namespace DOL.GS.Effects
 
         public override ushort Icon
         {
-            get { return 3020; }
+            get { return 4249; }
         }
 
         public override string Name
