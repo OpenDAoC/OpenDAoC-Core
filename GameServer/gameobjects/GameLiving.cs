@@ -4202,7 +4202,8 @@ namespace DOL.GS
 			if (this is GamePlayer player)
 				player.Stealth(false);
 
-			TryCancelMovementSpeedBuffs(true);
+			if(ad != null && ad.Damage > 0)
+				TryCancelMovementSpeedBuffs(true);
 
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
@@ -4491,8 +4492,10 @@ namespace DOL.GS
             if (effectListComponent == null || ad == null)
                 return false;
 
-            // Cancel movement speed buffs when attacked
-			bool effectRemoved = TryCancelMovementSpeedBuffs(false);
+			bool effectRemoved = false;
+            // Cancel movement speed buffs when attacked only if damaged
+			if(ad != null & ad.Damage > 0)
+				effectRemoved = TryCancelMovementSpeedBuffs(false);
 
 			
 
