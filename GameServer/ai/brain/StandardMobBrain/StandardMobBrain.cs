@@ -822,12 +822,14 @@ namespace DOL.AI.Brain
                     RemoveFromAggroList(l);
                     Body.attackComponent.RemoveAttacker(l);
                 }
+
+                if (maxAggroObject == null)
+                {
+                    m_aggroTable.Clear();
+                }
             }
 
-            if (maxAggroObject == null)
-            {
-                m_aggroTable.Clear();
-            }
+            
 
             return maxAggroObject;
         }
