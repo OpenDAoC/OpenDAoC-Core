@@ -9945,6 +9945,12 @@ namespace DOL.GS
                                                             return;
                                                         }
                                                     }
+                                                    
+                                                    if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                    {
+                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        return;
+                                                    }
 
                                                     Stealth(false);
 
@@ -10023,18 +10029,18 @@ namespace DOL.GS
                                 {
                                     Out.SendMessage("In your state you can't discharge any object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
-                                else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
-                                {
-                                    if ((CurrentRegion.Time - itemdelay) < itemreuse)
-                                    {
-                                        Out.SendMessage("You must wait " + (itemreuse - (CurrentRegion.Time - itemdelay)) / 1000 + " more second before discharge " + useItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    }
-                                    else
-                                    {
-                                        Out.SendMessage("You must wait " + (delay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    }
-                                    return;
-                                }
+                                // else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
+                                // {
+                                //     if ((CurrentRegion.Time - itemdelay) < itemreuse)
+                                //     {
+                                //         Out.SendMessage("You must wait " + (itemreuse - (CurrentRegion.Time - itemdelay)) / 1000 + " more second before discharge " + useItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                //     }
+                                //     else
+                                //     {
+                                //         Out.SendMessage("You must wait " + (delay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                //     }
+                                //     return;
+                                // }
                                 else
                                 {
                                     if (type == 1) //use1
