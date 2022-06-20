@@ -86,12 +86,12 @@ namespace DOL.GS.RealmAbilities
             if (caster == null)
                 return 0;
             
-            double damage = caster.AttackWeapon.DPS_AF * caster.AttackWeapon.SPD_ABS * .1 * .1;
+            // double damage = caster.AttackWeapon.DPS_AF * caster.AttackWeapon.SPD_ABS * .1 * .1;
             switch (Level)
             {
-                case 1: return damage * .1;
-                case 2: return damage * .2;
-                case 3: return damage * .3;
+                case 1: return 1.10;
+                case 2: return 1.20;
+                case 3: return 1.30;
             }
 
             return 0;
