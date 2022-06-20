@@ -2596,7 +2596,8 @@ namespace DOL.GS.Spells
 									}
 									else if (pet is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
 									{
-										list.Add(subpet);
+										if (!Spell.IsHealing)
+											list.Add(subpet);
 									}
 								}
 							}
