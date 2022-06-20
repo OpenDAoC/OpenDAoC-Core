@@ -4634,7 +4634,8 @@ namespace DOL.GS.Spells
 
 			if (this is DoTSpellHandler dot)
             {
-				criticalchance = dot.GetCriticalChance();
+				criticalchance = 0; //atlas - DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly
+				cdamage = 0;
             }
             else
             {

@@ -19,6 +19,7 @@
 using System;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -30,8 +31,31 @@ namespace DOL.GS.Spells
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
 		public override eBuffBonusCategory BonusCategory2 { get { return eBuffBonusCategory.Debuff; } }
 
-		// constructor
-		public DualStatDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+			var debuffs = target.effectListComponent.GetSpellEffects()
+								.Where(x => x.SpellHandler is DualStatDebuff);
+
+			foreach (var debuff in debuffs)
+			{
+				var debuffSpell = debuff.SpellHandler as DualStatDebuff;
+
+				if (debuffSpell.Property1 == this.Property1 && debuffSpell.Property2 == this.Property2 && debuffSpell.Spell.Value >= Spell.Value)
+				{
+					// Old Spell is Better than new one
+					SendSpellResistAnimation(target);
+					this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+					MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+					// Prevent Adding.
+					return;
+				}
+			}
+
+			base.ApplyEffectOnTarget(target, effectiveness);
+		}
+
+        // constructor
+        public DualStatDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>

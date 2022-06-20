@@ -30,9 +30,12 @@ namespace DOL.GS.Spells
 	/// </summary>
 	[SpellHandler("SpeedDecrease")]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
-	{       
+	{
+		private bool crit = false;
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
+			if (crit)
+				initParams.Effectiveness *= 2; //critical hit effectiveness needs to be set after duration is calculated to prevent double duration
 			new StatDebuffECSEffect(initParams);
 		}
 
@@ -53,15 +56,42 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			/*
+
+			//check for existing effect
+			var debuffs = target.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff);
+
+			foreach (var debuff in debuffs)
+			{
+				if (debuff.SpellHandler.Spell.Value >= Spell.Value)
+				{
+					// Old Spell is Better than new one
+					SendSpellResistAnimation(target);
+					this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+					MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+					// Prevent Adding.
+					return;
+				}
+			}
+
 			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
 			{
-				if (Util.Chance(Caster.SpellCriticalChance))
+				int criticalchance = this.Caster.DotCriticalChance;
+
+				int randNum = Util.CryptoNextInt(1, 100); //grab our random number
+				int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
+
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 				{
-					effectiveness *= 2;
-					if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for 100% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					spellCaster.Out.SendMessage($"debuff crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 				}
-			}*/
+
+				if (critCap > randNum)
+				{
+					//effectiveness *= 2;
+					crit = true;
+					if(Caster is GamePlayer c) c.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				}
+			}
 			
 			base.ApplyEffectOnTarget(target, effectiveness);
 		}
