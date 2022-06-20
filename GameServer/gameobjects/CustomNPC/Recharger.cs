@@ -237,6 +237,7 @@ public class Recharger : GameNPC
 
         foreach (var inventoryItem in player.Inventory.AllItems)
         {
+            if (!CanBeRecharged(inventoryItem)) continue;
             Recharge(inventoryItem);
             player.Out.SendInventoryItemsUpdate(new[] {inventoryItem});
         }
