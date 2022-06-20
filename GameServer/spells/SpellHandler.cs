@@ -2054,6 +2054,36 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
+		/// Special use case for when Amnesia isued used against the caster
+		/// </summary>
+		public virtual void AmnesiaInterruptCasting()
+		{
+			//castState = eCastState.Interrupted;
+			if (m_interrupted || !IsCasting)
+				return;
+			
+			if(m_caster is GamePlayer p && p.castingComponent != null)
+            {
+				p.castingComponent.spellHandler = null;
+				//p.castingComponent.queuedSpellHandler = null;
+            }
+
+			if (m_castTimer != null)
+			{
+				m_castTimer.Stop();
+				m_castTimer = null;
+
+				// if (m_caster is GamePlayer)
+				// {
+				// 	((GamePlayer)m_caster).ClearSpellQueue();
+				// }
+			}
+			//castState = eCastState.Interrupted;
+			m_startReuseTimer = false;
+			OnAfterSpellCastSequence();
+		}
+
+		/// <summary>
 		/// Casts a spell after the CastTime delay
 		/// </summary>
 		protected class DelayedCastTimer : GameTimer
@@ -3244,7 +3274,7 @@ namespace DOL.GS.Spells
 			if (!HasPositiveEffect)
 			{
 				SendEffectAnimation(target, 0, false, 1);
-				if(Spell.SpellType == (byte)eSpellType.Amnesia) return;
+				// if(Spell.SpellType == (byte)eSpellType.Amnesia) return;
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;
