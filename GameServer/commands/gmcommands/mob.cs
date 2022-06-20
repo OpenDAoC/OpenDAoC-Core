@@ -1191,7 +1191,7 @@ namespace DOL.GS.Commands
 					targetMob.attackComponent.AddAttacker(client.Player);
 					targetMob.AddXPGainer(client.Player, targetMob.Health);
 					targetMob.Die(client.Player);
-					targetMob.XPGainers.Clear();
+					//targetMob.XPGainers.Clear();
 					client.Out.SendMessage("Mob '" + targetMob.Name + "' killed", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 			}
