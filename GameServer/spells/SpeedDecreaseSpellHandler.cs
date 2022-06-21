@@ -58,20 +58,20 @@ namespace DOL.GS.Spells
 
 
 			//check for existing effect
-			var debuffs = target.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff);
+			// var debuffs = target.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff);
 
-			foreach (var debuff in debuffs)
-			{
-				if (debuff.SpellHandler.Spell.Value >= Spell.Value)
-				{
-					// Old Spell is Better than new one
-					SendSpellResistAnimation(target);
-					this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
-					MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
-					// Prevent Adding.
-					return;
-				}
-			}
+			// foreach (var debuff in debuffs)
+			// {
+			// 	if (debuff.SpellHandler.Spell.Value >= Spell.Value)
+			// 	{
+			// 		// Old Spell is Better than new one
+			// 		SendSpellResistAnimation(target);
+			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+			// 		// Prevent Adding.
+			// 		return;
+			// 	}
+			// }
 
 			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
 			{
