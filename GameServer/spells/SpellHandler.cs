@@ -4213,21 +4213,33 @@ namespace DOL.GS.Spells
 			{
 				speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(m_spellLine.Spec);
 			}
-			min = 1.25;
-			max = 1.25;
-
+			
+			/*
+			 * June 21st 2022 - Fen: Removing a lot of DoL code that should not be here for 1.65 calculations.
+			 *
+			 * Vanesyra lays out variance calculations here: https://www.ignboards.com/threads/melee-speed-melee-and-style-damage-or-why-pure-grothrates-are-wrong.452406879/page-3
+			 * Most importantly, variance should be .25 at its lowest, 1.0 at its max, and never exceed 1.0.
+			 *
+			 * Base DoL calculations were adding an extra 10-30% damage above 1.0, which has now been removed.
+			 */
+			min = .25;
+			max = 1;
+			
 			if (target.Level > 0)
 			{
-				min = 0.25 + (speclevel - 1) / (double)target.Level;
+				var varianceMod = (speclevel - 1) / (double) target.Level;
+				if (varianceMod > 1) varianceMod = 1;
+				min = varianceMod;
 			}
-
+			/*
 			if (speclevel - 1 > target.Level)
 			{
 				double overspecBonus = (speclevel - 1 - target.Level) * 0.005;
 				min += overspecBonus;
 				max += overspecBonus;
-			}
-
+				Console.WriteLine($"overspec bonus {overspecBonus}");
+			}*/
+			
 			// add level mod
 			if (m_caster is GamePlayer)
 			{
@@ -4359,7 +4371,8 @@ namespace DOL.GS.Spells
 				{
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
+					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
+					spellDamage *= ((manaStatValue / 2) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
