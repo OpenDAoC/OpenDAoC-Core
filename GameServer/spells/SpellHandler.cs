@@ -2632,6 +2632,28 @@ namespace DOL.GS.Spells
 					}
 					//End-- [Ganrod] Nidel: Can cast Pet spell on our Minion/Turret pet without ControlledNpc
 					break;
+				case "bdsubpet":
+					{ 
+						var player = Caster as GamePlayer;
+						if (player == null) return null;
+						var petBody = player.ControlledBrain?.Body;
+						if (petBody != null)
+						{
+							foreach (var pet in petBody.GetNPCsInRadius(modifiedRadius))
+							{
+								if (pet is not BDSubPet {Brain: IControlledBrain brain} subpet ||
+								    brain.GetPlayerOwner() != player) continue;
+								if (!Spell.IsHealing)
+									list.Add(subpet);
+							}
+
+							if (list.Count < 1)
+							{
+								player.Out.SendMessage("You don't have any subpet to cast this spell on!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							}
+						}
+					}
+					break;
 					#endregion
 					#region Enemy
 				case "enemy":
