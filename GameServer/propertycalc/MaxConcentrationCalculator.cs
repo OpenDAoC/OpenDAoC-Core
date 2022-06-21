@@ -46,14 +46,17 @@ namespace DOL.GS.PropertyCalc
 
 				int concBase = (int)((player.Level * 4) * 2.2);
 				int stat = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-				int factor = (stat > 50) ? (stat - 50) / 2 : (stat - 50);
-				int conc = (concBase + concBase * factor / 100) / 2;
+				var statConc = stat * 2.8;
+				//int factor = (stat > 50) ? (stat - 50) / 2 : (stat - 50);
+				//int conc = (concBase + concBase * factor / 100) / 2;
+				int conc = (concBase + (int)statConc) / 2;
+				//Console.WriteLine($"New conc val {conc} oldConc {(concBase + concBase * ((stat - 50) / 2) / 100) / 2}");
 				conc = (int)(player.Effectiveness * (double)conc);
 
 				if (conc < 0)
 				{
 					if (log.IsWarnEnabled)
-						log.WarnFormat(living.Name+": concentration is less than zerro (conc:{0} eff:{1:R} concBase:{2} stat:{3} factor:{4})", conc, player.Effectiveness, concBase, stat, factor);
+						log.WarnFormat(living.Name+": concentration is less than zerro (conc:{0} eff:{1:R} concBase:{2} stat:{3}})", conc, player.Effectiveness, concBase, stat);
 					conc = 0;
 				}
 
