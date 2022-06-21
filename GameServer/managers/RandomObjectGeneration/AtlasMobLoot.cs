@@ -112,11 +112,12 @@ namespace DOL.GS {
                     item.MaxCount = 1;
                     if (mob.Level < 5)
                     {
-                        loot.AddRandom(100, item, 1);
+                        chance += 50;
+                        loot.AddRandom(chance, item, 1);
                     }
                     else if (mob.Level < 10)
                         loot.AddRandom(chance + (100 - mob.Level * 10), item, 1);
-                    //50% bonus drop rate at lvl 5, down to normal chance at level 10
+                    //25% bonus drop rate at lvl 5, down to normal chance at level 10
                     else
                         loot.AddRandom(chance, item, 1);
 
