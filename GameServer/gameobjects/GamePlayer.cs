@@ -7569,6 +7569,9 @@ namespace DOL.GS
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
 
+            if (this.DuelTarget != null && source != this.DuelTarget)
+                this.DuelStop();
+            
             #region PVP DAMAGE
 
             if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
