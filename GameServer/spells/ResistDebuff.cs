@@ -78,23 +78,23 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			//check for existing effect
-			var debuffs = target.effectListComponent.GetSpellEffects()
-								.Where(x => x.SpellHandler is AbstractResistDebuff);
+			// var debuffs = target.effectListComponent.GetSpellEffects()
+			// 					.Where(x => x.SpellHandler is AbstractResistDebuff);
 
-			foreach (var debuff in debuffs)
-			{
-				var debuffSpell = debuff.SpellHandler as AbstractResistDebuff;
+			// foreach (var debuff in debuffs)
+			// {
+			// 	var debuffSpell = debuff.SpellHandler as AbstractResistDebuff;
 
-				if (debuffSpell.Property1 == this.Property1 && debuffSpell.Spell.Value >= Spell.Value)
-				{
-					// Old Spell is Better than new one
-					SendSpellResistAnimation(target);
-					this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
-					MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
-					// Prevent Adding.
-					return;
-				}
-			}
+			// 	if (debuffSpell.Property1 == this.Property1 && debuffSpell.Spell.Value >= Spell.Value)
+			// 	{
+			// 		// Old Spell is Better than new one
+			// 		SendSpellResistAnimation(target);
+			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+			// 		// Prevent Adding.
+			// 		return;
+			// 	}
+			// }
 
 
 			//TODO: correct effectiveness formula
