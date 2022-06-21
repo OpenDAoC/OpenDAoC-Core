@@ -143,7 +143,7 @@ namespace DOL.GS
 		}
 		#endregion Receive Responses
 
-		#region Repair Responses
+		#region Enchant Responses
 		/// <summary>
 		/// Responses that occur when an NPC attempts to enchant an item given to them.
 		/// </summary>
@@ -197,6 +197,7 @@ namespace DOL.GS
 			// bright
             item.Name = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.ItemLevel.Bright") + " " + item.Name;
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { item });
+            GameServer.Database.SaveObject(item);
             // Message: You give {0} {1}.
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.YouGive",
 	            GetName(0, true),
