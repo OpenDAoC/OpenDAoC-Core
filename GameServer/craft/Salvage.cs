@@ -362,7 +362,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item, bool mute = false)
 		{
-			if (player.InCombat)
+			if (player.InCombat && !player.IsSitting)
 			{
 				if (!mute)
 					player.Out.SendMessage("You can't salvage while in combat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
