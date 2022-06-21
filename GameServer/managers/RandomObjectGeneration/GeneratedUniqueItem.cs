@@ -5462,7 +5462,7 @@ namespace DOL.GS {
             //weighted so that early levels get many more weapons/armor
             if (level < 5)
             {
-                if (Util.Chance(40))
+                if (Util.Chance(45))
                     return eGenerateType.Weapon;
                 else if (Util.Chance(15))
                     return eGenerateType.Magical;
@@ -5470,7 +5470,7 @@ namespace DOL.GS {
             }
             else if (level < 10)
             {
-                if (Util.Chance(ROG_ARMOR_CHANCE * 2)) { genTypes.Add(eGenerateType.Armor); }
+                if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
                 if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
                 if (Util.Chance(ROG_WEAPON_CHANCE * 2)) { genTypes.Add(eGenerateType.Weapon); }
             }
