@@ -4290,6 +4290,7 @@ namespace DOL.GS
 		{
 			Brain?.KillFSM();
 
+			base.ProcessDeath(killer);
 			FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 			if (ControlledBrain != null)
