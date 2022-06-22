@@ -26,7 +26,7 @@ namespace DOL.GS
 					else
 						truc = ((source as GamePet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage(Name + " is immune to this form of attack!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage(Name + " is immune to this form of attack!", eChatType.CT_SpellResisted, eChatLoc.CL_ChatWindow);
 					base.TakeDamage(source, damageType, 0, 0);
 					return;
 				}
@@ -608,6 +608,20 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
+					else
+					{
+						if (Body.Model == 1)
+						{
+							foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+							{
+								if (npc.Brain is ParthananFarmController1Brain)
+								{
+									if (Body.IsWithinRadius(npc, 50))
+										Body.Die(npc);
+								}
+							}
+						}
+					}
 				}
 				#endregion
 				#region Connacht Parthnanans
@@ -652,6 +666,20 @@ namespace DOL.AI.Brain
 									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
+							}
+						}
+					}
+					else
+					{
+						if (Body.Model == 1)
+						{
+							foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+							{
+								if (npc.Brain is ParthananFarmController2Brain)
+								{
+									if (Body.IsWithinRadius(npc, 50))
+										Body.Die(npc);
+								}
 							}
 						}
 					}
@@ -703,6 +731,20 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
+					else
+					{
+						if (Body.Model == 1)
+						{
+							foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+							{
+								if (npc.Brain is ParthananFarmController2bBrain)
+								{
+									if (Body.IsWithinRadius(npc, 50))
+										Body.Die(npc);
+								}
+							}
+						}
+					}
 				}
 				#endregion
 				#region Lough Gur Parthanans
@@ -742,13 +784,28 @@ namespace DOL.AI.Brain
 						{
 							if (npc.Brain is ParthananFarmController3Brain)
 							{
+								Point3D point = new Point3D(npc.X, npc.Y, npc.Z);
 								if (!Body.IsWithinRadius(npc, 50))
-									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
+									Body.WalkTo(point, 100);
 								else
 									Body.Die(npc);
 							}
 						}
 					}
+					else
+                    {
+						if (Body.Model == 1)
+						{
+							foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+							{
+								if (npc.Brain is ParthananFarmController3Brain)
+								{
+									if (Body.IsWithinRadius(npc, 50))
+										Body.Die(npc);
+								}
+							}
+						}
+                    }
 				}
 				///
 				/////////////////////////////////////////////// 2nd farm
@@ -793,6 +850,20 @@ namespace DOL.AI.Brain
 									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
+							}
+						}
+					}
+					else
+					{
+						if (Body.Model == 1)
+						{
+							foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+							{
+								if (npc.Brain is ParthananFarmController3bBrain)
+								{
+									if (Body.IsWithinRadius(npc, 50))
+										Body.Die(npc);
+								}
 							}
 						}
 					}
@@ -1160,6 +1231,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
+			//log.Warn("MinParthAround3 = " + MinParthAround3.Count + ", SacrificeParthanan3 = " + SacrificeParthanan3 + ", BossIsUP3 = " + BossIsUP3);
 			if(ParthanansKilledFarm3 >= MobsToKillLoughGur)
             {
 				SacrificeParthanan3 = true;
