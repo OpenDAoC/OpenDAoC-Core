@@ -109,6 +109,7 @@ namespace DOL.GS
 		/// <returns>Distance to point</returns>
 		public virtual int GetDistanceTo(IPoint3D point)
 		{
+			if (point == null) return Int32.MaxValue;
 			double dx = (double) X - point.X;
 			double dy = (double) Y - point.Y;
 			double dz = (double) Z - point.Z;
