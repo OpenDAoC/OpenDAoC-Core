@@ -86,6 +86,11 @@ GMCommands.Debug.Usage:						/debug <on/off>
 GMCommands.Debug.ModeON:					Debug mode ON
 GMCommands.Debug.ModeOFF:					Debug mode OFF
 
+## /hascredit
+GMCommands.HasCredit.Description:			Checks if a player has a mob kill credit
+GMCommands.HasCredit.Usage:					/hascredit <mobname>
+
+
 # ]jump
 GMCommands.DebugJump.Description:			Teleports yourself to the specified location
 GMCommands.DebugJump.Usage:					']jump <zoneID> <locX> <locY> <locZ> <heading>' Autoused for *jump in debug mode
