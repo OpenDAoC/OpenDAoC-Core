@@ -874,7 +874,7 @@ namespace DOL.GS
 
 			var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
 
-			if (mobRequirement != null)
+			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
 			{
 				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
 
