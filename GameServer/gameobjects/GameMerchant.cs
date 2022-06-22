@@ -871,6 +871,19 @@ namespace DOL.GS
 			{
 				totalValue = number * template.Price;
 			}
+
+			var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
+
+			if (mobRequirement != null)
+			{
+				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+
+				if (!hasCredit)
+				{
+					player.Out.SendMessage($"You need to kill {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+					return;
+				}
+			}
 			
 			lock (player.Inventory)
 			{
