@@ -4406,7 +4406,7 @@ namespace DOL.GS.Spells
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
-					spellDamage *= ((manaStatValue / 2) * 0.005) + 1;
+					spellDamage *= ((manaStatValue) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
