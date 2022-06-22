@@ -880,7 +880,12 @@ namespace DOL.GS.Spells
 			{
                 if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					return false;
+					if(m_caster is NecromancerPet necropet && necropet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+					{
+						//Necro pet has Facilitate Painworking effect and isn't interrupted.
+					}
+					else
+						return false;
 				}
 			}
 
