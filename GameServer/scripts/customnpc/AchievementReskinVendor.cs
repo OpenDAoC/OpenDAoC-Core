@@ -8582,6 +8582,10 @@ public override bool WhisperReceive(GameLiving source, string str)
             price = cloakmedium;
             modelIDToAssign = 1723;
             break;
+            // $"[Mage Cloak 2] ({lowbie} {currencyName})\n");
+            // sb.Append($"[Mage Cloak 3] ({lowbie} {currencyName})\n");
+            // sb.Append($"[Embossed Cloak] ({lowbie} {currencyName})\n");
+            // sb.Append($"[Collared Cloak] ({lowbie} {currencyName})\n");
         case "collared cloak":
             if (item.Item_Type != Slot.CLOAK)
             {
@@ -8594,9 +8598,84 @@ public override bool WhisperReceive(GameLiving source, string str)
                 SendNotQualifiedMessage(player);
                 break;
             }
-
-            price = cloakcheap;
+            price = lowbie;
             modelIDToAssign = 669;
+            break;
+        case "mage cloak 2":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+            price = lowbie;
+            modelIDToAssign = 557;
+            break;
+        case "mage cloak 3":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+            price = lowbie;
+            modelIDToAssign = 144;
+            break;
+        case "embossed cloak":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+
+            if (player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < 2)
+            {
+                SendNotQualifiedMessage(player);
+                break;
+            }
+            price = lowbie;
+            modelIDToAssign = 560;
+            break;
+        case "basic cloak":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+            
+            price = freebie;
+            modelIDToAssign = 57;
+            break;
+        
+        case "hooded cloak":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+            
+            price = freebie;
+            modelIDToAssign = 96;
+            break;
+                    
+        case "bordered cloak":
+            if (item.Item_Type != Slot.CLOAK)
+            {
+                SendNotValidMessage(player);
+                break;
+            }
+            price = freebie;
+            modelIDToAssign = 92;
             break;
 
         #endregion
