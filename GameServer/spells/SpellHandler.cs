@@ -4224,6 +4224,13 @@ namespace DOL.GS.Spells
 				return;
 			}
 
+			if (m_spellLine.KeyName == GlobalSpellsLines.Mob_Spells)
+			{
+				min = .75;
+				max = 1.0;
+				return;
+			}
+
 			int speclevel = 1;
 
 			if (m_caster is GamePet)
