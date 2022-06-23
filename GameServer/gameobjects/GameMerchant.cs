@@ -880,7 +880,7 @@ namespace DOL.GS
 
 				if (!hasCredit)
 				{
-					player.Out.SendMessage($"You need to kill {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"You need to defeat {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
