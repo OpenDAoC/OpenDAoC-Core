@@ -85,6 +85,7 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is TheurgistPet theu)
 			{
+				/*
 				int hp = 1;
 				if (theu.Level < 2)
 				{
@@ -106,7 +107,24 @@ namespace DOL.GS.PropertyCalc
 					hp = (int) Math.Ceiling(hp * 1.5);
 				}
 				return hp;
+				*/
 
+				int hp = 1;
+				if (theu.Name.Contains("air"))
+				{
+					hp = 800;
+				}
+				else if (theu.Name.Contains("ice"))
+				{
+					hp = 500;
+				} else if (theu.Name.Contains("earth"))
+				{
+					hp = 350;
+				}
+				
+				hp = (int)((theu.Level / 44.0) * hp);
+				if (hp < 10) hp = 10;
+				return hp;
 			}
 			else if (living is TurretPet ani)
 			{

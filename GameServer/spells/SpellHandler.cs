@@ -880,7 +880,12 @@ namespace DOL.GS.Spells
 			{
                 if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					return false;
+					if(m_caster is NecromancerPet necropet && necropet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+					{
+						//Necro pet has Facilitate Painworking effect and isn't interrupted.
+					}
+					else
+						return false;
 				}
 			}
 
@@ -4224,6 +4229,13 @@ namespace DOL.GS.Spells
 				return;
 			}
 
+			if (m_spellLine.KeyName == GlobalSpellsLines.Mob_Spells)
+			{
+				min = .75;
+				max = 1.0;
+				return;
+			}
+
 			int speclevel = 1;
 
 			if (m_caster is GamePet)
@@ -4394,7 +4406,7 @@ namespace DOL.GS.Spells
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
-					spellDamage *= ((manaStatValue / 2) * 0.005) + 1;
+					spellDamage *= ((manaStatValue) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);

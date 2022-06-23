@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -16,11 +17,11 @@ public class PlayerDeck
     private const int BONUS_DECK_SIZE = 25;
     private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE;
 
-    private Stack<int> _cards;
+    private ConcurrentStack<int> _cards;
 
     public PlayerDeck()
     {
-        _cards = new Stack<int>();
+        _cards = new ConcurrentStack<int>();
         ResetDeck();
     }
 
@@ -83,10 +84,12 @@ public class PlayerDeck
 
     public int GetInt()
     {
-        if (_cards.Count == 0)
+        if (_cards.Count < 2)
             ResetDeck();
 
-        return _cards.Pop();
+        int output = 0;
+        _cards.TryPop(out output);
+        return output != 0 ? output : Util.Random(99);
     }
 
     public double GetPseudoDouble()
@@ -100,7 +103,9 @@ public class PlayerDeck
         //we append two ints together to simulate more accuracy on the double
         //subtract 1 to only generate values 0-99
         //useful to get outputs of 0-9999 instead of 11-100100
-        int first = _cards.Pop() - 1;
+        int first = 0;
+        _cards.TryPop(out first);
+        if (first == 0) first = Util.CryptoNextInt(99);
         int second = Util.CryptoNextInt(99); //just use a simple random for the .XX values
 
         //append our ints together
@@ -122,6 +127,6 @@ public class PlayerDeck
 
     public void LoadDeckFromJSON(string json)
     {
-        _cards = JsonConvert.DeserializeObject<Stack<int>>(json);
+        _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(json);
     }
 }
