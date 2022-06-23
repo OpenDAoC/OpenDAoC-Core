@@ -83,7 +83,7 @@ namespace DOL.GS.Scripts
                 return true;
             }
             
-            player.Out.SendMessage($"You are not eligible for any reward on {RealmName(player.Realm)} at the moment.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage($"You are not eligible for any reward on {RealmName(Realm)} at the moment.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
             
             return true;
