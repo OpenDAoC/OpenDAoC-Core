@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
             if (IsSpammingCommand(client.Player, "hardcore"))
                 return;
             
-            client.Out.SendMessage("Hardcore mode is disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("Hardcore mode is currently disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
             // if (client.Player.RealmPoints > 0)
             //     return;
