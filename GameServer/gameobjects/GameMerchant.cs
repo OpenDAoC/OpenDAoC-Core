@@ -837,6 +837,7 @@ namespace DOL.GS
 		public override string MoneyKey { get { return "dragonscales"; } }
 	}
 
+	// checks for achievement completion at realm level
 	public class GameAtlasMerchant : GameItemCurrencyMerchant
 	{
 		//Atlas Orbs itemtemplate = token_many
@@ -877,6 +878,98 @@ namespace DOL.GS
 			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
 			{
 				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+
+				if (!hasCredit)
+				{
+					player.Out.SendMessage($"You need to defeat {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+					return;
+				}
+			}
+			
+			lock (player.Inventory)
+			{
+				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					return;
+				}
+				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Merchant, template, amountToBuy);
+				//Generate the buy message
+				string message;
+				if (amountToBuy > 1)
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
+				else
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
+
+				var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+				int removed = 0;
+
+				foreach (InventoryItem item in items)
+				{
+					if (item.Id_nb != m_moneyItem.Item.Id_nb)
+						continue;
+					int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
+					player.Inventory.RemoveCountFromStack(item, remFromStack);
+					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template, remFromStack);
+					removed += remFromStack;
+					if (removed == totalValue)
+						break;
+				}
+
+				player.Out.SendInventoryItemsUpdate(items);
+				player.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+			}
+		}
+	}
+	
+	// checks for achievement completion at account level
+	public class AtlasAchievementMerchant : GameItemCurrencyMerchant
+	{
+		//Atlas Orbs itemtemplate = token_many
+		public override string MoneyKey { get { return "token_many"; } }
+
+		
+		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+		{
+			if (m_moneyItem == null || m_moneyItem.Item == null)
+				return;
+			//Get the template
+			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			if (template == null) return;
+
+			//Calculate the amout of items
+			int amountToBuy = number;
+			if (template.PackSize > 0)
+				amountToBuy *= template.PackSize;
+
+			if (amountToBuy <= 0) return;
+
+			//Calculate the value of items
+			long totalValue;
+
+			if (ServerProperties.Properties.ORBS_FIRE_SALE)
+			{
+				totalValue = 0;
+			}
+			else
+			{
+				totalValue = number * template.Price;
+			}
+
+			var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
+
+			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
+			{
+				var hasCredit = AchievementUtils.CheckAccountCredit(mobRequirement, player);
 
 				if (!hasCredit)
 				{
