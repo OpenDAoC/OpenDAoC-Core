@@ -152,8 +152,6 @@ namespace DOL.GS.Spells
 				{
 					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(m_spellLine.Spec);
 
-					Console.WriteLine($"Dot spell line {m_spellLine.KeyName} specLevel {speclevel}");
-					
 					if (target.Level > 0)
 					{
 						min = 0.25 + (speclevel - 1) / (double)target.Level;
