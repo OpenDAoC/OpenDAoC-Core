@@ -1126,7 +1126,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool InCombatInLast(int milliseconds)
 		{
-			if ((InCombatPvEInLast(milliseconds) && InCombatPvPInLast(milliseconds)) == false)
+			if ((InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds)) == false)
 			{
 				if (attackComponent.Attackers.Count > 0)
 				{
