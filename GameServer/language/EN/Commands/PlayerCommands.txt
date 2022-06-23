@@ -317,7 +317,7 @@ Scripts.Player.Guild.Help.GuildBuyBanner:		'/gc buybanner' - Spend points to buy
 Scripts.Player.Guild.Help.GuildCancel:			'/gc cancel <option> [value]' to cancel all command done before	
 Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep	
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' to decline the enter in guild	
-Scripts.Player.Guild.Help.GuildDemote:			'/gc demote <rank#> [name]' to set the rank from 0 to 10 of the player to an inferior rank	
+Scripts.Player.Guild.Help.GuildDemote:			'/gc demote [name] <rank#>' to set the rank from 0 to 10 of the player to an inferior rank	
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' puts money into the guild bank account.
 Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 1-100% <0 is off>
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' to show list of all option in guild edit	
@@ -356,7 +356,7 @@ Scripts.Player.Guild.Help.GuildList:			'/gc list' to show all guild in your real
 Scripts.Player.Guild.Help.GuildMotd:			'/gc motd <text>' to set the message of the day of the guild	
 Scripts.Player.Guild.Help.GuildNoteSelf:		'/gc noteself <note>' to set a note about your character for the guild	
 Scripts.Player.Guild.Help.GuildOMotd:			'/gc omotd <text>' to set the message of the day of the officier's guild	
-Scripts.Player.Guild.Help.GuildPromote:			'/gc promote <rank#> [name]' to promote player to a superior rank	
+Scripts.Player.Guild.Help.GuildPromote:			'/gc promote [name] <rank#>' to promote player to a superior rank	
 Scripts.Player.Guild.Help.GuildQuit:			'/gc quit' to leave the guild	
 Scripts.Player.Guild.Help.GuildRanks:			'/gc ranks' to show rank information for the guild	
 Scripts.Player.Guild.Help.GuildRemAccount:		'/gc removeaccount <accountname>' to remove every character of the account from the guild	
