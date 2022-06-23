@@ -5,11 +5,12 @@
  */
 
 using System;
-
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 using log4net;
 
 #region LoginEvent
@@ -64,7 +65,7 @@ namespace DOL.GS.GameEvents
             player.RealmLevel = 0;
             player.Experience = 0;
 
-            player.CraftingSkills.Clear();
+            player.MoveToBind();
 
             player.RemoveAllSpecs();
             player.RemoveAllSpellLines();
@@ -83,6 +84,9 @@ namespace DOL.GS.GameEvents
             player.Out.SendUpdatePlayer();
             player.Out.SendUpdatePlayerSkills();
             player.Out.SendUpdatePoints();
+            
+            BattlegroundEventLoot.GenerateArmor(player);
+            BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)player.CharacterClass.ID, player);
 
             var reset = new DOLCharactersXCustomParam
             {
@@ -94,6 +98,7 @@ namespace DOL.GS.GameEvents
             
             player.Out.SendMessage("Thanks for playing Beta! Your level has been reset to 1, we wish you good luck with your adventure.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
+        
     }
 }
 #endregion
