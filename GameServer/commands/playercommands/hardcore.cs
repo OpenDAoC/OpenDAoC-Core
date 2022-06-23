@@ -16,55 +16,56 @@ using log4net;
 using log4net.Repository.Hierarchy;
 
 #region LoginEvent
-namespace DOL.GS.GameEvents
-{
-    public class HardCoreLogin
-    {
-        
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        
-        [GameServerStartedEvent]
-        public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
-        {
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
-        }
-
-        /// <summary>
-        /// Event handler fired when server is stopped
-        /// </summary>
-        [GameServerStoppedEvent]
-        public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
-        {
-            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
-        }
-        
-        /// <summary>
-        /// Event handler fired when players enters the game
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender"></param>
-        /// <param name="arguments"></param>
-        private static void HCPlayerEntered(DOLEvent e, object sender, EventArgs arguments)
-        {
-            GamePlayer player = sender as GamePlayer;
-            if (player == null) return;
-            if (!player.HCFlag) return;
-            
-            if (player.DeathCount > 0 && player.HCFlag)
-            {
-                DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
-                if (cha != null)
-                {
-                    Log.Warn("[HARDCORE] player " + player.Name + " has " + player.DeathCount + " deaths and has been removed from the database.");
-                    GameServer.Database.DeleteObject(cha);
-                    player.Client.Out.SendPlayerQuit(true);
-                }
-            }
-    
-        }
-    }
-}
+// namespace DOL.GS.GameEvents
+// {
+//     public class HardCoreLogin
+//     {
+//         
+//         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+//         
+//         [GameServerStartedEvent]
+//         public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+//         {
+//             GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
+//         }
+//
+//         /// <summary>
+//         /// Event handler fired when server is stopped
+//         /// </summary>
+//         [GameServerStoppedEvent]
+//         public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
+//         {
+//             GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
+//         }
+//         
+//         /// <summary>
+//         /// Event handler fired when players enters the game
+//         /// </summary>
+//         /// <param name="e"></param>
+//         /// <param name="sender"></param>
+//         /// <param name="arguments"></param>
+//         private static void HCPlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+//         {
+//             GamePlayer player = sender as GamePlayer;
+//             if (player == null) return;
+//             if (!player.HCFlag) return;
+//             
+//             if (player.DeathCount > 0 && player.HCFlag)
+//             {
+//                 DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
+//                 if (cha != null)
+//                 {
+//                     Log.Warn("[HARDCORE] player " + player.Name + " has " + player.DeathCount + " deaths and has been removed from the database.");
+//                     GameServer.Database.DeleteObject(cha);
+//                     player.Client.Out.SendPlayerQuit(true);
+//                 }
+//             }
+//     
+//         }
+//     }
+// }
 #endregion
+
 #region command
 namespace DOL.GS.Commands
 {
@@ -79,30 +80,32 @@ namespace DOL.GS.Commands
         {
             if (IsSpammingCommand(client.Player, "hardcore"))
                 return;
-
-            if (client.Player.RealmPoints > 0)
-                return;
             
-            if (client.Player.HCFlag){
-                client.Out.SendMessage("Your Hardcore flag is ON! Death will result in the character deletion.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
+            client.Out.SendMessage("Hardcore mode is disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-            if (args.Length < 2)
-            {
-                DisplaySyntax(client);
-                return;
-            }
-
-            if (args[1].ToLower().Equals("on"))
-            {
-                if (client.Player.Level != 1)
-                {
-                    client.Out.SendMessage("You must be level 1 to activate Hardcore.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    return;
-                }
-                client.Out.SendCustomDialog("Do you really want to activate the Hardcore flag? Death will be permanent.", new CustomDialogResponse(HardcoreResponseHandler));
-            }
+            // if (client.Player.RealmPoints > 0)
+            //     return;
+            //
+            // if (client.Player.HCFlag){
+            //     client.Out.SendMessage("Your Hardcore flag is ON! Death will result in the character deletion.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            //     return;
+            // }
+            //
+            // if (args.Length < 2)
+            // {
+            //     DisplaySyntax(client);
+            //     return;
+            // }
+            //
+            // if (args[1].ToLower().Equals("on"))
+            // {
+            //     if (client.Player.Level != 1)
+            //     {
+            //         client.Out.SendMessage("You must be level 1 to activate Hardcore.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            //         return;
+            //     }
+            //     client.Out.SendCustomDialog("Do you really want to activate the Hardcore flag? Death will be permanent.", new CustomDialogResponse(HardcoreResponseHandler));
+            // }
         }
         
         protected virtual void HardcoreResponseHandler(GamePlayer player, byte response)
@@ -228,6 +231,7 @@ namespace DOL.GS.Commands
     
 }
 #endregion
+
 #region title
 namespace DOL.GS.PlayerTitles
 {
