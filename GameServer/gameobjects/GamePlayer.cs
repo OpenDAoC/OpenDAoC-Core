@@ -8499,7 +8499,7 @@ namespace DOL.GS
             }
 
             // then buffs drop messages
-            base.Die(killer);
+            base.ProcessDeath(killer);
 
             lock (m_LockObject)
             {
