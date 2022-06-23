@@ -4338,7 +4338,7 @@ namespace DOL.GS
 
 				// deal out exp and realm points based on server rules
 				GameServer.ServerRules.OnNPCKilled(this, killer);
-				base.Die(killer);
+				base.ProcessDeath(killer);
 			}
 			
 			lock (this.XPGainers.SyncRoot)
