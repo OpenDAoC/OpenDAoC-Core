@@ -4239,36 +4239,43 @@ namespace DOL.GS
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
+				
+				HybridDictionary XPGainerList = new HybridDictionary();
 				lock (m_xpGainers.SyncRoot)
 				{
-					if (m_xpGainers.Keys.Count == 0) return false;
-					foreach (DictionaryEntry de in m_xpGainers)
+					foreach (DictionaryEntry gainer in m_xpGainers)
 					{
-						GameObject obj = (GameObject)de.Key;
-						if (obj is GamePlayer)
-						{
-							//If a gameplayer with privlevel > 1 attacked the
-							//mob, then the players won't gain xp ...
-							if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
-								return false;
-							//If a player to which we are gray killed up we
-							//aren't worth anything either
-							if (((GamePlayer)obj).IsObjectGreyCon(this))
-								return false;
-						}
-						else
-						{
-							//If object is no gameplayer and realm is != none
-							//then it means that a npc has hit this living and
-							//it is not worth any xp ...
-							//if(obj.Realm != (byte)eRealm.None)
-							//If grey to at least one living then no exp
-							if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
-								return false;
-						}
+						XPGainerList.Add(gainer.Key, gainer.Value);
 					}
-					return true;
 				}
+				if (XPGainerList.Keys.Count == 0) return false;
+				foreach (DictionaryEntry de in XPGainerList)
+				{
+					GameObject obj = (GameObject)de.Key;
+					if (obj is GamePlayer)
+					{
+						//If a gameplayer with privlevel > 1 attacked the
+						//mob, then the players won't gain xp ...
+						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
+							return false;
+						//If a player to which we are gray killed up we
+						//aren't worth anything either
+						if (((GamePlayer)obj).IsObjectGreyCon(this))
+							return false;
+					}
+					else
+					{
+						//If object is no gameplayer and realm is != none
+						//then it means that a npc has hit this living and
+						//it is not worth any xp ...
+						//if(obj.Realm != (byte)eRealm.None)
+						//If grey to at least one living then no exp
+						if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
+							return false;
+					}
+				}
+				return true;
+				
 			}
 			set
 			{
