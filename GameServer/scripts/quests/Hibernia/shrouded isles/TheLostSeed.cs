@@ -778,7 +778,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "Feairna-Athar":
 							if (quest.Step == 4)
 							{
-								Jandros.SayTo(player, "Follow the path Morth towards Cothrom Gorge. " +
+								Jandros.SayTo(player, "Follow the path North towards Cothrom Gorge. " +
 								                      "Once in the forest, head West. There, you will find the Treant Feairna-Athar. Kill him and bring me proof.");
 								quest.Step = 5;
 							}
