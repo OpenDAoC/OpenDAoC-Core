@@ -1055,7 +1055,6 @@ namespace DOL.GS
 			mes += ",\"" + player.Guild.Motd + '\"'; // Guild Motd
 			mes += ",\"" + player.Guild.Omotd + '\"'; // Guild oMotd
 			player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
-			player.Guild.SaveIntoDatabase();
 		}
 
 		public void UpdateGuildWindow()
@@ -1076,7 +1075,7 @@ namespace DOL.GS
 			{
 				player.Guild.UpdateMember(player);
 			}*/
-			
+			if(guildPlayers[0] != null) guildPlayers[0].Guild.SaveIntoDatabase();
 		}
 	}
 }
