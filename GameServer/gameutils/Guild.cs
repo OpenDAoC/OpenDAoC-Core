@@ -853,7 +853,7 @@ namespace DOL.GS
 		public void SendMessageToGuildMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
 		{
 			List<GamePlayer> guildPlayers = new List<GamePlayer>();
-			lock (m_onlineGuildPlayers)
+			lock (m_memberListLock)
 			{
 				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
@@ -1060,7 +1060,7 @@ namespace DOL.GS
 		public void UpdateGuildWindow()
 		{
 			List<GamePlayer> guildPlayers = new List<GamePlayer>();
-			lock (m_onlineGuildPlayers)
+			lock (m_memberListLock)
 			{
 				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
