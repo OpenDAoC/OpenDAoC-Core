@@ -1491,6 +1491,8 @@ namespace DOL.GS
 
 		#region UpdateChangedSlots
 
+		public object InventorySlotLock = new object();
+
 		/// <summary>
 		/// Updates changed slots, inventory is already locked.
 		/// Inventory must be locked before invoking this method.
@@ -1503,37 +1505,41 @@ namespace DOL.GS
 			bool appearanceUpdated = false;
 			bool encumberanceUpdated = false;
 
-			foreach (eInventorySlot updatedSlot in m_changedSlots)
+			lock (InventorySlotLock)
 			{
-				// update appearance if one of changed slots is visible
-				if (!appearanceUpdated)
+				foreach (eInventorySlot updatedSlot in m_changedSlots)
 				{
-					foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
+					// update appearance if one of changed slots is visible
+					if (!appearanceUpdated)
 					{
-						if (updatedSlot != visibleSlot)
-							continue;
+						foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
+						{
+							if (updatedSlot != visibleSlot)
+								continue;
 
-						m_player.UpdateEquipmentAppearance();
-						appearanceUpdated = true;
-						break;
+							m_player.UpdateEquipmentAppearance();
+							appearanceUpdated = true;
+							break;
+						}
 					}
-				}
 
-				// update stats if equipped item has changed
-				if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing && updatedSlot >= eInventorySlot.RightHandWeapon)
-				{
-					m_player.Out.SendUpdateWeaponAndArmorStats();
-					statsUpdated = true;
-				}
+					// update stats if equipped item has changed
+					if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing &&
+					    updatedSlot >= eInventorySlot.RightHandWeapon)
+					{
+						m_player.Out.SendUpdateWeaponAndArmorStats();
+						statsUpdated = true;
+					}
 
-				// update encumberance if changed slot was in inventory or equipped
-				if (!encumberanceUpdated &&
-				    //					(updatedSlot >=(int)eInventorySlot.FirstVault && updatedSlot<=(int)eInventorySlot.LastVault) ||
-				    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
-				    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
-				{
-					m_player.UpdateEncumberance();
-					encumberanceUpdated = true;
+					// update encumberance if changed slot was in inventory or equipped
+					if (!encumberanceUpdated &&
+					    //					(updatedSlot >=(int)eInventorySlot.FirstVault && updatedSlot<=(int)eInventorySlot.LastVault) ||
+					    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
+					    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
+					{
+						m_player.UpdateEncumberance();
+						encumberanceUpdated = true;
+					}
 				}
 			}
 
