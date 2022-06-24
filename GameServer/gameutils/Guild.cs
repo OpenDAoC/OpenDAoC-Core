@@ -19,6 +19,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.Language;
@@ -850,17 +852,21 @@ namespace DOL.GS
 		/// <param name="loc">message location</param>
 		public void SendMessageToGuildMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
 		{
+			List<GamePlayer> guildPlayers = new List<GamePlayer>();
 			lock (m_onlineGuildPlayers)
 			{
-				foreach (GamePlayer pl in m_onlineGuildPlayers.Values)
-				{
-					if (!HasRank(pl, Guild.eRank.GcHear))
-					{
-						continue;
-					}
-					pl.Out.SendMessage(msg, type, loc);
-				}
+				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
+			
+			foreach (GamePlayer pl in guildPlayers)
+			{
+				if (!HasRank(pl, Guild.eRank.GcHear))
+				{
+					continue;
+				}
+				pl.Out.SendMessage(msg, type, loc);
+			}
+			
 		}
 
 		/// <summary>
@@ -1053,13 +1059,17 @@ namespace DOL.GS
 
 		public void UpdateGuildWindow()
 		{
+			List<GamePlayer> guildPlayers = new List<GamePlayer>();
 			lock (m_onlineGuildPlayers)
 			{
-				foreach (GamePlayer player in m_onlineGuildPlayers.Values)
-				{
-					player.Guild.UpdateMember(player);
-				}
+				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
+			
+			foreach (GamePlayer player in guildPlayers)
+			{
+				player.Guild.UpdateMember(player);
+			}
+			
 		}
 	}
 }
