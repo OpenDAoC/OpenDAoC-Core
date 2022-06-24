@@ -34,12 +34,14 @@ public class ReaperService
         //make a list to store all the dead livings to remove afterwards
         List<GameLiving> DeadLivings = new List<GameLiving>();
         
+        
         if (KillsToAdd != null && KillsToAdd.Count > 0)
         {
             lock (NewKillLock)
             {
                 lock (KillerDictLock)
                 {
+                    Diagnostics.StartPerfCounter(ServiceName+"-KillsToAdd");
                     foreach (var newDeath in KillsToAdd)
                     {
                         if (!KilledToKillerDict.Keys.Contains(newDeath.Key))
@@ -47,13 +49,16 @@ public class ReaperService
                         KillsToAdd.Remove(newDeath.Key);
                     }
                     KillsToAdd.Clear();
+                    Diagnostics.StopPerfCounter(ServiceName+"-KillsToAdd");
                 }
             }
         }
         
         
+        
         if (KilledToKillerDict.Keys.Count > 0)
         {
+            Diagnostics.StartPerfCounter(ServiceName+"-ProcessKills");
             //kill everything on multiple threads
             Parallel.ForEach(KilledToKillerDict, killed =>
             {
@@ -61,6 +66,8 @@ public class ReaperService
                 DeadLivings.Add(killed.Key);
             });
 
+            Diagnostics.StopPerfCounter(ServiceName+"-ProcessKills");
+            Diagnostics.StartPerfCounter(ServiceName+"-RemoveKills");
             lock (KillerDictLock)
             {
                 //remove everything we killed
@@ -70,7 +77,9 @@ public class ReaperService
                         KilledToKillerDict.Remove(deadLiving);
                 }
             }
+            Diagnostics.StopPerfCounter(ServiceName+"-RemoveKills");
         }
+        
         
 
         Diagnostics.StopPerfCounter(ServiceName);
