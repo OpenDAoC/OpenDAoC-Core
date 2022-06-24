@@ -65,6 +65,10 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
+
+			// disable the quest for launch
+			return;
+			
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
 

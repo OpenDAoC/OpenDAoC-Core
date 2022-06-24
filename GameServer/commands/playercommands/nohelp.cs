@@ -23,39 +23,42 @@ namespace DOL.GS.Commands
 		{
 			if (IsSpammingCommand(client.Player, "nohelp"))
 				return;
-
-			if (!client.Player.NoHelp)
-			{
-				if (client.Player.RealmPoints > 0)
-				{
-					client.Player.Out.SendMessage("You have already received help and cannot join this challenge.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				const string customKey = "grouped_char";
-				var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
-					.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-
-				DateTime d1 = new DateTime(2022, 1, 4);
-				DateTime d2 = new DateTime(2022, 1, 7, 21,0,0);
-
-				if (client.Player.Level == 1 || hasGrouped == null && client.Player.CreationDate >= d1 && client.Player.CreationDate <= d2)
-				{
-					client.Out.SendCustomDialog("Do you want to follow the path of Solitude?",
-						new CustomDialogResponse(NoHelpInitiate));
-				}
-				else
-				{
-					client.Player.Out.SendMessage("You have already received help and cannot join this challenge.",
-						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
-			}
+			
+			client.Out.SendMessage("Solo mode is currently disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 
-			if (client.Player.NoHelp)
-				client.Out.SendCustomDialog(
-					"Feeling lonely? Abandoning this path will void all your efforts in this challenge.",
-					new CustomDialogResponse(NoHelpAbandon));
+			// if (!client.Player.NoHelp)
+			// {
+			// 	if (client.Player.RealmPoints > 0)
+			// 	{
+			// 		client.Player.Out.SendMessage("You have already received help and cannot join this challenge.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			// 		return;
+			// 	}
+			//
+			// 	const string customKey = "grouped_char";
+			// 	var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+			// 		.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+			//
+			// 	DateTime d1 = new DateTime(2022, 1, 4);
+			// 	DateTime d2 = new DateTime(2022, 1, 7, 21,0,0);
+			//
+			// 	if (client.Player.Level == 1 || hasGrouped == null && client.Player.CreationDate >= d1 && client.Player.CreationDate <= d2)
+			// 	{
+			// 		client.Out.SendCustomDialog("Do you want to follow the path of Solitude?",
+			// 			new CustomDialogResponse(NoHelpInitiate));
+			// 	}
+			// 	else
+			// 	{
+			// 		client.Player.Out.SendMessage("You have already received help and cannot join this challenge.",
+			// 			eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			// 	}
+			// }
+			//
+			//
+			// if (client.Player.NoHelp)
+			// 	client.Out.SendCustomDialog(
+			// 		"Feeling lonely? Abandoning this path will void all your efforts in this challenge.",
+			// 		new CustomDialogResponse(NoHelpAbandon));
 		}
 
 		protected virtual void NoHelpInitiate(GamePlayer player, byte response)

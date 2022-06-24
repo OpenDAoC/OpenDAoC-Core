@@ -199,4 +199,19 @@ public class AchievementUtils
 
         return hasCredit;
     }
+    
+    public static bool CheckAccountCredit(string mob, GamePlayer player)
+    {
+        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+            .IsEqualTo(player.Client.Account.ObjectId));
+        var hasCredit = false;
+        
+        var achievementMob = Regex.Replace(mob, @"\s+", "").ToLower();
+        
+        var credit = achievements.Where(achievement => achievement.AchievementName.ToLower() == $"{achievementMob}-credit");
+
+        if (credit.Any()) hasCredit = true;
+
+        return hasCredit;
+    }
 }

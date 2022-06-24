@@ -11,12 +11,19 @@ public class ReaperService
 {
     private const string ServiceName = "Reaper Service";
     
-    private static Dictionary<GameLiving, GameObject> KilledToKillerDict; //primary key is living that needs to die, value is the object that killed it
+    //primary key is living that needs to die, value is the object that killed it.
+    //THIS SHOULD ONLY BE OPERATED ON BY THE TICK() FUNCTION! This keeps it thread safe
+    private static Dictionary<GameLiving, GameObject> KilledToKillerDict;
+    
+    //this is our buffer of things to add to our list before Reaping
+    //this can be added to by any number of threads
+    private static Dictionary<GameLiving, GameObject> KillsToAdd;
 
     static ReaperService()
     {
         EntityManager.AddService(typeof(ReaperService));
         KilledToKillerDict = new Dictionary<GameLiving, GameObject>();
+        KillsToAdd = new Dictionary<GameLiving, GameObject>();
     }
 
     public static void Tick(long tick)
@@ -26,7 +33,24 @@ public class ReaperService
         //cant modify the KilledToKillerDict while iteration is in progress, so
         //make a list to store all the dead livings to remove afterwards
         List<GameLiving> DeadLivings = new List<GameLiving>();
-
+        
+        if (KillsToAdd != null && KillsToAdd.Count > 0)
+        {
+            lock (NewKillLock)
+            {
+                lock (KillerDictLock)
+                {
+                    foreach (var newDeath in KillsToAdd)
+                    {
+                        if (!KilledToKillerDict.Keys.Contains(newDeath.Key))
+                            KilledToKillerDict.Add(newDeath.Key, newDeath.Value);
+                        KillsToAdd.Remove(newDeath.Key);
+                    }
+                    KillsToAdd.Clear();
+                }
+            }
+        }
+        
         
         if (KilledToKillerDict.Keys.Count > 0)
         {
@@ -53,13 +77,14 @@ public class ReaperService
     }
 
     public static object KillerDictLock = new object();
+    public static object NewKillLock = new object();
 
     public static void KillLiving(GameLiving living, GameObject killer)
     {
-        lock (KillerDictLock)
+        lock (NewKillLock)
         {
-            if(KilledToKillerDict != null && living != null && !KilledToKillerDict.ContainsKey(living))
-                KilledToKillerDict.Add(living, killer);
+            if(KillsToAdd != null && living != null && !KillsToAdd.ContainsKey(living))
+                KillsToAdd.Add(living, killer);
         }
     }
 }

@@ -4202,8 +4202,8 @@ namespace DOL.GS.Spells
 		{
 			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
 			{
-				min = 1.0;
-				max = 1.25;
+				min = .75;
+				max = 1.0;
 				return;
 			}
 
@@ -4211,14 +4211,14 @@ namespace DOL.GS.Spells
 			{
 				if (UseMinVariance)
 				{
-					min = 1.50;
+					min = 1.0;
 				}
 				else
 				{
-					min = 1.00;
+					min = .75;
 				}
 
-				max = 1.50;
+				max = 1.0;
 
 				return;
 			}

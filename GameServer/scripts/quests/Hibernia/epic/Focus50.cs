@@ -52,7 +52,7 @@ namespace DOL.GS.Quests.Hibernia
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Ainrebh = null; // Start NPC
-		private static GameNPC GreenMaw = null; // Mob to kill
+		private static GreenMaw GreenMaw = null; // Mob to kill
 
 		private static ItemTemplate GreenMaw_key = null; //ball of flame
 		private static ItemTemplate RangerEpicBoots = null; //Mist Shrouded Boots 
@@ -152,7 +152,7 @@ namespace DOL.GS.Quests.Hibernia
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 488306 && npc.Y == 521440)
 					{
-						GreenMaw = npc;
+						GreenMaw = npc as GreenMaw;
 						break;
 					}
 
@@ -160,7 +160,7 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find GreenMaw , creating it ...");
-				GreenMaw = new GameNPC();
+				GreenMaw = new GreenMaw();
 				GreenMaw.Model = 146;
 				GreenMaw.Name = "Green Maw";
 				GreenMaw.GuildName = "";

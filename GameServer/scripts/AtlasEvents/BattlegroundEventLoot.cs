@@ -15,7 +15,7 @@ namespace DOL.GS.Scripts
     public class BattlegroundEventLoot : GameNPC
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-		private int freeLootLevelOffset = 2;
+		private static int freeLootLevelOffset = 2;
 		private int playerRewardOffset = 6;
         public override bool AddToWorld()
         {
@@ -85,33 +85,14 @@ namespace DOL.GS.Scripts
 					player.Out.SendMessage("Sorry " + player.Name + ", I don't have enough items left to give you another set.\n\n Go fight for your Realm to get more equipment!", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					return false;
 				}
-				
-				List<eInventorySlot> bodySlots = new List<eInventorySlot>();
-					bodySlots.Add(eInventorySlot.ArmsArmor);
-					bodySlots.Add(eInventorySlot.FeetArmor);
-					bodySlots.Add(eInventorySlot.HandsArmor);
-					bodySlots.Add(eInventorySlot.HeadArmor);
-					bodySlots.Add(eInventorySlot.LegsArmor);
-					bodySlots.Add(eInventorySlot.TorsoArmor);
 
-					foreach (eInventorySlot islot in bodySlots) {
-						GeneratedUniqueItem item = null;
-						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), armorType, islot);
-						item.AllowAdd = true;
-						item.Color = (int)color;
-						item.IsTradable = false;
-						item.Price = 1;
-						GameServer.Database.AddObject(item);
-						InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
+				GenerateArmor(player);
 
-					DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
-					charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
-					charFreeEventEquip.KeyName = customKey;
-					charFreeEventEquip.Value = "1";
-					GameServer.Database.AddObject(charFreeEventEquip);
+				DOLCharactersXCustomParam charFreeEventEquip = new DOLCharactersXCustomParam();
+				charFreeEventEquip.DOLCharactersObjectId = player.ObjectId;
+				charFreeEventEquip.KeyName = customKey;
+				charFreeEventEquip.Value = "1";
+				GameServer.Database.AddObject(charFreeEventEquip);
 			} 
 			else if (str.Equals("weapons")) {
 				
@@ -248,7 +229,7 @@ namespace DOL.GS.Scripts
 			return true;
 		}
 
-        private eObjectType GetArmorType(eRealm realm, eCharacterClass charClass, byte level) {
+        private static eObjectType GetArmorType(eRealm realm, eCharacterClass charClass, byte level) {
             switch (realm) {
 				case eRealm.Albion:
 					return GeneratedUniqueItem.GetAlbionArmorType(charClass, level);
@@ -272,7 +253,7 @@ namespace DOL.GS.Scripts
             log.Info("\t BG Loot NPC initialized: true");
         }
 
-		private void GenerateWeapon(GameLiving player, eCharacterClass charClass, eObjectType type, eInventorySlot invSlot)
+		public static void GenerateWeapon(GameLiving player, eCharacterClass charClass, eObjectType type, eInventorySlot invSlot)
         {
 			//need to figure out shield size
 			eColor color = eColor.White;
@@ -362,7 +343,7 @@ namespace DOL.GS.Scripts
 			}	
 		}
 
-        private int GetShieldSizeFromClass(eCharacterClass charClass)
+        public static int GetShieldSizeFromClass(eCharacterClass charClass)
         {
 			//shield size is based off of damage type
 			//1 = small shield
@@ -403,7 +384,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private List<eObjectType> GenerateWeaponsForClass(eCharacterClass charClass, GameLiving player) {
+        public static List<eObjectType> GenerateWeaponsForClass(eCharacterClass charClass, GameLiving player) {
 			List<eObjectType> weapons = new List<eObjectType>();
 
             switch (charClass) {
@@ -620,5 +601,46 @@ namespace DOL.GS.Scripts
 
 			return weapons;
 		}
+
+        public static void GenerateArmor(GamePlayer player)
+        {
+	        var color = eColor.White;
+	        var realm = player.Realm;
+	        var charclass = (eCharacterClass)player.CharacterClass.ID;
+	        var armorType = GetArmorType(realm, charclass, player.Level);
+
+	        switch (realm) {
+		        case eRealm.Hibernia:
+			        color = eColor.Green_4;
+			        break;
+		        case eRealm.Albion:
+			        color = eColor.Red_4;
+			        break;
+		        case eRealm.Midgard:
+			        color = eColor.Blue_4;
+			        break;
+	        }
+	        
+	        List<eInventorySlot> bodySlots = new List<eInventorySlot>();
+	        bodySlots.Add(eInventorySlot.ArmsArmor);
+	        bodySlots.Add(eInventorySlot.FeetArmor);
+	        bodySlots.Add(eInventorySlot.HandsArmor);
+	        bodySlots.Add(eInventorySlot.HeadArmor);
+	        bodySlots.Add(eInventorySlot.LegsArmor);
+	        bodySlots.Add(eInventorySlot.TorsoArmor);
+
+	        foreach (eInventorySlot islot in bodySlots) {
+		        GeneratedUniqueItem item = null;
+		        item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), armorType, islot);
+		        item.AllowAdd = true;
+		        item.Color = (int)color;
+		        item.IsTradable = false;
+		        item.Price = 1;
+		        GameServer.Database.AddObject(item);
+		        InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+		        player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+		        //player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	        }
+        }
     }
 }

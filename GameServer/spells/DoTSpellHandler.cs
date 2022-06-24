@@ -80,12 +80,12 @@ namespace DOL.GS.Spells
 			return Spell.SpellType == compare.Spell.SpellType && Spell.DamageType == compare.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}
 
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
-		{
-			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && 
-				   SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine &&
-				   ((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.SpellHandler.Spell.Damage + dot.CriticalDamage);
-		}
+		// public override bool IsOverwritable(ECSGameSpellEffect compare)
+		// {
+		// 	return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && 
+		// 		   SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine &&
+		// 		   ((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.SpellHandler.Spell.Damage + dot.CriticalDamage);
+		// }
 
 		/// <summary>
 		/// Calculates damage to target with resist chance and stores it in ad
@@ -126,21 +126,27 @@ namespace DOL.GS.Spells
 		public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
 		{
 			int speclevel = 1;
-			min = 1.13;
-			max = 1.13;
+			min = 1;
+			max = 1;
 
 			if (m_caster is GamePlayer)
 			{
 				if (m_spellLine.KeyName == GlobalSpellsLines.Mundane_Poisons)
 				{
 					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(Specs.Envenom);
-					min = 1.25;
-					max = 1.25;
+					min = 1;
+					max = 1;
 
 					if (target.Level > 0)
 					{
 						min = 0.25 + (speclevel - 1) / (double)target.Level;
 					}
+				}
+
+				if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
+				{
+					min = .75;
+					max = 1;
 				}
 				else
 				{
@@ -148,7 +154,7 @@ namespace DOL.GS.Spells
 
 					if (target.Level > 0)
 					{
-						min = 0.13 + (speclevel - 1) / (double)target.Level;
+						min = 0.25 + (speclevel - 1) / (double)target.Level;
 					}
 				}
 			}
@@ -210,34 +216,34 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			//((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.Spell.Damage + dot.CriticalDamage)
-			var dots = target.effectListComponent.GetSpellEffects(eEffect.DamageOverTime)
-												 .Where(x => x.SpellHandler?.Spell != null)
-												 .Select(x => x.SpellHandler)
-												 .Where(x => x.Spell.SpellType == Spell.SpellType &&
-															 x.Spell.DamageType == Spell.DamageType &&
-															 x.SpellLine.IsBaseLine == SpellLine.IsBaseLine);
+			// var dots = target.effectListComponent.GetSpellEffects(eEffect.DamageOverTime)
+			// 									 .Where(x => x.SpellHandler?.Spell != null)
+			// 									 .Select(x => x.SpellHandler)
+			// 									 .Where(x => x.Spell.SpellType == Spell.SpellType &&
+			// 												 x.Spell.DamageType == Spell.DamageType &&
+			// 												 x.SpellLine.IsBaseLine == SpellLine.IsBaseLine);
 
-			foreach (var dotEffect in dots)
-            {
-				var dotHandler = (dotEffect as DoTSpellHandler);
+			// foreach (var dotEffect in dots)
+            // {
+			// 	var dotHandler = (dotEffect as DoTSpellHandler);
 
-				if (dotHandler == null)
-					continue;
+			// 	if (dotHandler == null)
+			// 		continue;
 
-				// Check for Overwriting.
-				if (dotEffect.Spell.Damage + dotHandler.CriticalDamage >= Spell.Damage + CriticalDamage)
-				{
-					// Old Spell is Better than new one
+			// 	// Check for Overwriting.
+			// 	if (dotEffect.Spell.Damage + dotHandler.CriticalDamage >= Spell.Damage + CriticalDamage)
+			// 	{
+			// 		// Old Spell is Better than new one
 
-					//apply first hit, then quit
-					OnDirectEffect(target, effectiveness);
+			// 		//apply first hit, then quit
+			// 		OnDirectEffect(target, effectiveness);
 					
-					this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
-					MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
-					// Prevent Adding.
-					return;
-				}
-			}
+			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+			// 		// Prevent Adding.
+			// 		return;
+			// 	}
+			// }
 
 			base.ApplyEffectOnTarget(target, effectiveness);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
