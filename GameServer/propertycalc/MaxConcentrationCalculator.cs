@@ -46,7 +46,7 @@ namespace DOL.GS.PropertyCalc
 
 				int concBase = (int)((player.Level * 4) * 2.2);
 				int stat = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-				var statConc = stat * 2.8;
+				var statConc = (stat-50) * 2.8;
 				//int factor = (stat > 50) ? (stat - 50) / 2 : (stat - 50);
 				//int conc = (concBase + concBase * factor / 100) / 2;
 				int conc = (concBase + (int)statConc) / 2;
