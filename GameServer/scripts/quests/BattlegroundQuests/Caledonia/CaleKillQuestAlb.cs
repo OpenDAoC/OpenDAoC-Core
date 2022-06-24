@@ -14,7 +14,7 @@ using log4net;
 
 namespace DOL.GS.DailyQuest.Albion
 {
-	public class PlayerKillQuestAlb : Quests.DailyQuest
+	public class CaleKillQuestAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -22,10 +22,10 @@ namespace DOL.GS.DailyQuest.Albion
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string questTitle = "[Daily] Fen's New Friends";
-		private const int minimumLevel = 40;
-		private const int maximumLevel = 50;
+		private const int minimumLevel = 34;
+		private const int maximumLevel = 39;
 
-		private static GameNPC ReyAlb = null; // Start NPC
+		private static GameNPC PazzAlb = null; // Start NPC
 
 		private int PlayersKilled = 0;
 		private const int MAX_KILLED = 10;
@@ -34,19 +34,19 @@ namespace DOL.GS.DailyQuest.Albion
 		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
-		public PlayerKillQuestAlb() : base()
+		public CaleKillQuestAlb() : base()
 		{
 		}
 
-		public PlayerKillQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public CaleKillQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public PlayerKillQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public CaleKillQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public PlayerKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaleKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -67,40 +67,40 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 1 && npc.X == 583867 && npc.Y == 477355)
+					if (npc.CurrentRegionID == 250 && npc.X == 37283 && npc.Y == 51881)
 					{
-						ReyAlb = npc;
+						PazzAlb = npc;
 						break;
 					}
 				}
 
-			if (ReyAlb == null)
+			if (PazzAlb == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Rey , creating it ...");
-				ReyAlb = new GameNPC();
-				ReyAlb.Model = 26;
-				ReyAlb.Name = "Rey";
-				ReyAlb.GuildName = "Bone Collector";
-				ReyAlb.Realm = eRealm.Albion;
+					log.Warn("Could not find PazzAlb, creating it ...");
+				PazzAlb = new GameNPC();
+				PazzAlb.Model = 26;
+				PazzAlb.Name = "Pazz";
+				PazzAlb.GuildName = "Bone Collector";
+				PazzAlb.Realm = eRealm.Albion;
 				//Druim Ligen Location
-				ReyAlb.CurrentRegionID = 1;
-				ReyAlb.Size = 60;
-				ReyAlb.Level = 59;
-				ReyAlb.X = 583867;
-				ReyAlb.Y = 477355;
-				ReyAlb.Z = 2600;
-				ReyAlb.Heading = 3054;
-				ReyAlb.Flags |= GameNPC.eFlags.PEACE;
-				ReyAlb.AddToWorld();
+				PazzAlb.CurrentRegionID = 250;
+				PazzAlb.Size = 40;
+				PazzAlb.Level = 59;
+				PazzAlb.X = 37283;
+				PazzAlb.Y = 51881;
+				PazzAlb.Z = 3944;
+				PazzAlb.Heading = 4090;
+				PazzAlb.Flags |= GameNPC.eFlags.PEACE;
+				PazzAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					ReyAlb.SaveIntoDatabase();
+					PazzAlb.SaveIntoDatabase();
 				}
 			}
 
@@ -115,11 +115,11 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.AddHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(PazzAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(PazzAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we bring to Dean the possibility to give this quest to players */
-			ReyAlb.AddQuestToGive(typeof (PlayerKillQuestAlb));
+			PazzAlb.AddQuestToGive(typeof (CaleKillQuestAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -129,17 +129,17 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (ReyAlb == null)
+			if (PazzAlb == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(ReyAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.RemoveHandler(ReyAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(PazzAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(PazzAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
 
 			/* Now we remove to Dean the possibility to give this quest to players */
-			ReyAlb.RemoveQuestToGive(typeof (PlayerKillQuestAlb));
+			PazzAlb.RemoveQuestToGive(typeof (CaleKillQuestAlb));
 		}
 
 		protected static void TalkToRey(DOLEvent e, object sender, EventArgs args)
@@ -149,11 +149,11 @@ namespace DOL.GS.DailyQuest.Albion
 			if (player == null)
 				return;
 
-			if(ReyAlb.CanGiveQuest(typeof (PlayerKillQuestAlb), player)  <= 0)
+			if(PazzAlb.CanGiveQuest(typeof (CaleKillQuestAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			PlayerKillQuestAlb quest = player.IsDoingQuest(typeof (PlayerKillQuestAlb)) as PlayerKillQuestAlb;
+			CaleKillQuestAlb quest = player.IsDoingQuest(typeof (CaleKillQuestAlb)) as CaleKillQuestAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -162,16 +162,16 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							ReyAlb.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
+							PazzAlb.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 							break;
 						case 2:
-							ReyAlb.SayTo(player, "Hello " + player.Name + ", did you [hit your quota]?");
+							PazzAlb.SayTo(player, "Hello " + player.Name + ", did you [hit your quota]?");
 							break;
 					}
 				}
 				else
 				{
-					ReyAlb.SayTo(player, "Hello "+ player.Name +", I am Rey. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
+					PazzAlb.SayTo(player, "Hello "+ player.Name +", I am Pazz. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
 					                     "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
 					                     "\nCan you lend me a hand? A leg could probably work too.");
 				}
@@ -185,7 +185,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "help me out":
-							player.Out.SendQuestSubscribeCommand(ReyAlb, QuestMgr.GetIDForQuestType(typeof(PlayerKillQuestAlb)), "Will you undertake " + questTitle + "?");
+							player.Out.SendQuestSubscribeCommand(PazzAlb, QuestMgr.GetIDForQuestType(typeof(CaleKillQuestAlb)), "Will you undertake " + questTitle + "?");
 							break;
 					}
 				}
@@ -211,7 +211,7 @@ namespace DOL.GS.DailyQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (PlayerKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (CaleKillQuestAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -229,7 +229,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			PlayerKillQuestAlb quest = player.IsDoingQuest(typeof (PlayerKillQuestAlb)) as PlayerKillQuestAlb;
+			CaleKillQuestAlb quest = player.IsDoingQuest(typeof (CaleKillQuestAlb)) as CaleKillQuestAlb;
 
 			if (quest == null)
 				return;
@@ -251,7 +251,7 @@ namespace DOL.GS.DailyQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(PlayerKillQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(CaleKillQuestAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -262,10 +262,10 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(ReyAlb.CanGiveQuest(typeof (PlayerKillQuestAlb), player)  <= 0)
+			if(PazzAlb.CanGiveQuest(typeof (CaleKillQuestAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (PlayerKillQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (CaleKillQuestAlb)) != null)
 				return;
 
 			if (response == 0x00)
@@ -275,10 +275,10 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!ReyAlb.GiveQuest(typeof (PlayerKillQuestAlb), player, 1))
+				if (!PazzAlb.GiveQuest(typeof (CaleKillQuestAlb), player, 1))
 					return;
 
-				ReyAlb.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
+				PazzAlb.SayTo(player, "You will find suitable players in the battlegrounds.");
 
 			}
 		}
@@ -297,9 +297,9 @@ namespace DOL.GS.DailyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the frontiers or in battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLED +")";
+						return "You will find suitable players in Caledonia. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Rey in Castle Sauvage for your Reward.";
+						return "Return to Pazz in the Caledonia Portal Keep for your Reward.";
 				}
 				return base.Description;
 			}
@@ -309,7 +309,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(PlayerKillQuestAlb)) == null)
+			if (player?.IsDoingQuest(typeof(CaleKillQuestAlb)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -333,7 +333,7 @@ namespace DOL.GS.DailyQuest.Albion
 		
 		public override string QuestPropertyKey
 		{
-			get => "PlayerKillQuestAlb";
+			get => "CaleKillQuestAlb";
 			set { ; }
 		}
 		
@@ -357,7 +357,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 250);
+			AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);
 			PlayersKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
