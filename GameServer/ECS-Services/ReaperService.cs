@@ -58,7 +58,8 @@ public class ReaperService
         
         if (KilledToKillerDict.Keys.Count > 0)
         {
-            Diagnostics.StartPerfCounter(ServiceName+"-ProcessKills");
+            int killsToProcess = KilledToKillerDict.Keys.Count;
+            Diagnostics.StartPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
             //kill everything on multiple threads
             Parallel.ForEach(KilledToKillerDict, killed =>
             {
@@ -66,7 +67,7 @@ public class ReaperService
                 DeadLivings.Add(killed.Key);
             });
 
-            Diagnostics.StopPerfCounter(ServiceName+"-ProcessKills");
+            Diagnostics.StopPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
             Diagnostics.StartPerfCounter(ServiceName+"-RemoveKills");
             lock (KillerDictLock)
             {
