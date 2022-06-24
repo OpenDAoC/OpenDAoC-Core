@@ -1248,12 +1248,14 @@ namespace DOL.GS
 			}
 		}
 
+		public object InventorySlotLock = new object();
 		/// <summary>
 		/// Updates changed slots, inventory is already locked
 		/// </summary>
 		protected virtual void UpdateChangedSlots()
 		{
-			m_changedSlots.Clear();
+			lock(InventorySlotLock)
+				m_changedSlots.Clear();
 		}
 
 		#endregion

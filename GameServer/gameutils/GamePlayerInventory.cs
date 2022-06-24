@@ -1491,8 +1491,6 @@ namespace DOL.GS
 
 		#region UpdateChangedSlots
 
-		public object InventorySlotLock = new object();
-
 		/// <summary>
 		/// Updates changed slots, inventory is already locked.
 		/// Inventory must be locked before invoking this method.
