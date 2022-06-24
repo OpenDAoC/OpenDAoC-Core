@@ -6,49 +6,49 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.API;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.DailyQuest.Albion
 {
-	public class ThidKillQuestMid : Quests.DailyQuest
+	public class ThidKeepCaptureAlb : Quests.DailyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const string questTitle = "[Daily] Fen's New Friends";
+		private const string questTitle = "[Daily] Thidranki Conquerer";
 		private const int minimumLevel = 20;
 		private const int maximumLevel = 24;
 
-		private static GameNPC PazzMid = null; // Start NPC
-
-		private int PlayersKilled = 0;
-		private const int MAX_KILLED = 10;
+		// Capture Goal
+		private const int MAX_CAPTURED = 1;
 		
-		// prevent grey killing
-		private const int MIN_PLAYER_CON = -3;
+		private static GameNPC PazzAlb = null; // Start NPC
+
+		private int _isCaptured = 0;
 
 		// Constructors
-		public ThidKillQuestMid() : base()
+		public ThidKeepCaptureAlb() : base()
 		{
 		}
 
-		public ThidKillQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public ThidKeepCaptureAlb(GamePlayer questingPlayer) : base(questingPlayer, 1)
 		{
 		}
 
-		public ThidKillQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public ThidKeepCaptureAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public ThidKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ThidKeepCaptureAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
-
+		
 		public override int Level
 		{
 			get
@@ -57,49 +57,49 @@ namespace DOL.GS.DailyQuest.Hibernia
 				return minimumLevel;
 			}
 		}
-		
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
+			
 
 			#region defineNPCs
-
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 252 && npc.X == 54259 && npc.Y == 25234)
+					if (npc.CurrentRegionID == 252 && npc.X == 37283 && npc.Y == 51881)
 					{
-						PazzMid = npc;
+						PazzAlb = npc;
 						break;
 					}
 				}
 
-			if (PazzMid == null)
+			if (PazzAlb == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find PazzMid, creating it ...");
-				PazzMid = new GameNPC();
-				PazzMid.Model = 26;
-				PazzMid.Name = "Pazz";
-				PazzMid.GuildName = "Bone Collector";
-				PazzMid.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				PazzMid.CurrentRegionID = 252;
-				PazzMid.Size = 40;
-				PazzMid.Level = 59;
-				PazzMid.X = 54259;
-				PazzMid.Y = 25234;
-				PazzMid.Z = 4319;
-				PazzMid.Heading = 1744;
-				PazzMid.Flags |= GameNPC.eFlags.PEACE;
-				PazzMid.AddToWorld();
+					log.Warn("Could not find PazzAlb, creating it ...");
+				PazzAlb = new GameNPC();
+				PazzAlb.Model = 26;
+				PazzAlb.Name = "Pazz";
+				PazzAlb.GuildName = "Bone Collector";
+				PazzAlb.Realm = eRealm.Albion;
+				//Druim Ligen Location
+				PazzAlb.CurrentRegionID = 252;
+				PazzAlb.Size = 40;
+				PazzAlb.Level = 59;
+				PazzAlb.X = 37283;
+				PazzAlb.Y = 51881;
+				PazzAlb.Z = 3944;
+				PazzAlb.Heading = 4090;
+				PazzAlb.Flags |= GameNPC.eFlags.PEACE;
+				PazzAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					PazzMid.SaveIntoDatabase();
+					PazzAlb.SaveIntoDatabase();
 				}
 			}
 
@@ -114,11 +114,11 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(PazzMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.AddHandler(PazzMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(PazzAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.AddHandler(PazzAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			PazzMid.AddQuestToGive(typeof (ThidKillQuestMid));
+			/* Now we bring to Haszan the possibility to give this quest to players */
+			PazzAlb.AddQuestToGive(typeof (ThidKeepCaptureAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -128,31 +128,31 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (PazzMid == null)
+			if (PazzAlb == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(PazzMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.RemoveHandler(PazzMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(PazzAlb, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
+			GameEventMgr.RemoveHandler(PazzAlb, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			PazzMid.RemoveQuestToGive(typeof (ThidKillQuestMid));
+			/* Now we remove to Haszan the possibility to give this quest to players */
+			PazzAlb.RemoveQuestToGive(typeof (ThidKeepCaptureAlb));
 		}
 
-		private static void TalkToRey(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHaszan(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(PazzMid.CanGiveQuest(typeof (ThidKillQuestMid), player)  <= 0)
+			if(PazzAlb.CanGiveQuest(typeof (ThidKeepCaptureAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			ThidKillQuestMid quest = player.IsDoingQuest(typeof (ThidKillQuestMid)) as ThidKillQuestMid;
+			ThidKeepCaptureAlb quest = player.IsDoingQuest(typeof (ThidKeepCaptureAlb)) as ThidKeepCaptureAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -161,18 +161,17 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							PazzMid.SayTo(player, "You will find suitable players in the battlegrounds.");
+							PazzAlb.SayTo(player, "Find an enemy occupied keep and capture it. If you succeed come back for your reward.");
 							break;
 						case 2:
-							PazzMid.SayTo(player, "Hello " + player.Name + ", did you [hit your quota]?");
+							PazzAlb.SayTo(player, "Hello " + player.Name + ", did you [capture] a keep?");
 							break;
 					}
 				}
 				else
 				{
-					PazzMid.SayTo(player, "Hello "+ player.Name +", I am Pazz. My master, Fen, has tasked me with collecting bones for a project he's working on. "+
-					                       "I'm way behind quota and could use some... subcontractors to [help me out]. \n\n"+
-					                       "\nCan you lend me a hand? A leg could probably work too.");
+					PazzAlb.SayTo(player, "Look "+ player.Name +", I'll cut to the chase. " +
+					                      "We need the central keep back because I left some... contraband in the basement that I'd really like to reclaim before its found by the guards. Can you [help a skeleton] out?");
 				}
 			}
 				// The player whispered to the NPC
@@ -183,8 +182,8 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "help me out":
-							player.Out.SendQuestSubscribeCommand(PazzMid, QuestMgr.GetIDForQuestType(typeof(ThidKillQuestMid)), "Will you undertake " + questTitle + "?");
+						case "help a skeleton":
+							player.Out.SendQuestSubscribeCommand(PazzAlb, QuestMgr.GetIDForQuestType(typeof(ThidKeepCaptureAlb)), "Will you help Pazz with "+questTitle+"");
 							break;
 					}
 				}
@@ -192,10 +191,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "hit your quota":
+						case "capture":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Ugh, some of these are still dripping. Well done, he'll be pleased.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -210,7 +209,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (ThidKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (ThidKeepCaptureAlb)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -228,14 +227,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			ThidKillQuestMid quest = player.IsDoingQuest(typeof (ThidKillQuestMid)) as ThidKillQuestMid;
+			ThidKeepCaptureAlb quest = player.IsDoingQuest(typeof (ThidKeepCaptureAlb)) as ThidKeepCaptureAlb;
 
 			if (quest == null)
 				return;
 
 			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and shed some blood!");
+				SendSystemMessage(player, "Good, now go out there and finish your work!");
 			}
 			else
 			{
@@ -244,13 +243,13 @@ namespace DOL.GS.DailyQuest.Hibernia
 			}
 		}
 
-		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(ThidKillQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(ThidKeepCaptureAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -261,23 +260,23 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(PazzMid.CanGiveQuest(typeof (ThidKillQuestMid), player)  <= 0)
+			if(PazzAlb.CanGiveQuest(typeof (ThidKeepCaptureAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (ThidKillQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (ThidKeepCaptureAlb)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping me.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping me out.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!PazzMid.GiveQuest(typeof (ThidKillQuestMid), player, 1))
+				if (!PazzAlb.GiveQuest(typeof (ThidKeepCaptureAlb), player, 1))
 					return;
 
-				PazzMid.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
+				PazzAlb.SayTo(player, "Thank you "+player.Name+", be an enrichment for our realm!");
 
 			}
 		}
@@ -296,9 +295,9 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "You will find suitable players in the battlegrounds. \nPlayers Killed: ("+ PlayersKilled +" | "+ MAX_KILLED +")";
+						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | 1)";
 					case 2:
-						return "Return to Pazz in the Thidranki Portal Keep for your Reward.";
+						return "Return to Pazz in Thidranki Portal Keep for your reward.";
 				}
 				return base.Description;
 			}
@@ -308,51 +307,53 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(ThidKillQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(ThidKeepCaptureAlb)) == null)
 				return;
-
+			
 			if (sender != m_questPlayer)
 				return;
 
-			if (e != GameLivingEvent.EnemyKilled) return;
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-
-			if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
-			    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
-			PlayersKilled++;
-			player.Out.SendMessage("[Daily] Enemy Killed: (" + PlayersKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			if (Step != 1 || e != GamePlayerEvent.CapturedKeepsChanged) return;
+			_isCaptured = 1;
+			player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
-			if (PlayersKilled >= MAX_KILLED)
+			if (_isCaptured >= MAX_CAPTURED)
 			{
 				// FinishQuest or go back to Dean
 				Step = 2;
 			}
+
 		}
 		
 		public override string QuestPropertyKey
 		{
-			get => "ThidKillQuestMid";
+			get => "ThidKeepCaptureAlb";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
-			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
+			
 		}
+
+		public override void AbortQuest()
+		{
+			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+		}
+
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,0,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);
-			PlayersKilled = 0;
+			_isCaptured = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			
 		}
 	}
 }
