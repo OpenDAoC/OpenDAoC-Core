@@ -1019,27 +1019,27 @@ namespace DOL.GS
 			}
 		}
 	}
-	public class GameL20RewardsMerchant : GameItemCurrencyMerchant
+	public class L20RewardsMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "L20RewardToken"; } }
 	}
 	
-	public class GameL25RewardsMerchant : GameItemCurrencyMerchant
+	public class L25RewardsMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "L25RewardToken"; } }
 	}
 	
-	public class GameL30RewardsMerchant : GameItemCurrencyMerchant
+	public class L30RewardsMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "L30RewardToken"; } }
 	}
 	
-	public class GameL35RewardsMerchant : GameItemCurrencyMerchant
+	public class L35RewardsMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "L35RewardToken"; } }
 	}
 	
-	public class GameL40RewardsMerchant : GameItemCurrencyMerchant
+	public class L40RewardsMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "L40RewardToken"; } }
 	}

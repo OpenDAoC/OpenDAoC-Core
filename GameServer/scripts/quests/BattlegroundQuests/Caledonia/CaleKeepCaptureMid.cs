@@ -185,7 +185,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "help a skeleton":
-							player.Out.SendQuestSubscribeCommand(PazzMid, QuestMgr.GetIDForQuestType(typeof(CaleKeepCaptureMid)), "Will you help Herou "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(PazzMid, QuestMgr.GetIDForQuestType(typeof(CaleKeepCaptureMid)), "Will you help Pazz with "+questTitle+"");
 							break;
 					}
 				}
