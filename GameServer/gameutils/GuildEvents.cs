@@ -214,7 +214,7 @@ namespace DOL.GS
 
 				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Guild.UpdateGuildWindow();
+				// player.Guild.UpdateGuildWindow();
 			}
 			
 			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == eXPSource.NPC)
@@ -223,7 +223,7 @@ namespace DOL.GS
 
 				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Guild.UpdateGuildWindow();
+				// player.Guild.UpdateGuildWindow();
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace DOL.GS
 						NewsMgr.CreateNews(message, player.Realm, eNewsType.RvRGlobal, false);
 					}
 
-					player.Guild.UpdateGuildWindow();
+					// player.Guild.UpdateGuildWindow();
 				}
 
 			}
@@ -285,8 +285,8 @@ namespace DOL.GS
 				}
 			}
 
-			if (player.Guild != null)
-				player.Guild.UpdateGuildWindow();
+			// if (player.Guild != null)
+			// 	player.Guild.UpdateGuildWindow();
 		}
 
 		#endregion
