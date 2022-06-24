@@ -4306,8 +4306,8 @@ namespace DOL.GS
 			if (killer != null)
 			{
 				if (killer is GamePet pet) killer = pet.Owner;
-				if (IsWorthReward)
-					DropLoot(killer);
+				// if (IsWorthReward)
+				// 	DropLoot(killer);
 
 				Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
 				if (killer is GamePlayer)
@@ -4321,27 +4321,27 @@ namespace DOL.GS
 			if (killer != null)
 			{
 				// Handle faction alignement changes // TODO Review
-				if ((Faction != null) && (killer is GamePlayer))
-				{
-					lock (this.XPGainers.SyncRoot)
-					{ 
-						// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
-						foreach (DictionaryEntry de in this.XPGainers)
-						{
-							GameLiving living = de.Key as GameLiving;
-							GamePlayer player = living as GamePlayer;
-							if (player != null && player.IsObjectGreyCon(this)) continue;
-							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
-							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+				// if ((Faction != null) && (killer is GamePlayer))
+				// {
+				// 	lock (this.XPGainers.SyncRoot)
+				// 	{ 
+				// 		// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
+				// 		foreach (DictionaryEntry de in this.XPGainers)
+				// 		{
+				// 			GameLiving living = de.Key as GameLiving;
+				// 			GamePlayer player = living as GamePlayer;
+				// 			if (player != null && player.IsObjectGreyCon(this)) continue;
+				// 			// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
+				// 			if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
+				// 				player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
 
-							if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-							{
-								Faction.KillMember(player);
-							}
-						}
-					}
-				}
+				// 			if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+				// 			{
+				// 				Faction.KillMember(player);
+				// 			}
+				// 		}
+				// 	}
+				// }
 
 				// deal out exp and realm points based on server rules
 				GameServer.ServerRules.OnNPCKilled(this, killer);
