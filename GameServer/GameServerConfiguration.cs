@@ -363,7 +363,7 @@ namespace DOL.GS
 			                                     Path.Combine(m_rootDirectory, "dol.sqlite3.db"));
 			m_autoSave = true;
 			m_saveInterval = 10;
-			m_maxClientCount = 500;
+			m_maxClientCount = 5000;
 
 			// Get count of CPUs
 			m_cpuCount = Environment.ProcessorCount;
