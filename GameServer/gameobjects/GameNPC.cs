@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -4238,36 +4239,43 @@ namespace DOL.GS
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
+				
+				HybridDictionary XPGainerList = new HybridDictionary();
 				lock (m_xpGainers.SyncRoot)
 				{
-					if (m_xpGainers.Keys.Count == 0) return false;
-					foreach (DictionaryEntry de in m_xpGainers)
+					foreach (DictionaryEntry gainer in m_xpGainers)
 					{
-						GameObject obj = (GameObject)de.Key;
-						if (obj is GamePlayer)
-						{
-							//If a gameplayer with privlevel > 1 attacked the
-							//mob, then the players won't gain xp ...
-							if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
-								return false;
-							//If a player to which we are gray killed up we
-							//aren't worth anything either
-							if (((GamePlayer)obj).IsObjectGreyCon(this))
-								return false;
-						}
-						else
-						{
-							//If object is no gameplayer and realm is != none
-							//then it means that a npc has hit this living and
-							//it is not worth any xp ...
-							//if(obj.Realm != (byte)eRealm.None)
-							//If grey to at least one living then no exp
-							if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
-								return false;
-						}
+						XPGainerList.Add(gainer.Key, gainer.Value);
 					}
-					return true;
 				}
+				if (XPGainerList.Keys.Count == 0) return false;
+				foreach (DictionaryEntry de in XPGainerList)
+				{
+					GameObject obj = (GameObject)de.Key;
+					if (obj is GamePlayer)
+					{
+						//If a gameplayer with privlevel > 1 attacked the
+						//mob, then the players won't gain xp ...
+						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
+							return false;
+						//If a player to which we are gray killed up we
+						//aren't worth anything either
+						if (((GamePlayer)obj).IsObjectGreyCon(this))
+							return false;
+					}
+					else
+					{
+						//If object is no gameplayer and realm is != none
+						//then it means that a npc has hit this living and
+						//it is not worth any xp ...
+						//if(obj.Realm != (byte)eRealm.None)
+						//If grey to at least one living then no exp
+						if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
+							return false;
+					}
+				}
+				return true;
+				
 			}
 			set
 			{
@@ -4290,7 +4298,6 @@ namespace DOL.GS
 		{
 			Brain?.KillFSM();
 
-			base.ProcessDeath(killer);
 			FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 			if (ControlledBrain != null)
@@ -4818,117 +4825,97 @@ namespace DOL.GS
 			ArrayList autolootlist = new ArrayList();
 			ArrayList aplayer = new ArrayList();
 			
+			HybridDictionary XPGainerList = new HybridDictionary();
 			lock (m_xpGainers.SyncRoot)
 			{
-				if (m_xpGainers.Keys.Count == 0) return;
-
-				ItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
-
-				foreach (ItemTemplate lootTemplate in lootTemplates)
+				foreach (DictionaryEntry gainer in m_xpGainers)
 				{
-					if (lootTemplate == null) continue;
-					GameStaticItem loot = null;
-					if (GameMoney.IsItemMoney(lootTemplate.Name))
+					XPGainerList.Add(gainer.Key, gainer.Value);
+				}
+			}
+			
+			if (XPGainerList.Keys.Count == 0) return;
+
+			ItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
+
+			foreach (ItemTemplate lootTemplate in lootTemplates)
+			{
+				if (lootTemplate == null) continue;
+				GameStaticItem loot = null;
+				if (GameMoney.IsItemMoney(lootTemplate.Name))
+				{
+					long value = lootTemplate.Price;
+					//GamePlayer killerPlayer = killer as GamePlayer;
+
+					//[StephenxPimentel] - Zone Bonus XP Support
+					if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
 					{
-						long value = lootTemplate.Price;
-						//GamePlayer killerPlayer = killer as GamePlayer;
-
-						//[StephenxPimentel] - Zone Bonus XP Support
-						if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killer is GameNPC)
 						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killer is GameNPC)
-							{
-								if (killer is GameNPC && ((killer as GameNPC).Brain is IControlledBrain))
-									killerPlayer = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-								else return;
-							}
-
-							int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
-							if (zoneBonus > 0)
-							{
-								long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
-								killerPlayer.AddMoney(amount,
-													  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
-													  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-								InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
-							}
+							if (killer is GameNPC && ((killer as GameNPC).Brain is IControlledBrain))
+								killerPlayer = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+							else return;
 						}
 
-						if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (eRealm)killer.Realm))
-							value += (value / 100) * 5;
-						else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (eRealm)killer.Realm))
-							value += (value / 100) * 3;
-
-						//this will need to be changed when the ML for increasing money is added
-						if (value != lootTemplate.Price)
+						int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
+						if (zoneBonus > 0)
 						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killerPlayer != null)
-								killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+							long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
+							killerPlayer.AddMoney(amount,
+												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
+												  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
 						}
-
-						//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
-						if (killer is GamePlayer)
-						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killerPlayer.GetModified(eProperty.MythicalCoin) > 0)
-							{
-								value += (value * killerPlayer.GetModified(eProperty.MythicalCoin)) / 100;
-								killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
-																						"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-							}
-						}
-
-						loot = new GameMoney(value, this);
-						loot.Name = lootTemplate.Name;
-						loot.Model = (ushort)lootTemplate.Model;
 					}
-					else if (lootTemplate.Name.StartsWith("scroll|"))
+
+					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (eRealm)killer.Realm))
+						value += (value / 100) * 5;
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (eRealm)killer.Realm))
+						value += (value / 100) * 3;
+
+					//this will need to be changed when the ML for increasing money is added
+					if (value != lootTemplate.Price)
 					{
-						String[] scrollData = lootTemplate.Name.Split('|');
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killerPlayer != null)
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+					}
 
-						if (scrollData.Length >= 3)
+					//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
+					if (killer is GamePlayer)
+					{
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killerPlayer.GetModified(eProperty.MythicalCoin) > 0)
 						{
-							String artifactID = scrollData[1];
-							int pageNumber = UInt16.Parse(scrollData[2]);
-							loot = ArtifactMgr.CreateScroll(artifactID, pageNumber);
+							value += (value * killerPlayer.GetModified(eProperty.MythicalCoin)) / 100;
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
+																					"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 						}
+					}
 
-						if (loot == null)
-						{
-							log.Error($"Artifact scroll could not be created for data string [{lootTemplate.Name}]");
-							continue;
-						}
-						else
-						{
-							loot.X = X;
-							loot.Y = Y;
-							loot.Z = Z;
-							loot.Heading = Heading;
-							loot.CurrentRegion = CurrentRegion;
-							(loot as WorldInventoryItem).Item.IsCrafted = false;
-							(loot as WorldInventoryItem).Item.Creator = Name;
-						}
+					loot = new GameMoney(value, this);
+					loot.Name = lootTemplate.Name;
+					loot.Model = (ushort)lootTemplate.Model;
+				}
+				else if (lootTemplate.Name.StartsWith("scroll|"))
+				{
+					String[] scrollData = lootTemplate.Name.Split('|');
+
+					if (scrollData.Length >= 3)
+					{
+						String artifactID = scrollData[1];
+						int pageNumber = UInt16.Parse(scrollData[2]);
+						loot = ArtifactMgr.CreateScroll(artifactID, pageNumber);
+					}
+
+					if (loot == null)
+					{
+						log.Error($"Artifact scroll could not be created for data string [{lootTemplate.Name}]");
+						continue;
 					}
 					else
 					{
-						InventoryItem invitem;
-
-						if (lootTemplate is ItemUnique)
-						{
-							GameServer.Database.AddObject(lootTemplate);
-							invitem = GameInventoryItem.Create(lootTemplate as ItemUnique);
-						}
-						else
-							invitem = GameInventoryItem.Create(lootTemplate);
-
-						if (lootTemplate is GeneratedUniqueItem)
-						{
-							invitem.IsROG = true;
-						}
-
-						loot = new WorldInventoryItem(invitem);
 						loot.X = X;
 						loot.Y = Y;
 						loot.Z = Z;
@@ -4936,54 +4923,80 @@ namespace DOL.GS
 						loot.CurrentRegion = CurrentRegion;
 						(loot as WorldInventoryItem).Item.IsCrafted = false;
 						(loot as WorldInventoryItem).Item.Creator = Name;
+					}
+				}
+				else
+				{
+					InventoryItem invitem;
 
-						// This may seem like an odd place for this code, but loot-generating code further up the line
-						// is dealing strictly with ItemTemplate objects, while you need the InventoryItem in order
-						// to be able to set the Count property.
-						// Converts single drops of loot with PackSize > 1 (and MaxCount >= PackSize) to stacks of Count = PackSize
-						if (((WorldInventoryItem)loot).Item.PackSize > 1 && ((WorldInventoryItem)loot).Item.MaxCount >= ((WorldInventoryItem)loot).Item.PackSize)
-						{
-							((WorldInventoryItem)loot).Item.Count = ((WorldInventoryItem)loot).Item.PackSize;
-						}
+					if (lootTemplate is ItemUnique)
+					{
+						GameServer.Database.AddObject(lootTemplate);
+						invitem = GameInventoryItem.Create(lootTemplate as ItemUnique);
+					}
+					else
+						invitem = GameInventoryItem.Create(lootTemplate);
+
+					if (lootTemplate is GeneratedUniqueItem)
+					{
+						invitem.IsROG = true;
 					}
 
-					GamePlayer playerAttacker = null;
-					foreach (GameObject gainer in m_xpGainers.Keys)
+					loot = new WorldInventoryItem(invitem);
+					loot.X = X;
+					loot.Y = Y;
+					loot.Z = Z;
+					loot.Heading = Heading;
+					loot.CurrentRegion = CurrentRegion;
+					(loot as WorldInventoryItem).Item.IsCrafted = false;
+					(loot as WorldInventoryItem).Item.Creator = Name;
+
+					// This may seem like an odd place for this code, but loot-generating code further up the line
+					// is dealing strictly with ItemTemplate objects, while you need the InventoryItem in order
+					// to be able to set the Count property.
+					// Converts single drops of loot with PackSize > 1 (and MaxCount >= PackSize) to stacks of Count = PackSize
+					if (((WorldInventoryItem)loot).Item.PackSize > 1 && ((WorldInventoryItem)loot).Item.MaxCount >= ((WorldInventoryItem)loot).Item.PackSize)
 					{
-						if (gainer is GamePlayer)
+						((WorldInventoryItem)loot).Item.Count = ((WorldInventoryItem)loot).Item.PackSize;
+					}
+				}
+
+				GamePlayer playerAttacker = null;
+				foreach (GameObject gainer in XPGainerList.Keys)
+				{
+					if (gainer is GamePlayer)
+					{
+						playerAttacker = gainer as GamePlayer;
+						if (loot.Realm == 0)
+							loot.Realm = ((GamePlayer)gainer).Realm;
+					}
+					loot.AddOwner(gainer);
+					if (gainer is GameNPC)
+					{
+						IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
+						if (brain != null)
 						{
-							playerAttacker = gainer as GamePlayer;
-							if (loot.Realm == 0)
-								loot.Realm = ((GamePlayer)gainer).Realm;
-						}
-						loot.AddOwner(gainer);
-						if (gainer is GameNPC)
-						{
-							IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
-							if (brain != null)
-							{
-								playerAttacker = brain.GetPlayerOwner();
-								loot.AddOwner(brain.GetPlayerOwner());
-							}
+							playerAttacker = brain.GetPlayerOwner();
+							loot.AddOwner(brain.GetPlayerOwner());
 						}
 					}
-					if (playerAttacker == null) return; // no loot if mob kills another mob
+				}
+				if (playerAttacker == null) return; // no loot if mob kills another mob
 
 
-					droplist.Add(loot.GetName(1, false));
-					loot.AddToWorld();
+				droplist.Add(loot.GetName(1, false));
+				loot.AddToWorld();
 
-					foreach (GameObject gainer in m_xpGainers.Keys)
+				foreach (GameObject gainer in XPGainerList.Keys)
+				{
+					if (gainer is GamePlayer)
 					{
-						if (gainer is GamePlayer)
+						GamePlayer player = gainer as GamePlayer;
+						if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
 						{
-							GamePlayer player = gainer as GamePlayer;
-							if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
-							{
-								if (player.Group == null || (player.Group != null && player == player.Group.Leader))
-									aplayer.Add(player);
-								autolootlist.Add(loot);
-							}
+							if (player.Group == null || (player.Group != null && player == player.Group.Leader))
+								aplayer.Add(player);
+							autolootlist.Add(loot);
 						}
 					}
 				}

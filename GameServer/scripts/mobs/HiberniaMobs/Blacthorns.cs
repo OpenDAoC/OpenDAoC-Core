@@ -108,20 +108,21 @@ namespace DOL.AI.Brain
 			}
 			if(HasAggro)
             {
-				CanAddNpcs = false;
-				if (BafNpcs.Count > 0)
-				{
-					foreach (GameNPC mobs in BafNpcs)
-					{
-						if (mobs != null && mobs.IsAlive)
-							AddAggroListTo(mobs.Brain as StandardMobBrain);
-						if (!mobs.IsAlive && !CanPullAditional)//check if any of baf mobs are killed
-						{
-							PickRandomMob();
-							CanPullAditional = true;
-						}
-					}
-				}				
+				// CanAddNpcs = false;
+				// if (BafNpcs.Count > 0)
+				// {
+				// 	foreach (GameNPC mobs in BafNpcs)
+				// 	{
+				// 		if (mobs != null && mobs.IsAlive)
+				// 			if (mobs.Brain is StandardMobBrain)
+				// 				AddAggroListTo(mobs.Brain as StandardMobBrain);
+				// 		if (!mobs.IsAlive && !CanPullAditional)//check if any of baf mobs are killed
+				// 		{
+				// 			PickRandomMob();
+				// 			CanPullAditional = true;
+				// 		}
+				// 	}
+				// }				
 			}
 			base.Think();
 		}
