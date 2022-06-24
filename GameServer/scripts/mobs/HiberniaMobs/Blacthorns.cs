@@ -114,7 +114,8 @@ namespace DOL.AI.Brain
 					foreach (GameNPC mobs in BafNpcs)
 					{
 						if (mobs != null && mobs.IsAlive)
-							AddAggroListTo(mobs.Brain as StandardMobBrain);
+							if (mobs.Brain is StandardMobBrain)
+								AddAggroListTo(mobs.Brain as StandardMobBrain);
 						if (!mobs.IsAlive && !CanPullAditional)//check if any of baf mobs are killed
 						{
 							PickRandomMob();
