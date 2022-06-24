@@ -22,6 +22,7 @@ using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.Keeps;
@@ -1065,10 +1066,16 @@ namespace DOL.GS
 				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
 			
+			Parallel.ForEach(guildPlayers, player =>
+			{
+				player.Guild.UpdateMember(player);
+			});
+			
+			/*
 			foreach (GamePlayer player in guildPlayers)
 			{
 				player.Guild.UpdateMember(player);
-			}
+			}*/
 			
 		}
 	}
