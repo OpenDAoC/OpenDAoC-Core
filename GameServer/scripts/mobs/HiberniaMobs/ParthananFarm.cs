@@ -16,6 +16,7 @@ namespace DOL.GS
 			if (source is GamePlayer || source is GamePet)
 			{
 				GameLiving target = source as GameLiving;
+				if (target == null || target.AttackWeapon == null) return;
 				if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
 					damageType == eDamageType.Energy || damageType == eDamageType.Heat
 					|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || target.AttackWeapon.Object_Type == (int)eObjectType.RecurvedBow || target.AttackWeapon.Object_Type == (int)eObjectType.Fired)
