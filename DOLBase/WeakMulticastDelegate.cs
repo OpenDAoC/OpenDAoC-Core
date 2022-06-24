@@ -276,7 +276,7 @@ namespace DOL
 					current._method.Invoke(current._weakRef.Target, args);
 				}
 
-				if (Environment.TickCount - start > 50)
+				if (Environment.TickCount - start > 25)
 				{
 					if (Log.IsWarnEnabled)
 						Log.Warn("Invoke took " + (Environment.TickCount - start) + "ms! " + current);
@@ -318,7 +318,7 @@ namespace DOL
 						Log.Error("InvokeSafe", ex);
 				}
 
-				if (Environment.TickCount - start > 50)
+				if (Environment.TickCount - start > 25)
 				{
 					if (Log.IsWarnEnabled)
 						Log.Warn("InvokeSafe took " + (Environment.TickCount - start) + "ms! " + current);
