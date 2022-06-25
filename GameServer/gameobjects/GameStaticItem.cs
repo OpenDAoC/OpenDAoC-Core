@@ -18,6 +18,9 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using DOL.Database;
 using DOL.Events;
 using DOL.Language;
@@ -329,8 +332,12 @@ namespace DOL.GS
 		public override bool AddToWorld()
 		{
 			if(!base.AddToWorld()) return false;
-			foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			// foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			
+			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+			{
 				player.Out.SendObjectCreate(this);
+			});
 			return true;
 		}
 
@@ -354,8 +361,11 @@ namespace DOL.GS
 		{
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+				//foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).OfType<GamePlayer>(), player =>
+				{
 					player.Out.SendObjectRemove(this);
+				});
 			}
 
 			if (base.RemoveFromWorld())

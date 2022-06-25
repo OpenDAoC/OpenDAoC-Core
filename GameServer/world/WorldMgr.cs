@@ -1611,6 +1611,7 @@ namespace DOL.GS
 			List<GameClient> potentialMatches = new List<GameClient>();
 			lock (m_clients.SyncRoot)
 			{
+				
 				foreach (GameClient client in m_clients)
 				{
 					if (client != null && client.Player != null && (realm == eRealm.None || client.Player.Realm == realm))
@@ -1618,12 +1619,14 @@ namespace DOL.GS
 						if (activeRequired && (!client.IsPlaying || client.Player.ObjectState != GameObject.eObjectState.Active))
 							continue;
 						
-						if (0 == string.Compare(client.Player.Name, playerName, true)) // case insensitive comapre
+						if (0 == String.Compare(client.Player.Name, playerName, StringComparison.OrdinalIgnoreCase)) // case insensitive comapre
 						{
 							potentialMatches.Add(client);
 							return potentialMatches;
 						}
-						if(client.Player.Name.ToLower().StartsWith(playerName.ToLower())) potentialMatches.Add(client);
+
+						if (client.Player.Name.ToLower().StartsWith(playerName.ToLower())) potentialMatches.Add(client);
+
 					}
 				}
 
