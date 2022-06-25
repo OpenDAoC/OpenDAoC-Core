@@ -4315,7 +4315,7 @@ namespace DOL.GS
 				if (killer is GamePlayer)
 					((GamePlayer)killer).Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
 			}
-			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-LivingProcessDeath-NPC("+this.GetHashCode()+")");
+			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Loot&Messages-NPC("+this.GetHashCode()+")");
 			StopFollowing();
 
 			if (Group != null)
@@ -4353,11 +4353,13 @@ namespace DOL.GS
 
 				base.ProcessDeath(killer);
 			}
-			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-XPGainersClear-NPC("+this.GetHashCode()+")");
+			
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
-			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-XPGainersClear-NPC("+this.GetHashCode()+")");
+			
+			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 			Delete();
+			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 
 			// remove temp properties
 			TempProperties.removeAllProperties();
