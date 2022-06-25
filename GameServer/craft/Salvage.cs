@@ -138,8 +138,17 @@ namespace DOL.GS
 
 			if (item.SalvageYieldID == 0 || yield.Count == 0)
 			{
+				var count = 0;
 				// Calculated salvage values
-				int count = GetMaterialYield(player, item, yield, material);
+				if (item.Description.Contains("Atlas ROG"))
+				{
+					count = 2;
+					yield.Count = 2;
+				}
+				else
+				{
+					count = GetMaterialYield(player, item, yield, material);
+				}
 				if (count < 1)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". The material returned amount is zero"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -675,6 +684,8 @@ namespace DOL.GS
 				{
 					maxCount = (int)Math.Ceiling((double)maxCount / 2);
 				}
+				
+				
 			}
 
 			int playerPercent = player.GetCraftingSkillValue(CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item)) * 100 / CraftingMgr.GetItemCraftLevel(item);
