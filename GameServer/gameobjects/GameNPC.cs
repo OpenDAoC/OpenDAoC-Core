@@ -1390,7 +1390,7 @@ namespace DOL.GS
 		{
 			if (m_arriveAtTargetAction != null)
 			{
-				m_arriveAtTargetAction.Stop();
+				m_arriveAtTargetAction?.Stop();
 				m_arriveAtTargetAction = null;
 			}
 		}
