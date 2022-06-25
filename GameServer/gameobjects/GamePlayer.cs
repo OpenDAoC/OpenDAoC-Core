@@ -5687,33 +5687,9 @@ namespace DOL.GS
                 }
             }
             
-            // PVE Beta Lv35 Title Reward
-            if (Level == 35)
-            {
-                const string customKey = "PvEBeta35";
-                var hasPvEBeta35Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
-
-                if (hasPvEBeta35Title == null)
-                {
-                    AccountXCustomParam PvEBeta35Title = new AccountXCustomParam();
-                    PvEBeta35Title.Name = Client.Account.Name;
-                    PvEBeta35Title.KeyName = customKey;
-                    PvEBeta35Title.Value = "1";
-                    GameServer.Database.AddObject(PvEBeta35Title);
-                    Client.Player.Out.SendPlayerTitleUpdate(this);
-                }
-            }
 
             if (Level == 40)
             {
-                const string customKey = "BoostedLevel-30";
-                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                if (usedi30 != null)
-                {
-                    Out.SendMessage("You have been awarded a bonus of 1000 Atlas Orbs for hitting level 40 with a test character.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 100);
-                }
-                
                 // Creates a TimeXLevel to track the levelling time to 40
                 if (Client.Account.PrivLevel == 1)
                 {
@@ -5758,24 +5734,6 @@ namespace DOL.GS
 
             if (Level == 50)
             {
-                const string customKey = "BoostedLevel-30";
-                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                
-                const string customKey2 = "BoostedLevel-40";
-                var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-
-                /*
-                if (usedi30 != null)
-                {
-                    Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }
-                if (Boosted)
-                {
-                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }*/
-                    
                 
                 // Check if player has completed the Hardcore Challenge
                 if (HCFlag)
@@ -5784,38 +5742,6 @@ namespace DOL.GS
                     HCCompleted = true;
                     Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }
-                
-                // Check if player has completed the Solo Challenge
-                const string groupedKey = "grouped_char";
-                const string soloKey = "solo_to_50";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
-                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
-                
-                if ((NoHelp && hasGrouped == null || hasGrouped == null) && !Boosted)
-                {
-                    NoHelp = false;
-                    DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
-                    soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = soloKey;
-                    soloBeetle.Value = "1";
-                    GameServer.Database.AddObject(soloBeetle);
-                    AtlasROGManager.GenerateOrbAmount(this, 1500);
-                    Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                }
-                
-                // PVE Beta Lv50 Title Reward
-                const string pve50key = "PvEBeta50";
-                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
-
-                if (hasPvEBeta50Title == null && !Boosted)
-                {
-                    AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
-                    PvEBeta50Title.Name = Client.Account.Name;
-                    PvEBeta50Title.KeyName = pve50key;
-                    PvEBeta50Title.Value = "1";
-                    GameServer.Database.AddObject(PvEBeta50Title);
-                    Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
                 
                 // Creates a TimeXLevel to track the levelling time to 50
