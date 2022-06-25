@@ -32,7 +32,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
-
+using ECS.Debug;
 namespace DOL.GS.ServerRules
 {
 	public abstract class AbstractServerRules : IServerRules
@@ -1159,6 +1159,7 @@ namespace DOL.GS.ServerRules
 
 
 			//Now deal the XP to all livings
+			Diagnostics.StartPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
 			foreach (DictionaryEntry de in XPGainerList)
 			{
 				GameLiving living = de.Key as GameLiving;
@@ -1504,6 +1505,7 @@ namespace DOL.GS.ServerRules
 						true, true);
 				}
 			}
+			Diagnostics.StopPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
 		}
 
 		private int GetUniqueClassCount(Group group)
