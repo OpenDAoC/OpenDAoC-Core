@@ -41,6 +41,7 @@ using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
 using FiniteStateMachine;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -4344,8 +4345,13 @@ namespace DOL.GS
 				}
 
 				// deal out exp and realm points based on server rules
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
+
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-LivingProcessDeath-NPC("+this.GetHashCode()+")");
 				base.ProcessDeath(killer);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-LivingProcessDeath-NPC("+this.GetHashCode()+")");
 			}
 			
 			lock (this.XPGainers.SyncRoot)
