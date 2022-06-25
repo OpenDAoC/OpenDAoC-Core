@@ -1491,7 +1491,12 @@ namespace DOL.GS
 		/// </summary>
 		protected override void UpdateChangedSlots()
 		{
-			m_player.Out.SendInventorySlotsUpdate(new List<int>(m_changedSlots.Cast<int>()));
+			
+			lock (m_changedSlots)
+			{
+				var slotsToUpdate = new List<int>(m_changedSlots.Cast<int>());
+				m_player.Out.SendInventorySlotsUpdate(slotsToUpdate);
+			}
 
 			bool statsUpdated = false;
 			bool appearanceUpdated = false;
