@@ -208,7 +208,7 @@ namespace DOL.GS
 
 			GainedExperienceEventArgs xpArgs = args as GainedExperienceEventArgs;
 
-			if (player.Guild != null && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
+			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
