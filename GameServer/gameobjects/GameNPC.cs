@@ -4304,18 +4304,21 @@ namespace DOL.GS
 			if (ControlledBrain != null)
 				ControlledNPC_Release();
 
-			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-Loot&Messages-NPC("+this.GetHashCode()+")");
+			
 			if (killer != null)
 			{
 				if (killer is GamePet pet) killer = pet.Owner;
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
 				if (IsWorthReward)
 					DropLoot(killer);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
 
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
 				Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
 				if (killer is GamePlayer)
 					((GamePlayer)killer).Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
 			}
-			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Loot&Messages-NPC("+this.GetHashCode()+")");
 			StopFollowing();
 
 			if (Group != null)
@@ -4357,7 +4360,7 @@ namespace DOL.GS
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
 			
-			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
+			
 			Delete();
 			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 
@@ -4993,7 +4996,9 @@ namespace DOL.GS
 
 
 				droplist.Add(loot.GetName(1, false));
+				Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
 				loot.AddToWorld();
+				Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
 
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
@@ -5010,7 +5015,9 @@ namespace DOL.GS
 				}
 			}
 
+			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
 			BroadcastLoot(droplist);
+			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
 
 			if (autolootlist.Count > 0)
 			{
