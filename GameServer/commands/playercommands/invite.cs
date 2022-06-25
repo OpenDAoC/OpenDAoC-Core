@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
 			}
 			else
 			{ // Inviting by name
-				var matchingClients = WorldMgr.GetClientByPlayerNameAndRealm(targetName, 0, true);
+				var matchingClients = WorldMgr.GetClientByPlayerNameAndRealm(targetName, client.Player.Realm, true);
 				GameClient targetClient = null;
 
 				if (matchingClients != null)
