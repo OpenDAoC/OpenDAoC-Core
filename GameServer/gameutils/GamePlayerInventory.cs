@@ -1513,8 +1513,7 @@ namespace DOL.GS
 						{
 							if (updatedSlot != visibleSlot)
 								continue;
-
-							m_player.UpdateEquipmentAppearance();
+							
 							appearanceUpdated = true;
 							break;
 						}
@@ -1524,7 +1523,6 @@ namespace DOL.GS
 					if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing &&
 					    updatedSlot >= eInventorySlot.RightHandWeapon)
 					{
-						m_player.Out.SendUpdateWeaponAndArmorStats();
 						statsUpdated = true;
 					}
 
@@ -1534,11 +1532,19 @@ namespace DOL.GS
 					    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
 					    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
 					{
-						m_player.UpdateEncumberance();
 						encumberanceUpdated = true;
 					}
 				}
 			}
+			
+			if(appearanceUpdated)
+				m_player.UpdateEquipmentAppearance();
+				
+			if(statsUpdated)
+				m_player.Out.SendUpdateWeaponAndArmorStats();
+				
+			if(encumberanceUpdated)
+				m_player.UpdateEncumberance();
 
 			base.UpdateChangedSlots();
 		}
