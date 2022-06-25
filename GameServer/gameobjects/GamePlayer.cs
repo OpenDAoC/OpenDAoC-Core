@@ -5460,9 +5460,25 @@ namespace DOL.GS
                 this.Out.SendMessage($"Loyalty: {RealmLoyaltyBonus.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)} | {loyaltyPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Get Champion Experience too
-            GainChampionExperience(expTotal);
+            // GainChampionExperience(expTotal);
 
-            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
+            #region Guild XP Bonus
+            long guildBonus = 0;
+            if (this.Guild != null && !this.Guild.IsStartingGuild && this.Guild.BonusType == Guild.eBonusType.Experience && xpSource == eXPSource.NPC)
+			{
+				guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 100);
+			}else if (this.Guild != null && this.Guild.IsStartingGuild && xpSource == eXPSource.NPC)
+			{
+				guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 200);
+			}
+
+            expTotal += guildBonus;
+
+            #endregion Guild XP Bonus
+
+            //Commenting base.GainExperience out as it was used to Notify which was only used by GuildEvent (which is now moved here)
+            //base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
+            
 
             if (IsLevelSecondStage)
             {
@@ -5485,6 +5501,7 @@ namespace DOL.GS
                 string expOutpostBonusStr = "";
                 string expSoloBonusStr = "";
                 string expRealmLoyaltyStr = "";
+                string expGuildBonusStr = "";
 
                 if (expCampBonus > 0)
                 {
@@ -5509,7 +5526,12 @@ namespace DOL.GS
                     expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
                 }
 
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                if(guildBonus > 0)
+                {
+                    expGuildBonusStr = "("+ guildBonus.ToString("N0", format) + " Guild bonus)";
+                }
+
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr + expGuildBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
