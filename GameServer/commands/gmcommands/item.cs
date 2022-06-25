@@ -64,7 +64,6 @@ namespace DOL.GS.Commands
 	     "GMCommands.Item.Usage.DPS_AF",
 	     "GMCommands.Item.Usage.SPD_ABS",
 	     "GMCommands.Item.Usage.Material",
-	     "GMCommands.Item.Usage.Scroll",
 	     "GMCommands.Item.Usage.Spell",
 	     "GMCommands.Item.Usage.Spell1",
 	     "GMCommands.Item.Usage.Proc",
@@ -87,7 +86,6 @@ namespace DOL.GS.Commands
 	     "GMCommands.Item.Usage.FindID",
 	     "GMCommands.Item.Usage.FindName",
 	     "/item load <id_nb> - Load an item from the DB and replace or add item to the ItemTemplate cache",
-	     "/item loadartifacts - Re-load all the artifact entries from the DB.  ItemTemplates must be loaded separately and prior to loading artifacts.",
 	     "/item loadpackage <packageid> | **all** - Load all the items in a package from the DB and replace or add to the ItemTemplate cache. **all** is loading all items [! SLOW !]",
 	     "/item loadspells - Read each item spell from the database and update the global spell list")]
 	public class ItemCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -127,23 +125,6 @@ namespace DOL.GS.Commands
 							break;
 						}
 						#endregion Blank
-						#region Scroll
-					case "scroll":
-						{
-							WorldInventoryItem scroll = ArtifactMgr.CreateScroll(args[2], Convert.ToInt16(args[3]));
-							if (scroll == null)
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Scroll.NotFound", args[3], args[2]), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-								return;
-							}
-							if (client.Player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, scroll.Item))
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Scroll.Created", scroll.Item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								InventoryLogging.LogInventoryAction(client.Player, client.Player, eInventoryActionType.Other, scroll.Item.Template, scroll.Item.Count);
-							}
-							break;
-						}
-						#endregion Scroll
 						#region Classes
 					case "classes":
 						{
@@ -1966,13 +1947,6 @@ namespace DOL.GS.Commands
 							break;
 						}
 						#endregion LoadPackage
-						#region LoadArtifacts
-					case "loadartifacts":
-						{
-							DisplayMessage(client, "{0} Artifacts re-loaded.", DOL.GS.ArtifactMgr.LoadArtifacts());
-						}
-						break;
-						#endregion LoadArtifacts
 						#region LoadSpells
 					case "loadspells":
 						{

@@ -682,10 +682,6 @@ namespace DOL.GS
 					return false;
 
 				//---------------------------------------------------------------
-				//Load artifact manager
-				InitComponent(ArtifactMgr.Init(), "Artifact Manager");
-
-				//---------------------------------------------------------------
 				//Load all calculators
 				if (!InitComponent(GameLiving.LoadCalculators(), "GameLiving.LoadCalculators()"))
 					return false;

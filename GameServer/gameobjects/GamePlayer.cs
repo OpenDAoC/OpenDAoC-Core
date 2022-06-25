@@ -9771,9 +9771,7 @@ namespace DOL.GS
 
                     // Artifacts don't require charges.
 
-                    if ((type < 2 && useItem.SpellID > 0 && useItem.Charges < 1 && useItem.MaxCharges > -1 && !(useItem is InventoryArtifact)) ||
-                        (type == 2 && useItem.SpellID1 > 0 && useItem.Charges1 < 1 && useItem.MaxCharges1 > -1 && !(useItem is InventoryArtifact)) ||
-                        (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1))
+                    if (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1)
                     {
                         Out.SendMessage("The " + useItem.Name + " is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
@@ -16946,25 +16944,6 @@ namespace DOL.GS
             get { return m_minoRelic; }
             set { m_minoRelic = value; }
         }
-        #endregion
-
-        #region Artifacts
-
-        /// <summary>
-        /// Checks if the player's class has at least one version of the artifact specified available to them.
-        /// </summary>
-        /// <param name="artifactID"></param>
-        /// <returns>True when at least one version exists, false when no versions are available.</returns>
-        public bool CanReceiveArtifact(string artifactID)
-        {
-            Dictionary<String, ItemTemplate> possibleVersions = ArtifactMgr.GetArtifactVersions(artifactID, (eCharacterClass)CharacterClass.ID, Realm);
-
-            if (possibleVersions.Count == 0)
-                return false;
-
-            return true;
-        }
-
         #endregion
 
         #region Constructors

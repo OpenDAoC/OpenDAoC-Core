@@ -66,7 +66,6 @@ namespace DOL.GS.Commands
 		"/player startml - Start this players Master Level training.",
 		"/player setml <level> - Set this players current Master Level.",
 		"/player setmlstep <level> <step> [false] - Sets a step for an ML level to finished. 0 to set as unfinished.",
-		"/player articredit <artifact>",
         "/player allchars <PlayerName>", 
         "/player class <list|classID> - view a list of classes, or change the targets class.",
         "/player areas - list all the areas the player is currently inside of "
@@ -85,26 +84,6 @@ namespace DOL.GS.Commands
 
             switch (args[1])
             {
-                #region articredit
-
-                case "articredit":
-                    {
-                        if (args.Length != 3)
-                        {
-                            DisplaySyntax(client);
-                            return;
-                        }
-
-                        var player = client.Player.TargetObject as GamePlayer;
-                        if (player == null)
-                            player = client.Player;
-
-                        ArtifactMgr.GrantArtifactCredit(player, args[2]);
-                        break;
-                    }
-
-                #endregion
-
                 #region name
 
                 case "name":

@@ -110,28 +110,22 @@ namespace DOL.GS
 							// GameInventoryItem and utilizes the new Delve system.  No need to set ClassType for all artifacts when
 							// this code works fine as is.
 
-							if (ArtifactMgr.IsArtifact(item))
+
+							GameInventoryItem playerItem = GameInventoryItem.Create(item);
+
+							if (playerItem.CheckValid(m_player))
 							{
-								m_items.Add(itemSlot, new InventoryArtifact(item));
+								m_items.Add(itemSlot, playerItem as InventoryItem);
 							}
 							else
 							{
-								GameInventoryItem playerItem = GameInventoryItem.Create(item);
-
-								if (playerItem.CheckValid(m_player))
-								{
-									m_items.Add(itemSlot, playerItem as InventoryItem);
-								}
-								else
-								{
-									Log.ErrorFormat("Item '{0}', ClassType '{1}' failed valid test for player '{2}'!", item.Name, item.ClassType, m_player.Name);
-									GameInventoryItem invalidItem = new GameInventoryItem();
-									invalidItem.Name = "Invalid Item";
-									invalidItem.OwnerID = item.OwnerID;
-									invalidItem.SlotPosition = item.SlotPosition;
-									invalidItem.AllowAdd = false;
-									m_items.Add(itemSlot, invalidItem);
-								}
+								Log.ErrorFormat("Item '{0}', ClassType '{1}' failed valid test for player '{2}'!", item.Name, item.ClassType, m_player.Name);
+								GameInventoryItem invalidItem = new GameInventoryItem();
+								invalidItem.Name = "Invalid Item";
+								invalidItem.OwnerID = item.OwnerID;
+								invalidItem.SlotPosition = item.SlotPosition;
+								invalidItem.AllowAdd = false;
+								m_items.Add(itemSlot, invalidItem);
 							}
 
 							if (Log.IsWarnEnabled)
