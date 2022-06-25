@@ -173,4 +173,25 @@ public class LoyaltyManager
         
     }
 
+    public static void HandlePVPKill(GamePlayer player)
+    {
+        List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
+        
+        foreach (var loyalty in rloyal)
+        {
+            if (loyalty.Realm == (int) player.Realm)
+            {
+                //do nothing
+            }
+            else
+            {
+                loyalty.LoyalDays = 0;
+                if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
+                    loyalty.LoyalDays = loyalty.MinimumLoyalDays;
+            }
+        }
+
+        GameServer.Database.SaveObject(rloyal);
+    }
+
 }

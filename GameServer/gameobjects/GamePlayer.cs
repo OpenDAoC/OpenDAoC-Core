@@ -5398,19 +5398,7 @@ namespace DOL.GS
 
             if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
             {
-                foreach (var loyalty in rloyal)
-                {
-                    if (loyalty.Realm == (int) this.Realm)
-                    {
-                        //do nothing
-                    }
-                    else
-                    {
-                        loyalty.LoyalDays = 0;
-                        if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
-                            loyalty.LoyalDays = loyalty.MinimumLoyalDays;
-                    }
-                }
+               LoyaltyManager.HandlePVPKill(this);
             }
 
             long RealmLoyaltyBonus = 0;
