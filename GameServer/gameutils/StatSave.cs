@@ -56,28 +56,28 @@ namespace DOL.GS.GameEvents
 			if (ServerProperties.Properties.STATSAVE_INTERVAL == -1)
 				return;
 			
-			try
-			{
-				m_systemCpuUsedCounter = new PerformanceCounter("Processor", "% processor time", "_total");
-				m_systemCpuUsedCounter.NextValue();
-			}
-			catch (Exception ex)
-			{
-				m_systemCpuUsedCounter = null;
-				if (log.IsWarnEnabled)
-					log.Warn(ex.GetType().Name + " SystemCpuUsedCounter won't be available: " + ex.Message);
-			}
-			try
-			{
-				m_processCpuUsedCounter = new PerformanceCounter("Process", "% processor time", GetProcessCounterName());
-				m_processCpuUsedCounter.NextValue();
-			}
-			catch (Exception ex)
-			{
-				m_processCpuUsedCounter = null;
-				if (log.IsWarnEnabled)
-					log.Warn(ex.GetType().Name + " ProcessCpuUsedCounter won't be available: " + ex.Message);
-			}
+			// try
+			// {
+			// 	m_systemCpuUsedCounter = new PerformanceCounter("Processor", "% processor time", "_total");
+			// 	m_systemCpuUsedCounter.NextValue();
+			// }
+			// catch (Exception ex)
+			// {
+			// 	m_systemCpuUsedCounter = null;
+			// 	if (log.IsWarnEnabled)
+			// 		log.Warn(ex.GetType().Name + " SystemCpuUsedCounter won't be available: " + ex.Message);
+			// }
+			// try
+			// {
+			// 	m_processCpuUsedCounter = new PerformanceCounter("Process", "% processor time", GetProcessCounterName());
+			// 	m_processCpuUsedCounter.NextValue();
+			// }
+			// catch (Exception ex)
+			// {
+			// 	m_processCpuUsedCounter = null;
+			// 	if (log.IsWarnEnabled)
+			// 		log.Warn(ex.GetType().Name + " ProcessCpuUsedCounter won't be available: " + ex.Message);
+			// }
 			// 1 min * INTERVAL
 			m_statFrequency *= ServerProperties.Properties.STATSAVE_INTERVAL;
 			lock (typeof(StatSave))
@@ -143,19 +143,21 @@ namespace DOL.GS.GameEvents
 				int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
 
 				float cpu = 0;
-				if (m_systemCpuUsedCounter != null)
-					cpu = m_systemCpuUsedCounter.NextValue(); 
-				if (m_processCpuUsedCounter != null)
-					cpu = m_processCpuUsedCounter.NextValue();
+				// if (m_systemCpuUsedCounter != null)
+				// 	cpu = m_systemCpuUsedCounter.NextValue(); 
+				// if (m_processCpuUsedCounter != null)
+				// 	cpu = m_processCpuUsedCounter.NextValue();
 
-				long totalmem = GC.GetTotalMemory(false);
-			
+				// long totalmem = GC.GetTotalMemory(false);
+
+				long totalmem = 0;
+				
 				ServerStats newstat = new ServerStats();
 				newstat.CPU = cpu;
 				newstat.Clients = clients;
 				newstat.Upload = (int)outRate/1024;
 				newstat.Download = (int)inRate / 1024;
-				newstat.Memory = totalmem / 1024;
+				newstat.Memory = totalmem;
 				newstat.AlbionPlayers = AlbPlayers;
 				newstat.MidgardPlayers = MidPlayers;
 				newstat.HiberniaPlayers = HibPlayers;
