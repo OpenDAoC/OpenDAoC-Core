@@ -41,6 +41,7 @@ using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
 using FiniteStateMachine;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -1389,7 +1390,7 @@ namespace DOL.GS
 		{
 			if (m_arriveAtTargetAction != null)
 			{
-				m_arriveAtTargetAction.Stop();
+				m_arriveAtTargetAction?.Stop();
 				m_arriveAtTargetAction = null;
 			}
 		}
@@ -4303,6 +4304,7 @@ namespace DOL.GS
 			if (ControlledBrain != null)
 				ControlledNPC_Release();
 
+			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-Loot&Messages-NPC("+this.GetHashCode()+")");
 			if (killer != null)
 			{
 				if (killer is GamePet pet) killer = pet.Owner;
@@ -4313,6 +4315,7 @@ namespace DOL.GS
 				if (killer is GamePlayer)
 					((GamePlayer)killer).Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
 			}
+			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Loot&Messages-NPC("+this.GetHashCode()+")");
 			StopFollowing();
 
 			if (Group != null)
@@ -4344,14 +4347,19 @@ namespace DOL.GS
 				}
 
 				// deal out exp and realm points based on server rules
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
+
 				base.ProcessDeath(killer);
 			}
 			
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
-
+			
+			Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 			Delete();
+			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 
 			// remove temp properties
 			TempProperties.removeAllProperties();

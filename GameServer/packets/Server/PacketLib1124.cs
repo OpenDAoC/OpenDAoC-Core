@@ -758,7 +758,9 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					var effects = m_gameClient.Player.effectListComponent.ConcentrationEffects;
+					var effects = m_gameClient.Player?.effectListComponent.ConcentrationEffects;
+					if (effects == null)
+						return;
                     for (int i = 0; i < effects.Count; i++)
                     {
                         IConcentrationEffect effect = effects[i];

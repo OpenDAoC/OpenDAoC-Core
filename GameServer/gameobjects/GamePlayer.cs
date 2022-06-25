@@ -5348,11 +5348,9 @@ namespace DOL.GS
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
             
-            List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
-
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-
+                List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
                 bool realmFound = false;
                 foreach (var rl in rloyal)
                 {
@@ -5400,19 +5398,7 @@ namespace DOL.GS
 
             if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
             {
-                foreach (var loyalty in rloyal)
-                {
-                    if (loyalty.Realm == (int) this.Realm)
-                    {
-                        //do nothing
-                    }
-                    else
-                    {
-                        loyalty.LoyalDays = 0;
-                        if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
-                            loyalty.LoyalDays = loyalty.MinimumLoyalDays;
-                    }
-                }
+               LoyaltyManager.HandlePVPKill(this);
             }
 
             long RealmLoyaltyBonus = 0;
@@ -13670,6 +13656,7 @@ namespace DOL.GS
             m_dbCharacter = (DOLCharacters)obj;
             
             
+            LoyaltyManager.CachePlayer(this);
             List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
