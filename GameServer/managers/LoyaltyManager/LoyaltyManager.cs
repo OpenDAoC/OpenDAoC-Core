@@ -11,15 +11,54 @@ namespace DOL.GS;
 public class LoyaltyManager
 
 {
+    private static Dictionary<GamePlayer, PlayerLoyalty> _CachedPlayerLoyaltyDict;
+
+    public static object CachedDictLock = new object();
+
     public LoyaltyManager()
     {
+        _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
     }
     
     public static PlayerLoyalty GetPlayerLoyalty(GamePlayer player)
     {
         if (player == null) return null;
-        List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
+        PlayerLoyalty playerLoyalty = null;
+
+        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+        bool alreadyExists = false;
+
+        //need to do this since we can't safely lock the object in the IF statement below
+        lock (CachedDictLock)
+        {
+            if (_CachedPlayerLoyaltyDict.ContainsKey(player))
+                alreadyExists = true;
+        }
         
+        if (!alreadyExists)
+        {
+            CachePlayer(player);
+        }
+
+        lock(CachedDictLock)
+            playerLoyalty = _CachedPlayerLoyaltyDict[player];
+
+        return playerLoyalty;
+    }
+
+    public static void CachePlayer(GamePlayer player)
+    {
+        List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
+        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+
+        lock (CachedDictLock)
+        {
+            if (_CachedPlayerLoyaltyDict.ContainsKey(player))
+            {
+                _CachedPlayerLoyaltyDict.Remove(player);
+            }
+        }
+
         var midLoyalty = 0;
         var hibLoyalty = 0;
         var albLoyalty = 0;
@@ -47,13 +86,45 @@ public class LoyaltyManager
             HibLoyaltyDays = hibLoyalty,
             HibPercent = hibPercent
         };
-
-        return playerLoyalty;
+            
+        lock(CachedDictLock)
+            _CachedPlayerLoyaltyDict.Add(player, playerLoyalty);
     }
     
     public static RealmLoyalty GetPlayerRealmLoyalty(GamePlayer player)
     {
         if (player == null) return null;
+
+        RealmLoyalty realmLoyalty = null;
+
+        PlayerLoyalty totalLoyalty = GetPlayerLoyalty(player);
+
+        int days = 0;
+        double percent = 0;
+
+        switch (player.Realm)
+        {
+            case eRealm.Albion:
+                days = totalLoyalty.AlbLoyaltyDays;
+                percent = totalLoyalty.AlbPercent;
+                break;
+            case eRealm.Hibernia:
+                days = totalLoyalty.HibLoyaltyDays;
+                percent = totalLoyalty.HibPercent;
+                break;
+            case eRealm.Midgard:
+                days = totalLoyalty.MidLoyaltyDays;
+                percent = totalLoyalty.MidPercent;
+                break;
+        }
+
+        realmLoyalty = new RealmLoyalty()
+        {
+            Days = days,
+            Percent = percent
+        };
+        
+        /*
         List<AccountXRealmLoyalty> Loyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
 
         int days = 0;
@@ -71,6 +142,7 @@ public class LoyaltyManager
             Days = days,
             Percent = percent
         };
+        */
 
         return realmLoyalty;
     }
@@ -94,6 +166,11 @@ public class LoyaltyManager
         List<AccountXRealmLoyalty> realmLoyalty = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
         DateTime lastUpdatedTime = realmLoyalty.First().LastLoyaltyUpdate;
         return lastUpdatedTime;
+    }
+
+    public static void UpdateLoyalty(GamePlayer player, PlayerLoyalty loyalty)
+    {
+        
     }
 
 }

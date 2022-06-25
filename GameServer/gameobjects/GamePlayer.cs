@@ -13670,6 +13670,7 @@ namespace DOL.GS
             m_dbCharacter = (DOLCharacters)obj;
             
             
+            LoyaltyManager.CachePlayer(this);
             List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
