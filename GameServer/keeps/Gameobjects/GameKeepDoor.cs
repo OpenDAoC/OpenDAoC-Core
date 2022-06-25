@@ -192,7 +192,7 @@ namespace DOL.GS.Keeps
 					if (DoorIndex == 1)
 						return true;
 				}
-				else if (Component.Keep is GameKeep)
+				else if (Component.Keep is GameKeep || Component.CurrentRegion.ID is (250 or 251 or 252 or 253))
 				{
 					// if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
 					// {
