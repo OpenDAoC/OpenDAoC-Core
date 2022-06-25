@@ -61,8 +61,8 @@ namespace DOL.GS {
                 //or a valid class for one of their groupmates
                 if (player.Group != null)
                 {
-                    var MaxDropCap = Math.Floor((decimal) (player.Group.MemberCount)/2) + 1;
-                    if (mob.Level > 60) MaxDropCap++; //increase drop cap beyond lvl 60
+                    var MaxDropCap = Math.Floor((decimal) (player.Group.MemberCount)/3) + 1;
+                    if (mob.Level > 65) MaxDropCap++; //increase drop cap beyond lvl 60
                     int guaranteedDrop = mob.Level > 65 ? 1 : 0; //guarantee a drop for very high level mobs
 
                     int numDrops = 0;
