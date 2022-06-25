@@ -5348,11 +5348,9 @@ namespace DOL.GS
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
             
-            List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
-
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-
+                List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
                 bool realmFound = false;
                 foreach (var rl in rloyal)
                 {
