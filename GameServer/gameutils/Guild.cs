@@ -1075,7 +1075,7 @@ namespace DOL.GS
 			{
 				player.Guild.UpdateMember(player);
 			}*/
-			if(guildPlayers[0] != null) guildPlayers[0].Guild.SaveIntoDatabase();
+			if(guildPlayers.Count > 0 && guildPlayers[0] != null) guildPlayers[0].Guild.SaveIntoDatabase();
 		}
 	}
 }
