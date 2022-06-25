@@ -1192,7 +1192,7 @@ namespace DOL.GS.ServerRules
 				}
 			}
 
-			highestConValue = highestPlayer.GetConLevel(killedNPC);
+			highestConValue = highestPlayer != null ? highestPlayer.GetConLevel(killedNPC) : living.GetConLevel(killedNPC);
 
 			if (living is NecromancerPet)
 			{
