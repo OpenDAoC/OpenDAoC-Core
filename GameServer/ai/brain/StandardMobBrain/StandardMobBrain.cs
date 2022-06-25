@@ -333,13 +333,9 @@ namespace DOL.AI.Brain
 
                 if (Body.Faction != null)
                 {
-                    int aggrolevel = 0;
-                    if (Body.Faction != null)
-                    {
-                        aggrolevel = CalculateAggroLevelToTarget(npc);
+                    var aggrolevel = CalculateAggroLevelToTarget(npc);
                         if (aggrolevel < 75)
                             return;
-                    }
                 }
 
                 if (CalculateAggroLevelToTarget(npc) > 0)
