@@ -1494,7 +1494,12 @@ namespace DOL.GS
 			
 			lock (m_changedSlots)
 			{
-				var slotsToUpdate = new List<int>(m_changedSlots.Cast<int>());
+				var invSlots = m_changedSlots.ToList();
+				var slotsToUpdate = new List<int>();
+				foreach (var inv in invSlots)
+				{
+					slotsToUpdate.Add((int)inv);
+				}
 				m_player.Out.SendInventorySlotsUpdate(slotsToUpdate);
 			}
 
