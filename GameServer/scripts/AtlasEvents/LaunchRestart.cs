@@ -97,7 +97,7 @@ namespace DOL.GS.GameEvents
             
             var message = $"Thanks for enduring our launch. \n\n" +
                           $"All player inventories, achievements, money and crafting skills have been reset. \n\n" +
-                          $"A gold compensation has been added to your account." +
+                          $"A gold compensation has been added to your account. \n" +
                           $"Visit Cruella de Vill in your Realm's Capital to claim an additional reward.";
             
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
