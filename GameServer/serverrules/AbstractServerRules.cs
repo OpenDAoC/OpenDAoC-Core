@@ -412,14 +412,14 @@ namespace DOL.GS.ServerRules
 			// Safe area support for defender
 			foreach (AbstractArea area in defender.CurrentAreas)
 			{
+				if (area is null) continue;
+
 				if (!area.IsSafeArea)
 					continue;
 
-				if (defender is GamePlayer)
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
+				if (defender is not GamePlayer) continue;
+				if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+				return false;
 			}
 
 			//safe area support for attacker

@@ -267,7 +267,7 @@ namespace DOL.GS.Friends
 			var offlineFriends = this[Player].ToList();
 			var index = 0;
 			foreach (var friend in this[Player].Select(name => PlayersFriendsListsCache.FirstOrDefault(kv => kv.Key.Name == name))
-					 .Where(kv => kv.Key != null && !kv.Key.IsAnonymous).Select(kv => kv.Key))
+					 .Where(kv => kv.Key != null && !kv.Key.IsAnonymous && kv.Key.Realm == Player.Realm).Select(kv => kv.Key))
 			{
 				offlineFriends.Remove(friend.Name);
 				Player.Out.SendMessage(string.Format("F,{0},{1},{2},{3},\"{4}\"",

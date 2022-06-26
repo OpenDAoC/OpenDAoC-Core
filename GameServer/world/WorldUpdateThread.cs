@@ -117,7 +117,7 @@ namespace DOL.GS
 		/// <param name="player">The player needing update</param>
 		private static void UpdatePlayerWorld(GamePlayer player)
 		{
-			UpdatePlayerWorld(player, GameTimer.GetTickCount());
+			UpdatePlayerWorld(player, GameLoop.GameLoopTime);
 		}
 
 		/// <summary>
@@ -486,7 +486,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		private static bool PlayerNeedUpdate(long lastUpdate)
 		{
-			return (GameTimer.GetTickCount() - lastUpdate) >= GetPlayerWorldUpdateInterval;
+			return (GameLoop.GameLoopTime - lastUpdate) >= GetPlayerWorldUpdateInterval;
 		}
 
 		private static bool StartPlayerUpdateTask(GameClient client, IDictionary<GameClient, Tuple<long, Task, Region>> clientsUpdateTasks, long begin)
@@ -517,10 +517,10 @@ namespace DOL.GS
 					// Check for how long
 					if ((begin - lastUpdate) > GetPlayerWorldUpdateInterval)
 					{
-						if (log.IsWarnEnabled && (GameTimer.GetTickCount() - player.TempProperties.getProperty<long>("LAST_WORLD_UPDATE_THREAD_WARNING", 0) >= 1000))
+						if (log.IsWarnEnabled && (GameLoop.GameLoopTime - player.TempProperties.getProperty<long>("LAST_WORLD_UPDATE_THREAD_WARNING", 0) >= 1000))
 						{
 							log.WarnFormat("Player Update Task ({0}) Taking more than world update refresh rate : {1} ms (real {2} ms) - Task Status : {3}!", player.Name, GetPlayerWorldUpdateInterval, begin - lastUpdate, taskEntry.Status);
-							player.TempProperties.setProperty("LAST_WORLD_UPDATE_THREAD_WARNING", GameTimer.GetTickCount());
+							player.TempProperties.setProperty("LAST_WORLD_UPDATE_THREAD_WARNING", GameLoop.GameLoopTime);
 						}
 					}
 					// Don't init this client.
@@ -596,7 +596,7 @@ namespace DOL.GS
 				try
 				{
 					// Start Time of the loop
-					long begin = GameTimer.GetTickCount();
+					long begin = GameLoop.GameLoopTime;
 
 					// Get All Clients
 					var clients = WorldMgr.GetAllClients();
@@ -649,7 +649,7 @@ namespace DOL.GS
 						StartPlayerUpdateTask(client, clientsUpdateTasks, begin);
 					}
 
-					long took = GameTimer.GetTickCount() - begin;
+					long took = GameLoop.GameLoopTime - begin;
 
 					if (took >= 500)
 					{

@@ -19,7 +19,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using DOL.GS;
-using DOL.GS.Spells;
 
 namespace DOL.AI.Brain
 {
@@ -39,7 +38,6 @@ namespace DOL.AI.Brain
 		{
 			List<GameLiving> newTargets = new List<GameLiving>();
 			List<GameLiving> oldTargets = new List<GameLiving>();
-			base.CalculateNextAttackTarget();
 			lock((m_aggroTable as ICollection).SyncRoot)
 			{
 				foreach(GameLiving living in m_aggroTable.Keys)
@@ -67,64 +65,53 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			foreach (GamePlayer living in Body.GetPlayersInRadius((ushort)((TurretPet)Body).TurretSpell.Range, Body.CurrentRegion.IsDungeon ? false : true))
-            {
-                if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-                    continue;
-
-                if (living.IsInvulnerableToAttack)
-                    continue;
-
-                if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-                    continue;
-
-                if (living.IsMezzed || living.IsStealthed)
-                    continue;
-
-				//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-				if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
+			foreach (GameLiving living in Body.GetPlayersInRadius((ushort) ((TurretPet) Body).TurretSpell.Range,
+				         Body.CurrentRegion.IsDungeon ? false : true))
+			{
+				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+					continue;
+				
+				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
 					continue;
 
+				if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
+					continue;
+
+				if (living.IsMezzed || living.IsStealthed)
+					continue;
+
+				if (living is GameNPC)
+				{
+					if (Body.GetConLevel(living) <= -3)
+						continue;
+
+					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null && living.CurrentSpeed <= (living.MaxSpeed / 10)) //turrets will only not attack enemies that are snared, only rooted
+						continue;
+
+					if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
+						continue;
+				} else if (living is GamePlayer gamelivingPl)
+				{
+					if (gamelivingPl.IsInvulnerableToAttack)
+						continue;
+					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
+						continue;
+				}
+				
 				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))
 				{
 					oldTargets.Add(living);
 				}
 				else
 				{
-					newTargets.Add(living as GameLiving);
+					newTargets.Add(living);
 				}
-            }
-
-			foreach (GameNPC living in Body.GetNPCsInRadius((ushort)((TurretPet)Body).TurretSpell.Range, Body.CurrentRegion.IsDungeon ? false : true))
-            {
-                if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-                    continue;
-
-                if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-                    continue;
-
-                if (living.IsMezzed || living.IsStealthed)
-                    continue;
-
-                if (Body.GetConLevel(living) <= -3)
-	                continue;
-
-				//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-				if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null && living.CurrentSpeed <= (living.MaxSpeed / 10)) //turrets will only not attack enemies that are snared, only rooted
-					continue;
-
-                if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
-                    continue;
-
-				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))
-				{
-					oldTargets.Add(living);
-				}
-				else
-				{
-					newTargets.Add(living as GameLiving);
-				}
+				
+				base.CalculateNextAttackTarget();
 			}
+			
 
 			// always favor previous targets and new targets that have not been attacked first, then re-attack old targets
 

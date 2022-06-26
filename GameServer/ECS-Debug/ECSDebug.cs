@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -24,7 +25,7 @@ namespace ECS.Debug
         private static bool PerfCountersEnabled = false;
         private static bool stateMachineDebugEnabled = false;
         private static bool aggroDebugEnabled = false;
-        private static Dictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new Dictionary<string, System.Diagnostics.Stopwatch>();
+        private static ConcurrentDictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new ConcurrentDictionary<string, System.Diagnostics.Stopwatch>();
 
         private static bool GameEventMgrNotifyProfilingEnabled = false;
         private static int GameEventMgrNotifyTimerInterval = 0;
@@ -89,7 +90,7 @@ namespace ECS.Debug
 
             InitializeStreamWriter();
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            PerfCounters.Add(uniqueID, stopwatch);
+            PerfCounters.TryAdd(uniqueID, stopwatch);
         }
 
         public static void StopPerfCounter(string uniqueID)

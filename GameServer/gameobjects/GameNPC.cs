@@ -4992,6 +4992,7 @@ namespace DOL.GS
 			BroadcastLoot(droplist);
 			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
 
+			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
 			if (autolootlist.Count > 0)
 			{
 				foreach (GameObject obj in autolootlist)
@@ -5003,6 +5004,7 @@ namespace DOL.GS
 					}
 				}
 			}
+			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
 		}
 
 		/// <summary>

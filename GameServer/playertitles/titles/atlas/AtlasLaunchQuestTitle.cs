@@ -50,7 +50,7 @@ namespace DOL.GS.PlayerTitles
 
         public override bool IsSuitable(GamePlayer player)
         {
-            var launch = new DateTime(2022, 06, 25, 00, 00, 00);
+            var launch = new DateTime(2022, 06, 27, 00, 00, 00);
             var creationDate = player.DBCharacter.CreationDate;
             
             return (creationDate < launch);

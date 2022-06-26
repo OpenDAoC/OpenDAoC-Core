@@ -28,38 +28,38 @@ namespace DOL.AI.Brain
 	public override void Notify(DOLEvent e, object sender, System.EventArgs args)
 	{
 		base.Notify(e, sender, args);
-		if(AggressionState != eAggressionState.Passive)
-		{
-			if(e == GameLivingEvent.CastFinished || e == GameLivingEvent.AttackFinished)
-			{
-				TurretPet pet = sender as TurretPet;
-				if(pet == null || pet != Body || !(pet.Brain is TurretMainPetTankBrain))
-					return;
-
-				if(e == GameLivingEvent.CastFinished)
-				{
-					if(Body.TargetObject != null)
-					{
-						//Force to stop spell casting
-						if(Body.IsCasting)
-						{
-							Body.StopCurrentSpellcast();
-						}
-						if(Body.SpellTimer != null && Body.SpellTimer.IsAlive)
-						{
-							Body.SpellTimer.Stop();
-						}
-						Body.StartAttack(Body.TargetObject);
-					}
-					return;
-				}
-				if(e == GameLivingEvent.AttackFinished)
-				{
-					Body.StopAttack();
-					AttackMostWanted();
-				}
-			}
-		}
+		// if(AggressionState != eAggressionState.Passive)
+		// {
+		// 	if(e == GameLivingEvent.CastFinished || e == GameLivingEvent.AttackFinished)
+		// 	{
+		// 		TurretPet pet = sender as TurretPet;
+		// 		if(pet == null || pet != Body || !(pet.Brain is TurretMainPetTankBrain))
+		// 			return;
+		//
+		// 		if(e == GameLivingEvent.CastFinished)
+		// 		{
+		// 			if(Body.TargetObject != null)
+		// 			{
+		// 				//Force to stop spell casting
+		// 				if(Body.IsCasting)
+		// 				{
+		// 					Body.StopCurrentSpellcast();
+		// 				}
+		// 				if(Body.SpellTimer != null && Body.SpellTimer.IsAlive)
+		// 				{
+		// 					Body.SpellTimer.Stop();
+		// 				}
+		// 				Body.StartAttack(Body.TargetObject);
+		// 			}
+		// 			return;
+		// 		}
+		// 		if(e == GameLivingEvent.AttackFinished)
+		// 		{
+		// 			Body.StopAttack();
+		// 			AttackMostWanted();
+		// 		}
+		// 	}
+		// }
 	}
 
   	public override void AttackMostWanted()
