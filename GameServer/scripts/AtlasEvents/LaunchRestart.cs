@@ -69,6 +69,9 @@ namespace DOL.GS.GameEvents
             player.RealmLevel = 0;
             player.Experience = 0;
             
+            BattlegroundEventLoot.GenerateArmor(player);
+            BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)player.CharacterClass.ID, player);
+
             player.RemoveAllSpecs();
             player.RemoveAllSpellLines();
             player.styleComponent.RemoveAllStyles();
@@ -82,8 +85,6 @@ namespace DOL.GS.GameEvents
             player.Out.SendUpdatePlayerSkills();
             player.Out.SendUpdatePoints();
             
-            BattlegroundEventLoot.GenerateArmor(player);
-            BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)player.CharacterClass.ID, player);
 
             var reset = new DOLCharactersXCustomParam
             {
