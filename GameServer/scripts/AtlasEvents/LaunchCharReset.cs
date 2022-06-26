@@ -79,7 +79,7 @@ namespace DOL.GS.GameEvents
 
             //this is just for additional updates
             //that add all the new class changes.
-            player.OnLevelUp(0);
+            player.OnLevelUp(player.Level - 1);
 
             player.Out.SendUpdatePlayer();
             player.Out.SendUpdatePlayerSkills();
