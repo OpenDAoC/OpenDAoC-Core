@@ -49,7 +49,7 @@ namespace DOL.GS.GameEvents
             var player = sender as GamePlayer;
             if (player == null) return;
             
-            var launch = new DateTime(2022, 06, 26, 14, 00, 00);
+            var launch = new DateTime(2022, 06, 26, 12, 30, 00);
 
             var creationDate = player.DBCharacter.CreationDate;
 
