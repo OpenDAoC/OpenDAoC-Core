@@ -15035,6 +15035,7 @@ namespace DOL.GS
                     if (craftingSkill != null)
                     {
                         m_craftingSkills.Add(skill, startValue);
+                        CraftingProgressMgr.TrackChange(this, skill, startValue);
                         Out.SendMessage("You gain skill in " + craftingSkill.Name + "! (" + startValue + ").", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         return true;
                     }
