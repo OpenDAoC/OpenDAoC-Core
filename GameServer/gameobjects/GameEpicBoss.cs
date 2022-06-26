@@ -8,7 +8,7 @@ namespace DOL.GS {
             ScalingFactor = 80;
             OrbsReward = Properties.EPICBOSS_ORBS;
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             if (MaxHealth < 60000 && MaxHealth > 30000)// 1.5k orbs for finalll boss in dungeon, or huge one in classic/SI zone
                 OrbsReward /= 2;
@@ -17,6 +17,9 @@ namespace DOL.GS {
                 OrbsReward /= 4;
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
+
+
+            if (killer is GamePet pet) killer = pet.Owner; 
             
             var playerKiller = killer as GamePlayer;
             
@@ -52,7 +55,7 @@ namespace DOL.GS {
                 playerKiller.Achieve($"{achievementMob}-Credit");
             }
 
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }
