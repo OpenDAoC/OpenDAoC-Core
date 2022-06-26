@@ -4755,7 +4755,7 @@ namespace DOL.GS {
         {
             int cap = 0;
             
-            if (mobLevel > 57)
+            if (mobLevel > 62)
                 cap = mobLevel + (Util.Random(1, 5));
             else 
                 cap = mobLevel - (Util.Random(1, 10));
