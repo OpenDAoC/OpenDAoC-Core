@@ -102,6 +102,8 @@ namespace DOL.GS.GameEvents
             
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
             
+            player.Achieve($"{BetaResetKey}-Credit");
+            
             if (receivedCompensation != null) return;
             
             player.AddMoney(250 * 10000); // 250 gold
