@@ -2521,6 +2521,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
 		public static bool CRAFTING_MAX_SKILLS;
+		
+		/// <summary>
+		/// Max character crafting skill?
+		/// </summary>
+		[ServerProperty("craft", "crafting_max_skills_amount", "The amount to which set the crafting skills when using crafting_max_skills", 1)]
+		public static int CRAFTING_MAX_SKILLS_AMOUNT;
 
 		/// <summary>
 		/// Use salvage per realm and get back material to use in chars realm

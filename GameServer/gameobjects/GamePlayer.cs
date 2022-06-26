@@ -15176,7 +15176,9 @@ namespace DOL.GS
                                 if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                                 {
                                     if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                        m_craftingSkills.Add((eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
+                                    {
+                                        m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                    }
                                     else
                                         m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
                                 }
@@ -15192,7 +15194,9 @@ namespace DOL.GS
                             if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                             {
                                 if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
+                                {
+                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                }
                                 else
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
                             }
