@@ -68,9 +68,7 @@ namespace DOL.GS.GameEvents
             player.RealmPoints = 0;
             player.RealmLevel = 0;
             player.Experience = 0;
-
-            player.MoveToBind();
-
+            
             player.RemoveAllSpecs();
             player.RemoveAllSpellLines();
             player.styleComponent.RemoveAllStyles();
@@ -98,7 +96,8 @@ namespace DOL.GS.GameEvents
             var message = $"Thanks for enduring our launch. \n\n" +
                           $"All player inventories, achievements, money and crafting skills have been reset. \n\n" +
                           $"A gold compensation has been added to your account. \n" +
-                          $"Visit Cruella de Vill in your Realm's Capital to claim an additional reward.";
+                          $"Visit Cruella de Vill in your Realm's Capital to claim an additional reward. \n\n" +
+                          $"Please relog for the changes to take effect and have your character specializations appear.";
             
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
             
