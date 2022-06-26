@@ -28,13 +28,13 @@ namespace DOL.GS.Spells
             //base.ApplyEffectOnTarget(target, effectiveness);
 
             if (template.ClassType == "")
-                Npc = new GameMerchant();
+                Npc = new GameAtlasMerchant();
             else
             {
                 try
                 {
-                    Npc = new GameMerchant();
-                    Npc = (GameMerchant) Assembly.GetAssembly(typeof (GameServer)).CreateInstance(template.ClassType, false);
+                    Npc = new GameAtlasMerchant();
+                    Npc = (GameAtlasMerchant) Assembly.GetAssembly(typeof (GameServer)).CreateInstance(template.ClassType, false);
                 }
                 catch (Exception e)
                 {
@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
                 {
                     try
                     {
-                        Npc = (GameMerchant) Assembly.GetExecutingAssembly().CreateInstance(template.ClassType, false);
+                        Npc = (GameAtlasMerchant) Assembly.GetExecutingAssembly().CreateInstance(template.ClassType, false);
                     }
                     catch (Exception e)
                     {
