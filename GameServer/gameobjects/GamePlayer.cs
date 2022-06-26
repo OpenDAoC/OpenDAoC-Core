@@ -846,6 +846,7 @@ namespace DOL.GS
                 Shade(false);
             Out.SendPlayerQuit(false);
             Quit(true);
+            CraftingProgressMgr.FlushAndSaveInstance(this);
             SaveIntoDatabase();
             m_quitTimer?.Stop();
             m_quitTimer = null;
@@ -13926,8 +13927,8 @@ namespace DOL.GS
                 //Save realmtimer
                 RealmTimer.SaveRealmTimer(this);
 
-                SaveSkillsToCharacter();
-                SaveCraftingSkills();
+                SaveSkillsToCharacter();                
+                //SaveCraftingSkills();
                 DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
                 DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel;
                 DBCharacter.LastLevelUp = DateTime.Now;
@@ -15095,33 +15096,33 @@ namespace DOL.GS
         /// <summary>
         /// This function saves all player crafting skill in the db
         /// </summary>
-        protected void SaveCraftingSkills()
-        {
-            if (DBCharacter == null)
-                return;
-            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+        //protected void SaveCraftingSkills()
+        //{
+        //    if (DBCharacter == null)
+        //        return;
+        //    AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
             
-            CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
+        //    CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
 
-            string cs = "";
+        //    string cs = "";
 
-            if (CraftingPrimarySkill != eCraftingSkill.NoCrafting)
-            {
-                lock (CraftingLock)
-                {
-                    foreach (KeyValuePair<eCraftingSkill, int> de in m_craftingSkills)
-                    {
-                        if (cs.Length > 0) cs += ";";
+        //    if (CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+        //    {
+        //        lock (CraftingLock)
+        //        {
+        //            foreach (KeyValuePair<eCraftingSkill, int> de in m_craftingSkills)
+        //            {
+        //                if (cs.Length > 0) cs += ";";
 
-                        cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);
-                    }
-                }
-            }
+        //                cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);
+        //            }
+        //        }
+        //    }
 
-            CraftingForRealm.SerializedCraftingSkills = cs;
+        //    CraftingForRealm.SerializedCraftingSkills = cs;
             
-            GameServer.Database.SaveObject(CraftingForRealm); 
-        }
+        //    GameServer.Database.SaveObject(CraftingForRealm); 
+        //}
 
         /// <summary>
         /// This function load all player crafting skill from the db
@@ -15179,10 +15180,8 @@ namespace DOL.GS
                                 {
                                     if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS) {
                                         m_craftingSkills.Add((eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
-                                        CraftingProgressMgr.TrackChange(this, (eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
                                     } else {
                                         m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
-                                        CraftingProgressMgr.TrackChange(this, (eCraftingSkill)i, Convert.ToInt32(values[1]));
                                     }
                                 }
                                 else
@@ -15198,10 +15197,8 @@ namespace DOL.GS
                             {
                                 if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS) {
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
-                                    CraftingProgressMgr.TrackChange(this, (eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
                                 } else {
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
-                                    CraftingProgressMgr.TrackChange(this, (eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
                                 }
                             }
                             else
