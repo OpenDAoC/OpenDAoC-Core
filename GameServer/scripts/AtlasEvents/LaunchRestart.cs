@@ -76,14 +76,9 @@ namespace DOL.GS.GameEvents
             player.styleComponent.RemoveAllStyles();
 
             //reset before, and after changing the class.
-            player.Reset();
-            player.SetCharacterClass(player.CharacterClass.ID);
-            player.Reset();
-            player.RespecAll();
 
-            //this is just for additional updates
-            //that add all the new class changes.
-            player.OnLevelUp(player.Level - 1);
+            player.RespecAll();
+            
 
             player.Out.SendUpdatePlayer();
             player.Out.SendUpdatePlayerSkills();
@@ -117,6 +112,8 @@ namespace DOL.GS.GameEvents
                 KeyName = playerCompensationString,
                 Value = "1"
             };
+            GameServer.Database.AddObject(compensation);
+
         }
         
     }
