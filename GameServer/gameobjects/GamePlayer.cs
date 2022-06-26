@@ -14909,6 +14909,7 @@ namespace DOL.GS
                 if (craftingSkill != null && count >0)
                 {
                     m_craftingSkills[skill] = count + m_craftingSkills[skill];
+                    CraftingProgressMgr.TrackChange(this, skill, m_craftingSkills[skill]);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.GainSkill", craftingSkill.Name, m_craftingSkills[skill]), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     int currentSkillLevel = GetCraftingSkillValue(skill);
                     if (HasPlayerReachedNewCraftingTitle(currentSkillLevel))
@@ -15176,10 +15177,13 @@ namespace DOL.GS
                             {
                                 if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                                 {
-                                    if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+                                    if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS) {
                                         m_craftingSkills.Add((eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
-                                    else
+                                        CraftingProgressMgr.TrackChange(this, (eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
+                                    } else {
                                         m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
+                                        CraftingProgressMgr.TrackChange(this, (eCraftingSkill)i, Convert.ToInt32(values[1]));
+                                    }
                                 }
                                 else
                                 {
@@ -15192,10 +15196,13 @@ namespace DOL.GS
                         {
                             if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                             {
-                                if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+                                if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS) {
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
-                                else
+                                    CraftingProgressMgr.TrackChange(this, (eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
+                                } else {
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+                                    CraftingProgressMgr.TrackChange(this, (eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+                                }
                             }
                             else
                             {
