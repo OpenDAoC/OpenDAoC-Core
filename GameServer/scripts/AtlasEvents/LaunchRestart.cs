@@ -98,7 +98,8 @@ namespace DOL.GS.GameEvents
                           $"All player inventories, achievements, money and crafting skills have been reset. \n\n" +
                           $"A gold compensation has been added to your account. \n" +
                           $"Visit Cruella de Vill in your Realm's Capital to claim an additional reward. \n\n" +
-                          $"Please relog for the changes to take effect and have your character specializations appear.";
+                          $"Please relog for the changes to take effect and have your character specializations appear.\n\n" +
+                          $"Visit Discord #project-updates for more informations";
             
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
             
