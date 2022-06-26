@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DOL.GS {
     public static class CraftingProgressMgr {
-        private static IDictionary<GamePlayer, Dictionary<eCraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<eCraftingSkill, int>>(1000);
+        private static IDictionary<GamePlayer, Dictionary<eCraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<eCraftingSkill, int>>();
         private static readonly object _lockObject = new();
 
         /// <summary>
@@ -14,18 +14,12 @@ namespace DOL.GS {
         /// <param name="gamePlayer"></param>
         /// <param name="craftSkill"></param>
         /// <param name="amount"></param>
-        public static void TrackChange(GamePlayer gamePlayer, eCraftingSkill craftSkill, int amount) {
-            lock (_lockObject) {                
-                if (_craftingChanges.TryGetValue(gamePlayer, out var existingInstance)) {
-                    if(!existingInstance.ContainsKey(craftSkill)) {
-                        existingInstance.Add(craftSkill, amount);
-                    } else {
-                        existingInstance[craftSkill] = amount;
-                    }
+        public static void TrackChange(GamePlayer gamePlayer, Dictionary<eCraftingSkill, int> craftingChanges) {
+            lock (_lockObject) {
+                if (_craftingChanges.ContainsKey(gamePlayer)) {
+                    _craftingChanges[gamePlayer] = craftingChanges;
                 } else {
-                    Dictionary<eCraftingSkill, int> instanceRecord = new Dictionary<eCraftingSkill, int>();
-                    instanceRecord.Add(craftSkill, amount);
-                    _craftingChanges.Add(gamePlayer, instanceRecord);
+                    _craftingChanges.Add(gamePlayer, craftingChanges);
                 }
             }
         }
@@ -59,6 +53,7 @@ namespace DOL.GS {
                         continue;
                     }
                     _saveInstance(change.Key, change.Value);
+                    count++;
                 }
                 _craftingChanges.Clear();
             }

@@ -14910,7 +14910,7 @@ namespace DOL.GS
                 if (craftingSkill != null && count >0)
                 {
                     m_craftingSkills[skill] = count + m_craftingSkills[skill];
-                    CraftingProgressMgr.TrackChange(this, skill, m_craftingSkills[skill]);
+                    CraftingProgressMgr.TrackChange(this, m_craftingSkills);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.GainSkill", craftingSkill.Name, m_craftingSkills[skill]), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     int currentSkillLevel = GetCraftingSkillValue(skill);
                     if (HasPlayerReachedNewCraftingTitle(currentSkillLevel))
@@ -15037,7 +15037,7 @@ namespace DOL.GS
                     if (craftingSkill != null)
                     {
                         m_craftingSkills.Add(skill, startValue);
-                        CraftingProgressMgr.TrackChange(this, skill, startValue);
+                        CraftingProgressMgr.TrackChange(this, m_craftingSkills);
                         Out.SendMessage("You gain skill in " + craftingSkill.Name + "! (" + startValue + ").", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         return true;
                     }
