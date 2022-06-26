@@ -1526,6 +1526,7 @@ namespace DOL.GS
 				if (log.IsDebugEnabled)
 					log.Debug("Save ThreadId=" + Thread.CurrentThread.ManagedThreadId);
 				int saveCount = 0;
+				int craftingSaveCount = 0;
 				if (m_database != null)
 				{
 					ThreadPriority oldprio = Thread.CurrentThread.Priority;
@@ -1542,6 +1543,7 @@ namespace DOL.GS
 					BoatMgr.SaveAllBoats();
 
 					FactionMgr.SaveAllAggroToFaction();
+					craftingSaveCount = CraftingProgressMgr.Save();
 
 					// 2008-01-29 Kakuri - Obsolete
 					//m_database.WriteDatabaseTables();
@@ -1550,8 +1552,9 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Saving database complete!");
 				startTick = Environment.TickCount - startTick;
-				if (log.IsInfoEnabled)
-					log.Info("Saved all databases and " + saveCount + " players in " + startTick + "ms");
+				if (log.IsInfoEnabled) 
+					log.Info("Saved all databases and " + saveCount + " players in " + startTick + "ms" + Environment.NewLine 
+						+ "Crafting Progress Saved for: " + craftingSaveCount);
 			}
 			catch (Exception e1)
 			{
