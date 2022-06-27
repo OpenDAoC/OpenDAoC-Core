@@ -66,7 +66,7 @@ public class PlayerDeck
         while (cardsLength > 1)
         {
             cardsLength--;
-            int k = Util.CryptoNextInt(cardsLength + 1);
+            int k = Util.CryptoNextInt(cardsLength);
             var currentItem = preshuffle[k];
             preshuffle[k] = preshuffle[cardsLength];
             preshuffle[cardsLength] = currentItem;
