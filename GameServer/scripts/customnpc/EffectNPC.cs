@@ -978,6 +978,7 @@ namespace DOL.GS {
                 newInventoryItem.IsCrafted = true;
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
+            newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             //player.RealmPoints -= price;
@@ -1053,6 +1054,7 @@ namespace DOL.GS {
                 newInventoryItem.IsCrafted = true;
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
+            newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             //player.RealmPoints -= price;
