@@ -2324,13 +2324,16 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
-                GameLiving target = Body.TargetObject as GameLiving;
-                if (!target.IsWithinRadius(spawn, 900) && AggroTable.ContainsKey(target))
+                if (HasAggro && Body.TargetObject != null)
                 {
-                    AggroTable.Remove(target);
-                    CalculateNextAttackTarget();
-                    CanSwitchTarget = false;
+                    Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+                    GameLiving target = Body.TargetObject as GameLiving;
+                    if (!target.IsWithinRadius(spawn, 900) && AggroTable.ContainsKey(target) && target != null && target.IsAlive)
+                    {
+                        AggroTable.Remove(target);
+                        CalculateNextAttackTarget();
+                        CanSwitchTarget = false;
+                    }
                 }
             }
             return 0;
