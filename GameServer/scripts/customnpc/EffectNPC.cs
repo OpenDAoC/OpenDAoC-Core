@@ -944,6 +944,7 @@ namespace DOL.GS {
                item.Object_Type == 46)
             {
                 SendReply(player, "You can't dye that.");
+                return;
             }
 
             int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
