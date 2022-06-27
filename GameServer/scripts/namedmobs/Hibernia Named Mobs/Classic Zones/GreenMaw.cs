@@ -53,10 +53,30 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 20000; }
 		}
 		public override bool AddToWorld()
 		{
+			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is GreenMawBrain)
+					return false;
+			}
+			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAddBrain)
+					npc.RemoveFromWorld();
+			}
+			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAdd2Brain)
+					npc.RemoveFromWorld();
+			}
+			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAdd3Brain)
+					npc.RemoveFromWorld();
+			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50022);
 			LoadTemplate(npcTemplate);
 			Strength = npcTemplate.Strength;
@@ -189,7 +209,7 @@ namespace DOL.GS
         public override void Die(GameObject killer)
         {
 			++GreenMawRedCount;
-			if (GreenMawRedCount == 3)
+			if (GreenMawRedCount >= 3)
 				SpawnCopies();
 			base.Die(killer);
         }
@@ -297,7 +317,7 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
 		{
 			++GreenMawOrangeCount;
-			if (GreenMawOrangeCount == 4)
+			if (GreenMawOrangeCount >= 4)
 				SpawnCopies();
 			base.Die(killer);
 		}
