@@ -902,7 +902,7 @@ namespace DOL.GS
                     if (log.IsInfoEnabled)
                         log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
                 }
-
+                CraftingProgressMgr.FlushAndSaveInstance(this);
                 SaveIntoDatabase();
             }
             finally

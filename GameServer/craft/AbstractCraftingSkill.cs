@@ -193,6 +193,13 @@ namespace DOL.GS
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+			
+			if (player.IsCasting)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftCasting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			
 
 			return true;
 		}
@@ -211,7 +218,7 @@ namespace DOL.GS
 				return 0;
 			}
 
-			if (queue > 0 && remainingToCraft == 0 && finishedCraft)
+			if (queue > 1 && remainingToCraft == 0 && finishedCraft)
 			{
 				remainingToCraft = queue - 1;
 			}
