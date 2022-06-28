@@ -89,7 +89,7 @@ namespace DOL.GS.Commands
 
             foreach (GameKeepGuard guard in keep.Guards.Values)
             {
-                if (guard is GuardCorspeSummoner)
+                if (guard is GuardCorpseSummoner)
                 {
                     if (guard.CurrentZone != null && guard.CurrentZone.ID == client.Player.CurrentZone.ID)
                     {

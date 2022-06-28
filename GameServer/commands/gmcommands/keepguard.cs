@@ -194,7 +194,7 @@ namespace DOL.GS.Commands
 							#region CorpseSummoner
                             case "corpsesummoner":
                                 {
-                                    guard = new GuardCorspeSummoner();
+                                    guard = new GuardCorpseSummoner();
                                     break;
                                 }
                             #endregion CorpseSummoner

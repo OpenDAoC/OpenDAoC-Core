@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Keeps
 {
-    public class GuardCorspeSummoner : GameKeepGuard
+    public class GuardCorpseSummoner : GameKeepGuard
     {
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -97,12 +97,12 @@ namespace DOL.GS.Keeps
             }
             if (base.AddToWorld())
             {
-                Name = "Corspe Summoner";
+                Name = "Corpse Summoner";
                 Model = 25;
                 Size = 60;
                 MaxSpeedBase = 0;
-                var corspesummonerbrain = new CorspeSummonerBrain();
-                SetOwnBrain(corspesummonerbrain);
+                var corpseSummonerBrain = new CorpseSummonerBrain();
+                SetOwnBrain(corpseSummonerBrain);
                 m_lastRealm = Realm;
                 return true;
             }
@@ -117,9 +117,9 @@ namespace DOL.GS.Keeps
 namespace DOL.AI.Brain
 {
     
-    public class CorspeSummonerBrain : KeepGuardBrain
+    public class CorpseSummonerBrain : KeepGuardBrain
     {
-        public CorspeSummonerBrain()
+        public CorpseSummonerBrain()
             : base()
         {
             AggroLevel = 90;
@@ -128,10 +128,10 @@ namespace DOL.AI.Brain
         /*public override void Think()
         {
             base.Think();
-            if ((Body as GuardCorspeSummoner).Component.Keep != null && (Body as GuardCorspeSummoner).Component.Keep.Level < 10)
+            if ((Body as GuardCorpseSummoner).Component.Keep != null && (Body as GuardCorpseSummoner).Component.Keep.Level < 10)
             {
                 Body.RemoveFromWorld();
-                (Body as GuardCorspeSummoner).StartModifiedRespawn();
+                (Body as GuardCorpseSummoner).StartModifiedRespawn();
             }
         }*/
     }

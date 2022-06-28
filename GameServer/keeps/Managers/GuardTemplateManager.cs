@@ -373,7 +373,7 @@ namespace DOL.GS.Keeps
             {
                 guard.Gender = eGender.Male;
             }
-            if (guard is GuardCorspeSummoner)
+            if (guard is GuardCorpseSummoner)
             {
                 guard.Gender = eGender.Male;
             }
@@ -1003,7 +1003,7 @@ namespace DOL.GS.Keeps
         /// <param name="guard">The guard object</param>
         private static void SetGuardName(GameKeepGuard guard)
         {
-            if (guard is GuardCorspeSummoner)
+            if (guard is GuardCorpseSummoner)
             {
                 guard.Name = "Corpse Summoner";
                 guard.TranslationId = "SetGuardName.CorpseSummoner";
@@ -1354,8 +1354,8 @@ namespace DOL.GS.Keeps
                     brain = new HealerBrain();
                 else if (guard is GuardLord)
                     brain = new LordBrain();
-                else if (guard is GuardCorspeSummoner)
-                    brain = new CorspeSummonerBrain();
+                else if (guard is GuardCorpseSummoner)
+                    brain = new CorpseSummonerBrain();
                 guard.AddBrain(brain);
                 brain.guard = guard;
             }
