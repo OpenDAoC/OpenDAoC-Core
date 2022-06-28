@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
-using Timer = System.Timers.Timer;
-using System.Timers;
+using DOL.GS;
 
 namespace DOL.GS
 {
@@ -14,78 +13,11 @@ namespace DOL.GS
         {
             get { return 10000; }
         }
-        public int TimerInterval = 45000;
-        public void StartTimer()
-        {
-            Timer myTimer = new Timer();
-            myTimer.Elapsed += new ElapsedEventHandler(DisplayTimeEvent);
-            myTimer.Interval = TimerInterval; // 1000 ms is one second
-            myTimer.Start();
-        }
-        public void DisplayTimeEvent(object source, ElapsedEventArgs e)
-        {
-            DoStuff();
-        }
-        List<GamePlayer> PlayersInGalla = new List<GamePlayer>();
-        public static bool Pick_randomly_Target = false;
-        public void DoStuff()
-        {
-            if (IsAlive)
-            {
-                foreach (GameClient client in WorldMgr.GetClientsOfRegion(191))
-                {
-                    if (client != null)
-                    {
-                        if (client.Player.IsAlive && client.Account.PrivLevel == 1 && !PlayersInGalla.Contains(client.Player))
-                            PlayersInGalla.Add(client.Player);//add players to list from whole galladoria
-                    }
-                }
-                PickPlayer(); 
-            }
-        }
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
-        {
-            get { return randomtarget; }
-            set { randomtarget = value; }
-        }
-        public void PickPlayer()
-        {
-            if(IsAlive)
-            {
-                if (PlayersInGalla.Count>0)
-                {
-                    foreach (GamePlayer ppls in PlayersInGalla)
-                    {
-                        if (ppls != null && ppls.IsAlive  && PlayersInGalla.Contains(ppls))
-                        {
-                            if (ppls.CurrentRegionID != 191)
-                                PlayersInGalla.Remove(ppls);//remove player from list if he leave current zone
-                        }
-                    }
-                    GamePlayer ptarget = PlayersInGalla[Util.Random(1, PlayersInGalla.Count) - 1];
-                    RandomTarget = ptarget;
-                    if (RandomTarget != null && RandomTarget.Client.Account.PrivLevel == 1 && RandomTarget.IsAlive)
-                    {
-                        //create mob only for visual purpose
-                        EyesWatchingYouEffect mob = new EyesWatchingYouEffect();
-                        mob.X = RandomTarget.X;
-                        mob.Y = RandomTarget.Y;
-                        mob.Z = RandomTarget.Z;
-                        mob.CurrentRegion = RandomTarget.CurrentRegion;
-                        mob.Heading = RandomTarget.Heading;
-                        mob.AddToWorld();
-                    }
-                    RandomTarget = null;
-                    Pick_randomly_Target = false;
-                }
-            }
-        }
+        public override bool IsVisibleToPlayers => true;//this make dragon think all the time, no matter if player is around or not
         public override bool AddToWorld()
         {
-            RandomTarget = null;
-            Pick_randomly_Target = false;
-            StartTimer();
+            EyesWatchingYouInitBrain.RandomTarget = null;
+            EyesWatchingYouInitBrain.Pick_randomly_Target = false;
             EyesWatchingYouInitBrain sbrain = new EyesWatchingYouInitBrain();
             SetOwnBrain(sbrain);
             base.AddToWorld();
@@ -138,10 +70,77 @@ namespace DOL.AI.Brain
         public EyesWatchingYouInitBrain()
             : base()
         {
-            ThinkInterval = 2000;
+            ThinkInterval = 1000;
+        }
+        public static List<GamePlayer> PlayersInGalla = new List<GamePlayer>();
+        public static bool Pick_randomly_Target = false;
+        private bool allowTimer = false;
+        private int TimerDoStuff(ECSGameTimer timer)
+        {
+            PickPlayer();
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndTimerDoStuff), 5000);
+            return 0;
+        }
+        private int EndTimerDoStuff(ECSGameTimer timer)
+        {
+            allowTimer = false;
+            return 0;
+        }
+        public void DoStuff()
+        {
+            if (Body.IsAlive)
+            {
+                foreach (GameClient client in WorldMgr.GetClientsOfRegion(191))
+                {
+                    if (client != null)
+                    {
+                        if (client.Player.IsAlive && client.Account.PrivLevel == 1 && !PlayersInGalla.Contains(client.Player))
+                            PlayersInGalla.Add(client.Player);//add players to list from whole galladoria
+                    }
+                }
+            }
+        }
+        public static GamePlayer randomtarget = null;
+        public static GamePlayer RandomTarget
+        {
+            get { return randomtarget; }
+            set { randomtarget = value; }
+        }
+        public void PickPlayer()
+        {
+            if (Body.IsAlive)
+            {
+                if (PlayersInGalla.Count > 0)
+                {
+                    GamePlayer ptarget = PlayersInGalla[Util.Random(1, PlayersInGalla.Count) - 1];
+                    RandomTarget = ptarget;
+                    if (RandomTarget != null && RandomTarget.Client.Account.PrivLevel == 1 && RandomTarget.IsAlive && RandomTarget.CurrentRegionID == 191)
+                    {
+                        //create mob only for visual purpose
+                        EyesWatchingYouEffect mob = new EyesWatchingYouEffect();
+                        mob.X = RandomTarget.X;
+                        mob.Y = RandomTarget.Y;
+                        mob.Z = RandomTarget.Z;
+                        mob.CurrentRegion = RandomTarget.CurrentRegion;
+                        mob.Heading = RandomTarget.Heading;
+                        mob.AddToWorld();
+                    }
+                    RandomTarget = null;
+                    Pick_randomly_Target = false;
+                    if (PlayersInGalla.Count > 0)
+                        PlayersInGalla.Clear();
+                }
+            }
         }
         public override void Think()
         {
+            if (Body.IsAlive)
+                DoStuff();
+            if (!allowTimer)
+            {
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TimerDoStuff), Util.Random(25000,45000));
+                allowTimer = true;
+            }
             base.Think();
         }
     }
