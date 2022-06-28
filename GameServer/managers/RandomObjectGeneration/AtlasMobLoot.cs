@@ -63,9 +63,10 @@ namespace DOL.GS {
                 //or a valid class for one of their groupmates
                 if (player.Group != null)
                 {
-                    var MaxDropCap = Math.Floor((decimal) (player.Group.MemberCount)/3) + 1;
+                    var MaxDropCap = Math.Round((decimal) (player.Group.MemberCount)/3);
+                    if (MaxDropCap < 1) MaxDropCap = 1;
                     if (mob.Level > 65) MaxDropCap++; //increase drop cap beyond lvl 60
-                    int guaranteedDrop = mob.Level > 65 ? 1 : 0; //guarantee a drop for very high level mobs
+                    int guaranteedDrop = mob.Level > 67 ? 1 : 0; //guarantee a drop for very high level mobs
 
                     int numDrops = 0;
                     //roll for an item for each player in the group
@@ -105,13 +106,25 @@ namespace DOL.GS {
                     }
                     
                     ItemTemplate item = null;
-                
-                
-                    GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
+
+                    if (mob.Level < 5)
+                    {
+                        chance += 50;
+                    }
+                    else if (mob.Level < 10)
+                        chance += (100 - mob.Level * 10);
+
+                    if (Util.Chance(chance))
+                    {
+                        GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
+                        item = tmp;
+                        item.MaxCount = 1;
+                        loot.AddFixed(item, 1);
+                    }
                     //tmp.GenerateItemQuality(killedcon);
                     //tmp.CapUtility(mob.Level + 1);
-                    item = tmp;
-                    item.MaxCount = 1;
+                    
+                    /*
                     if (mob.Level < 5)
                     {
                         chance += 50;
@@ -122,6 +135,7 @@ namespace DOL.GS {
                     //25% bonus drop rate at lvl 5, down to normal chance at level 10
                     else
                         loot.AddRandom(chance, item, 1);
+                        */
 
                     if(player.Level < 50 || mob.Level < 50)
                     {
