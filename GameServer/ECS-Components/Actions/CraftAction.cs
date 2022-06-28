@@ -107,6 +107,7 @@ namespace DOL.GS
             owner.craftComponent.CraftState = false;
             finishedCraft = false;
             ownerPlayer.Out.SendCloseTimerWindow();
+            owner.TempProperties.removeProperty("CraftQueueRemaining");
         }
         
         
@@ -169,7 +170,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				player.TempProperties.setProperty("CraftQueueRemaining", 0);
+				player.TempProperties.removeProperty("CraftQueueRemaining");
 				finishedCraft = true;
 			}
         }
