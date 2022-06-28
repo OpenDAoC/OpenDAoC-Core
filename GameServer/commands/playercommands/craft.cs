@@ -99,12 +99,19 @@ namespace DOL.GS.Commands
                         {
                             var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
+                            
+                            IList<Ingredient> recipeIngredients;
 
-                            foreach (var ingredient in recipe.Ingredients)
+                            lock (recipe)
+                            {
+                                recipeIngredients = recipe.Ingredients;
+                            }
+                            
+                            foreach (var ingredient in recipeIngredients)
                             {
                                 foreach (var items in merchantitems)
                                 {
-                                    ItemTemplate item =
+                                    var item =
                                         GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
                                     if (item != ingredient.Material) continue;
                                     merchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
