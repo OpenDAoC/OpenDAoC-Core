@@ -1022,7 +1022,7 @@ namespace DOL.GS
                 CraftTimer = null;
             }
             
-            craftComponent.StopCraft();
+            craftComponent?.StopCraft();
 
             if (QuestActionTimer != null)
             {
