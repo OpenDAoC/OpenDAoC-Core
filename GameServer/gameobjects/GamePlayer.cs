@@ -12173,16 +12173,12 @@ namespace DOL.GS
         {
             if (Inventory.InventoryWeight > MaxEncumberance)
             {
-                if (IsOverencumbered == false)
-                {
-                    IsOverencumbered = true;
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-                else
-                {
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
+                IsOverencumbered = true;
                 Out.SendUpdateMaxSpeed();
+                if (MaxSpeed == 0)
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "PropertyCalc.MaxSpeed.YouAreEncumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                else
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             else if (IsOverencumbered)
             {
