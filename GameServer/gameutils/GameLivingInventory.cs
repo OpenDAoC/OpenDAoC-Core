@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -1190,7 +1191,6 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-
 		/// <summary>
 		/// Gets the inventory weight
 		/// </summary>
@@ -1198,18 +1198,19 @@ namespace DOL.GS
 		{
 			get
 			{
-				InventoryItem item;
-				int weight = 0;
+				var weight = 0;
+				IList<InventoryItem> items;
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					foreach (eInventorySlot slot in EQUIP_SLOTS)
-					{
-						if (m_items.TryGetValue(slot, out item))
-						{
-							weight += item.Weight;
-						}
-					}
+					items = new List<InventoryItem>(m_items.Values);
+				}
+				
+				foreach (var item in items)
+				{
+					if (!EQUIP_SLOTS.Contains((eInventorySlot)item.SlotPosition))
+						continue;
+					weight += item.Weight;
 				}
 
 				return weight/10;

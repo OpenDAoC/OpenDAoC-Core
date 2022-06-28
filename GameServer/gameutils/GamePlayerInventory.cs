@@ -1387,30 +1387,27 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-
-		/// <summary>
-		/// Gets the inventory weight
-		/// </summary>
+		
 		public override int InventoryWeight
 		{
 			get
 			{
-				int weight = 0;
+				var weight = 0;
+				IList<InventoryItem> items;
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					InventoryItem item;
-
-					for (eInventorySlot slot = eInventorySlot.FirstBackpack; slot <= eInventorySlot.LastBackpack; slot++)
-					{
-						if (m_items.TryGetValue(slot, out item))
-						{
-							weight += item.Weight;
-						}
-					}
-
-					return weight/10 + base.InventoryWeight;
+					items = new List<InventoryItem>(m_items.Values);
 				}
+				
+				foreach (var item in items)
+				{
+					if ((eInventorySlot) item.SlotPosition < eInventorySlot.FirstBackpack || (eInventorySlot)item.SlotPosition > eInventorySlot.LastBackpack)
+						continue;
+					weight += item.Weight;
+				}
+				
+				return weight/10 + base.InventoryWeight;
 			}
 		}
 
