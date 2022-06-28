@@ -2778,6 +2778,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("beta", "orbs_fire_sale", "All items at the orbs merchant will be free if set to true", false)]
 		public static bool ORBS_FIRE_SALE;
 		
+		[ServerProperty("atlas", "enable_corpsesummoner", "Whether or not to enable the corpse summoner command", true)]
+		public static bool ENABLE_CORPSESUMONNER;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
