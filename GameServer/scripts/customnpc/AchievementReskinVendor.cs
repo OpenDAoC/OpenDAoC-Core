@@ -1548,6 +1548,7 @@ public bool SetModel(GamePlayer player, int number, int price)
             newInventoryItem.IsCrafted = true;
         if(item.Creator != "")
             newInventoryItem.Creator = item.Creator;
+        newInventoryItem.Count = 1;
         player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
         player.Out.SendInventoryItemsUpdate(new InventoryItem[] {newInventoryItem});
         // player.RemoveBountyPoints(300);
@@ -1607,6 +1608,7 @@ public void SetExtension(GamePlayer player, byte number, int price)
             newInventoryItem.IsCrafted = true;
         if(item.Creator != "")
             newInventoryItem.Creator = item.Creator;
+        newInventoryItem.Count = 1;
         player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
         player.Out.SendInventoryItemsUpdate(new InventoryItem[] {newInventoryItem});
         // player.RemoveBountyPoints(300);

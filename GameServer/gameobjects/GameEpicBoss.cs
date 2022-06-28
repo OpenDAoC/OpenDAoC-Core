@@ -8,13 +8,17 @@ namespace DOL.GS {
             ScalingFactor = 80;
             OrbsReward = Properties.EPICBOSS_ORBS;
         }
-        public override void ProcessDeath(GameObject killer)
+        public override void Die(GameObject killer)//current orb reward for epic boss is 1500
         {
-            if (MaxHealth < 60000 && MaxHealth > 30000)// 1.5k orbs for finalll boss in dungeon, or huge one in classic/SI zone
+            if (MaxHealth < 60000 && MaxHealth > 30000)// 750 orbs for finalll boss in dungeon, or huge one in classic/SI zone
                 OrbsReward /= 2;
-            
-            if (MaxHealth < 40000)// 750 orbs for normal nameds
+
+            if (MaxHealth < 40000 && MaxHealth > 30000)// 375 orbs for normal nameds
                 OrbsReward /= 4;
+
+            if (MaxHealth < 30000 && MaxHealth > 10000)// 250 orbs for normal nameds
+                OrbsReward /= 6;
+
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
 

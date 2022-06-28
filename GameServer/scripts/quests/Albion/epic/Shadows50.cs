@@ -35,7 +35,7 @@ namespace DOL.GS.Quests.Albion
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Lidmann = null; // Start NPC
-		private static GameNPC Uragaig = null; // Mob to kill
+		private static CailleachUragaig Uragaig = null; // Mob to kill
 
 		private static ItemTemplate sealed_pouch = null; //sealed pouch
 		private static ItemTemplate MercenaryEpicBoots = null; // of the Shadowy Embers  Boots 
@@ -144,7 +144,7 @@ namespace DOL.GS.Quests.Albion
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 316218 && npc.Y == 664484)
 					{
-						Uragaig = npc;
+						Uragaig = npc as CailleachUragaig;
 						break;
 					}
 
@@ -152,7 +152,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Uragaig , creating it ...");
-				Uragaig = new GameNPC();
+				Uragaig = new CailleachUragaig();
 				Uragaig.Model = 349;
 				Uragaig.Name = "Cailleach Uragaig";
 				Uragaig.GuildName = "";
