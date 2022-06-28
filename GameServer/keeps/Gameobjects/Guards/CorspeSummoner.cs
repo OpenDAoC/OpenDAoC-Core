@@ -45,7 +45,7 @@ namespace DOL.GS.Keeps
                         m_respawnTimer = null;
                     }
 
-                    m_respawnTimer = new RegionTimer(this);
+                    m_respawnTimer = new ECSGameTimer(this);
                     m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(ModdedRespawnTimerCallback);
                     m_respawnTimer.Start(reloadrespawntimer > 0 ? reloadrespawntimer : respawnInt);
                 }
@@ -101,7 +101,7 @@ namespace DOL.GS.Keeps
                 Model = 25;
                 Size = 60;
                 MaxSpeedBase = 0;
-                CorspeSummonerBrain corspesummonerbrain = new CorspeSummonerBrain();
+                var corspesummonerbrain = new CorspeSummonerBrain();
                 SetOwnBrain(corspesummonerbrain);
                 m_lastRealm = Realm;
                 return true;
@@ -125,9 +125,6 @@ namespace DOL.AI.Brain
             AggroLevel = 90;
             AggroRange = 1500;
         }
-                /// <summary>
-        /// Do the mob AI
-        /// </summary>
         /*public override void Think()
         {
             base.Think();
