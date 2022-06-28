@@ -1118,9 +1118,9 @@ namespace DOL.GS
 
 				base.TargetObject = newTarget;
 
-				if (previousTarget != null && newTarget != previousTarget)
-					previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
-										  new SwitchedTargetEventArgs(previousTarget, newTarget));
+				// if (previousTarget != null && newTarget != previousTarget)
+				// 	previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
+				// 						  new SwitchedTargetEventArgs(previousTarget, newTarget));
 			}
 		}
 
