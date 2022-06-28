@@ -48,6 +48,7 @@ namespace DOL.GS
 
 		public int id;
 		public AttackComponent attackComponent;
+		public CraftComponent craftComponent;
         public RangeAttackComponent rangeAttackComponent;
         public StyleComponent styleComponent;
         public Spell LastPulseCast;

@@ -58,7 +58,7 @@ namespace DOL.GS
 			}
 		}
 
-		protected override void BuildCraftedItem(GamePlayer player, Recipe recipe)
+		public override void BuildCraftedItem(GamePlayer player, Recipe recipe)
 		{
 			var product = recipe.Product;
 			GameSiegeWeapon siegeweapon;

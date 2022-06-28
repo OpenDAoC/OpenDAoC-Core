@@ -138,22 +138,23 @@ namespace DOL.GS
 
 			player.Stealth(false);
 
-			StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
+			//StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
+			player.craftComponent.StartCraft(recipe, this, craftingTime);
 		}
 
 		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
         {
-			player.CraftTimer = new ECSGameTimer(player);
-			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
-			player.CraftTimer.Properties.setProperty(PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.setProperty(RECIPE_BEING_CRAFTED, recipe);
-			player.CraftTimer.Start(craftingTime * 1000);
+			//player.CraftTimer = new ECSGameTimer(player);
+			//player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
+			//player.CraftTimer.Properties.setProperty(PLAYER_CRAFTER, player);
+			//player.CraftTimer.Properties.setProperty(RECIPE_BEING_CRAFTED, recipe);
+			//player.CraftTimer.Start(craftingTime * 1000);
 		}
 
 		protected virtual void StopCraftingCurrentItem(GamePlayer player, ItemTemplate itemToCraft)
 		{
-			player.CraftTimer.Stop();
-			player.Out.SendCloseTimerWindow();
+			//player.CraftTimer.Stop();
+			player.craftComponent.StopCraft();
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
@@ -202,68 +203,6 @@ namespace DOL.GS
 			
 
 			return true;
-		}
-
-		protected virtual int MakeItem(ECSGameTimer timer)
-		{
-			GamePlayer player = timer.Properties.getProperty<GamePlayer>(PLAYER_CRAFTER);
-			Recipe recipe = timer.Properties.getProperty<Recipe>(RECIPE_BEING_CRAFTED);
-			var queue = player.TempProperties.getProperty<int>("CraftQueueLength");
-			var remainingToCraft = player.TempProperties.getProperty<int>("CraftQueueRemaining");
-
-			if (player == null || recipe == null)
-			{
-				if (player != null) player.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Crafting.MakeItem: Could not retrieve player, recipe, or raw materials to craft from CraftTimer.");
-				return 0;
-			}
-
-			if (queue > 1 && remainingToCraft == 0 && finishedCraft)
-			{
-				remainingToCraft = queue - 1;
-			}
-
-			player.CraftTimer?.Stop();
-			player.Out.SendCloseTimerWindow();
-
-			if (Util.Chance(CalculateChanceToMakeItem(player, recipe.Level)))
-			{
-				if (!RemoveUsedMaterials(player, recipe))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-					if (player.Client.Account.PrivLevel == 1)
-						return 0;
-				}
-				BuildCraftedItem(player, recipe);
-				GainCraftingSkillPoints(player, recipe);
-			}
-			else
-			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				player.Out.SendPlaySound(eSoundType.Craft, 0x02);
-			}
-
-			if (remainingToCraft >= 1)
-			{
-				if (CheckRawMaterials(player, recipe))
-				{
-					player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
-					StartCraftingTimerAndSetCallBackMethod(player, recipe, GetCraftingTime(player, recipe));
-					player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), GetCraftingTime(player, recipe));
-					finishedCraft = false;
-				}
-				else
-				{ 
-					finishedCraft = true;
-				}
-			}
-			else
-			{
-				finishedCraft = true;
-			}
-
-			return 0;
 		}
 
 		#endregion
@@ -516,7 +455,7 @@ namespace DOL.GS
 			return true;//all raw material removed and item created
 		}
 
-		protected virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
+		public virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
 		{
 			var product = recipe.Product;
 
