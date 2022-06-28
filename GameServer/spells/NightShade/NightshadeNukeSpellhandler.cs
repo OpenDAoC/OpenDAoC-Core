@@ -69,8 +69,8 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				int dexValue = player.GetModified((eProperty)player.Dexterity);
-				spellDamage *= (dexValue + 300) / 275.0;
+				int strValue = player.GetModified((eProperty)player.Strength);
+				spellDamage *= (strValue + 300) / 275.0;
 			}
 
 			if (spellDamage < 0)

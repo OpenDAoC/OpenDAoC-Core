@@ -140,7 +140,12 @@ namespace DOL.GS
 			{
 				var count = 0;
 				// Calculated salvage values
-				if (item.Description.Contains("Atlas ROG"))
+				if (item.Object_Type == (int)eObjectType.Magical)
+				{
+					count = 1;
+					yield.Count = 1;
+				}
+				else if (item.Description.Contains("Atlas ROG"))
 				{
 					count = 2;
 					yield.Count = 2;
