@@ -856,5 +856,26 @@ namespace DOL.GS.Keeps
 					player.MoveTo((ushort)t.RegionID, t.X, t.Y, t.Z, (ushort)t.Heading);
 			}
 		}
+		
+		public virtual AbstractGameKeep GetKeepByShortName(string shortname)
+		{
+			return GetKeepsShortName(shortname);
+		}
+		public virtual AbstractGameKeep GetKeepsShortName(string shortname)
+		{
+
+			lock (m_keepList.SyncRoot)
+			{
+				foreach (AbstractGameKeep keep in m_keepList.Values)
+				{
+					if (keep.DBKeep == null || keep.Name.ToLower() != shortname.ToLower())
+						continue;
+
+					return keep;
+				}
+			}
+
+			return null;
+		}
 	}
 }
