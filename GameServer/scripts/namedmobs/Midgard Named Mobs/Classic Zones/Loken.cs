@@ -77,6 +77,11 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
+			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is LokenBrain)
+					return false;
+			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
 			LoadTemplate(npcTemplate);
 			Strength = npcTemplate.Strength;
