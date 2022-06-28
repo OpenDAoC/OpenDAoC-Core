@@ -10897,6 +10897,7 @@ namespace DOL.GS
             m_healthRegenerationTimer = new ECSGameTimer(this);
             m_powerRegenerationTimer = new ECSGameTimer(this);
             m_enduRegenerationTimer = new ECSGameTimer(this);
+            craftComponent = new CraftComponent(this);
             m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
             m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
             m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
@@ -11945,8 +11946,9 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnPlayerMove.InterruptCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
-                CraftTimer = null;
+                //CraftTimer.Stop();
+                //CraftTimer = null;
+                this.craftComponent.StopCraft();
                 Out.SendCloseTimerWindow();
             }
             if (IsSummoningMount)
@@ -15060,13 +15062,17 @@ namespace DOL.GS
             set { m_crafttimer = value; }
         }
 
+        private CraftAction m_craftaction;
+        public CraftAction CraftAction
+        {
+            get { return m_craftaction; }
+            set { m_craftaction = value; }
+        }
+
         /// <summary>
         /// Does the player is crafting
         /// </summary>
-        public bool IsCrafting
-        {
-            get { return (m_crafttimer != null && m_crafttimer.IsAlive); }
-        }
+        public bool IsCrafting => (craftComponent != null && craftComponent.CraftState);
 
         protected bool m_isDead = false;
         /// <summary>
@@ -17036,7 +17042,6 @@ namespace DOL.GS
             m_isWireframe = false;
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;
-
             m_saveInDB = true;
             LoadFromDatabase(dbChar);
 			
@@ -17054,6 +17059,7 @@ namespace DOL.GS
 			
             //Add to EntityManager
             EntityManager.AddPlayer((this));
+            EntityManager.RemoveNpc(this);
             EntityManager.RemoveNpc(this);
         }
 
