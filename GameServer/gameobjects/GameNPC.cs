@@ -1481,7 +1481,7 @@ namespace DOL.GS
 			MovementStartTick = Environment.TickCount; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
 			UpdateTickSpeed();
 			
-			Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
+			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
 			
 			StartArriveAtTargetAction(GetTicksToArriveAt(TargetPosition, speed));
 			BroadcastUpdate();
