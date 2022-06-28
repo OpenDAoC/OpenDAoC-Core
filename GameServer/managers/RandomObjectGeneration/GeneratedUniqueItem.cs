@@ -8890,16 +8890,18 @@ namespace DOL.GS {
                     break;
             }
 
+            
             if(Util.Chance(1) && Level > 40)
             {
                 validModels.Clear();
                 validModels.Add(3662);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3705);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -8969,11 +8971,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3662);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3705);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9051,11 +9054,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3658);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3701);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9145,12 +9149,13 @@ namespace DOL.GS {
                 validModels.Add(3675);
                 validModels.Add(3674);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3717);
                 validModels.Add(3718);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9233,11 +9238,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3661);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3704);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9330,12 +9336,13 @@ namespace DOL.GS {
                 validModels.Add(3676);
                 validModels.Add(3677);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3719);
                 validModels.Add(3720);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9373,12 +9380,13 @@ namespace DOL.GS {
                 
                 validModels.Add(3657);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3700);
                 validModels.Add(3817);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9467,12 +9475,13 @@ namespace DOL.GS {
                 validModels.Add(3721);
                 validModels.Add(3722);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3721);
                 validModels.Add(3722);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9632,11 +9641,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3660);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3703);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9701,12 +9711,13 @@ namespace DOL.GS {
                 validModels.Add(3824);
                 validModels.Add(3663);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3706);
                 validModels.Add(3823);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
