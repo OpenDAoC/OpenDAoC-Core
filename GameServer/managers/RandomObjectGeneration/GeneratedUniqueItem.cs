@@ -218,8 +218,11 @@ namespace DOL.GS {
         public void GenerateItemQuality(double conlevel)
         {
             // set base quality
-            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 47);
+            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 59);
             int maxQuality = (int)(1.310 * conlevel + 94.29 + 3);
+
+            if (this.Level > 51 && minQuality < 97)
+                minQuality = 97;
 
             // CAPS
             maxQuality = Math.Min(maxQuality, ROG_CAP_QUAL);  // unique objects capped at 99 quality
@@ -4771,6 +4774,9 @@ namespace DOL.GS {
 
             if (cap < 15)
                 cap = 15; //all items can gen with up to 15 uti
+            
+            if (mobLevel > 70 && cap < 60)
+                cap = 60;
 
             if (this.ProcSpellID != 0 || this.ProcSpellID1 != 0)
                 cap = (int)Math.Floor(cap * .7); //proc items generate with lower utility
