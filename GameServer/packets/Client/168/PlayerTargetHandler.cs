@@ -130,7 +130,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				}
 
-				GameEventMgr.Notify(GamePlayerEvent.ChangeTarget, player, null);
+				// GameEventMgr.Notify(GamePlayerEvent.ChangeTarget, player, null);
 
 				return 0;
 			}

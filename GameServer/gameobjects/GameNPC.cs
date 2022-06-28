@@ -1118,9 +1118,9 @@ namespace DOL.GS
 
 				base.TargetObject = newTarget;
 
-				if (previousTarget != null && newTarget != previousTarget)
-					previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
-										  new SwitchedTargetEventArgs(previousTarget, newTarget));
+				// if (previousTarget != null && newTarget != previousTarget)
+				// 	previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
+				// 						  new SwitchedTargetEventArgs(previousTarget, newTarget));
 			}
 		}
 
@@ -1202,7 +1202,7 @@ namespace DOL.GS
 		{
 			if (IsStunned || IsMezzed) return;
 
-			Notify(GameNPCEvent.TurnTo, this, new TurnToEventArgs(tx, ty));
+			// Notify(GameNPCEvent.TurnTo, this, new TurnToEventArgs(tx, ty));
 
 			if (sendUpdate)
 				Heading = GetHeading(new Point2D(tx, ty));
@@ -1228,7 +1228,7 @@ namespace DOL.GS
 		{
 			if (IsStunned || IsMezzed) return;
 
-			Notify(GameNPCEvent.TurnToHeading, this, new TurnToHeadingEventArgs(heading));
+			// Notify(GameNPCEvent.TurnToHeading, this, new TurnToHeadingEventArgs(heading));
 
 			if (sendUpdate)
 				if (Heading != heading) Heading = heading;
@@ -1481,7 +1481,7 @@ namespace DOL.GS
 			MovementStartTick = Environment.TickCount; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
 			UpdateTickSpeed();
 			
-			Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
+			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
 			
 			StartArriveAtTargetAction(GetTicksToArriveAt(TargetPosition, speed));
 			BroadcastUpdate();
