@@ -53,7 +53,7 @@ namespace DOL.GS {
                     }
                 }
             }
-            else
+            else if (playerKiller != null)
             {
                 AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
                 playerKiller.Achieve($"{achievementMob}-Credit");
