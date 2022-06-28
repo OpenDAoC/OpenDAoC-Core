@@ -125,9 +125,9 @@ namespace DOL.GS
 				return;
 			}
 
-			if (queue > 1 && remainingToCraft == 0 && finishedCraft)
+			if (queue > 1 && remainingToCraft == 0)
 			{
-				remainingToCraft = queue - 1;
+				remainingToCraft = queue;
 			}
 
 			//player.CraftTimer?.Stop();
@@ -151,7 +151,7 @@ namespace DOL.GS
 				player.Out.SendPlaySound(eSoundType.Craft, 0x02);
 			}
 
-			if (remainingToCraft >= 1)
+			if (remainingToCraft > 1)
 			{
 				if (skill.CheckRawMaterials(player, recipe))
 				{
@@ -160,6 +160,7 @@ namespace DOL.GS
 					this.m_startTick = GameLoop.GameLoopTime + 1;
 					player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), skill.GetCraftingTime(player, recipe));
 					finishedCraft = false;
+					player.craftComponent.AddRecipe(recipe);
 				}
 				else
 				{ 
@@ -168,6 +169,7 @@ namespace DOL.GS
 			}
 			else
 			{
+				player.TempProperties.setProperty("CraftQueueRemaining", 0);
 				finishedCraft = true;
 			}
         }
