@@ -12126,24 +12126,7 @@ namespace DOL.GS
                 RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
                 if (ab != null)
                     enc *= 1 + ((double)ab.Amount / 100);
-
-                // Apply Sojourner ability
-                if (this.GetSpellLine("Sojourner") != null)
-                {
-                    enc *= 1.25;
-                }
-
-                // Apply Walord effect
-                GameSpellEffect iBaneLordEffect = SpellHandler.FindEffectOnTarget(this, "Oppression");
-                if (iBaneLordEffect != null)
-                    enc *= 1.00 - (iBaneLordEffect.Spell.Value * 0.01);
-
-                // Apply Mythirian Bonus
-                if (GetModified(eProperty.MythicalDiscumbering) > 0)
-                {
-                    enc += GetModified(eProperty.MythicalDiscumbering);
-                }
-
+                
                 return (int)enc;
             }
         }
