@@ -1179,8 +1179,8 @@ namespace DOL.GS
                     p.Out.SendMessage(
                         LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"),
                         eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    // TODO: look into timer
-                    p.CraftTimer.Stop();
+                    //p.CraftTimer.Stop();
+                    p.craftComponent.StopCraft();
                     p.CraftTimer = null;
                     p.Out.SendCloseTimerWindow();
                 }

@@ -1021,6 +1021,8 @@ namespace DOL.GS
                 CraftTimer.Stop();
                 CraftTimer = null;
             }
+            
+            craftComponent.StopCraft();
 
             if (QuestActionTimer != null)
             {
@@ -7407,7 +7409,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -8878,7 +8881,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -9183,7 +9187,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
