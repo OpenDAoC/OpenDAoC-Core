@@ -57,6 +57,8 @@ namespace DOL.GS {
                 // chance to get a RoG Item
                 int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 2);
 
+                //chance = 100;
+
                 //players below level 50 will always get loot for their class, 
                 //or a valid class for one of their groupmates
                 if (player.Group != null)
@@ -106,7 +108,7 @@ namespace DOL.GS {
                 
                 
                     GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
-                    tmp.GenerateItemQuality(killedcon);
+                    //tmp.GenerateItemQuality(killedcon);
                     //tmp.CapUtility(mob.Level + 1);
                     item = tmp;
                     item.MaxCount = 1;
