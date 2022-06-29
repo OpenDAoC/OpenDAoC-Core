@@ -4765,7 +4765,10 @@ namespace DOL.GS {
 
             if (mobLevel < 60)
                 cap -= (Util.Random(1, 5));
-
+            
+            if (mobLevel > 70 && cap < 60)
+                cap = mobLevel-10;
+            
             if (cap > 80) cap = 80;
 
             //randomize cap to be 80-105% of normal value
@@ -4774,9 +4777,6 @@ namespace DOL.GS {
 
             if (cap < 15)
                 cap = 15; //all items can gen with up to 15 uti
-            
-            if (mobLevel > 70 && cap < 60)
-                cap = 60;
 
             if (this.ProcSpellID != 0 || this.ProcSpellID1 != 0)
                 cap = (int)Math.Floor(cap * .7); //proc items generate with lower utility
@@ -5473,15 +5473,18 @@ namespace DOL.GS {
             {
                 if (Util.Chance(45))
                     return eGenerateType.Weapon;
-                else if (Util.Chance(15))
-                    return eGenerateType.Magical;
+                //else if (Util.Chance(15))
+                  //  return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
             else if (level < 10)
             {
                 if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
-                if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE * 2)) { genTypes.Add(eGenerateType.Weapon); }
+                //if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+                if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+
+                if (genTypes.Count < 1)
+                    genTypes.Add(eGenerateType.Armor);                
             }
             else
             {
