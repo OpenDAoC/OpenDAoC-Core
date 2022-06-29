@@ -346,14 +346,14 @@ namespace DOL.GS
 									  eChatLoc.CL_SystemWindow);
 				return;
 			}
-
+   
 			if (Owner.GroundTarget.Z > this.Z + 100)
 			{
 				Owner.Out.SendMessage("Ground target too high!", eChatType.CT_System,
 					eChatLoc.CL_SystemWindow);
 				return;
 			}
-
+   
 			//let's check if we are trying to move too close to a door, if we are, don't move
 			foreach (IDoor door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget.X, Owner.GroundTarget.Y, Owner.GroundTarget.Z, (ushort)(AttackRange - 50), false))
 			{
@@ -363,7 +363,7 @@ namespace DOL.GS
 					return;
 				}
 			}
-
+   
 			//unarmed & unaim siege weapon
 			CurrentState &= ~eState.Armed;
 			TargetObject = null;

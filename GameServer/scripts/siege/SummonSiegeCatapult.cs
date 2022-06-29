@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System;
+using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
 {
@@ -22,6 +23,18 @@ namespace DOL.GS.Spells
 			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
 			    return false;
 		    }
+            
+            foreach (AbstractArea area in Caster.CurrentAreas)
+            {
+	            if (area is KeepArea)
+	            {
+		            if (((KeepArea)area).Keep.IsPortalKeep)
+		            {
+			            MessageToCaster("You cannot use siege weapons here (PK)!", PacketHandler.eChatType.CT_SpellResisted);
+			            return false;
+		            }
+	            }
+            }
 
             //Only allow one treb/catapult in the radius
             ushort catapultSummonRadius = 500;
