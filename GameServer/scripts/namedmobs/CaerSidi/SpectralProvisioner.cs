@@ -143,11 +143,12 @@ namespace DOL.AI.Brain
 			{
 				ItemTemplate sackJunk = GameServer.Database.FindObjectByKey<ItemTemplate>("sack_of_decaying_junk");
 				InventoryItem item = GameInventoryItem.Create(sackJunk);
-			
+
 				foreach (GamePlayer player in Body.GetPlayersInRadius(500))
 				{
-					if (player.IsAlive)
-						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+					if (!player.IsAlive) continue;
+					item.OwnerID = player.ObjectId;
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
 				}
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDecayingJunk), Util.Random(25000,35000));
 				CanAddJunk = true;
