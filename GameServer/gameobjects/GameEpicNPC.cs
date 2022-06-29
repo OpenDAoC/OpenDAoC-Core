@@ -12,6 +12,8 @@ namespace DOL.GS {
             // debug
             log.Debug($"{Name} killed by {killer.Name}");
             
+            if (killer is GamePet pet) killer = pet.Owner; 
+            
             var playerKiller = killer as GamePlayer;
             
             var amount = Util.Random(Level / 10, Level * 2 / 10);
@@ -61,7 +63,7 @@ namespace DOL.GS {
                     }
                 }
             }
-            else
+            else if (playerKiller != null)
             {
                 var numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days : 0;
                 if (numCurrentLoyalDays >= 1)

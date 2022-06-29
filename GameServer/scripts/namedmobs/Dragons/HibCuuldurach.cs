@@ -204,7 +204,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			HibCuuldurachBrain.pathpoint1 = false;
 			HibCuuldurachBrain.pathpoint2 = false;
@@ -238,6 +238,7 @@ namespace DOL.GS
 			HibCuuldurachBrain.IsRestless = false;
 			HibCuuldurachBrain.LockIsRestless = false;
 			HibCuuldurachBrain.CanSpawnMessengers = false;
+			HibCuuldurachBrain.checkForMessangers = false;
 			HibCuuldurachBrain.LockIsRestless = false;
 			HibCuuldurachBrain.CanGlare = false;
 			HibCuuldurachBrain.CanGlare2 = false;
@@ -306,6 +307,8 @@ namespace DOL.AI.Brain
 		public static bool ResetChecks = false;
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
+		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -365,19 +368,28 @@ namespace DOL.AI.Brain
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
+						CanSpawnMessengers = false;
 						Body.TempProperties.removeProperty("cuuldurach_messengers");
 					}                   
                 }
 				#endregion
-				foreach (GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				if (!checkForMessangers)
 				{
-					if (messenger != null && messenger.IsAlive && messenger.Brain is CuuldurachMessengerBrain)
-						messenger.RemoveFromWorld();
-				}
-				foreach (GameNPC glimmers in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-				{
-					if (glimmers != null && glimmers.IsAlive && glimmers.Brain is CuuldurachSpawnedAdBrain)
-						glimmers.RemoveFromWorld();
+					if (DragonAdds.Count > 0)
+					{
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is CuuldurachMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC glimmer in DragonAdds)
+						{
+							if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
+								glimmer.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
+					}
+					checkForMessangers = true;
 				}
 			}
 
@@ -468,6 +480,7 @@ namespace DOL.AI.Brain
 			#endregion
 			if (HasAggro && Body.TargetObject != null)
 			{
+				checkForMessangers = false;
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if (CanThrow == false && !IsRestless)
 				{
@@ -1187,7 +1200,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 5702;
 					spell.Icon = 5702;
 					spell.TooltipId = 5702;
-					spell.Damage = 2800;
+					spell.Damage = 2400;
 					spell.Name = "Cuuldurach's Breath";
 					spell.Range = 0;
 					spell.Radius = 2000;
@@ -1314,6 +1327,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(83);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
 			CuuldurachMessengerBrain adds = new CuuldurachMessengerBrain();
+
+			if (!HibCuuldurachBrain.DragonAdds.Contains(this))
+				HibCuuldurachBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1652,6 +1669,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			CuuldurachSpawnedAdBrain sbrain = new CuuldurachSpawnedAdBrain();
+
+			if (!HibCuuldurachBrain.DragonAdds.Contains(this))
+				HibCuuldurachBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;

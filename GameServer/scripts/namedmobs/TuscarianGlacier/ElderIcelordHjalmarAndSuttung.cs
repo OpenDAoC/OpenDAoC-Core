@@ -458,7 +458,7 @@ namespace DOL.AI.Brain
         public static bool message1 = false;
         public static bool message2 = false;
         public static bool AggroText = false;
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             Point3D point = new Point3D(31088, 53870, 11886);
@@ -483,16 +483,20 @@ namespace DOL.AI.Brain
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160394);
                 Body.Strength = npcTemplate.Strength;
                 message2 = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                     {
-                        if (npc.IsAlive)
+                        if (npc != null)
                         {
-                            if (npc.Brain is MorkimmaBrain)
-                                npc.Die(Body);
+                            if (npc.IsAlive)
+                            {
+                                if (npc.Brain is MorkimmaBrain)
+                                    npc.Die(Body);
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
 
@@ -506,8 +510,9 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
             }
 
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if (message2 == false)
                 {
                     BroadcastMessage(Body.Name + " bellows 'I am amazed that you have made it this far! I'm afraid that your journey ends here with all of your death, however, I will show you no mercy!'");

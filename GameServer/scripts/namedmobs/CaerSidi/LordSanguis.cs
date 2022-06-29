@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -199,17 +199,22 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 BloodMage.MageCount = 0;
-                foreach(GameNPC mages in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if(mages != null)
+                    foreach (GameNPC mages in Body.GetNPCsInRadius(5000))
                     {
-                        if(mages.IsAlive && mages.Brain is BloodMageBrain)
-                            mages.RemoveFromWorld();
+                        if (mages != null)
+                        {
+                            if (mages.IsAlive && mages.Brain is BloodMageBrain)
+                                mages.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds= true;
                 }
             }
-            if (Body.InCombat && HasAggro)
+            if (Body.TargetObject != null && HasAggro)
             {
+                RemoveAdds = false;
                 if (Util.Chance(10))
                 {
                     if (BloodMage.MageCount < 2)

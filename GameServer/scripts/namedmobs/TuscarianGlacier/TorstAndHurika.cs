@@ -280,6 +280,7 @@ namespace DOL.AI.Brain
             }
         }
         private bool SpawnEddies = false;
+        private bool RemoveAdds = false;
         public override void Think()
         {
             TorstFlyingPath();
@@ -295,10 +296,14 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 Body.Flags = GameNPC.eFlags.FLYING; //fly
                 SpawnEddies = false;
-                foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
-                        npc.RemoveFromWorld();
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                    {
+                        if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
+                            npc.RemoveFromWorld();
+                    }
+                    RemoveAdds = true;
                 }
             }
 
@@ -309,6 +314,7 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if (!SpawnEddies)
                 {
                     CreateEddies();

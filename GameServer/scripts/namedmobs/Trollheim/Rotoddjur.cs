@@ -96,6 +96,7 @@ namespace DOL.AI.Brain
 			AggroRange = 500;
 		}
 		public static bool IsPulled = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if(!HasAggressionTable())
@@ -103,19 +104,24 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
-						if (npc.IsAlive && npc.Brain is RotoddjurAddBrain)
+						if (npc != null)
 						{
-							npc.RemoveFromWorld();
+							if (npc.IsAlive && npc.Brain is RotoddjurAddBrain)
+							{
+								npc.RemoveFromWorld();
+							}
 						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if(HasAggro)
+			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(25) && target != null)
 				{

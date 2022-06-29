@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
 				IsPulled = false;
 				RandomTarget = null;
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				if (IsTargetPicked == false)
                 {

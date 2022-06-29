@@ -275,21 +275,27 @@ namespace DOL.AI.Brain
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is BeliathanMinionBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is BeliathanMinionBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
+            if (HasAggro && Body.TargetObject != null)
+                RemoveAdds = false;
             base.Think();
         }
     }

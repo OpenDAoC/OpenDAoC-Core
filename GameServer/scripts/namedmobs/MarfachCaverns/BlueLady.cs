@@ -154,6 +154,7 @@ namespace DOL.AI.Brain
             AggroRange = 500;
         }
         private bool CanSpawnAdds = false;
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -161,16 +162,21 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 CanSpawnAdds = false;
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is BlueLadyAddBrain)
+                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is BlueLadyAddBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 Body.CastSpell(BlueLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 if ((BlueLadySwordAdd.SwordCount < 10 || BlueLadyAxeAdd.AxeCount < 10) && CanSpawnAdds == false)
                 {

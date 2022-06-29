@@ -132,6 +132,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool NotInCombat = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -146,14 +147,19 @@ namespace DOL.AI.Brain
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
 					NotInCombat = true;
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "RisnirCrussAdd")
-						npc.Die(Body);
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "RisnirCrussAdd")
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
 				}
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				NotInCombat = false;
 				if (Body.Flags != 0)
 					Body.Flags = 0;

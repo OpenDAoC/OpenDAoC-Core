@@ -126,6 +126,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        private bool RemoveAdds = false;
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -225,19 +226,24 @@ namespace DOL.AI.Brain
                 StartCastDOT = false;
                 RandomTarget = null;
                 SpawnFeeder = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        if (npc.IsAlive && npc.Brain is OEMAddBrain)
+                        if (npc != null)
                         {
-                            npc.RemoveFromWorld();
+                            if (npc.IsAlive && npc.Brain is OEMAddBrain)
+                            {
+                                npc.RemoveFromWorld();
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (HasAggro && Body.IsAlive)
             {
+                RemoveAdds = false;
                 //DOT is not classic like, can be anabled if we wish to
                 /* if (StartCastDOT == false)
                  {
@@ -477,7 +483,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             Body.IsWorthReward = false; //worth no reward
-            if (Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(15) && Body.TargetObject != null)

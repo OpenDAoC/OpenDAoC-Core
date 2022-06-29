@@ -91,16 +91,19 @@ namespace DOL.AI.Brain
 		public static bool IsPulled = false;
 		public override void Think()
 		{
-			foreach(GameNPC npc in Body.GetNPCsInRadius(2000))
-            {
-				if(npc != null)
-                {
-					if(npc.IsAlive && npc.PackageID == "DagarBaf")
-                    {
-						AddAggroListTo(npc.Brain as StandardMobBrain);
-                    }
-                }
-            }
+			if (HasAggro && Body.TargetObject != null)
+			{
+				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				{
+					if (npc != null)
+					{
+						if (npc.IsAlive && npc.PackageID == "DagarBaf")
+						{
+							AddAggroListTo(npc.Brain as StandardMobBrain);
+						}
+					}
+				}
+			}
 			base.Think();
 		}
 	}

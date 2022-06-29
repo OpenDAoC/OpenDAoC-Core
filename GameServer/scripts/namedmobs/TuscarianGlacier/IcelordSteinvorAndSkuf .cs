@@ -180,7 +180,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -200,21 +200,26 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if (mob != null)
+                    foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
                     {
-                        if (mob.IsAlive)
+                        if (mob != null)
                         {
-                            if (mob.Brain is EffectMobBrain)
-                                mob.RemoveFromWorld();
+                            if (mob.IsAlive)
+                            {
+                                if (mob.Brain is EffectMobBrain)
+                                    mob.RemoveFromWorld();
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
 
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
+            if (Body.TargetObject != null && HasAggro)
             {
+                RemoveAdds = false;
                 if (PickedTarget == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), 1000);

@@ -284,7 +284,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
+            if (HasAggro && Body.TargetObject != null) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
                 {

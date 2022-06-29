@@ -205,7 +205,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			AlbGolestandtBrain.pathpoint1 = false;
 			AlbGolestandtBrain.pathpoint2 = false;
@@ -239,6 +239,7 @@ namespace DOL.GS
 			AlbGolestandtBrain.IsRestless = false;
 			AlbGolestandtBrain.LockIsRestless = false;
 			AlbGolestandtBrain.CanSpawnMessengers = false;
+			AlbGolestandtBrain.checkForMessangers = false;
 			AlbGolestandtBrain.LockIsRestless = false;
 			AlbGolestandtBrain.CanGlare = false;
 			AlbGolestandtBrain.CanGlare2 = false;
@@ -307,6 +308,8 @@ namespace DOL.AI.Brain
 		public static bool ResetChecks = false;
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
+		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -366,19 +369,28 @@ namespace DOL.AI.Brain
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
+						CanSpawnMessengers = false;
 						Body.TempProperties.removeProperty("golestandt_messengers");
 					}
 				}
                 #endregion
-                foreach (GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				if (!checkForMessangers)
 				{
-					if (messenger != null && messenger.IsAlive && messenger.Brain is GolestandtMessengerBrain)
-						messenger.RemoveFromWorld();
-				}
-				foreach (GameNPC granitegiant in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-				{
-					if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
-						granitegiant.RemoveFromWorld();
+					if (DragonAdds.Count > 0)
+					{
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is GolestandtMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC granitegiant in DragonAdds)
+						{
+							if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
+								granitegiant.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
+					}
+					checkForMessangers = true;
 				}
 			}
 
@@ -468,6 +480,7 @@ namespace DOL.AI.Brain
 			#endregion
 			if (HasAggro && Body.TargetObject != null)
 			{
+				checkForMessangers = false;
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if (CanThrow == false && !IsRestless)
 				{
@@ -1185,7 +1198,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 5700;
 					spell.Icon = 5700;
 					spell.TooltipId = 5700;
-					spell.Damage = 2800;
+					spell.Damage = 2400;
 					spell.Name = "Golestandt's Breath";
 					spell.Range = 0;
 					spell.Radius = 2000;
@@ -1312,6 +1325,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(31);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(31));
 			GolestandtMessengerBrain adds = new GolestandtMessengerBrain();
+
+			if (!AlbGolestandtBrain.DragonAdds.Contains(this))
+				AlbGolestandtBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1650,6 +1667,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			GolestandtSpawnedAdBrain sbrain = new GolestandtSpawnedAdBrain();
+
+			if (!AlbGolestandtBrain.DragonAdds.Contains(this))
+				AlbGolestandtBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;

@@ -203,7 +203,7 @@ namespace DOL.AI.Brain
             spam_teleport = false;
             return 0;
         }
-
+        private bool RemoveAdds = false;
         public static bool spam_teleport = false;
         public override void Think()
         {
@@ -223,21 +223,26 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(160))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(160))
                     {
-                        if (npc.IsAlive && !npc.InCombat)
+                        if (npc != null)
                         {
-                            if (npc.Brain is JailerAddBrain && npc.RespawnInterval == -1)
-                                npc.RemoveFromWorld();
+                            if (npc.IsAlive && !npc.InCombat)
+                            {
+                                if (npc.Brain is JailerAddBrain && npc.RespawnInterval == -1)
+                                    npc.RemoveFromWorld();
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
 
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
+            if (Body.TargetObject != null && HasAggro)
             {
+                RemoveAdds = false;
                 if (spam_teleport == false && Body.TargetObject != null)
                 {
                     int rand = Util.Random(25000, 45000);

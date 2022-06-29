@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
                 if (!Body.Styles.Contains(ChieftainCaimheul.slam))
                     Body.Styles.Add(ChieftainCaimheul.slam); 
             }
-            if (Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
                 if (IsPulled == false)
                 {

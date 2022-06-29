@@ -220,7 +220,7 @@ namespace DOL.AI.Brain
 					PickRandomTarget();
 					PickTarget = true;
 				}
-				if (HasAggro && Cancast) //&& RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
+				if (HasAggro && Cancast && Body.TargetObject != null) //&& RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
 				{
 					if(Body.TargetObject != RandomTarget)
 						Body.TargetObject = RandomTarget;

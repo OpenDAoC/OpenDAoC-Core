@@ -216,6 +216,7 @@ namespace DOL.AI.Brain
         }
         public static bool CanCast = false;
         public bool SpawnCopiesAgain = false;
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -231,13 +232,17 @@ namespace DOL.AI.Brain
                 AidonCopyIce.CopyCountIce = 0;
                 AidonCopyAir.CopyCountAir = 0;
                 AidonCopyEarth.CopyCountEarth = 0;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
                     {
-                        if (npc.IsAlive && (npc.Brain is AidonCopyFireBrain || npc.Brain is AidonCopyAirBrain || npc.Brain is AidonCopyIceBrain || npc.Brain is AidonCopyEarthBrain))
-                            npc.RemoveFromWorld();
+                        if (npc != null)
+                        {
+                            if (npc.IsAlive && (npc.Brain is AidonCopyFireBrain || npc.Brain is AidonCopyAirBrain || npc.Brain is AidonCopyIceBrain || npc.Brain is AidonCopyEarthBrain))
+                                npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (Body.IsOutOfTetherRange)
@@ -246,7 +251,7 @@ namespace DOL.AI.Brain
             else if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
                 Body.Health = Body.MaxHealth;
 
-            if (Body.InCombat && HasAggro)
+            if (Body.TargetObject != null && HasAggro)
             {
                 if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
                 {

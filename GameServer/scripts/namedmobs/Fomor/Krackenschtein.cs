@@ -223,11 +223,9 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				TeleportTarget = null;
 				if(Enemys_To_DD.Count>0)
-                {
 					Enemys_To_DD.Clear();
-                }
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null && Body.IsAlive)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{

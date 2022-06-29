@@ -81,5 +81,6 @@ namespace DOL.GS.Keeps
 		void UpdateBaseLevels();
 		Battleground GetBattleground(ushort region);
 		void ExitBattleground(GamePlayer player);
+		AbstractGameKeep GetKeepByShortName(string keepname);
 	}
 }

@@ -147,6 +147,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		private bool CanSpawnAdds = false;
+		private bool RemoveAdds = false;
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if(ad != null && ad.Damage > 0 && ad.Attacker != null && CanSpawnAdds == false && Util.Chance(20))
@@ -185,14 +186,19 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnAdds = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain)
-						npc.Die(Body);
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain)
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
 				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				GameLiving target = Body.TargetObject as GameLiving;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{

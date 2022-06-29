@@ -437,6 +437,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -465,20 +466,25 @@ namespace DOL.AI.Brain
                 ScorScaithBrain.switch_target = false;
 
                 spawn_guardians = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is CorpScaithBrain || npc.Brain is SpioradScaithBrain ||
-                        npc.Brain is RopadhScaithBrain || npc.Brain is DamhnaScaithBrain
-                        || npc.Brain is FuinneamgScaithBrain || npc.Brain is BruScaithBrain ||
-                        npc.Brain is FuarScaithBrain || npc.Brain is TaesScaithBrain
-                        || npc.Brain is ScorScaithBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is CorpScaithBrain || npc.Brain is SpioradScaithBrain ||
+                            npc.Brain is RopadhScaithBrain || npc.Brain is DamhnaScaithBrain
+                            || npc.Brain is FuinneamgScaithBrain || npc.Brain is BruScaithBrain ||
+                            npc.Brain is FuarScaithBrain || npc.Brain is TaesScaithBrain
+                            || npc.Brain is ScorScaithBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (Body.InCombat && HasAggro)
+            if (Body.TargetObject != null && HasAggro)
             {
+                RemoveAdds = false;
                 if (spawn_guardians == false)
                 {
                     BroadcastMessage(String.Format(Body.Name + " summons the Scaths to do his bidding!"));

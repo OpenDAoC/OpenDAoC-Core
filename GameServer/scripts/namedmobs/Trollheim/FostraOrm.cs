@@ -83,7 +83,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(25) && target != null)
