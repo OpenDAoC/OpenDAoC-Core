@@ -13,7 +13,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 15;
+        public static ushort BASE_ROG_CHANCE = 12;
 
 
         /// <summary>
@@ -56,6 +56,12 @@ namespace DOL.GS {
 
                 // chance to get a RoG Item
                 int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 2);
+
+                if (mob.Level > 27)
+                    chance -= 3;
+
+                if (mob.Level > 40)
+                    chance -= 3;
 
                 //chance = 100;
 
