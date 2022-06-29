@@ -204,7 +204,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			MidGjalpinulvaBrain.pathpoint1 = false;
 			MidGjalpinulvaBrain.pathpoint2 = false;
@@ -300,6 +300,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -366,29 +367,19 @@ namespace DOL.AI.Brain
 				#endregion
 				if (!checkForMessangers)
 				{
-					GameNPC[] messengers = WorldMgr.GetNPCsByNameFromRegion("Gjalpinulva's messenger", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] drakulvs1 = WorldMgr.GetNPCsByNameFromRegion("drakulv executioner", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] drakulvs2 = WorldMgr.GetNPCsByNameFromRegion("drakulv disciple", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] drakulvs3 = WorldMgr.GetNPCsByNameFromRegion("drakulv soultrapper", Body.CurrentRegionID, eRealm.None);
-					foreach (GameNPC messenger in messengers)
+					if (DragonAdds.Count > 0)
 					{
-						if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
-							messenger.RemoveFromWorld();
-					}
-					foreach (GameNPC drakulv in drakulvs1)
-					{
-						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
-							drakulv.RemoveFromWorld();
-					}
-					foreach (GameNPC drakulv in drakulvs2)
-					{
-						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
-							drakulv.RemoveFromWorld();
-					}
-					foreach (GameNPC drakulv in drakulvs3)
-					{
-						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
-							drakulv.RemoveFromWorld();
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC drakulv in DragonAdds)
+						{
+							if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
+								drakulv.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
 					}
 					checkForMessangers = true;
 				}
@@ -1327,6 +1318,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(781);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(781));
 			GjalpinulvaMessengerBrain adds = new GjalpinulvaMessengerBrain();
+
+			if (!MidGjalpinulvaBrain.DragonAdds.Contains(this))
+				MidGjalpinulvaBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1654,6 +1649,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			GjalpinulvaSpawnedAdBrain sbrain = new GjalpinulvaSpawnedAdBrain();
+
+			if (!MidGjalpinulvaBrain.DragonAdds.Contains(this))
+				MidGjalpinulvaBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;
