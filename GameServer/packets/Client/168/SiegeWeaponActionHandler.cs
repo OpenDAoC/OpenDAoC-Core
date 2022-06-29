@@ -60,7 +60,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case 2: { client.Player.SiegeWeapon.Arm(); } break;//arm
 				case 3: { client.Player.SiegeWeapon.Aim(); } break;//aim
 				case 4: { client.Player.SiegeWeapon.Fire(); } break;//fire
-				case 5: { client.Player.SiegeWeapon.Move(); } break;//move
+				// case 5: { client.Player.SiegeWeapon.Move(); } break;//move
+				case 5: break;//move
 				case 6: { client.Player.SiegeWeapon.TryRepair(); } break;//repair
 				case 7: { client.Player.SiegeWeapon.salvage(); } break;//salvage
 				case 8: { client.Player.SiegeWeapon.ReleaseControl(); } break;//release
