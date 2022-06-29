@@ -205,7 +205,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			AlbGolestandtBrain.pathpoint1 = false;
 			AlbGolestandtBrain.pathpoint2 = false;
@@ -309,6 +309,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -375,29 +376,19 @@ namespace DOL.AI.Brain
                 #endregion
 				if (!checkForMessangers)
 				{
-					GameNPC[] messengers = WorldMgr.GetNPCsByNameFromRegion("Golestandt's messenger", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] granitegiants1 = WorldMgr.GetNPCsByNameFromRegion("granite giant stonelord", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] granitegiants2 = WorldMgr.GetNPCsByNameFromRegion("granite giant pounder", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] granitegiants3 = WorldMgr.GetNPCsByNameFromRegion("granite giant outlooker", Body.CurrentRegionID, eRealm.None);
-					foreach (GameNPC messenger in messengers)
+					if (DragonAdds.Count > 0)
 					{
-						if (messenger != null && messenger.IsAlive && messenger.Brain is GolestandtMessengerBrain)
-							messenger.RemoveFromWorld();
-					}
-					foreach (GameNPC granitegiant in granitegiants1)
-					{
-						if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
-							granitegiant.RemoveFromWorld();
-					}
-					foreach (GameNPC granitegiant in granitegiants2)
-					{
-						if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
-							granitegiant.RemoveFromWorld();
-					}
-					foreach (GameNPC granitegiant in granitegiants3)
-					{
-						if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
-							granitegiant.RemoveFromWorld();
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is GolestandtMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC granitegiant in DragonAdds)
+						{
+							if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
+								granitegiant.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
 					}
 					checkForMessangers = true;
 				}
@@ -1334,6 +1325,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(31);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(31));
 			GolestandtMessengerBrain adds = new GolestandtMessengerBrain();
+
+			if (!AlbGolestandtBrain.DragonAdds.Contains(this))
+				AlbGolestandtBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1672,6 +1667,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			GolestandtSpawnedAdBrain sbrain = new GolestandtSpawnedAdBrain();
+
+			if (!AlbGolestandtBrain.DragonAdds.Contains(this))
+				AlbGolestandtBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;
