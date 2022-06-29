@@ -204,7 +204,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			HibCuuldurachBrain.pathpoint1 = false;
 			HibCuuldurachBrain.pathpoint2 = false;
@@ -308,6 +308,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -374,29 +375,19 @@ namespace DOL.AI.Brain
 				#endregion
 				if (!checkForMessangers)
 				{
-					GameNPC[] messengers = WorldMgr.GetNPCsByNameFromRegion("Cuuldurach's messenger", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] glimmers1 = WorldMgr.GetNPCsByNameFromRegion("glimmer geist", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] glimmers2 = WorldMgr.GetNPCsByNameFromRegion("glimmer knight", Body.CurrentRegionID, eRealm.None);
-					GameNPC[] glimmers3 = WorldMgr.GetNPCsByNameFromRegion("glimmer deathwatcher", Body.CurrentRegionID, eRealm.None);
-					foreach (GameNPC messenger in messengers)
+					if (DragonAdds.Count > 0)
 					{
-						if (messenger != null && messenger.IsAlive && messenger.Brain is CuuldurachMessengerBrain)
-							messenger.RemoveFromWorld();
-					}
-					foreach (GameNPC glimmer in glimmers1)
-					{
-						if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
-							glimmer.RemoveFromWorld();
-					}
-					foreach (GameNPC glimmer in glimmers2)
-					{
-						if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
-							glimmer.RemoveFromWorld();
-					}
-					foreach (GameNPC glimmer in glimmers3)
-					{
-						if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
-							glimmer.RemoveFromWorld();
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is CuuldurachMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC glimmer in DragonAdds)
+						{
+							if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
+								glimmer.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
 					}
 					checkForMessangers = true;
 				}
@@ -1336,6 +1327,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(83);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
 			CuuldurachMessengerBrain adds = new CuuldurachMessengerBrain();
+
+			if (!HibCuuldurachBrain.DragonAdds.Contains(this))
+				HibCuuldurachBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1674,6 +1669,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			CuuldurachSpawnedAdBrain sbrain = new CuuldurachSpawnedAdBrain();
+
+			if (!HibCuuldurachBrain.DragonAdds.Contains(this))
+				HibCuuldurachBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;
