@@ -172,6 +172,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		public static bool IsCreatingSouls = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -181,19 +182,24 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				TorturedSouls.TorturedSoulKilled = 0;
 				TorturedSouls.TorturedSoulCount = 0;
-				foreach (GameNPC souls in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (souls != null)
+					foreach (GameNPC souls in Body.GetNPCsInRadius(5000))
 					{
-						if (souls.IsAlive && (souls.Brain is TorturedSoulsBrain || souls.Brain is ExplodeUndeadBrain))
+						if (souls != null)
 						{
-							souls.RemoveFromWorld();
+							if (souls.IsAlive && (souls.Brain is TorturedSoulsBrain || souls.Brain is ExplodeUndeadBrain))
+							{
+								souls.RemoveFromWorld();
+							}
 						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(IsCreatingSouls==false)
                 {
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(5000, 8000));//every 5-8s it will spawn tortured souls

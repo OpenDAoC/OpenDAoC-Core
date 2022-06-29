@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 					SpawnWolf = true;
                 }
             }
-			if(HasAggro)
+			if(HasAggro && Body.TargetObject != null)
             {
 				SpawnWolf = false;
 				GameLiving target = Body.TargetObject as GameLiving;
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (Body.IsOutOfTetherRange)
+			if (Body.IsOutOfTetherRange && Body.TargetObject != null)
 			{
 				Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
 				GameLiving target = Body.TargetObject as GameLiving;

@@ -62,7 +62,7 @@ namespace DOL.GS
 		public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-		public override short Strength { get => base.Strength; set => base.Strength = 350; }
+		public override short Strength { get => base.Strength; set => base.Strength = 200; }
 		#endregion
 		public override bool AddToWorld()
 		{
@@ -276,15 +276,18 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
-            {
-				if(npc != null && npc.IsAlive && npc != Body && npc.Brain is FireBlightBrain brain)
-                {
-					GameLiving target = Body.TargetObject as GameLiving;
-					if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
-						brain.AddToAggroList(target, 10);
-                }
-            }
+			if (HasAggro && Body.TargetObject != null)
+			{
+				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				{
+					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is FireBlightBrain brain)
+					{
+						GameLiving target = Body.TargetObject as GameLiving;
+						if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
+							brain.AddToAggroList(target, 10);
+					}
+				}
+			}
 			base.Think();
 		}
 	}
@@ -364,13 +367,16 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			if (HasAggro && Body.TargetObject != null)
 			{
-				if (npc != null && npc.IsAlive && npc != Body && npc.Brain is LateBlightBrain brain)
+				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{
-					GameLiving target = Body.TargetObject as GameLiving;
-					if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
-						brain.AddToAggroList(target, 10);
+					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is LateBlightBrain brain)
+					{
+						GameLiving target = Body.TargetObject as GameLiving;
+						if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
+							brain.AddToAggroList(target, 10);
+					}
 				}
 			}
 			base.Think();
@@ -452,13 +458,16 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			if (HasAggro && Body.TargetObject != null)
 			{
-				if (npc != null && npc.IsAlive && npc != Body && npc.Brain is FleshBlightBrain brain)
+				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{
-					GameLiving target = Body.TargetObject as GameLiving;
-					if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
-						brain.AddToAggroList(target, 10);
+					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is FleshBlightBrain brain)
+					{
+						GameLiving target = Body.TargetObject as GameLiving;
+						if (!brain.HasAggro && brain != Body.Brain && target != null && target.IsAlive)
+							brain.AddToAggroList(target, 10);
+					}
 				}
 			}
 			base.Think();

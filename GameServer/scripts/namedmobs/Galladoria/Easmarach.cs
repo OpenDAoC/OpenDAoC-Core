@@ -242,7 +242,7 @@ namespace DOL.AI.Brain
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
                 Body.MaxSpeedBase = npcTemplate.MaxSpeed;
             }
-            if (Body.IsOutOfTetherRange && !dontattack)
+            if (Body.IsOutOfTetherRange && !dontattack && Body.TargetObject != null)
             {
                 Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
                 GameLiving target = Body.TargetObject as GameLiving;

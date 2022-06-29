@@ -182,6 +182,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
         }
         public static bool Spawn_Splinders = false;
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -203,16 +204,21 @@ namespace DOL.AI.Brain
                     Enemys_To_Mezz.Clear();
                 }
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is SBAddsBrain && npc != null && npc.IsAlive)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is SBAddsBrain && npc != null && npc.IsAlive)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if(Spawn_Splinders==false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSplinder), 10000);
@@ -238,13 +244,16 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && Body.IsAlive)
             {
-                SBAdds Add = new SBAdds();
-                Add.X = Body.X + Util.Random(-50, 80);
-                Add.Y = Body.Y + Util.Random(-50, 80);
-                Add.Z = Body.Z;
-                Add.CurrentRegion = Body.CurrentRegion;
-                Add.Heading = Body.Heading;
-                Add.AddToWorld();
+                for (int i = 0; i < Util.Random(1, 2); i++)
+                {
+                    SBAdds Add = new SBAdds();
+                    Add.X = Body.X + Util.Random(-50, 80);
+                    Add.Y = Body.Y + Util.Random(-50, 80);
+                    Add.Z = Body.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = Body.Heading;
+                    Add.AddToWorld();
+                }
                 new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnSplinder), Util.Random(15000,25000));
             }
             return 0;

@@ -173,27 +173,31 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public override void Think()
+		private bool RemoveAdds = false;
+		public override void Think()
 		{
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if(npc != null)
-                    {
-						if(npc.IsAlive && npc.Brain is QunilariaAddBrain && npc.PackageID == "QunilariaCombatAdd")
-                        {
-							npc.Die(npc);
-                        }
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.Brain is QunilariaAddBrain && npc.PackageID == "QunilariaCombatAdd")
+							{
+								npc.Die(npc);
+							}
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
-			{
-			}
+			if (Body.TargetObject != null && Body.IsAlive && HasAggro)
+				RemoveAdds = false;
 			base.Think();
 		}
 	}

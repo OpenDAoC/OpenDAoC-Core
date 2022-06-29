@@ -104,6 +104,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		public static bool IsPulled = false;
+		private bool RemoveAdds = false;
 		public void BlockEntrance()
         {
 			Point3D entrance = new Point3D(31234, 33215, 15842);
@@ -129,23 +130,28 @@ namespace DOL.AI.Brain
 				IsPulled = false;
 				Adds1 = false;
 				Adds2 = false;
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
-						if (npc.IsAlive && npc.Brain is AnurigundaAddsBrain)
+						if (npc != null)
 						{
-							npc.RemoveFromWorld();
+							if (npc.IsAlive && npc.Brain is AnurigundaAddsBrain)
+							{
+								npc.RemoveFromWorld();
+							}
 						}
 					}
+					RemoveAdds = true;
 				}
 			}
 			if(Body.IsAlive)
             {
 				BlockEntrance();
             }
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if (IsPulled == false)
 				{
 					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))

@@ -221,6 +221,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -228,20 +229,23 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
+                if (!RemoveAdds)
                 {
-                    if (mob_c != null)
+                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
                     {
-                        if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && brain1.HasAggro)
-                            brain1.ClearAggroList();
-                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && brain2.HasAggro)
-                            brain2.ClearAggroList();
+                        if (mob_c != null)
+                        {
+                            if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && brain1.HasAggro)
+                                brain1.ClearAggroList();
+                            if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && brain2.HasAggro)
+                                brain2.ClearAggroList();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro && Body.InCombat)
-            {
-            }
+            if (HasAggro && Body.TargetObject != null)
+                RemoveAdds = false;
             base.Think();
         }
         
@@ -469,7 +473,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 8;
+                    spell.RecastDelay = Util.Random(4,8);
                     spell.ClientEffect = 4568;
                     spell.Icon = 4568;
                     spell.Damage = 450;
@@ -683,7 +687,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 8;
+                    spell.RecastDelay = Util.Random(4,8);
                     spell.ClientEffect = 4227;
                     spell.Icon = 4227;
                     spell.Damage = 450;

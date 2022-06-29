@@ -106,6 +106,7 @@ namespace DOL.AI.Brain
 
 		public static bool CanSpawnStag = false;
 		private bool CanSpawnBlobs = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -114,14 +115,19 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnBlobs = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is FuilslathachBrain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is FuilslathachBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
 				}
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				if (!CanSpawnBlobs)
 				{
 					SpawnBlobs();

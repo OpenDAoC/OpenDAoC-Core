@@ -277,22 +277,27 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 850;
         }
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is LegionAddBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is LegionAddBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if(IsCreatingSouls==false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(25000, 30000));//every 25-30s it will spawn tortured souls

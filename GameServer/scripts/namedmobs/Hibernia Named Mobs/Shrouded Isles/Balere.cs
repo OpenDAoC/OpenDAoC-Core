@@ -97,6 +97,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool spawnAdds = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -105,14 +106,19 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				spawnAdds = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is BalereAddBrain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is BalereAddBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
 				}
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if (!spawnAdds)
 				{
 					SpawnAdds();

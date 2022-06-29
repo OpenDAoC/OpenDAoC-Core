@@ -97,7 +97,7 @@ namespace DOL.AI.Brain
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool spawnMinions = true;
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -105,14 +105,20 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 spawnMinions = true;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is NahemahMinionBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is NahemahMinionBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
+            if (HasAggro && Body.TargetObject != null)
+                RemoveAdds = false;
             base.Think();
         }
         public override void OnAttackedByEnemy(AttackData ad)

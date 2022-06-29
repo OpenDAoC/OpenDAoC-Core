@@ -185,6 +185,7 @@ namespace DOL.AI.Brain
 		private bool NotInCombat = false;
 		private bool InCombat1 = false;
 		private bool SpamMess1 = false;
+		private bool RemoveAdds = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
@@ -248,21 +249,26 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				CanSpawnAdds = false;
 				SpamMess1 = false;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
-					if (npc != null && npc.IsAlive && npc.Brain is VortanosAddBrain)
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 					{
-						npc.RemoveFromWorld();
-						if (!NotInCombat)
+						if (npc != null && npc.IsAlive && npc.Brain is VortanosAddBrain)
 						{
-							BroadcastMessage(Body.Name + " says, \"Sleep my unwilling prisoners, you are no longer needed here\"");
-							NotInCombat = true;
+							npc.RemoveFromWorld();
+							if (!NotInCombat)
+							{
+								BroadcastMessage(Body.Name + " says, \"Sleep my unwilling prisoners, you are no longer needed here\"");
+								NotInCombat = true;
+							}
 						}
 					}
-                }
+					RemoveAdds = true;
+				}
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				NotInCombat = false;
 				if(!InCombat1)
                 {

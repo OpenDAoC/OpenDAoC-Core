@@ -243,7 +243,8 @@ namespace DOL.AI.Brain
 				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
 			}
 		}
-        public override void Think()
+		private bool RemoveAdds = false;
+		public override void Think()
 		{
 			if (!HasAggressionTable())
 			{
@@ -252,17 +253,22 @@ namespace DOL.AI.Brain
 				Stage2 = false;
 				SpawnSacrifices1 = false;
 				Body.Health = Body.MaxHealth;
-				foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if(npc != null)
-                    {
-						if(npc.IsAlive && (npc.Brain is SummonedDemonBrain || npc.Brain is SummonedSacrificeBrain || npc.Brain is ShadeOfAelfgarBrain))
-							npc.RemoveFromWorld();
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && (npc.Brain is SummonedDemonBrain || npc.Brain is SummonedSacrificeBrain || npc.Brain is ShadeOfAelfgarBrain))
+								npc.RemoveFromWorld();
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(Stage2==true)//demon form
 					Body.CastSpell(GovannonDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
@@ -727,7 +733,7 @@ namespace DOL.AI.Brain
 				if (Enemys_To_Port.Count > 0)
 					Enemys_To_Port.Clear();//clear list if it reset
 			}
-			if(Body.IsAlive && Body.InCombat && HasAggro)
+			if(Body.IsAlive && Body.InCombat && HasAggro && Body.TargetObject != null)
             {
 				if(Util.Chance(5))
 					PickRandomTarget();

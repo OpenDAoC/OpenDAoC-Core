@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
                 spamaoe = false;
                 spampoison = false;
             }
-            if(Body.IsOutOfTetherRange)
+            if(Body.IsOutOfTetherRange && Body.TargetObject != null)
             {
                 Body.StopFollowing();
                 Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);

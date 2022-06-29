@@ -102,7 +102,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				if (IsPulled == false)
 				{

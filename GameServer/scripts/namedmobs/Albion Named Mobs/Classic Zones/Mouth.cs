@@ -149,6 +149,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool SpawnAdd = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -157,15 +158,20 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				SpawnAdd = false;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
-					if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "MouthAdd")
-						npc.Die(Body);
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "MouthAdd")
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
-				if(SpawnAdd==false)
+				RemoveAdds = false;
+				if (SpawnAdd==false)
                 {
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(MouthAdds), Util.Random(20000, 35000));
 					SpawnAdd = true;

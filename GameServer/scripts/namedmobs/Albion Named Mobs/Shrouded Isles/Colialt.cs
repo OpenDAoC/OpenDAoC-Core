@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 				ColialtPhase = false;
 				CanFollow = false;
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				foreach(GameNPC npc in Body.GetNPCsInRadius(3000))
                 {

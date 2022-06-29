@@ -108,6 +108,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool CanSpawnTree = false;
+		private bool RemoveTrees = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -116,20 +117,25 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnTree = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+				if (!RemoveTrees)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is WalkingTreeBrain)
-						npc.RemoveFromWorld();
-				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is WalkingTree2Brain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is WalkingTreeBrain)
+							npc.RemoveFromWorld();
+					}
+					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is WalkingTree2Brain)
+							npc.RemoveFromWorld();
+					}
+					RemoveTrees = true;
 				}
 			}
-			if(HasAggro)
+			if(HasAggro && Body.TargetObject != null)
             {
-				if(!CanSpawnTree)
+				RemoveTrees = false;
+				if (!CanSpawnTree)
                 {
 					SpawnTree();
 					SpawnTree2();
