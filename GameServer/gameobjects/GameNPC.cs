@@ -2574,6 +2574,13 @@ namespace DOL.GS
 				AggroRange = template.AggroRange
 			};
 		}
+		
+		public void UpdateNPCEquipmentAppearance()
+		{
+			if (ObjectState != eObjectState.Active) return;
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				player.Out.SendLivingEquipmentUpdate(this);
+		}
 
 		/// <summary>
 		/// Switches the active weapon to another one

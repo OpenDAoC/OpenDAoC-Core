@@ -27,23 +27,26 @@ public class PlayerDeck
 
     private void InitializeDeck()
     {
-        _cards.Clear();
-
-        for (int i = 0; i < NUM_NORMAL_DECKS; i++)
+        lock (_cardLock)
         {
-            for (int j = 0; j < 100; j++)
-            {
-                _cards.Push(j+1); //offset by 1 to only generate 'cards' with values 1-100
-            }
-        }
+            _cards.Clear();
 
-        for (int i = 0; i < NUM_BONUS_DECKS; i++)
-        {
-            for (int j = (100-BONUS_DECK_SIZE); j < 100; j++)
+            for (int i = 0; i < NUM_NORMAL_DECKS; i++)
             {
-                //add a "bonus deck" of high numbers X-99
-                _cards.Push(j);
+                for (int j = 0; j < 100; j++)
+                {
+                    _cards.Push(j+1); //offset by 1 to only generate 'cards' with values 1-100
+                }
             }
+
+            for (int i = 0; i < NUM_BONUS_DECKS; i++)
+            {
+                for (int j = (100-BONUS_DECK_SIZE); j < 100; j++)
+                {
+                    //add a "bonus deck" of high numbers X-99
+                    _cards.Push(j);
+                }
+            }            
         }
     }
 
@@ -56,29 +59,37 @@ public class PlayerDeck
         Shuffle();
         //Console.WriteLine($"deck reset");
     }
+
+    private object _cardLock = new object();
     
     private void Shuffle()
     {
-        int[] preshuffle = _cards.ToArray();
+        int[] preshuffle = null;
+        lock (_cardLock)
+        {
+            preshuffle = _cards.ToArray();    
+        }
+
         //Fisher-Yates shuffle algorithm
         // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-        int cardsLength = _cards.Count;
+        int cardsLength = _cards.Count - 1;
         while (cardsLength > 1)
         {
             cardsLength--;
-            int k = Util.CryptoNextInt(cardsLength);
-            var currentItem = preshuffle[k];
-            preshuffle[k] = preshuffle[cardsLength];
-            preshuffle[cardsLength] = currentItem;
+            int k = Util.CryptoNextInt(cardsLength + 1);
+            (preshuffle[k], preshuffle[cardsLength]) = (preshuffle[cardsLength], preshuffle[k]);
         }
         /*
         //randomly order the contents of the array, then reassign the array
         int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(cardsLength-1)).ToArray();
         */
-        _cards.Clear();
-        foreach (var i in preshuffle)
+        lock (_cardLock)
         {
-            _cards.Push(i);
+            _cards.Clear();
+            foreach (var i in preshuffle)
+            {
+                _cards.Push(i);
+            }    
         }
     }
 

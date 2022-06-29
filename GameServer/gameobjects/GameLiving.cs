@@ -5818,6 +5818,42 @@ namespace DOL.GS
         public EffectListComponent effectListComponent;
         #endregion
 
+        public virtual GamePlayer LosChecker(GameLiving actionSource, GameObject actionTarget)
+        {
+	        if (actionSource == null || actionTarget == null)
+		        return null;
+
+	        if (actionSource is GamePlayer)
+		        return actionSource as GamePlayer;
+	        
+	        {
+		        if (actionSource is GameNPC &&
+		            (actionSource as GameNPC).Brain is IControlledBrain &&
+		            ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null &&
+		            ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner().ObjectState == GamePlayer.eObjectState.Active)
+			        return ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+
+		        if (actionTarget is GamePlayer)
+			        return actionTarget as GamePlayer;
+		        
+		        {
+			        if (actionSource is GameNPC && ((actionSource as GameNPC).Brain is IControlledBrain == false))
+			        {
+				        if (actionTarget is GameNPC &&
+				            (actionTarget as GameNPC).Brain is IControlledBrain &&
+				            ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null &&
+				            ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner().ObjectState == GamePlayer.eObjectState.Active)
+					        return ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+			        }
+		        }
+	        }
+	        foreach (GamePlayer pl in actionSource.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+	        {
+		        if (pl != null && pl.ObjectState == GameLiving.eObjectState.Active)
+			        return pl;
+	        }
+	        return null;
+        }
 
         #region Mana/Health/Endurance/Concentration/Delete
         /// <summary>

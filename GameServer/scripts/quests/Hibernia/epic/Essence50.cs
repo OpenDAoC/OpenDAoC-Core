@@ -1450,7 +1450,7 @@ namespace DOL.GS.Quests.Hibernia
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name == Caithor.Name)
+				if (gArgs.Target is Caithor)
 				{
 					m_questPlayer.Out.SendMessage("You collect the Moonstone from Caithor", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, Moonstone);

@@ -353,6 +353,22 @@ namespace DOL.GS
             get { return m_statsAnon; }
             set { m_statsAnon = value; }
         }
+        
+        protected bool m_lastDeathPvP;
+
+        public bool LastDeathPvP
+        {
+            get { return m_lastDeathPvP; }
+            set { m_lastDeathPvP = value; }
+        }
+        
+        protected bool m_wasmovedbycorpsesummoner;
+
+        public bool WasMovedByCorpseSummoner
+        {
+            get { return m_wasmovedbycorpsesummoner; }
+            set { m_wasmovedbycorpsesummoner = value; }
+        }
 		
         #region DoorCache
         protected Dictionary<int, eDoorState> m_doorUpdateList = null;
@@ -1895,7 +1911,8 @@ namespace DOL.GS
             Mana = MaxMana;
             StartPowerRegeneration();
             StartEnduranceRegeneration();
-
+            LastDeathPvP = false;
+            
             var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
             /*
             foreach (var item in this.Inventory.EquippedItems)
@@ -2079,7 +2096,7 @@ namespace DOL.GS
 			
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
-
+            LastDeathPvP = false;
             UpdatePlayerStatus();
             Out.SendPlayerRevive(this);
         }
@@ -8548,6 +8565,9 @@ namespace DOL.GS
                             conLoss = 1;
                         TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
                     }
+                    
+                    if (realmDeath)
+                        LastDeathPvP = true;
                 }
                 GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             }

@@ -10,6 +10,11 @@ namespace DOL.GS
 		public static int KillsRequireToSpawn = 20;
 		public override bool AddToWorld()
 		{
+			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is DevelinBrain)
+					return false;
+			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159930);
 			LoadTemplate(npcTemplate);
 			Strength = npcTemplate.Strength;

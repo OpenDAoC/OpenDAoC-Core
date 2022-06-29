@@ -1,6 +1,7 @@
 ﻿using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -15,6 +16,34 @@ namespace DOL.GS
 				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
 				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
+			}
+		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			if (source is GamePlayer || source is GamePet)
+			{
+				Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
+				if (!source.IsWithinRadius(spawn, TetherRange))//dont take any dmg 
+				{
+					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
+						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+						|| damageType == eDamageType.Slash)
+					{
+						GamePlayer truc;
+						if (source is GamePlayer)
+							truc = (source as GamePlayer);
+						else
+							truc = ((source as GamePet).Owner as GamePlayer);
+						if (truc != null)
+							truc.Out.SendMessage(Name + " is immune to damage form this distance!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						base.TakeDamage(source, damageType, 0, 0);
+						return;
+					}
+				}
+				else//take dmg
+				{
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+				}
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -44,10 +73,15 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 20000; }
 		}
 		public override bool AddToWorld()
 		{
+			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is LokenBrain)
+					return false;
+			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
 			LoadTemplate(npcTemplate);
 			Strength = npcTemplate.Strength;
@@ -109,6 +143,8 @@ namespace DOL.AI.Brain
             {
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
+				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
+				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
 				if (LokenWolf.WolfsCount < 2 && !SpawnWolf)
                 {
 					SpawnWolfs();
@@ -126,6 +162,21 @@ namespace DOL.AI.Brain
 						if (!brian.HasAggro && brian != null && target != null && target.IsAlive)
 							brian.AddToAggroList(target, 10);
 					}
+				}
+			}
+			if (Body.IsOutOfTetherRange)
+			{
+				Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
+				GameLiving target = Body.TargetObject as GameLiving;
+				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
+				if (target != null)
+				{
+					if (!target.IsWithinRadius(spawn, Body.TetherRange))
+					{
+						Body.MaxSpeedBase = 0;
+					}
+					else
+						Body.MaxSpeedBase = npcTemplate.MaxSpeed;
 				}
 			}
 			base.Think();
@@ -160,7 +211,7 @@ namespace DOL.GS
 		public override short Constitution { get => base.Constitution; set => base.Constitution = 200; }
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-		public override short Strength { get => base.Strength; set => base.Strength = 150; }
+		public override short Strength { get => base.Strength; set => base.Strength = 120; }
 		#endregion
 		public override bool AddToWorld()
 		{
