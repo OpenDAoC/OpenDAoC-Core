@@ -619,7 +619,6 @@ namespace DOL.GS {
                     {
                         validColors.Add(70); //green3
                         validColors.Add(71); //green4
-                        validColors.Add(137); //lime green
                         validColors.Add(142); //forest green
                     }
                     break;
@@ -651,7 +650,6 @@ namespace DOL.GS {
                     {
                         validColors.Add(66); //red3
                         validColors.Add(67); //red4
-                        validColors.Add(120); //red crafter
                         validColors.Add(143); //burgundy
                     }
                     break;
