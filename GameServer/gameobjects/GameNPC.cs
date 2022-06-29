@@ -767,7 +767,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsVisibleToPlayers
 		{
-			get { return (uint)Environment.TickCount - m_lastVisibleToPlayerTick < 60000; }
+			get { return (uint)GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < 60000; }
 		}
 
 		/// <summary>
@@ -1348,7 +1348,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the last this this NPC was actually update to at least one player.
 		/// </summary>
-		public uint LastVisibleToPlayersTickCount
+		public long LastVisibleToPlayersTickCount
 		{
 			get { return m_lastVisibleToPlayerTick; }
 		}
@@ -1423,7 +1423,7 @@ namespace DOL.GS
 			Y = target.Y;
 			Z = target.Z;
 
-			MovementStartTick = Environment.TickCount;
+			MovementStartTick = GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -1478,7 +1478,7 @@ namespace DOL.GS
 
 			m_Heading = GetHeading(TargetPosition);
 			m_currentSpeed = speed;
-			MovementStartTick = Environment.TickCount; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
+			MovementStartTick = GameLoop.GameLoopTime; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
 			UpdateTickSpeed();
 			
 			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
@@ -1555,7 +1555,7 @@ namespace DOL.GS
 
 			m_currentSpeed = speed;
 
-			MovementStartTick = Environment.TickCount;
+			MovementStartTick = GameLoop.GameLoopTime;
 			UpdateTickSpeed();
 			BroadcastUpdate();
 		}
@@ -3058,7 +3058,7 @@ namespace DOL.GS
 		{
 			base.BroadcastUpdate();
 
-			m_lastUpdateTickCount = (uint)Environment.TickCount;
+			m_lastUpdateTickCount = (uint)GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -3067,7 +3067,7 @@ namespace DOL.GS
 		/// </summary>
 		public void NPCUpdatedCallback()
 		{
-			m_lastVisibleToPlayerTick = (uint)Environment.TickCount;
+			m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
 			lock (BrainSync)
 			{
 				ABrain brain = Brain;
@@ -3099,7 +3099,7 @@ namespace DOL.GS
 			}
 
 			if (anyPlayer)
-				m_lastVisibleToPlayerTick = (uint)Environment.TickCount;
+				m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
 
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
