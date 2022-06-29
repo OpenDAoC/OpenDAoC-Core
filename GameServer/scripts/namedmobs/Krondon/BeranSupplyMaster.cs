@@ -102,6 +102,7 @@ namespace DOL.AI.Brain
 		}
 		public static bool Ignite_Barrel = false;
 		public static bool BringAdds = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -111,17 +112,22 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				Ignite_Barrel = false;
 				BringAdds = false;
-				foreach(GameNPC npc  in Body.GetNPCsInRadius(2500))
-                {
-					if(npc != null)
-                    {
-						if (npc.IsAlive && npc.Name.ToLower() == "onstal hyrde" && npc.RespawnInterval == -1)
-							npc.Die(npc);
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.Name.ToLower() == "onstal hyrde" && npc.RespawnInterval == -1)
+								npc.Die(npc);
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(Ignite_Barrel == false)
                 {
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(IgniteBarrel), Util.Random(15000, 35000));

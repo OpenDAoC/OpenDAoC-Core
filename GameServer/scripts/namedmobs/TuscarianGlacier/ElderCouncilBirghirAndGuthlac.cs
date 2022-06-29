@@ -592,7 +592,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -608,13 +608,17 @@ namespace DOL.AI.Brain
                 StartCastRoot = false;
                 CanCast = false;
                 RandomTarget2 = null;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                     {
-                        if (npc.IsAlive && npc.Brain is FrozenBombBrain)
-                            npc.Die(Body);
+                        if (npc != null)
+                        {
+                            if (npc.IsAlive && npc.Brain is FrozenBombBrain)
+                                npc.Die(Body);
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
 
@@ -628,6 +632,7 @@ namespace DOL.AI.Brain
 
             if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if(!StartCastRoot)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));

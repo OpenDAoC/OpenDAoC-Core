@@ -154,6 +154,7 @@ namespace DOL.AI.Brain
 				IsRift = true;
             }
 		}
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if(Body.IsAlive)
@@ -167,19 +168,24 @@ namespace DOL.AI.Brain
 				IsPulled = false;
 				IsRift = false;
 				SpawnMoreAdds = false;
-				foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if (npc != null)
-                    {
-						if(npc.IsAlive && npc.Brain is MorkenhetBrain)
-                        {
-							npc.RemoveFromWorld();
-                        }
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.Brain is MorkenhetBrain)
+							{
+								npc.RemoveFromWorld();
+							}
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				IsValkyn = false;								
 				if(IsRift)
                 {

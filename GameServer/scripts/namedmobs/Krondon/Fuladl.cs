@@ -113,6 +113,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool spawnadds = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -121,20 +122,25 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				spawnadds = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 					{
-						if (npc.IsAlive && npc.Brain is FuladlAddBrain)
+						if (npc != null)
 						{
-							npc.RemoveFromWorld();
-							FuladlAdd.PartsCount = 0;
+							if (npc.IsAlive && npc.Brain is FuladlAddBrain)
+							{
+								npc.RemoveFromWorld();
+								FuladlAdd.PartsCount = 0;
+							}
 						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if (spawnadds == false)
 				{
 					SpawnAdds();

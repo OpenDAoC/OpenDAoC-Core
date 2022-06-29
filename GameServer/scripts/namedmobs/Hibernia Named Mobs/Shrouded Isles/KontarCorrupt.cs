@@ -108,6 +108,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool spawnAdds = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -116,14 +117,19 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				spawnAdds = false;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
-                {
-					if (npc != null && npc.IsAlive && npc.Brain is CorruptorBodyguardBrain)
-						npc.RemoveFromWorld();
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is CorruptorBodyguardBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
+				}
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				if(!spawnAdds)
                 {
 					SpawnAdds();
@@ -265,7 +271,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				foreach(GameNPC npc in Body.GetNPCsInRadius(1500))
                 {

@@ -214,6 +214,7 @@ namespace DOL.AI.Brain
             }
         }
         public static bool spawnadds = false;
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -226,12 +227,16 @@ namespace DOL.AI.Brain
                 StartCastRoot = false;
                 CanCastAoeSnare = false;
                 RandomTarget2 = null;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is OGAddsBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is OGAddsBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
@@ -240,6 +245,7 @@ namespace DOL.AI.Brain
             }
             if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if (StartCastRoot == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(25000, 35000));

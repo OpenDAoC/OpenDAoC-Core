@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
-            if (Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
                 if (Body.TargetObject != null)
                 {

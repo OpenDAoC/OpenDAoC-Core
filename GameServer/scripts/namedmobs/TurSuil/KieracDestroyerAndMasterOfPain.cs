@@ -348,7 +348,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(DebuffSC, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}

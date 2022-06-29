@@ -166,6 +166,7 @@ namespace DOL.AI.Brain
 		}
 		private bool CanSpawnMoreGhouls = false;
 		private bool spawnAddsAfterCombat = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -179,14 +180,19 @@ namespace DOL.AI.Brain
 					SpawnAddsAfterCombat();
 					spawnAddsAfterCombat = true;
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is ValnirMordethAddBrain && npc.PackageID == "MordethAdds")
-						npc.Die(Body);
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is ValnirMordethAddBrain && npc.PackageID == "MordethAdds")
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
 				}
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				spawnAddsAfterCombat = false;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 				{

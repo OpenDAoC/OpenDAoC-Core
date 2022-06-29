@@ -152,10 +152,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -167,25 +167,18 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override bool HasAbility(string keyName)
-		{
-			if (IsAlive && keyName == GS.Abilities.CCImmunity)
-				return true;
-
-			return base.HasAbility(keyName);
-		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 350;
+			return 250;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.20;
+			return 0.10;
 		}
 		public override int MaxHealth
 		{
-			get { return 10000; }
+			get { return 6000; }
 		}
 		#region Stats
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
@@ -260,10 +253,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -275,25 +268,18 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override bool HasAbility(string keyName)
-		{
-			if (IsAlive && keyName == GS.Abilities.CCImmunity)
-				return true;
-
-			return base.HasAbility(keyName);
-		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 350;
+			return 200;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.20;
+			return 0.10;
 		}
 		public override int MaxHealth
 		{
-			get { return 5000; }
+			get { return 4000; }
 		}
 		#region Stats
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
@@ -368,10 +354,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -383,21 +369,15 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override bool HasAbility(string keyName)
-		{
-			if (IsAlive && keyName == GS.Abilities.CCImmunity)
-				return true;
 
-			return base.HasAbility(keyName);
-		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
-			return 350;
+			return 150;
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// 85% ABS is cap.
-			return 0.20;
+			return 0.10;
 		}
 		public override int MaxHealth
 		{

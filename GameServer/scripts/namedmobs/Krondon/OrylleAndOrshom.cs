@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
 				RandomTarget = null;//throw
 				IsTargetPicked = false;//throw
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				if (IsTargetPicked == false && OrshomFire.FireCount > 0)
 				{
@@ -283,6 +283,7 @@ namespace DOL.AI.Brain
 			CanBAF = false;
 		}
 		private bool Spawn_Fire = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -291,20 +292,25 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				Spawn_Fire = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 					{
-						if (npc.IsAlive && npc.Brain is OrshomFireBrain)
+						if (npc != null)
 						{
-							npc.RemoveFromWorld();
-							OrshomFire.FireCount = 0;
+							if (npc.IsAlive && npc.Brain is OrshomFireBrain)
+							{
+								npc.RemoveFromWorld();
+								OrshomFire.FireCount = 0;
+							}
 						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if (Spawn_Fire == false)
 				{
 					SpawnFire();

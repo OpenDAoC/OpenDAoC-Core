@@ -196,6 +196,7 @@ namespace DOL.AI.Brain
         }
         public static bool spawnfairy = false;
         public static bool nearspawn = false;
+        private bool RemoveAdds = false;
         public int ReturnSpawn(ECSGameTimer timer)
         {
             ClearAggroList();
@@ -220,18 +221,23 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 Body.Health = Body.MaxHealth;
                 spawnfairy = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+                if (!RemoveAdds)
                 {
-                    if (npc == null) break;
-                    if (npc.Brain is EvernFairyBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                     {
-                        if (npc.RespawnInterval == -1)
-                            npc.Die(npc); //we kill all fairys if boss reset
+                        if (npc == null) break;
+                        if (npc.Brain is EvernFairyBrain)
+                        {
+                            if (npc.RespawnInterval == -1)
+                                npc.Die(npc); //we kill all fairys if boss reset
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (Body.InCombat && Body.IsAlive && HasAggro)
             {
+                RemoveAdds = false;
                 if (Body.TargetObject != null)
                 {
                     if (Body.HealthPercent < 100)

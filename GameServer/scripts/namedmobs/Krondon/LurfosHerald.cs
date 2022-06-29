@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
 					IsNormalWeapon = true;
                 }
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				IsNormalWeapon = false;
 				if(StartSwitchWeapons==false)

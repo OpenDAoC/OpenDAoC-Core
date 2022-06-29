@@ -365,7 +365,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 message1 = false;
             }
-            if (Body.InCombat && HasAggro)
+            if (Body.TargetObject != null && HasAggro)
             {
                 PlayerInCenter();//method that check if player enter to frozen circle
                 if (message1 == false)

@@ -522,7 +522,7 @@ namespace DOL.AI.Brain
             if (!HasAggressionTable())
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                this.Body.Health = this.Body.MaxHealth;
+                Body.Health = Body.MaxHealth;
                 IsBaseForm = false;
                 IsSaiyanForm = false;
                 IsTreantForm = false;
@@ -549,7 +549,6 @@ namespace DOL.AI.Brain
 
             if (Body.IsOutOfTetherRange)
             {
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, 1);
                 ClearAggroList();
                 FormBase();
             }

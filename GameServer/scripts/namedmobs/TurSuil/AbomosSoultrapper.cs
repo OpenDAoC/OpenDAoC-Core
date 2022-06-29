@@ -167,6 +167,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -174,17 +175,23 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				foreach(GameNPC adds in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if(adds != null)
-                    {
-						if(adds.IsAlive && adds.Brain is AbomosAddBrain)
-                        {
-							adds.Die(adds);
-                        }
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC adds in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					{
+						if (adds != null)
+						{
+							if (adds.IsAlive && adds.Brain is AbomosAddBrain)
+							{
+								adds.Die(adds);
+							}
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
+			if (HasAggro && Body.TargetObject != null)
+				RemoveAdds = false;
 			if(Body.InCombat && HasAggro && Body.HealthPercent <= 50)
             {
 				SpawnAdds();

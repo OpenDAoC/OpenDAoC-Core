@@ -97,7 +97,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{

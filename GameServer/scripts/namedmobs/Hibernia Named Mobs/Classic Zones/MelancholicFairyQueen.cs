@@ -17,13 +17,6 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Melancholic Fairy Queen Initializing...");
 		}
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-			}
-		}
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -70,12 +63,11 @@ namespace DOL.GS
 		public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-		public override short Strength { get => base.Strength; set => base.Strength = 400; }
+		public override short Strength { get => base.Strength; set => base.Strength = 200; }
 		#endregion
 		public static bool IsKilled = false;
 		public override bool AddToWorld()
-		{
-			BroadcastMessage("You hear the sound of trumpets in the distance.");
+		{			
 			Name = "Melancholic Fairy Queen";
 			Model = 679;
 			Level = (byte)Util.Random(64,68);
@@ -84,7 +76,6 @@ namespace DOL.GS
 			TetherRange = 2600;
 			Flags = eFlags.FLYING;
 			MaxSpeedBase = 250;
-			CreateFairyGuards();
 			IsKilled = false;
 
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
@@ -104,20 +95,7 @@ namespace DOL.GS
 					adds.RemoveFromWorld();
 			}
 			base.Die(killer);
-        }
-        private void CreateFairyGuards()
-        {
-			for (int i = 0; i < 4; i++)
-			{
-				MFQGuards guards = new MFQGuards();
-				guards.X = X + Util.Random(-500, 500);
-				guards.Y = Y + Util.Random(-500, 500);
-				guards.Z = Z;
-				guards.Heading = Heading;
-				guards.CurrentRegion = CurrentRegion;
-				guards.AddToWorld();
-			}
-        }
+        }      
 	}
 }
 namespace DOL.AI.Brain
@@ -128,12 +106,53 @@ namespace DOL.AI.Brain
 		public MelancholicFairyQueenBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 800;
+			AggroRange = 500;
 			ThinkInterval = 1500;
 		}
-
+		ushort oldModel;
+		GameNPC.eFlags oldFlags;
+		bool changed;
+		public void BroadcastMessage(String message)
+		{
+			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+			{
+				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+			}
+		}
 		public override void Think()
 		{
+			if (Body.CurrentRegion.IsNightTime == false)
+			{
+				if (changed == false)
+				{
+					oldFlags = Body.Flags;
+					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
+					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
+					Body.Flags ^= GameNPC.eFlags.PEACE;
+
+					if (oldModel == 0)
+						oldModel = Body.Model;
+
+					Body.Model = 1;
+					foreach (GameNPC adds in Body.GetNPCsInRadius(8000))
+					{
+						if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)
+							adds.RemoveFromWorld();
+					}
+					changed = true;
+				}
+			}
+			if (Body.CurrentRegion.IsNightTime)
+			{
+				if (changed)
+				{
+					Body.Flags = oldFlags;
+					Body.Model = oldModel;
+					BroadcastMessage("You hear the sound of trumpets in the distance.");
+					CreateFairyGuards();
+					changed = false;
+				}
+			}
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
@@ -157,8 +176,21 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-        #region Spell
-        private Spell m_MFQDD;
+		private void CreateFairyGuards()
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				MFQGuards guards = new MFQGuards();
+				guards.X = Body.X + Util.Random(-500, 500);
+				guards.Y = Body.Y + Util.Random(-500, 500);
+				guards.Z = Body.Z;
+				guards.Heading = Body.Heading;
+				guards.CurrentRegion = Body.CurrentRegion;
+				guards.AddToWorld();
+			}
+		}
+		#region Spell
+		private Spell m_MFQDD;
 		public Spell MFQDD
 		{
 			get
@@ -190,89 +222,6 @@ namespace DOL.AI.Brain
         #endregion
     }
 }
-#region Melancholic Fairy Queen Controller - controlls when queen will spawn/despawn
-namespace DOL.GS
-{
-	public class MFQController : GameNPC
-	{
-		public MFQController() : base()
-		{
-		}
-		public override bool IsVisibleToPlayers => true;
-		public override bool AddToWorld()
-		{
-			Name = "MFQ Controller";
-			GuildName = "DO NOT REMOVE";
-			Level = 50;
-			Model = 665;
-			RespawnInterval = 5000;
-			Flags = (GameNPC.eFlags)60;
-
-			MFQControllerBrain sbrain = new MFQControllerBrain();
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
-		}
-	}
-}
-
-namespace DOL.AI.Brain
-{
-	public class MFQControllerBrain : StandardMobBrain
-	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public MFQControllerBrain()
-			: base()
-		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
-			ThinkInterval = 1000;
-		}
-		public override void Think()
-		{
-			uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
-			uint minute = WorldMgr.GetCurrentGameTime() / 1000 / 60 % 60;
-			//log.Warn("Current time: " + hour + ":" + minute);
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
-			{
-				if (npc != null && npc.IsAlive && npc.Brain is MelancholicFairyQueenBrain brain)
-				{
-					if (hour >= 24)
-					{
-						npc.RemoveFromWorld();
-
-						foreach (GameNPC adds in Body.GetNPCsInRadius(8000))
-						{
-							if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)
-								adds.RemoveFromWorld();
-						}
-					}
-				}
-			}
-			if (hour == 20 && !MelancholicFairyQueen.IsKilled)
-				SpawnQueen();
-
-			base.Think();
-		}
-		public void SpawnQueen()
-		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
-			{
-				if (npc.Brain is MelancholicFairyQueenBrain)
-					return;
-			}
-			MelancholicFairyQueen boss = new MelancholicFairyQueen();
-			boss.X = Body.X;
-			boss.Y = Body.Y;
-			boss.Z = Body.Z;
-			boss.Heading = Body.Heading;
-			boss.CurrentRegion = Body.CurrentRegion;
-			boss.AddToWorld();
-		}
-	}
-}
-#endregion
 
 #region Fairy Queen Guards
 namespace DOL.GS
@@ -337,7 +286,7 @@ namespace DOL.AI.Brain
 		public MFQGuardsBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 800;
+			AggroRange = 500;
 			ThinkInterval = 1500;
 		}
 		public override void Think()

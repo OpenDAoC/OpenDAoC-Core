@@ -4070,7 +4070,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 if (BafHost == false)//baf all copies to pulled host
                 {

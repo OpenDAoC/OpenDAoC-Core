@@ -75,7 +75,6 @@ namespace DOL.GS.Scripts
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			WarlordDorinakkaBrain.BafMobs = false;
 
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 			WarlordDorinakkaBrain adds = new WarlordDorinakkaBrain();
@@ -99,35 +98,28 @@ namespace DOL.AI.Brain
             AggroRange = 500;
         }
 
-        public static bool BafMobs = false;
-
         public override void Think()
         {
             if (!HasAggressionTable())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                BafMobs = false;
                 Body.Health = Body.MaxHealth;
             }
 
-            if (Body.InCombat && HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
-            {
-                if (BafMobs == false)
-                {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                    {
-                        if (npc != null)
-                        {
-                            if (npc.IsAlive && npc.PackageID == "DorinakkaBaf")
-                            {
-                                AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
-                                BafMobs = true;
-                            }
-                        }
-                    }
-                }
-            }
+			if (Body.TargetObject != null && HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
+			{
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				{
+					if (npc != null)
+					{
+						if (npc.IsAlive && npc.PackageID == "DorinakkaBaf")
+						{
+							AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+						}
+					}
+				}
+			}
             base.Think();
         }
     }

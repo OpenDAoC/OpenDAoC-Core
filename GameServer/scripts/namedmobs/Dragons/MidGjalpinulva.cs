@@ -245,6 +245,7 @@ namespace DOL.GS
 			MidGjalpinulvaBrain.RandomTarget2 = null;
 			MidGjalpinulvaBrain.CanStun = false;
 			MidGjalpinulvaBrain.CanThrow = false;
+			MidGjalpinulvaBrain.checkForMessangers = false;
 			MidGjalpinulvaBrain.DragonKaboom1 = false;
 			MidGjalpinulvaBrain.DragonKaboom2 = false;
 			MidGjalpinulvaBrain.DragonKaboom3 = false;
@@ -298,6 +299,7 @@ namespace DOL.AI.Brain
 		public static bool ResetChecks = false;
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
+		public static bool checkForMessangers = false;
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -357,19 +359,38 @@ namespace DOL.AI.Brain
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
+						CanSpawnMessengers = false;
 						Body.TempProperties.removeProperty("gjalpinulva_messengers");
 					}
 				}
-                #endregion
-                foreach (GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
-						messenger.RemoveFromWorld();
-                }
-				foreach (GameNPC drakulvs in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				#endregion
+				if (!checkForMessangers)
 				{
-					if (drakulvs != null && drakulvs.IsAlive && drakulvs.Brain is GjalpinulvaSpawnedAdBrain)
-						drakulvs.RemoveFromWorld();
+					GameNPC[] messengers = WorldMgr.GetNPCsByNameFromRegion("Gjalpinulva's messenger", Body.CurrentRegionID, eRealm.None);
+					GameNPC[] drakulvs1 = WorldMgr.GetNPCsByNameFromRegion("drakulv executioner", Body.CurrentRegionID, eRealm.None);
+					GameNPC[] drakulvs2 = WorldMgr.GetNPCsByNameFromRegion("drakulv disciple", Body.CurrentRegionID, eRealm.None);
+					GameNPC[] drakulvs3 = WorldMgr.GetNPCsByNameFromRegion("drakulv soultrapper", Body.CurrentRegionID, eRealm.None);
+					foreach (GameNPC messenger in messengers)
+					{
+						if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
+							messenger.RemoveFromWorld();
+					}
+					foreach (GameNPC drakulv in drakulvs1)
+					{
+						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
+							drakulv.RemoveFromWorld();
+					}
+					foreach (GameNPC drakulv in drakulvs2)
+					{
+						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
+							drakulv.RemoveFromWorld();
+					}
+					foreach (GameNPC drakulv in drakulvs3)
+					{
+						if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
+							drakulv.RemoveFromWorld();
+					}
+					checkForMessangers = true;
 				}
 			}
 
@@ -459,6 +480,7 @@ namespace DOL.AI.Brain
             #endregion
             if (HasAggro && Body.TargetObject != null)
             {
+				checkForMessangers = false;
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if(CanThrow == false && !IsRestless)
                 {
@@ -1178,7 +1200,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 5701;
 					spell.Icon = 5701;
 					spell.TooltipId = 5701;
-					spell.Damage = 2800;
+					spell.Damage = 2400;
 					spell.Name = "Gjalpinulva's Breath";
 					spell.Range = 0;
 					spell.Radius = 2000;

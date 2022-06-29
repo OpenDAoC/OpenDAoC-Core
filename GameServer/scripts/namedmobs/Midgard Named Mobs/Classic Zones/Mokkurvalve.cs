@@ -123,6 +123,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		private bool CanSpawnShard = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -131,14 +132,19 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnShard = false;
-				foreach(GameNPC  npc in Body.GetNPCsInRadius(8000))
-                {
-					if (npc != null && npc.IsAlive && npc.Brain is MokkurvalveAddsBrain)
-						npc.Die(Body);
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is MokkurvalveAddsBrain)
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(!CanSpawnShard)
                 {
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnShards), Util.Random(15000, 35000));
@@ -149,7 +155,7 @@ namespace DOL.AI.Brain
 		}
 		private int SpawnShards(ECSGameTimer timer)
         {
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				BroadcastMessage("Part of " + Body.Name + "'s body falls to the ground.");
 				MokkurvalveAdds add = new MokkurvalveAdds();

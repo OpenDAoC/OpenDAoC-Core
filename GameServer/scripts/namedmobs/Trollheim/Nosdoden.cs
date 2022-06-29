@@ -537,6 +537,7 @@ namespace DOL.AI.Brain
 			get { return playerrezzed; }
 			set { playerrezzed = value; }
 		}
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -565,19 +566,24 @@ namespace DOL.AI.Brain
 					Enemys_To_DD.Clear();
 				if (Enemys_To_DOT.Count > 0)
 					Enemys_To_DOT.Clear();
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
-						npc.Die(Body);
-				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
+							npc.Die(Body);
+					}
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
 				}
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
                 #region Summon Adds
                 if (Body.HealthPercent <= 90 && SpawnAdds1==false)
                 {

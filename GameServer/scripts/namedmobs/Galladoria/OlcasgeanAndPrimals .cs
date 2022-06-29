@@ -686,6 +686,7 @@ namespace DOL.AI.Brain
         public static bool spawn_antipass = false;
         public static bool wake_up_boss = false;
         public static bool spawn_effect = false;
+        private bool RemoveAdds = false;
         List<GamePlayer> player_in_range;
         List<GamePlayer> player_in_range2;
         List<GamePlayer> player_to_port;
@@ -768,12 +769,16 @@ namespace DOL.AI.Brain
                 spawn_antipass = false;
                 spawn_effect = false;
                 TeleportTarget = null;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is WaterfallAntipassBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is WaterfallAntipassBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (!(Body is Olcasgean))
@@ -813,8 +818,9 @@ namespace DOL.AI.Brain
                 Point3D point2 = new Point3D();
                 point2.X = 39237; point2.Y = 62644; point2.Z = 11685;
 
-                if (Body.InCombat || HasAggro && Body.TargetObject != null)//Boss in combat
+                if (HasAggro && Body.TargetObject != null)//Boss in combat
                 {
+                    RemoveAdds = false;
                     if(spawn_effect ==false)
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnEffects), 2000);
@@ -2353,7 +2359,7 @@ namespace DOL.AI.Brain
                 if (Util.Chance(15))
                     Body.CastSpell(EarthRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
-            if (Body.IsOutOfTetherRange && HasAggro)
+            if (Body.IsOutOfTetherRange && HasAggro && Body.TargetObject != null)
             {
                 Body.StopFollowing();
                 Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
