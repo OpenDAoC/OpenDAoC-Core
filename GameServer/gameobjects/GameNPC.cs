@@ -1953,6 +1953,8 @@ namespace DOL.GS
 			if (!IsMovingOnPath)
 				return;
 
+			m_IsMovingOnPath = false;
+			
 			//GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
 			//Notify(GameNPCEvent.PathMoveEnds, this);
 			if (this is GameTaxi || this is GameTaxiBoat)
@@ -1961,7 +1963,7 @@ namespace DOL.GS
 				RemoveFromWorld();
 			}
 			
-			m_IsMovingOnPath = false;
+			
 		}
 
 		/// <summary>
