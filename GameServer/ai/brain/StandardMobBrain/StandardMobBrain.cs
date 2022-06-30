@@ -46,7 +46,13 @@ namespace DOL.AI.Brain
         public const int MAX_AGGRO_DISTANCE = 3600;
         public const int MAX_AGGRO_LIST_DISTANCE = 6000;
         public const int MAX_PET_AGGRO_DISTANCE = 512; // Tolakram - Live test with caby pet - I was extremely close before auto aggro
-
+        #region los constants
+        protected object LOS_LOCK = new object();
+        public const string LAST_LOS_TARGET_PROPERTY = "last_LOS_checkTarget";
+        public const string LAST_LOS_TICK_PROPERTY = "last_LOS_checkTick";
+        public const string NUM_LOS_CHECKS_INPROGRESS = "num_LOS_progress";
+        protected GameObject m_targetLOSObject = null;
+        #endregion
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new List<GamePlayer>();
 
@@ -320,8 +326,9 @@ namespace DOL.AI.Brain
 
             if (Body.CurrentRegion == null)
                 return;
-            
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
+
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange,
+                         Body.CurrentRegion.IsDungeon ? false : true))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true)) continue;
                 if (m_aggroTable.ContainsKey(npc))
@@ -331,21 +338,194 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi || npc is GameTrainingDummy)
                     continue; //do not attack horses
 
-                if (Body.Faction != null)
+                // if (Body.Faction != null)
+                // {
+                //     var aggrolevel = CalculateAggroLevelToTarget(npc);
+                //         if (aggrolevel < 75)
+                //             return;
+                // }
+
+                if (npc.Brain is IControlledBrain && (npc.Brain as IControlledBrain).GetPlayerOwner() != null)
                 {
-                    var aggrolevel = CalculateAggroLevelToTarget(npc);
-                        if (aggrolevel < 75)
-                            return;
+                    GamePlayer factionChecker = (npc.Brain as IControlledBrain).GetPlayerOwner();
+                    int aggrolevel = 0;
+
+                    // [Tyriada] Refonte pour un code plus lisible pour les factions
+                    if (Body.Faction == null)
+                    {
+                        aggrolevel = AggroLevel;
+                    }
+                    else
+                    {
+                        aggrolevel = Body.Faction.GetAggroToFaction(factionChecker);
+                    }
+
+                    //Not Hostile
+                    if (aggrolevel <= 51)
+                        return;
+
+                    // Les mobs auront � pr�sent r�ellement un %age de chance d'attaquer
+                    if (!Util.Chance(aggrolevel))
+                    {
+                        return;
+                    }
                 }
 
-                if (CalculateAggroLevelToTarget(npc) > 0)
+                // if (CalculateAggroLevelToTarget(npc) > 0)
+                // {
+                //     if (npc.Brain is ControlledNpcBrain) // This is a pet or charmed creature, checkLOS
+                //         AddToAggroList(npc, (npc.Level + 1) << 1, true);
+                //     else
+                //         AddToAggroList(npc, (npc.Level + 1) << 1);
+                // }
+                if (CalculateAggroLevelToTarget(npc) > 51)
                 {
-                    if (npc.Brain is ControlledNpcBrain) // This is a pet or charmed creature, checkLOS
-                        AddToAggroList(npc, (npc.Level + 1) << 1, true);
+                    if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
+                    {
+                        long lastTick = Body.TempProperties.getProperty<long>(LAST_LOS_TARGET_PROPERTY);
+                        lock (LOS_LOCK)
+                        {
+                            int count = Body.TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
+
+                            if (count > 5)
+                            {
+
+                                // Now do a safety check.  If it's been a while since we sent any check we should clear count
+                                if (lastTick == 0 || GameLoop.GameLoopTime - lastTick >
+                                    GS.ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                                {
+                                    Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
+                                }
+
+                                continue;
+                            }
+
+                            count++;
+                            Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
+
+                            Body.TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, npc);
+                            Body.TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
+                            m_targetLOSObject = npc;
+
+                        }
+
+                        GamePlayer losChecker = LosChecker(Body, npc);
+                        if (losChecker == null)
+                        {
+                            //log.Info("Pas de checker, on abandonne.");
+                        }
+                        else
+                        {
+                            CheckLOS(losChecker, npc);
+                            TempCheckLOS(losChecker, npc, (npc.Level + 1) << 1, true);
+                            losChecker.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(BeforeAddToAggro_CheckLOS));
+                        }
+                    }
                     else
-                        AddToAggroList(npc, (npc.Level + 1) << 1);
+                    {
+                        //log.Info("Ajout sans LOS");
+                        AddToAggroList(npc, 1, true);
+                        //log.Info("Add 3 " + npc.Name);
+                    }
+
                 }
             }
+        }
+
+        private GamePlayer LosChecker(GameLiving actionSource, GameObject actionTarget)
+        {
+            if (actionSource == null || actionTarget == null)
+                return null;
+
+            if (actionSource is GamePlayer)
+                return actionSource as GamePlayer;
+            else
+            {
+                if (actionSource is GameNPC &&
+                    (actionSource as GameNPC).Brain is IControlledBrain &&
+                    ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null &&
+                    ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner().ObjectState == GamePlayer.eObjectState.Active)
+                    return ((actionSource as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+
+                if (actionTarget is GamePlayer)
+                    return actionTarget as GamePlayer;
+                else
+                {
+                    if (actionTarget is GameNPC &&
+                        (actionTarget as GameNPC).Brain is IControlledBrain &&
+                        ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null &&
+                        ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner().ObjectState == GamePlayer.eObjectState.Active)
+                        return ((actionTarget as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+                }
+            }
+            foreach (GamePlayer pl in actionSource.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                if (pl != null && pl.ObjectState == GameLiving.eObjectState.Active)
+                    return pl;
+            }
+            return null;
+        }
+        
+        private void CheckLOS(GamePlayer CheckLOSPlayer, GameObject actionTarget)
+        {
+            if (CheckLOSPlayer == null)
+                return;
+            Body.TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, actionTarget);
+            Body.TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
+        }
+        
+        private void TempCheckLOS(GamePlayer CheckLOSPlayer, GameLiving Cible, int AggroAmount, bool natural)
+        {
+            if (CheckLOSPlayer == null || Cible == null || AggroAmount == 0)
+                return;
+
+            CheckLOSPlayer.TempProperties.setProperty("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + ((ushort)Cible.ObjectID).ToString() + "_living", Cible);
+            CheckLOSPlayer.TempProperties.setProperty("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + ((ushort)Cible.ObjectID).ToString() + "_aggroamount", AggroAmount);
+            CheckLOSPlayer.TempProperties.setProperty("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + ((ushort)Cible.ObjectID).ToString() + "_natural", natural);
+        }
+        
+        protected void BeforeAddToAggro_CheckLOS(GamePlayer player, ushort response, ushort targetOID)
+        {
+            GameLiving living = player.TempProperties.getProperty<GameLiving>("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + targetOID.ToString() + "_living", null);
+            int aggroamount = player.TempProperties.getProperty<int>("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + targetOID.ToString() + "_aggroamount", 0);
+            bool natural = player.TempProperties.getProperty<bool>("CHECKLOS_" + ((ushort)Body.ObjectID).ToString() + "_" + targetOID.ToString() + "_natural", true);
+            
+            lock (LOS_LOCK)
+            {
+                int count = Body.TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
+                count--;
+                Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, Math.Max(0, count));
+            }
+
+            var realResponse = response & 0x100;
+            if ((realResponse) == 0x100)
+            {
+                if (living != null)
+                {
+                    log.Info("Check LOS Ok  living : " + living.Name + " |  " + aggroamount.ToString() + " | " + natural.ToString());
+                    AddToAggroList(living, aggroamount, natural);
+                    log.Info("Add 1 " + living.Name);
+                }
+                else
+                    log.Info($"Check LOS error");
+            }
+            else
+            {
+                if (living != null)
+                {
+                    if (Body is TurretPet)
+                    {
+                        if (GetAggroAmountForLiving(living) > 0)
+                        {
+                            RemoveFromAggroList(living);
+                        }
+                        Body.TargetObject = null;
+                        log.Info("Check LOS RATE Turret living : " + living.Name + "");
+                    }
+                }
+                log.Info("Different los response");
+            }
+            log.Info($"Check LOS error: {response} {realResponse}");
         }
 
         /// <summary>
@@ -353,7 +533,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckPlayerAggro()
         {
-            CheckPlayerAggro(false);
+            CheckPlayerAggro(true);
         }
 
         /// <summary>
@@ -370,7 +550,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, false))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
                 // Don't aggro on immune players.
@@ -378,27 +558,17 @@ namespace DOL.AI.Brain
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
-                if (Body.CurrentZone.IsDungeon)
-                {
-                    useLOS = true;
-                }
+                // if (Body.CurrentZone.IsDungeon)
+                // {
+                //     useLOS = true;
+                // }
+                //
+                // if (useLOS && player != null)
+                // {
+                //     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
+                // }
 
-                if (useLOS && player != null)
-                {
-                    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
-                }
 
-                int aggrolevel = 0;
-
-                if (Body.Faction != null)
-                {
-                    aggrolevel = Body.Faction.GetAggroToFaction(player);
-                    if (aggrolevel < 75)
-                        return;
-                }
-
-                if (aggrolevel <= 0 && AggroLevel <= 0)
-                    return;
 
                 if (m_aggroTable.ContainsKey(player))
                     continue; // add only new players
@@ -406,11 +576,85 @@ namespace DOL.AI.Brain
                     continue;
                 if (player.Steed != null)
                     continue; //do not attack players on steed
+                
+                int aggrolevel = 0;
 
-                if (CalculateAggroLevelToTarget(player) > 0)
+                // if (Body.Faction != null)
+                // {
+                //     aggrolevel = Body.Faction.GetAggroToFaction(player);
+                //     if (aggrolevel < 75)
+                //         return;
+                // }
+                
+                if (Body.Faction == null)
                 {
-                    if (useLOS && !AggroLOS) return;
-                    AddToAggroList(player, 1, true);
+                    aggrolevel = AggroLevel;
+                }
+                else
+                {
+                    aggrolevel = Body.Faction.GetAggroToFaction(player);
+                }
+                //
+                // if (aggrolevel <= 0 && AggroLevel <= 0)
+                //     return;
+                
+                if (aggrolevel <= 51)
+                    return;
+
+                // if (CalculateAggroLevelToTarget(player) > 0)
+                // {
+                //     if (useLOS && !AggroLOS) return;
+                //     AddToAggroList(player, 1, true);
+                // }
+                
+                if (!Util.Chance(aggrolevel))
+                    return;
+
+                if (player.Steed != null && (player.Steed is GameTaxi || player.Steed is GameTaxiBoat))
+                    continue; //do not attack players on steed
+
+                if (CalculateAggroLevelToTarget(player) > 51)
+                {
+                    if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
+                    {
+                        long lastTick = Body.TempProperties.getProperty<long>(LAST_LOS_TARGET_PROPERTY);
+                        lock (LOS_LOCK)
+                        {
+                            int count = Body.TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
+
+                            if (count > 5)
+                            {
+
+                                // Now do a safety check.  If it's been a while since we sent any check we should clear count
+                                if (lastTick == 0 || GameLoop.GameLoopTime - lastTick > GS.ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                                {
+                                    Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
+                                }
+
+                                continue;
+                            }
+
+                            count++;
+                            Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
+
+                            Body.TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, player);
+                            Body.TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
+                            m_targetLOSObject = player;
+
+                        }
+                        GamePlayer losChecker = LosChecker(Body, player); // devrait renvoyer "player"
+                        if (losChecker != null)
+                        {
+                            TempCheckLOS(losChecker, player, 1, true);
+                            losChecker.Out.SendCheckLOS(Body, player, new CheckLOSResponse(BeforeAddToAggro_CheckLOS));
+                        }
+                    }
+                    else
+                    {
+                        //log.Info("Ajout sans LOS 2");
+                        AddToAggroList(player, 1, true);
+                        //log.Info("Add 2 " + player.Name);
+                    }
                 }
             }
         }
@@ -561,20 +805,20 @@ namespace DOL.AI.Brain
 
             // Check LOS (walls, pits, etc...) before  attacking, player + pet
             // Be sure the aggrocheck is triggered by the brain on Think() method
-            if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || ((Body is GameKeepGuard guard && !guard.IsPortalKeepGuard) && CheckLOS))
-            {
-                GamePlayer thisLiving = null;
-                if (living is GamePlayer)
-                    thisLiving = (GamePlayer)living;
-                else if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-                    thisLiving = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-
-                if (thisLiving != null)
-                {
-                    thisLiving.Out.SendCheckLOS(Body, living, new CheckLOSResponse(CheckAggroLOS));
-                    if (!AggroLOS) return;
-                }
-            }
+            // if (DOL.GS.ServerProperties.Properties.ALWAYS_CHECK_LOS && CheckLOS || ((Body is GameKeepGuard guard && !guard.IsPortalKeepGuard) && CheckLOS))
+            // {
+            //     GamePlayer thisLiving = null;
+            //     if (living is GamePlayer)
+            //         thisLiving = (GamePlayer)living;
+            //     else if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
+            //         thisLiving = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+            //
+            //     if (thisLiving != null)
+            //     {
+            //         thisLiving.Out.SendCheckLOS(Body, living, new CheckLOSResponse(CheckAggroLOS));
+            //         if (!AggroLOS) return;
+            //     }
+            // }
 
             BringFriends(living);
 
@@ -595,9 +839,12 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
                         {
-                            if (!m_aggroTable.ContainsKey(p))
+                            if (!p.IsStealthed)
                             {
-                                m_aggroTable[p] = 1L;   // add the missing group member on aggro table
+                                if (!m_aggroTable.ContainsKey(p))
+                                {
+                                    m_aggroTable[p] = 1;//1L // add the missing group member on aggro table
+                                }
                             }
                         }
                     }
@@ -654,7 +901,7 @@ namespace DOL.AI.Brain
 
                     // can't be removed this way, set to minimum
                     if (amount <= 0)
-                        amount = 1L;
+                        amount = 1; //1L;
 
                     m_aggroTable[living] = amount;
                 }
@@ -666,7 +913,7 @@ namespace DOL.AI.Brain
                     }
                     else
                     {
-                        m_aggroTable[living] = 1L;
+                        m_aggroTable[living] = 1; //1L;
                     }
                 }
             }
@@ -802,8 +1049,8 @@ namespace DOL.AI.Brain
                         && living.ObjectState == GameObject.eObjectState.Active)
                     {
                         int distance = Body.GetDistanceTo(living);
-                        int maxAggroDistance = (this is IControlledBrain) ? MAX_PET_AGGRO_DISTANCE : MAX_AGGRO_DISTANCE;
-
+                        // int maxAggroDistance = (this is IControlledBrain) ? MAX_PET_AGGRO_DISTANCE : MAX_AGGRO_DISTANCE;
+                        int maxAggroDistance = MAX_AGGRO_DISTANCE;
                         if (distance <= maxAggroDistance)
                         {
                             double aggro = amount * Math.Min(500.0 / distance, 1);
@@ -840,42 +1087,91 @@ namespace DOL.AI.Brain
         /// <returns></returns>
         public virtual int CalculateAggroLevelToTarget(GameLiving target)
         {
-            // Withdraw if can't attack.
+            // // Withdraw if can't attack.
+            // if (GameServer.ServerRules.IsAllowedToAttack(Body, target, true) == false)
+            //     return 0;
+            //
+            // // Get owner if target is pet or subpet
+            // GameLiving realTarget = target;
+            // if (target is GamePet pet && (pet.Owner is GamePlayer || pet.Owner is GamePet))
+            // {
+            //     if (pet.Owner is GamePet mainpet && mainpet.Owner is GamePlayer)
+            //         realTarget = mainpet.Owner;
+            //     else
+            //         realTarget = pet.Owner;
+            // }
+            //
+            // // only attack if green+ to target
+            // if (realTarget.IsObjectGreyCon(Body))
+            //     return 0;
+            //
+            // // If this npc have Faction return the AggroAmount to Player
+            // if (Body.Faction != null)
+            // {
+            //     if (realTarget is GamePlayer)
+            //     {
+            //         return Math.Min(100, Body.Faction.GetAggroToFaction((GamePlayer)realTarget));
+            //     }
+            //     else if (realTarget is GameNPC && Body.Faction.EnemyFactions.Contains(((GameNPC)realTarget).Faction))
+            //     {
+            //         return 100;
+            //     }
+            // }
+            //
+            // //we put this here to prevent aggroing non-factions npcs
+            // if (Body.Realm == eRealm.None && realTarget is GameNPC)
+            //     return 0;
+            //
+            // return Math.Min(100, AggroLevel);
+            
             if (GameServer.ServerRules.IsAllowedToAttack(Body, target, true) == false)
                 return 0;
 
-            // Get owner if target is pet or subpet
-            GameLiving realTarget = target;
-            if (target is GamePet pet && (pet.Owner is GamePlayer || pet.Owner is GamePet))
+            // related to the pet owner if applicable
+            if (target is GameNPC)
             {
-                if (pet.Owner is GamePet mainpet && mainpet.Owner is GamePlayer)
-                    realTarget = mainpet.Owner;
-                else
-                    realTarget = pet.Owner;
+                IControlledBrain brain = ((GameNPC)target).Brain as IControlledBrain;
+                if (brain != null)
+                {
+                    GameLiving thisLiving = (((GameNPC)target).Brain as IControlledBrain).GetLivingOwner();
+                    if (thisLiving != null)
+                    {
+                        if (thisLiving.IsObjectGreyCon(Body))
+                            return 0;
+                    }
+                }
             }
 
-            // only attack if green+ to target
-            if (realTarget.IsObjectGreyCon(Body))
-                return 0;
+            if (target.IsObjectGreyCon(Body)) return 0;     // only attack if green+ to target
 
-            // If this npc have Faction return the AggroAmount to Player
             if (Body.Faction != null)
             {
-                if (realTarget is GamePlayer)
+                if (target is GamePlayer)
                 {
-                    return Math.Min(100, Body.Faction.GetAggroToFaction((GamePlayer)realTarget));
+                    GamePlayer player = (GamePlayer)target;
+                    AggroLevel = Body.Faction.GetAggroToFaction(player);
                 }
-                else if (realTarget is GameNPC && Body.Faction.EnemyFactions.Contains(((GameNPC)realTarget).Faction))
+                else if (target is GameNPC)
                 {
-                    return 100;
+                    GameNPC npc = (GameNPC)target;
+
+                    if (npc.Faction != null)
+                    {
+                        if (npc.Brain is IControlledBrain && (npc.Brain as IControlledBrain).GetPlayerOwner() != null)
+                        {
+                            GamePlayer factionChecker = (npc.Brain as IControlledBrain).GetPlayerOwner();
+                            AggroLevel = Body.Faction.GetAggroToFaction(factionChecker);
+                        }
+                        else
+                        {
+                            if (Body.Faction.EnemyFactions.Contains(npc.Faction))
+                                AggroLevel = 100;
+                        }
+                    }
                 }
             }
-
-            //we put this here to prevent aggroing non-factions npcs
-            if (Body.Realm == eRealm.None && realTarget is GameNPC)
-                return 0;
-
-            return Math.Min(100, AggroLevel);
+            if (AggroLevel >= 100) return 100;
+            return AggroLevel;
         }
 
         /// <summary>
