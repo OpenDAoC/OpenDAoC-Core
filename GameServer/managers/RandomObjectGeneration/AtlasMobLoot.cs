@@ -13,7 +13,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 15;
+        public static ushort BASE_ROG_CHANCE = 12;
 
 
         /// <summary>
@@ -67,6 +67,12 @@ namespace DOL.GS {
                     if (MaxDropCap < 1) MaxDropCap = 1;
                     if (mob.Level > 65) MaxDropCap++; //increase drop cap beyond lvl 60
                     int guaranteedDrop = mob.Level > 67 ? 1 : 0; //guarantee a drop for very high level mobs
+                    
+                    if (mob.Level > 27)
+                        chance -= 3;
+
+                    if (mob.Level > 40)
+                        chance -= 3;
 
                     int numDrops = 0;
                     //roll for an item for each player in the group
@@ -104,6 +110,8 @@ namespace DOL.GS {
                     {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }
+
+                    chance += 5; //solo drop bonus
                     
                     ItemTemplate item = null;
 
