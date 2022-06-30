@@ -55,6 +55,7 @@ namespace DOL.AI.Brain
 		GameNPC.eFlags oldFlags;
 		bool changed;
 		bool spawnRats = false;
+		private bool RemoveAdds = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GameClient player in WorldMgr.GetClientsOfZone(Body.CurrentZone.ID))
@@ -94,15 +95,20 @@ namespace DOL.AI.Brain
 			if (!HasAggressionTable())
 			{
 				spawnRats = false;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
-					if (npc != null && npc.IsAlive && npc.Brain is GiantLemerAddBrain)
-						npc.RemoveFromWorld();
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is GiantLemerAddBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
+				}
 			}
 
 			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				if(!spawnRats)
                 {
 					SpawnRats();
