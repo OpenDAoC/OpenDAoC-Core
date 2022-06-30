@@ -353,7 +353,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckPlayerAggro()
         {
-            CheckPlayerAggro(false);
+            CheckPlayerAggro(true);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
                     useLOS = true;
                 }
 
-                if (useLOS && player != null)
+                if (useLOS && player != null && !AggroLOS)
                 {
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
                 }
@@ -407,9 +407,11 @@ namespace DOL.AI.Brain
                 if (player.Steed != null)
                     continue; //do not attack players on steed
 
-                if (CalculateAggroLevelToTarget(player) > 0)
+                var aggroleveltotarget = CalculateAggroLevelToTarget(player);
+                if (aggroleveltotarget > 0)
                 {
                     if (useLOS && !AggroLOS) return;
+                    Console.WriteLine($"adding {player.Name} to aggro list");
                     AddToAggroList(player, 1, true);
                 }
             }
@@ -526,10 +528,18 @@ namespace DOL.AI.Brain
         }
         protected void CheckAggroLOS(GamePlayer player, ushort response, ushort targetOID)
         {
-            if ((response & 0x100) == 0x100)
+            var realResponse = response & 0x100;
+            if (realResponse == 0x100)
+            {
+                Console.WriteLine($"{targetOID} LOS check for {player.Name} success");
                 AggroLOS = true;
+            }
             else
+            {
+                Console.WriteLine($"{targetOID} LOS check for {player.Name} failed");
                 AggroLOS = false;
+            }
+                
         }
 
         /// <summary>
@@ -540,7 +550,7 @@ namespace DOL.AI.Brain
         /// <param name="aggroamount"></param>
         public virtual void AddToAggroList(GameLiving living, int aggroamount)
         {
-            AddToAggroList(living, aggroamount, false);
+            AddToAggroList(living, aggroamount, true);
         }
 
         /// <summary>

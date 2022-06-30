@@ -80,5 +80,30 @@ namespace DOL.GS.PacketHandler
 			//}
 			
 		}
+		
+		[Obsolete("Shouldn't be used in favor of new LoS Check Manager")]
+		public override void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
+		{
+			if (m_gameClient.Player == null)
+				return;
+			int TargetOID = (Target != null ? Target.ObjectID : 0);
+			string key = string.Format("LOS C:0x{0} T:0x{1}", Checker.ObjectID, TargetOID);
+			CheckLOSResponse old_callback = null;
+			lock (m_gameClient.Player.TempProperties)
+			{
+				old_callback = (CheckLOSResponse)m_gameClient.Player.TempProperties.getProperty<object>(key, null);
+				m_gameClient.Player.TempProperties.setProperty(key, callback);
+			}
+			if (old_callback != null)
+				old_callback(m_gameClient.Player, 0, 0); // not sure for this,  i want targetOID there
+
+			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
+			{
+				pak.WriteShort((ushort)Checker.ObjectID);
+				pak.WriteShort((ushort)TargetOID);
+				pak.WriteShort(0x00); // ?
+				SendTCP(pak);
+			}
+		}
 	}
 }
