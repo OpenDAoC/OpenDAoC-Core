@@ -97,6 +97,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool SpawnAdds = false;
+		private bool RemoveAdds = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -108,15 +109,20 @@ namespace DOL.AI.Brain
 		{
 			if(!HasAggressionTable())
             {
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc.IsAlive && npc != null && npc.Brain is PilusAddBrain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc.IsAlive && npc != null && npc.Brain is PilusAddBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
 				}
 				SpawnAdds = false;
             }
 			if(HasAggro && Body.TargetObject != null)
             {
+				RemoveAdds = false;
 				if (!SpawnAdds)
 				{
 					BroadcastMessage("The Amminus pilus says, \"I require assistance!\"");
