@@ -353,7 +353,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckPlayerAggro()
         {
-            CheckPlayerAggro(true);
+            CheckPlayerAggro(false);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
                     useLOS = true;
                 }
 
-                if (useLOS && player != null && !AggroLOS)
+                if (useLOS && !AggroLOS)
                 {
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
                 }
@@ -411,8 +411,7 @@ namespace DOL.AI.Brain
                 if (aggroleveltotarget > 0)
                 {
                     if (useLOS && !AggroLOS) return;
-                    Console.WriteLine($"adding {player.Name} to aggro list");
-                    AddToAggroList(player, 1, true);
+                    AddToAggroList(player, 1, useLOS);
                 }
             }
         }
@@ -531,12 +530,12 @@ namespace DOL.AI.Brain
             var realResponse = response & 0x100;
             if (realResponse == 0x100)
             {
-                Console.WriteLine($"{targetOID} LOS check for {player.Name} success");
+                // Console.WriteLine($"{targetOID} LOS check for {player.Name} success");
                 AggroLOS = true;
             }
             else
             {
-                Console.WriteLine($"{targetOID} LOS check for {player.Name} failed");
+                // Console.WriteLine($"{targetOID} LOS check for {player.Name} failed");
                 AggroLOS = false;
             }
                 
@@ -550,7 +549,7 @@ namespace DOL.AI.Brain
         /// <param name="aggroamount"></param>
         public virtual void AddToAggroList(GameLiving living, int aggroamount)
         {
-            AddToAggroList(living, aggroamount, true);
+            AddToAggroList(living, aggroamount, false);
         }
 
         /// <summary>

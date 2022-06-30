@@ -546,7 +546,7 @@ namespace DOL.GS
 				m_WorldUpdateThread.Start();
 
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
-				m_dayStartTick = Environment.TickCount - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
+				m_dayStartTick = (int)GameTimer.GetTickCount() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
 
 				m_pingCheckTimer = new Timer(new TimerCallback(PingCheck), null, 10 * 1000, 0); // every 10s a check
@@ -649,7 +649,7 @@ namespace DOL.GS
 				try
 				{
 					Thread.Sleep(200); // check every 200ms for needed relocs
-					int start = Environment.TickCount;
+					long start = GameTimer.GetTickCount();
 
 					var regionsClone = m_regions.Values;
 
@@ -660,7 +660,7 @@ namespace DOL.GS
 							region.Relocate();
 						}
 					}
-					int took = Environment.TickCount - start;
+					long took = GameTimer.GetTickCount() - start;
 					if (took > 500)
 					{
 						if (log.IsWarnEnabled)
@@ -686,7 +686,7 @@ namespace DOL.GS
 		/// <param name="sender"></param>
 		private static void DayReset(object sender)
 		{
-			m_dayStartTick = Environment.TickCount;
+			m_dayStartTick = (int)GameTimer.GetTickCount();
 			foreach (GameClient client in GetAllPlayingClients())
 			{
 				if (client.Player != null && client.Player.CurrentRegion != null && client.Player.CurrentRegion.UseTimeManager)
@@ -714,7 +714,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				m_dayStartTick = Environment.TickCount - (int)(dayStart / m_dayIncrement); // set start time to ...
+				m_dayStartTick = (int)GameTimer.GetTickCount() - (int)(dayStart / m_dayIncrement); // set start time to ...
 				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
 			}
 
@@ -753,7 +753,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				long diff = Environment.TickCount - m_dayStartTick;
+				long diff = GameTimer.GetTickCount() - m_dayStartTick;
 				long curTime = diff * m_dayIncrement;
 				return (uint)(curTime % DAY);
 			}

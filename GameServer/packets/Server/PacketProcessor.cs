@@ -384,11 +384,11 @@ namespace DOL.GS.PacketHandler
 
 					Buffer.BlockCopy(buf, 0, m_tcpSendBuffer, 0, buf.Length);
 
-					int start = Environment.TickCount;
+					long start = GameTimer.GetTickCount();
 
 					m_client.Socket.BeginSend(m_tcpSendBuffer, 0, buf.Length, SocketFlags.None, m_asyncTcpCallback, m_client);
 
-					int took = Environment.TickCount - start;
+					long took = GameTimer.GetTickCount() - start;
 					if (took > 100 && log.IsWarnEnabled)
 						log.WarnFormat("SendTCP.BeginSend took {0}ms! (TCP to client: {1})", took, m_client);
 				}
@@ -454,11 +454,11 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				int start = Environment.TickCount;
+				long start = GameTimer.GetTickCount();
 
 				client.Socket.BeginSend(data, 0, count, SocketFlags.None, m_asyncTcpCallback, client);
 
-				int took = Environment.TickCount - start;
+				long took = GameTimer.GetTickCount() - start;
 				if (took > 100 && log.IsWarnEnabled)
 					log.WarnFormat("AsyncTcpSendCallback.BeginSend took {0}ms! (TCP to client: {1})", took, client.ToString());
 			}
@@ -681,11 +681,11 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				int start = Environment.TickCount;
+				long start = GameTimer.GetTickCount();
 
 				GameServer.Instance.SendUDP(data, count, m_client.UdpEndPoint, m_asyncUdpCallback);
 
-				int took = Environment.TickCount - start;
+				long took = GameTimer.GetTickCount() - start;
 				if (took > 100 && log.IsWarnEnabled)
 					log.WarnFormat("AsyncUdpSendCallback.BeginSend took {0}ms! (TCP to client: {1})", took, m_client.ToString());
 			}
@@ -979,7 +979,7 @@ namespace DOL.GS.PacketHandler
 				//synchronized! One reader, multiple writers supported!
 				m_activePacketThreads.Add(Thread.CurrentThread, m_client);
 #endif
-				long start = Environment.TickCount;
+				long start = GameTimer.GetTickCount();
 				try
 				{
 					packetHandler.HandlePacket(m_client, packet);
@@ -1002,7 +1002,7 @@ namespace DOL.GS.PacketHandler
 					m_activePacketThreads.Remove(Thread.CurrentThread);
 				}
 #endif
-				long timeUsed = Environment.TickCount - start;
+				long timeUsed = GameTimer.GetTickCount() - start;
 				if (monitorTimer != null)
 				{
 					monitorTimer.Stop();
