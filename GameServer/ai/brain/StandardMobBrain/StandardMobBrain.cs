@@ -562,7 +562,7 @@ namespace DOL.AI.Brain
                 //     useLOS = true;
                 // }
                 //
-                // if (useLOS && player != null)
+                // if (useLOS && !AggroLOS)
                 // {
                 //     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
                 // }
@@ -612,7 +612,8 @@ namespace DOL.AI.Brain
                 if (player.Steed != null && (player.Steed is GameTaxi || player.Steed is GameTaxiBoat))
                     continue; //do not attack players on steed
 
-                if (CalculateAggroLevelToTarget(player) > 51)
+                var aggroleveltotarget = CalculateAggroLevelToTarget(player);
+                if (aggroleveltotarget > 51)
                 {
                     if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
                     {
@@ -651,7 +652,7 @@ namespace DOL.AI.Brain
                     else
                     {
                         //log.Info("Ajout sans LOS 2");
-                        AddToAggroList(player, 1, true);
+                        AddToAggroList(player, 1, useLOS);
                         //log.Info("Add 2 " + player.Name);
                     }
                 }
@@ -769,10 +770,18 @@ namespace DOL.AI.Brain
         }
         protected void CheckAggroLOS(GamePlayer player, ushort response, ushort targetOID)
         {
-            if ((response & 0x100) == 0x100)
+            var realResponse = response & 0x100;
+            if (realResponse == 0x100)
+            {
+                // Console.WriteLine($"{targetOID} LOS check for {player.Name} success");
                 AggroLOS = true;
+            }
             else
+            {
+                // Console.WriteLine($"{targetOID} LOS check for {player.Name} failed");
                 AggroLOS = false;
+            }
+                
         }
 
         /// <summary>

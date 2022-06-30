@@ -1469,7 +1469,7 @@ namespace DOL.GS
         /// <summary>
         /// tick when player is died
         /// </summary>
-        protected int m_deathTick;
+        protected long m_deathTick;
 
         /// <summary>
         /// choosed the player to release as soon as possible?
@@ -1563,7 +1563,7 @@ namespace DOL.GS
                 }
                 m_releaseType = releaseCommand;
                 // we use realtime, because timer window is realtime
-                int diff = m_deathTick - Environment.TickCount + RELEASE_MINIMUM_WAIT * 1000;
+                long diff = m_deathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
                 if (diff >= 1000)
                 {
                     if (m_automaticRelease)
@@ -2009,7 +2009,7 @@ namespace DOL.GS
         {
             if (IsAlive)
                 return 0;
-            int diffToRelease = Environment.TickCount - m_deathTick;
+            long diffToRelease = GameLoop.GameLoopTime - m_deathTick;
             if (m_automaticRelease && diffToRelease > RELEASE_MINIMUM_WAIT * 1000)
             {
                 Release(m_releaseType, true);
@@ -8478,7 +8478,7 @@ namespace DOL.GS
                 
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;
                 m_releasePhase = 0;
-                m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
+                m_deathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
                 m_releaseTimer = new ECSGameTimer(this);
@@ -11134,7 +11134,7 @@ namespace DOL.GS
             //Set the new destination
             //Current Speed = 0 when moved ... else X,Y,Z continue to be modified
             CurrentSpeed = 0;
-            MovementStartTick = Environment.TickCount;
+            MovementStartTick = GameLoop.GameLoopTime;
             Point3D originalPoint = new Point3D(X, Y, Z);
             X = x;
             Y = y;
@@ -11549,12 +11549,12 @@ namespace DOL.GS
         }
 
 
-        private int m_lastPositionUpdateTick = 0;
+        private long m_lastPositionUpdateTick = 0;
 
         /// <summary>
         /// The environment tick count when this players position was last updated
         /// </summary>
-        public int LastPositionUpdateTick
+        public long LastPositionUpdateTick
         {
             get { return m_lastPositionUpdateTick; }
             set { m_lastPositionUpdateTick = value; }
