@@ -1989,7 +1989,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delays movement to the next waypoint
 		/// </summary>
-		protected class WaypointDelayAction : RegionAction
+		protected class WaypointDelayAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new WaypointDelayAction
@@ -2003,11 +2003,11 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 				if (!npc.IsMovingOnPath)
-					return;
+					return 0;
 				PathPoint oldPathPoint = npc.CurrentWayPoint;
 				PathPoint nextPathPoint = npc.CurrentWayPoint.Next;
 				if ((npc.CurrentWayPoint.Type == ePathType.Path_Reverse) && (npc.CurrentWayPoint.FiredFlag))
@@ -2051,6 +2051,8 @@ namespace DOL.GS
 				{
 					npc.StopMovingOnPath();
 				}
+
+				return 0;
 			}
 		}
 		#endregion
