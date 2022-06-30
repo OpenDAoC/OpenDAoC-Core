@@ -333,9 +333,9 @@ namespace DOL.GS.Keeps
 				if (m_oldHealthPercent != HealthPercent)
 				{
 					m_oldHealthPercent = HealthPercent;
-					foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
-						client.Out.SendObjectUpdate(this);
+						player.Client.Out.SendObjectUpdate(this);
 					}
 				}
 			}
