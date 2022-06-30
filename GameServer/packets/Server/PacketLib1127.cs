@@ -82,7 +82,7 @@ namespace DOL.GS.PacketHandler
 		}
 		
 		[Obsolete("Shouldn't be used in favor of new LoS Check Manager")]
-		public virtual void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
+		public override void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
 		{
 			if (m_gameClient.Player == null)
 				return;

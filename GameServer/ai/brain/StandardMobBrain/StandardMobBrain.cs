@@ -525,7 +525,6 @@ namespace DOL.AI.Brain
                 }
                 log.Info("Different los response");
             }
-            log.Info($"Check LOS error: {response} {realResponse}");
         }
 
         /// <summary>
