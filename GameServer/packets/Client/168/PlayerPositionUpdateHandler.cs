@@ -67,7 +67,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			int environmentTick = Environment.TickCount;
+			long environmentTick = GameLoop.GameLoopTime; 
 			int oldSpeed = client.Player.CurrentSpeed;
 
 			//read the state of the player
@@ -205,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			int coordsPerSec = 0;
 			int jumpDetect = 0;
-			int timediff = Environment.TickCount - client.Player.LastPositionUpdateTick;
+			int timediff = (int)(GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick);
 			int distance = 0;
 
 			if (timediff > 0)
@@ -234,7 +234,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			#endif
 			#endregion DEBUG
 
-			client.Player.LastPositionUpdateTick = Environment.TickCount;
+			client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
 			client.Player.LastPositionUpdatePoint.X = realX;
 			client.Player.LastPositionUpdatePoint.Y = realY;
 			client.Player.LastPositionUpdatePoint.Z = realZ;
@@ -356,7 +356,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			// used to predict current position, should be before
 			// any calculation (like fall damage)
-			client.Player.MovementStartTick = Environment.TickCount;
+			client.Player.MovementStartTick = GameLoop.GameLoopTime;
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed
@@ -411,7 +411,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			const string SHLASTUPDATETICK = "SHPLAYERPOSITION_LASTUPDATETICK";
 			const string SHLASTFLY = "SHLASTFLY_STRING";
 			const string SHLASTSTATUS = "SHLASTSTATUS_STRING";
-			int SHlastTick = client.Player.TempProperties.getProperty<int>(SHLASTUPDATETICK);
+			long SHlastTick = client.Player.TempProperties.getProperty<long>(SHLASTUPDATETICK);
 			int SHlastFly = client.Player.TempProperties.getProperty<int>(SHLASTFLY);
 			int SHlastStatus = client.Player.TempProperties.getProperty<int>(SHLASTSTATUS);
 			int SHcount = client.Player.TempProperties.getProperty<int>(SHSPEEDCOUNTER);
@@ -811,7 +811,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				(client.ClientState != GameClient.eClientState.Playing))
 				return;
 
-			int environmentTick = Environment.TickCount;
+			long environmentTick = GameLoop.GameLoopTime;
 			int oldSpeed = client.Player.CurrentSpeed;
 
 			var newPlayerX = packet.ReadFloatLowEndian();
@@ -929,7 +929,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			int coordsPerSec = 0;
 			int jumpDetect = 0;
-			int timediff = Environment.TickCount - client.Player.LastPositionUpdateTick;
+			long timediff = GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick;
 			int distance = 0;
 
 			if (timediff > 0)
@@ -937,7 +937,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				var newPoint = new Point3D(newPlayerX, newPlayerY, newPlayerZ);
 				distance = newPoint.GetDistanceTo(new Point3D((int)client.Player.LastPositionUpdatePoint.X, (int)client.Player.LastPositionUpdatePoint.Y,
 					(int)client.Player.LastPositionUpdatePoint.Z));
-				coordsPerSec = distance * 1000 / timediff;
+				coordsPerSec =distance * 1000 /(int)timediff;
 
 				if (distance < 100 && client.Player.LastPositionUpdatePoint.Z > 0)
 				{
@@ -945,7 +945,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 			}
 
-			client.Player.LastPositionUpdateTick = Environment.TickCount;
+			client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
 			client.Player.LastPositionUpdatePoint.X = newPlayerX;
 			client.Player.LastPositionUpdatePoint.Y = newPlayerY;
 			client.Player.LastPositionUpdatePoint.Z = newPlayerZ;
@@ -1070,7 +1070,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			// used to predict current position, should be before
 			// any calculation (like fall damage)
-			client.Player.MovementStartTick = Environment.TickCount; // experimental 0024
+			client.Player.MovementStartTick = GameLoop.GameLoopTime; // experimental 0024
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed
