@@ -442,6 +442,15 @@ namespace DOL.GS.ServerRules
 			if (defender is GameKeepGuard && attacker is GameNPC && attacker.Realm == 0)
 				return false;
 
+			//dont allow attack npcs that have no faction set by other npcs without or with faction, faction vs faction is only allowed to attack
+			if (defender is GameNPC defendnpc && attacker is GameNPC attacknpc && attacknpc.Brain is not ControlledNpcBrain && defendnpc.Brain is not ControlledNpcBrain)
+			{
+				if (defendnpc.Faction == null)//dont attack npc without faction
+					return false;
+				if (attacknpc.Faction == null && defendnpc.Faction != null)//npc without faction can't attack npc with faction
+					return false;
+			}
+
 			//Checking for shadowed necromancer, can't be attacked.
 			if (defender.ControlledBrain != null)
 				if (defender.ControlledBrain.Body != null)
