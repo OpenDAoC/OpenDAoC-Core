@@ -19,11 +19,15 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+
 
 using log4net;
 
@@ -618,6 +622,7 @@ namespace DOL.GS.Keeps
 
 		public override void StartHealthRegeneration()
 		{
+			if (!IsAttackableDoor) return; //Doors don't regen health if they are not attackable
 			if (m_repairTimer != null && m_repairTimer.IsAlive) return; 
 			m_repairTimer = new ECSGameTimer(this);
 			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
@@ -827,10 +832,15 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void BroadcastDoorStatus()
 		{
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
-				client.Player.SendDoorUpdate(this);
-			}
+				player.SendDoorUpdate(this);
+			});
+
+			// foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+			// {
+			// 	client.Player.SendDoorUpdate(this);
+			// }
 		}
 
 		protected ECSGameTimer m_repairTimer;
