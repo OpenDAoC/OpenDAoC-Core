@@ -12004,6 +12004,15 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if(effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            {
+                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                if(volley != null)
+                    volley.PlayerMoving();
+            }
+
+
             //Notify the GameEventMgr of the moving player
             GameEventMgr.Notify(GamePlayerEvent.Moving, this);
         }

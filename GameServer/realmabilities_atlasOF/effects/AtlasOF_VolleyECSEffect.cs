@@ -87,7 +87,7 @@ namespace DOL.GS.Effects
                     BowPreparation = true;
                 }              
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-                GameEventMgr.AddHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
+                // GameEventMgr.AddHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
                 GameEventMgr.AddHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             }
@@ -180,7 +180,7 @@ namespace DOL.GS.Effects
             #endregion
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-            GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
+            // GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             base.OnStopEffect();
         }
@@ -1045,22 +1045,20 @@ namespace DOL.GS.Effects
         /// <param name="e">The event which was raised</param>
         /// <param name="sender">Sender of the event</param>
         /// <param name="args">EventArgs associated with the event</param>
-        private void PlayerMoving(DOLEvent e, object sender, EventArgs args)
+        //private void PlayerMoving(DOLEvent e, object sender, EventArgs args)
+        public void PlayerMoving()
         {
-            GamePlayer player = (GamePlayer)sender;
-            if (player == null) return;
-            if (e == GamePlayerEvent.Moving)
+            if (m_player == null) return;
+            m_player.Out.SendAttackMode(false);
+            Cancel(false);
+            AtlasOF_Volley volle = m_player.GetAbility<AtlasOF_Volley>();
+            m_player.DisableSkill(volle, AtlasOF_Volley.DISABLE_DURATION);
+            m_player.Out.SendMessage("You move and interrupt your " + Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            foreach (GamePlayer i_player in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                player.Out.SendAttackMode(false);
-                Cancel(false);
-                AtlasOF_Volley volle = m_player.GetAbility<AtlasOF_Volley>();
-                m_player.DisableSkill(volle, AtlasOF_Volley.DISABLE_DURATION);
-                player.Out.SendMessage("You move and interrupt your " + Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer i_player in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    i_player.Out.SendInterruptAnimation(player);
-                }
+                i_player.Out.SendInterruptAnimation(m_player);
             }
+           
         }
         private void AttackedByEnemy(DOLEvent e, object sender, EventArgs arguments)
         {
