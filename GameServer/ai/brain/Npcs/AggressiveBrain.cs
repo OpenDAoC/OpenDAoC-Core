@@ -358,11 +358,11 @@ namespace DOL.AI.Brain
 
             if (sender == Body)
             {
-                if (e == GameNPCEvent.ArriveAtSpawnPoint)
-                {
-                    Body.TurnTo(Body.SpawnHeading);
-                    return;
-                }
+                //if (e == GameNPCEvent.ArriveAtSpawnPoint)
+                //{
+                //    Body.TurnTo(Body.SpawnHeading);
+                //    return;
+                // }
 
                 if (e == GameLivingEvent.Interrupted || e == GameLivingEvent.CastFailed ||
                     e == GameNPCEvent.CastFailed)

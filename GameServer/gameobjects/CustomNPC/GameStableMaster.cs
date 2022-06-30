@@ -239,9 +239,11 @@ namespace DOL.GS
 						mount.Z = path.Z;
 						mount.CurrentRegion = CurrentRegion;
 						mount.Heading = path.GetHeading( path.Next );
+						mount.FixedSpeed = true;
+						mount.MaxSpeedBase = 1500;
 						mount.AddToWorld();
 						mount.CurrentWayPoint = path;
-						GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
+						//GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						new MountHorseAction(player, mount).Start(400);
 						new HorseRideAction(mount).Start(4000);
 						return true;

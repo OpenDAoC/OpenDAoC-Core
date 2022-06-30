@@ -1379,10 +1379,25 @@ namespace DOL.GS
 				bool arriveAtSpawnPoint = npc.IsReturningToSpawnPoint;
 
 				npc.StopMoving();
-				npc.Notify(GameNPCEvent.ArriveAtTarget, npc);
+				//npc.Notify(GameNPCEvent.ArriveAtTarget, npc);
 
 				if (arriveAtSpawnPoint)
-					npc.Notify(GameNPCEvent.ArriveAtSpawnPoint, npc);
+				{
+					npc.TurnTo(npc.SpawnHeading);
+					return;
+				}
+
+				if (!npc.IsMovingOnPath)
+					return;
+
+				if (npc.CurrentWayPoint != null)
+				{
+					WaypointDelayAction waitTimer = new WaypointDelayAction(npc);
+					waitTimer.Start(Math.Max(1, npc.CurrentWayPoint.WaitTime * 100));
+				}
+				else
+					npc.StopMovingOnPath();
+
 			}
 		}
 
@@ -1919,10 +1934,10 @@ namespace DOL.GS
 
 			if (CurrentWayPoint != null)
 			{
-				GameEventMgr.AddHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
+				//GameEventMgr.AddHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
 				WalkTo(CurrentWayPoint, Math.Min(speed, (short)CurrentWayPoint.MaxSpeed));
 				m_IsMovingOnPath = true;
-				Notify(GameNPCEvent.PathMoveStarts, this);
+				//Notify(GameNPCEvent.PathMoveStarts, this);
 			}
 			else
 			{
@@ -1938,8 +1953,14 @@ namespace DOL.GS
 			if (!IsMovingOnPath)
 				return;
 
-			GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
-			Notify(GameNPCEvent.PathMoveEnds, this);
+			//GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
+			//Notify(GameNPCEvent.PathMoveEnds, this);
+			if (this is GameTaxi || this is GameTaxiBoat)
+			{
+				StopMoving();
+				RemoveFromWorld();
+			}
+			
 			m_IsMovingOnPath = false;
 		}
 
@@ -1997,7 +2018,7 @@ namespace DOL.GS
 						case ePathType.Loop:
 							{
 								npc.CurrentWayPoint = MovementMgr.FindFirstPathPoint(npc.CurrentWayPoint);
-								npc.Notify(GameNPCEvent.PathMoveStarts, npc);
+								//npc.Notify(GameNPCEvent.PathMoveStarts, npc);
 								break;
 							}
 						case ePathType.Once:
