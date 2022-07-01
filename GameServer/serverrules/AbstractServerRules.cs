@@ -443,8 +443,13 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			//dont allow attack npcs that have no faction set by other npcs without or with faction, faction vs faction is only allowed to attack
-			if (defender is GameNPC defendnpc && attacker is GameNPC attacknpc && attacknpc.Brain is not ControlledNpcBrain && defendnpc.Brain is not ControlledNpcBrain)
+			if (defender is GameNPC defendnpc && attacker is GameNPC attacknpc)
 			{
+				if (defender is GamePet) return true; //check if defender is GamePet
+				if (defendnpc.Brain is ControlledNpcBrain) return true; //check if defender is controlled npc
+				if (attacknpc is GamePet) return true; //check if attacker is GamePet
+				if (attacknpc.Brain is ControlledNpcBrain) return true; //check if attacker is controlled npc
+
 				if (defendnpc.Faction == null)//dont attack npc without faction
 					return false;
 				if (attacknpc.Faction == null && defendnpc.Faction != null)//npc without faction can't attack npc with faction
