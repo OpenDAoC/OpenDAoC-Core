@@ -44,6 +44,7 @@ namespace DOL.GS
                 if (effect == null)
                     return;
 
+                long startTick = GameTimer.GetTickCount();
                 if (effect.CancelEffect || effect.IsDisabled)
                 {
                     HandleCancelEffect(effect);
@@ -52,6 +53,9 @@ namespace DOL.GS
                 {
                     HandlePropertyModification(effect);
                 }
+                long stopTick = GameTimer.GetTickCount();
+                if((stopTick - startTick)  > 25 )
+                    log.Warn($"Long EffectService.Tick for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
             });
             
             Diagnostics.StopPerfCounter(ServiceName);
