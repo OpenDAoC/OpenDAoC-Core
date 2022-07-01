@@ -395,7 +395,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				if (this.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+				if (this.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
 					return false;
 				return m_turningDisabledCount > 0;
 			}
