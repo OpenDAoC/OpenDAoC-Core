@@ -1294,7 +1294,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Restores the NPC heading after some time
 		/// </summary>
-		protected class RestoreHeadingAction : RegionAction
+		protected class RestoreHeadingAction : RegionECSAction
 		{
 			/// <summary>
 			/// The NPCs old heading
@@ -1320,20 +1320,22 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 
 				npc.TempProperties.removeProperty(RESTORE_HEADING_ACTION_PROP);
 
-				if (npc.ObjectState != eObjectState.Active) return;
-				if (!npc.IsAlive) return;
-				if (npc.attackComponent.AttackState) return;
-				if (npc.IsMoving) return;
-				if (npc.Equals(m_oldPosition)) return;
-				if (npc.Heading == m_oldHeading) return; // already set? oO
+				if (npc.ObjectState != eObjectState.Active) return 0;
+				if (!npc.IsAlive) return 0;
+				if (npc.attackComponent.AttackState) return 0;
+				if (npc.IsMoving) return 0;
+				if (npc.Equals(m_oldPosition)) return 0;
+				if (npc.Heading == m_oldHeading) return 0; // already set? oO
 
 				npc.TurnTo(m_oldHeading);
+
+				return 0;
 			}
 		}
 
@@ -1356,7 +1358,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delayed action that fires an event when an NPC arrives at its target
 		/// </summary>
-		protected class ArriveAtTargetAction : RegionAction
+		protected class ArriveAtTargetAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new ArriveAtTargetAction
@@ -1372,7 +1374,7 @@ namespace DOL.GS
 			/// This time was estimated using walking speed and distance.
 			/// It fires the ArriveAtTarget event
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 
@@ -1384,11 +1386,11 @@ namespace DOL.GS
 				if (arriveAtSpawnPoint)
 				{
 					npc.TurnTo(npc.SpawnHeading);
-					return;
+					return 0;
 				}
 
 				if (!npc.IsMovingOnPath)
-					return;
+					return 0;
 
 				if (npc.CurrentWayPoint != null)
 				{
@@ -1398,6 +1400,7 @@ namespace DOL.GS
 				else
 					npc.StopMovingOnPath();
 
+				return 0;
 			}
 		}
 
@@ -5558,7 +5561,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The spell action of this living
 		/// </summary>
-		public class SpellAction : RegionAction
+		public class SpellAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new attack action
@@ -5572,7 +5575,7 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC owner = null;
 				if (m_actionSource != null && m_actionSource is GameNPC)
@@ -5580,13 +5583,13 @@ namespace DOL.GS
 				else
 				{
 					Stop();
-					return;
+					return 0;
 				}
 
 				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
 				{
 					Stop();
-					return;
+					return 0;
 				}
 
 				//If we started casting a spell, stop the timer and wait for
@@ -5594,7 +5597,7 @@ namespace DOL.GS
 				if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
 				{
 					Stop();
-					return;
+					return 0;
 				}
 				else
 				{
@@ -5611,6 +5614,8 @@ namespace DOL.GS
 				{
 					Interval = 1500;
 				}
+
+				return Interval;
 			}
 		}
 
