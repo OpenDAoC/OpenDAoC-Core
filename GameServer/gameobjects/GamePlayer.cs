@@ -5729,6 +5729,17 @@ namespace DOL.GS
                 }
             }
             
+            if (Level == 39)
+            {
+                var today = DateTime.Today;
+                var endSoftLaunch = new DateTime(2022, 07, 18);
+
+                if (today <= endSoftLaunch)
+                {
+                    Client.Player.Achieve("SoftLaunch39-Credit");
+                }
+            }
+            
 
             if (Level == 40)
             {
