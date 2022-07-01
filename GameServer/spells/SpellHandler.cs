@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 using System.Text;
 using DOL.AI.Brain;
@@ -33,6 +34,7 @@ using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
 using DOL.GS.SpellEffects;
 using DOL.Language;
+
 
 using log4net;
 
@@ -2247,12 +2249,12 @@ namespace DOL.GS.Spells
 			_calculatedCastTime = castTime * 100;
             //Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 
-            foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
 				if (player == null)
-					continue;
+					return;
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
-			}
+			});
 		}
 
 		/// <summary>
@@ -3085,7 +3087,7 @@ namespace DOL.GS.Spells
 				}
 			}
 			
-			foreach (GameLiving t in targets)
+			Parallel.ForEach(targets, t =>
 			{
 				
 				// Aggressive NPCs will aggro on every target they hit
@@ -3125,7 +3127,7 @@ namespace DOL.GS.Spells
 					if (spellResistChance > randNum)
 					{
 						OnSpellResisted(t);
-						continue;
+						return;
 					}
 				}
                 if (Spell.Radius == 0 || HasPositiveEffect)
@@ -3154,7 +3156,7 @@ namespace DOL.GS.Spells
 
 				if (Caster is GamePet pet && Spell.IsBuff)
 					pet.AddBuffedTarget(target);
-			}
+			});
 
 			if (Spell.Target.ToLower() == "ground")
 			{
