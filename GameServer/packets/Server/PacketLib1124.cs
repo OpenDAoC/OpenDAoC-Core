@@ -5741,7 +5741,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)Checker.ObjectID);
 				pak.WriteShort((ushort)TargetOID);
 				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x00); // ?
+				// pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
 		}
