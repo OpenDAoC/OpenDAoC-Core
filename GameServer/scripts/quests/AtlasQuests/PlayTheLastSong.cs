@@ -41,8 +41,9 @@ namespace DOL.GS.Quests.Midgard
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
+		private static bool IsSinging;
 		private static GameNPC VikingDextz = null; // Start NPC
-		private static Freeya Freeya = null; // Finish NPC
+		private static GameNPC Freeya = null; // Finish NPC
 		
 		private static WorldObject FreeyasGrave = null; // Object
 
@@ -86,7 +87,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 763734 && npc.Y == 646142)
 					{
-						Freeya = npc as Freeya;
+						Freeya = npc;
 						break;
 					}
 			
@@ -95,7 +96,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find FreeyaMid , creating it ...");
-				Freeya = new Freeya();
+				Freeya = new GameNPC();
 				Freeya.Model = 165;
 				Freeya.Name = "Freeya";
 				Freeya.GuildName = "Thor Boyaux";
@@ -339,11 +340,11 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		protected static void TalkToFreeya(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToFreeya(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null || Freeya.IsSinging)
+			if (player == null || IsSinging)
 				return;
 			
 			//We also check if the player is already doing the quest
@@ -400,7 +401,7 @@ namespace DOL.GS.Quests.Midgard
 			else if (e == GameLivingEvent.WhisperReceive)
 			{
 				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null || Freeya.IsSinging)
+				if (quest == null || IsSinging)
 				{
 					switch (wArgs.Text)
 					{
@@ -421,10 +422,10 @@ namespace DOL.GS.Quests.Midgard
 							break;
 						case "song":
 							//when ceremony begins, it isnt possible to interact with Freeya (prevent Spell/Quest Bugs)
-							if (quest.Step == 3 && !Freeya.IsSinging)
+							if (quest.Step == 3 && !IsSinging)
 							{
 								quest.Step = 4;
-								Freeya.IsSinging = true;
+								IsSinging = true;
 
 								//cast Health Song
 								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(CastHealthRegen), 3000);
@@ -438,7 +439,7 @@ namespace DOL.GS.Quests.Midgard
 								
 								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(timer => FinishSinging(timer, player)), 18000);
 								
-								if (quest.Step == 4 && !Freeya.IsSinging)
+								if (quest.Step == 4 && !IsSinging)
 								{
 									quest.Step = 5;
 								}
@@ -472,7 +473,7 @@ namespace DOL.GS.Quests.Midgard
 			Freeya.TurnTo(player, 500);
 			Freeya.Emote(eEmote.Military);
 			CastResistance();
-			Freeya.IsSinging = false;
+			IsSinging = false;
 			quest.FinishQuest();
 			player.Out.SendObjectUpdate(Freeya);
 
@@ -802,14 +803,14 @@ namespace DOL.GS.Quests.Midgard
 			if (player==null || player.IsDoingQuest(typeof (PlayTheLastSong)) == null)
 				return;
 
-			if (e == GameLivingEvent.Interact && (Step == 4 && !Freeya.IsSinging))
+			if (e == GameObjectEvent.Interact && (Step == 4 && !IsSinging))
 			{
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == Freeya.Name)
 				{
 					new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(timer => FinishSinging(timer, player)), 3000);
 								
-					if (Step == 4 && !Freeya.IsSinging)
+					if (Step == 4 && !IsSinging)
 					{
 						Step = 5;
 					}
@@ -818,12 +819,24 @@ namespace DOL.GS.Quests.Midgard
 					FinishQuest();
 				}
 			}
+			if (e == GameObjectEvent.AddToWorld)
+			{
+				GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
+				GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			}
+			if (e == GameLivingEvent.Dying)
+			{
+				GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
+				GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			}
 		}
 		
 		private static int DelayedDeath(ECSGameTimer timer)
 		{
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
+			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
 			Freeya.Die(Freeya);
 			return 0;
 		}
@@ -899,31 +912,6 @@ namespace DOL.GS.Quests.Midgard
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
-		}
-	}
-	
-	public class Freeya : GameNPC{
-		public bool IsSinging = false;
-
-		protected int RespawnTimerCallback(ECSGameTimer respawnTimer)
-		{
-			IsSinging = false;
-			return base.RespawnTimerCallback(respawnTimer);
-		}
-
-		public override void Notify(DOLEvent e, EventArgs args)
-		{
-			if (e == GameNPCEvent.Dying)
-			{
-				IsSinging = false;
-			}
-
-			if (IsRespawning)
-			{
-				IsSinging = false;
-			}
-			
-			base.Notify(e, args);
 		}
 	}
 }
