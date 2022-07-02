@@ -1629,11 +1629,16 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
+				if (m_followTimer != null && m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
-				else
+				else if (m_followTimer != null)
 				{
 					m_followTimer.Stop();
+				}
+				else if (m_followTimer == null)
+				{
+					m_followTimer = new ECSGameTimer(this);
+					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
 				}
 			
 				m_followMaxDist = maxDistance;
