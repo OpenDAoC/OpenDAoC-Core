@@ -105,11 +105,12 @@ namespace DOL.GS
                     }
 
                     int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-                    foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    Parallel.ForEach((owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
                     {
-                        if (player == null) continue;
+                        if (player == null)
+                            return;
                         player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
-                    }
+                    });
 
                     interruptDuration = owner.attackComponent.AttackSpeed(attackWeapon);
 
@@ -345,10 +346,12 @@ namespace DOL.GS
                         { }
                         else
                         {
-                            foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            Parallel.ForEach((owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
                             {
+                                if (player == null)
+                                    return;
                                 player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
-                            }
+                            });
                         }
                         if (owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         {
