@@ -894,7 +894,7 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, 200, true);
+			m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
