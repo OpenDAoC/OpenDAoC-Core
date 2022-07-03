@@ -2,6 +2,7 @@
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 
 namespace DOL.GS
 {
@@ -77,6 +78,18 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
+        public override void Die(GameObject killer)
+        {
+			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			{
+				if (npc != null)
+				{
+					if (npc.IsAlive && npc.RespawnInterval == -1 && npc.Brain is TeazanodwcAddBrain)
+						npc.Die(npc);
+				}
+			}
+			base.Die(killer);
+        }
     }
 }
 namespace DOL.AI.Brain
@@ -90,7 +103,8 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		
+		private bool _SpawnAdds = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -98,10 +112,80 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
+				_SpawnAdds = false;
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.RespawnInterval == -1 && npc.Brain is TeazanodwcAddBrain)
+								npc.Die(npc);
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
-			if (HasAggro)
-			{				
+			if (HasAggro && Body.TargetObject != null)
+			{
+				RemoveAdds = false;
+				if(!_SpawnAdds)
+                {
+					SpawnAdds();
+					_SpawnAdds = true;
+                }
 			}
+			base.Think();
+		}
+		private void SpawnAdds()
+		{
+			for (int i = 0; i < Util.Random(4,5); i++)
+			{
+				TeazanodwcAdd npc = new TeazanodwcAdd();
+				npc.X = Body.X + Util.Random(-100, 100);
+				npc.Y = Body.Y + Util.Random(-100, 100);
+				npc.Z = Body.Z;
+				npc.Heading = Body.Heading;
+				npc.CurrentRegion = Body.CurrentRegion;
+				npc.AddToWorld();
+			}
+		}
+	}
+}
+namespace DOL.GS
+{
+	public class TeazanodwcAdd : GameNPC
+	{
+		public TeazanodwcAdd() : base() { }
+
+		public override bool AddToWorld()
+		{
+			Name = "Teazanodwc's servant";
+			Level = (byte)Util.Random(50, 53);
+			Model = 601;
+			Size =(byte)Util.Random(100,130);
+			TeazanodwcAddBrain sbrain = new TeazanodwcAddBrain();
+			SetOwnBrain(sbrain);
+			LoadedFromScript = true;
+			RespawnInterval = -1;
+			base.AddToWorld();
+			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class TeazanodwcAddBrain : StandardMobBrain
+	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public TeazanodwcAddBrain() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 1000;
+			ThinkInterval = 1500;
+		}
+		public override void Think()
+		{
 			base.Think();
 		}
 	}
