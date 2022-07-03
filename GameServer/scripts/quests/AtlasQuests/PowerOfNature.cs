@@ -38,9 +38,11 @@ namespace DOL.GS.Quests.Hibernia
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC Theresa = null; // Start NPC
-		private static GameNPC Karl = null; // Finish Quest
+		private static GameNPC Theresa = null; // Start + Finish NPC
+		private static GameNPC Karl = null; // Speak with Karl
 
+		private static ItemTemplate theresas_doll = null;
+		
 		// Constructors
 		public PowerOfNature() : base()
 		{
@@ -115,7 +117,7 @@ namespace DOL.GS.Quests.Hibernia
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Karl, creating it ...");
 				Karl = new GameNPC();
-				Karl.Model = 350;
+				Karl.Model = 956;
 				Karl.Name = "Karl";
 				Karl.GuildName = "";
 				Karl.Realm = eRealm.Hibernia;
@@ -134,6 +136,36 @@ namespace DOL.GS.Quests.Hibernia
 			// end npc
 			#endregion
 
+			#region defineItems
+
+			theresas_doll = GameServer.Database.FindObjectByKey<ItemTemplate>("theresas_doll");
+			if (theresas_doll == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Theresa's doll, creating it ...");
+				theresas_doll = new ItemTemplate();
+				theresas_doll.Id_nb = "theresas_doll";
+				theresas_doll.Name = "Theresa's doll";
+				theresas_doll.Level = 5;
+				theresas_doll.Item_Type = 0;
+				theresas_doll.Model = 1879;
+				theresas_doll.IsDropable = false;
+				theresas_doll.IsTradable = false;
+				theresas_doll.IsIndestructible = false;
+				theresas_doll.IsPickable = false;
+				theresas_doll.DPS_AF = 0;
+				theresas_doll.SPD_ABS = 0;
+				theresas_doll.Object_Type = 0;
+				theresas_doll.Hand = 0;
+				theresas_doll.Type_Damage = 0;
+				theresas_doll.Quality = 100;
+				theresas_doll.Weight = 1;
+				theresas_doll.Description = "This doll was a present of Karl the Hero of Hibernia.";
+				if (SAVE_INTO_DATABASE)
+					GameServer.Database.AddObject(theresas_doll);
+			}
+			#endregion
+			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
@@ -155,6 +187,7 @@ namespace DOL.GS.Quests.Hibernia
 			//if not loaded, don't worry
 			if (Theresa == null)
 				return;
+			
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
@@ -188,17 +221,24 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
+							Theresa.SayTo(player, $"Greetings {player.Name}, i don't know what to say, thank you very much for helping me. I will give you some [information] about him now.");
 							break;
 						case 2:
+							Theresa.SayTo(player, $"Hey {player.Name}, exit the East Entrance to Lough Derg, and move south to the little lake, I hope you will find my father there.");
 							break;
 						case 3:
+							Theresa.SayTo(player, $"Hello {player.Name}, you found my father? What did he [say]?");
 							break;
 						case 4:
+							Theresa.SayTo(player, "Thank you so much, I never met a kind person like you. You helped me a lot and I want to reward you with some silver.");
+							quest.FinishQuest();
 							break;
 					}
 				}
 				else
 				{
+					Theresa.SayTo(player, $"Hello {player.CharacterClass.Name}, for many years there has been war in our areas and I am afraid that those days will come back. " +
+					                      $"My father hasn't been to Tir na Nog since then. I miss him and I hope he's doing well. Could you [help me] to find him?");
 				}
 			}
 				// The player whispered to the NPC
@@ -209,8 +249,8 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "":
-							player.Out.SendQuestSubscribeCommand(Theresa, QuestMgr.GetIDForQuestType(typeof(PowerOfNature)), "Will you help Theresa to find her dad? [Memorial] Power of Nature");
+						case "help me":
+							player.Out.SendQuestSubscribeCommand(Theresa, QuestMgr.GetIDForQuestType(typeof(PowerOfNature)), "Will you help Theresa to find her father? [Memorial] Power of Nature");
 							break;
 					}
 				}
@@ -218,6 +258,33 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "information":
+							Theresa.SayTo(player, "Karl the fighter, the defender, the honorable, my father is an amazing person. " +
+							                      "When I was younger, he always brought me something from his travels. " +
+							                      "I still have these things to this day and will never lose them! As I got older, the trips got longer and I started to miss him way more. " +
+							                      "My mother didn't have it easy. She got sick and needed him. Now she is gone and he has not been to Tir na Nog for several years. We all [needed him].");
+							break;
+						case "needed him":
+							Theresa.SayTo(player, "When I was a kid we used to walk to the little lake in Lough Derg and look at the trees and the bugs. This for several hours, I loved it. " +
+							                      "I always had a [toy] with me on the way, which my father gave me from his travels. " +
+							                      "It would be nice if you could go to this lake, maybe he is there, that would be my greatest hope.");
+							break;
+						case "toy":
+							Theresa.SayTo(player, "I want to give you this toy to take with you on your way. If you meet him, give him this as a sign of love. I will never forget him!");
+							if (quest.Step == 1 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
+								    eInventorySlot.LastBackpack))
+							{
+								GiveItem(player, theresas_doll);
+								quest.Step = 2;
+							}
+							else
+							{
+								Theresa.SayTo(player, "Oh you have too much in your inventory, come back when you can get this [toy].");
+							}
+							break;
+						case "say":
+							Theresa.SayTo(player, "I am so glad that I sent you. Now that I know he is fine and is still alive gives me peace and strength.");
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
@@ -331,7 +398,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			if (response == 0x00)
 			{
-				// send message, when decline dialog
+				Theresa.SayTo(player, $"Dont worry, thanks for listening to me, even that helped me a lot. Come back if you want to [help me].");
 			}
 			else
 			{
@@ -339,8 +406,7 @@ namespace DOL.GS.Quests.Hibernia
 				if (!Theresa.GiveQuest(typeof (PowerOfNature), player, 1))
 					return;
 
-				// add interaction here after accepting quest
-
+				Theresa.SayTo(player, $"Thank you very much, i don't know what to say. I will give you some [information] about him now.");
 			}
 		}
 
@@ -364,8 +430,6 @@ namespace DOL.GS.Quests.Hibernia
 					case 3:
 						return "";
 					case 4:
-						return "";
-					case 5:
 						return "";
 				}
 				return base.Description;
