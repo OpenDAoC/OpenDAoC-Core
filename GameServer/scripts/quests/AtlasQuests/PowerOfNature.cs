@@ -264,8 +264,7 @@ namespace DOL.GS.Quests.Hibernia
                             break;
                         case 4:
                             Theresa.SayTo(player,
-                                "Thank you so much, I never met a kind person like you. You helped me a lot and I want to reward you with some silver.");
-                            quest.FinishQuest();
+                                "Thank you so much, I never met a kind person like you. You helped me a lot and I want to reward you with some silver. You told me something about [Power of Nature], what does that mean?");
                             break;
                     }
                 }
@@ -310,7 +309,7 @@ namespace DOL.GS.Quests.Hibernia
                             break;
                         case "toy":
                             Theresa.SayTo(player,
-                                "I want to give you this toy to take with you on your way. If you meet him, give him this as a sign of love. I will never forget him!");
+                                "I want to give you this toy to take it with you on your way to this lake. If you meet him, give him this as a sign of love. I will never forget him!");
                             if (quest.Step == 1 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
                                     eInventorySlot.LastBackpack))
                             {
@@ -325,8 +324,31 @@ namespace DOL.GS.Quests.Hibernia
 
                             break;
                         case "say":
-                            Theresa.SayTo(player,
-                                "I am so glad that I sent you. Now that I know he is fine and is still alive gives me peace and strength.");
+                            if (quest.Step == 3)
+                            {
+                                Theresa.SayTo(player,
+                                    "I am so glad that I sent you. Now that I know he is fine and is still alive gives me peace and strength.");
+                            }
+                            break;
+                        case "Power of Nature":
+                            if (quest.Step == 4)
+                            {
+                                Theresa.SayTo(player,
+                                    "The small lake in Lough Derg is the source of [natural powers] and he gives me this power as a sign of its return?");
+                            }
+                            break;
+                        case "natural powers":
+                            if (quest.Step == 4)
+                            {
+                                RemoveItem(player, magical_theresas_doll);
+                                Theresa.SayTo(player,
+                                "You bring the doll back to me, thank you very much. My father is coming back!");
+                                Theresa.Emote(eEmote.Cheer);
+                                new ECSGameTimer(Theresa, new ECSGameTimer.ECSTimerCallback(StartTheresaEffect), 2000);
+                                Theresa.SayTo(player,
+                                    "I can feel the power of nature!");
+                                quest.FinishQuest();
+                            }
                             break;
                         case "abort":
                             player.Out.SendCustomDialog(
@@ -517,6 +539,12 @@ namespace DOL.GS.Quests.Hibernia
                     effect.CastSpell(EffectSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
+            return 0;
+        }
+
+        private static int StartTheresaEffect(ECSGameTimer timer)
+        {
+            Theresa.CastSpell(EffectSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
 
