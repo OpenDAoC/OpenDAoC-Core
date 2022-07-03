@@ -38,6 +38,7 @@ namespace DOL.AI.Brain
 		{
 			List<GameLiving> newTargets = new List<GameLiving>();
 			List<GameLiving> oldTargets = new List<GameLiving>();
+			base.CalculateNextAttackTarget();
 			lock((m_aggroTable as ICollection).SyncRoot)
 			{
 				foreach(GameLiving living in m_aggroTable.Keys)
@@ -68,8 +69,8 @@ namespace DOL.AI.Brain
 			foreach (GameLiving living in Body.GetPlayersInRadius((ushort) ((TurretPet) Body).TurretSpell.Range,
 				         Body.CurrentRegion.IsDungeon ? false : true))
 			{
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-					continue;
+				// if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+				// 	continue;
 				
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
 					continue;
@@ -108,8 +109,7 @@ namespace DOL.AI.Brain
 				{
 					newTargets.Add(living);
 				}
-				
-				base.CalculateNextAttackTarget();
+								
 			}
 			
 
