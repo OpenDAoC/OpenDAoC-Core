@@ -4275,9 +4275,13 @@ namespace DOL.GS
 					EffectService.RequestImmediateCancelEffect(pulseSpell);
 					if (((SpellHandler)pulseSpell.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out var petEffect))
                     {
-						//verify the effect is a focus shield and not a timer based damage shield
-						if (petEffect.FirstOrDefault().SpellHandler.Spell.IsFocus)
-							EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
+						if (petEffect is not null)
+                        {
+							//verify the effect is a focus shield and not a timer based damage shield
+							if (petEffect.FirstOrDefault().SpellHandler.Spell.IsFocus)
+								EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
+						}
+							
 					}
 				}
             }
