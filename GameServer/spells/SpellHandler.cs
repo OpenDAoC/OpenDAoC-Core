@@ -3937,7 +3937,10 @@ namespace DOL.GS.Spells
 			
 			if (this is DamageShieldSpellHandler)
             {
-				EffectService.RequestImmediateCancelEffect(EffectListService.GetSpellEffectOnTarget(Caster?.ControlledBrain?.Body, eEffect.FocusShield));
+				ECSGameSpellEffect dmgShield = EffectListService.GetSpellEffectOnTarget(Caster?.ControlledBrain?.Body, eEffect.FocusShield);
+				//verify the effect is a focus shield and not a timer based damage shield
+				if (dmgShield.SpellHandler.Spell.IsFocus)
+					EffectService.RequestImmediateCancelEffect(dmgShield);
             }
             
             //CancelPulsingSpell(Caster, currentEffect.Spell.SpellType);
