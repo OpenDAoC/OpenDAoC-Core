@@ -81,35 +81,7 @@ namespace DOL.GS.Scripts
 		{
 			get { return 30000; }
 		}
-		/// <summary>
-		/// Return to spawn point, Thane Dyggve can't be attacked while it's
-		/// on it's way.
-		/// </summary>
-		public override void WalkToSpawn()
-		{
-			EvadeChance = 100;
-			WalkToSpawn(MaxSpeed);
-		}
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			if (EvadeChance == 100)
-				return;
 
-			base.OnAttackedByEnemy(ad);
-		}	
-		/// <summary>
-		/// Handle event notifications.
-		/// </summary>
-		/// <param name="e">The event that occured.</param>
-		/// <param name="sender">The sender of the event.</param>
-		public override void Notify(DOLEvent e, object sender)
-		{
-			base.Notify(e, sender);
-			// When Thane Dyggve arrives at its spawn point, make it vulnerable again.
-
-			if (e == GameNPCEvent.ArriveAtTarget)
-				EvadeChance = 0;
-		}
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -124,8 +96,10 @@ namespace DOL.GS.Scripts
 		{
 			protected String[] m_MjollnirAnnounce;
 			protected bool castsMjollnir = true;
+			private bool CanCastSpell = false;
 			public ThaneDyggveBrain() : base()
 			{
+				CanBAF = false;
 				m_MjollnirAnnounce = new String[]
 				{
 					"You feel your energy draining and {0} summons powerful lightning hammers!",
@@ -134,11 +108,26 @@ namespace DOL.GS.Scripts
 			}
 			public override void Think()
 			{
+				if(!HasAggressionTable())
+                {
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					Body.Health = Body.MaxHealth;
+					CanCastSpell = false;
+				}
 				if (Body.InCombat && Body.IsAlive && HasAggro)
 				{
 					if (Body.TargetObject != null)
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMjollnir), 2000);
+						foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+						{
+							if (npc != null && npc.IsAlive && npc.PackageID == "ThaneDyggveBaf")
+								AddAggroListTo(npc.Brain as StandardMobBrain);
+						}
+						if (!CanCastSpell)
+						{
+							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMjollnir), 2000);
+							CanCastSpell = true;
+						}
 						if (Body.IsCasting)
 						{
 							if (castsMjollnir)
@@ -149,9 +138,7 @@ namespace DOL.GS.Scripts
 							castsMjollnir = false;
 						}
 						else
-						{
 							castsMjollnir = true;
-						}
 					}
 				}
 				base.Think();
@@ -167,16 +154,7 @@ namespace DOL.GS.Scripts
 					player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 				}
 			}	
-			/// <summary>
-			/// Called whenever the Thane Dyggve's body sends something to its brain.
-			/// </summary>
-			/// <param name="e">The event that occured.</param>
-			/// <param name="sender">The source of the event.</param>
-			/// <param name="args">The event details.</param>
-			public override void Notify(DOLEvent e, object sender, EventArgs args)
-			{
-				base.Notify(e, sender, args);
-			}
+
 			/// <summary>
 			/// Cast Mjollnir on the Target
 			/// </summary>
@@ -185,8 +163,14 @@ namespace DOL.GS.Scripts
 			private int CastMjollnir(ECSGameTimer timer)
 			{
 				Body.CastSpell(Mjollnir, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetMjollnir), 30000);
 				return 0;
-			}		
+			}	
+			private int ResetMjollnir(ECSGameTimer timer)
+            {				
+				CanCastSpell = false;
+				return 0;
+            }
 			#region MjollnirSpell
 			private Spell m_Mjollnir;
 			/// <summary>
@@ -223,9 +207,7 @@ namespace DOL.GS.Scripts
 					return m_Mjollnir;
 				}
 			}
-
-			#endregion
-			
+			#endregion		
 		}
 	}
 }
