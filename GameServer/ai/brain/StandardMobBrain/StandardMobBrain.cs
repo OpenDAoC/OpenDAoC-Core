@@ -360,8 +360,21 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
 
             if (npc.Brain is IControlledBrain && (npc.Brain as IControlledBrain).GetPlayerOwner() != null)
             {
-                var factionChecker = (npc.Brain as IControlledBrain).GetPlayerOwner();
                 var aggrolevel = 0;
+
+                //if being attacked by the player controlled pet, set aggrolevel high enough to register pet & player in aggro table
+                if (npc.IsAttacking && npc.TargetObject is GameNPC)
+                {
+                    GameNPC npcAttackTarget = (GameNPC) npc.TargetObject;
+
+                    if (npcAttackTarget.ObjectID == this.Body.ObjectID)
+                    {
+                        aggrolevel = 52;
+                        return;
+                    }                    
+                }                
+
+                var factionChecker = (npc.Brain as IControlledBrain).GetPlayerOwner();
 
                 if (Body.Faction == null)
                     aggrolevel = AggroLevel;
@@ -812,6 +825,7 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
             var player = (GamePlayer) living;
 
             if (player.Group != null)
+            { 
                 // player is in group, add whole group to aggro list
                 lock ((m_aggroTable as ICollection).SyncRoot)
                 {
@@ -820,7 +834,7 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
                             if (!m_aggroTable.ContainsKey(p))
                                 m_aggroTable[p] = 1; //1L // add the missing group member on aggro table
                 }
-
+            }
             //ProtectEffect protect = (ProtectEffect) player.EffectList.GetOfType(typeof(ProtectEffect));
             foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects()
                          .Where(e => e.EffectType == eEffect.Protect))
@@ -883,7 +897,30 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
             else
             {
                 if (aggroamount > 0)
+                {
                     m_aggroTable[living] = aggroamount;
+
+                    if (living is GameNPC)
+                    {
+                        if ((living as GameNPC).Brain is IControlledBrain && ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null)
+                        {
+                            GamePlayer petOwner = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+                            m_aggroTable[petOwner] = 1;
+
+                            if (petOwner.Group != null)
+                            {
+                                // player is in group, add whole group to aggro list
+                                lock ((m_aggroTable as ICollection).SyncRoot)
+                                {
+                                    foreach (var p in petOwner.Group.GetPlayersInTheGroup())
+                                        if (!p.IsStealthed)
+                                            if (!m_aggroTable.ContainsKey(p))
+                                                m_aggroTable[p] = 1; //1L // add the missing group member on aggro table
+                                }
+                            }
+                        }
+                    }
+                }
                 else
                     m_aggroTable[living] = 1; //1L;
             }
