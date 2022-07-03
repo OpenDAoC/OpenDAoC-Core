@@ -424,13 +424,13 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "";
+						return "Continue speaking with Theresa and get more information about Karl.";
 					case 2:
-						return "";
+						return "Travel to the little Lake in Lough Derg and search for Karl.";
 					case 3:
-						return "";
+						return "Speak with Karl and help him with the ceremony.";
 					case 4:
-						return "";
+						return "Return to Theresa with Karl's present.";
 				}
 				return base.Description;
 			}
