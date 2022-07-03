@@ -2,6 +2,7 @@
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 
 namespace DOL.GS
 {
@@ -77,6 +78,49 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
+		public override void OnAttackEnemy(AttackData ad)
+		{
+			if (Util.Chance(35))//cast nasty heat proc
+			{
+				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) 
+					&& !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+					CastSpell(FesterDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			}
+			base.OnAttackEnemy(ad);
+		}
+		private Spell m_FesterDisease;
+		private Spell FesterDisease
+		{
+			get
+			{
+				if (m_FesterDisease == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 0;
+					spell.RecastDelay = 0;
+					spell.ClientEffect = 4375;
+					spell.Icon = 4375;
+					spell.Name = "Disease";
+					spell.Message1 = "You are diseased!";
+					spell.Message2 = "{0} is diseased!";
+					spell.Message3 = "You look healthy.";
+					spell.Message4 = "{0} looks healthy again.";
+					spell.TooltipId = 4375;
+					spell.Range = 350;
+					spell.Duration = 120;
+					spell.SpellID = 11986;
+					spell.Target = "Enemy";
+					spell.Type = "Disease";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					m_FesterDisease = new Spell(spell, 70);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FesterDisease);
+				}
+				return m_FesterDisease;
+			}
+		}
 	}
 }
 namespace DOL.AI.Brain
@@ -99,10 +143,51 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				GameLiving target = Body.TargetObject as GameLiving;
+				if(target != null && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					Body.CastSpell(fester_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.Think();
 		}
+		#region Spells
+		private Spell m_fester_Dot;
+		private Spell fester_Dot
+		{
+			get
+			{
+				if (m_fester_Dot == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 3;
+					spell.RecastDelay = Util.Random(20,30);
+					spell.ClientEffect = 3411;
+					spell.Icon = 3411;
+					spell.Name = "Fester's Venom";
+					spell.Description = "Inflicts 80 damage to the target every 4 sec for 20 seconds";
+					spell.Message1 = "An acidic cloud surrounds you!";
+					spell.Message2 = "{0} is surrounded by an acidic cloud!";
+					spell.Message3 = "The acidic mist around you dissipates.";
+					spell.Message4 = "The acidic mist around {0} dissipates.";
+					spell.TooltipId = 3411;
+					spell.Range = 1500;
+					spell.Radius = 600;
+					spell.Damage = 80;
+					spell.Duration = 20;
+					spell.Frequency = 40;
+					spell.SpellID = 11985;
+					spell.Target = "Enemy";
+					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Uninterruptible = true;
+					spell.DamageType = (int)eDamageType.Matter;
+					m_fester_Dot = new Spell(spell, 70);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_fester_Dot);
+				}
+				return m_fester_Dot;
+			}
+		}
+		#endregion
 	}
 }
