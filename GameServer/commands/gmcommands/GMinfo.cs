@@ -279,7 +279,11 @@ namespace DOL.GS.Commands
 					info.Add("WeaponAction: " + target.attackComponent.weaponAction);
 
 					if (target.InCombat || target.attackComponent.AttackState)
+					{
 						info.Add("RegionTick: " + GameLoop.GameLoopTime);
+						if(target.attackComponent.attackAction != null)
+							info.Add("AttackAction StartTime " + target.attackComponent.attackAction.StartTime);
+					}
 
 					info.Add("");
 
