@@ -58,6 +58,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
             // demon
             BodyType = 2;
