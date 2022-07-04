@@ -957,7 +957,7 @@ namespace DOL.GS
                 {
                     //if (m_attackAction.TimeUntilElapsed < 500)
                     //	m_attackAction.Start(500);
-                    if (attackAction.TimeUntilStart < 100)
+                    if (0 < attackAction.TimeUntilStart && attackAction.TimeUntilStart < 100)
                         attackAction.StartTime = 100;
                 }
             }
