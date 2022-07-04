@@ -22,9 +22,12 @@ namespace DOL.GS
 			//RespawnInterval = Util.Random(3600000, 7200000);
 
 			DoobenBrain sbrain = new DoobenBrain();
+			if (NPCTemplate != null)
+			{
+				sbrain.AggroLevel = NPCTemplate.AggroLevel;
+				sbrain.AggroRange = NPCTemplate.AggroRange;
+			}
 			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}

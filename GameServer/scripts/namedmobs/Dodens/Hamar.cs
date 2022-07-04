@@ -46,7 +46,8 @@ namespace DOL.GS.Scripts
 			Flags |= eFlags.GHOST;
 			// double-wielded
 			VisibleActiveWeaponSlots = 16;
-			
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
 			ScalingFactor = 40;
 			base.SetOwnBrain(new HamarBrain());
 			LoadedFromScript = false; //load from database

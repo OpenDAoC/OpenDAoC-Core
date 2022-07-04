@@ -23,9 +23,12 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 
 			VagdushBrain sbrain = new VagdushBrain();
+			if (NPCTemplate != null)
+			{
+				sbrain.AggroLevel = NPCTemplate.AggroLevel;
+				sbrain.AggroRange = NPCTemplate.AggroRange;
+			}
 			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
