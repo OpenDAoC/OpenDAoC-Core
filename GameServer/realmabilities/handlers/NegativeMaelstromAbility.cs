@@ -20,6 +20,7 @@ namespace DOL.GS.RealmAbilities
 
         public override void Execute(GameLiving living)
         {
+            //TODO Convert this to using SpellHandlers and cancel when moving
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
             GamePlayer caster = living as GamePlayer;
 			if (caster.IsMoving)
@@ -87,7 +88,7 @@ namespace DOL.GS.RealmAbilities
 			}
             caster.TempProperties.setProperty(IS_CASTING, true);
             caster.TempProperties.setProperty(NM_CAST_SUCCESS, true);
-            GameEventMgr.AddHandler(caster, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
+            // GameEventMgr.AddHandler(caster, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
             GameEventMgr.AddHandler(caster, GamePlayerEvent.AttackFinished, new DOLEventHandler(CastInterrupted));
             GameEventMgr.AddHandler(caster, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
             if (caster != null)
@@ -99,7 +100,7 @@ namespace DOL.GS.RealmAbilities
 		{
             bool castWasSuccess = player.TempProperties.getProperty(NM_CAST_SUCCESS, false);
             player.TempProperties.removeProperty(IS_CASTING);
-            GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
+            // GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackFinished, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
             if (player.IsMezzed || player.IsStunned || player.IsSitting)

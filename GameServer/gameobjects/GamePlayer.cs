@@ -12014,7 +12014,7 @@ namespace DOL.GS
 
 
             //Notify the GameEventMgr of the moving player
-            GameEventMgr.Notify(GamePlayerEvent.Moving, this);
+            // GameEventMgr.Notify(GamePlayerEvent.Moving, this);
         }
 
         /// <summary>
