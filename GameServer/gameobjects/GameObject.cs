@@ -1541,20 +1541,20 @@ namespace DOL.GS
 		{
 			if (ObjectState != eObjectState.Active)
 				return;
-			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
-			{
-				if (player == null)
-					return;
-				
-				player.Out.SendObjectUpdate(this);
-			});
-			// foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			// Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			// {
 			// 	if (player == null)
-			// 		continue;
+			// 		return;
 				
 			// 	player.Out.SendObjectUpdate(this);
-			// }
+			// });
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				if (player == null)
+					continue;
+				
+				player.Out.SendObjectUpdate(this);
+			}
 		}
         
         #endregion
