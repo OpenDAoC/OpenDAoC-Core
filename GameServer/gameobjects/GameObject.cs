@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 using DOL.Database;
 using DOL.Events;
@@ -1540,14 +1541,20 @@ namespace DOL.GS
 		{
 			if (ObjectState != eObjectState.Active)
 				return;
-			
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
 				if (player == null)
-					continue;
+					return;
 				
 				player.Out.SendObjectUpdate(this);
-			}
+			});
+			// foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			// {
+			// 	if (player == null)
+			// 		continue;
+				
+			// 	player.Out.SendObjectUpdate(this);
+			// }
 		}
         
         #endregion
