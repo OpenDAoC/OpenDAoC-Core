@@ -54,22 +54,22 @@ namespace DOL.GS.Spells
         /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-            if (m_pet is not null)
+            if (Spell.Target.ToLower() == "pet")
             {
-                if (Spell.Target.ToLower() == "pet")
-                {
-                    Spell subspell = SkillBase.GetSpellByID(m_spell.SubSpellID);
+                Spell subspell = SkillBase.GetSpellByID(m_spell.SubSpellID);
 
-                    if (subspell != null && subspell.IsHealing && Caster?.TargetObject is TurretPet)
-                        target = (GameLiving)Caster.TargetObject;
-                    else
-                        target = Caster?.ControlledBrain?.Body;
+                if (subspell != null && subspell.IsHealing && Caster?.TargetObject is TurretPet)
+                    target = (GameLiving)Caster.TargetObject;
+                else
+                    target = Caster?.ControlledBrain?.Body;
 
-                    if (target is null || !target.IsWithinRadius(Caster, subspell.Range))
-                        return;
-                }
+                if (target is null || !target.IsWithinRadius(Caster, subspell.Range))
+                    return;
+            }
 
-                base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target, effectiveness);
+            if (m_pet is not null)
+            {   
                 m_pet.Level = m_pet.Owner is null ? (byte)1 : m_pet.Owner.Level; // No bomber class to override SetPetLevel() in, so set level here
                 m_pet.TempProperties.setProperty(BOMBERTARGET, target);
                 m_pet.Name = Spell.Name;
