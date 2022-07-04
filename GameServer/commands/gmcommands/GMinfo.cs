@@ -282,7 +282,10 @@ namespace DOL.GS.Commands
 					{
 						info.Add("RegionTick: " + GameLoop.GameLoopTime);
 						if(target.attackComponent.attackAction != null)
+						{
 							info.Add("AttackAction StartTime " + target.attackComponent.attackAction.StartTime);
+							info.Add("AttackAction TimeUntilStart " + target.attackComponent.attackAction.TimeUntilStart);
+						}
 					}
 
 					info.Add("");
