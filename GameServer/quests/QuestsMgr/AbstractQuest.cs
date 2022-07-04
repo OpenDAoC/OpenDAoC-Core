@@ -427,7 +427,7 @@ namespace DOL.GS.Quests
 		{
 			if (player != null)
 			{
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(InterruptAction));
+				// GameEventMgr.AddHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(InterruptAction));
 				GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(InterruptAction));
 				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(InterruptAction));
 				GameEventMgr.AddHandler(player, GamePlayerEvent.AttackFinished, new DOLEventHandler(InterruptAction));
@@ -438,7 +438,7 @@ namespace DOL.GS.Quests
 		{
 			if (player != null)
 			{
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(InterruptAction));
+				// GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(InterruptAction));
 				GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(InterruptAction));
 				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(InterruptAction));
 				GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackFinished, new DOLEventHandler(InterruptAction));
