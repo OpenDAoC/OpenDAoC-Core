@@ -63,8 +63,8 @@ namespace DOL.GS
                         long startTick = GameTimer.GetTickCount();
                         brain.Think();
                         long stopTick = GameTimer.GetTickCount();
-                        if((stopTick - startTick)  > 25 )
-                            log.Warn($"Long NPCThink for {brain.Body.Name}({brain.Body.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
+                        if((stopTick - startTick)  > 25 && brain != null)
+                            log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
                         brain.LastThinkTick = tick;
                     }
 
