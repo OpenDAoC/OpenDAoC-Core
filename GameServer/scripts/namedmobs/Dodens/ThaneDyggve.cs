@@ -33,7 +33,8 @@ namespace DOL.GS.Scripts
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-			
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
 			ScalingFactor = 60;
 			base.SetOwnBrain(new ThaneDyggveBrain());
 			LoadedFromScript = false; //load from database

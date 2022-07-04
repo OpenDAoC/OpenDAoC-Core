@@ -390,6 +390,13 @@ namespace DOL.GS
 				return false;
 			}
 
+			if (item.Level < 1)
+			{
+				if (!mute)
+					player.Out.SendMessage("This item cannot be salvaged.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
 			// using negative numbers to indicate item cannot be salvaged
 			if (item.SalvageYieldID < 0)
 			{

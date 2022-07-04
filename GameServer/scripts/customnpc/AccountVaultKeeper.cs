@@ -294,9 +294,12 @@ namespace DOL.GS
             // block placing untradables into housing vaults from any source - Tolakram
             if (toAccountVault && itemInFromSlot != null && itemInFromSlot.IsTradable == false)
             {
-                player.Out.SendMessage("You can not put this item into an Account Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendInventoryItemsUpdate(null);
-                return false;
+                if (itemInFromSlot.Id_nb != "token_many")
+                {
+                    player.Out.SendMessage("You can not put this item into an Account Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendInventoryItemsUpdate(null);
+                    return false;
+                }
             }
 
             // let's move it
