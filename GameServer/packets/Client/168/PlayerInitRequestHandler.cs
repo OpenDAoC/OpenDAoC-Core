@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using DOL.Events;
 using DOL.GS.Housing;
@@ -128,8 +129,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendStarterHelp();
 				}
 				
+				var clIP = ((IPEndPoint) player.Client.Socket.RemoteEndPoint)?.Address.ToString();
+				var sharedClients = WorldMgr.GetClientsFromIP(clIP);
+				if (sharedClients.Count > 1)
+				{
+					foreach (var cl in sharedClients)
+					{
+						if (cl.Account.Name == player.Client.Account.Name) continue;
+						var message = $"DUAL IP LOGIN: [{clIP}] {player.Client.Account.Name} ({player.Name} - L{player.Level} {player.CharacterClass?.Name} in {player.CurrentZone?.Description}) - {cl.Account.Name} ({cl.Player?.Name} - L{cl.Player?.Level} {cl.Player?.CharacterClass?.Name} in {cl.Player?.CurrentZone?.Description})";
+						GameServer.Instance.LogDualIPAction(message);
+					}
+				}
 				
-
 
 				if (ServerProperties.Properties.ENABLE_DEBUG)
 					player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -194,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 										Log.Debug("Container " + container.TempPropString + " with value " + container.Value + " for player " + player.Name + " was removed from container list, tempproperties added");
 								}
-									TempPropertiesManager.TempPropContainerList.TryRemove(container);
+								TempPropertiesManager.TempPropContainerList.TryRemove(container);
 							}
 						}
 						catch (Exception e)
