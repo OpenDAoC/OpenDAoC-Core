@@ -86,7 +86,7 @@ namespace DOL.GS.Scripts
             // demon
             BodyType = 2;
             Race = 2001;
-
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
