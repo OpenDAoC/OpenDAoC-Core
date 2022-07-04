@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -443,6 +444,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					client.Out.SendLoginGranted();
 					client.ClientState = GameClient.eClientState.Connecting;
+
+					var clIP = ((IPEndPoint) client.Socket.RemoteEndPoint)?.Address.ToString();
+					var sharedClients = WorldMgr.GetClientsFromIP(clIP);
+					if (sharedClients.Count > 1)
+					{
+						foreach (var cl in sharedClients)
+						{
+							if (cl.Account.Name == client.Account.Name) continue;
+							var message = $"DUAL IP LOGIN: {client.Account.Name} is connecting from the same IP {clIP} as {cl.Account.Name} ({cl.Player?.Name} - L{cl.Player?.Level} {cl.Player?.CharacterClass.Name})";
+							GameServer.Instance.LogDualIPAction(message);
+						}
+					}
 
 					// Log entry
 					AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountSuccessfulLogin, "", userName);
