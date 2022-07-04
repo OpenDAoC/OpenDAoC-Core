@@ -49,11 +49,9 @@ namespace DOL.GS.GameEvents
             if (player == null) return;
             
             var launch = new DateTime(2022, 07, 04, 15, 00, 00);
-            // var launch = new DateTime(2022, 07, 02, 15, 30, 00);
             
             var creationDate = player.DBCharacter.CreationDate;
 
-            if (DateTime.Now < launch) return;
             if (creationDate >= launch) return;
 
             var needsReset = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
