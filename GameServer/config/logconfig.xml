@@ -110,7 +110,7 @@
 
 	<!-- Define our DualIP Action Logger -->
 	<logger name="dualip">
-		<additivity value="false" />
+		<additivity value="true" />
 		<level value="ALL" />
 		<appender-ref ref="DualIPFileAppender" />
 	</logger>
