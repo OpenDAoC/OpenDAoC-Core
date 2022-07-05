@@ -973,6 +973,41 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
             Body.TempProperties.removeProperty(Body.attackComponent.Attackers);
         }
     }
+    protected bool m_BeforeCastCheck;
+
+    /// <summary>
+    /// Gets or sets the targetObject's visibility
+    /// </summary>
+    public virtual bool BeforeCastCheck
+    {
+        get { return m_BeforeCastCheck; }
+        set { m_BeforeCastCheck = value; }
+    }
+    
+    /// <summary>
+    /// Check the Line of Sight from an npc to a target
+    /// </summary>
+    /// <param name="player">The player</param>
+    /// <param name="response">The result</param>
+    /// <param name="targetOID">The target OID</param>
+    public void CheckBeforeCast(GamePlayer player, ushort response, ushort targetOID)
+    {
+        if (player == null) // Hmm
+            return;
+
+        lock (LOS_LOCK)
+        {
+            int count = Body.TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
+            count--;
+            Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, Math.Max(0, count));
+        }
+
+        if ((response & 0x100) == 0x100) // en vue ?
+            m_BeforeCastCheck = true;
+        else
+            m_BeforeCastCheck = false;
+
+    }
 
     /// <summary>
     ///     Makes a copy of current aggro list
@@ -1818,37 +1853,74 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
         return casted;
     }
 
-    /// <summary>
-    ///     Checks offensive spells.  Handles dds, debuffs, etc.
-    /// </summary>
-    protected virtual bool CheckOffensiveSpells(Spell spell)
-    {
-        if (spell.Target.ToLower() != "enemy" && spell.Target.ToLower() != "area" && spell.Target.ToLower() != "cone")
-            return false;
-
-        var casted = false;
-
-        if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || !LivingHasEffect(living, spell) ||
-                                                       spell.SpellType == (byte) eSpellType.DirectDamageWithDebuff ||
-                                                       spell.SpellType == (byte) eSpellType.DamageSpeedDecrease))
+        /// <summary>
+        ///     Checks offensive spells.  Handles dds, debuffs, etc.
+        /// </summary>
+         protected virtual bool CheckOffensiveSpells(Spell spell)
         {
-            // Offensive spells require the caster to be facing the target
-            if (Body.TargetObject != Body)
-                Body.TurnTo(Body.TargetObject);
+            if (spell.Target.ToLower() != "enemy" && spell.Target.ToLower() != "area" && spell.Target.ToLower() != "cone")
+                return false;
+            if (Body.IsCasting)
+                return false;
+            if (Body.TargetObject != null)
+            {
+                if (spell.SpellType.ToString().ToLower() != "directdamagewithdebuff" && Body.TargetObject is GameLiving)
+                {
+                    if (LivingHasEffect(Body.TargetObject as GameLiving, spell))
+                        return false;
+                }
+                GamePlayer losChecker = LosChecker(Body, Body.TargetObject);
+                if (losChecker != null)
+                {
+                    if (!Body.IsCasting)
+                    {
+                        long lastTick = Body.TempProperties.getProperty<long>(LAST_LOS_TARGET_PROPERTY);
+                        lock (LOS_LOCK)
+                        {
+                            int count = Body.TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
 
-            casted = Body.CastSpell(spell, m_mobSpellLine);
+                            if (count > 5)
+                            {
 
-            // if (casted && spell.CastTime > 0 && Body.IsMoving)
-            //Stopfollowing if spell casted and the cast time > 0 (non-instant spells)
-            if (casted && spell.CastTime > 0)
-                Body.StopFollowing();
-            //If instant cast and spell casted, and current follow target is not the target object, then switch follow target to current TargetObject
-            else if (casted && spell.CastTime == 0 && Body.CurrentFollowTarget != Body.TargetObject)
-                Body.Follow(Body.TargetObject, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
+                                // Now do a safety check.  If it's been a while since we sent any check we should clear count
+                                if (lastTick == 0 || Body.CurrentRegion.Time - lastTick > DOL.GS.ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                                {
+                                    Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
+                                }
+
+                                return false;
+                            }
+
+                            count++;
+                            Body.TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
+
+                            Body.TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, Body.TargetObject);
+                            Body.TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, Body.CurrentRegion.Time);
+                            m_targetLOSObject = Body.TargetObject;
+
+                        }
+                        losChecker.Out.SendCheckLOS(Body, Body.TargetObject, new CheckLOSResponse(CheckBeforeCast));
+                        if (BeforeCastCheck)
+                        {
+                            if (!Body.IsWithinRadius(Body.TargetObject, spell.Range))
+                            {
+                                Body.Follow(Body.TargetObject, 90, spell.Range);
+                                return false;
+                            }
+                            if (Body.IsMoving && spell.CastTime > 0)
+                                Body.StopFollowing();
+
+                            if (Body.TargetObject != Body && spell.CastTime > 0)
+                                Body.TurnTo(Body.TargetObject, true);
+
+                            Body.CastSpell(spell, m_mobSpellLine, false);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
-
-        return casted;
-    }
 
     /// <summary>
     ///     Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
