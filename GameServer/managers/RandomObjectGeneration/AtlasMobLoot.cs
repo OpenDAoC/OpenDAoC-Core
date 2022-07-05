@@ -85,6 +85,9 @@ namespace DOL.GS {
                     //roll for an item for each player in the group
                     foreach (var groupPlayer in player.Group.GetPlayersInTheGroup().ToArray())
                     {
+                        if(groupPlayer.GetDistance(player) > WorldMgr.VISIBILITY_DISTANCE)
+                            continue;
+                        
                         if (Util.Chance(chance) && numDrops < MaxDropCap)
                         {
                             classForLoot = GetRandomClassFromGroup(player.Group);

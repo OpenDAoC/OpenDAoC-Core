@@ -108,14 +108,13 @@ namespace DOL.GS.GameEvents
 			DOLCharacters ch = chArgs.Character;
 			Account account = chArgs.GameClient.Account;
 			
-			if ((ePrivLevel)account.PrivLevel == ePrivLevel.Player)
-			{
-				var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));
-				ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
 
-				if (ch.GuildID != "")
-					ch.GuildRank = 8;
-			}
+			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));
+			ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
+
+			if (ch.GuildID != "")
+				ch.GuildRank = 8;
+			
 		}
 
 		/// <summary>

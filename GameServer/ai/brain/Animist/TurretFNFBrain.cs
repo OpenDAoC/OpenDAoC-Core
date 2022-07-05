@@ -1,143 +1,188 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using DOL.GS;
+using log4net;
 
-namespace DOL.AI.Brain
+namespace DOL.AI.Brain;
+
+public class TurretFNFBrain : TurretBrain
 {
-	public class TurretFNFBrain : TurretBrain
-	{
-		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    private static ILog log =
+        LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public TurretFNFBrain(GameLiving owner) : base(owner)
-		{
-		}
+    public TurretFNFBrain(GameLiving owner)
+        : base(owner)
+    {
+    }
 
-		/// <summary>
-		/// Get a random target from aggro table
-		/// </summary>
-		/// <returns></returns>
-		protected override GameLiving CalculateNextAttackTarget()
-		{
-			List<GameLiving> newTargets = new List<GameLiving>();
-			List<GameLiving> oldTargets = new List<GameLiving>();
-			base.CalculateNextAttackTarget();
-			lock((m_aggroTable as ICollection).SyncRoot)
-			{
-				foreach(GameLiving living in m_aggroTable.Keys)
-				{
-					if(!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-						continue;
+    /// <summary>
+    ///     Get a random target from aggro table
+    /// </summary>
+    /// <returns></returns>
+    protected override GameLiving CalculateNextAttackTarget()
+    {
+        var newTargets = new List<GameLiving>();
+        var oldTargets = new List<GameLiving>();
 
-					if (living.IsMezzed || living.IsStealthed)
-						continue;
+        base.CalculateNextAttackTarget();
 
-					if (!Body.IsWithinRadius(living, MAX_AGGRO_DISTANCE, true))
-						continue;
+        lock ((m_aggroTable as ICollection).SyncRoot)
+        {
+            foreach (var living in m_aggroTable.Keys)
+            {
+                if (living == null)
+                    continue;
 
-					if (!Body.IsWithinRadius(living, ((TurretPet)Body).TurretSpell.Range, true))
-						continue;
+                if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion ||
+                    living.ObjectState != GameObject.eObjectState.Active)
+                    continue;
 
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
-						continue;
+                //if (living.IsMezzed || living.IsStealthed)
+                if (living.IsStealthed)
+                    continue;
 
-					if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && living.HasAbility(Abilities.RootImmunity))
-						continue;
+                if (!Body.IsWithinRadius(living, MAX_AGGRO_DISTANCE, true))
+                    continue;
 
-					newTargets.Add(living);
-				}
-			}
+                if (!Body.IsWithinRadius(living, ((TurretPet) Body).TurretSpell.Range, true))
+                    continue;
 
-			foreach (GameLiving living in Body.GetPlayersInRadius((ushort) ((TurretPet) Body).TurretSpell.Range,
-				         Body.CurrentRegion.IsDungeon ? false : true))
-			{
-				// if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-				// 	continue;
-				
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-					continue;
+                /*if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+                    continue;
 
-				if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-					continue;
+                if (((TurretPet)Body).TurretSpell.SpellType == "SpeedDecrease" && living.HasAbility(Abilities.RootImmunity))
+                    continue;*/
 
-				if (living.IsMezzed || living.IsStealthed)
-					continue;
+                if (living is GameNPC && Owner.IsObjectGreyCon(living) &&
+                    !Body.attackComponent.Attackers.Contains(living))
+                {
+                    if ((living as GameNPC).Brain is IControlledBrain)
+                    {
+                        if (((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null)
+                        {
+                            newTargets.Add(living);
+                        }
+                        else
+                        {
+                            if ((Body.Brain as IControlledBrain).GetPlayerOwner() != null &&
+                                (Body.Brain as IControlledBrain).GetPlayerOwner().attackComponent.Attackers
+                                .Contains(living) == false)
+                                continue;
+                        }
+                    }
+                    else
+                    {
+                        if ((Body.Brain as IControlledBrain).GetPlayerOwner() != null &&
+                            (Body.Brain as IControlledBrain).GetPlayerOwner().attackComponent.Attackers
+                            .Contains(living) == false)
+                            continue;
+                    }
+                }
 
-				if (living is GameNPC)
-				{
-					if (Body.GetConLevel(living) <= -3)
-						continue;
+                newTargets.Add(living);
+            }
+        }
 
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null && living.CurrentSpeed <= (living.MaxSpeed / 10)) //turrets will only not attack enemies that are snared, only rooted
-						continue;
+        foreach (GamePlayer living in Body.GetPlayersInRadius((ushort) ((TurretPet) Body).TurretSpell.Range, false))
+        {
+            if (living == null)
+                continue;
 
-					if (((TurretPet)Body).TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
-						continue;
-				} else if (living is GamePlayer gamelivingPl)
-				{
-					if (gamelivingPl.IsInvulnerableToAttack)
-						continue;
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
-						continue;
-				}
-				
-				if (LivingHasEffect(living, ((TurretPet)Body).TurretSpell))
-				{
-					oldTargets.Add(living);
-				}
-				else
-				{
-					newTargets.Add(living);
-				}
-								
-			}
-			
+            if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+                continue;
 
-			// always favor previous targets and new targets that have not been attacked first, then re-attack old targets
+            if (living.IsInvulnerableToAttack)
+                continue;
 
-            if (newTargets.Count > 0)
-			{
-				return newTargets[Util.Random(newTargets.Count - 1)];
-			}
-			else if (oldTargets.Count > 0)
-			{
-				return oldTargets[Util.Random(oldTargets.Count - 1)];
-			}
+            if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion ||
+                living.ObjectState != GameObject.eObjectState.Active)
+                continue;
 
-			m_aggroTable.Clear();
-			return null;
-		}
+            //if (living.IsMezzed || living.IsStealthed)
+            if (living.IsStealthed)
+                continue;
 
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			AddToAggroList(ad.Attacker, (ad.Attacker.Level + 1) << 1);
-		}
+            /*if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+                continue;*/
 
-		/// <summary>
-    /// Updates the pet window
+            if (LivingHasEffect(living, ((TurretPet) Body).TurretSpell))
+                oldTargets.Add(living);
+            else
+                newTargets.Add(living);
+        }
+
+        foreach (GameNPC living in Body.GetNPCsInRadius((ushort) ((TurretPet) Body).TurretSpell.Range, false))
+        {
+            if (living == null)
+                continue;
+
+            if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+                continue;
+
+            if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion ||
+                living.ObjectState != GameObject.eObjectState.Active)
+                continue;
+
+            //if (living.IsMezzed || living.IsStealthed)
+            if (living.IsStealthed)
+                continue;
+
+            if (living is GameNPC && Owner.IsObjectGreyCon(living) &&
+                !Body.attackComponent.Attackers.Contains(living))
+            {
+                if (living.Brain is IControlledBrain)
+                {
+                    if ((living.Brain as IControlledBrain).GetPlayerOwner() != null)
+                    {
+                        newTargets.Add(living);
+                    }
+                    else
+                    {
+                        if ((Body.Brain as IControlledBrain).GetPlayerOwner() != null &&
+                            (Body.Brain as IControlledBrain).GetPlayerOwner().attackComponent.Attackers
+                            .Contains(living) == false)
+                            continue;
+                    }
+                }
+                else
+                {
+                    if ((Body.Brain as IControlledBrain).GetPlayerOwner() != null &&
+                        (Body.Brain as IControlledBrain).GetPlayerOwner().attackComponent.Attackers
+                        .Contains(living) == false)
+                        continue;
+                }
+            }
+
+            /*if (((TurretPet)Body).TurretSpell.SpellType != "SpeedDecrease" && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
+                continue;
+
+            if (((TurretPet)Body).TurretSpell.SpellType == "SpeedDecrease" && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
+                continue;*/
+
+            if (LivingHasEffect(living, ((TurretPet) Body).TurretSpell))
+                oldTargets.Add(living);
+            else
+                newTargets.Add(living);
+        }
+
+        if (newTargets.Count > 0)
+            return newTargets[Util.Random(newTargets.Count - 1)];
+        if (oldTargets.Count > 0) return oldTargets[Util.Random(oldTargets.Count - 1)];
+
+        m_aggroTable.Clear();
+        return null;
+    }
+
+    public override void OnAttackedByEnemy(AttackData ad)
+    {
+        AddToAggroList(ad.Attacker, (ad.Attacker.Level + 1) << 1);
+    }
+
+    /// <summary>
+    ///     Updates the pet window
     /// </summary>
     public override void UpdatePetWindow()
     {
     }
-  }
 }
