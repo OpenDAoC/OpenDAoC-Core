@@ -7,6 +7,8 @@ using log4net;
 
 namespace DOL.GS
 {
+    //The AuxGameLoop is for Timers that do not need to be "realtime" and part of the main Game Loop. 
+    //This is for things like quit timers, player init, world init, etc where we dont really care how long it takes as long as it doesnt affect the main Game Loop.
     public static class AuxGameLoop
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
