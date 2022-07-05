@@ -111,13 +111,13 @@ namespace DOL.GS {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }
 
-                    chance += 5; //solo drop bonus
+                    chance += 7; //solo drop bonus
                     
                     ItemTemplate item = null;
 
                     if (mob.Level < 5)
                     {
-                        chance += 50;
+                        chance += 75;
                     }
                     else if (mob.Level < 10)
                         chance += (100 - mob.Level * 10);
