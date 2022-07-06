@@ -1245,7 +1245,10 @@ namespace DOL.GS
 
 			if (changes <= 0 && m_changedSlots.Count > 0)
 			{
-				UpdateChangedSlots();
+				lock(m_items) //Inventory must be locked before calling UpdateChangedSlots
+				{
+					UpdateChangedSlots();
+				}
 			}
 		}
 
