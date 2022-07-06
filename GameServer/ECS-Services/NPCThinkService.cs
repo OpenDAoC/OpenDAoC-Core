@@ -68,6 +68,9 @@ namespace DOL.GS
                         brain.LastThinkTick = tick;
                     }
 
+                    if (brain.Body is not {NeedsBroadcastUpdate: true}) return;
+                    brain.Body.BroadcastUpdate();
+                    brain.Body.NeedsBroadcastUpdate = false;
                 }
             });
 

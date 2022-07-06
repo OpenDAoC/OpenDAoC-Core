@@ -131,6 +131,8 @@ namespace DOL.GS.Commands
 					{
 						info.Add(" + Aggro level: " + aggroBrain.AggroLevel);
 						info.Add(" + Aggro range: " + aggroBrain.AggroRange);
+						if(aggroBrain is StandardMobBrain mobBrain)
+							info.Add(" + ThinkInterval: " + mobBrain.ThinkInterval +"ms");
 
 						if (target.MaxDistance < 0)
 							info.Add(" + MaxDistance: " + -target.MaxDistance * aggroBrain.AggroRange / 100);

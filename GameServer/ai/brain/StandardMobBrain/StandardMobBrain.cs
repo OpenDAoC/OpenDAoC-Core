@@ -653,7 +653,15 @@ public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
     ///     The interval for thinking, min 1.5 seconds
     ///     10 seconds for 0 aggro mobs
     /// </summary>
-    public override int ThinkInterval => Math.Max(500, 1500 - AggroLevel / 10 * 100);
+    public override int ThinkInterval 
+    {
+        get 
+        { 
+            if(Body is GameMerchant)
+                return 5000; //Merchants don't need to think that often
+            return Math.Max(500, 1500 - (AggroLevel/10) * 100); 
+        }
+    }
 
     /// <summary>
     ///     If this brain is part of a formation, it edits it's values accordingly.
