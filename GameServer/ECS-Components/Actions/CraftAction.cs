@@ -141,7 +141,10 @@ namespace DOL.GS
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					if (player.Client.Account.PrivLevel == 1)
+					{
+						CleanupCraftAction();
 						return;
+					}
 				}
 				skill.BuildCraftedItem(player, recipe);
 				skill.GainCraftingSkillPoints(player, recipe);
