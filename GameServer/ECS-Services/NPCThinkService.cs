@@ -57,7 +57,6 @@ namespace DOL.GS
                 if (npc is GameNPC && (npc as GameNPC).Brain != null)
                 {
                     var brain = (npc as GameNPC).Brain;
-                    brain.Body.NeedsBroadcastUpdate = false;
 
                     if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
                     {
