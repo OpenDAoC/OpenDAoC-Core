@@ -94,7 +94,7 @@ AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.Rawmaterial:			    Can
 GamePlayer.Attack.InterruptedCrafting:			You interrupt your crafting.
 AbstractCraftingSkill.CraftItem.CantCraftInCombat:      You can't craft while in combat!
 AbstractCraftingSkill.CraftItem.CantCraftCasting:       You can't craft while casting!
-AbstractCraftingSkill.CraftItem.BeginWork:		        You begin work on the {0}. ({1}%)
+AbstractCraftingSkill.CraftItem.BeginWork:		        You begin working on the {0}. ({1}%)
 AbstractCraftingSkill.CraftItem.ChanceToGainPoint:	    Chance of gaining 1 point in your primary crafting skill is {0}%.
 AbstractCraftingSkill.CraftItem.CurrentlyMaking:	    Currently Making: {0}
 AbstractCraftingSkill.CraftItem.MoveAndInterrupt:	    You move and cancel the product you were making.
