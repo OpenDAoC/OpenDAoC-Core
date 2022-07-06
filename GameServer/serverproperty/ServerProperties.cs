@@ -2781,7 +2781,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "enable_corpsesummoner", "Whether or not to enable the corpse summoner command", true)]
 		public static bool ENABLE_CORPSESUMONNER;
 		
-		[ServerProperty("atlas", "carapace_dropchance", "The base Beetle Carapace drop chance in %", 1.0)]
+		[ServerProperty("atlas", "carapace_dropchance", "The base Beetle Carapace drop chance in %", 0.01)]
 		public static double CARAPACE_DROPCHANCE;
 		
 		#endregion
