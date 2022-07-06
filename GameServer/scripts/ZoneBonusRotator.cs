@@ -160,7 +160,7 @@ namespace DOL.GS.Scripts
             TellClient(player.Client);
         }
 
-        private static int UpdatePvEZones()
+        internal static int UpdatePvEZones()
         {
             _lastPvEChangeTick = GameLoop.GameLoopTime;
 
@@ -209,7 +209,7 @@ namespace DOL.GS.Scripts
             return 0;
         }
 
-        private static int UpdateRvRZones()
+        internal static int UpdateRvRZones()
         {
 
             _lastRvRChangeTick = GameLoop.GameLoopTime;
