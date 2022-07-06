@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
                     useLOS = true;
                 }
 
-                if (useLOS && player != null)
+                if (useLOS && player != null && !AggroLOS)
                 {
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
                 }

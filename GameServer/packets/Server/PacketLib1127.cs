@@ -125,8 +125,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
-		
-		public virtual void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
+		public override void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
 		{
 			if (m_gameClient.Player == null)
 				return;
