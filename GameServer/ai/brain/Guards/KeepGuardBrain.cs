@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
 			//check NPCs is expensive, so we only do it slowly
 			if (GameLoop.GameLoopTime - LastNPCAggroCheck < NPC_AGGRO_DELAY) return;
 
-			LastNPCAggroCheck = GameLoop.GameLoopTime;
+			LastNPCAggroCheck = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
 
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
