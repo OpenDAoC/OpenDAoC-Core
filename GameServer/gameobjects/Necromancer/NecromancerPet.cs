@@ -395,7 +395,7 @@ namespace DOL.GS
 				if (Brain is NecromancerPetBrain necroBrain)
 				{					
                     if (Brain.Body.IsCasting)
-					    necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
+	                    NecromancerPetBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted, Owner as GamePlayer);
 					StopCurrentSpellcast();
 					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
@@ -427,7 +427,7 @@ namespace DOL.GS
 				if (Brain is NecromancerPetBrain necroBrain)
 				{
                     if (Brain.Body.IsCasting)
-					    necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
+	                    NecromancerPetBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted, Owner as GamePlayer);
 					StopCurrentSpellcast();
 					if (necroBrain.SpellsQueued)
 						necroBrain.ClearSpellQueue();
@@ -803,7 +803,7 @@ namespace DOL.GS
 			if (owner == null)
 				return;
 			Brain.Stop();
-			owner.Notify(GameNPCEvent.PetLost);
+			//owner.Notify(GameNPCEvent.PetLost);
 			Die(null);
 		}
 	}
