@@ -164,6 +164,34 @@ namespace DOL.GS {
                 }
             }
         }
+        
+        public static void GenerateBeetleCarapace(GameLiving living, int amount = 1)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                var player = living as GamePlayer;
+
+                var itemTP = GameServer.Database.FindObjectByKey<ItemTemplate>("beetle_carapace");
+
+                InventoryItem item = GameInventoryItem.Create(itemTP);
+                
+                item.OwnerID = player.InternalID;
+
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+
+                if (!player.Inventory.AddCountToStack(item,amount))
+                {
+                    if(!player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                    {
+                        item.Count = amount;
+                        player.CreateItemOnTheGround(item);
+                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    }
+
+                }
+                player.Achieve(AchievementUtils.AchievementNames.Carapace_Farmed, amount);
+            }
+        }
 
         public static GeneratedUniqueItem GenerateMonsterLootROG(eRealm realm, eCharacterClass charClass, byte level)
         {

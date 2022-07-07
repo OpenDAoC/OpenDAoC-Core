@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS {
     public class GameEpicNPC : GameNPC {
@@ -18,6 +19,7 @@ namespace DOL.GS {
             
             var amount = Util.Random(Level / 10, Level * 2 / 10);
             var baseChance = 80;
+            var carapaceChance = Properties.CARAPACE_DROPCHANCE;
             var realmLoyalty = 0;
             
             var achievementMob = Regex.Replace(Name, @"\s+", "");
@@ -39,6 +41,12 @@ namespace DOL.GS {
                         {
                             AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
                         }
+
+                        if (Util.ChanceDouble(carapaceChance))
+                        {
+                            AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                        }
+                        
                         bgPlayer.Achieve($"{achievementMob}-Credit");
                     }
                 }
@@ -58,6 +66,10 @@ namespace DOL.GS {
                         {
                             AtlasROGManager.GenerateOrbAmount(groupPlayer,amount);
                         }
+                        if (Util.ChanceDouble(carapaceChance))
+                        {
+                            AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
+                        }
                         groupPlayer.Achieve($"{achievementMob}-Credit");
             
                     }
@@ -73,6 +85,10 @@ namespace DOL.GS {
                 if(Util.Chance(baseChance+realmLoyalty))
                 {
                     AtlasROGManager.GenerateOrbAmount(playerKiller,amount);
+                }
+                if (Util.ChanceDouble(carapaceChance))
+                {
+                    AtlasROGManager.GenerateBeetleCarapace(playerKiller);
                 }
                 playerKiller.Achieve($"{achievementMob}-Credit");
             

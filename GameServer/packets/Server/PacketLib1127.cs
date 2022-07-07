@@ -125,5 +125,32 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+		public override void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
+		{
+			if (m_gameClient.Player == null)
+				return;
+
+			int TargetOID = (target != null ? target.ObjectID : 0);
+			int SourceOID = (source != null ? source.ObjectID : 0);
+
+			string key = string.Format("LOSMGR C:0x{0} T:0x{1}", SourceOID, TargetOID);
+
+			CheckLOSMgrResponse old_callback = null;
+			lock (m_gameClient.Player.TempProperties)
+			{
+				old_callback = (CheckLOSMgrResponse)m_gameClient.Player.TempProperties.getProperty<object>(key, null);
+				m_gameClient.Player.TempProperties.setProperty(key, callback);
+			}
+			if (old_callback != null)
+				old_callback(m_gameClient.Player, 0, 0, 0);
+
+			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
+			{
+				pak.WriteShort((ushort)SourceOID);
+				pak.WriteShort((ushort)TargetOID);
+				pak.WriteShort(0x00); // ?
+				SendTCP(pak);
+			}
+		}
 	}
 }

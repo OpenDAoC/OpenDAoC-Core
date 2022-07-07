@@ -10,6 +10,8 @@ public class AchievementUtils
     public abstract class AchievementNames
     {
         public const string Orbs_Earned = "Lifetime Orbs Earned";
+        
+        public const string Carapace_Farmed = "Lifetime Carapace Dropped";
 
         #region PvE
 
