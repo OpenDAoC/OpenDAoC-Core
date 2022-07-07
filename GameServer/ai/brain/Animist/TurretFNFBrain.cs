@@ -65,7 +65,8 @@ namespace DOL.AI.Brain
 					if (turretBody.TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && living.HasAbility(Abilities.RootImmunity))
 						continue;
 
-					newTargets.Add(living);
+					if(!newTargets.Contains(living))
+						newTargets.Add(living);
 				}
 			}
 			
