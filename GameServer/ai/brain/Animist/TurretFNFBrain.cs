@@ -66,8 +66,7 @@ public class TurretFNFBrain : TurretBrain
                         else
                         {
                             if ((Body.Brain as IControlledBrain).GetPlayerOwner() != null &&
-                                (Body.Brain as IControlledBrain).GetPlayerOwner().attackComponent.Attackers
-                                .Contains(living) == false)
+                                (Body.Brain as IControlledBrain).GetPlayerOwner()?.attackComponent.Attackers?.Contains(living) == false)
                                 continue;
                         }
                     }
