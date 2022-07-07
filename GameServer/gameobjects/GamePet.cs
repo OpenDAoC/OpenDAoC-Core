@@ -114,9 +114,9 @@ namespace DOL.GS
 			if (SummonSpellDamage >= 0)
 				newLevel = (byte)SummonSpellDamage;
 			else if (!(Owner is GamePet))
-				newLevel = (byte)(Owner.Level * SummonSpellDamage * -0.01);
+				newLevel = (byte)((Owner?.Level ?? 0) * SummonSpellDamage * -0.01);
 			else if (RootOwner is GameLiving summoner)
-				newLevel = (byte)(summoner.Level * SummonSpellDamage * -0.01);
+				newLevel = (byte)(summoner?.Level * SummonSpellDamage * -0.01);
 
 			if (SummonSpellValue > 0  && newLevel > SummonSpellValue)
 				newLevel = (byte)SummonSpellValue;
