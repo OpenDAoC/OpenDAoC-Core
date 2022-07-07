@@ -115,7 +115,7 @@ namespace DOL.GS
                         else
                         {
                             charmMob.Brain.Stop();
-                            casterPlayer.Notify(GameNPCEvent.PetLost);
+                            //casterPlayer.Notify(GameNPCEvent.PetLost);
                             charmMob.Die(null);
                         }
                     }
