@@ -4299,7 +4299,7 @@ namespace DOL.GS.Spells
 			 *
 			 * Base DoL calculations were adding an extra 10-30% damage above 1.0, which has now been removed.
 			 */
-			min = .25;
+			min = .2;
 			max = 1;
 			
 			if (target.Level > 0)
@@ -4338,8 +4338,8 @@ namespace DOL.GS.Spells
 				max = 0.25;
 			if (min > max)
 				min = max;
-			if (min < 0)
-				min = 0;
+			if (min < .2)
+				min = .2;
 		}
 
 		/// <summary>
