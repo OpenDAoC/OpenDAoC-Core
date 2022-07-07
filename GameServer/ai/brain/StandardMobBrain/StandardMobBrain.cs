@@ -434,8 +434,8 @@ namespace DOL.AI.Brain
         {
             foreach (var petNPC in Body.GetPetsInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
             {
-                var pet = petNPC as GamePet;
-                if (pet == null) continue;
+                if (petNPC is not GamePet pet) continue;
+                if (pet.Owner is not GamePlayer owner) continue;
                 
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, pet, true)) continue;
                 // Don't aggro on immune players.
@@ -445,7 +445,7 @@ namespace DOL.AI.Brain
                     useLOS = true;
                 }
 
-                if (useLOS && pet != null && !AggroLOS && pet is GamePet p && p.Owner is GamePlayer owner)
+                if (useLOS && pet != null && !AggroLOS && pet is GamePet p)
                 {
                     owner.Out.SendCheckLOS(Body, pet, new CheckLOSResponse(CheckAggroLOS));
                 }
@@ -454,7 +454,7 @@ namespace DOL.AI.Brain
 
                 if (Body.Faction != null)
                 {
-                    aggrolevel = Body.Faction.GetAggroToFaction(pet.Owner as GamePlayer);
+                    aggrolevel = Body.Faction.GetAggroToFaction(owner);
                     if (aggrolevel < 75)
                         return;
                 }
