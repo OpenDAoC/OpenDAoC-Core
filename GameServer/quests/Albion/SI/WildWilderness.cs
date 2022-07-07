@@ -32,7 +32,7 @@ namespace DOL.GS.Quests.Hibernia
                 switch (Step)
                 {
                     case 1:
-                        return "Speak with Miach about the lungersy.";
+                        return "Speak with Miach about the lungers.";
                     case 2:
                         return "Kill a lunger for its tail. They can be found just outside the gates of Domnann.";
                     case 3:
