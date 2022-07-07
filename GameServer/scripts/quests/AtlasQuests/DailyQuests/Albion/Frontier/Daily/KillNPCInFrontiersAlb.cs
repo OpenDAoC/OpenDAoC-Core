@@ -113,7 +113,7 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
 			GameEventMgr.AddHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-			/* Now we bring to Cola the possibility to give this quest to players */
+			/* Now we bring to Haszan the possibility to give this quest to players */
 			Haszan.AddQuestToGive(typeof (KillNPCInFrontiersAlb));
 
 			if (log.IsInfoEnabled)
@@ -133,7 +133,7 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.RemoveHandler(Haszan, GameObjectEvent.Interact, new DOLEventHandler(TalkToHaszan));
 			GameEventMgr.RemoveHandler(Haszan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHaszan));
 
-			/* Now we remove to Cola the possibility to give this quest to players */
+			/* Now we remove to Haszan the possibility to give this quest to players */
 			Haszan.RemoveQuestToGive(typeof (KillNPCInFrontiersAlb));
 		}
 
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "clear the frontiers":
-							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Cola "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Haszan, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersAlb)), "Will you help Haszan "+questTitle+"");
 							break;
 					}
 				}

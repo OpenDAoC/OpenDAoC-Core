@@ -114,7 +114,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
 			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
+			/* Now we bring to Herou the possibility to give this quest to players */
 			Herou.AddQuestToGive(typeof (KillNPCInFrontiersMid));
 
 			if (log.IsInfoEnabled)
@@ -134,7 +134,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
 			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
+			/* Now we remove to Herou the possibility to give this quest to players */
 			Herou.RemoveQuestToGive(typeof (KillNPCInFrontiersMid));
 		}
 
@@ -167,7 +167,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. I serve the realm and ensure its borders are always protected. "+
+					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou, Fen\'s friend. I serve the realm and ensure its borders are always protected. "+
 					                    "I heard you are strong. Do you think you're strong enough to help me with some trouble we've been having? \n\n"+
 					                    "I need an adventurer to help me [clear the frontiers].");
 				}
@@ -181,7 +181,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "clear the frontiers":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Dean "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(KillNPCInFrontiersMid)), "Will you help Herou "+questTitle+"");
 							break;
 					}
 				}
