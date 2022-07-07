@@ -84,6 +84,11 @@ namespace DOL.GS
 		/// The textwrite for log operations
 		/// </summary>
 		protected ILog m_cheatLog;
+		
+		/// <summary>
+		/// The textwrite for log operations
+		/// </summary>
+		protected ILog m_dualIPLog;
 
 		/// <summary>
 		/// Database instance
@@ -807,6 +812,12 @@ namespace DOL.GS
 					return false;
 				}
 
+				//Start Aux GameLoop
+				if (!InitComponent(AuxGameLoop.Init(), "AuxGameLoop Init"))
+				{
+					return false;
+				}
+
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
 				//---------------------------------------------------------------
@@ -1294,6 +1305,7 @@ namespace DOL.GS
 
 			WorldMgr.Exit();
 			GameLoop.Exit();
+			AuxGameLoop.Exit();
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )
@@ -1448,6 +1460,16 @@ namespace DOL.GS
 			m_cheatLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
 			log.Debug(text);
 		}
+		
+		/// <summary>
+		/// Writes a line to the cheat log file
+		/// </summary>
+		/// <param name="text">the text to log</param>
+		public void LogDualIPAction(string text)
+		{
+			m_dualIPLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
+			log.Debug(text);
+		}
 
 		/// <summary>
 		/// Writes a line to the inventory log file
@@ -1590,6 +1612,7 @@ namespace DOL.GS
 		{
 			m_gmLog = LogManager.GetLogger(Configuration.GMActionsLoggerName);
 			m_cheatLog = LogManager.GetLogger(Configuration.CheatLoggerName);
+			m_dualIPLog = LogManager.GetLogger(Configuration.DualIPLoggerName);
 			m_inventoryLog = LogManager.GetLogger(Configuration.InventoryLoggerName);
 
 			if (log.IsDebugEnabled)

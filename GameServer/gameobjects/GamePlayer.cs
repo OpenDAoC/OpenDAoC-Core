@@ -812,14 +812,14 @@ namespace DOL.GS
         /// <summary>
         /// quit timer
         /// </summary>
-        protected ECSGameTimer m_quitTimer;
+        protected AuxECSGameTimer m_quitTimer;
 
         /// <summary>
         /// Timer callback for quit
         /// </summary>
         /// <param name="callingTimer">the calling timer</param>
         /// <returns>the new intervall</returns>
-        protected virtual int QuitTimerCallback(ECSGameTimer callingTimer)
+        protected virtual int QuitTimerCallback(AuxECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
             {
@@ -1220,8 +1220,8 @@ namespace DOL.GS
 
                 if (m_quitTimer == null)
                 {
-                    m_quitTimer = new ECSGameTimer(this);
-                    m_quitTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuitTimerCallback);
+                    m_quitTimer = new AuxECSGameTimer(this);
+                    m_quitTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(QuitTimerCallback);
                     m_quitTimer.Start();
                 }
 
@@ -12015,8 +12015,17 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if(effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            {
+                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                if(volley != null)
+                    volley.PlayerMoving();
+            }
+
+
             //Notify the GameEventMgr of the moving player
-            GameEventMgr.Notify(GamePlayerEvent.Moving, this);
+            // GameEventMgr.Notify(GamePlayerEvent.Moving, this);
         }
 
         /// <summary>

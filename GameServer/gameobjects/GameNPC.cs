@@ -63,6 +63,8 @@ namespace DOL.GS
 		public const int CONST_WALKTOTOLERANCE = 25;
 
 		private int m_databaseLevel;
+		
+		public bool NeedsBroadcastUpdate { get; set; }
 
 		
 		#region Formations/Spacing
@@ -194,7 +196,8 @@ namespace DOL.GS
 				ushort oldHeading = base.Heading;
 				base.Heading = value;
 				if (base.Heading != oldHeading)
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+				//BroadcastUpdate();
 			}
 		}
 
@@ -828,7 +831,8 @@ namespace DOL.GS
 				if (base.CurrentSpeed != value)
 				{
 					base.CurrentSpeed = value;
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+					//BroadcastUpdate();
 				}
 			}
 		}
@@ -1502,7 +1506,8 @@ namespace DOL.GS
 			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
 			
 			StartArriveAtTargetAction(GetTicksToArriveAt(TargetPosition, speed));
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		private void StartArriveAtTargetAction(int requiredTicks)
@@ -1575,7 +1580,8 @@ namespace DOL.GS
 
 			MovementStartTick = GameLoop.GameLoopTime;
 			UpdateTickSpeed();
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		/// <summary>
@@ -1612,7 +1618,8 @@ namespace DOL.GS
 			}
 
 			SavePosition(target);
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		public const int STICKMINIMUMRANGE = 75;
@@ -1860,7 +1867,8 @@ namespace DOL.GS
 			bool old = IsTurningDisabled;
 			base.DisableTurning(add);
 			if (old != IsTurningDisabled)
-				BroadcastUpdate();
+				NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		#endregion
@@ -4567,7 +4575,7 @@ namespace DOL.GS
 
 				BroadcastUpdate();
 
-                attackComponent.AttackState = false;
+				attackComponent.AttackState = false;
 			}
 		}
 
@@ -4788,7 +4796,8 @@ namespace DOL.GS
 			{
 				int oldPercent = HealthPercent;
 				if (oldPercent != HealthPercent)
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+				//BroadcastUpdate();
 			}
 			return (Health < MaxHealth) ? period : 0;
 		}
@@ -4859,10 +4868,33 @@ namespace DOL.GS
             }
 
 			if ((Flags & eFlags.STEALTH) != 0)
-				Flags ^= GameNPC.eFlags.STEALTH;
-
-
+				Flags ^= eFlags.STEALTH;
+			
 			base.OnAttackedByEnemy(ad);
+        }
+
+        public override void TakeDamage(AttackData ad)
+        {
+	        base.TakeDamage(ad);
+	        
+	        if(Brain is StandardMobBrain standardMobBrain && Brain is not NecromancerPetBrain)
+	        {
+		        // Console.WriteLine($"dmg {ad.Damage} crit {ad.CriticalDamage} mod {Math.Abs(ad.Modifier)}");
+		        var aggro = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
+
+		        if (ad.Attacker is GameNPC pet)
+		        {
+			        if (pet.Brain is IControlledBrain petBrain)
+			        {
+				        // owner gets 25% of aggro
+				        standardMobBrain.AddToAggroList(petBrain.Owner,(int)Math.Max(1, aggro * 0.25));
+				        // remaining of aggro is given to pet
+				        aggro = (int)Math.Max(1, aggro * 0.75);
+			        }
+		        }
+		        standardMobBrain.AddToAggroList(ad.Attacker, aggro);
+		        standardMobBrain.OnAttackedByEnemy(ad);
+	        }
         }
 
         /// <summary>
@@ -5088,8 +5120,44 @@ namespace DOL.GS
 			{
 				this.AddXPGainer(healSource, (float)healAmount);
 			}
+
+			if (Brain is StandardMobBrain mobBrain)
+			{
+				// first check to see if the healer is in our aggrolist so we don't go attacking anyone who heals
+				if (mobBrain.m_aggroTable.ContainsKey(healSource as GameLiving))
+				{
+					if (healSource is GamePlayer || (healSource is GameNPC && (((GameNPC)healSource).Flags & eFlags.PEACE) == 0))
+					{
+						mobBrain.AddToAggroList((GameLiving)healSource, healAmount);
+					}
+				}
+			}
+			
 			//DealDamage needs to be called after addxpgainer!
 		}
+
+		public override void EnemyKilled(GameLiving enemy)
+		{
+			base.EnemyKilled(enemy);
+
+			if (Brain is StandardMobBrain mobBrain)
+			{
+				// transfer all controlled target aggro to the owner
+				if (enemy is GameNPC)
+				{
+					var controlled = ((GameNPC)enemy).Brain as IControlledBrain;
+					if (controlled != null)
+					{
+						var contrAggro = mobBrain.GetAggroAmountForLiving(controlled.Body);
+						mobBrain.AddToAggroList(controlled.Owner, (int)contrAggro);
+					}
+				}
+				attackComponent.Attackers.Remove(enemy);
+				TargetObject = null;
+			}
+		}
+		
+		
 
 		#endregion
 

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using Timer=System.Threading.Timer;
@@ -1533,6 +1534,30 @@ namespace DOL.GS
 
 			return targetClients;
 		}
+		
+		/// <summary>
+		/// Returns a list of playing clients from a given IP address
+		/// </summary>
+		/// <param name="ip">The IP address</param>
+		/// <returns>Array of GameClients from that IP</returns>
+		public static IList<GameClient> GetClientsFromIP(string ip)
+		{
+			var targetClients = new List<GameClient>();
+
+			lock (m_clients.SyncRoot)
+			{
+				foreach (GameClient client in m_clients)
+				{
+					if (client != null)
+					{
+						if (((IPEndPoint)client.Socket.RemoteEndPoint)?.Address.ToString() == ip)
+							targetClients.Add(client);
+					}
+				}
+			}
+			return targetClients;
+		}
+		
 		/// <summary>
 		/// Find a GameClient by the Player's ID
 		/// Case-insensitive, make sure you use returned Player.Name instead of what player typed.

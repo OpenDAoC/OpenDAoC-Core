@@ -172,7 +172,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                 else
                 {
                     Dean.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                       "A nightshade has reported the forces in Galladoria are planning an attack. \n" +
+                                       "A Nightshade has reported the forces in Galladoria are planning an attack. \n" +
                                        "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }

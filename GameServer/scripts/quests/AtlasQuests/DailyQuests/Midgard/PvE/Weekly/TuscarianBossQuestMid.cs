@@ -117,7 +117,7 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
             GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-            /* Now we bring to Herou the possibility to give this quest to players */
+            /* Now we bring to Isaac the possibility to give this quest to players */
             Isaac.AddQuestToGive(typeof(TuscarianBossQuestMid));
 
             if (log.IsInfoEnabled)
@@ -137,7 +137,7 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
             GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-            /* Now we remove to Herou the possibility to give this quest to players */
+            /* Now we remove to Isaac the possibility to give this quest to players */
             Isaac.RemoveQuestToGive(typeof(TuscarianBossQuestMid));
         }
 
@@ -162,7 +162,7 @@ namespace DOL.GS.DailyQuest.Midgard
                     {
                         case 1:
                             Isaac.SayTo(player,
-                                "Please, enter Tuscaran Glacier and slay strong opponents. If you succeed come back for your reward.");
+                                "Please, enter Tuscaren Glacier and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
                             Isaac.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
@@ -172,7 +172,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 else
                 {
                     Isaac.SayTo(player, "Hello " + player.Name + ", I am Isaac. " +
-                                        "A shadowblade has reported the forces in Tuscaren Glacier are planning an attack. \n" +
+                                        "A Shadowblade has reported the forces in Tuscaren Glacier are planning an attack. \n" +
                                         "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }
@@ -336,7 +336,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
                 if (_deadTuscaBossMob >= MAX_KILLGOAL)
                 {
-                    // FinishQuest or go back to Herou
+                    // FinishQuest or go back to Isaac
                     Step = 2;
                 }
             }

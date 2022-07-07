@@ -109,7 +109,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
 			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
+			/* Now we bring to Cola the possibility to give this quest to players */
 			Cola.AddQuestToGive(typeof (DFMobKillQuestHib));
 
 			if (log.IsInfoEnabled)
@@ -129,7 +129,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
 			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
+			/* Now we remove to Cola the possibility to give this quest to players */
 			Cola.RemoveQuestToGive(typeof (DFMobKillQuestHib));
 		}
 
@@ -176,7 +176,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "stop the invasion":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Dean "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Cola "+questTitle+"?");
 							break;
 					}
 				}

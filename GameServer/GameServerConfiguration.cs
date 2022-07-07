@@ -106,6 +106,11 @@ namespace DOL.GS
 		/// The logger name where to log cheat attempts
 		/// </summary>
 		protected string m_cheatLoggerName;
+		
+		/// <summary>
+		/// The logger name where to log duplicate IP connections
+		/// </summary>
+		protected string m_dualIPLoggerName;
 
 		/// <summary>
 		/// The file name of the invalid names file
@@ -184,7 +189,7 @@ namespace DOL.GS
 
 			m_ServerName = root["Server"]["ServerName"].GetString(m_ServerName);
 			m_ServerNameShort = root["Server"]["ServerNameShort"].GetString(m_ServerNameShort);
-
+			m_dualIPLoggerName  = root["Server"]["DualIPLoggerName"].GetString(m_dualIPLoggerName);
 			m_cheatLoggerName = root["Server"]["CheatLoggerName"].GetString(m_cheatLoggerName);
 			m_gmActionsLoggerName = root["Server"]["GMActionLoggerName"].GetString(m_gmActionsLoggerName);
 			m_invalidNamesFile = root["Server"]["InvalidNamesFile"].GetString(m_invalidNamesFile);
@@ -288,6 +293,7 @@ namespace DOL.GS
 			root["Server"]["GameType"].Set(serverType);
 
 			root["Server"]["CheatLoggerName"].Set(m_cheatLoggerName);
+			root["Server"]["DualIPLoggerName"].Set(m_dualIPLoggerName);
 			root["Server"]["GMActionLoggerName"].Set(m_gmActionsLoggerName);
 			root["Server"]["InvalidNamesFile"].Set(m_invalidNamesFile);
 
@@ -354,6 +360,7 @@ namespace DOL.GS
 			m_serverType = eGameServerType.GST_Normal;
 
 			m_cheatLoggerName = "cheats";
+			m_dualIPLoggerName = "dualip";
 			m_gmActionsLoggerName = "gmactions";
 		    InventoryLoggerName = "inventories";
 		    m_invalidNamesFile = Path.Combine(Path.Combine(".", "config"), "invalidnames.txt");
@@ -499,6 +506,15 @@ namespace DOL.GS
 		{
 			get { return m_cheatLoggerName; }
 			set { m_cheatLoggerName = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets the cheat logger name
+		/// </summary>
+		public string DualIPLoggerName
+		{
+			get { return m_dualIPLoggerName; }
+			set { m_dualIPLoggerName = value; }
 		}
 
         /// <summary>

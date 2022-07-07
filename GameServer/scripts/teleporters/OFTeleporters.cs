@@ -263,7 +263,7 @@ namespace DOL.GS.Scripts
                                     // else 
                                     if (player.Level is >= 20 and <= 24)
                                     {
-                                        if (player.RealmPoints >= 350)
+                                        if (player.RealmPoints >= 7125)
                                         {
                                             break;
                                         }
@@ -282,7 +282,7 @@ namespace DOL.GS.Scripts
                                     // }
                                     else if (player.Level is >= 30 and <= 34)
                                     {
-                                        if (player.RealmPoints >= 7125)
+                                        if (player.RealmPoints >= 122500)
                                         {
                                             break;
                                         }

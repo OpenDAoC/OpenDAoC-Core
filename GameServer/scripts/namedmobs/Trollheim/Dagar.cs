@@ -64,6 +64,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 956, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Crush;

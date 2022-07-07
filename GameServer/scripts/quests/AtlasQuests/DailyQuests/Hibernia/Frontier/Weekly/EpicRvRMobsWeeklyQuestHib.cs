@@ -117,10 +117,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
+			/* Now we bring to Cola the possibility to give this quest to players */
 			Cola.AddQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
 
 			if (log.IsInfoEnabled)
@@ -137,14 +137,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
+			/* Now we remove to Cola the possibility to give this quest to players */
 			Cola.RemoveQuestToGive(typeof (EpicRvRMobsWeeklyQuestHib));
 		}
 
-		private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToCola(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "kill the epic creatures":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestHib)), "Will you help Dean "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(EpicRvRMobsWeeklyQuestHib)), "Will you help Cola "+questTitle+"?");
 							break;
 					}
 				}

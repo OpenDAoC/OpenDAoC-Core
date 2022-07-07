@@ -957,7 +957,7 @@ namespace DOL.GS
                 {
                     //if (m_attackAction.TimeUntilElapsed < 500)
                     //	m_attackAction.Start(500);
-                    if (attackAction.TimeUntilStart < 100)
+                    if (0 < attackAction.TimeUntilStart && attackAction.TimeUntilStart < 100)
                         attackAction.StartTime = 100;
                 }
             }
@@ -2989,7 +2989,9 @@ namespace DOL.GS
                     break;
             }
 
-            if (showAnim && ad.Target != null)
+            var target = ad.Target;
+
+            if (showAnim && target != null)
             {
                 //http://dolserver.sourceforge.net/forum/showthread.php?s=&threadid=836
                 byte resultByte = 0;
@@ -3016,18 +3018,18 @@ namespace DOL.GS
 
                     case eAttackResult.Parried:
                         resultByte = 1;
-                        if (ad.Target != null && ad.Target.attackComponent.AttackWeapon != null)
+                        if (target != null && target.attackComponent.AttackWeapon != null)
                         {
-                            defendersWeapon = ad.Target.attackComponent.AttackWeapon.Model;
+                            defendersWeapon = target.attackComponent.AttackWeapon.Model;
                         }
 
                         break;
 
                     case eAttackResult.Blocked:
                         resultByte = 2;
-                        if (ad.Target != null && ad.Target.Inventory != null)
+                        if (target != null && target.Inventory != null)
                         {
-                            InventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            InventoryItem lefthand = target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                             if (lefthand != null && lefthand.Object_Type == (int) eObjectType.Shield)
                             {
                                 defendersWeapon = lefthand.Model;
@@ -3037,7 +3039,7 @@ namespace DOL.GS
                         break;
                 }
 
-                foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
                     if (player == null) continue;
                     int animationId;

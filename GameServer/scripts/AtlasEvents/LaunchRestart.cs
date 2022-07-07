@@ -20,8 +20,7 @@ namespace DOL.GS.GameEvents
         
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
-        private static string BetaResetKey = "LaunchRestart";
-        private static string CompensationString = "LaunchCompensation";
+        private static string RestartKey = "LaunchRestart";
         
         [GameServerStartedEvent]
         public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
@@ -49,74 +48,48 @@ namespace DOL.GS.GameEvents
             var player = sender as GamePlayer;
             if (player == null) return;
             
-            var launch = new DateTime(2022, 06, 26, 12, 30, 00);
-
+            var launch = new DateTime(2022, 07, 04, 15, 00, 00);
+            
             var creationDate = player.DBCharacter.CreationDate;
 
             if (creationDate >= launch) return;
 
             var needsReset = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
-                .IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(BetaResetKey)));
-
-            var playerCompensationString = CompensationString + player.Realm;
-            
-            var receivedCompensation = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name")
-                .IsEqualTo(player.AccountName).And(DB.Column("KeyName").IsEqualTo(playerCompensationString)));
+                .IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(RestartKey)));
 
             if (needsReset != null) return;
 
+            player.MoveToBind();
+            
             player.RealmPoints = 0;
             player.RealmLevel = 0;
             player.Experience = 0;
             
+            player.RespecRealm();
+            player.Reset();
+            player.SetCharacterClass(player.CharacterClass.ID);
+            player.Reset();
+            player.OnLevelUp(0);
+            
             BattlegroundEventLoot.GenerateArmor(player);
             BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)player.CharacterClass.ID, player);
-
-            player.RemoveAllSpecs();
-            player.RemoveAllSpellLines();
-            player.styleComponent.RemoveAllStyles();
-
-            //reset before, and after changing the class.
-
-            player.RespecAll();
-            
+            player.ReceiveItem(player, "Personal_Bind_Recall_Stone");
 
             player.Out.SendUpdatePlayer();
             player.Out.SendUpdatePlayerSkills();
             player.Out.SendUpdatePoints();
             
-
             var reset = new DOLCharactersXCustomParam
             {
                 DOLCharactersObjectId = player.ObjectId,
-                KeyName = BetaResetKey,
+                KeyName = RestartKey,
                 Value = "1"
             };
             GameServer.Database.AddObject(reset);
             
-            var message = $"Thanks for enduring our launch. \n\n" +
-                          $"All player inventories, achievements, money and crafting skills have been reset. \n\n" +
-                          $"A gold compensation has been added to your account. \n" +
-                          $"Visit Cruella de Vill in your Realm's Capital to claim an additional reward. \n\n" +
-                          $"Please relog for the changes to take effect and have your character specializations appear.\n\n" +
-                          $"Visit Discord #project-updates for more informations";
+            player.Achieve($"{RestartKey}-Credit");
             
-            player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
-            
-            player.Achieve($"{BetaResetKey}-Credit");
-            
-            if (receivedCompensation != null) return;
-            
-            player.AddMoney(250 * 10000); // 250 gold
-            
-            var compensation = new AccountXCustomParam
-            {
-                Name = player.AccountName,
-                KeyName = playerCompensationString,
-                Value = "1"
-            };
-            GameServer.Database.AddObject(compensation);
-
+            player.Out.SendMessage("Thanks for playing Atlas! Your level has been reset to 1, we wish you good luck with your adventure.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
         
     }

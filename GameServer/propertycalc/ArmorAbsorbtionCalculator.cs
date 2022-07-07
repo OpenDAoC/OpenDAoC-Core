@@ -32,7 +32,9 @@ namespace DOL.GS.PropertyCalc
 			int abilityBonus = living.AbilityBonus[property];
 			int hardCap = 50;
 			if (living is GamePet)
-				buffBonus += living.effectListComponent.GetAllEffects().Where(e => e is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.IsBuff).Count();
+			{
+				buffBonus += living.effectListComponent.GetAllEffects().Count(e => e is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.IsBuff) * 4;
+			}
 			return Math.Min(hardCap, (buffBonus - debuffMalus + itemBonus + abilityBonus));
 		}
 	}

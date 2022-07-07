@@ -4266,13 +4266,24 @@ namespace DOL.GS
 
         public void CancelFocusSpell(bool moving = false)
         {
-			var focusEffect = effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.IsFocus).FirstOrDefault();
-            if (focusEffect != null)
+
+            foreach (var pulseSpell in effectListComponent.GetSpellEffects(eEffect.Pulse))
             {
-                ((SpellHandler)focusEffect.SpellHandler).FocusSpellAction(moving);
-                EffectService.RequestImmediateCancelEffect(focusEffect);
-                if (((SpellHandler)focusEffect.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(focusEffect.EffectType, out var petEffect))
-                    EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
+				if (pulseSpell.SpellHandler.Spell.IsFocus)
+                {
+					((SpellHandler)pulseSpell.SpellHandler).FocusSpellAction(moving);
+					EffectService.RequestImmediateCancelEffect(pulseSpell);
+					if (((SpellHandler)pulseSpell.SpellHandler).GetTarget().effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out var petEffect))
+                    {
+						if (petEffect is not null)
+                        {
+							//verify the effect is a focus shield and not a timer based damage shield
+							if (petEffect.FirstOrDefault().SpellHandler.Spell.IsFocus)
+								EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
+						}
+							
+					}
+				}
             }
         }
 		/// <summary>
