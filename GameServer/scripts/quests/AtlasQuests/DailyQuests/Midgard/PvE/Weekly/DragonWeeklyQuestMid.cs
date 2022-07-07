@@ -136,7 +136,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
 			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
 
-			/* Now we remove to Herou the possibility to give this quest to players */
+			/* Now we remove to Isaac the possibility to give this quest to players */
 			Isaac.RemoveQuestToGive(typeof (DragonWeeklyQuestMid));
 		}
 
@@ -183,7 +183,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "kill the dragon":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)), "Will you help Herou "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(DragonWeeklyQuestMid)), "Will you help Isaac "+questTitle+"?");
 							break;
 					}
 				}
@@ -297,7 +297,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					case 1:
 						return "Travel to Malmohus and slay " + DRAGON_NAME + " for Midgard. \nKilled: " + DRAGON_NAME + " ("+ DragonKilled +" | " + MAX_KILLED + ")";
 					case 2:
-						return "Return to Herou for your Reward.";
+						return "Return to Isaac for your Reward.";
 				}
 				return base.Description;
 			}
@@ -323,7 +323,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					
 			if (DragonKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Herou
+				// FinishQuest or go back to Isaac
 				Step = 2;
 			}
 
