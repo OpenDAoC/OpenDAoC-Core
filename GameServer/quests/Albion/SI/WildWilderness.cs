@@ -238,7 +238,7 @@ namespace DOL.GS.Quests.Hibernia
                     switch (wArgs.Text)
                     {
                         case "hunt":
-                            _miach.SayTo(player, "Aye. It is not their normal way. I believe it is the evil touch of the Fomorians! They have ruined the homes of many of these creatures, they have destroyed their hunting grounds, and now some of the creatures have become twisted and abhorrent! The beasts I speak of are close to our town, the lungers, we must get ird of them!");
+                            _miach.SayTo(player, "Aye. It is not their normal way. I believe it is the evil touch of the Fomorians! They have ruined the homes of many of these creatures, they have destroyed their hunting grounds, and now some of the creatures have become twisted and abhorrent! The beasts I speak of are close to our town, the lungers, we must get rid of them!");
                             player.Out.SendQuestSubscribeCommand(_miach, QuestMgr.GetIDForQuestType(typeof(WildWilderness)), "Will you help rid the area of young lungers?");
                             break;
                     }

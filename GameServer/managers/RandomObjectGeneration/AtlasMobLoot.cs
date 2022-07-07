@@ -55,7 +55,7 @@ namespace DOL.GS {
                 }
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 2);
+                int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 3);
 
                 //chance = 100;
 
