@@ -13,7 +13,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 15;
+        public static ushort BASE_ROG_CHANCE = 16;
 
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace DOL.GS {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }
 
-                    chance += 7; //solo drop bonus
+                    chance += 9; //solo drop bonus
                     
                     ItemTemplate item = null;
 
