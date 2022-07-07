@@ -1266,7 +1266,34 @@ namespace DOL.GS
 			}
 			return new Region.EmptyEnumerator();
 		}
+		
+		public IEnumerable GetPetsInRadius(ushort radiusToCheck, bool ignoreZ)
+		{
+			return GetPetsInRadius(false, radiusToCheck, false, ignoreZ);
+		}
 
+		public IEnumerable GetPetsInRadius(bool useCache, ushort radiusToCheck, bool withDistance, bool ignoreZ)
+		{
+			if (CurrentRegion != null)
+			{
+				//Eden - avoid server freeze
+				if (CurrentRegion.GetZone(X, Y) == null)
+				{
+					if (this is GamePlayer && (this as GamePlayer).Client.Account.PrivLevel < 3 && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
+					{
+						GamePlayer player = this as GamePlayer;
+						player.TempProperties.setProperty("isbeingbanned", true);
+						player.MoveToBind();
+					}
+				}
+				else
+				{
+					return CurrentRegion?.GetPetsInRadius(X, Y, Z, radiusToCheck, withDistance, ignoreZ);
+				}
+			}
+			return new Region.EmptyEnumerator();
+		}
+		
 		/// <summary>
 		/// Gets all npcs close to this object inside a certain radius
 		/// </summary>

@@ -310,6 +310,10 @@ namespace DOL.AI.Brain
             } else { return false; }
         }
 
+
+        public long LastNPCAggroCheckTick = 0;
+        public int NPC_AGGRO_DELAY => ThinkInterval * 10;
+        
         /// <summary>
         /// Check for aggro against close NPCs
         /// </summary>
@@ -320,6 +324,10 @@ namespace DOL.AI.Brain
 
             if (Body.CurrentRegion == null)
                 return;
+
+            if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
+
+            LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
             
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
             {
@@ -370,6 +378,8 @@ namespace DOL.AI.Brain
                 return;
             }
 
+            List<GameNPC> pets = new List<GameNPC>();
+
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
@@ -390,6 +400,9 @@ namespace DOL.AI.Brain
 
                 int aggrolevel = 0;
 
+                if(player.ControlledBrain != null)
+                    pets.Add(player.ControlledBrain.Body);
+                
                 if (Body.Faction != null)
                 {
                     aggrolevel = Body.Faction.GetAggroToFaction(player);
@@ -411,6 +424,53 @@ namespace DOL.AI.Brain
                 {
                     if (useLOS && !AggroLOS) return;
                     AddToAggroList(player, 1, true);
+                }
+            }
+            
+            CheckPetAggro(useLOS);
+        }
+
+        private void CheckPetAggro(bool useLOS)
+        {
+            foreach (var petNPC in Body.GetPetsInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            {
+                var pet = petNPC as GamePet;
+                if (pet == null) continue;
+                
+                if (!GameServer.ServerRules.IsAllowedToAttack(Body, pet, true)) continue;
+                // Don't aggro on immune players.
+                
+                if (Body.CurrentZone.IsDungeon)
+                {
+                    useLOS = true;
+                }
+
+                if (useLOS && pet != null && !AggroLOS && pet is GamePet p && p.Owner is GamePlayer owner)
+                {
+                    owner.Out.SendCheckLOS(Body, pet, new CheckLOSResponse(CheckAggroLOS));
+                }
+
+                int aggrolevel = 0;
+
+                if (Body.Faction != null)
+                {
+                    aggrolevel = Body.Faction.GetAggroToFaction(pet.Owner as GamePlayer);
+                    if (aggrolevel < 75)
+                        return;
+                }
+
+                if (aggrolevel <= 0 && AggroLevel <= 0)
+                    return;
+
+                if (m_aggroTable.ContainsKey(pet))
+                    continue; // add only new players
+                if (!pet.IsAlive || pet.ObjectState != GameObject.eObjectState.Active || pet.IsStealthed)
+                    continue;
+
+                if (CalculateAggroLevelToTarget(pet) > 0)
+                {
+                    if (useLOS && !AggroLOS) return;
+                    AddToAggroList(pet, 1, true);
                 }
             }
         }
