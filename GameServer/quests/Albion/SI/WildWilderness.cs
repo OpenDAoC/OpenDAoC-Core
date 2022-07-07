@@ -214,11 +214,11 @@ namespace DOL.GS.Quests.Hibernia
                     switch (quest.Step)
                     {
                         case 1:
-                            _miach.SayTo(player, $"Great! While you are at it, bring one of the lunger tails to Resalg. He will pay you well for it. He is trying to create some potion. " +
+                            _miach.SayTo(player, $"Great! While you are at it, bring one of the lunger tails to Resalg. He will pay you well for it. He is trying to create some potions and " +
                                                  $"I told him I'd acquire a [tail] for him.");
                             break;
                         case 2:
-                            _miach.SayTo(player, $"Hello {player.CharacterClass.Name}, find those lunger and bring one tail to Resalg!");
+                            _miach.SayTo(player, $"Hello {player.CharacterClass.Name}, find those lungers and bring a tail to Resalg!");
                             break;
                         case 3:
                             _miach.SayTo(player, $"Oh you got a tail, please bring that to Resalg.");
@@ -227,7 +227,7 @@ namespace DOL.GS.Quests.Hibernia
                 }
                 else
                 {
-                    _miach.SayTo(player, "There was once a time when all of Hy Brasil was tame. There was once a time when nature's beasts were tame. Now, though, the creatures we once had no reason to fear, have become aggressive. They kill not just for food, but for pleasure. They no longer only kill their normal prey. Now, they [hunt] us.");
+                    _miach.SayTo(player, "There was once a time when all of Hy Brasil was tame. There was once a time when nature's beasts were tame. Now, though, the creatures we once had no reason to fear have become aggressive. They kill not just for food, but for pleasure. They no longer only kill their normal prey. Now, they [hunt] us.");
                 }
             }
             else if (e == GameLivingEvent.WhisperReceive)
@@ -238,7 +238,7 @@ namespace DOL.GS.Quests.Hibernia
                     switch (wArgs.Text)
                     {
                         case "hunt":
-                            _miach.SayTo(player, "Aye. It is not their normal way. I believe it is the evil touch of the Fomorians! They have ruined the homes of many of these creatures, they have destroyed their hunting grounds, and now, some of the creatures have become twisted and abhorrent! The beasts I speak of, close to our town, the lungers, we must get ird of them!");
+                            _miach.SayTo(player, "Aye. It is not their normal way. I believe it is the evil touch of the Fomorians! They have ruined the homes of many of these creatures, they have destroyed their hunting grounds, and now some of the creatures have become twisted and abhorrent! The beasts I speak of are close to our town, the lungers, we must get ird of them!");
                             player.Out.SendQuestSubscribeCommand(_miach, QuestMgr.GetIDForQuestType(typeof(WildWilderness)), "Will you help rid the area of young lungers?");
                             break;
                     }
@@ -283,10 +283,10 @@ namespace DOL.GS.Quests.Hibernia
                             _resalg.SayTo(player, $"Hey Forester, Miach told me that you get me a tail?");
                             break;
                         case 3:
-                            _resalg.SayTo(player, $"What can I do for you, fine Forester?");
+                            _resalg.SayTo(player, $"What can I do for you, fine {player.CharacterClass.Name}?");
                             
                             _resalg.SayTo(player, "Ah! You've brought me a lunger tail! Now, I'm not sure if this is going to work, " +
-                                                  "but I think it just might, yes, it just might. You see, I'm working on a special [formula].");
+                                                  "but I think it just might... yes, it just might. You see, I'm working on a special [formula].");
                             break;
                     }
                 }
@@ -308,7 +308,7 @@ namespace DOL.GS.Quests.Hibernia
                             player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
                             break;
                         case "formula":
-                            _resalg.SayTo(player, "Aye. It will calm down the maddened animals, I think. I can't truly be sure, but I'm hoping so! Some of the animals have even been mutated, since the Fomorian's arrival, you know. I blame the foulness of that maleficent race! I would like to aid the Sylvan, I would like to see this ravaged land restored, and the peaceful balance that has taken generations upon generations to develop, once again restored. Aye, and I'll not lie, but I'm willing to bet I'd have a name, if I were to aid the process in some way! Maybe some prestige! Ah, but to work, yes, to work now. Here, I shall pay you for this tail! Good day, friend!");
+                            _resalg.SayTo(player, "Aye. It will calm down the maddened animals, I think. I can't truly be sure, but I'm hoping so! Some of the animals have even been mutated since the Fomorian's arrival, you know. I blame the foulness of that maleficent race! I would like to aid the Sylvan. I would like to see this ravaged land restored, and the peaceful balance that has taken generations upon generations to develop once again restored. Aye, and I'll not lie, but I'm willing to bet I'd have a name if I were to aid the process in some way! Maybe some prestige! Ah, but to work, yes, to work now. Here, I shall pay you for this tail! Good day, friend!");
                             RemoveItem(player, _lungerTail);
                             quest.FinishQuest();
                             break;
@@ -356,7 +356,7 @@ namespace DOL.GS.Quests.Hibernia
             }
             if (response == 0x00)
             {
-                SendSystemMessage(player, "Good, no go out there and finish your work!");
+                SendSystemMessage(player, "Good, now go out there and finish your work!");
             }
             else
             {
@@ -375,7 +375,7 @@ namespace DOL.GS.Quests.Hibernia
 
             if (response == 0x00)
             {
-                SendReply(player, "Oh well, if you change your mind, please come back!");
+                SendReply(player, "Oh, well... if you change your mind, please come back!");
             }
             else
             {
