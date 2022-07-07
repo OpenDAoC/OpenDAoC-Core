@@ -521,7 +521,7 @@ namespace DOL.GS.PacketHandler
 			int[] racial = new int[updateResists.Length];
 			int[] caps = new int[updateResists.Length];
 
-			int cap = (m_gameClient.Player.Level >> 1) + 1;
+			int cap = (int) (m_gameClient?.Player != null ? (m_gameClient.Player.Level >> 1) + 1 : 1);
 			for (int i = 0; i < updateResists.Length; i++)
 			{
 				caps[i] = cap;
