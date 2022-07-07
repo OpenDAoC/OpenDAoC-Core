@@ -64,7 +64,7 @@ namespace DOL.AI.Brain
 				}
             }
 
-			foreach (GamePlayer living in Body.GetPlayersInRadius((ushort)((TurretPet)Body).TurretSpell.Range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GamePlayer living in Body.GetPlayersInRadius((ushort)((TurretPet)Body).TurretSpell.Range, !Body.CurrentRegion.IsDungeon))
 			{
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
 					continue;
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			foreach (GameNPC living in Body.GetNPCsInRadius((ushort)((TurretPet)Body).TurretSpell.Range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GameNPC living in Body.GetNPCsInRadius((ushort)((TurretPet)Body).TurretSpell.Range, !Body.CurrentRegion.IsDungeon))
 			{
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
 					continue;
@@ -118,8 +118,12 @@ namespace DOL.AI.Brain
 				return oldTargets[Util.Random(oldTargets.Count - 1)];
 			}
 
-			m_aggroTable.Clear();
-            return null;
+			lock ((m_aggroTable as ICollection).SyncRoot)
+			{
+				m_aggroTable.Clear();
+			}
+
+			return null;
         }
 
 		public override void CheckNPCAggro()

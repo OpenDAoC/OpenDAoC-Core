@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			foreach (GamePlayer living in Body.GetPlayersInRadius(m_range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GamePlayer living in Body.GetPlayersInRadius(m_range, !Body.CurrentRegion.IsDungeon))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
                     continue;
@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
 
             }
 
-			foreach (GameNPC living in Body.GetNPCsInRadius(m_range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GameNPC living in Body.GetNPCsInRadius(m_range, !Body.CurrentRegion.IsDungeon))
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
                     continue;
@@ -159,8 +159,12 @@ namespace DOL.AI.Brain
 				return newTargets[Util.Random(newTargets.Count - 1)];
 			}
 
-            m_aggroTable.Clear();
-			return null;
+            lock ((m_aggroTable as ICollection).SyncRoot)
+            {
+	            m_aggroTable.Clear();
+            }
+
+            return null;
 		}
 
 		public void SetAggressionState(eAggressionState state) { }
