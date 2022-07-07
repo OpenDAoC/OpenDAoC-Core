@@ -9,6 +9,8 @@ namespace DOL.AI.Brain
 	/// </summary>
 	public class LordBrain : KeepGuardBrain
 	{
+		public override long NPC_AGGRO_DELAY => 1500;
+
 		public LordBrain() : base()
 		{
 		}

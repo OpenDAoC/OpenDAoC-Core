@@ -20,6 +20,9 @@ namespace DOL.AI.Brain
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GameKeepGuard guard;
+		public long LastNPCAggroCheck;
+		public virtual long NPC_AGGRO_DELAY => 10000; //10s
+
 		/// <summary>
 		/// Constructor for the Brain setting default values
 		/// </summary>
@@ -28,6 +31,7 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 90;
 			AggroRange = 1000;
+			LastNPCAggroCheck = 0;
 		}
 
 		public void SetAggression(int aggroLevel, int aggroRange)
@@ -184,6 +188,11 @@ namespace DOL.AI.Brain
 		{
 			if (Body.attackComponent.AttackState || Body.CurrentSpellHandler != null)
 				return;
+
+			//check NPCs is expensive, so we only do it slowly
+			if (GameLoop.GameLoopTime - LastNPCAggroCheck < NPC_AGGRO_DELAY) return;
+
+			LastNPCAggroCheck = GameLoop.GameLoopTime;
 
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
