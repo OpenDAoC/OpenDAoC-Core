@@ -1132,8 +1132,10 @@ namespace DOL.GS.ServerRules
 
 			float totalDamage = 0;
 			Dictionary<Group, int> plrGrpExp = new Dictionary<Group, int>();
+			Dictionary<Group, float> grpToDmgDict = new Dictionary<Group, float>();
 			GamePlayer highestPlayer = null;
 			bool isGroupInRange = false;
+			Group highestDamageDealingGroup = null;
 
 			//Collect the total damage
 			foreach (DictionaryEntry de in XPGainerList)
@@ -1156,23 +1158,54 @@ namespace DOL.GS.ServerRules
 						plrGrpExp[player.Group] += 1;
 					else
 						plrGrpExp[player.Group] = 1;
+
+					if (grpToDmgDict.ContainsKey(player.Group))
+						grpToDmgDict[player.Group] += (float) de.Value;
+					else
+						grpToDmgDict.Add(player.Group, (float)de.Value);					
 				}
 
 				// tolakram: only prepare for xp challenge code if player is in a group
 				if (highestPlayer == null || (player.Level > highestPlayer.Level))
 					highestPlayer = player;
 			}
+			
+			//get the highest damage dealing group
+			if(grpToDmgDict.Count > 0)
+				highestDamageDealingGroup = grpToDmgDict.Aggregate((l, r) => l.Value > r.Value ? l : r).Key; 
 
 			#endregion
 
-			List<GameObject> livingsToAward = new List<GameObject>();
+			HashSet<GameObject> livingsToAward = new HashSet<GameObject>();
 			//Now deal the XP to all livings
 			Diagnostics.StartPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
 			foreach (DictionaryEntry de in XPGainerList)
 			{
 				if (de.Key is GameLiving living)
 				{
-					livingsToAward.Add(living);
+					var player = living as GamePlayer;
+					if (living.Group != null)
+					{
+						if(highestDamageDealingGroup != null && living.Group == highestDamageDealingGroup )
+							livingsToAward.Add(living);
+						else if(player != null)
+						{
+							player.Out.SendMessage($"Your group did not deal enough damage to claim this kill.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}
+					}
+
+					if (player != null)
+					{
+						BattleGroup clientBattleGroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+						if (clientBattleGroup != null)
+						{
+							player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						} 
+						else
+						{
+							livingsToAward.Add(living);
+						}
+					}
 				}
 			}
 
@@ -1208,7 +1241,7 @@ namespace DOL.GS.ServerRules
 						highestPlayer = gamePlayer;
 				}
 			}
-
+			
 			highestConValue = highestPlayer != null ? highestPlayer.GetConLevel(killedNPC) : living.GetConLevel(killedNPC);
 
 			if (living is NecromancerPet)
