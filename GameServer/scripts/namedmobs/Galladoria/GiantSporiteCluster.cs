@@ -115,7 +115,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Spawn();
 
-            RespawnInterval = 5000;//ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             GiantSporiteClusterBrain sBrain = new GiantSporiteClusterBrain();
