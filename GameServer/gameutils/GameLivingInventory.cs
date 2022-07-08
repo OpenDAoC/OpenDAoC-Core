@@ -1210,6 +1210,8 @@ namespace DOL.GS
 				{
 					if (!EQUIP_SLOTS.Contains((eInventorySlot)item.SlotPosition))
 						continue;
+					if ((eInventorySlot) item.SlotPosition is eInventorySlot.FirstQuiver or eInventorySlot.SecondQuiver or eInventorySlot.ThirdQuiver or eInventorySlot.FourthQuiver)
+						continue;
 					weight += item.Weight;
 				}
 
