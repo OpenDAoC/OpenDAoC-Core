@@ -88,6 +88,12 @@ namespace DOL.GS.Commands
 
 		protected void CreateGuild(GamePlayer player, byte response)
 		{
+			if (player.Group == null)
+			{
+				player.Out.SendMessage("There was an issue processing guild request. Please try again.", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			#region Player Declines
 			if (response != 0x01)
 			{
