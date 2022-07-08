@@ -1729,7 +1729,7 @@ namespace DOL.GS
 			if (followLiving != null && !followLiving.IsAlive)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				return 0;
 			}
 
@@ -1737,7 +1737,7 @@ namespace DOL.GS
 			if (followTarget == null || followTarget.ObjectState != eObjectState.Active || CurrentRegionID != followTarget.CurrentRegionID)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				return 0;
 			}
 
@@ -1754,7 +1754,7 @@ namespace DOL.GS
 			if ((int)distance > m_followMaxDist)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				this.WalkToSpawn();
 				return 0;
 			}
@@ -1769,14 +1769,14 @@ namespace DOL.GS
 				{
 					if (attackComponent.AttackState && brain != null && followLiving != null)
 					{
-						long seconds = 20 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
+						long seconds = 25 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
 						long lastattacked = LastAttackTick;
 						long lasthit = LastAttackedByEnemyTick;
 						if ((GameLoop.GameLoopTime - lastattacked > seconds * 1000 && GameLoop.GameLoopTime - lasthit > seconds * 1000)
 							&& lasthit != 0)
 						{
 							//StopFollow();
-							Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+							//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 							//brain.ClearAggroList();
 							//this.WalkToSpawn();
 							LastAttackedByEnemyTickPvE = 0;
