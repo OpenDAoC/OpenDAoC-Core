@@ -319,18 +319,19 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckNPCAggro()
         {
+            if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
+            
             if (Body.attackComponent.AttackState)
                 return;
 
             if (Body.CurrentRegion == null)
                 return;
 
-            if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
-
             LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
             
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
             {
+                if (npc == null || Body == null) continue;
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true)) continue;
                 if (m_aggroTable.ContainsKey(npc))
                     continue; // add only new NPCs
