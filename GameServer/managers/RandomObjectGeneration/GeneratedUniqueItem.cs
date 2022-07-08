@@ -52,9 +52,9 @@ namespace DOL.GS {
         // TOA Chance in %
         public const ushort ROG_TOA_ITEM_CHANCE = 0;
         // Armor Chance in %
-        public const ushort ROG_ARMOR_CHANCE = 40;
+        public const ushort ROG_ARMOR_CHANCE = 50;
         // Magical Chance in %
-        public const ushort ROG_MAGICAL_CHANCE = 45;
+        public const ushort ROG_MAGICAL_CHANCE = 40;
         // Weapon Chance in %
         public const ushort ROG_WEAPON_CHANCE = 40;
 
@@ -5480,9 +5480,6 @@ namespace DOL.GS {
                 if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
                 //if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
                 if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
-
-                if (genTypes.Count < 1)
-                    genTypes.Add(eGenerateType.Armor);                
             }
             else
             {
@@ -5491,10 +5488,13 @@ namespace DOL.GS {
                 if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)/2) ) { genTypes.Add(eGenerateType.Weapon); }
             }
 
-            //if none of the object types were added, default to magical
+            //if none of the object types were added, default to armor
             if (genTypes.Count < 1)
             {
-                genTypes.Add(eGenerateType.Magical);
+                if(Util.Chance(50))
+                    genTypes.Add(eGenerateType.Armor);
+                else
+                    genTypes.Add(eGenerateType.Weapon);
             }
 
             return genTypes[Util.Random(genTypes.Count - 1)];
