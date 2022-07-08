@@ -1407,7 +1407,7 @@ namespace DOL.GS
 					weight += item.Weight;
 				}
 				
-				return weight/10 + base.InventoryWeight;
+				return weight/10;
 			}
 		}
 
