@@ -156,6 +156,12 @@ namespace DOL.GS
 				salvageYield.Count = ReturnSalvage.Count;
 				salvageYield.MaterialId_nb = (string) ReturnSalvage.ID;
 			}
+
+			if (salvageYield.MaterialId_nb == "")
+			{
+				player.Out.SendMessage("No material set for this item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return 0;
+			}
 			
 			//Calculate a penalty based on players secondary crafting skill level
 			salvageYield.Count = salvageYield.Count < 1 ? 0 : GetYieldPenalty(player, item, salvageYield.Count);

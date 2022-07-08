@@ -508,8 +508,7 @@ namespace DOL.GS.SalvageCalc
                                 break;
                             default:
                                 // Return 1 for generic magicals
-                                // TODO currently to 0 because need to sort out the materialtype in this case
-                                Yield.Count = 0;
+                                Yield.Count = 1;
                                 return Yield;
                         }
                         break;
