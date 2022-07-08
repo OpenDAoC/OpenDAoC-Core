@@ -416,6 +416,36 @@ namespace DOL.GS.SalvageCalc
             MetalSalvageList[28] = "netherite_metal_bars";
             MetalSalvageList[29] = "arcanite_metal_bars";
             #endregion
+            
+            string[] JewelSalvageList = new string[33];
+            #region Jewels
+            JewelSalvageList[0] = "Alexandrite";
+            JewelSalvageList[1] = "Jade";
+            JewelSalvageList[2] = "Water_Opal";
+            JewelSalvageList[3] = "Rhodolite";
+            JewelSalvageList[4] = "Peridot";
+            JewelSalvageList[5] = "Yellow_Tourmaline";
+            JewelSalvageList[6] = "Kornerupine";
+            JewelSalvageList[7] = "Purple_Sapphire";
+            JewelSalvageList[8] = "Chrysoberyl";
+            JewelSalvageList[9] = "Black_Sapphire";
+            JewelSalvageList[10] = "Precious_Heliodor";
+            #endregion
+            
+            int[] JewelCost = new int[11];
+            #region Jewel Cost
+            JewelCost[0] = 8;
+            JewelCost[1] = 72;
+            JewelCost[2] = 432;
+            JewelCost[3] = 1728;
+            JewelCost[4] = 5184;
+            JewelCost[5] = 11664;
+            JewelCost[6] = 17496;
+            JewelCost[7] = 26248;
+            JewelCost[8] = 34120;
+            JewelCost[9] = 39232;
+            JewelCost[10] = 39232;
+            #endregion
 
             int[] MetalBarCost = new int[10];
             #region MetalCost
@@ -506,9 +536,18 @@ namespace DOL.GS.SalvageCalc
                                 }
                                 #endregion
                                 break;
-                            default:
-                                // Return 1 for generic magicals
+                            case 33:
+                            case 35:
+                            case 29:
+                            case 34:
+                            case 36:
+                            case 32:
+                            case 24:
+                                MaterialType = 5;
                                 Yield.Count = 1;
+                                break;
+                            default:
+                                Yield.Count = 0;
                                 return Yield;
                         }
                         break;
@@ -2227,6 +2266,12 @@ namespace DOL.GS.SalvageCalc
                     }
                     #endregion
                     Yield.Count = Item.IsCrafted == true ? Yield.Count : Difference;
+                    break;
+                case 5: //Magicals
+                    Yield.ID = JewelSalvageList[Yield.Tier];
+                    Yield.Count = 1;
+                    Yield.MSRP = DropPenalty == true ? (JewelCost[Yield.Tier + 1] * Yield.Count) * 2 : (JewelCost[Yield.Tier] * Yield.Count) * 2;
+                    
                     break;
                 default: //Will not return any salvage but provides some info
                     //Provide a MSRP if possible based on fallthrough results
