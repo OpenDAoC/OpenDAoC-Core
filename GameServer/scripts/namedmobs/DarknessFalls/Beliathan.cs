@@ -185,7 +185,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 40000; }
+            get { return 200000; }
         }
         public override short MaxSpeedBase
         {

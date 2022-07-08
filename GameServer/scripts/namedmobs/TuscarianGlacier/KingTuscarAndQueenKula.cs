@@ -147,7 +147,9 @@ namespace DOL.GS
         public static int QueenKulaCount = 0;
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            BroadcastMessage(String.Format("King Tuscar rages and gains strength from Odin!"));
+            if(KingTuscar.KingTuscarCount > 0)
+                BroadcastMessage(String.Format("As the Queen Kula dies, King Tuscar scream in rage and gather more strength!"));
+
             --QueenKulaCount;
             bool canReportNews = true;
             // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
@@ -204,7 +206,54 @@ namespace DOL.GS
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
-        }    
+        }
+        #endregion
+
+        public override void OnAttackedByEnemy(AttackData ad)// on Boss actions
+        {
+            if (ad != null && ad.Damage > 0 && ad.Attacker != null && ad.Attacker.IsAlive && ad.Attacker is GamePlayer)
+            {
+                if(KingTuscar.KingTuscarCount == 0 || HealthPercent <= 50)
+                {
+                    if (Util.Chance(50))
+                        CastSpell(Cold_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                }
+                if (KingTuscar.KingTuscarCount > 0 || HealthPercent > 50)
+                    if (Util.Chance(10))
+                    CastSpell(Cold_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        #region Spells
+        private Spell m_Cold_DD;
+        private Spell Cold_DD
+        {
+            get
+            {
+                if (m_Cold_DD == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 2;
+                    spell.ClientEffect = 4075;
+                    spell.Icon = 4075;
+                    spell.TooltipId = 4075;
+                    spell.Damage = 400;
+                    spell.Name = "Thor's Might";
+                    spell.Range = 2500;
+                    spell.SpellID = 11892;
+                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy;
+                    m_Cold_DD = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Cold_DD);
+                }
+                return m_Cold_DD;
+            }
+        }
         #endregion
     }
 }
@@ -326,16 +375,17 @@ namespace DOL.AI.Brain
         public static bool IsPulled1 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (IsPulled1 == false)
+            if (HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.Brain is KingTuscarBrain)
+                        GameLiving target = Body.TargetObject as GameLiving;
+                        if (npc.IsAlive && npc.Brain is KingTuscarBrain brain)
                         {
-                            AddAggroListTo(npc.Brain as KingTuscarBrain);
-                            IsPulled1 = true;
+                            if (brain != null && !brain.HasAggro && target != null && target.IsAlive)
+                                brain.AddToAggroList(target, 10);
                         }
                     }
                 }
@@ -622,6 +672,13 @@ namespace DOL.GS
             if (ad != null && ad.AttackResult == eAttackResult.Blocked)
             {
                 styleComponent.NextCombatStyle = after_block;//target blocked boss attack so use after block style
+                if(Util.Chance(50))
+                    CastSpell(Hammers_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
+            }
+            if (ad != null && ad.AttackResult == eAttackResult.Parried)
+            {
+                if (Util.Chance(50))
+                    CastSpell(Thunder_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
             }
             if (QueenKula.QueenKulaCount == 0 || (HealthPercent <= 50 && KingTuscarBrain.TuscarRage==true))
             {
@@ -746,6 +803,66 @@ namespace DOL.GS
                 return m_Thunder_aoe;
             }
         }
+        private Spell m_Hammers_aoe2;
+        private Spell Hammers_aoe2
+        {
+            get
+            {
+                if (m_Hammers_aoe2 == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
+                    spell.ClientEffect = 3541;
+                    spell.Icon = 3541;
+                    spell.TooltipId = 3541;
+                    spell.Damage = 500;
+                    spell.Name = "Mjolnir's Fury";
+                    spell.Radius = 500;
+                    spell.Range = 350;
+                    spell.SpellID = 11890;
+                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy;
+                    m_Hammers_aoe2 = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hammers_aoe2);
+                }
+                return m_Hammers_aoe2;
+            }
+        }
+        private Spell m_Thunder_aoe2;
+        private Spell Thunder_aoe2
+        {
+            get
+            {
+                if (m_Thunder_aoe2 == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 5;
+                    spell.ClientEffect = 3528;
+                    spell.Icon = 3528;
+                    spell.TooltipId = 3528;
+                    spell.Damage = 400;
+                    spell.Name = "Thor's Might";
+                    spell.Radius = 500;
+                    spell.Range = 350;
+                    spell.SpellID = 11891;
+                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Uninterruptible = true;
+                    spell.MoveCast = true;
+                    spell.DamageType = (int)eDamageType.Energy;
+                    m_Thunder_aoe2 = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Thunder_aoe2);
+                }
+                return m_Thunder_aoe2;
+            }
+        }
         private Spell m_Bleed;
         private Spell Bleed
         {
@@ -808,16 +925,17 @@ namespace DOL.AI.Brain
         public static bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (IsPulled2 == false)
+            if (HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.Brain is QueenKulaBrain)
+                        GameLiving target = Body.TargetObject as GameLiving;
+                        if (npc.IsAlive && npc.Brain is QueenKulaBrain brain)
                         {
-                            AddAggroListTo(npc.Brain as QueenKulaBrain);
-                            IsPulled2 = true;
+                            if (brain != null && !brain.HasAggro && target != null && target.IsAlive)
+                                brain.AddToAggroList(target, 10);
                         }
                     }
                 }
