@@ -181,6 +181,12 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            if (!HasAggressionTable())
+            {
+                //set state to RETURN TO SPAWN
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                Body.Health = Body.MaxHealth;
+            }
             if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
             {
                 int countPlayer = 0;
