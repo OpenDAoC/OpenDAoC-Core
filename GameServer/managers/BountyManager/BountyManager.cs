@@ -194,7 +194,7 @@ public class BountyManager
         {
             if (ActiveBounties.ContainsKey(killed.Realm))
             {
-                var realmBounties = ActiveBounties[killer.Realm];
+                var realmBounties = ActiveBounties[killed.Realm];
                 var playerBountyFound = false;
                 foreach (BountyPoster bp in realmBounties)
                 {
