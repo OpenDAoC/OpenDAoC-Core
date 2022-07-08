@@ -144,6 +144,15 @@ namespace DOL.Database
 			get { return m_emblem; }
 			set { Dirty = true;m_emblem = value; }
 		}
+		
+		protected byte m_salvageextension;
+		[DataElement(AllowDbNull = true)]
+		public virtual byte SalvageExtension
+		{
+			get { return m_salvageextension; }
+			set { Dirty = true; m_salvageextension = value; }
+		}
+		
 		protected byte m_extension;
 		[DataElement(AllowDbNull = false)]
 		public virtual byte Extension
@@ -314,6 +323,7 @@ namespace DOL.Database
 			m_emblem = template.Emblem;
 			m_count = template.PackSize;
 			m_extension = template.Extension;
+			m_salvageextension = template.SalvageExtension;
 			m_condition = template.MaxCondition;
 			m_durability = template.MaxDurability;
 			m_charges = template.Charges > 0 ? template.Charges : template.MaxCharges;
@@ -339,6 +349,7 @@ namespace DOL.Database
 			m_emblem = template.Emblem;
 			m_count = template.PackSize;
 			m_extension = template.Extension;
+			m_salvageextension = template.SalvageExtension;
 			m_condition = template.MaxCondition;
 			m_durability = template.MaxDurability;
 			m_charges = template.Charges > 0 ? template.Charges : template.MaxCharges;
@@ -359,6 +370,7 @@ namespace DOL.Database
 			m_utemplate_id = template.UTemplate_Id;
 			m_color = template.Color;
 			m_extension = template.Extension;
+			m_salvageextension = template.SalvageExtension;
 			m_slot_pos = template.SlotPosition;
 			m_count = template.Count;
 			m_creator = template.Creator;
