@@ -2128,15 +2128,7 @@ namespace DOL.GS.SalvageCalc
                 }
 
                 #endregion
-
-                #region AtlasROGs
-                
-                    if (Description.Contains("Atlas ROG"))
-                    {
-                        Yield.Count = 2;
-                    }
-                
-                #endregion
+            
 
             bool DropPenalty = false;
             //Non crafted items do not have the same worth as crafted in metal bars
@@ -2308,6 +2300,15 @@ namespace DOL.GS.SalvageCalc
                         
                         break;
                 }
+                
+                #region AtlasROGs
+                
+                if (Description.Contains("Atlas ROG"))
+                {
+                    Yield.Count = 2;
+                }
+                
+                #endregion
             return Yield;
         }
 
