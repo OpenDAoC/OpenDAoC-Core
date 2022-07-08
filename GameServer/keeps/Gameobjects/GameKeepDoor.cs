@@ -380,7 +380,7 @@ namespace DOL.GS.Keeps
 				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 			
-			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
 				GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
 			}
