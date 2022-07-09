@@ -142,7 +142,9 @@ namespace DOL.GS.GameEvents
                        $"INT: {player.GetBaseStat(eStat.INT)}\n" +
                        $"PIE: {player.GetBaseStat(eStat.PIE)}\n" +
                        $"EMP: {player.GetBaseStat(eStat.EMP)}\n" +
-                       $"CHR: {player.GetBaseStat(eStat.CHR)}\n";
+                       $"CHR: {player.GetBaseStat(eStat.CHR)}\n\n";
+            
+            message += "REMEMBER TO LOGOUT AND CLICK ON CUSTOMIZE TO DISTRIBUTE YOUR 30 STARTING POINTS.";
 
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
 
