@@ -52,7 +52,7 @@ namespace DOL.GS.GameEvents
             
             var needsAdjustment = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
                 .IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo("StatsAdjust")));
-
+            
             if (needsAdjustment != null) return;
             
             Log.Warn($"STATSADJUST - {player.Name} ({player.AccountName})");
@@ -61,9 +61,9 @@ namespace DOL.GS.GameEvents
             stsMessage +=
                 $"STR: {player.GetBaseStat(eStat.STR)} CON: {player.GetBaseStat(eStat.CON)} DEX: {player.GetBaseStat(eStat.DEX)} QUI: {player.GetBaseStat(eStat.QUI)} INT: {player.GetBaseStat(eStat.INT)} PIE: {player.GetBaseStat(eStat.PIE)} EMP: {player.GetBaseStat(eStat.EMP)} CHR: {player.GetBaseStat(eStat.CHR)}";
             Log.Warn(stsMessage);
+
             
-            var pRace = PlayerRace.AllRaces[player.Race];
-            var rBaseStats = RaceStats.GetRaceStats(pRace);
+            var rBaseStats = RaceStats.GetRaceStats(player.Race);
 
             var baseStr = (short)rBaseStats.Strength;
             var baseCon = (short)rBaseStats.Constitution;
@@ -129,18 +129,20 @@ namespace DOL.GS.GameEvents
             player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, message);
             message += "Logout and click on CUSTOMIZE to redistribute your 30 starting points.\n\n";
             
+            player.Out.SendCharStatsUpdate();
+            
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             player.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-            //
-            // message += "Your new base stats are:\n\n";
-            // message += $"STR: {player.GetBaseStat(eStat.STR)}\n" +
-            //            $"CON: {player.GetBaseStat(eStat.CON)}\n" +
-            //            $"DEX: {player.GetBaseStat(eStat.DEX)}\n" +
-            //            $"QUI: {player.GetBaseStat(eStat.QUI)}\n" +
-            //            $"INT: {player.GetBaseStat(eStat.INT)}\n" +
-            //            $"PIE: {player.GetBaseStat(eStat.PIE)}\n" +
-            //            $"EMP: {player.GetBaseStat(eStat.EMP)}\n" +
-            //            $"CHR: {player.GetBaseStat(eStat.CHR)}\n";
+            
+            message += "Your new base stats are:\n\n";
+            message += $"STR: {player.GetBaseStat(eStat.STR)}\n" +
+                       $"CON: {player.GetBaseStat(eStat.CON)}\n" +
+                       $"DEX: {player.GetBaseStat(eStat.DEX)}\n" +
+                       $"QUI: {player.GetBaseStat(eStat.QUI)}\n" +
+                       $"INT: {player.GetBaseStat(eStat.INT)}\n" +
+                       $"PIE: {player.GetBaseStat(eStat.PIE)}\n" +
+                       $"EMP: {player.GetBaseStat(eStat.EMP)}\n" +
+                       $"CHR: {player.GetBaseStat(eStat.CHR)}\n";
 
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
 
