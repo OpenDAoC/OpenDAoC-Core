@@ -154,7 +154,7 @@ namespace DOL.GS.Scripts
             
             message += "\n\n" +
                        "Perhaps you would like the challenge of the [Epic Dungeon]?";
-            
+
             SayTo(player, message);
 
             return true;
@@ -464,7 +464,10 @@ namespace DOL.GS.Scripts
                 return;
             }
             
-            Say("I'm now teleporting you to " + destination.TeleportID + ".");
+            var message = $"{Name} says, \"I'm now teleporting you to {destination.TeleportID}.\"";
+            
+            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            
             OnTeleportSpell(player, destination);
         }
 
