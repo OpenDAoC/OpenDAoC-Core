@@ -153,6 +153,13 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
+		public override bool HasAbility(string keyName)
+		{
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
