@@ -52,7 +52,7 @@ namespace DOL.GS.Quests.Albion
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Roben = null; // Start NPC
-		private static GameNPC Blythe = null; // Mob to kill
+		private static SisterBlythe Blythe = null; // Mob to kill
 
 		private static ItemTemplate statue_of_arawn = null; //sealed pouch
 		private static ItemTemplate ClericEpicBoots = null; //Shadow Shrouded Boots 
@@ -133,7 +133,7 @@ namespace DOL.GS.Quests.Albion
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 322231 && npc.Y == 671546)
 					{
-						Blythe = npc;
+						Blythe = npc as SisterBlythe;
 						break;
 					}
 
@@ -141,7 +141,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Blythe , creating it ...");
-				Blythe = new GameNPC();
+				Blythe = new SisterBlythe();
 				Blythe.Model = 67;
 				Blythe.Name = "Sister Blythe";
 				Blythe.GuildName = "";
