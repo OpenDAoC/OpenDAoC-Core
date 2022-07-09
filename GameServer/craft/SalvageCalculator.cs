@@ -119,6 +119,7 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_w
 using System.Text.RegularExpressions;
 
 using DOL.Database;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS.SalvageCalc
 {
@@ -2300,7 +2301,9 @@ namespace DOL.GS.SalvageCalc
                         
                         break;
                 }
-                
+
+                Yield.Count = (int) (Yield.Count * Properties.SALVAGE_YIELD_MULTIPLIER);
+
                 #region AtlasROGs
                 
                 if (Description.Contains("Atlas ROG"))
