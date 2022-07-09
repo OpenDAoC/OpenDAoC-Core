@@ -28,6 +28,7 @@ namespace DOL.GS.Realm
 
 		private static Dictionary<PlayerRace, RaceStats> Stats = new Dictionary<PlayerRace, RaceStats>()
 		{
+			{PlayerRace.Briton, new RaceStats(60, 60, 60, 60, 60, 60, 60, 60)},
 			{PlayerRace.Avalonian, new RaceStats(45, 45, 60, 70, 80, 60, 60, 60)},
 			{PlayerRace.Highlander, new RaceStats(70, 70, 50, 50, 60, 60, 60, 60)},
 			{PlayerRace.Saracen, new RaceStats(50, 50, 80, 60, 60, 60, 60, 60)},
