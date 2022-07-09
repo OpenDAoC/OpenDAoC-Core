@@ -37,7 +37,7 @@ namespace DOL.GS.Housing
 	{
 		public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static ECSGameTimer CheckRentTimer = null;
+		private static AuxECSGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
 		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
@@ -112,7 +112,7 @@ namespace DOL.GS.Housing
 			if (CheckRentTimer == null)
 			{
 				CheckRentTimer =
-					new ECSGameTimer(null, CheckRents, TimerInterval);
+					new AuxECSGameTimer(null, CheckRents, TimerInterval);
 			}
 
 			return true;
@@ -757,7 +757,7 @@ namespace DOL.GS.Housing
 			return Properties.HOUSING_RENT_COTTAGE;
 		}
 
-		public static int CheckRents(ECSGameTimer timer)
+		public static int CheckRents(AuxECSGameTimer timer)
 		{
 			if (Properties.RENT_DUE_DAYS == 0)
 				return 0;

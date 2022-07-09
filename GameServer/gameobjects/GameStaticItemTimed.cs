@@ -99,7 +99,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The callback function that will remove this bag after some time
 		/// </summary>
-		protected class RemoveItemAction : RegionECSAction
+		protected class RemoveItemAction : AuxRegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new remove action
@@ -112,7 +112,7 @@ namespace DOL.GS
 			/// <summary>
 			/// The callback function that will remove this bag after some time
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(AuxECSGameTimer timer)
 			{
 				GameStaticItem item = (GameStaticItem)m_actionSource;
 				//remove this object from the world after some time

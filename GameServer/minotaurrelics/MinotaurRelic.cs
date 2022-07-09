@@ -46,7 +46,7 @@ namespace DOL.GS
 		#region Declarations
 		DBMinotaurRelic m_dbRelic;
 		Timer timer = null;
-		public ECSGameTimer respawntimer = null;
+		public AuxECSGameTimer respawntimer = null;
 		protected int m_spawny;
 		protected int m_spawnx;
 		protected int m_spawnz;
@@ -494,7 +494,7 @@ namespace DOL.GS
 				respawntimer.Stop();
 				respawntimer = null;
 			}
-			respawntimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback),
+			respawntimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback),
 			                               Util.Random(MinotaurRelicManager.MIN_RESPAWN_TIMER, MinotaurRelicManager.MAX_RESPAWN_TIMER));
 		}
 
@@ -503,7 +503,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer"></param>
 		/// <returns></returns>
-		protected override int RespawnTimerCallback(ECSGameTimer respawnTimer)
+		protected override int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
 		{
 			if (respawntimer != null)
 			{
