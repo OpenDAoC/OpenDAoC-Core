@@ -131,16 +131,16 @@ namespace DOL.GS.GameEvents
             
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             player.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-            
-            message += "Your new base stats are:\n\n";
-            message += $"STR: {player.GetBaseStat(eStat.STR)}\n" +
-                       $"CON: {player.GetBaseStat(eStat.CON)}\n" +
-                       $"DEX: {player.GetBaseStat(eStat.DEX)}\n" +
-                       $"QUI: {player.GetBaseStat(eStat.QUI)}\n" +
-                       $"INT: {player.GetBaseStat(eStat.INT)}\n" +
-                       $"PIE: {player.GetBaseStat(eStat.PIE)}\n" +
-                       $"EMP: {player.GetBaseStat(eStat.EMP)}\n" +
-                       $"CHR: {player.GetBaseStat(eStat.CHR)}\n";
+            //
+            // message += "Your new base stats are:\n\n";
+            // message += $"STR: {player.GetBaseStat(eStat.STR)}\n" +
+            //            $"CON: {player.GetBaseStat(eStat.CON)}\n" +
+            //            $"DEX: {player.GetBaseStat(eStat.DEX)}\n" +
+            //            $"QUI: {player.GetBaseStat(eStat.QUI)}\n" +
+            //            $"INT: {player.GetBaseStat(eStat.INT)}\n" +
+            //            $"PIE: {player.GetBaseStat(eStat.PIE)}\n" +
+            //            $"EMP: {player.GetBaseStat(eStat.EMP)}\n" +
+            //            $"CHR: {player.GetBaseStat(eStat.CHR)}\n";
 
             player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
 
