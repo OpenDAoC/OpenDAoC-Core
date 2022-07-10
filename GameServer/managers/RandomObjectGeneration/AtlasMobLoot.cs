@@ -1,6 +1,8 @@
 ﻿using DOL.AI.Brain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DOL.Database;
 
 namespace DOL.GS {
 
@@ -11,7 +13,7 @@ namespace DOL.GS {
     public class ROGMobGenerator : LootGeneratorBase {
 
         //base chance in %
-        public static ushort BASE_ROG_CHANCE = 25;
+        public static ushort BASE_ROG_CHANCE = 16;
 
 
         /// <summary>
@@ -53,20 +55,63 @@ namespace DOL.GS {
                 }
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((killedcon + 1) * 3);
+                int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 3);
 
-                int lvl = mob.Level + 1;
-                if (lvl < 1)
-                {
-                    lvl = 1;
-                }
+                //chance = 100;
 
                 //players below level 50 will always get loot for their class, 
                 //or a valid class for one of their groupmates
                 if (player.Group != null)
                 {
-                    classForLoot = GetRandomClassFromGroup(player.Group);
-                    chance += 4 * player.Group.GetPlayersInTheGroup().Count; //4% extra drop chance per group member
+                    var MaxDropCap = Math.Round((decimal) (player.Group.MemberCount)/3);
+                    if (MaxDropCap < 1) MaxDropCap = 1;
+                    if (mob.Level > 65) MaxDropCap++; //increase drop cap beyond lvl 60
+                    int guaranteedDrop = mob.Level > 67 ? 1 : 0; //guarantee a drop for very high level mobs
+                    
+                    if (mob.Level > 27)
+                        chance -= 3;
+
+                    if (mob.Level > 40)
+                        chance -= 3;
+                    
+                    if (mob.Level < 5)
+                    {
+                        chance += 75;
+                    }
+                    else if (mob.Level < 10)
+                        chance += (100 - mob.Level * 10);
+
+                    int numDrops = 0;
+                    //roll for an item for each player in the group
+                    foreach (var groupPlayer in player.Group.GetPlayersInTheGroup().ToArray())
+                    {
+                        if(groupPlayer.GetDistance(player) > WorldMgr.VISIBILITY_DISTANCE)
+                            continue;
+                        
+                        if (Util.Chance(chance) && numDrops < MaxDropCap)
+                        {
+                            classForLoot = GetRandomClassFromGroup(player.Group);
+                            var item = GenerateItemTemplate(player, classForLoot, (byte)(mob.Level + 1), killedcon);
+                            loot.AddFixed(item, 1);
+                            numDrops++;
+                        }
+                    }
+
+                    //if we're under the cap, add in the guaranteed drop
+                    if (numDrops < MaxDropCap && guaranteedDrop > 0)
+                    {
+                        classForLoot = GetRandomClassFromGroup(player.Group);
+                        var item = GenerateItemTemplate(player, classForLoot, (byte)(mob.Level + 1), killedcon);
+                        loot.AddFixed(item, 1);
+                    }
+
+                    if(player.Level < 50 || mob.Level < 50)
+                    {
+                        var item = AtlasROGManager.GenerateBeadOfRegeneration();
+                        loot.AddRandom(2, item, 1);
+                    }
+                    //classForLoot = GetRandomClassFromGroup(player.Group);
+                    //chance += 4 * player.Group.GetPlayersInTheGroup().Count; //4% extra drop chance per group member
                 }
                 else
                 {
@@ -75,33 +120,51 @@ namespace DOL.GS {
                     {
                         classForLoot = GetRandomClassFromRealm(player.Realm);
                     }
+
+                    chance += 9; //solo drop bonus
+                    
+                    ItemTemplate item = null;
+
+                    if (mob.Level < 5)
+                    {
+                        chance += 75;
+                    }
+                    else if (mob.Level < 10)
+                        chance += (100 - mob.Level * 10);
+
+                    if (Util.Chance(chance))
+                    {
+                        GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
+                        item = tmp;
+                        item.MaxCount = 1;
+                        loot.AddFixed(item, 1);
+                    }
+                    //tmp.GenerateItemQuality(killedcon);
+                    //tmp.CapUtility(mob.Level + 1);
+                    
+                    /*
+                    if (mob.Level < 5)
+                    {
+                        chance += 50;
+                        loot.AddRandom(chance, item, 1);
+                    }
+                    else if (mob.Level < 10)
+                        loot.AddRandom(chance + (100 - mob.Level * 10), item, 1);
+                    //25% bonus drop rate at lvl 5, down to normal chance at level 10
+                    else
+                        loot.AddRandom(chance, item, 1);
+                        */
+
+                    if(player.Level < 50 || mob.Level < 50)
+                    {
+                        item = AtlasROGManager.GenerateBeadOfRegeneration();
+                        loot.AddRandom(2, item, 1);
+                    }
                 }
 
                 //chance = 100;
 
-                Database.ItemTemplate item = null;
-                
-                
-                GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
-                tmp.GenerateItemQuality(killedcon);
-                //tmp.CapUtility(mob.Level + 1);
-                item = tmp;
-                item.MaxCount = 1;
-                if (mob.Level < 5)
-                {
-                    loot.AddRandom(100, item, 1);
-                }
-                else if (mob.Level < 10)
-                    loot.AddRandom(chance + (100 - mob.Level * 10), item, 1);
-                //50% bonus drop rate at lvl 5, down to normal chance at level 10
-                else
-                    loot.AddRandom(chance, item, 1);
-
-                if(player.Level < 50 || mob.Level < 50)
-                {
-                    item = AtlasROGManager.GenerateBeadOfRegeneration();
-                    loot.AddRandom(2, item, 1);
-                }
+               
 
             }
             catch
@@ -110,6 +173,21 @@ namespace DOL.GS {
             }
 
             return loot;
+        }
+
+
+        private ItemTemplate GenerateItemTemplate(GamePlayer player, eCharacterClass classForLoot, byte lootLevel, int killedcon)
+        {
+            ItemTemplate item = null;
+                
+                
+            GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel);
+            tmp.GenerateItemQuality(killedcon);
+            //tmp.CapUtility(mob.Level + 1);
+            item = tmp;
+            item.MaxCount = 1;
+
+            return item;
         }
 
         private eCharacterClass GetRandomClassFromGroup(Group group)

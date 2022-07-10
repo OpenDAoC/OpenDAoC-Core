@@ -88,6 +88,12 @@ namespace DOL.GS.Commands
 
 		protected void CreateGuild(GamePlayer player, byte response)
 		{
+			if (player.Group == null)
+			{
+				player.Out.SendMessage("There was an issue processing guild request. Please try again.", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			#region Player Declines
 			if (response != 0x01)
 			{
@@ -2449,11 +2455,6 @@ namespace DOL.GS.Commands
 							if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Dues))
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
-							}
-							if (client.Player.Guild.GuildLevel < 5)
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.GuildLevelReq"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
 							if (args[2] == null)

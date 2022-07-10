@@ -108,6 +108,21 @@
 		</Layout>
 	</appender>
 
+	<!-- Define our DualIP Action Logger -->
+	<logger name="dualip">
+		<additivity value="true" />
+		<level value="ALL" />
+		<appender-ref ref="DualIPFileAppender" />
+	</logger>
+	<!-- Define our file output -->
+	<appender name="DualIPFileAppender" type="log4net.Appender.RollingFileAppender" >
+		<appendtofile value="true" />
+		<file value="./logs/DualIP.log" />
+		<Layout type="log4net.Layout.PatternLayout">
+			<param name="ConversionPattern" value="%date - %message%newline" />
+		</Layout>
+	</appender>
+
 	<!-- Define our Inventories Action Logger -->
 	<logger name="inventories">
 		<additivity value="false" />

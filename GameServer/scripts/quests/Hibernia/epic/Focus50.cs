@@ -50,9 +50,10 @@ namespace DOL.GS.Quests.Hibernia
 		protected const string questTitle = "Unnatural Powers";
 		protected const int minimumLevel = 50;
 		protected const int maximumLevel = 50;
+		private int _GreenMawAddKilled = 0;
 
 		private static GameNPC Ainrebh = null; // Start NPC
-		private static GameNPC GreenMaw = null; // Mob to kill
+		private static GreenMaw GreenMaw = null; // Mob to kill
 
 		private static ItemTemplate GreenMaw_key = null; //ball of flame
 		private static ItemTemplate RangerEpicBoots = null; //Mist Shrouded Boots 
@@ -152,7 +153,7 @@ namespace DOL.GS.Quests.Hibernia
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 488306 && npc.Y == 521440)
 					{
-						GreenMaw = npc;
+						GreenMaw = npc as GreenMaw;
 						break;
 					}
 
@@ -160,7 +161,7 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find GreenMaw , creating it ...");
-				GreenMaw = new GameNPC();
+				GreenMaw = new GreenMaw();
 				GreenMaw.Model = 146;
 				GreenMaw.Name = "Green Maw";
 				GreenMaw.GuildName = "";
@@ -1316,11 +1317,19 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (quest != null)
 				{
-					Ainrebh.SayTo(player, "Check your Journal for instructions!");
+					switch (quest.Step)
+					{
+						case 1:
+							Ainrebh.SayTo(player, "Check your Journal for instructions!");
+							break;
+						case 2:
+							Ainrebh.SayTo(player, "You have [earned] this Epic Armor!");
+							break;
+					}
 				}
 				else
 				{
-					Ainrebh.SayTo(player, "Hibernia needs your [services]");
+					Ainrebh.SayTo(player, "Hibernia needs your [services]!");
 				}
 
 			}
@@ -1342,13 +1351,29 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "earned":
+							if (quest.Step == 2)
+							{
+								quest.FinishQuest();
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
 			}
-
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs)args;
+				if (quest != null)
+				{
+					if (rArgs.Item.Id_nb == GreenMaw_key.Id_nb)
+					{
+						Ainrebh.SayTo(player, "Thank you " + player.Name + ", you have [earned] your Epic Armor.");
+					}
+				}
+			}
 		}
 
 		public override bool CheckQuestQualification(GamePlayer player)
@@ -1450,7 +1475,7 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out GreenMaw in Cursed Forest Loc 37k,38k kill it!";
+						return "[Step #1] Seek out Green Maw in Cursed Forest Loc 37k,38k kill it!";
 					case 2:
 						return "[Step #2] Return to Ainrebh and give her Green Maw's Key!";
 				}
@@ -1465,30 +1490,26 @@ namespace DOL.GS.Quests.Hibernia
 			if (player==null || player.IsDoingQuest(typeof (Focus_50)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-				if (gArgs.Target.Name == GreenMaw.Name)
+				if (gArgs.Target is GreenMawAdd3)//it must be last yellow adds 
+                {
+					_GreenMawAddKilled++;//count killed adds here
+				}
+
+				if (_GreenMawAddKilled >= 2)
 				{
 					m_questPlayer.Out.SendMessage("You collect Green Maw's Key", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, GreenMaw_key);
 					Step = 2;
 					return;
 				}
-
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-            {
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Ainrebh.Name && gArgs.Item.Id_nb == GreenMaw_key.Id_nb)
-				{
-					Ainrebh.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
-				}
-			}
+			}		
 		}
 
 		public override void AbortQuest()

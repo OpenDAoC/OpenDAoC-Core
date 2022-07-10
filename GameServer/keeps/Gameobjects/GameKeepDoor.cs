@@ -19,11 +19,15 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+
 
 using log4net;
 
@@ -187,9 +191,6 @@ namespace DOL.GS.Keeps
 				if (Component == null || Component.Keep == null)
 					return false;
 
-                if (Component.Keep.Region == 252)
-                    return true;
-
                 if (Component.Keep is GameKeepTower)
 				{
 					if (DoorIndex == 1)
@@ -332,9 +333,9 @@ namespace DOL.GS.Keeps
 				if (m_oldHealthPercent != HealthPercent)
 				{
 					m_oldHealthPercent = HealthPercent;
-					foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
-						client.Out.SendObjectUpdate(this);
+						player.Client.Out.SendObjectUpdate(this);
 					}
 				}
 			}
@@ -379,7 +380,7 @@ namespace DOL.GS.Keeps
 				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 			
-			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
 				GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
 			}
@@ -621,6 +622,7 @@ namespace DOL.GS.Keeps
 
 		public override void StartHealthRegeneration()
 		{
+			if (!IsAttackableDoor) return; //Doors don't regen health if they are not attackable
 			if (m_repairTimer != null && m_repairTimer.IsAlive) return; 
 			m_repairTimer = new ECSGameTimer(this);
 			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
@@ -830,10 +832,15 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void BroadcastDoorStatus()
 		{
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
-				client.Player.SendDoorUpdate(this);
-			}
+				player.SendDoorUpdate(this);
+			});
+
+			// foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+			// {
+			// 	client.Player.SendDoorUpdate(this);
+			// }
 		}
 
 		protected ECSGameTimer m_repairTimer;

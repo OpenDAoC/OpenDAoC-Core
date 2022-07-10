@@ -44,6 +44,7 @@ namespace DOL.GS
         public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
+        public ISpellHandler SpellHandler { get; set; }
 
         /// <summary>
 		/// The icon for this effect.
@@ -97,6 +98,7 @@ namespace DOL.GS
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;
             NextTick = 0;
+            SpellHandler = initParams.SpellHandler;
         }
 
         public virtual long GetRemainingTimeForClient()

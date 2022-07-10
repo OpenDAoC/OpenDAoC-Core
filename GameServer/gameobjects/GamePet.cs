@@ -114,9 +114,9 @@ namespace DOL.GS
 			if (SummonSpellDamage >= 0)
 				newLevel = (byte)SummonSpellDamage;
 			else if (!(Owner is GamePet))
-				newLevel = (byte)(Owner.Level * SummonSpellDamage * -0.01);
+				newLevel = (byte)((Owner?.Level ?? 0) * SummonSpellDamage * -0.01);
 			else if (RootOwner is GameLiving summoner)
-				newLevel = (byte)(summoner.Level * SummonSpellDamage * -0.01);
+				newLevel = (byte)(summoner?.Level * SummonSpellDamage * -0.01);
 
 			if (SummonSpellValue > 0  && newLevel > SummonSpellValue)
 				newLevel = (byte)SummonSpellValue;
@@ -562,6 +562,7 @@ namespace DOL.GS
 		/// Targets the pet has buffed, to allow correct buff removal when the pet dies
 		/// </summary>
 		private List<GameLiving> m_buffedTargets = null;
+		private object _buffedTargetsLock = new object();
 
 		/// <summary>
 		/// Add a target to the pet's list of buffed targets
@@ -569,14 +570,25 @@ namespace DOL.GS
 		/// <param name="living">Target to add to the list</param>
 		public void AddBuffedTarget(GameLiving living)
 		{
+			
 			if (living == this)
 				return;
 
 			if (m_buffedTargets == null)
-				m_buffedTargets = new List<GameLiving>(1);
+			{
+				lock(_buffedTargetsLock)
+				{
+					if (m_buffedTargets == null)
+						m_buffedTargets = new List<GameLiving>(1);
+				}
+			}
 
-			if (!m_buffedTargets.Contains(living))
-				m_buffedTargets.Add(living);
+			lock(_buffedTargetsLock)
+			{
+				if (!m_buffedTargets.Contains(living))
+					m_buffedTargets.Add(living);
+			}
+			
 		}
 
 		/// <summary>
@@ -584,13 +596,16 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StripBuffs()
 		{
-			if (m_buffedTargets != null)
-				foreach (GameLiving living in m_buffedTargets)
-					if (living != this && living.EffectList != null)
-						foreach (IGameEffect effect in living.EffectList)
-							if (effect is GameSpellEffect spellEffect && spellEffect.SpellHandler != null 
-								&& spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster == this)
-								effect.Cancel(false);
+			lock(_buffedTargetsLock)
+			{
+				if (m_buffedTargets != null)
+					foreach (GameLiving living in m_buffedTargets)
+						if (living != this && living.EffectList != null)
+							foreach (IGameEffect effect in living.EffectList)
+								if (effect is GameSpellEffect spellEffect && spellEffect.SpellHandler != null 
+									&& spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster == this)
+									effect.Cancel(false);
+			}
 		}
 		
 		/// <summary>

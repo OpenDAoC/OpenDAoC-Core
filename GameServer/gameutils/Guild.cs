@@ -19,7 +19,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.Keeps;
@@ -267,7 +270,8 @@ namespace DOL.GS
 			m_DBguild.Bank += amount;
 
             InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
-            donating.Out.SendUpdatePlayer();
+			donating.SaveIntoDatabase();
+			donating.Out.SendUpdatePlayer();			
 			return;
 		}
 		public void WithdrawGuildBank(GamePlayer withdraw, double amount)
@@ -850,17 +854,21 @@ namespace DOL.GS
 		/// <param name="loc">message location</param>
 		public void SendMessageToGuildMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
 		{
-			lock (m_onlineGuildPlayers)
+			List<GamePlayer> guildPlayers = new List<GamePlayer>();
+			lock (m_memberListLock)
 			{
-				foreach (GamePlayer pl in m_onlineGuildPlayers.Values)
-				{
-					if (!HasRank(pl, Guild.eRank.GcHear))
-					{
-						continue;
-					}
-					pl.Out.SendMessage(msg, type, loc);
-				}
+				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
+			
+			foreach (GamePlayer pl in guildPlayers)
+			{
+				if (!HasRank(pl, Guild.eRank.GcHear))
+				{
+					continue;
+				}
+				pl.Out.SendMessage(msg, type, loc);
+			}
+			
 		}
 
 		/// <summary>
@@ -1048,18 +1056,27 @@ namespace DOL.GS
 			mes += ",\"" + player.Guild.Motd + '\"'; // Guild Motd
 			mes += ",\"" + player.Guild.Omotd + '\"'; // Guild oMotd
 			player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
-			player.Guild.SaveIntoDatabase();
 		}
 
 		public void UpdateGuildWindow()
 		{
-			lock (m_onlineGuildPlayers)
+			List<GamePlayer> guildPlayers = new List<GamePlayer>();
+			lock (m_memberListLock)
 			{
-				foreach (GamePlayer player in m_onlineGuildPlayers.Values)
-				{
-					player.Guild.UpdateMember(player);
-				}
+				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
+			
+			Parallel.ForEach(guildPlayers, player =>
+			{
+				player.Guild.UpdateMember(player);
+			});
+			
+			/*
+			foreach (GamePlayer player in guildPlayers)
+			{
+				player.Guild.UpdateMember(player);
+			}*/
+			if(guildPlayers.Count > 0 && guildPlayers[0] != null) guildPlayers[0].Guild.SaveIntoDatabase();
 		}
 	}
 }

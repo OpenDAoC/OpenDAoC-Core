@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -40,6 +41,7 @@ using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
 using FiniteStateMachine;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -61,6 +63,8 @@ namespace DOL.GS
 		public const int CONST_WALKTOTOLERANCE = 25;
 
 		private int m_databaseLevel;
+		
+		public bool NeedsBroadcastUpdate { get; set; }
 
 		
 		#region Formations/Spacing
@@ -192,7 +196,8 @@ namespace DOL.GS
 				ushort oldHeading = base.Heading;
 				base.Heading = value;
 				if (base.Heading != oldHeading)
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+				//BroadcastUpdate();
 			}
 		}
 
@@ -765,7 +770,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsVisibleToPlayers
 		{
-			get { return (uint)Environment.TickCount - m_lastVisibleToPlayerTick < 60000; }
+			get { return (uint)GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < 60000; }
 		}
 
 		/// <summary>
@@ -826,7 +831,8 @@ namespace DOL.GS
 				if (base.CurrentSpeed != value)
 				{
 					base.CurrentSpeed = value;
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+					//BroadcastUpdate();
 				}
 			}
 		}
@@ -1116,9 +1122,9 @@ namespace DOL.GS
 
 				base.TargetObject = newTarget;
 
-				if (previousTarget != null && newTarget != previousTarget)
-					previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
-										  new SwitchedTargetEventArgs(previousTarget, newTarget));
+				// if (previousTarget != null && newTarget != previousTarget)
+				// 	previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
+				// 						  new SwitchedTargetEventArgs(previousTarget, newTarget));
 			}
 		}
 
@@ -1200,7 +1206,7 @@ namespace DOL.GS
 		{
 			if (IsStunned || IsMezzed) return;
 
-			Notify(GameNPCEvent.TurnTo, this, new TurnToEventArgs(tx, ty));
+			// Notify(GameNPCEvent.TurnTo, this, new TurnToEventArgs(tx, ty));
 
 			if (sendUpdate)
 				Heading = GetHeading(new Point2D(tx, ty));
@@ -1226,7 +1232,7 @@ namespace DOL.GS
 		{
 			if (IsStunned || IsMezzed) return;
 
-			Notify(GameNPCEvent.TurnToHeading, this, new TurnToHeadingEventArgs(heading));
+			// Notify(GameNPCEvent.TurnToHeading, this, new TurnToHeadingEventArgs(heading));
 
 			if (sendUpdate)
 				if (Heading != heading) Heading = heading;
@@ -1292,7 +1298,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Restores the NPC heading after some time
 		/// </summary>
-		protected class RestoreHeadingAction : RegionAction
+		protected class RestoreHeadingAction : RegionECSAction
 		{
 			/// <summary>
 			/// The NPCs old heading
@@ -1318,20 +1324,22 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 
 				npc.TempProperties.removeProperty(RESTORE_HEADING_ACTION_PROP);
 
-				if (npc.ObjectState != eObjectState.Active) return;
-				if (!npc.IsAlive) return;
-				if (npc.attackComponent.AttackState) return;
-				if (npc.IsMoving) return;
-				if (npc.Equals(m_oldPosition)) return;
-				if (npc.Heading == m_oldHeading) return; // already set? oO
+				if (npc.ObjectState != eObjectState.Active) return 0;
+				if (!npc.IsAlive) return 0;
+				if (npc.attackComponent.AttackState) return 0;
+				if (npc.IsMoving) return 0;
+				if (npc.Equals(m_oldPosition)) return 0;
+				if (npc.Heading == m_oldHeading) return 0; // already set? oO
 
 				npc.TurnTo(m_oldHeading);
+
+				return 0;
 			}
 		}
 
@@ -1346,7 +1354,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the last this this NPC was actually update to at least one player.
 		/// </summary>
-		public uint LastVisibleToPlayersTickCount
+		public long LastVisibleToPlayersTickCount
 		{
 			get { return m_lastVisibleToPlayerTick; }
 		}
@@ -1354,7 +1362,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delayed action that fires an event when an NPC arrives at its target
 		/// </summary>
-		protected class ArriveAtTargetAction : RegionAction
+		protected class ArriveAtTargetAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new ArriveAtTargetAction
@@ -1370,17 +1378,33 @@ namespace DOL.GS
 			/// This time was estimated using walking speed and distance.
 			/// It fires the ArriveAtTarget event
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 
 				bool arriveAtSpawnPoint = npc.IsReturningToSpawnPoint;
 
 				npc.StopMoving();
-				npc.Notify(GameNPCEvent.ArriveAtTarget, npc);
+				//npc.Notify(GameNPCEvent.ArriveAtTarget, npc);
 
 				if (arriveAtSpawnPoint)
-					npc.Notify(GameNPCEvent.ArriveAtSpawnPoint, npc);
+				{
+					npc.TurnTo(npc.SpawnHeading);
+					return 0;
+				}
+
+				if (!npc.IsMovingOnPath)
+					return 0;
+
+				if (npc.CurrentWayPoint != null)
+				{
+					WaypointDelayAction waitTimer = new WaypointDelayAction(npc);
+					waitTimer.Start(Math.Max(1, npc.CurrentWayPoint.WaitTime * 100));
+				}
+				else
+					npc.StopMovingOnPath();
+
+				return 0;
 			}
 		}
 
@@ -1388,7 +1412,7 @@ namespace DOL.GS
 		{
 			if (m_arriveAtTargetAction != null)
 			{
-				m_arriveAtTargetAction.Stop();
+				m_arriveAtTargetAction?.Stop();
 				m_arriveAtTargetAction = null;
 			}
 		}
@@ -1421,7 +1445,7 @@ namespace DOL.GS
 			Y = target.Y;
 			Z = target.Z;
 
-			MovementStartTick = Environment.TickCount;
+			MovementStartTick = GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -1476,13 +1500,14 @@ namespace DOL.GS
 
 			m_Heading = GetHeading(TargetPosition);
 			m_currentSpeed = speed;
-			MovementStartTick = Environment.TickCount; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
+			MovementStartTick = GameLoop.GameLoopTime; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
 			UpdateTickSpeed();
 			
-			Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
+			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
 			
 			StartArriveAtTargetAction(GetTicksToArriveAt(TargetPosition, speed));
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		private void StartArriveAtTargetAction(int requiredTicks)
@@ -1553,9 +1578,10 @@ namespace DOL.GS
 
 			m_currentSpeed = speed;
 
-			MovementStartTick = Environment.TickCount;
+			MovementStartTick = GameLoop.GameLoopTime;
 			UpdateTickSpeed();
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		/// <summary>
@@ -1592,7 +1618,8 @@ namespace DOL.GS
 			}
 
 			SavePosition(target);
-			BroadcastUpdate();
+			NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		public const int STICKMINIMUMRANGE = 75;
@@ -1609,11 +1636,16 @@ namespace DOL.GS
 				if (target == null || target.ObjectState != eObjectState.Active)
 					return;
 			
-				if (m_followTimer.IsAlive && m_followTarget.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
+				if (m_followTimer != null && m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
 					return;
-				else
+				else if (m_followTimer != null)
 				{
 					m_followTimer.Stop();
+				}
+				else if (m_followTimer == null)
+				{
+					m_followTimer = new ECSGameTimer(this);
+					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
 				}
 			
 				m_followMaxDist = maxDistance;
@@ -1697,7 +1729,7 @@ namespace DOL.GS
 			if (followLiving != null && !followLiving.IsAlive)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				return 0;
 			}
 
@@ -1705,7 +1737,7 @@ namespace DOL.GS
 			if (followTarget == null || followTarget.ObjectState != eObjectState.Active || CurrentRegionID != followTarget.CurrentRegionID)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				return 0;
 			}
 
@@ -1722,7 +1754,7 @@ namespace DOL.GS
 			if ((int)distance > m_followMaxDist)
 			{
 				StopFollowing();
-				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				this.WalkToSpawn();
 				return 0;
 			}
@@ -1737,14 +1769,14 @@ namespace DOL.GS
 				{
 					if (attackComponent.AttackState && brain != null && followLiving != null)
 					{
-						long seconds = 20 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
+						long seconds = 25 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
 						long lastattacked = LastAttackTick;
 						long lasthit = LastAttackedByEnemyTick;
 						if ((GameLoop.GameLoopTime - lastattacked > seconds * 1000 && GameLoop.GameLoopTime - lasthit > seconds * 1000)
 							&& lasthit != 0)
 						{
 							//StopFollow();
-							Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
+							//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 							//brain.ClearAggroList();
 							//this.WalkToSpawn();
 							LastAttackedByEnemyTickPvE = 0;
@@ -1835,7 +1867,8 @@ namespace DOL.GS
 			bool old = IsTurningDisabled;
 			base.DisableTurning(add);
 			if (old != IsTurningDisabled)
-				BroadcastUpdate();
+				NeedsBroadcastUpdate = true;
+			//BroadcastUpdate();
 		}
 
 		#endregion
@@ -1917,10 +1950,10 @@ namespace DOL.GS
 
 			if (CurrentWayPoint != null)
 			{
-				GameEventMgr.AddHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
+				//GameEventMgr.AddHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
 				WalkTo(CurrentWayPoint, Math.Min(speed, (short)CurrentWayPoint.MaxSpeed));
 				m_IsMovingOnPath = true;
-				Notify(GameNPCEvent.PathMoveStarts, this);
+				//Notify(GameNPCEvent.PathMoveStarts, this);
 			}
 			else
 			{
@@ -1936,9 +1969,17 @@ namespace DOL.GS
 			if (!IsMovingOnPath)
 				return;
 
-			GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
-			Notify(GameNPCEvent.PathMoveEnds, this);
 			m_IsMovingOnPath = false;
+			
+			//GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
+			//Notify(GameNPCEvent.PathMoveEnds, this);
+			if (this is GameTaxi || this is GameTaxiBoat)
+			{
+				StopMoving();
+				RemoveFromWorld();
+			}
+			
+			
 		}
 
 		/// <summary>
@@ -1964,7 +2005,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delays movement to the next waypoint
 		/// </summary>
-		protected class WaypointDelayAction : RegionAction
+		protected class WaypointDelayAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new WaypointDelayAction
@@ -1978,11 +2019,11 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC npc = (GameNPC)m_actionSource;
 				if (!npc.IsMovingOnPath)
-					return;
+					return 0;
 				PathPoint oldPathPoint = npc.CurrentWayPoint;
 				PathPoint nextPathPoint = npc.CurrentWayPoint.Next;
 				if ((npc.CurrentWayPoint.Type == ePathType.Path_Reverse) && (npc.CurrentWayPoint.FiredFlag))
@@ -1995,7 +2036,7 @@ namespace DOL.GS
 						case ePathType.Loop:
 							{
 								npc.CurrentWayPoint = MovementMgr.FindFirstPathPoint(npc.CurrentWayPoint);
-								npc.Notify(GameNPCEvent.PathMoveStarts, npc);
+								//npc.Notify(GameNPCEvent.PathMoveStarts, npc);
 								break;
 							}
 						case ePathType.Once:
@@ -2026,6 +2067,8 @@ namespace DOL.GS
 				{
 					npc.StopMovingOnPath();
 				}
+
+				return 0;
 			}
 		}
 		#endregion
@@ -2572,6 +2615,13 @@ namespace DOL.GS
 				AggroRange = template.AggroRange
 			};
 		}
+		
+		public void UpdateNPCEquipmentAppearance()
+		{
+			if (ObjectState != eObjectState.Active) return;
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				player.Out.SendLivingEquipmentUpdate(this);
+		}
 
 		/// <summary>
 		/// Switches the active weapon to another one
@@ -2892,6 +2942,7 @@ namespace DOL.GS
 
 			Notify(GameNPCEvent.RiderMount, this, new RiderMountEventArgs(rider, this));
 			int slot = GetFreeArrayLocation();
+			if(slot == -1) return false; //full
 			Riders[slot] = rider;
 			rider.Steed = this;
 			return true;
@@ -3048,7 +3099,7 @@ namespace DOL.GS
 		{
 			base.BroadcastUpdate();
 
-			m_lastUpdateTickCount = (uint)Environment.TickCount;
+			m_lastUpdateTickCount = (uint)GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -3057,7 +3108,7 @@ namespace DOL.GS
 		/// </summary>
 		public void NPCUpdatedCallback()
 		{
-			m_lastVisibleToPlayerTick = (uint)Environment.TickCount;
+			m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
 			lock (BrainSync)
 			{
 				ABrain brain = Brain;
@@ -3089,7 +3140,7 @@ namespace DOL.GS
 			}
 
 			if (anyPlayer)
-				m_lastVisibleToPlayerTick = (uint)Environment.TickCount;
+				m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
 
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
@@ -4049,7 +4100,7 @@ namespace DOL.GS
 
 		//}
 
-		private int scalingFactor = 15;
+		private int scalingFactor = Properties.GAMENPC_SCALING;
 
 		private int orbsReward = 0;
 		
@@ -4237,36 +4288,43 @@ namespace DOL.GS
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
+				
+				HybridDictionary XPGainerList = new HybridDictionary();
 				lock (m_xpGainers.SyncRoot)
 				{
-					if (m_xpGainers.Keys.Count == 0) return false;
-					foreach (DictionaryEntry de in m_xpGainers)
+					foreach (DictionaryEntry gainer in m_xpGainers)
 					{
-						GameObject obj = (GameObject)de.Key;
-						if (obj is GamePlayer)
-						{
-							//If a gameplayer with privlevel > 1 attacked the
-							//mob, then the players won't gain xp ...
-							if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
-								return false;
-							//If a player to which we are gray killed up we
-							//aren't worth anything either
-							if (((GamePlayer)obj).IsObjectGreyCon(this))
-								return false;
-						}
-						else
-						{
-							//If object is no gameplayer and realm is != none
-							//then it means that a npc has hit this living and
-							//it is not worth any xp ...
-							//if(obj.Realm != (byte)eRealm.None)
-							//If grey to at least one living then no exp
-							if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
-								return false;
-						}
+						XPGainerList.Add(gainer.Key, gainer.Value);
 					}
-					return true;
 				}
+				if (XPGainerList.Keys.Count == 0) return false;
+				foreach (DictionaryEntry de in XPGainerList)
+				{
+					GameObject obj = (GameObject)de.Key;
+					if (obj is GamePlayer)
+					{
+						//If a gameplayer with privlevel > 1 attacked the
+						//mob, then the players won't gain xp ...
+						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
+							return false;
+						//If a player to which we are gray killed up we
+						//aren't worth anything either
+						if (((GamePlayer)obj).IsObjectGreyCon(this))
+							return false;
+					}
+					else
+					{
+						//If object is no gameplayer and realm is != none
+						//then it means that a npc has hit this living and
+						//it is not worth any xp ...
+						//if(obj.Realm != (byte)eRealm.None)
+						//If grey to at least one living then no exp
+						if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
+							return false;
+					}
+				}
+				return true;
+				
 			}
 			set
 			{
@@ -4285,7 +4343,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Called when this living dies
 		/// </summary>
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Brain?.KillFSM();
 
@@ -4294,15 +4352,20 @@ namespace DOL.GS
 			if (ControlledBrain != null)
 				ControlledNPC_Release();
 
+			
 			if (killer != null)
 			{
 				if (killer is GamePet pet) killer = pet.Owner;
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
 				if (IsWorthReward)
 					DropLoot(killer);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
 
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
 				Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
 				if (killer is GamePlayer)
 					((GamePlayer)killer).Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
 			}
 			StopFollowing();
 
@@ -4311,7 +4374,7 @@ namespace DOL.GS
 
 			if (killer != null)
 			{
-				// Handle faction alignement changes // TODO Review
+				//Handle faction alignement changes // TODO Review
 				if ((Faction != null) && (killer is GamePlayer))
 				{
 					lock (this.XPGainers.SyncRoot)
@@ -4335,11 +4398,19 @@ namespace DOL.GS
 				}
 
 				// deal out exp and realm points based on server rules
+				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
-				base.Die(killer);
-			}
+				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 
+				base.ProcessDeath(killer);
+			}
+			
+			lock (this.XPGainers.SyncRoot)
+				this.XPGainers.Clear();
+			
+			
 			Delete();
+			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
 
 			// remove temp properties
 			TempProperties.removeAllProperties();
@@ -4504,7 +4575,7 @@ namespace DOL.GS
 
 				BroadcastUpdate();
 
-                attackComponent.AttackState = false;
+				attackComponent.AttackState = false;
 			}
 		}
 
@@ -4551,7 +4622,7 @@ namespace DOL.GS
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
-		protected ECSGameTimer m_respawnTimer;
+		protected AuxECSGameTimer m_respawnTimer;
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
@@ -4647,8 +4718,8 @@ namespace DOL.GS
 				{
 					if (m_respawnTimer == null)
 					{
-						m_respawnTimer = new ECSGameTimer(this);
-						m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
+						m_respawnTimer = new AuxECSGameTimer(this);
+						m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
 					}
 					else if (m_respawnTimer.IsAlive)
 					{
@@ -4666,7 +4737,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
 		{
 			int dummy;
 			// remove Mob from "respawning"
@@ -4720,13 +4791,13 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			int period = m_healthRegenerationPeriod;
+			int period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 			if (!InCombat)
 			{
 				int oldPercent = HealthPercent;
-				period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
 				if (oldPercent != HealthPercent)
-					BroadcastUpdate();
+					NeedsBroadcastUpdate = true;
+				//BroadcastUpdate();
 			}
 			return (Health < MaxHealth) ? period : 0;
 		}
@@ -4797,10 +4868,33 @@ namespace DOL.GS
             }
 
 			if ((Flags & eFlags.STEALTH) != 0)
-				Flags ^= GameNPC.eFlags.STEALTH;
-
-
+				Flags ^= eFlags.STEALTH;
+			
 			base.OnAttackedByEnemy(ad);
+        }
+
+        public override void TakeDamage(AttackData ad)
+        {
+	        base.TakeDamage(ad);
+	        
+	        if(Brain is StandardMobBrain standardMobBrain && Brain is not NecromancerPetBrain)
+	        {
+		        // Console.WriteLine($"dmg {ad.Damage} crit {ad.CriticalDamage} mod {Math.Abs(ad.Modifier)}");
+		        var aggro = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
+
+		        if (ad.Attacker is GameNPC pet)
+		        {
+			        if (pet.Brain is IControlledBrain petBrain)
+			        {
+				        // owner gets 25% of aggro
+				        standardMobBrain.AddToAggroList(petBrain.Owner,(int)Math.Max(1, aggro * 0.25));
+				        // remaining of aggro is given to pet
+				        aggro = (int)Math.Max(1, aggro * 0.75);
+			        }
+		        }
+		        standardMobBrain.AddToAggroList(ad.Attacker, aggro);
+		        standardMobBrain.OnAttackedByEnemy(ad);
+	        }
         }
 
         /// <summary>
@@ -4813,180 +4907,164 @@ namespace DOL.GS
 			ArrayList droplist = new ArrayList();
 			ArrayList autolootlist = new ArrayList();
 			ArrayList aplayer = new ArrayList();
-
+			
+			HybridDictionary XPGainerList = new HybridDictionary();
 			lock (m_xpGainers.SyncRoot)
 			{
-				if (m_xpGainers.Keys.Count == 0) return;
-
-				ItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
-
-				foreach (ItemTemplate lootTemplate in lootTemplates)
+				foreach (DictionaryEntry gainer in m_xpGainers)
 				{
-					if (lootTemplate == null) continue;
-					GameStaticItem loot = null;
-					if (GameMoney.IsItemMoney(lootTemplate.Name))
+					XPGainerList.Add(gainer.Key, gainer.Value);
+				}
+			}
+			
+			if (XPGainerList.Keys.Count == 0) return;
+
+			ItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
+
+			foreach (ItemTemplate lootTemplate in lootTemplates)
+			{
+				if (lootTemplate == null) continue;
+				GameStaticItem loot = null;
+				if (GameMoney.IsItemMoney(lootTemplate.Name))
+				{
+					long value = lootTemplate.Price;
+					//GamePlayer killerPlayer = killer as GamePlayer;
+
+					//[StephenxPimentel] - Zone Bonus XP Support
+					if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
 					{
-						long value = lootTemplate.Price;
-						//GamePlayer killerPlayer = killer as GamePlayer;
-
-						//[StephenxPimentel] - Zone Bonus XP Support
-						if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killer is GameNPC)
 						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killer is GameNPC)
-							{
-								if (killer is GameNPC && ((killer as GameNPC).Brain is IControlledBrain))
-									killerPlayer = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-								else return;
-							}
-
-							int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
-							if (zoneBonus > 0)
-							{
-								long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
-								killerPlayer.AddMoney(amount,
-													  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
-													  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-								InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
-							}
+							if (killer is GameNPC && ((killer as GameNPC).Brain is IControlledBrain))
+								killerPlayer = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+							else return;
 						}
 
-						if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (eRealm)killer.Realm))
-							value += (value / 100) * 5;
-						else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (eRealm)killer.Realm))
-							value += (value / 100) * 3;
-
-						//this will need to be changed when the ML for increasing money is added
-						if (value != lootTemplate.Price)
+						int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
+						if (zoneBonus > 0)
 						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killerPlayer != null)
-								killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+							long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
+							killerPlayer.AddMoney(amount,
+												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
+												  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
 						}
-
-						//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
-						if (killer is GamePlayer)
-						{
-							GamePlayer killerPlayer = killer as GamePlayer;
-							if (killerPlayer.GetModified(eProperty.MythicalCoin) > 0)
-							{
-								value += (value * killerPlayer.GetModified(eProperty.MythicalCoin)) / 100;
-								killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
-																						"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-							}
-						}
-
-						loot = new GameMoney(value, this);
-						loot.Name = lootTemplate.Name;
-						loot.Model = (ushort)lootTemplate.Model;
 					}
-					else if (lootTemplate.Name.StartsWith("scroll|"))
+
+					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (eRealm)killer.Realm))
+						value += (value / 100) * 5;
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (eRealm)killer.Realm))
+						value += (value / 100) * 3;
+
+					//this will need to be changed when the ML for increasing money is added
+					if (value != lootTemplate.Price)
 					{
-						String[] scrollData = lootTemplate.Name.Split('|');
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killerPlayer != null)
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+					}
 
-						if (scrollData.Length >= 3)
+					//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
+					if (killer is GamePlayer)
+					{
+						GamePlayer killerPlayer = killer as GamePlayer;
+						if (killerPlayer.GetModified(eProperty.MythicalCoin) > 0)
 						{
-							String artifactID = scrollData[1];
-							int pageNumber = UInt16.Parse(scrollData[2]);
-							loot = ArtifactMgr.CreateScroll(artifactID, pageNumber);
+							value += (value * killerPlayer.GetModified(eProperty.MythicalCoin)) / 100;
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
+																					"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 						}
+					}
 
-						if (loot == null)
-						{
-							log.Error($"Artifact scroll could not be created for data string [{lootTemplate.Name}]");
-							continue;
-						}
-						else
-						{
-							loot.X = X;
-							loot.Y = Y;
-							loot.Z = Z;
-							loot.Heading = Heading;
-							loot.CurrentRegion = CurrentRegion;
-							(loot as WorldInventoryItem).Item.IsCrafted = false;
-							(loot as WorldInventoryItem).Item.Creator = Name;
-						}
+					loot = new GameMoney(value, this);
+					loot.Name = lootTemplate.Name;
+					loot.Model = (ushort)lootTemplate.Model;
+				}
+				else
+				{
+					InventoryItem invitem;
+
+					if (lootTemplate is ItemUnique)
+					{
+						GameServer.Database.AddObject(lootTemplate);
+						invitem = GameInventoryItem.Create(lootTemplate as ItemUnique);
 					}
 					else
+						invitem = GameInventoryItem.Create(lootTemplate);
+
+					if (lootTemplate is GeneratedUniqueItem)
 					{
-						InventoryItem invitem;
-
-						if (lootTemplate is ItemUnique)
-						{
-							GameServer.Database.AddObject(lootTemplate);
-							invitem = GameInventoryItem.Create(lootTemplate as ItemUnique);
-						}
-						else
-							invitem = GameInventoryItem.Create(lootTemplate);
-
-						if (lootTemplate is GeneratedUniqueItem)
-						{
-							invitem.IsROG = true;
-						}
-
-						loot = new WorldInventoryItem(invitem);
-						loot.X = X;
-						loot.Y = Y;
-						loot.Z = Z;
-						loot.Heading = Heading;
-						loot.CurrentRegion = CurrentRegion;
-						(loot as WorldInventoryItem).Item.IsCrafted = false;
-						(loot as WorldInventoryItem).Item.Creator = Name;
-
-						// This may seem like an odd place for this code, but loot-generating code further up the line
-						// is dealing strictly with ItemTemplate objects, while you need the InventoryItem in order
-						// to be able to set the Count property.
-						// Converts single drops of loot with PackSize > 1 (and MaxCount >= PackSize) to stacks of Count = PackSize
-						if (((WorldInventoryItem)loot).Item.PackSize > 1 && ((WorldInventoryItem)loot).Item.MaxCount >= ((WorldInventoryItem)loot).Item.PackSize)
-						{
-							((WorldInventoryItem)loot).Item.Count = ((WorldInventoryItem)loot).Item.PackSize;
-						}
+						invitem.IsROG = true;
 					}
 
-					GamePlayer playerAttacker = null;
-					foreach (GameObject gainer in m_xpGainers.Keys)
+					loot = new WorldInventoryItem(invitem);
+					loot.X = X;
+					loot.Y = Y;
+					loot.Z = Z;
+					loot.Heading = Heading;
+					loot.CurrentRegion = CurrentRegion;
+					(loot as WorldInventoryItem).Item.IsCrafted = false;
+					(loot as WorldInventoryItem).Item.Creator = Name;
+
+					// This may seem like an odd place for this code, but loot-generating code further up the line
+					// is dealing strictly with ItemTemplate objects, while you need the InventoryItem in order
+					// to be able to set the Count property.
+					// Converts single drops of loot with PackSize > 1 (and MaxCount >= PackSize) to stacks of Count = PackSize
+					if (((WorldInventoryItem)loot).Item.PackSize > 1 && ((WorldInventoryItem)loot).Item.MaxCount >= ((WorldInventoryItem)loot).Item.PackSize)
 					{
-						if (gainer is GamePlayer)
+						((WorldInventoryItem)loot).Item.Count = ((WorldInventoryItem)loot).Item.PackSize;
+					}
+				}
+
+				GamePlayer playerAttacker = null;
+				foreach (GameObject gainer in XPGainerList.Keys)
+				{
+					if (gainer is GamePlayer)
+					{
+						playerAttacker = gainer as GamePlayer;
+						if (loot.Realm == 0)
+							loot.Realm = ((GamePlayer)gainer).Realm;
+					}
+					loot.AddOwner(gainer);
+					if (gainer is GameNPC)
+					{
+						IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
+						if (brain != null)
 						{
-							playerAttacker = gainer as GamePlayer;
-							if (loot.Realm == 0)
-								loot.Realm = ((GamePlayer)gainer).Realm;
-						}
-						loot.AddOwner(gainer);
-						if (gainer is GameNPC)
-						{
-							IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
-							if (brain != null)
-							{
-								playerAttacker = brain.GetPlayerOwner();
-								loot.AddOwner(brain.GetPlayerOwner());
-							}
+							playerAttacker = brain.GetPlayerOwner();
+							loot.AddOwner(brain.GetPlayerOwner());
 						}
 					}
-					if (playerAttacker == null) return; // no loot if mob kills another mob
+				}
+				if (playerAttacker == null) return; // no loot if mob kills another mob
 
 
-					droplist.Add(loot.GetName(1, false));
-					loot.AddToWorld();
+				droplist.Add(loot.GetName(1, false));
+				Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
+				loot.AddToWorld();
+				Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
 
-					foreach (GameObject gainer in m_xpGainers.Keys)
+				foreach (GameObject gainer in XPGainerList.Keys)
+				{
+					if (gainer is GamePlayer)
 					{
-						if (gainer is GamePlayer)
+						GamePlayer player = gainer as GamePlayer;
+						if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
 						{
-							GamePlayer player = gainer as GamePlayer;
-							if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
-							{
-								if (player.Group == null || (player.Group != null && player == player.Group.Leader))
-									aplayer.Add(player);
-								autolootlist.Add(loot);
-							}
+							if (player.Group == null || (player.Group != null && player == player.Group.Leader))
+								aplayer.Add(player);
+							autolootlist.Add(loot);
 						}
 					}
 				}
 			}
 
+			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
 			BroadcastLoot(droplist);
+			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
 
+			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
 			if (autolootlist.Count > 0)
 			{
 				foreach (GameObject obj in autolootlist)
@@ -4998,6 +5076,7 @@ namespace DOL.GS
 					}
 				}
 			}
+			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
 		}
 
 		/// <summary>
@@ -5041,8 +5120,44 @@ namespace DOL.GS
 			{
 				this.AddXPGainer(healSource, (float)healAmount);
 			}
+
+			if (Brain is StandardMobBrain mobBrain)
+			{
+				// first check to see if the healer is in our aggrolist so we don't go attacking anyone who heals
+				if (mobBrain.m_aggroTable.ContainsKey(healSource as GameLiving))
+				{
+					if (healSource is GamePlayer || (healSource is GameNPC && (((GameNPC)healSource).Flags & eFlags.PEACE) == 0))
+					{
+						mobBrain.AddToAggroList((GameLiving)healSource, healAmount);
+					}
+				}
+			}
+			
 			//DealDamage needs to be called after addxpgainer!
 		}
+
+		public override void EnemyKilled(GameLiving enemy)
+		{
+			base.EnemyKilled(enemy);
+
+			if (Brain is StandardMobBrain mobBrain)
+			{
+				// transfer all controlled target aggro to the owner
+				if (enemy is GameNPC)
+				{
+					var controlled = ((GameNPC)enemy).Brain as IControlledBrain;
+					if (controlled != null)
+					{
+						var contrAggro = mobBrain.GetAggroAmountForLiving(controlled.Body);
+						mobBrain.AddToAggroList(controlled.Owner, (int)contrAggro);
+					}
+				}
+				attackComponent.Attackers.Remove(enemy);
+				TargetObject = null;
+			}
+		}
+		
+		
 
 		#endregion
 
@@ -5519,7 +5634,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The spell action of this living
 		/// </summary>
-		public class SpellAction : RegionAction
+		public class SpellAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new attack action
@@ -5533,7 +5648,7 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC owner = null;
 				if (m_actionSource != null && m_actionSource is GameNPC)
@@ -5541,13 +5656,13 @@ namespace DOL.GS
 				else
 				{
 					Stop();
-					return;
+					return 0;
 				}
 
 				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
 				{
 					Stop();
-					return;
+					return 0;
 				}
 
 				//If we started casting a spell, stop the timer and wait for
@@ -5555,7 +5670,7 @@ namespace DOL.GS
 				if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
 				{
 					Stop();
-					return;
+					return 0;
 				}
 				else
 				{
@@ -5572,6 +5687,8 @@ namespace DOL.GS
 				{
 					Interval = 1500;
 				}
+
+				return Interval;
 			}
 		}
 

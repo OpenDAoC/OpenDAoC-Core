@@ -117,7 +117,7 @@ namespace DOL.GS.DailyQuest.Albion
             GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
             GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
-            /* Now we bring to Haszan the possibility to give this quest to players */
+            /* Now we bring to Hector the possibility to give this quest to players */
             Hector.AddQuestToGive(typeof(SidiMobQuestAlb));
 
             if (log.IsInfoEnabled)
@@ -137,7 +137,7 @@ namespace DOL.GS.DailyQuest.Albion
             GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
             GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
-            /* Now we remove to Haszan the possibility to give this quest to players */
+            /* Now we remove to Hector the possibility to give this quest to players */
             Hector.RemoveQuestToGive(typeof(SidiMobQuestAlb));
         }
 
@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest.Albion
                         case "clearing the way":
                             player.Out.SendQuestSubscribeCommand(Hector,
                                 QuestMgr.GetIDForQuestType(typeof(SidiMobQuestAlb)),
-                                "Will you help Haszan with " + questTitle + "");
+                                "Will you help Hector with " + questTitle + "");
                             break;
                     }
                 }

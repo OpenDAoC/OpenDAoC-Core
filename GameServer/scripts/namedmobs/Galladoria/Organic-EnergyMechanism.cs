@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using Timer = System.Timers.Timer;
-using System.Timers;
-
 
 namespace DOL.GS
 {
@@ -20,6 +16,12 @@ namespace DOL.GS
         public OrganicEnergyMechanism()
             : base()
         {
+        }
+        [ScriptLoadedEvent]
+        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        {
+            if (log.IsInfoEnabled)
+                log.Info("Organic-Energy Mechanism Initializing...");
         }
         public override int GetResist(eDamageType damageType)
         {
@@ -59,28 +61,6 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public void StartTimer()
-        {
-            Timer myTimer = new Timer();
-            myTimer.Elapsed += new ElapsedEventHandler(DisplayTimeEvent);
-            myTimer.Interval = 4000; // 1000 ms is one second
-            myTimer.Start();
-        }
-        public void DisplayTimeEvent(object source, ElapsedEventArgs e)
-        {
-            ShowEffect();
-        }
-        public void ShowEffect()
-        {
-            if (this.IsAlive)
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    player.Out.SendSpellEffectAnimation(this, this, 509, 0, false, 0x01); //finished heal effect
-                }
-            }
-        }
-        public static bool addeffect = true;
 
         public override bool AddToWorld()
         {
@@ -94,76 +74,44 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
+
             OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SetOwnBrain(sBrain);
-            addeffect = true;
+
             OrganicEnergyMechanismBrain.StartCastDOT = false;
             OrganicEnergyMechanismBrain.CanCast = false;
             OrganicEnergyMechanismBrain.RandomTarget = null;
+
             bool success = base.AddToWorld();
             if (success)
             {
-                if (addeffect == true)
-                {
-                    StartTimer();
-                    addeffect = false;
-                }
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
             }
             SaveIntoDatabase();
             LoadedFromScript = false;
             return success;
         }
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        protected int Show_Effect(ECSGameTimer timer)
         {
-            GameNPC[] npcs;
-
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Organic-Energy Mechanism", 191, (eRealm) 0);
-            if (npcs.Length == 0)
+            if (IsAlive)
             {
-                log.Warn("Organic-Energy Mechanism not found, creating it...");
-
-                log.Warn("Initializing Organic-Energy Mechanism...");
-                OrganicEnergyMechanism OEM = new OrganicEnergyMechanism();
-                OEM.Name = "Organic-Energy Mechanism";
-                OEM.Model = 665; //does have not any model just visual effect
-                OEM.Realm = 0;
-                OEM.Level = 79;
-                OEM.Size = 200;
-                OEM.CurrentRegionID = 191; //galladoria
-
-                OEM.Strength = 500;
-                OEM.Intelligence = 220;
-                OEM.Piety = 220;
-                OEM.Dexterity = 200;
-                OEM.Constitution = 200;
-                OEM.Quickness = 125;
-                OEM.MeleeDamageType = eDamageType.Slash;
-                OEM.Faction = FactionMgr.GetFactionByID(96);
-
-                OEM.X = 49410;
-                OEM.Y = 31267;
-                OEM.Z = 14388;
-                OEM.MaxDistance = 2000;
-                OEM.MaxSpeedBase = 0; //mob doesnt move
-                OEM.Heading = 193;
-
-                OrganicEnergyMechanismBrain ubrain = new OrganicEnergyMechanismBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 500;
-                OEM.SetOwnBrain(ubrain);
-                INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164704);
-                OEM.LoadTemplate(npcTemplate);
-                OEM.AddToWorld();
-                OEM.Brain.Start();
-                OEM.SaveIntoDatabase();
+                foreach (GamePlayer player in GetPlayersInRadius(3000))
+                {
+                    if (player != null)
+                        player.Out.SendSpellEffectAnimation(this, this, 509, 0, false, 0x01);
+                }
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
             }
-            else
-                log.Warn(
-                    "Organic-Energy Mechanism exist ingame, remove it and restart server if you want to add by script code.");
+            return 0;
+        }
+        protected int DoCast(ECSGameTimer timer)
+        {
+            if (IsAlive)
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+            return 0;
         }
     }
 }
@@ -178,6 +126,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        private bool RemoveAdds = false;
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -250,9 +199,21 @@ namespace DOL.AI.Brain
             return 0;
         }
         #endregion
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+            if(ad != null)
+            {
+                if (Util.Chance(50) && !Body.IsCasting)
+                    Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+
+                if (Util.Chance(50) && !Body.IsCasting)
+                    Body.CastSpell(OEMEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.OnAttackedByEnemy(ad);
+        }
         public override void Think()
         {
-            if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(40 * 1000) == false && Body.InCombatInLast(45 * 1000))
             {
                 if(AggroTable.Count>0)
                     ClearAggroList();
@@ -265,30 +226,30 @@ namespace DOL.AI.Brain
                 StartCastDOT = false;
                 RandomTarget = null;
                 SpawnFeeder = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        if (npc.IsAlive && npc.Brain is OEMAddBrain)
+                        if (npc != null)
                         {
-                            npc.RemoveFromWorld();
+                            if (npc.IsAlive && npc.Brain is OEMAddBrain)
+                            {
+                                npc.RemoveFromWorld();
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
             if (HasAggro && Body.IsAlive)
             {
+                RemoveAdds = false;
                 //DOT is not classic like, can be anabled if we wish to
                 /* if (StartCastDOT == false)
                  {
                      new RegionTimer(Body, new RegionTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
                      StartCastDOT = true;
                  }*/
-                if (Util.Chance(15))
-                    Body.CastSpell(OEMDamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-
-                if (Util.Chance(25))
-                    Body.CastSpell(OEMEffect, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
                 if (SpawnFeeder==false)
                 {
@@ -522,7 +483,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             Body.IsWorthReward = false; //worth no reward
-            if (Body.InCombat && HasAggro)
+            if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(15) && Body.TargetObject != null)

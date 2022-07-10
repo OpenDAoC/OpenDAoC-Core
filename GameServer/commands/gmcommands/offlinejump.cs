@@ -30,11 +30,11 @@ namespace DOL.GS.Commands
 						client.Out.SendMessage("Character " + args[1] + " not found", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 						return;
 					}
-					character.Xpos = 47411;
-					character.Ypos= 48694;
-					character.Zpos = 25000;
-					character.Region = 249;
-					character.Direction = 5;
+					character.Xpos = 33278;
+					character.Ypos= 35168;
+					character.Zpos = 16220;
+					character.Region = 497;
+					character.Direction = 2056;
 					BindCharacter(character);
 					GameServer.Database.SaveObject(character);
 					client.Out.SendMessage("Character " + args[1].ToUpperInvariant() + " has been moved to Jail", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);

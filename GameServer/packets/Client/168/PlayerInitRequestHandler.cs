@@ -47,7 +47,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player init requests
 		/// </summary>
-		protected class PlayerInitRequestAction : RegionECSAction
+		protected class PlayerInitRequestAction : AuxRegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new PlayerInitRequestHandler
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(AuxECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 
@@ -85,7 +85,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					updateTempProperties = true;
 					player.EnteredGame = true;
 					player.Notify(GamePlayerEvent.GameEntered, player);
-					// ShowPatchNotes(player);
+					ShowPatchNotes(player);
 					//player.EffectList.RestoreAllEffects();
 					EffectService.RestoreAllEffects(player);
 					checkInstanceLogin = true;
@@ -209,17 +209,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return 0;
 			}
 			
-			public void ShowPatchNotes(GamePlayer player)
+			private void ShowPatchNotes(GamePlayer player)
 			{
 				var today = DateTime.Today;
 
-				using var newsClient = new HttpClient();
-				string newsTxt;
-				var news = new List<string>();
-				const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
-				newsTxt = newsClient.GetStringAsync(url).Result;
-				news.Add(newsTxt);
-				player.Out.SendCustomTextWindow("Server News " + today.ToString("d"), news);
+				player.Out.SendCustomTextWindow("Server News " + today.ToString("d"), GameServer.Instance.PatchNotes);
 			}
 
 			private static void CheckBGLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)

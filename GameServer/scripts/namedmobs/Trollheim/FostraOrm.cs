@@ -62,6 +62,7 @@ namespace DOL.GS
 
 			Faction = FactionMgr.GetFactionByID(150);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			FostraOrmBrain sbrain = new FostraOrmBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -83,7 +84,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(25) && target != null)

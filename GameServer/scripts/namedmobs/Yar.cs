@@ -80,7 +80,8 @@ namespace DOL.GS
             
             Faction = FactionMgr.GetFactionByID(154);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
-            
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
             YarBrain sBrain = new YarBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();

@@ -153,6 +153,13 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
+		public override bool HasAbility(string keyName)
+		{
+			if (IsAlive && keyName == GS.Abilities.CCImmunity)
+				return true;
+
+			return base.HasAbility(keyName);
+		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
@@ -204,7 +211,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
 			MidGjalpinulvaBrain.pathpoint1 = false;
 			MidGjalpinulvaBrain.pathpoint2 = false;
@@ -245,6 +252,7 @@ namespace DOL.GS
 			MidGjalpinulvaBrain.RandomTarget2 = null;
 			MidGjalpinulvaBrain.CanStun = false;
 			MidGjalpinulvaBrain.CanThrow = false;
+			MidGjalpinulvaBrain.checkForMessangers = false;
 			MidGjalpinulvaBrain.DragonKaboom1 = false;
 			MidGjalpinulvaBrain.DragonKaboom2 = false;
 			MidGjalpinulvaBrain.DragonKaboom3 = false;
@@ -298,6 +306,8 @@ namespace DOL.AI.Brain
 		public static bool ResetChecks = false;
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
+		public static bool checkForMessangers = false;
+		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -357,19 +367,28 @@ namespace DOL.AI.Brain
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
+						CanSpawnMessengers = false;
 						Body.TempProperties.removeProperty("gjalpinulva_messengers");
 					}
 				}
-                #endregion
-                foreach (GameNPC messenger in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
-						messenger.RemoveFromWorld();
-                }
-				foreach (GameNPC drakulvs in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				#endregion
+				if (!checkForMessangers)
 				{
-					if (drakulvs != null && drakulvs.IsAlive && drakulvs.Brain is GjalpinulvaSpawnedAdBrain)
-						drakulvs.RemoveFromWorld();
+					if (DragonAdds.Count > 0)
+					{
+						foreach (GameNPC messenger in DragonAdds)
+						{
+							if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
+								messenger.RemoveFromWorld();
+						}
+						foreach (GameNPC drakulv in DragonAdds)
+						{
+							if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
+								drakulv.RemoveFromWorld();
+						}
+						DragonAdds.Clear();
+					}
+					checkForMessangers = true;
 				}
 			}
 
@@ -459,6 +478,7 @@ namespace DOL.AI.Brain
             #endregion
             if (HasAggro && Body.TargetObject != null)
             {
+				checkForMessangers = false;
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if(CanThrow == false && !IsRestless)
                 {
@@ -1178,7 +1198,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 5701;
 					spell.Icon = 5701;
 					spell.TooltipId = 5701;
-					spell.Damage = 2800;
+					spell.Damage = 2400;
 					spell.Name = "Gjalpinulva's Breath";
 					spell.Range = 0;
 					spell.Radius = 2000;
@@ -1305,6 +1325,10 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(781);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(781));
 			GjalpinulvaMessengerBrain adds = new GjalpinulvaMessengerBrain();
+
+			if (!MidGjalpinulvaBrain.DragonAdds.Contains(this))
+				MidGjalpinulvaBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(adds);
 			base.AddToWorld();
 			return true;
@@ -1632,6 +1656,10 @@ namespace DOL.GS
 
 			MaxSpeedBase = 225;
 			GjalpinulvaSpawnedAdBrain sbrain = new GjalpinulvaSpawnedAdBrain();
+
+			if (!MidGjalpinulvaBrain.DragonAdds.Contains(this))
+				MidGjalpinulvaBrain.DragonAdds.Add(this);
+
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = true;

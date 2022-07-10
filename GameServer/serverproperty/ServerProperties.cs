@@ -464,6 +464,30 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "tester_login", "Allow only testers and staff to login", false)]
 		public static bool TESTER_LOGIN;
+		
+		/// <summary>
+		/// The toughness of the boss for the SI necklace quest
+		/// </summary>
+		[ServerProperty("atlas", "neck_boss_scaling", "The toughness of the boss for the SI necklace quest", 80)]
+		public static int NECK_BOSS_SCALING;
+		
+		/// <summary>
+		/// The toughness of GameNPCs
+		/// </summary>
+		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 15)]
+		public static int GAMENPC_SCALING;
+		
+		/// <summary>
+		/// The first factor in the PVE mob damage equation. Lower hits harder.
+		/// </summary>
+		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 3.2)]
+		public static double PVE_MOB_DAMAGE_F1;
+		
+		/// <summary>
+		/// The second factor in the PVE mob damage equation. Lower hits harder.
+		/// </summary>
+		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 150.0)]
+		public static double PVE_MOB_DAMAGE_F2;
 
 		/// <summary>
 		/// Enable integrated serverlistupdate script?
@@ -2497,6 +2521,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
 		public static bool CRAFTING_MAX_SKILLS;
+		
+		/// <summary>
+		/// Max character crafting skill?
+		/// </summary>
+		[ServerProperty("craft", "crafting_max_skills_amount", "The amount to which set the crafting skills when using crafting_max_skills", 1)]
+		public static int CRAFTING_MAX_SKILLS_AMOUNT;
 
 		/// <summary>
 		/// Use salvage per realm and get back material to use in chars realm
@@ -2747,6 +2777,15 @@ namespace DOL.GS.ServerProperties
 		
 		[ServerProperty("beta", "orbs_fire_sale", "All items at the orbs merchant will be free if set to true", false)]
 		public static bool ORBS_FIRE_SALE;
+		
+		[ServerProperty("atlas", "enable_corpsesummoner", "Whether or not to enable the corpse summoner command", true)]
+		public static bool ENABLE_CORPSESUMONNER;
+		
+		[ServerProperty("atlas", "carapace_dropchance", "The base Beetle Carapace drop chance in %", 0.01)]
+		public static double CARAPACE_DROPCHANCE;
+		
+		[ServerProperty("atlas", "salvage_yield_multiplier", "The salvage yield multiplier", 0.5)]
+		public static double SALVAGE_YIELD_MULTIPLIER;
 		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

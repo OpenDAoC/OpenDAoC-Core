@@ -26,6 +26,7 @@ using DOL.GS.PropertyCalc;
 using DOL.Language;
 using System.Collections.Generic;
 using DOL.GS.RealmAbilities;
+using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -76,9 +77,29 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			//check for existing effect
+			// var debuffs = target.effectListComponent.GetSpellEffects()
+			// 					.Where(x => x.SpellHandler is AbstractResistDebuff);
+
+			// foreach (var debuff in debuffs)
+			// {
+			// 	var debuffSpell = debuff.SpellHandler as AbstractResistDebuff;
+
+			// 	if (debuffSpell.Property1 == this.Property1 && debuffSpell.Spell.Value >= Spell.Value)
+			// 	{
+			// 		// Old Spell is Better than new one
+			// 		SendSpellResistAnimation(target);
+			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
+			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
+			// 		// Prevent Adding.
+			// 		return;
+			// 	}
+			// }
+
+
 			//TODO: correct effectiveness formula
 			// invoke direct effect if not resisted for DD w/ debuff spells
-            if (Caster is GamePlayer && Spell.Level > 0)
+			if (Caster is GamePlayer && Spell.Level > 0)
             {
                 if (((GamePlayer)Caster).CharacterClass.ClassType == eClassType.ListCaster)
 				{
@@ -90,23 +111,15 @@ namespace DOL.GS.Spells
                     effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
                 }
 				else
-					{
-						effectiveness = 1.0; 
-						effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-					}
-			}
+				{
+					effectiveness = 1.0; 
+					effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+				}
 
-            /*
-            if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
-            {
-	            if (Util.Chance(Caster.SpellCriticalChance))
-	            {
-		            double preModEffectiveness = effectiveness;
-		            effectiveness *= 1 + Util.Random(1, 10) * .1;
-		            if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(effectiveness-preModEffectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-	            }
-            }
-			*/
+				effectiveness *= GetCritBonus();
+			}
+            
+			
 			base.ApplyEffectOnTarget(target, effectiveness);
 
 			if (target.Realm == 0 || Caster.Realm == 0)
@@ -126,6 +139,27 @@ namespace DOL.GS.Spells
 					aggroBrain.AddToAggroList(Caster, 1);
 			}
 			if(Spell.CastTime>0) target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+		}
+
+		private double GetCritBonus()
+		{
+			double critMod = 1;
+
+			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			{
+				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && Caster.DotCriticalChance > 0)
+				{
+					spellCaster.Out.SendMessage($"debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				}
+
+				if (Util.Chance(Caster.DotCriticalChance * 2))
+				{
+					critMod *= 1 + Util.Random(1, 10) * .1;
+					if (Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1, 3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				}
+			}
+
+			return critMod;
 		}
 
 		/// <summary>

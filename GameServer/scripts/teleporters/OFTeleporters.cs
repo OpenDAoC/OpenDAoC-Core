@@ -263,7 +263,7 @@ namespace DOL.GS.Scripts
                                     // else 
                                     if (player.Level is >= 20 and <= 24)
                                     {
-                                        if (player.RealmPoints >= 350)
+                                        if (player.RealmPoints >= 7125)
                                         {
                                             break;
                                         }
@@ -280,9 +280,9 @@ namespace DOL.GS.Scripts
                                     //     PortLocation = new GameLocation("Murdaigean Alb", 251, 38113, 53507, 4160,
                                     //         3268);
                                     // }
-                                    else if (player.Level is >= 30 and <= 34)
+                                    else if (player.Level is >= 34 and <= 39)
                                     {
-                                        if (player.RealmPoints >= 7125)
+                                        if (player.RealmPoints >= 122500)
                                         {
                                             break;
                                         }
@@ -422,7 +422,7 @@ namespace DOL.GS.Scripts
                                     // else 
                                     if (player.Level >= 20 && player.Level <= 24)
                                     {
-                                        if (player.RealmPoints >= 350)
+                                        if (player.RealmPoints >= 7125)
                                         {
                                             break;
                                         }
@@ -438,9 +438,9 @@ namespace DOL.GS.Scripts
                                     //
                                     //     PortLocation = new GameLocation("Murdaigean Mid", 251, 53568, 23643, 4530);
                                     // }
-                                    else if (player.Level >= 30 && player.Level <= 34)
+                                    else if (player.Level is >= 34 and <= 39)
                                     {
-                                        if (player.RealmPoints >= 7125)
+                                        if (player.RealmPoints >= 122500)
                                         {
                                             break;
                                         }
@@ -579,7 +579,7 @@ namespace DOL.GS.Scripts
                                     // else 
                                     if (player.Level >= 20 && player.Level <= 24)
                                     {
-                                        if (player.RealmPoints >= 350)
+                                        if (player.RealmPoints >= 7125)
                                         {
                                             break;
                                         }
@@ -595,9 +595,9 @@ namespace DOL.GS.Scripts
                                     //
                                     //     PortLocation = new GameLocation("Murdaigean Hib", 251, 17367, 18248, 4320);
                                     // }
-                                    else if (player.Level >= 30 && player.Level <= 34)
+                                    else if (player.Level is >= 34 and <= 39)
                                     {
-                                        if (player.RealmPoints >= 7125)
+                                        if (player.RealmPoints >= 122500)
                                         {
                                             break;
                                         }

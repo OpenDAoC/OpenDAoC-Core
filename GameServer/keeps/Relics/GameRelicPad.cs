@@ -154,7 +154,7 @@ namespace DOL.GS
 					avatarUrl = "https://cdn.discordapp.com/attachments/879754382231613451/977721735153606686/relic_hib.png";
 					break;
 			}
-			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 			// Create your DiscordMessage with all parameters of your message.
 			var discordMessage = new DiscordMessage(
 				"",
@@ -190,7 +190,7 @@ namespace DOL.GS
 				}
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 				
-				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{
 					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 				}
@@ -262,7 +262,7 @@ namespace DOL.GS
 				}
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 				
-				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{
 					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 				}

@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
 					IsInCombat = true;
 				}
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				if (IsPulled == false)
 				{

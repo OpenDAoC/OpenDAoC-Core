@@ -196,6 +196,9 @@ namespace DOL.GS
 			                                      }))
 				return false;
 
+			if (living is GamePlayer p && p.DuelTarget != null) 
+				p.DuelStop();
+			
 			UpdateGroupWindow();
 			// update icons of joined player to everyone in the group
 			UpdateMember(living, true, false);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -14,34 +15,38 @@ public class PlayerDeck
     private const int NUM_BONUS_DECKS = 1;
     private const int NUM_NORMAL_DECKS = 1;
     private const int BONUS_DECK_SIZE = 25;
-    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE + 1;
+    private const int PLAYER_DECK_SIZE = NUM_NORMAL_DECKS * 100 + NUM_BONUS_DECKS * BONUS_DECK_SIZE;
 
-    private Stack<int> _cards = new Stack<int>(PLAYER_DECK_SIZE);
+    private ConcurrentStack<int> _cards;
 
     public PlayerDeck()
     {
+        _cards = new ConcurrentStack<int>();
         ResetDeck();
     }
 
     private void InitializeDeck()
     {
-        _cards.Clear();
-
-        for (int i = 0; i < NUM_NORMAL_DECKS; i++)
+        lock (_cardLock)
         {
-            for (int j = 0; j < 100; j++)
-            {
-                _cards.Push(j+1); //offset by 1 to only generate 'cards' with values 1-100
-            }
-        }
+            _cards.Clear();
 
-        for (int i = 0; i < NUM_BONUS_DECKS; i++)
-        {
-            for (int j = (100-BONUS_DECK_SIZE); j < 100; j++)
+            for (int i = 0; i < NUM_NORMAL_DECKS; i++)
             {
-                //add a "bonus deck" of high numbers X-99
-                _cards.Push(j);
+                for (int j = 0; j < 100; j++)
+                {
+                    _cards.Push(j+1); //offset by 1 to only generate 'cards' with values 1-100
+                }
             }
+
+            for (int i = 0; i < NUM_BONUS_DECKS; i++)
+            {
+                for (int j = (100-BONUS_DECK_SIZE); j < 100; j++)
+                {
+                    //add a "bonus deck" of high numbers X-99
+                    _cards.Push(j);
+                }
+            }            
         }
     }
 
@@ -54,24 +59,48 @@ public class PlayerDeck
         Shuffle();
         //Console.WriteLine($"deck reset");
     }
+
+    private object _cardLock = new object();
     
     private void Shuffle()
     {
-        //randomly order the contents of the array, then reassign the array
-        int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(PLAYER_DECK_SIZE-1)).ToArray();
-        _cards.Clear();
-        foreach (var i in shuffled)
+        int[] preshuffle = null;
+        lock (_cardLock)
         {
-            _cards.Push(i);
+            preshuffle = _cards.ToArray();    
+        }
+
+        //Fisher-Yates shuffle algorithm
+        // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+        int cardsLength = _cards.Count - 1;
+        while (cardsLength > 1)
+        {
+            cardsLength--;
+            int k = Util.CryptoNextInt(cardsLength + 1);
+            (preshuffle[k], preshuffle[cardsLength]) = (preshuffle[cardsLength], preshuffle[k]);
+        }
+        /*
+        //randomly order the contents of the array, then reassign the array
+        int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(cardsLength-1)).ToArray();
+        */
+        lock (_cardLock)
+        {
+            _cards.Clear();
+            foreach (var i in preshuffle)
+            {
+                _cards.Push(i);
+            }    
         }
     }
 
     public int GetInt()
     {
-        if (_cards.Count == 0)
+        if (_cards.Count < 2)
             ResetDeck();
 
-        return _cards.Pop();
+        int output = 0;
+        _cards.TryPop(out output);
+        return output != 0 ? output : Util.Random(99);
     }
 
     public double GetPseudoDouble()
@@ -85,7 +114,9 @@ public class PlayerDeck
         //we append two ints together to simulate more accuracy on the double
         //subtract 1 to only generate values 0-99
         //useful to get outputs of 0-9999 instead of 11-100100
-        int first = _cards.Pop() - 1;
+        int first = 0;
+        _cards.TryPop(out first);
+        if (first == 0) first = Util.CryptoNextInt(99);
         int second = Util.CryptoNextInt(99); //just use a simple random for the .XX values
 
         //append our ints together
@@ -107,6 +138,6 @@ public class PlayerDeck
 
     public void LoadDeckFromJSON(string json)
     {
-        _cards = JsonConvert.DeserializeObject<Stack<int>>(json);
+        _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(json);
     }
 }

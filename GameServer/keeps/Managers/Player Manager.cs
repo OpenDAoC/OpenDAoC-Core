@@ -68,7 +68,7 @@ namespace DOL.GS.Keeps
 			BroadcastMessage(message, eRealm.None);
 			NewsMgr.CreateNews(message, keep.Realm, eNewsType.RvRGlobal, false);
 
-			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID)))
+			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
 				BroadcastDiscordRvR(message, keep.Realm, keep.Name);
 			}
@@ -167,7 +167,7 @@ namespace DOL.GS.Keeps
 					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728400523296768/keep_mid.png";
 					break;
 			}
-			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 
 			// Create your DiscordMessage with all parameters of your message.
 			var discordMessage = new DiscordMessage(

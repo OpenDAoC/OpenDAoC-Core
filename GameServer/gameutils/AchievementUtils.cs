@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DOL.Database;
 
 namespace DOL.GS;
@@ -9,6 +10,8 @@ public class AchievementUtils
     public abstract class AchievementNames
     {
         public const string Orbs_Earned = "Lifetime Orbs Earned";
+        
+        public const string Carapace_Farmed = "Lifetime Carapace Dropped";
 
         #region PvE
 
@@ -157,5 +160,60 @@ public class AchievementUtils
         temp.Add($"");
 
         return temp;
+    }
+    
+    public static List<Achievement> GetAchievementInfoForPlayerPerRealm(GamePlayer player, int realm)
+    {
+        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+            .IsEqualTo(player.Client.Account.ObjectId));
+
+        if (achievements == null) return null;
+        
+        var RealmAchievements = new List<Achievement>();
+        
+        foreach (var achievement in achievements)
+        {
+            if (achievement.Realm != realm) continue;
+            RealmAchievements.Add(achievement);
+        }
+        
+        return RealmAchievements;
+    }
+
+    public static bool CheckPlayerCredit(string mob, GamePlayer player, int realm)
+    {
+        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+            .IsEqualTo(player.Client.Account.ObjectId));
+        var hasCredit = false;
+        
+        var achievementMob = Regex.Replace(mob, @"\s+", "").ToLower();
+
+        // foreach (var achievement in achievements)
+        // {
+        //     if (achievement.Realm != realm) continue;
+        //     if (achievement.AchievementName.ToLower() == $"{achievementMob}-credit") hasCredit = true;
+        // }
+
+        var credit = achievements.Where(achievement => achievement.Realm == realm)
+            .Where(achievement => achievement.AchievementName.ToLower() == $"{achievementMob}-credit");
+
+        if (credit.Any()) hasCredit = true;
+
+        return hasCredit;
+    }
+    
+    public static bool CheckAccountCredit(string mob, GamePlayer player)
+    {
+        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+            .IsEqualTo(player.Client.Account.ObjectId));
+        var hasCredit = false;
+        
+        var achievementMob = Regex.Replace(mob, @"\s+", "").ToLower();
+        
+        var credit = achievements.Where(achievement => achievement.AchievementName.ToLower() == $"{achievementMob}-credit");
+
+        if (credit.Any()) hasCredit = true;
+
+        return hasCredit;
     }
 }

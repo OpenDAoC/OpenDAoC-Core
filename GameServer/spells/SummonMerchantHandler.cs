@@ -28,13 +28,13 @@ namespace DOL.GS.Spells
             //base.ApplyEffectOnTarget(target, effectiveness);
 
             if (template.ClassType == "")
-                Npc = new GameMerchant();
+                Npc = new GameAtlasMerchant();
             else
             {
                 try
                 {
-                    Npc = new GameMerchant();
-                    Npc = (GameMerchant) Assembly.GetAssembly(typeof (GameServer)).CreateInstance(template.ClassType, false);
+                    Npc = new GameAtlasMerchant();
+                    Npc = (GameAtlasMerchant) Assembly.GetAssembly(typeof (GameServer)).CreateInstance(template.ClassType, false);
                 }
                 catch (Exception e)
                 {
@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
                 {
                     try
                     {
-                        Npc = (GameMerchant) Assembly.GetExecutingAssembly().CreateInstance(template.ClassType, false);
+                        Npc = (GameAtlasMerchant) Assembly.GetExecutingAssembly().CreateInstance(template.ClassType, false);
                     }
                     catch (Exception e)
                     {
@@ -75,20 +75,18 @@ namespace DOL.GS.Spells
             {
                 case eRealm.Albion:
                     Npc.Model = 10;
-                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_alb");
                     break;
                 case eRealm.Hibernia: 
                     Npc.Model = 307;
-                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_hib");
                     break;
                 case eRealm.Midgard:
                     Npc.Model = 158;
-                    Npc.TradeItems = new MerchantTradeItems("portable_merchant_mid");
                     break;
                 case eRealm.None: 
                     Npc.Model = 10;
                     break;
             }
+            Npc.TradeItems = new MerchantTradeItems("portable_merchant");
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
            // SummonedTick = GameLoop.GameLoopTime;

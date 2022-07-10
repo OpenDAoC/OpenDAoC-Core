@@ -1,11 +1,4 @@
-using System;
-using System.Collections;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.GS.Spells;
-using DOL.Events;
 using DOL.Database;
 namespace DOL.GS.RealmAbilities
 {
@@ -19,8 +12,8 @@ namespace DOL.GS.RealmAbilities
         public Ability Ability { get { return this; } }
 
         
-		private const int m_range = 500; // pbaoe
-        private const int m_radius = 0; //
+		private const int m_range = 0; // pbaoe
+        private const int m_radius = 500; //
         private const eDamageType m_damageType = eDamageType.Natural;
 
 		private DBSpell m_dbspell;
@@ -63,24 +56,16 @@ namespace DOL.GS.RealmAbilities
         public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-			GamePlayer caster = living as GamePlayer;
+			var caster = living as GamePlayer;
 			if (caster == null)
 				return;
 			m_tauntValue = GetTauntValue();
 
 			CreateSpell(caster);
+			
+			caster.castingComponent.StartCastSpell(m_spell, m_spellline, this);
 
-			foreach (GamePlayer pc in caster.GetPlayersInRadius(m_range))
-			{
-				CastSpellOn(pc, caster);
-			}
-
-            foreach (GameNPC npc in caster.GetNPCsInRadius(m_range))
-            {
-	            CastSpellOn(npc, caster);
-            }
-
-            // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
+			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
 		}
 

@@ -40,9 +40,9 @@ namespace DOL.GS.Commands
 				return;
 
 
-			if (client.Player.Level < 24)
+			if (client.Player.Level < 40)
 			{
-				DisplayMessage(client, "This command is only available to players above level 24.");
+				DisplayMessage(client, "This command is only available to players above level 39.");
 				return;
 			}
 

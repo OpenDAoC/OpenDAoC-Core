@@ -170,8 +170,7 @@ namespace DOL.GS
         public override bool TargetInView
         {
             get {
-                if(TargetObject != null 
-                   && GetDistanceTo(TargetObject) < 64)
+                if(TargetObject != null && ((TargetObject is GamePlayer {IsMoving: true} p && GetDistanceTo(p) < 100) || GetDistanceTo(TargetObject) < 64))
                     return true; 
                 else
                     return m_targetInView; }
@@ -353,6 +352,22 @@ namespace DOL.GS
         {
             get { return m_statsAnon; }
             set { m_statsAnon = value; }
+        }
+        
+        protected bool m_lastDeathPvP;
+
+        public bool LastDeathPvP
+        {
+            get { return m_lastDeathPvP; }
+            set { m_lastDeathPvP = value; }
+        }
+        
+        protected bool m_wasmovedbycorpsesummoner;
+
+        public bool WasMovedByCorpseSummoner
+        {
+            get { return m_wasmovedbycorpsesummoner; }
+            set { m_wasmovedbycorpsesummoner = value; }
         }
 		
         #region DoorCache
@@ -797,14 +812,14 @@ namespace DOL.GS
         /// <summary>
         /// quit timer
         /// </summary>
-        protected ECSGameTimer m_quitTimer;
+        protected AuxECSGameTimer m_quitTimer;
 
         /// <summary>
         /// Timer callback for quit
         /// </summary>
         /// <param name="callingTimer">the calling timer</param>
         /// <returns>the new intervall</returns>
-        protected virtual int QuitTimerCallback(ECSGameTimer callingTimer)
+        protected virtual int QuitTimerCallback(AuxECSGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
             {
@@ -847,6 +862,7 @@ namespace DOL.GS
                 Shade(false);
             Out.SendPlayerQuit(false);
             Quit(true);
+            CraftingProgressMgr.FlushAndSaveInstance(this);
             SaveIntoDatabase();
             m_quitTimer?.Stop();
             m_quitTimer = null;
@@ -902,7 +918,7 @@ namespace DOL.GS
                     if (log.IsInfoEnabled)
                         log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
                 }
-
+                CraftingProgressMgr.FlushAndSaveInstance(this);
                 SaveIntoDatabase();
             }
             finally
@@ -1021,6 +1037,8 @@ namespace DOL.GS
                 CraftTimer.Stop();
                 CraftTimer = null;
             }
+            
+            craftComponent?.StopCraft();
 
             if (QuestActionTimer != null)
             {
@@ -1202,8 +1220,8 @@ namespace DOL.GS
 
                 if (m_quitTimer == null)
                 {
-                    m_quitTimer = new ECSGameTimer(this);
-                    m_quitTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuitTimerCallback);
+                    m_quitTimer = new AuxECSGameTimer(this);
+                    m_quitTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(QuitTimerCallback);
                     m_quitTimer.Start();
                 }
 
@@ -1451,7 +1469,7 @@ namespace DOL.GS
         /// <summary>
         /// tick when player is died
         /// </summary>
-        protected int m_deathTick;
+        protected long m_deathTick;
 
         /// <summary>
         /// choosed the player to release as soon as possible?
@@ -1545,7 +1563,7 @@ namespace DOL.GS
                 }
                 m_releaseType = releaseCommand;
                 // we use realtime, because timer window is realtime
-                int diff = m_deathTick - Environment.TickCount + RELEASE_MINIMUM_WAIT * 1000;
+                long diff = m_deathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
                 if (diff >= 1000)
                 {
                     if (m_automaticRelease)
@@ -1893,7 +1911,8 @@ namespace DOL.GS
             Mana = MaxMana;
             StartPowerRegeneration();
             StartEnduranceRegeneration();
-
+            LastDeathPvP = false;
+            
             var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
             /*
             foreach (var item in this.Inventory.EquippedItems)
@@ -1990,7 +2009,7 @@ namespace DOL.GS
         {
             if (IsAlive)
                 return 0;
-            int diffToRelease = Environment.TickCount - m_deathTick;
+            long diffToRelease = GameLoop.GameLoopTime - m_deathTick;
             if (m_automaticRelease && diffToRelease > RELEASE_MINIMUM_WAIT * 1000)
             {
                 Release(m_releaseType, true);
@@ -2077,7 +2096,7 @@ namespace DOL.GS
 			
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
-
+            LastDeathPvP = false;
             UpdatePlayerStatus();
             Out.SendPlayerRevive(this);
         }
@@ -5349,11 +5368,9 @@ namespace DOL.GS
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
             
-            List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
-
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-
+                List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
                 bool realmFound = false;
                 foreach (var rl in rloyal)
                 {
@@ -5401,19 +5418,7 @@ namespace DOL.GS
 
             if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
             {
-                foreach (var loyalty in rloyal)
-                {
-                    if (loyalty.Realm == (int) this.Realm)
-                    {
-                        //do nothing
-                    }
-                    else
-                    {
-                        loyalty.LoyalDays = 0;
-                        if (loyalty.LoyalDays < loyalty.MinimumLoyalDays)
-                            loyalty.LoyalDays = loyalty.MinimumLoyalDays;
-                    }
-                }
+               LoyaltyManager.HandlePVPKill(this);
             }
 
             long RealmLoyaltyBonus = 0;
@@ -5475,9 +5480,25 @@ namespace DOL.GS
                 this.Out.SendMessage($"Loyalty: {RealmLoyaltyBonus.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)} | {loyaltyPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Get Champion Experience too
-            GainChampionExperience(expTotal);
+            // GainChampionExperience(expTotal);
 
-            base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
+            #region Guild XP Bonus
+            long guildBonus = 0;
+            if (this.Guild != null && !this.Guild.IsStartingGuild && this.Guild.BonusType == Guild.eBonusType.Experience && xpSource == eXPSource.NPC)
+			{
+				guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 100);
+			}else if (this.Guild != null && this.Guild.IsStartingGuild && xpSource == eXPSource.NPC)
+			{
+				guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 200);
+			}
+
+            expTotal += guildBonus;
+
+            #endregion Guild XP Bonus
+
+            //Commenting base.GainExperience out as it was used to Notify which was only used by GuildEvent (which is now moved here)
+            //base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
+            
 
             if (IsLevelSecondStage)
             {
@@ -5500,6 +5521,7 @@ namespace DOL.GS
                 string expOutpostBonusStr = "";
                 string expSoloBonusStr = "";
                 string expRealmLoyaltyStr = "";
+                string expGuildBonusStr = "";
 
                 if (expCampBonus > 0)
                 {
@@ -5524,7 +5546,12 @@ namespace DOL.GS
                     expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
                 }
 
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                if(guildBonus > 0)
+                {
+                    expGuildBonusStr = "("+ guildBonus.ToString("N0", format) + " Guild bonus)";
+                }
+
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr + expGuildBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
@@ -5702,33 +5729,20 @@ namespace DOL.GS
                 }
             }
             
-            // PVE Beta Lv35 Title Reward
-            if (Level == 35)
+            if (Level == 39)
             {
-                const string customKey = "PvEBeta35";
-                var hasPvEBeta35Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                var today = DateTime.Today;
+                var endSoftLaunch = new DateTime(2022, 07, 18);
 
-                if (hasPvEBeta35Title == null)
+                if (today <= endSoftLaunch)
                 {
-                    AccountXCustomParam PvEBeta35Title = new AccountXCustomParam();
-                    PvEBeta35Title.Name = Client.Account.Name;
-                    PvEBeta35Title.KeyName = customKey;
-                    PvEBeta35Title.Value = "1";
-                    GameServer.Database.AddObject(PvEBeta35Title);
-                    Client.Player.Out.SendPlayerTitleUpdate(this);
+                    Client.Player.Achieve("SoftLaunch39-Credit");
                 }
             }
+            
 
             if (Level == 40)
             {
-                const string customKey = "BoostedLevel-30";
-                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                if (usedi30 != null)
-                {
-                    Out.SendMessage("You have been awarded a bonus of 1000 Atlas Orbs for hitting level 40 with a test character.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 100);
-                }
-                
                 // Creates a TimeXLevel to track the levelling time to 40
                 if (Client.Account.PrivLevel == 1)
                 {
@@ -5773,24 +5787,6 @@ namespace DOL.GS
 
             if (Level == 50)
             {
-                const string customKey = "BoostedLevel-30";
-                var usedi30 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-                
-                const string customKey2 = "BoostedLevel-40";
-                var usedi40 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
-
-                /*
-                if (usedi30 != null)
-                {
-                    Out.SendMessage("Your journey from level 30 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }
-                if (Boosted)
-                {
-                    Out.SendMessage("Your journey from level 40 has come to an end. You have been awarded a bonus of 5000 Atlas Orbs.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }*/
-                    
                 
                 // Check if player has completed the Hardcore Challenge
                 if (HCFlag)
@@ -5799,38 +5795,6 @@ namespace DOL.GS
                     HCCompleted = true;
                     Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     AtlasROGManager.GenerateOrbAmount(this, 5000);
-                }
-                
-                // Check if player has completed the Solo Challenge
-                const string groupedKey = "grouped_char";
-                const string soloKey = "solo_to_50";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(groupedKey)));
-                var hasKey = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId).And(DB.Column("KeyName").IsEqualTo(soloKey)));
-                
-                if ((NoHelp && hasGrouped == null || hasGrouped == null) && !Boosted)
-                {
-                    NoHelp = false;
-                    DOLCharactersXCustomParam soloBeetle = new DOLCharactersXCustomParam();
-                    soloBeetle.DOLCharactersObjectId = this.ObjectId;
-                    soloBeetle.KeyName = soloKey;
-                    soloBeetle.Value = "1";
-                    GameServer.Database.AddObject(soloBeetle);
-                    AtlasROGManager.GenerateOrbAmount(this, 1500);
-                    Out.SendMessage("You have reached Level 50! Your No Help flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                }
-                
-                // PVE Beta Lv50 Title Reward
-                const string pve50key = "PvEBeta50";
-                var hasPvEBeta50Title = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(pve50key)));
-
-                if (hasPvEBeta50Title == null && !Boosted)
-                {
-                    AccountXCustomParam PvEBeta50Title = new AccountXCustomParam();
-                    PvEBeta50Title.Name = Client.Account.Name;
-                    PvEBeta50Title.KeyName = pve50key;
-                    PvEBeta50Title.Value = "1";
-                    GameServer.Database.AddObject(PvEBeta50Title);
-                    Client.Player.Out.SendPlayerTitleUpdate(this);
                 }
                 
                 // Creates a TimeXLevel to track the levelling time to 50
@@ -7473,7 +7437,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -7570,6 +7535,9 @@ namespace DOL.GS
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
 
+            if (this.DuelTarget != null && source != this.DuelTarget)
+                this.DuelStop();
+            
             #region PVP DAMAGE
 
             if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
@@ -8348,7 +8316,7 @@ namespace DOL.GS
         /// Called when the player dies
         /// </summary>
         /// <param name="killer">the killer</param>
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             // Ambient trigger upon killing player
             if (killer is GameNPC)
@@ -8497,7 +8465,7 @@ namespace DOL.GS
             }
 
             // then buffs drop messages
-            base.Die(killer);
+            base.ProcessDeath(killer);
 
             lock (m_LockObject)
             {
@@ -8521,7 +8489,7 @@ namespace DOL.GS
                 
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;
                 m_releasePhase = 0;
-                m_deathTick = Environment.TickCount; // we use realtime, because timer window is realtime
+                m_deathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
                 m_releaseTimer = new ECSGameTimer(this);
@@ -8608,6 +8576,9 @@ namespace DOL.GS
                             conLoss = 1;
                         TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
                     }
+                    
+                    if (realmDeath)
+                        LastDeathPvP = true;
                 }
                 GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             }
@@ -8647,36 +8618,11 @@ namespace DOL.GS
 
             if (HCFlag)
             {
-                string realm = "";
-                    if (Realm == eRealm._FirstPlayerRealm)
-                        realm = "Albion";
-                    else if (Realm == eRealm._LastPlayerRealm)
-                        realm = "Hibernia";
-                    else
-                        realm = "Midgard";
-                    
-                Out.SendCustomDialog($"Today is a bad day for {realm}.\n This character will be automatically deleted.", new CustomDialogResponse(HCDeathResponse));
+                DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(Name));
+                if (cha == null) return;
+                Client.Out.SendPlayerQuit(true);
+                GameServer.Database.DeleteObject(cha);
             }
-            
-            
-        }
-        
-        protected virtual void HCDeathResponse(GamePlayer player, byte response)
-        {
-            DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
-
-            // If no character exists that matches the exact name entered
-            if (cha == null)
-            {
-                return;
-            }
-            // If the character is logged in, remove them from the game
-            // player.Release(eReleaseType.Normal, true);
-            // player.Quit(true);
-            GameServer.Database.DeleteObject(cha);
-            player.Client.Out.SendPlayerQuit(true);
-            
-            
         }
 
         public override void EnemyKilled(GameLiving enemy)
@@ -8966,7 +8912,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -9271,7 +9218,8 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
+                //CraftTimer.Stop();
+                craftComponent.StopCraft();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -9882,9 +9830,7 @@ namespace DOL.GS
 
                     // Artifacts don't require charges.
 
-                    if ((type < 2 && useItem.SpellID > 0 && useItem.Charges < 1 && useItem.MaxCharges > -1 && !(useItem is InventoryArtifact)) ||
-                        (type == 2 && useItem.SpellID1 > 0 && useItem.Charges1 < 1 && useItem.MaxCharges1 > -1 && !(useItem is InventoryArtifact)) ||
-                        (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1))
+                    if (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1)
                     {
                         Out.SendMessage("The " + useItem.Name + " is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
@@ -9970,6 +9916,12 @@ namespace DOL.GS
                                                             Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                             return;
                                                         }
+                                                    }
+                                                    
+                                                    if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                    {
+                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        return;
                                                     }
 
                                                     Stealth(false);
@@ -10981,6 +10933,7 @@ namespace DOL.GS
             m_healthRegenerationTimer = new ECSGameTimer(this);
             m_powerRegenerationTimer = new ECSGameTimer(this);
             m_enduRegenerationTimer = new ECSGameTimer(this);
+            craftComponent = new CraftComponent(this);
             m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
             m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
             m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
@@ -11192,7 +11145,7 @@ namespace DOL.GS
             //Set the new destination
             //Current Speed = 0 when moved ... else X,Y,Z continue to be modified
             CurrentSpeed = 0;
-            MovementStartTick = Environment.TickCount;
+            MovementStartTick = GameLoop.GameLoopTime;
             Point3D originalPoint = new Point3D(X, Y, Z);
             X = x;
             Y = y;
@@ -11607,12 +11560,12 @@ namespace DOL.GS
         }
 
 
-        private int m_lastPositionUpdateTick = 0;
+        private long m_lastPositionUpdateTick = 0;
 
         /// <summary>
         /// The environment tick count when this players position was last updated
         /// </summary>
-        public int LastPositionUpdateTick
+        public long LastPositionUpdateTick
         {
             get { return m_lastPositionUpdateTick; }
             set { m_lastPositionUpdateTick = value; }
@@ -12029,8 +11982,9 @@ namespace DOL.GS
             if (IsCrafting)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnPlayerMove.InterruptCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                CraftTimer.Stop();
-                CraftTimer = null;
+                //CraftTimer.Stop();
+                //CraftTimer = null;
+                this.craftComponent.StopCraft();
                 Out.SendCloseTimerWindow();
             }
             if (IsSummoningMount)
@@ -12061,8 +12015,17 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if(effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            {
+                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                if(volley != null)
+                    volley.PlayerMoving();
+            }
+
+
             //Notify the GameEventMgr of the moving player
-            GameEventMgr.Notify(GamePlayerEvent.Moving, this);
+            // GameEventMgr.Notify(GamePlayerEvent.Moving, this);
         }
 
         /// <summary>
@@ -12210,24 +12173,7 @@ namespace DOL.GS
                 RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
                 if (ab != null)
                     enc *= 1 + ((double)ab.Amount / 100);
-
-                // Apply Sojourner ability
-                if (this.GetSpellLine("Sojourner") != null)
-                {
-                    enc *= 1.25;
-                }
-
-                // Apply Walord effect
-                GameSpellEffect iBaneLordEffect = SpellHandler.FindEffectOnTarget(this, "Oppression");
-                if (iBaneLordEffect != null)
-                    enc *= 1.00 - (iBaneLordEffect.Spell.Value * 0.01);
-
-                // Apply Mythirian Bonus
-                if (GetModified(eProperty.MythicalDiscumbering) > 0)
-                {
-                    enc += GetModified(eProperty.MythicalDiscumbering);
-                }
-
+                
                 return (int)enc;
             }
         }
@@ -12274,16 +12220,12 @@ namespace DOL.GS
         {
             if (Inventory.InventoryWeight > MaxEncumberance)
             {
-                if (IsOverencumbered == false)
-                {
-                    IsOverencumbered = true;
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-                else
-                {
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
+                IsOverencumbered = true;
                 Out.SendUpdateMaxSpeed();
+                if (MaxSpeed == 0)
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "PropertyCalc.MaxSpeed.YouAreEncumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                else
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             else if (IsOverencumbered)
             {
@@ -13687,6 +13629,7 @@ namespace DOL.GS
             m_dbCharacter = (DOLCharacters)obj;
             
             
+            LoyaltyManager.CachePlayer(this);
             List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
@@ -14010,8 +13953,8 @@ namespace DOL.GS
                 //Save realmtimer
                 RealmTimer.SaveRealmTimer(this);
 
-                SaveSkillsToCharacter();
-                SaveCraftingSkills();
+                SaveSkillsToCharacter();                
+                //SaveCraftingSkills();
                 DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
                 DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel;
                 DBCharacter.LastLevelUp = DateTime.Now;
@@ -14993,6 +14936,7 @@ namespace DOL.GS
                 if (craftingSkill != null && count >0)
                 {
                     m_craftingSkills[skill] = count + m_craftingSkills[skill];
+                    CraftingProgressMgr.TrackChange(this, m_craftingSkills);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.GainSkill", craftingSkill.Name, m_craftingSkills[skill]), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     int currentSkillLevel = GetCraftingSkillValue(skill);
                     if (HasPlayerReachedNewCraftingTitle(currentSkillLevel))
@@ -15119,6 +15063,7 @@ namespace DOL.GS
                     if (craftingSkill != null)
                     {
                         m_craftingSkills.Add(skill, startValue);
+                        CraftingProgressMgr.TrackChange(this, m_craftingSkills);
                         Out.SendMessage("You gain skill in " + craftingSkill.Name + "! (" + startValue + ").", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         return true;
                     }
@@ -15141,13 +15086,17 @@ namespace DOL.GS
             set { m_crafttimer = value; }
         }
 
+        private CraftAction m_craftaction;
+        public CraftAction CraftAction
+        {
+            get { return m_craftaction; }
+            set { m_craftaction = value; }
+        }
+
         /// <summary>
         /// Does the player is crafting
         /// </summary>
-        public bool IsCrafting
-        {
-            get { return (m_crafttimer != null && m_crafttimer.IsAlive); }
-        }
+        public bool IsCrafting => (craftComponent != null && craftComponent.CraftState);
 
         protected bool m_isDead = false;
         /// <summary>
@@ -15177,33 +15126,33 @@ namespace DOL.GS
         /// <summary>
         /// This function saves all player crafting skill in the db
         /// </summary>
-        protected void SaveCraftingSkills()
-        {
-            if (DBCharacter == null)
-                return;
-            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+        //protected void SaveCraftingSkills()
+        //{
+        //    if (DBCharacter == null)
+        //        return;
+        //    AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
             
-            CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
+        //    CraftingForRealm.CraftingPrimarySkill = (byte)CraftingPrimarySkill;
 
-            string cs = "";
+        //    string cs = "";
 
-            if (CraftingPrimarySkill != eCraftingSkill.NoCrafting)
-            {
-                lock (CraftingLock)
-                {
-                    foreach (KeyValuePair<eCraftingSkill, int> de in m_craftingSkills)
-                    {
-                        if (cs.Length > 0) cs += ";";
+        //    if (CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+        //    {
+        //        lock (CraftingLock)
+        //        {
+        //            foreach (KeyValuePair<eCraftingSkill, int> de in m_craftingSkills)
+        //            {
+        //                if (cs.Length > 0) cs += ";";
 
-                        cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);
-                    }
-                }
-            }
+        //                cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);
+        //            }
+        //        }
+        //    }
 
-            CraftingForRealm.SerializedCraftingSkills = cs;
+        //    CraftingForRealm.SerializedCraftingSkills = cs;
             
-            GameServer.Database.SaveObject(CraftingForRealm); 
-        }
+        //    GameServer.Database.SaveObject(CraftingForRealm); 
+        //}
 
         /// <summary>
         /// This function load all player crafting skill from the db
@@ -15260,9 +15209,13 @@ namespace DOL.GS
                                 if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                                 {
                                     if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                        m_craftingSkills.Add((eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
+                                    {
+                                        m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                    }
                                     else
+                                    {
                                         m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
+                                    }
                                 }
                                 else
                                 {
@@ -15276,9 +15229,13 @@ namespace DOL.GS
                             if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                             {
                                 if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
+                                {
+                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                }
                                 else
+                                {
                                     m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+                                }
                             }
                             else
                             {
@@ -17052,25 +17009,6 @@ namespace DOL.GS
         }
         #endregion
 
-        #region Artifacts
-
-        /// <summary>
-        /// Checks if the player's class has at least one version of the artifact specified available to them.
-        /// </summary>
-        /// <param name="artifactID"></param>
-        /// <returns>True when at least one version exists, false when no versions are available.</returns>
-        public bool CanReceiveArtifact(string artifactID)
-        {
-            Dictionary<String, ItemTemplate> possibleVersions = ArtifactMgr.GetArtifactVersions(artifactID, (eCharacterClass)CharacterClass.ID, Realm);
-
-            if (possibleVersions.Count == 0)
-                return false;
-
-            return true;
-        }
-
-        #endregion
-
         #region Constructors
         /// <summary>
         /// Returns the string representation of the GamePlayer
@@ -17128,7 +17066,6 @@ namespace DOL.GS
             m_isWireframe = false;
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;
-
             m_saveInDB = true;
             LoadFromDatabase(dbChar);
 			
@@ -17146,6 +17083,7 @@ namespace DOL.GS
 			
             //Add to EntityManager
             EntityManager.AddPlayer((this));
+            EntityManager.RemoveNpc(this);
             EntityManager.RemoveNpc(this);
         }
 

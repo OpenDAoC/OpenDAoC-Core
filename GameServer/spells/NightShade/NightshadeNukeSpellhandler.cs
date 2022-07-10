@@ -39,20 +39,21 @@ namespace DOL.GS.Spells
 					speclevel = ((GamePlayer)Caster).Level;
 			}
 
-			min = 1.25;
-			max = 1.25;
+			min = 0.5;
+			max = 1.0;
 
 			if (target.Level > 0)
 			{
 				min = 0.75 + (speclevel - 1) / (double)target.Level * 0.5;
 			}
 
+			/*
 			if (speclevel - 1 > target.Level)
 			{
 				double overspecBonus = (speclevel - 1 - target.Level) * 0.005;
 				min += overspecBonus;
 				max += overspecBonus;
-			}
+			}*/
 
 			if (min > max) min = max;
 			if (min < 0) min = 0;
@@ -68,8 +69,8 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				int dexValue = player.GetModified((eProperty)player.Dexterity);
-				spellDamage *= (dexValue + 300) / 275.0;
+				int strValue = player.GetModified((eProperty)player.Strength);
+				spellDamage *= (strValue + 300) / 275.0;
 			}
 
 			if (spellDamage < 0)

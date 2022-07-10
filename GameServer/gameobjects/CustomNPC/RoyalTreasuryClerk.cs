@@ -40,19 +40,15 @@ namespace DOL.GS
 			if (!base.Interact(player) || player == null)
 				return false;
 
-			if (GlobalConstants.IsExpansionEnabled((int)eClientExpansion.DarknessRising))
+			
+			SayTo(player, $"Hello {player.CharacterClass.Name}, you can come to me if you lost your Personal Bind Recall Stone.\n");
+
+			if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
 			{
-				SayTo(player, "Let me check to see if you are owed any items ... ");
-
-				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
-				{
-					SayTo(player, "I see you are missing your Personal Bind Recall Stone.  Would you like [another]?");
-				}
-
-				return true;
+				SayTo(player, "It looks like you need my service.  Do you need [another] Personal Bind Recall Stone?");
 			}
 
-			return false;
+			return true;
 		}
 
 		/// <summary>

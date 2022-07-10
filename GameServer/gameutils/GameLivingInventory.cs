@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -1190,7 +1191,6 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-
 		/// <summary>
 		/// Gets the inventory weight
 		/// </summary>
@@ -1198,18 +1198,21 @@ namespace DOL.GS
 		{
 			get
 			{
-				InventoryItem item;
-				int weight = 0;
+				var weight = 0;
+				IList<InventoryItem> items;
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					foreach (eInventorySlot slot in EQUIP_SLOTS)
-					{
-						if (m_items.TryGetValue(slot, out item))
-						{
-							weight += item.Weight;
-						}
-					}
+					items = new List<InventoryItem>(m_items.Values);
+				}
+				
+				foreach (var item in items)
+				{
+					if (!EQUIP_SLOTS.Contains((eInventorySlot)item.SlotPosition))
+						continue;
+					if ((eInventorySlot) item.SlotPosition is eInventorySlot.FirstQuiver or eInventorySlot.SecondQuiver or eInventorySlot.ThirdQuiver or eInventorySlot.FourthQuiver)
+						continue;
+					weight += item.Weight;
 				}
 
 				return weight/10;
@@ -1244,16 +1247,21 @@ namespace DOL.GS
 
 			if (changes <= 0 && m_changedSlots.Count > 0)
 			{
-				UpdateChangedSlots();
+				lock(m_items) //Inventory must be locked before calling UpdateChangedSlots
+				{
+					UpdateChangedSlots();
+				}
 			}
 		}
 
+		public object InventorySlotLock = new object();
 		/// <summary>
 		/// Updates changed slots, inventory is already locked
 		/// </summary>
 		protected virtual void UpdateChangedSlots()
 		{
-			m_changedSlots.Clear();
+			lock(InventorySlotLock)
+				m_changedSlots.Clear();
 		}
 
 		#endregion

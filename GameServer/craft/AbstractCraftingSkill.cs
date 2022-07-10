@@ -138,22 +138,23 @@ namespace DOL.GS
 
 			player.Stealth(false);
 
-			StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
+			//StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
+			player.craftComponent.StartCraft(recipe, this, craftingTime);
 		}
 
 		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
         {
-			player.CraftTimer = new ECSGameTimer(player);
-			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
-			player.CraftTimer.Properties.setProperty(PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.setProperty(RECIPE_BEING_CRAFTED, recipe);
-			player.CraftTimer.Start(craftingTime * 1000);
+			//player.CraftTimer = new ECSGameTimer(player);
+			//player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
+			//player.CraftTimer.Properties.setProperty(PLAYER_CRAFTER, player);
+			//player.CraftTimer.Properties.setProperty(RECIPE_BEING_CRAFTED, recipe);
+			//player.CraftTimer.Start(craftingTime * 1000);
 		}
 
 		protected virtual void StopCraftingCurrentItem(GamePlayer player, ItemTemplate itemToCraft)
 		{
-			player.CraftTimer.Stop();
-			player.Out.SendCloseTimerWindow();
+			//player.CraftTimer.Stop();
+			player.craftComponent.StopCraft();
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
@@ -193,64 +194,15 @@ namespace DOL.GS
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
+			
+			if (player.IsCasting)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftCasting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			
 
 			return true;
-		}
-
-		protected virtual int MakeItem(ECSGameTimer timer)
-		{
-			GamePlayer player = timer.Properties.getProperty<GamePlayer>(PLAYER_CRAFTER);
-			Recipe recipe = timer.Properties.getProperty<Recipe>(RECIPE_BEING_CRAFTED);
-			var queue = player.TempProperties.getProperty<int>("CraftQueueLength");
-			var remainingToCraft = player.TempProperties.getProperty<int>("CraftQueueRemaining");
-
-			if (player == null || recipe == null)
-			{
-				if (player != null) player.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Crafting.MakeItem: Could not retrieve player, recipe, or raw materials to craft from CraftTimer.");
-				return 0;
-			}
-
-			if (queue > 0 && remainingToCraft == 0 && finishedCraft)
-			{
-				remainingToCraft = queue - 1;
-			}
-
-			player.CraftTimer?.Stop();
-			player.Out.SendCloseTimerWindow();
-
-			if (Util.Chance(CalculateChanceToMakeItem(player, recipe.Level)))
-			{
-				if (!RemoveUsedMaterials(player, recipe))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-					if (player.Client.Account.PrivLevel == 1)
-						return 0;
-				}
-
-				BuildCraftedItem(player, recipe);
-				GainCraftingSkillPoints(player, recipe);
-			}
-			else
-			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				player.Out.SendPlaySound(eSoundType.Craft, 0x02);
-			}
-
-			if (remainingToCraft >= 1)
-			{
-				player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
-				StartCraftingTimerAndSetCallBackMethod(player, recipe, GetCraftingTime(player, recipe));
-				player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), GetCraftingTime(player, recipe));
-				finishedCraft = false;
-			}
-			else
-			{
-				finishedCraft = true;
-			}
-
-			return 0;
 		}
 
 		#endregion
@@ -503,7 +455,7 @@ namespace DOL.GS
 			return true;//all raw material removed and item created
 		}
 
-		protected virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
+		public virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
 		{
 			var product = recipe.Product;
 
@@ -550,69 +502,70 @@ namespace DOL.GS
 					}
 					count = 0;
 				}
+			}
+			
+			InventoryItem newItem = null;
 
-				InventoryItem newItem = null;
+			player.Inventory.BeginChanges();
 
-				player.Inventory.BeginChanges();
-
-				Dictionary<int, int>.Enumerator enumerator = changedSlots.GetEnumerator();
-				while (enumerator.MoveNext())
+			Dictionary<int, int>.Enumerator enumerator = changedSlots.GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				KeyValuePair<int, int> slot = enumerator.Current;
+				int countToAdd = slot.Value;
+				if (countToAdd > 0)	// Add to exiting item
 				{
-					KeyValuePair<int, int> slot = enumerator.Current;
-					int countToAdd = slot.Value;
-					if (countToAdd > 0)	// Add to exiting item
+					newItem = player.Inventory.GetItem((eInventorySlot)slot.Key);
+					if (newItem != null && player.Inventory.AddCountToStack(newItem, countToAdd))
 					{
-						newItem = player.Inventory.GetItem((eInventorySlot)slot.Key);
-						if (newItem != null && player.Inventory.AddCountToStack(newItem, countToAdd))
-						{
-							InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Other, newItem.Template, countToAdd);
-							// count incremented, continue with next change
-							continue;
-						}
-					}
-
-					if (recipe.IsForUniqueProduct == false)
-					{
-						newItem = GameInventoryItem.Create(product);
-					}
-					else
-					{
-						ItemUnique unique = new ItemUnique(product);
-						GameServer.Database.AddObject(unique);
-						newItem = GameInventoryItem.Create(unique);
-						newItem.Quality = GetQuality(player, recipe.Level);
-					}
-
-					newItem.IsCrafted = true;
-					newItem.Creator = player.Name;
-					newItem.Count = -countToAdd;
-
-					if (slot.Key > 0)	// Create new item in the backpack
-					{
-						player.Inventory.AddItem((eInventorySlot)slot.Key, newItem);
-						InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Craft, newItem.Template, newItem.Count);
-					}
-					else					// Create new item on the ground
-					{
-						player.CreateItemOnTheGround(newItem);
-						player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.BackpackFull", product.Name));
+						InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Other, newItem.Template, countToAdd);
+						// count incremented, continue with next change
+						continue;
 					}
 				}
 
-				player.Inventory.CommitChanges();
-
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-
-				if (recipe.IsForUniqueProduct && newItem.Quality == 100)
+				if (recipe.IsForUniqueProduct == false)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Masterpiece"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					player.Out.SendPlaySound(eSoundType.Craft, 0x04);
+					newItem = GameInventoryItem.Create(product);
 				}
 				else
 				{
-					player.Out.SendPlaySound(eSoundType.Craft, 0x03);
+					ItemUnique unique = new ItemUnique(product);
+					GameServer.Database.AddObject(unique);
+					newItem = GameInventoryItem.Create(unique);
+					newItem.Quality = GetQuality(player, recipe.Level);
+				}
+
+				newItem.IsCrafted = true;
+				newItem.Creator = player.Name;
+				newItem.Count = -countToAdd;
+
+				if (slot.Key > 0)	// Create new item in the backpack
+				{
+					player.Inventory.AddItem((eInventorySlot)slot.Key, newItem);
+					InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Craft, newItem.Template, newItem.Count);
+				}
+				else					// Create new item on the ground
+				{
+					player.CreateItemOnTheGround(newItem);
+					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.BackpackFull", product.Name));
 				}
 			}
+
+			player.Inventory.CommitChanges();
+
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+
+			if (recipe.IsForUniqueProduct && newItem.Quality == 100)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Masterpiece"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendPlaySound(eSoundType.Craft, 0x04);
+			}
+			else
+			{
+				player.Out.SendPlaySound(eSoundType.Craft, 0x03);
+			}
+			
 		}
 
 		#endregion

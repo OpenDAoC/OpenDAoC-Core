@@ -180,6 +180,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -189,13 +190,17 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 FornInCombat = false;
                 SpamMessage = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                if (!RemoveAdds)
                 {
-                    if (npc != null && npc.IsAlive)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                     {
-                        if (npc.Brain is FornShardBrain)
-                            npc.RemoveFromWorld(); //remove adds here
+                        if (npc != null && npc.IsAlive)
+                        {
+                            if (npc.Brain is FornShardBrain)
+                                npc.RemoveFromWorld(); //remove adds here
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
 
@@ -208,8 +213,9 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if (FornInCombat == false)
                 {
                     SpawnShards(); //spawn adds here
@@ -401,14 +407,17 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            Point3D point = new Point3D(49617, 32874, 10859);
-            GameLiving target = Body.TargetObject as GameLiving;
-            if (target != null && target.IsAlive)
+            if (HasAggro && Body.TargetObject != null)
             {
-                if (!target.IsWithinRadius(point, 400) && !Body.IsWithinRadius(point, 400))
-                    Body.MaxSpeedBase = 0;
-                if(target.IsWithinRadius(point, 400))
-                    Body.MaxSpeedBase = 200;
+                Point3D point = new Point3D(49617, 32874, 10859);
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (target != null && target.IsAlive)
+                {
+                    if (!target.IsWithinRadius(point, 400) && !Body.IsWithinRadius(point, 400))
+                        Body.MaxSpeedBase = 0;
+                    if (target.IsWithinRadius(point, 400))
+                        Body.MaxSpeedBase = 200;
+                }
             }
             base.Think();
         }

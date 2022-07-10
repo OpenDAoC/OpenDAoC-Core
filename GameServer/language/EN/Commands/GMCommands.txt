@@ -86,6 +86,11 @@ GMCommands.Debug.Usage:						/debug <on/off>
 GMCommands.Debug.ModeON:					Debug mode ON
 GMCommands.Debug.ModeOFF:					Debug mode OFF
 
+## /hascredit
+GMCommands.HasCredit.Description:			Checks if a player has a mob kill credit
+GMCommands.HasCredit.Usage:					/hascredit <mobname>
+
+
 # ]jump
 GMCommands.DebugJump.Description:			Teleports yourself to the specified location
 GMCommands.DebugJump.Usage:					']jump <zoneID> <locX> <locY> <locZ> <heading>' Autoused for *jump in debug mode
@@ -304,7 +309,7 @@ GMCommands.Keep.AddTeleport.StoneAdded:		Teleport Stone added!
 ## /keepguard
 GMCommands.KeepGuard.Description:			Various keep guard commands!
 GMCommands.KeepGuard.Information:			Use '/mob' command if you want to change other param of guard.
-GMCommands.KeepGuard.Usage.Create:			'/keepguard create <lord|fighter|archer|healer|stealther|caster|hastener|mission|patrol> <static(optional for archer and caster)>'.
+GMCommands.KeepGuard.Usage.Create:			'/keepguard create <lord|fighter|archer|healer|stealther|caster|hastener|mission|patrol|corpsesummoner|gatekeeperin|gatekeeperout> <static(optional for archer and caster)>'.
 GMCommands.KeepGuard.Usage.Position.Add:	'/keepguard position add <height(optional)>'.
 GMCommands.KeepGuard.Usage.Position.Remove:	'/keepguard position remove'.
 GMCommands.KeepGuard.Usage.Path.Create:		'/keepguard path create'.

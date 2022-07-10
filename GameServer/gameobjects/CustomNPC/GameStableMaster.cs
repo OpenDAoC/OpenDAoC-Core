@@ -239,9 +239,11 @@ namespace DOL.GS
 						mount.Z = path.Z;
 						mount.CurrentRegion = CurrentRegion;
 						mount.Heading = path.GetHeading( path.Next );
+						mount.FixedSpeed = true;
+						mount.MaxSpeedBase = 1500;
 						mount.AddToWorld();
 						mount.CurrentWayPoint = path;
-						GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
+						//GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						new MountHorseAction(player, mount).Start(400);
 						new HorseRideAction(mount).Start(4000);
 						return true;
@@ -301,7 +303,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Handles delayed player mount on horse
 		/// </summary>
-		protected class MountHorseAction : RegionAction
+		protected class MountHorseAction : RegionECSAction
 		{
 			/// <summary>
 			/// The target horse
@@ -324,17 +326,18 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer)m_actionSource;
 				player.MountSteed(m_horse, true);
+				return 0;
 			}
 		}
 
 		/// <summary>
 		/// Handles delayed horse ride actions
 		/// </summary>
-		protected class HorseRideAction : RegionAction
+		protected class HorseRideAction : RegionECSAction
 		{
 			/// <summary>
 			/// Constructs a new HorseStartAction
@@ -348,10 +351,11 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameNPC horse = (GameNPC)m_actionSource;
 				horse.MoveOnPath(horse.MaxSpeed);
+				return 0;
 			}
 		}
 	}

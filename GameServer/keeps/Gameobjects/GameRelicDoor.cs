@@ -19,6 +19,8 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Linq;
 
 using DOL.Database;
 using DOL.Events;
@@ -294,10 +296,16 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void BroadcastDoorStatus()
 		{
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+
+			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
-				client.Player.SendDoorUpdate(this);
-			}
+				player.SendDoorUpdate(this);
+			});
+
+			// foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+			// {
+			// 	client.Player.SendDoorUpdate(this);
+			// }
 		}
 
 		/*

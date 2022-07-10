@@ -148,11 +148,11 @@ namespace DOL.GS
 		public void SpawnMasterOfPain()
 		{
 				MasterOfPain Add1 = new MasterOfPain();
-				Add1.X = X;
-				Add1.Y = Y;
-				Add1.Z = Z;
+				Add1.X = 33971;
+				Add1.Y = 20939;
+				Add1.Z = 11611;
 				Add1.CurrentRegion = CurrentRegion;
-				Add1.Heading = Heading;
+				Add1.Heading = 39;
 				Add1.RespawnInterval = -1;
 				Add1.AddToWorld();
 		}
@@ -348,7 +348,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (Body.InCombat && Body.IsAlive && HasAggro)
+			if (Body.InCombat && Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(DebuffSC, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}

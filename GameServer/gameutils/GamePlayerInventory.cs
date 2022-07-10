@@ -110,28 +110,22 @@ namespace DOL.GS
 							// GameInventoryItem and utilizes the new Delve system.  No need to set ClassType for all artifacts when
 							// this code works fine as is.
 
-							if (ArtifactMgr.IsArtifact(item))
+
+							GameInventoryItem playerItem = GameInventoryItem.Create(item);
+
+							if (playerItem.CheckValid(m_player))
 							{
-								m_items.Add(itemSlot, new InventoryArtifact(item));
+								m_items.Add(itemSlot, playerItem as InventoryItem);
 							}
 							else
 							{
-								GameInventoryItem playerItem = GameInventoryItem.Create(item);
-
-								if (playerItem.CheckValid(m_player))
-								{
-									m_items.Add(itemSlot, playerItem as InventoryItem);
-								}
-								else
-								{
-									Log.ErrorFormat("Item '{0}', ClassType '{1}' failed valid test for player '{2}'!", item.Name, item.ClassType, m_player.Name);
-									GameInventoryItem invalidItem = new GameInventoryItem();
-									invalidItem.Name = "Invalid Item";
-									invalidItem.OwnerID = item.OwnerID;
-									invalidItem.SlotPosition = item.SlotPosition;
-									invalidItem.AllowAdd = false;
-									m_items.Add(itemSlot, invalidItem);
-								}
+								Log.ErrorFormat("Item '{0}', ClassType '{1}' failed valid test for player '{2}'!", item.Name, item.ClassType, m_player.Name);
+								GameInventoryItem invalidItem = new GameInventoryItem();
+								invalidItem.Name = "Invalid Item";
+								invalidItem.OwnerID = item.OwnerID;
+								invalidItem.SlotPosition = item.SlotPosition;
+								invalidItem.AllowAdd = false;
+								m_items.Add(itemSlot, invalidItem);
 							}
 
 							if (Log.IsWarnEnabled)
@@ -1393,30 +1387,27 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-
-		/// <summary>
-		/// Gets the inventory weight
-		/// </summary>
+		
 		public override int InventoryWeight
 		{
 			get
 			{
-				int weight = 0;
+				var weight = 0;
+				IList<InventoryItem> items;
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					InventoryItem item;
-
-					for (eInventorySlot slot = eInventorySlot.FirstBackpack; slot <= eInventorySlot.LastBackpack; slot++)
-					{
-						if (m_items.TryGetValue(slot, out item))
-						{
-							weight += item.Weight;
-						}
-					}
-
-					return weight/10 + base.InventoryWeight;
+					items = new List<InventoryItem>(m_items.Values);
 				}
+				
+				foreach (var item in items)
+				{
+					if ((eInventorySlot) item.SlotPosition < eInventorySlot.FirstBackpack || (eInventorySlot)item.SlotPosition > eInventorySlot.LastBackpack)
+						continue;
+					weight += item.Weight;
+				}
+				
+				return weight/10 + base.InventoryWeight;;
 			}
 		}
 
@@ -1497,45 +1488,65 @@ namespace DOL.GS
 		/// </summary>
 		protected override void UpdateChangedSlots()
 		{
-			m_player.Out.SendInventorySlotsUpdate(new List<int>(m_changedSlots.Cast<int>()));
+			
+			lock (m_changedSlots)
+			{
+				var invSlots = m_changedSlots.ToList();
+				var slotsToUpdate = new List<int>();
+				foreach (var inv in invSlots)
+				{
+					slotsToUpdate.Add((int)inv);
+				}
+				m_player.Out.SendInventorySlotsUpdate(slotsToUpdate);
+			}
 
 			bool statsUpdated = false;
 			bool appearanceUpdated = false;
 			bool encumberanceUpdated = false;
 
-			foreach (eInventorySlot updatedSlot in m_changedSlots)
+			lock (InventorySlotLock)
 			{
-				// update appearance if one of changed slots is visible
-				if (!appearanceUpdated)
+				foreach (eInventorySlot updatedSlot in m_changedSlots)
 				{
-					foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
+					// update appearance if one of changed slots is visible
+					if (!appearanceUpdated)
 					{
-						if (updatedSlot != visibleSlot)
-							continue;
+						foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
+						{
+							if (updatedSlot != visibleSlot)
+								continue;
+							
+							appearanceUpdated = true;
+							break;
+						}
+					}
 
-						m_player.UpdateEquipmentAppearance();
-						appearanceUpdated = true;
-						break;
+					// update stats if equipped item has changed
+					if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing &&
+					    updatedSlot >= eInventorySlot.RightHandWeapon)
+					{
+						statsUpdated = true;
+					}
+
+					// update encumberance if changed slot was in inventory or equipped
+					if (!encumberanceUpdated &&
+					    //					(updatedSlot >=(int)eInventorySlot.FirstVault && updatedSlot<=(int)eInventorySlot.LastVault) ||
+					    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
+					    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
+					{
+						encumberanceUpdated = true;
 					}
 				}
-
-				// update stats if equipped item has changed
-				if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing && updatedSlot >= eInventorySlot.RightHandWeapon)
-				{
-					m_player.Out.SendUpdateWeaponAndArmorStats();
-					statsUpdated = true;
-				}
-
-				// update encumberance if changed slot was in inventory or equipped
-				if (!encumberanceUpdated &&
-				    //					(updatedSlot >=(int)eInventorySlot.FirstVault && updatedSlot<=(int)eInventorySlot.LastVault) ||
-				    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
-				    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
-				{
-					m_player.UpdateEncumberance();
-					encumberanceUpdated = true;
-				}
 			}
+			
+			if(appearanceUpdated)
+				m_player.UpdateEquipmentAppearance();
+				
+			if(statsUpdated)
+				m_player.Out.SendUpdateWeaponAndArmorStats();
+				
+			if(encumberanceUpdated)
+				m_player.UpdateEncumberance();
 
 			base.UpdateChangedSlots();
 		}

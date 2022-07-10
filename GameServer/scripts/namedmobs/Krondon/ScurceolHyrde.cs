@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				if ((LyftMihtOne.Orb1Count > 0 || LyftMihtTwo.Orb2Count > 0 || LyftMihtThree.Orb3Count > 0 || LyftMihtFour.Orb4Count > 0))
 					Body.Strength = 320;

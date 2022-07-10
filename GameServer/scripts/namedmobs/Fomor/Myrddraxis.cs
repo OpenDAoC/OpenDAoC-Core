@@ -375,7 +375,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && RandomTarget2 != null)
 			{
-				GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+				GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 				if (RandomTarget2 != null && RandomTarget2.IsAlive)
 				{
 					Body.TargetObject = RandomTarget2;
@@ -436,7 +436,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && RandomTarget != null)
 			{
-				GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+				GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 				if (RandomTarget != null && RandomTarget.IsAlive)
 				{
 					Body.TargetObject = RandomTarget;
@@ -474,6 +474,7 @@ namespace DOL.AI.Brain
 		#endregion
 		public static bool StartCastDD = false;
 		public static bool StartCastDOT = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -495,63 +496,68 @@ namespace DOL.AI.Brain
 				CanCastPBAOE1 = false;
 				CanCastPBAOE2 = false;
 				CanCastPBAOE3 = false;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
-                {
-					if(npc != null)
-                    {
-						if (MyrddraxisSecondHead.SecondHeadCount == 0)
-                        {
-							MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
-							Add1.X = 32384;
-							Add1.Y = 31942;
-							Add1.Z = 15931;
-							Add1.CurrentRegion = Body.CurrentRegion;
-							Add1.Heading = 455;
-							Add1.Flags = GameNPC.eFlags.FLYING;
-							Add1.RespawnInterval = -1;
-							Add1.AddToWorld();
-						}
-						if (MyrddraxisThirdHead.ThirdHeadCount == 0)
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					{
+						if (npc != null)
 						{
-							MyrddraxisThirdHead Add2 = new MyrddraxisThirdHead();
-							Add2.X = 32187;
-							Add2.Y = 32205;
-							Add2.Z = 15961;
-							Add2.CurrentRegion = Body.CurrentRegion;
-							Add2.Heading = 4095;
-							Add2.Flags = GameNPC.eFlags.FLYING;
-							Add2.RespawnInterval = -1;
-							Add2.AddToWorld();
-						}
-						if (MyrddraxisFourthHead.FourthHeadCount == 0)
-						{
-							MyrddraxisFourthHead Add3 = new MyrddraxisFourthHead();
-							Add3.X = 32371;
-							Add3.Y = 32351;
-							Add3.Z = 15936;
-							Add3.CurrentRegion = Body.CurrentRegion;
-							Add3.Heading = 971;
-							Add3.Flags = GameNPC.eFlags.FLYING;
-							Add3.RespawnInterval = -1;
-							Add3.AddToWorld();
-						}
-						if (MyrddraxisFifthHead.FifthHeadCount == 0)
-						{
-							MyrddraxisFifthHead Add4 = new MyrddraxisFifthHead();
-							Add4.X = 32576;
-							Add4.Y = 32133;
-							Add4.Z = 15936;
-							Add4.CurrentRegion = Body.CurrentRegion;
-							Add4.Heading = 4028;
-							Add4.Flags = GameNPC.eFlags.FLYING;
-							Add4.RespawnInterval = -1;
-							Add4.AddToWorld();
+							if (MyrddraxisSecondHead.SecondHeadCount == 0)
+							{
+								MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
+								Add1.X = 32384;
+								Add1.Y = 31942;
+								Add1.Z = 15931;
+								Add1.CurrentRegion = Body.CurrentRegion;
+								Add1.Heading = 455;
+								Add1.Flags = GameNPC.eFlags.FLYING;
+								Add1.RespawnInterval = -1;
+								Add1.AddToWorld();
+							}
+							if (MyrddraxisThirdHead.ThirdHeadCount == 0)
+							{
+								MyrddraxisThirdHead Add2 = new MyrddraxisThirdHead();
+								Add2.X = 32187;
+								Add2.Y = 32205;
+								Add2.Z = 15961;
+								Add2.CurrentRegion = Body.CurrentRegion;
+								Add2.Heading = 4095;
+								Add2.Flags = GameNPC.eFlags.FLYING;
+								Add2.RespawnInterval = -1;
+								Add2.AddToWorld();
+							}
+							if (MyrddraxisFourthHead.FourthHeadCount == 0)
+							{
+								MyrddraxisFourthHead Add3 = new MyrddraxisFourthHead();
+								Add3.X = 32371;
+								Add3.Y = 32351;
+								Add3.Z = 15936;
+								Add3.CurrentRegion = Body.CurrentRegion;
+								Add3.Heading = 971;
+								Add3.Flags = GameNPC.eFlags.FLYING;
+								Add3.RespawnInterval = -1;
+								Add3.AddToWorld();
+							}
+							if (MyrddraxisFifthHead.FifthHeadCount == 0)
+							{
+								MyrddraxisFifthHead Add4 = new MyrddraxisFifthHead();
+								Add4.X = 32576;
+								Add4.Y = 32133;
+								Add4.Z = 15936;
+								Add4.CurrentRegion = Body.CurrentRegion;
+								Add4.Heading = 4028;
+								Add4.Flags = GameNPC.eFlags.FLYING;
+								Add4.RespawnInterval = -1;
+								Add4.AddToWorld();
+							}
 						}
 					}
-                }
+					RemoveAdds = true;
+				}
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(StartCastDD==false)
                 {
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
@@ -864,7 +870,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 40000; }
 		}
 		public static int SecondHeadCount = 0;
 		public override void Die(GameObject killer)
@@ -946,7 +952,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsPulled1 = false;
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(Head2_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (IsPulled1==false)
@@ -1080,7 +1086,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 40000; }
 		}
 		public static int ThirdHeadCount = 0;
 		public override void Die(GameObject killer)
@@ -1163,7 +1169,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsPulled2 = false;
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(Head3_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (IsPulled2==false)
@@ -1297,7 +1303,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 40000; }
 		}
 		public static int FourthHeadCount = 0;
 		public override void Die(GameObject killer)
@@ -1380,7 +1386,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsPulled3 = false;
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(Head4_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (IsPulled3==false)
@@ -1514,7 +1520,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 40000; }
 		}
 		public static int FifthHeadCount = 0;
 		public override void Die(GameObject killer)
@@ -1596,7 +1602,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				IsPulled4 = false;
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
 				Body.CastSpell(Head5_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (IsPulled4==false)

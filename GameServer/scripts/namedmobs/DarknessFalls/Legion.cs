@@ -66,7 +66,7 @@ namespace DOL.GS.Scripts
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 300000; }
         }
 
         public override bool AddToWorld()
@@ -86,7 +86,7 @@ namespace DOL.GS.Scripts
             // demon
             BodyType = 2;
             Race = 2001;
-
+            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
@@ -277,22 +277,27 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 850;
         }
-
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is LegionAddBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is LegionAddBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if(IsCreatingSouls==false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(25000, 30000));//every 25-30s it will spawn tortured souls

@@ -152,7 +152,7 @@ _**NOTE:** If you set values (user ID, user password, and database name) contrar
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
 6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
 7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
-8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
+8. `FLUSH PRIVILEGES;` <!-- Refreshes the privilege changes -->
 9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
 
 #### Configuring `My.cnf` (Ubuntu)
@@ -361,7 +361,7 @@ _**NOTE:** If you set values (user ID, user password, and database name) contrar
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
 6. To grant all privileges **for all databases** to the _atlas_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'atlas'@localhost IDENTIFIED BY 'atlas';` <!-- The 'atlas' user may exercise ALL privileges on ALL of your databases -->
 7. To grant all privileges **only to the _atlas_ DB**, use this command: `GRANT ALL PRIVILEGES ON atlas.* TO 'atlas'@localhost;` <!-- The 'atlas' user may only modify the 'atlas' DB -->
-8. `FLUSH PRIVILEGES` <!-- Refreshes the privilege changes -->
+8. `FLUSH PRIVILEGES;` <!-- Refreshes the privilege changes -->
 9. `SHOW GRANTS FOR 'atlas'@localhost;` <!-- This lists all privileges granted to the `atlas` user -->
 
 #### Configuring `My.ini` (Win)

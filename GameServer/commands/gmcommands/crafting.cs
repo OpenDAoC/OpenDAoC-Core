@@ -95,6 +95,23 @@ namespace DOL.GS.Commands
 					client.Out.SendCustomTextWindow("SalvageYield ID " + salvageID, list);
 					return;
 				}
+				
+				if (args[1].ToLower() == "adjustprices")
+				{
+					var recipeIDs = new List<ushort>();
+					var DBrecipes = GameServer.Database.SelectAllObjects<DBCraftedItem>();
+					foreach (var dbrecipe in DBrecipes)
+					{
+						recipeIDs.Add(Convert.ToUInt16(dbrecipe.CraftedItemID));
+					}
+
+					foreach (var r in recipeIDs)
+					{
+						RecipeDB.FindBy(r);
+					}
+
+					return;
+				}
 
 				if (args[1].ToLower() == "salvageadd" || args[1].ToLower() == "salvageupdate")
 				{

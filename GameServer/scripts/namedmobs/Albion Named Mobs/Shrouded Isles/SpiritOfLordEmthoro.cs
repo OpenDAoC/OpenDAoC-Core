@@ -133,6 +133,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool CanSpawnAdd = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -143,14 +144,19 @@ namespace DOL.AI.Brain
 				CanSpawnAdd = false;
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166454);
 				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
-						npc.Die(Body);
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
+							npc.Die(Body);
+					}
+					RemoveAdds = true;
 				}
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				GameLiving target = Body.TargetObject as GameLiving;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
 				{

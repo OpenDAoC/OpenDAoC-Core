@@ -52,9 +52,9 @@ namespace DOL.GS {
         // TOA Chance in %
         public const ushort ROG_TOA_ITEM_CHANCE = 0;
         // Armor Chance in %
-        public const ushort ROG_ARMOR_CHANCE = 40;
+        public const ushort ROG_ARMOR_CHANCE = 50;
         // Magical Chance in %
-        public const ushort ROG_MAGICAL_CHANCE = 45;
+        public const ushort ROG_MAGICAL_CHANCE = 40;
         // Weapon Chance in %
         public const ushort ROG_WEAPON_CHANCE = 40;
 
@@ -218,8 +218,11 @@ namespace DOL.GS {
         public void GenerateItemQuality(double conlevel)
         {
             // set base quality
-            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 47);
+            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 59);
             int maxQuality = (int)(1.310 * conlevel + 94.29 + 3);
+
+            if (this.Level > 51 && minQuality < 97)
+                minQuality = 97;
 
             // CAPS
             maxQuality = Math.Min(maxQuality, ROG_CAP_QUAL);  // unique objects capped at 99 quality
@@ -230,7 +233,7 @@ namespace DOL.GS {
             this.Quality = Util.Random(minQuality, maxQuality);
 
             this.Price = Money.SetAutoPrice(this.Level, this.Quality);
-            this.Price /= 10;
+            this.Price /= 8;
             if (this.Price <= 0)
                 this.Price = 2; // 2c as sell price is 50%
         }
@@ -616,7 +619,6 @@ namespace DOL.GS {
                     {
                         validColors.Add(70); //green3
                         validColors.Add(71); //green4
-                        validColors.Add(137); //lime green
                         validColors.Add(142); //forest green
                     }
                     break;
@@ -648,7 +650,6 @@ namespace DOL.GS {
                     {
                         validColors.Add(66); //red3
                         validColors.Add(67); //red4
-                        validColors.Add(120); //red crafter
                         validColors.Add(143); //burgundy
                     }
                     break;
@@ -4754,12 +4755,18 @@ namespace DOL.GS {
         private void CapUtility(int mobLevel)
         {
             int cap = 0;
-            
-            if (mobLevel > 57)
-                cap = mobLevel + (Util.Random(1, 5));
-            else 
-                cap = mobLevel - (Util.Random(1, 10));
 
+            cap = mobLevel - 10;
+            
+            if (mobLevel > 65)
+                cap = mobLevel + (Util.Random(1, 5));
+            
+            if (mobLevel < 60)
+                cap -= (Util.Random(1, 10));
+            
+            if (mobLevel > 70 && cap < 60)
+                cap = mobLevel-10;
+            
             if (cap > 80) cap = 80;
 
             //randomize cap to be 80-105% of normal value
@@ -5462,17 +5469,17 @@ namespace DOL.GS {
             //weighted so that early levels get many more weapons/armor
             if (level < 5)
             {
-                if (Util.Chance(40))
+                if (Util.Chance(45))
                     return eGenerateType.Weapon;
-                else if (Util.Chance(15))
-                    return eGenerateType.Magical;
+                //else if (Util.Chance(15))
+                  //  return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
             else if (level < 10)
             {
-                if (Util.Chance(ROG_ARMOR_CHANCE * 2)) { genTypes.Add(eGenerateType.Armor); }
-                if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE * 2)) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+                //if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+                if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
             }
             else
             {
@@ -5481,10 +5488,13 @@ namespace DOL.GS {
                 if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)/2) ) { genTypes.Add(eGenerateType.Weapon); }
             }
 
-            //if none of the object types were added, default to magical
+            //if none of the object types were added, default to armor
             if (genTypes.Count < 1)
             {
-                genTypes.Add(eGenerateType.Magical);
+                if(Util.Chance(50))
+                    genTypes.Add(eGenerateType.Armor);
+                else
+                    genTypes.Add(eGenerateType.Weapon);
             }
 
             return genTypes[Util.Random(genTypes.Count - 1)];
@@ -8887,16 +8897,18 @@ namespace DOL.GS {
                     break;
             }
 
+            
             if(Util.Chance(1) && Level > 40)
             {
                 validModels.Clear();
                 validModels.Add(3662);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3705);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -8966,11 +8978,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3662);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3705);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9048,11 +9061,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3658);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3701);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9142,12 +9156,13 @@ namespace DOL.GS {
                 validModels.Add(3675);
                 validModels.Add(3674);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3717);
                 validModels.Add(3718);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9230,11 +9245,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3661);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3704);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9327,12 +9343,13 @@ namespace DOL.GS {
                 validModels.Add(3676);
                 validModels.Add(3677);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3719);
                 validModels.Add(3720);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9370,12 +9387,13 @@ namespace DOL.GS {
                 
                 validModels.Add(3657);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3700);
                 validModels.Add(3817);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9464,12 +9482,13 @@ namespace DOL.GS {
                 validModels.Add(3721);
                 validModels.Add(3722);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3721);
                 validModels.Add(3722);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9629,11 +9648,12 @@ namespace DOL.GS {
                 validModels.Clear();
                 validModels.Add(3660);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3703);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
@@ -9698,12 +9718,13 @@ namespace DOL.GS {
                 validModels.Add(3824);
                 validModels.Add(3663);
             }
+            /*
             if (Util.Chance(1) && Level > 50)
             {
                 validModels.Clear();
                 validModels.Add(3706);
                 validModels.Add(3823);
-            }
+            }*/
 
             return validModels[Util.Random(validModels.Count - 1)];
         }

@@ -331,7 +331,7 @@ namespace DOL.GS.DailyQuest.Albion
 						}
 						
 					case 2:
-						return "Return to Cola in Castle Sauvage for your Reward.";
+						return "Return to Isaac in Svasud Faste for your Reward.";
 				}
 				return base.Description;
 			}

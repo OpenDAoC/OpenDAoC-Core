@@ -51,7 +51,17 @@ namespace DOL.GS.Commands
 			string message = string.Join(" ", args, 2, args.Length - 2);
 
 			int result = 0;
-			GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+			GameClient targetClient;
+			
+			if (client.Account.PrivLevel > 1)
+			{
+				targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+			}
+			else
+			{
+				targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, client.Player.Realm, false, out result);
+			}
+
 			if (targetClient != null && !GameServer.ServerRules.IsAllowedToUnderstand(client.Player, targetClient.Player))
 			{
 				targetClient = null;

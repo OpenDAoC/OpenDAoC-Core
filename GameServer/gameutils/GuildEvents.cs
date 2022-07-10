@@ -54,7 +54,7 @@ namespace DOL.GS
 		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.AddHandler(GamePlayerEvent.NextCraftingTierReached, new DOLEventHandler(OnNextCraftingTierReached));
-			GameEventMgr.AddHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
+			// GameEventMgr.AddHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
 			GameEventMgr.AddHandler(GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointsGain));
 			GameEventMgr.AddHandler(GamePlayerEvent.GainedBountyPoints, new DOLEventHandler(BountyPointsGain));
 			GameEventMgr.AddHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
@@ -71,7 +71,7 @@ namespace DOL.GS
 			GameEventMgr.RemoveHandler(GamePlayerEvent.NextCraftingTierReached, new DOLEventHandler(OnNextCraftingTierReached));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointsGain));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedBountyPoints, new DOLEventHandler(BountyPointsGain));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
+			// GameEventMgr.RemoveHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.RLLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(LevelUp));
@@ -208,13 +208,13 @@ namespace DOL.GS
 
 			GainedExperienceEventArgs xpArgs = args as GainedExperienceEventArgs;
 
-			if (player.Guild != null && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
+			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
 				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Guild.UpdateGuildWindow();
+				// player.Guild.UpdateGuildWindow();
 			}
 			
 			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == eXPSource.NPC)
@@ -223,7 +223,7 @@ namespace DOL.GS
 
 				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Guild.UpdateGuildWindow();
+				// player.Guild.UpdateGuildWindow();
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace DOL.GS
 						NewsMgr.CreateNews(message, player.Realm, eNewsType.RvRGlobal, false);
 					}
 
-					player.Guild.UpdateGuildWindow();
+					// player.Guild.UpdateGuildWindow();
 				}
 
 			}
@@ -285,8 +285,8 @@ namespace DOL.GS
 				}
 			}
 
-			if (player.Guild != null)
-				player.Guild.UpdateGuildWindow();
+			// if (player.Guild != null)
+			// 	player.Guild.UpdateGuildWindow();
 		}
 
 		#endregion

@@ -154,9 +154,9 @@ namespace DOL.GS.ServerRules
 				}
 			}
 			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_WEBHOOK_ID))
+			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
 			{
-				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_WEBHOOK_ID);
+				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 
 				// Create your DiscordMessage with all parameters of your message.
 				var discordMessage = new DiscordMessage(

@@ -101,6 +101,7 @@ namespace DOL.AI.Brain
 		}
 		private bool spawnadds = false;
 		private bool IsPulled = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -110,17 +111,22 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				spawnadds = false;
 				IsPulled = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 					{
-						if (npc.IsAlive && (npc.Brain is DebenFighterBrain || npc.Brain is DebenMageBrain))
-							npc.RemoveFromWorld();
+						if (npc != null)
+						{
+							if (npc.IsAlive && (npc.Brain is DebenFighterBrain || npc.Brain is DebenMageBrain))
+								npc.RemoveFromWorld();
+						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if(IsPulled==false)
                 {
 					foreach(GameNPC npc in Body.GetNPCsInRadius(2500))

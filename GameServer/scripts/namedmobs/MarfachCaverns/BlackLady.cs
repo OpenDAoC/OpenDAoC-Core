@@ -176,26 +176,32 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 2000;
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if(!HasAggressionTable())
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                if (!RemoveAdds)
                 {
-                    if (npc != null)
+                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
-                        if (npc.IsAlive && npc.Brain is OgressBrain)
+                        if (npc != null)
                         {
-                            npc.RemoveFromWorld();
-                            Ogress.OgressCount = 0;
+                            if (npc.IsAlive && npc.Brain is OgressBrain)
+                            {
+                                npc.RemoveFromWorld();
+                                Ogress.OgressCount = 0;
+                            }
                         }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if(Body.InCombat && HasAggro)
+            if(Body.TargetObject != null && HasAggro)
             {
+                RemoveAdds = false;
                 Body.CastSpell(BlackLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
                 if(Util.Chance(20))
@@ -248,7 +254,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3.5;
-                    spell.RecastDelay = Util.Random(10,20);
+                    spell.RecastDelay = Util.Random(6,12);
                     spell.ClientEffect = 4568;
                     spell.Icon = 4568;
                     spell.TooltipId = 4568;

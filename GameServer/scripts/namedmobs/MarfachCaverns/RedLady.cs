@@ -161,36 +161,30 @@ namespace DOL.AI.Brain
             CanSpawnAdds = false;
             return 0;
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
-            if (Body.IsOutOfTetherRange)
-            {
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                Body.Health = Body.MaxHealth;               
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-                    if (npc.Brain is SpecialInnocentBrain)
-                    {
-                        npc.RemoveFromWorld();
-                    }
-                }
-            }
             if (!HasAggressionTable())
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 SpecialInnocent.InnocentCount = 0;
                 CanSpawnAdds = false;
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                if (!RemoveAdds)
                 {
-                    if (npc.Brain is SpecialInnocentBrain)
+                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
-                        npc.RemoveFromWorld();
+                        if (npc.Brain is SpecialInnocentBrain)
+                        {
+                            npc.RemoveFromWorld();
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro && Body.InCombat)
+            if (HasAggro && Body.InCombat && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if(SpecialInnocent.InnocentCount<9 && CanSpawnAdds == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdd), Util.Random(20000, 30000));

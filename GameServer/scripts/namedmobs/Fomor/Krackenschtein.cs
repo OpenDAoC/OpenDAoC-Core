@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (CanCast == false)
+			if (CanCast == false && Enemys_To_DD.Count > 0)
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 		}
 		public int CastBolt(ECSGameTimer timer)
 		{
-			GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+			GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
 			{
 				Body.TargetObject = RandomTarget;
@@ -223,11 +223,9 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				TeleportTarget = null;
 				if(Enemys_To_DD.Count>0)
-                {
 					Enemys_To_DD.Clear();
-                }
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null && Body.IsAlive)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{

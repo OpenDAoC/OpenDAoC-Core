@@ -191,6 +191,25 @@ namespace DOL.GS.Commands
 									return;
 								}
 							#endregion Patrol
+							#region CorpseSummoner
+                            case "corpsesummoner":
+                                {
+                                    guard = new GuardCorpseSummoner();
+                                    break;
+                                }
+                            #endregion CorpseSummoner
+                            #region GateKeeper
+                            case "gatekeeperin":
+                                {
+                                    guard = new GateKeeperIn();
+                                    break;
+                                }
+                            case "gatekeeperout":
+                                {
+                                    guard = new GateKeeperOut();
+                                    break;
+                                }
+                            #endregion GateKeeper
 						}
 
 						if (guard == null)

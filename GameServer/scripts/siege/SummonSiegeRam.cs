@@ -5,6 +5,8 @@
  */
 
 using System.Collections.Generic;
+using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -17,13 +19,45 @@ namespace DOL.GS.Spells
 
         public override bool StartSpell(GameLiving target)
         {
-            if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
-            {
-			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
-			    return false;
-		    }
+	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
+		        MessageToCaster("You cannot use siege weapons here!", eChatType.CT_SpellResisted);
+		        return false;
+	        }
 
-            //Limit 2 Rams in a certain radius
+	        if (Caster is not GamePlayer player)
+		        return false;
+
+	        if (!player.CurrentZone.IsOF || player.CurrentRegion.IsDungeon)
+	        {
+		        MessageToCaster("You cannot use siege weapons here!", eChatType.CT_SpellResisted);
+		        return false;
+	        }
+	        
+	        if (target is not (GameKeepDoor or GameRelicDoor))
+	        {
+		        MessageToCaster("You need to target a door!", eChatType.CT_SpellResisted);
+		        return false;
+	        }
+            
+	        if (!target.IsAttackable)
+	        {
+		        MessageToCaster("You cannot attack your target.", eChatType.CT_SpellResisted);
+		        return false;
+	        }
+	        
+	        if (!Caster.IsWithinRadius(target, 500))
+	        {
+		        player.Out.SendMessage("You are too far away to attack " + Caster.TargetObject.Name, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+		        return false;
+	        }
+	        
+	        if (Caster.GetDistanceTo(target) < 200)
+	        {
+		        player.Out.SendMessage("You are too close to attack " + Caster.TargetObject.Name, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+		        return false;
+	        }
+	        
+	        //Limit 2 Rams in a certain radius
 			int ramSummonRadius = 200;
             int ramsInRadius = 0;
 			foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.X, Caster.Y, Caster.Z, (ushort)(ramSummonRadius), false, false))
@@ -34,7 +68,7 @@ namespace DOL.GS.Spells
 
 			if (ramsInRadius >= 2)
 			{
-				MessageToCaster("Too many rams in this area and you cannot summon another ram here!", PacketHandler.eChatType.CT_SpellResisted);
+				MessageToCaster("Too many rams in this area and you cannot summon another ram here!", eChatType.CT_SpellResisted);
                 return false;
 			}
 
@@ -44,14 +78,11 @@ namespace DOL.GS.Spells
 
 	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 	    {
-		    if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
-			    return;
-		    }
-		    
 		    base.ApplyEffectOnTarget(target, effectiveness);
 
-            GameSiegeRam ram = new GameSiegeRam();
+		    if (Caster is not GamePlayer player) return;
+
+		    GameSiegeRam ram = new GameSiegeRam();
             ram.X = Caster.X;
             ram.Y = Caster.Y;
             ram.Z = Caster.Z;
@@ -60,7 +91,7 @@ namespace DOL.GS.Spells
             ram.Realm = Caster.Realm;
 
             //determine the ram level based on Spell Damage
-            switch(this.Spell.Damage)
+            switch(Spell.Damage)
             {
                 case 0:
                     ram.Level = 0;
@@ -85,21 +116,19 @@ namespace DOL.GS.Spells
             }
 
             ram.AddToWorld();
-            if(Caster is GamePlayer player)
-            {
-                player.MountSteed(ram,true);
-                ram.TakeControl(player);
-            }
-        }
+
+            player.MountSteed(ram,true);
+            ram.TakeControl(player);
+	    }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
-            {
-                MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
-                return false;
-            }
-
+	        if (selectedTarget is not (GameKeepDoor or GameRelicDoor))
+	        {
+		        MessageToCaster("You need to target a door!", eChatType.CT_SpellResisted);
+		        return false;
+	        }
+	        
             return base.CheckBeginCast(selectedTarget);
         }
 
@@ -108,7 +137,7 @@ namespace DOL.GS.Spells
 			get
 			{
 				var list = new List<string>();
-				list.Add(string.Format("  {0}", Spell.Description));
+				list.Add(Spell.Description);
 
 				return list;
 			}

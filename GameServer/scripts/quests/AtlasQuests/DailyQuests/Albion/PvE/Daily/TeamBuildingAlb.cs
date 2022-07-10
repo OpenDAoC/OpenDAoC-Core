@@ -115,7 +115,7 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
 			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
+			/* Now we bring to Hector the possibility to give this quest to players */
 			Hector.AddQuestToGive(typeof (TeamBuildingAlb));
 
 			if (log.IsInfoEnabled)
@@ -135,7 +135,7 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
 			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
+			/* Now we remove to Hector the possibility to give this quest to players */
 			Hector.RemoveQuestToGive(typeof (TeamBuildingAlb));
 		}
 
@@ -182,7 +182,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "feeling social":
-							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)), "Will you help Dean "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(TeamBuildingAlb)), "Will you help Hector "+questTitle+"");
 							break;
 					}
 				}

@@ -454,6 +454,18 @@ namespace DOL.GS
                         playerAttacker?.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
                     break;
+                case eAttackResult.NotAllowed_ServerRules:
+                case eAttackResult.NoTarget:
+                case eAttackResult.TargetDead:
+                case eAttackResult.OutOfRange:
+                case eAttackResult.NoValidTarget:
+                case eAttackResult.TargetNotVisible:
+                case eAttackResult.Fumbled:
+                case eAttackResult.Bodyguarded:
+                case eAttackResult.Phaseshift:
+                case eAttackResult.Grappled:
+                default:
+                    break;
             }
         }
     }

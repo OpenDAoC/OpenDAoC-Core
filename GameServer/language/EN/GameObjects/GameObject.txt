@@ -43,8 +43,9 @@ GamePlayer.OnItemUnequipped.RightHandFree:	You sheathe {0} from your right hand.
 ## Item Use
 GamePlayer.UseSlot.NotEnouthPower:				You are not powerful enough to use this item's spell.
 GamePlayer.UseSlot.OutOfCharges:				The {0} is out of charges.
-GamePlayer.UseSlot.MustWaitBeforeUse:			You must wait {0} more second before use potion!
+GamePlayer.UseSlot.MustWaitBeforeUse:			You must wait {0} more second before using another potion!
 GamePlayer.UseSlot.CantUseState:			    You can't use {0} in your state.
+GamePlayer.UseSlot.CantUseAttacking:			You can't use {0} while attacking!
 GamePlayer.UseSlot.Used:			            {0} has been used.
 GamePlayer.UseSlot.CantUseCast:				You need to finish your current action for use your {0}!
 GamePlayer.UseSlot.AttemptToUse:				You attempt to use {0}.

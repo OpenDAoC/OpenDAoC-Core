@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -83,6 +84,11 @@ namespace DOL.GS
 		/// The textwrite for log operations
 		/// </summary>
 		protected ILog m_cheatLog;
+		
+		/// <summary>
+		/// The textwrite for log operations
+		/// </summary>
+		protected ILog m_dualIPLog;
 
 		/// <summary>
 		/// Database instance
@@ -146,6 +152,8 @@ namespace DOL.GS
 		{
 			get { return log; }
 		}
+
+		public List<String> PatchNotes;
 
 		#endregion
 
@@ -590,7 +598,6 @@ namespace DOL.GS
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
 				//---------------------------------------------------------------
 				//Try to compile the Scripts
 				if (!InitComponent(CompileScripts(), "Script compilation"))
@@ -678,10 +685,6 @@ namespace DOL.GS
 				//Load all faction managers
 				if (!InitComponent(FactionMgr.Init(), "Faction Managers"))
 					return false;
-
-				//---------------------------------------------------------------
-				//Load artifact manager
-				InitComponent(ArtifactMgr.Init(), "Artifact Manager");
 
 				//---------------------------------------------------------------
 				//Load all calculators
@@ -809,6 +812,12 @@ namespace DOL.GS
 					return false;
 				}
 
+				//Start Aux GameLoop
+				if (!InitComponent(AuxGameLoop.Init(), "AuxGameLoop Init"))
+				{
+					return false;
+				}
+
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
 				//---------------------------------------------------------------
@@ -847,7 +856,8 @@ namespace DOL.GS
 					var webserver = new DOL.GS.API.ApiHost();
 					log.Info("Game WebAPI open for connections.");
 				}
-
+				
+				GetPatchNotes();
 
 				//INIT WAS FINE!
 				return true;
@@ -859,6 +869,28 @@ namespace DOL.GS
 
 				return false;
 			}
+		}
+
+		public async void GetPatchNotes()
+		{
+			var news = new List<string>();
+
+			try
+			{
+				using var newsClient = new HttpClient();
+				const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
+				var newsResult = await newsClient.GetStringAsync(url);
+				news.Add(newsResult);
+				log.Debug("Patch notes updated.");
+				newsClient.Dispose();
+			}
+			catch (Exception)
+			{
+				news.Add("No patch notes available.");
+				log.Debug("Cannot retrieve patch notes.");
+
+			}
+			PatchNotes = news;
 		}
 
 		/// <summary>
@@ -1273,6 +1305,7 @@ namespace DOL.GS
 
 			WorldMgr.Exit();
 			GameLoop.Exit();
+			AuxGameLoop.Exit();
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )
@@ -1427,6 +1460,16 @@ namespace DOL.GS
 			m_cheatLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
 			log.Debug(text);
 		}
+		
+		/// <summary>
+		/// Writes a line to the cheat log file
+		/// </summary>
+		/// <param name="text">the text to log</param>
+		public void LogDualIPAction(string text)
+		{
+			m_dualIPLog.Logger.Log(typeof(GameServer), Level.Alert, text, null);
+			log.Debug(text);
+		}
 
 		/// <summary>
 		/// Writes a line to the inventory log file
@@ -1505,6 +1548,7 @@ namespace DOL.GS
 				if (log.IsDebugEnabled)
 					log.Debug("Save ThreadId=" + Thread.CurrentThread.ManagedThreadId);
 				int saveCount = 0;
+				int craftingSaveCount = 0;
 				if (m_database != null)
 				{
 					ThreadPriority oldprio = Thread.CurrentThread.Priority;
@@ -1521,6 +1565,7 @@ namespace DOL.GS
 					BoatMgr.SaveAllBoats();
 
 					FactionMgr.SaveAllAggroToFaction();
+					craftingSaveCount = CraftingProgressMgr.Save();
 
 					// 2008-01-29 Kakuri - Obsolete
 					//m_database.WriteDatabaseTables();
@@ -1529,8 +1574,9 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Saving database complete!");
 				startTick = Environment.TickCount - startTick;
-				if (log.IsInfoEnabled)
-					log.Info("Saved all databases and " + saveCount + " players in " + startTick + "ms");
+				if (log.IsInfoEnabled) 
+					log.Info("Saved all databases and " + saveCount + " players in " + startTick + "ms" + Environment.NewLine 
+						+ "Crafting Progress Saved for: " + craftingSaveCount);
 			}
 			catch (Exception e1)
 			{
@@ -1566,6 +1612,7 @@ namespace DOL.GS
 		{
 			m_gmLog = LogManager.GetLogger(Configuration.GMActionsLoggerName);
 			m_cheatLog = LogManager.GetLogger(Configuration.CheatLoggerName);
+			m_dualIPLog = LogManager.GetLogger(Configuration.DualIPLoggerName);
 			m_inventoryLog = LogManager.GetLogger(Configuration.InventoryLoggerName);
 
 			if (log.IsDebugEnabled)

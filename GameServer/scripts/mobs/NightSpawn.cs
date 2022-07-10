@@ -10,6 +10,11 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             NightSpawnBrain sBrain = new NightSpawnBrain();
+            if (NPCTemplate != null)
+            {
+                sBrain.AggroLevel = NPCTemplate.AggroLevel;
+                sBrain.AggroRange = NPCTemplate.AggroRange;
+            }
             SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;

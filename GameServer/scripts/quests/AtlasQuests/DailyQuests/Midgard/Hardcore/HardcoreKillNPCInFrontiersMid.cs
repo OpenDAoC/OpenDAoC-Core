@@ -296,7 +296,7 @@ namespace DOL.GS.DailyQuest
 					case 1:
 						return "Kill 25 mobs in a frontier zone. \n Creatures Killed: ("+ FrontierMobsKilled +" | "+MAX_KillGoal+")";
 					case 2:
-						return "Return to Succi in Druim Ligen for your grim reward.";
+						return "Return to Succi in Svasud Faste for your grim reward.";
 				}
 				return base.Description;
 			}

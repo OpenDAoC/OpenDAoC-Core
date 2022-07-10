@@ -107,6 +107,7 @@ namespace DOL.AI.Brain
 		}
 		private bool BringAdds = false;
 		private bool CanPort = false;
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -116,17 +117,22 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				BringAdds = false;
 				CanPort = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null)
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
 					{
-						if (npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "AfancMinion")
-							npc.Die(npc);
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "AfancMinion")
+								npc.Die(npc);
+						}
 					}
+					RemoveAdds = true;
 				}
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
 				if (BringAdds == false)
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Minions), Util.Random(15000, 35000));

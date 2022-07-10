@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
                     Reset_Gildas = true;
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Body.TargetObject != null)

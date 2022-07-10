@@ -521,7 +521,7 @@ namespace DOL.GS.PacketHandler
 			int[] racial = new int[updateResists.Length];
 			int[] caps = new int[updateResists.Length];
 
-			int cap = (m_gameClient.Player.Level >> 1) + 1;
+			int cap = (int) (m_gameClient?.Player != null ? (m_gameClient.Player.Level >> 1) + 1 : 1);
 			for (int i = 0; i < updateResists.Length; i++)
 			{
 				caps[i] = cap;
@@ -758,7 +758,9 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 
-					var effects = m_gameClient.Player.effectListComponent.ConcentrationEffects;
+					var effects = m_gameClient.Player?.effectListComponent.ConcentrationEffects;
+					if (effects == null)
+						return;
                     for (int i = 0; i < effects.Count; i++)
                     {
                         IConcentrationEffect effect = effects[i];
@@ -2858,7 +2860,7 @@ namespace DOL.GS.PacketHandler
 							break;
 						}
 
-						if (q.Step != -1)
+						if (q.Step != -1 || q.Step != -2)
 							questIndex++;
 					}
 				}
@@ -2876,9 +2878,9 @@ namespace DOL.GS.PacketHandler
 			int questIndex = 1;
 			lock (m_gameClient.Player.QuestList)
 			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
+				foreach (AbstractQuest quest in m_gameClient.Player.QuestList.ToList())
 				{
-					SendQuestPacket((quest.Step == 0 || quest == null) ? null : quest, questIndex++);
+					SendQuestPacket((quest.Step == 0 || quest.Step == -1 || quest.Step == -2) ? null : quest, questIndex++);
 				}
 			}
 		}
@@ -3198,7 +3200,11 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
 				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for 
 				//clientside positions of objects.
-				pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				if(m_gameClient.Player.CurrentZone != null) //Check if CurrentZone is not null
+					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				else
+					pak.WriteShort(0x00);
+
 				pak.WriteShort(0x00); // ?
 				pak.WriteShort(0x01); // cause region change ?
 				pak.WriteByte(0x0C); //Server ID
@@ -5735,7 +5741,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)Checker.ObjectID);
 				pak.WriteShort((ushort)TargetOID);
 				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x00); // ?
+				// pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
 		}
@@ -5764,7 +5770,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)SourceOID);
 				pak.WriteShort((ushort)TargetOID);
 				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x00); // ?
+				// pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
 		}
@@ -6111,8 +6117,13 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort)m_gameClient.Player?.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort)m_gameClient.Player?.Encumberance); // encumb used
+				//check if maxencumberance or encumberance is null before sending packet.
+				int? maxencumberance = m_gameClient.Player?.MaxEncumberance;
+				int? encumberance = m_gameClient.Player?.Encumberance;
+				if(maxencumberance == null || encumberance == null)
+					return;
+				pak.WriteShort((ushort)maxencumberance); // encumb total
+				pak.WriteShort((ushort)encumberance); // encumb used
 				SendTCP(pak);
 			}
 		}

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Events;
@@ -12,7 +13,7 @@ public class BountyManager
 {
     private const string KILLEDBY = "KilledBy";
 
-    private static Dictionary<eRealm, List<BountyPoster>> ActiveBounties;
+    private static ConcurrentDictionary<eRealm, List<BountyPoster>> ActiveBounties;
     private static List<BountyPoster> PlayerBounties;
 
     private static BountyPoster m_nextPosterToExpire;
@@ -35,7 +36,7 @@ public class BountyManager
     {
         minBountyReward = Properties.BOUNTY_MIN_REWARD;
         maxBountyReward = Properties.BOUNTY_MAX_REWARD;
-        ActiveBounties = new Dictionary<eRealm, List<BountyPoster>>();
+        ActiveBounties = new ConcurrentDictionary<eRealm, List<BountyPoster>>();
         PlayerBounties = new List<BountyPoster>();
         ResetBounty();
     }
@@ -43,11 +44,11 @@ public class BountyManager
     public static void ResetBounty()
     {
         if (ActiveBounties == null)
-            ActiveBounties = new Dictionary<eRealm, List<BountyPoster>>();
+            ActiveBounties = new ConcurrentDictionary<eRealm, List<BountyPoster>>();
         ActiveBounties.Clear();
     }
 
-    public static Dictionary<eRealm, List<BountyPoster>> GetActiveBounties
+    public static ConcurrentDictionary<eRealm, List<BountyPoster>> GetActiveBounties
     {
         get { return ActiveBounties; }
         set { }
@@ -100,7 +101,8 @@ public class BountyManager
         {
             List<GamePlayer> playersToAward = new List<GamePlayer>();
 
-            foreach (System.Collections.DictionaryEntry de in killedPlayer.XPGainers)
+            var gainerList = killedPlayer.XPGainers;
+            foreach (System.Collections.DictionaryEntry de in gainerList)
             {
                 GameLiving living = de.Key as GameLiving;
                 GamePlayer player = living as GamePlayer;
@@ -187,12 +189,12 @@ public class BountyManager
 
         BountyPoster poster = new BountyPoster(killed, killer, amount);
 
-        ActiveBounties ??= new Dictionary<eRealm, List<BountyPoster>>();
+        ActiveBounties ??= new ConcurrentDictionary<eRealm, List<BountyPoster>>();
         if (ActiveBounties.Any())
         {
             if (ActiveBounties.ContainsKey(killed.Realm))
             {
-                var realmBounties = ActiveBounties[killer.Realm];
+                var realmBounties = ActiveBounties[killed.Realm];
                 var playerBountyFound = false;
                 foreach (BountyPoster bp in realmBounties)
                 {
@@ -218,10 +220,10 @@ public class BountyManager
         }
         else
         {
-            ActiveBounties = new Dictionary<eRealm, List<BountyPoster>>();
+            ActiveBounties = new ConcurrentDictionary<eRealm, List<BountyPoster>>();
             var realmPoster = new List<BountyPoster>();
             realmPoster.Add(poster);
-            ActiveBounties.Add(killer.Realm, realmPoster);
+            ActiveBounties.TryAdd(killer.Realm, realmPoster);
         }
 
         BroadcastBounty(poster);
@@ -298,7 +300,10 @@ public class BountyManager
     {
         if (ActiveBounties == null || !ActiveBounties.Any()) return null;
         PlayerBounties.Clear();
-        foreach (var (key, e) in ActiveBounties?.ToList())
+        var bounties = ActiveBounties?.ToList();
+        if (bounties == null) return null;
+        
+        foreach (var (key, e) in bounties)
         {
             foreach (BountyPoster poster in e.ToList())
             {

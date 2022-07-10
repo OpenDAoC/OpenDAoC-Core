@@ -102,6 +102,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
+        private bool RemoveAdds = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -110,18 +111,23 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+                if (!RemoveAdds)
                 {
-                    if (npc == null) continue;
-                    if (!npc.IsAlive) continue;
-                    if (npc.Brain is OtryggAddBrain)
+                    foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
                     {
-                        npc.Die(Body);
+                        if (npc == null) continue;
+                        if (!npc.IsAlive) continue;
+                        if (npc.Brain is OtryggAddBrain)
+                        {
+                            npc.Die(Body);
+                        }
                     }
+                    RemoveAdds = true;
                 }
             }
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
+                RemoveAdds = false;
                 if (OtryggAdd.PetsCount is < 8 and >= 0)
                 {
                     SpawnPetsMore();
@@ -262,7 +268,7 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
                 {

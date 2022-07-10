@@ -28,10 +28,10 @@ namespace DOL.GS
 		private int KeepsTaken = 0;
 		private int RelicsTaken = 0;
 		private int RealmPointsEarned = 0;
-		private const int PLAYER_KILL_GOAL = 200;
-		private const int KEEP_TAKE_GOAL = 10;
-		private const int RELIC_CAPTURE_GOAL = 2;
-		private const int REALM_POINT_GOAL = 100000;
+		private const int PLAYER_KILL_GOAL = 15;
+		private const int KEEP_TAKE_GOAL = 1;
+		private const int RELIC_CAPTURE_GOAL = 1;
+		private const int REALM_POINT_GOAL = 10000;
 		
 		// prevent grey killing
 		private const int MIN_PLAYER_CON = -3;
@@ -65,6 +65,10 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
+
+			// disable the quest for launch
+			return;
+			
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
 

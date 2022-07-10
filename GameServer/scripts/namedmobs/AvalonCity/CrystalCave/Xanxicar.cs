@@ -199,6 +199,7 @@ namespace DOL.AI.Brain
 		public static bool Bomb2 = false;
 		public static bool Bomb3 = false;
 		public static bool Bomb4 = false;
+		private bool RemoveAdds = false;
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
 		List<GamePlayer> DD_Enemys = new List<GamePlayer>();
 		public void BroadcastMessage(String message)
@@ -323,17 +324,22 @@ namespace DOL.AI.Brain
 				SpawnAddsOnce = false;
 				CheckForSingleAdd = false;
 				XanxicarianChampion.XanxicarianChampionCount = 0;
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-                {
-					if(npc != null)
-                    {
-						if(npc.IsAlive && npc.Brain is XanxicarianChampionBrain)
-							npc.RemoveFromWorld();
-                    }
-                }
+				if (!RemoveAdds)
+				{
+					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					{
+						if (npc != null)
+						{
+							if (npc.IsAlive && npc.Brain is XanxicarianChampionBrain)
+								npc.RemoveFromWorld();
+						}
+					}
+					RemoveAdds = true;
+				}
 			}
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
+				RemoveAdds = false;
 				if (IsTargetPicked == false)
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 40000));//timer to port and pick player

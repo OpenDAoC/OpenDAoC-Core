@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
                 playerowner.Client.GameObjectUpdateArray.TryAdd(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
             }
 
-            if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
+            if (playerowner != null && (GameLoop.GameLoopTime - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
             {
                 playerowner.Out.SendObjectUpdate(Body);
             }

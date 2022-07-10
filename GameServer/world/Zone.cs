@@ -947,7 +947,7 @@ namespace DOL.GS
 				{
 					for (int typeIndex = 0; typeIndex < m_subZoneElements[subZoneIndex].Length; typeIndex++)
 					{
-						if (Environment.TickCount > m_subZoneTimestamps[(subZoneIndex << 2) | typeIndex])
+						if (GameTimer.GetTickCount() > m_subZoneTimestamps[(subZoneIndex << 2) | typeIndex])
 						{
 							// it is time to relocate some elements in this subzone
 							// => perform needed relocations of elements
@@ -1014,7 +1014,7 @@ namespace DOL.GS
 
 		private void UnsafeUpdateSubZoneTimestamp(int subZoneIndex, int typeIndex)
 		{
-			int nextUpdateTimestamp = Environment.TickCount + Zone.MAX_REFRESH_INTERVAL;
+			int nextUpdateTimestamp =(int)GameTimer.GetTickCount() + Zone.MAX_REFRESH_INTERVAL;
 
 			if (nextUpdateTimestamp < 0)
 			{

@@ -18,6 +18,7 @@
  */
 
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using DOL.Language;
 using DOL.GS;
@@ -70,11 +71,11 @@ namespace DOL.GS.Commands
 
 		private void Broadcast(GamePlayer player, string message)
 		{
-			foreach (GameClient c in WorldMgr.GetAllClients())
+			foreach (GameClient c in WorldMgr.GetClientsOfRealm(player.Realm))
 			{
 				if (c.Player.Realm == player.Realm || player.Client.Account.PrivLevel > 1)
 				{
-					c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Trade.Message", player.Name, message), eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
+					c.Out.SendMessage($"[Trade] {player.Name}: {message}", eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
 				}
 			}
 			

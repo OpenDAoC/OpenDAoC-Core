@@ -1,4 +1,5 @@
-﻿using DOL.Database;
+﻿using System.Collections.Generic;
+using DOL.Database;
 
 namespace DOL.GS.Commands
 {
@@ -23,25 +24,25 @@ namespace DOL.GS.Commands
             {
                 #region set
 
-                if (args[1] == "set")
-                {
-                    if (args.Length >= 3)
-                    {
-                        int.TryParse(args[2], out int count);
-                        if (count == 0)
-                        {
-                            DisplayMessage(client, "Use: /craft set <#>");
-                            return;
-                        }
-
-                        client.Player.TempProperties.setProperty(CraftQueueLength, count);
-                        DisplayMessage(client, $"Crafting queue set to {count} items");
-                    }
-                    else
-                    {
-                        DisplayMessage(client, "Use: /craft set <#>");
-                    }
-                }
+                // if (args[1] == "set")
+                // {
+                //     if (args.Length >= 3)
+                //     {
+                //         int.TryParse(args[2], out int count);
+                //         if (count == 0)
+                //         {
+                //             DisplayMessage(client, "Use: /craft set <#>");
+                //             return;
+                //         }
+                //
+                //         client.Player.TempProperties.setProperty(CraftQueueLength, count);
+                //         DisplayMessage(client, $"Crafting queue set to {count} items");
+                //     }
+                //     else
+                //     {
+                //         DisplayMessage(client, "Use: /craft set <#>");
+                //     }
+                // }
 
                 #endregion
 
@@ -49,10 +50,9 @@ namespace DOL.GS.Commands
 
                 if (args[1] == "clear")
                 {
-                    if (client.Player.TempProperties.getProperty<int>(CraftQueueLength) != 0)
-                    {
-                        client.Player.TempProperties.removeProperty(CraftQueueLength);
-                    }
+
+                    client.Player.TempProperties.removeProperty(CraftQueueLength);
+                    
 
                     var recipe = client.Player.TempProperties.getProperty<Recipe>(RecipeToCraft);
                     if (recipe != null)
@@ -99,12 +99,19 @@ namespace DOL.GS.Commands
                         {
                             var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
+                            
+                            IList<Ingredient> recipeIngredients;
 
-                            foreach (var ingredient in recipe.Ingredients)
+                            lock (recipe)
+                            {
+                                recipeIngredients = recipe.Ingredients;
+                            }
+                            
+                            foreach (var ingredient in recipeIngredients)
                             {
                                 foreach (var items in merchantitems)
                                 {
-                                    ItemTemplate item =
+                                    var item =
                                         GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
                                     if (item != ingredient.Material) continue;
                                     merchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
@@ -155,18 +162,40 @@ namespace DOL.GS.Commands
                             var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
 
-                            foreach (var ingredient in recipe.Ingredients)
+                            IList<Ingredient> recipeIngredients;
+
+                            lock (recipe)
+                            {
+                                recipeIngredients = recipe.Ingredients;
+                            }
+                            
+                            var playerItems = new List<InventoryItem>(); 
+                                    
+                            lock (client.Player.Inventory)
+                            {
+                                foreach (var pItem in client.Player.Inventory.AllItems)
+                                {
+                                    if (pItem.SlotPosition < (int)eInventorySlot.FirstBackpack ||
+                                        pItem.SlotPosition > (int)eInventorySlot.LastBackpack)
+                                        continue; 
+                                    playerItems.Add(pItem);
+                                }
+                            }
+                            
+                            foreach (var ingredient in recipeIngredients)
                             {
                                 foreach (var items in merchantitems)
                                 {
-                                    ItemTemplate item =
+                                    var item =
                                         GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
                                     if (item != ingredient.Material) continue;
-                                    int playerAmount;
-                                    var playeritems = client.Player.Inventory.GetFirstItemByName(
-                                        ingredient.Material.Name, eInventorySlot.FirstBackpack,
-                                        eInventorySlot.LastBackpack);
-                                    playerAmount = playeritems?.Count ?? 0;
+                                    int playerAmount = 0;
+
+                                    foreach (var pItem in playerItems)
+                                    {
+                                        if (pItem.Template == ingredient.Material)
+                                            playerAmount += pItem.Count;
+                                    }
 
                                     merchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
                                         (ingredient.Count * amount) - playerAmount);

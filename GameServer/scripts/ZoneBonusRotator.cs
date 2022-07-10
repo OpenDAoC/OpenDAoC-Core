@@ -102,7 +102,7 @@ namespace DOL.GS.Scripts
             RvRTimer = RvRTickTime * 1000;
             PvEExperienceBonusAmount = 50;
             RvRExperienceBonusAmount = 100;
-            RPBonusAmount = 100;
+            RPBonusAmount = 10;
             BPBonusAmount = 25;
 
             GetZones();
@@ -160,7 +160,7 @@ namespace DOL.GS.Scripts
             TellClient(player.Client);
         }
 
-        private static int UpdatePvEZones()
+        internal static int UpdatePvEZones()
         {
             _lastPvEChangeTick = GameLoop.GameLoopTime;
 
@@ -209,7 +209,7 @@ namespace DOL.GS.Scripts
             return 0;
         }
 
-        private static int UpdateRvRZones()
+        internal static int UpdateRvRZones()
         {
 
             _lastRvRChangeTick = GameLoop.GameLoopTime;

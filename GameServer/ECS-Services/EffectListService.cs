@@ -7,11 +7,14 @@ using DOL.GS.Effects;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using System.Reflection;
+using log4net;
 
 namespace DOL.GS
 {
     public static class EffectListService
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         static int _segmentsize = 1000;
         static List<Task> _tasks = new List<Task>();
         private const string ServiceName = "EffectListService";
@@ -30,7 +33,11 @@ namespace DOL.GS
 
             Parallel.ForEach(arr, p =>
             {
+                long startTick = GameTimer.GetTickCount();
                 HandleEffects(tick,p);
+                long stopTick = GameTimer.GetTickCount();
+                if((stopTick - startTick)  > 25 )
+                    log.Warn($"Long EffectListService.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
             });
             
             Diagnostics.StopPerfCounter(ServiceName);               

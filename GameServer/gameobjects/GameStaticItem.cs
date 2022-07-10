@@ -18,6 +18,9 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using DOL.Database;
 using DOL.Events;
 using DOL.Language;
@@ -329,8 +332,12 @@ namespace DOL.GS
 		public override bool AddToWorld()
 		{
 			if(!base.AddToWorld()) return false;
-			foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			// foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			
+			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+			{
 				player.Out.SendObjectCreate(this);
+			});
 			return true;
 		}
 
@@ -354,8 +361,11 @@ namespace DOL.GS
 		{
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+				//foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).OfType<GamePlayer>(), player =>
+				{
 					player.Out.SendObjectRemove(this);
+				});
 			}
 
 			if (base.RemoveFromWorld())
@@ -375,7 +385,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Timer used to respawn this object
 		/// </summary>
-		protected ECSGameTimer m_respawnTimer = null;
+		protected AuxECSGameTimer m_respawnTimer = null;
 
 		/// <summary>
 		/// The sync object for respawn timer modifications
@@ -391,8 +401,8 @@ namespace DOL.GS
 			{
 				if (m_respawnTimer == null)
 				{
-					m_respawnTimer = new ECSGameTimer(this);
-					m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
+					m_respawnTimer = new AuxECSGameTimer(this);
+					m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
 					m_respawnTimer.Start(respawnSeconds * 1000);
 				}
 			}
@@ -403,7 +413,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
 		{
 			lock (m_respawnTimerLock)
 			{

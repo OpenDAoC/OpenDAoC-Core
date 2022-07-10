@@ -49,7 +49,7 @@ namespace DOL.GS
 	}
 
 	/// <summary>
-	/// Description résumée de CraftingMgr.
+	/// Description rï¿½sumï¿½e de CraftingMgr.
 	/// </summary>
 	public class CraftingMgr
 	{
@@ -224,6 +224,9 @@ namespace DOL.GS
 				case (int)eObjectType.RecurvedBow:
 				case (int)eObjectType.Staff:
 					return eCraftingSkill.WoodWorking;
+				
+				case (int)eObjectType.Magical:
+					return eCraftingSkill.GemCutting;
 
 				default:
 					return eCraftingSkill.NoCrafting;
@@ -295,6 +298,7 @@ namespace DOL.GS
 				case (int)eObjectType.Longbow:
 				case (int)eObjectType.RecurvedBow:
 				case (int)eObjectType.Staff:
+				case (int)eObjectType.Magical:
 					return 15 + (item.Level - 1) * 20;
 
 				default:

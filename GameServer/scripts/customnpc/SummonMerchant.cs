@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Scripts
 {
-    public class SummonedMerchant : GameMerchant
+    public class SummonedMerchant : GameAtlasMerchant
     {
         
         public override bool AddToWorld()

@@ -338,7 +338,7 @@ namespace DOL.GS
 		{
 			base.BroadcastUpdate();
 			
-			m_lastUpdateTickCount = (uint)Environment.TickCount;
+			m_lastUpdateTickCount = (uint)GameLoop.GameLoopTime;
 		}
 		
 		private static long m_healthregentimer = 0;

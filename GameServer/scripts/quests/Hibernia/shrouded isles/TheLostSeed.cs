@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Hibernia
@@ -38,9 +31,9 @@ namespace DOL.GS.Quests.Hibernia
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected const string questTitle = "The Lost Seed";
-		protected const int minimumLevel = 48;
-		protected const int maximumLevel = 50;
+		private const string questTitle = "The Lost Seed";
+		private const int minimumLevel = 48;
+		private const int maximumLevel = 50;
 
 		private static GameNPC Terod = null; // Start NPC + Finish NPC
 		private static GameNPC Kredril = null; // step 2
@@ -51,7 +44,7 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static readonly GameLocation treantLocation = new("Feairna-Athar", 181, 288348, 319950, 2328);
 		
-		private static IArea treantArea;
+		private static AbstractArea treantArea;
 
 		private static ItemTemplate paidrean_necklace;
 		private static ItemTemplate glowing_red_jewel;
@@ -287,8 +280,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			const int radius = 1500;
 			var region = WorldMgr.GetRegion(treantLocation.RegionID);
-			treantArea = region.AddArea(new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
-				radius));
+			treantArea = new Area.Circle("accursed piece of forest", treantLocation.X, treantLocation.Y, treantLocation.Z,
+				radius);
+			treantArea.CanBroadcast = false;
+			treantArea.DisplayMessage = false;
+			region.AddArea(treantArea);
 			treantArea.RegisterPlayerEnter(PlayerEnterTreantArea);
 			
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -345,7 +341,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateFeairnaAthar(GamePlayer player)
 		{
-			Feairna_Athar = new GameNPC();
+			Feairna_Athar = new SINeckBoss();
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
 			Feairna_Athar.GuildName = "";
@@ -355,14 +351,14 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.CurrentRegionID = 181;
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
-			Feairna_Athar.ScalingFactor = 60;
+			Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
 			Feairna_Athar.X = player.X;
 			Feairna_Athar.Y = player.Y;
 			Feairna_Athar.Z = player.Z;
 			Feairna_Athar.MaxSpeedBase = 250;
 			Feairna_Athar.AddToWorld();
 
-			var brain = new StandardMobBrain();
+			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Feairna_Athar.SetOwnBrain(brain);
@@ -370,8 +366,44 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.AddToWorld();
 
 			Feairna_Athar.StartAttack(player);
+			
+			GameEventMgr.AddHandler(Feairna_Athar,GameLivingEvent.Dying, FaeiarnaAtharDying);
 		}
-		
+		private void FaeiarnaAtharDying(DOLEvent e, object sender, EventArgs arguments)
+		{
+			var args = (DyingEventArgs) arguments;
+        
+			var player = args.Killer as GamePlayer;
+        
+			if (player == null)
+				return;
+        
+			if (player.Group != null)
+			{
+				foreach (var gpl in player.Group.GetPlayersInTheGroup())
+				{
+					AdvanceAfterKill(gpl);
+				}
+			}
+			else
+			{
+				AdvanceAfterKill(player);
+			}
+        
+			GameEventMgr.RemoveHandler(Feairna_Athar, GameLivingEvent.Dying, FaeiarnaAtharDying);
+			Feairna_Athar.Delete();
+		}
+		private static void AdvanceAfterKill(GamePlayer player)
+		{
+			var quest = player.IsDoingQuest(typeof(TheLostSeed)) as TheLostSeed;
+			if (quest is not {Step: 5}) return;
+			if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				player.Out.SendMessage(
+					"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
+					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			GiveItem(player, glowing_red_jewel);
+			quest.Step = 6;
+		}
 		private static void PlayerEnterTreantArea(DOLEvent e, object sender, EventArgs args)
 		{
 			var aargs = args as AreaEventArgs;
@@ -746,7 +778,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "Feairna-Athar":
 							if (quest.Step == 4)
 							{
-								Jandros.SayTo(player, "Follow the path Morth towards Cothrom Gorge. " +
+								Jandros.SayTo(player, "Follow the path North towards Cothrom Gorge. " +
 								                      "Once in the forest, head West. There, you will find the Treant Feairna-Athar. Kill him and bring me proof.");
 								quest.Step = 5;
 							}
@@ -878,28 +910,6 @@ namespace DOL.GS.Quests.Hibernia
 				return base.Description;
 			}
 		}
-
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-			var player = sender as GamePlayer;
-
-			if (sender != m_questPlayer)
-				return;
-
-			if (player == null || player.IsDoingQuest(typeof(TheLostSeed)) == null)
-				return;
-
-			if (e == GameLivingEvent.EnemyKilled && Step == 5 && player.TargetObject.Name == Feairna_Athar.Name)
-			{
-				if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-					player.Out.SendMessage(
-						"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
-						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				GiveItem(player, glowing_red_jewel);
-				Step = 6;
-			}
-		}
-
 		public override void AbortQuest()
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...

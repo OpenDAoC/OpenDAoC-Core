@@ -4,7 +4,6 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.GS.Quests.Albion;
@@ -27,7 +26,7 @@ public class LostStoneofArawn : BaseQuest
 
     private static readonly GameLocation demonLocation = new("Nyaegha", 51, 348381, 479838, 3320);
 
-    private static IArea demonArea;
+    private static AbstractArea demonArea;
 
     private static ItemTemplate ancient_copper_necklace;
     private static ItemTemplate scroll_wearyall_loststone;
@@ -86,7 +85,7 @@ public class LostStoneofArawn : BaseQuest
     [ScriptLoadedEvent]
     public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
     {
-        if (!Properties.LOAD_QUESTS)
+        if (!ServerProperties.Properties.LOAD_QUESTS)
             return;
 
 
@@ -295,8 +294,11 @@ public class LostStoneofArawn : BaseQuest
 
         const int radius = 1500;
         var region = WorldMgr.GetRegion(demonLocation.RegionID);
-        demonArea = region.AddArea(new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
-            radius));
+        demonArea = new Area.Circle("demonic patch", demonLocation.X, demonLocation.Y, demonLocation.Z,
+            radius);
+        demonArea.CanBroadcast = false;
+        demonArea.DisplayMessage = false;
+        region.AddArea(demonArea);
         demonArea.RegisterPlayerEnter(PlayerEnterDemonArea);
 
         GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, SubscribeQuest);
@@ -345,7 +347,7 @@ public class LostStoneofArawn : BaseQuest
 
     protected virtual void CreateNyaegha(GamePlayer player)
     {
-        Nyaegha = new GameNPC();
+        Nyaegha = new SINeckBoss();
         Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
@@ -356,7 +358,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.CurrentRegionID = 51;
         Nyaegha.Size = 150;
         Nyaegha.Level = 65;
-        Nyaegha.ScalingFactor = 60;
+        Nyaegha.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
         Nyaegha.X = 348381;
         Nyaegha.Y = 479838;
         Nyaegha.Z = 3320;
@@ -364,7 +366,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.MaxSpeedBase = 250;
         Nyaegha.AddToWorld();
 
-        var brain = new StandardMobBrain();
+        var brain = new SINeckBossBrain();
         brain.AggroLevel = 200;
         brain.AggroRange = 500;
         Nyaegha.SetOwnBrain(brain);
@@ -372,6 +374,43 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.AddToWorld();
 
         Nyaegha.StartAttack(player);
+        
+        GameEventMgr.AddHandler(Nyaegha, GameLivingEvent.Dying, NyaeghaDying);
+    }
+    private void NyaeghaDying(DOLEvent e, object sender, EventArgs arguments)
+    {
+        var args = (DyingEventArgs) arguments;
+        
+        var player = args.Killer as GamePlayer;
+        
+        if (player == null)
+            return;
+        
+        if (player.Group != null)
+        {
+            foreach (var gpl in player.Group.GetPlayersInTheGroup())
+            {
+                AdvanceAfterKill(gpl);
+            }
+        }
+        else
+        {
+            AdvanceAfterKill(player);
+        }
+        
+        GameEventMgr.RemoveHandler(Nyaegha, GameLivingEvent.Dying, NyaeghaDying);
+        Nyaegha.Delete();
+    }
+    private static void AdvanceAfterKill(GamePlayer player)
+    {
+        var quest = player.IsDoingQuest(typeof(LostStoneofArawn)) as LostStoneofArawn;
+        if (quest is not {Step: 4}) return;
+        if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            player.Out.SendMessage(
+                "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
+                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        GiveItem(player, lost_stone_of_arawn);
+        quest.Step = 5;
     }
 
     private static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
@@ -757,28 +796,6 @@ public class LostStoneofArawn : BaseQuest
                 "Speak with N\'chever in Wearyall Village, he will be able to tell you more about the [Stone of Arawn].");
         }
     }
-
-    public override void Notify(DOLEvent e, object sender, EventArgs args)
-    {
-        var player = sender as GamePlayer;
-
-        if (sender != m_questPlayer)
-            return;
-
-        if (player == null || player.IsDoingQuest(typeof(LostStoneofArawn)) == null)
-            return;
-
-        if (e == GameLivingEvent.EnemyKilled && Step == 4 && player.TargetObject.Name == Nyaegha.Name)
-        {
-            if (!m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-                player.Out.SendMessage(
-                    "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
-                    eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            GiveItem(player, lost_stone_of_arawn);
-            Step = 5;
-        }
-    }
-
     public override void AbortQuest()
     {
         base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...

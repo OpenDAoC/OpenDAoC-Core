@@ -152,6 +152,7 @@ namespace DOL.GS
 
 			Faction = FactionMgr.GetFactionByID(150);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			NosdodenBrain sbrain = new NosdodenBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -438,7 +439,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && RandomTarget2 != null)
 			{
-				GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+				GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 				if (RandomTarget2 != null && RandomTarget2.IsAlive)
 				{
 					Body.TargetObject = RandomTarget2;
@@ -504,7 +505,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && RandomTarget != null)
 			{
-				GamePlayer oldTarget = (GamePlayer)Body.TargetObject;//old target
+				GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 				if (RandomTarget != null && RandomTarget.IsAlive)
 				{
 					Body.TargetObject = RandomTarget;
@@ -537,6 +538,7 @@ namespace DOL.AI.Brain
 			get { return playerrezzed; }
 			set { playerrezzed = value; }
 		}
+		private bool RemoveAdds = false;
 		public override void Think()
 		{
 			if (!HasAggressionTable())
@@ -565,19 +567,24 @@ namespace DOL.AI.Brain
 					Enemys_To_DD.Clear();
 				if (Enemys_To_DOT.Count > 0)
 					Enemys_To_DOT.Clear();
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				if (!RemoveAdds)
 				{
-					if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
-						npc.Die(Body);
-				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
-						npc.RemoveFromWorld();
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
+							npc.Die(Body);
+					}
+					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					{
+						if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
+							npc.RemoveFromWorld();
+					}
+					RemoveAdds = true;
 				}
 			}
-			if (Body.IsAlive && HasAggro)
+			if (Body.IsAlive && HasAggro && Body.TargetObject != null)
 			{
+				RemoveAdds = false;
                 #region Summon Adds
                 if (Body.HealthPercent <= 90 && SpawnAdds1==false)
                 {

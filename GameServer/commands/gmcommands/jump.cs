@@ -256,7 +256,7 @@ namespace DOL.GS.Commands
 					}
 					if (CheckExpansion(clientc, clientc, 249))
 					{
-						clientc.Player.MoveTo(249, 47411, 48694, 25000, 5);
+						clientc.Player.MoveTo(497, 33278, 35168, 16220, 2056);
 						return;
 					}
 					return;

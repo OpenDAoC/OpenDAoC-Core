@@ -48,6 +48,7 @@ namespace DOL.Database
 		private string m_discordID;
 		private int m_realm_timer_realm;
 		private DateTime m_realm_timer_last_combat;
+		private DateTime m_lastDisconnected;
 		
 		/// <summary>
 		/// Create account row in DB
@@ -313,6 +314,23 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_realm_timer_last_combat = value;
+			}
+		}
+		
+		/// <summary>
+		/// The date time of the last disconnection
+		/// </summary>
+		[DataElement(AllowDbNull=true)]
+		public DateTime LastDisconnected
+		{
+			get
+			{
+				return m_lastDisconnected;
+			}
+			set
+			{
+				Dirty = true;
+				m_lastDisconnected = value;
 			}
 		}
 

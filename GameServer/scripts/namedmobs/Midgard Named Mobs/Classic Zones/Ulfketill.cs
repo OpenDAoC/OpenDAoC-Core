@@ -102,7 +102,7 @@ namespace DOL.AI.Brain
 			{
 				SpawnJotuns();
 			}
-			if(HasAggro)
+			if(HasAggro && Body.TargetObject != null)
             {
 				foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
                 {
@@ -216,7 +216,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{

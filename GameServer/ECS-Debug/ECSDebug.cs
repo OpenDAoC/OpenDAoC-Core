@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -25,6 +26,8 @@ namespace ECS.Debug
         private static bool stateMachineDebugEnabled = false;
         private static bool aggroDebugEnabled = false;
         private static Dictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new Dictionary<string, System.Diagnostics.Stopwatch>();
+
+        private static object _PerfCountersLock = new object();
 
         private static bool GameEventMgrNotifyProfilingEnabled = false;
         private static int GameEventMgrNotifyTimerInterval = 0;
@@ -89,7 +92,10 @@ namespace ECS.Debug
 
             InitializeStreamWriter();
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            PerfCounters.Add(uniqueID, stopwatch);
+            lock(_PerfCountersLock)
+            {
+                PerfCounters.TryAdd(uniqueID, stopwatch);
+            }
         }
 
         public static void StopPerfCounter(string uniqueID)
@@ -98,9 +104,12 @@ namespace ECS.Debug
                 return;
 
             System.Diagnostics.Stopwatch stopwatch;
-            if (PerfCounters.TryGetValue(uniqueID, out stopwatch))
+            lock(_PerfCountersLock)
             {
-                stopwatch.Stop();
+                if (PerfCounters.TryGetValue(uniqueID, out stopwatch))
+                {
+                    stopwatch.Stop();
+                }
             }
         }
 
@@ -110,23 +119,26 @@ namespace ECS.Debug
                 return;
 
             // Report perf counters that were active this frame and then flush them.
-            if (PerfCounters.Count > 0)
+            lock(_PerfCountersLock)
             {
-                string logString = "[PerfCounters] ";
-
-                foreach (var counter in PerfCounters)
+                if (PerfCounters.Count > 0)
                 {
-                    var counterName = counter.Key;
-                    var elapsed = (float)counter.Value.Elapsed.TotalMilliseconds;
-                    string elapsedString = elapsed.ToString();
-                    elapsedString = DOL.GS.Util.TruncateString(elapsedString, 4);
-                    logString += ($"{counterName} {elapsedString}ms | ");
+                    string logString = "[PerfCounters] ";
+
+                    foreach (var counter in PerfCounters)
+                    {
+                        var counterName = counter.Key;
+                        var elapsed = (float)counter.Value.Elapsed.TotalMilliseconds;
+                        string elapsedString = elapsed.ToString();
+                        elapsedString = DOL.GS.Util.TruncateString(elapsedString, 4);
+                        logString += ($"{counterName} {elapsedString}ms | ");
+                    }
+                    //Console.WriteLine(logString);
+                    //log.Logger.Log(typeof(Diagnostics), Level.Info, logString, null);
+                    //log.Info(logString);
+                    _perfStreamWriter.WriteLine(logString);
+                    PerfCounters.Clear();
                 }
-                //Console.WriteLine(logString);
-                //log.Logger.Log(typeof(Diagnostics), Level.Info, logString, null);
-                //log.Info(logString);
-                _perfStreamWriter.WriteLine(logString);
-                PerfCounters.Clear();
             }
         }
 

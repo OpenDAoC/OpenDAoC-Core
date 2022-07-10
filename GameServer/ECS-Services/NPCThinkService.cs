@@ -9,6 +9,8 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Diagnostics;
 using System.Buffers;
+using log4net;
+using System.Reflection;
 
 namespace DOL.GS
 {
@@ -29,6 +31,8 @@ namespace DOL.GS
         static int unthinking;
         static long interval = 2000;
         static long last_interval = 0;
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const string ServiceName = "NPCThinkService";
 
@@ -56,13 +60,20 @@ namespace DOL.GS
 
                     if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
                     {
+                        long startTick = GameTimer.GetTickCount();
                         brain.Think();
+                        long stopTick = GameTimer.GetTickCount();
+                        if((stopTick - startTick)  > 25 && brain != null)
+                            log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
                         brain.LastThinkTick = tick;
                     }
 
+                    if (brain.Body is not {NeedsBroadcastUpdate: true}) return;
+                    brain.Body.BroadcastUpdate();
+                    brain.Body.NeedsBroadcastUpdate = false;
                 }
             });
-            
+
             Diagnostics.StopPerfCounter(ServiceName);
         }
 

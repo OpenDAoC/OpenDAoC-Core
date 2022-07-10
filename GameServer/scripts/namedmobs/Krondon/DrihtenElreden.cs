@@ -203,7 +203,7 @@ namespace DOL.AI.Brain
 				if(PulledMobs.Count > 0)
 					PulledMobs.Clear();
 			}
-			if (HasAggro)
+			if (HasAggro && Body.TargetObject != null)
 			{
 				if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteBuff))
 					Body.CastSpell(Boss_Haste_Buff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
