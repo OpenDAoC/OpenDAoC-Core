@@ -193,16 +193,6 @@ namespace DOL.GS.API
                     return Results.Problem("No bread for you!", null, 401);
                 }
                 var activePlayers = _utils.GetAllClientStatuses();
-                try
-                {
-                    var jsonObject = Newtonsoft.Json.JsonConvert.SerializeObject(activePlayers);
-                }
-                catch (Exception e)
-                {
-                    var exceptionJson = Newtonsoft.Json.JsonConvert.SerializeObject(e);
-                    return Results.Json(exceptionJson, null, null, 500);
-                }
-                
                 return Results.Ok(activePlayers);
             });
 
