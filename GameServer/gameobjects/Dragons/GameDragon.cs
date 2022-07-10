@@ -222,9 +222,11 @@ namespace DOL.GS
 				{
 					if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 					{
+						if (bgPlayer.Level < 45) continue;
 						AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
 						AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
 						bgPlayer.Achieve($"{achievementMob}-Credit");
+
 					}
 				}
 			}
@@ -234,6 +236,7 @@ namespace DOL.GS
 				{
 					if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 					{
+						if (groupPlayer.Level < 45) continue;
 						AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
 						AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
 						groupPlayer.Achieve($"{achievementMob}-Credit");
@@ -242,9 +245,12 @@ namespace DOL.GS
 			}
 			else if (playerKiller != null)
 			{
-				AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
-				AtlasROGManager.GenerateBeetleCarapace(playerKiller);
-				playerKiller.Achieve($"{achievementMob}-Credit");
+				if (playerKiller.Level >= 45)
+				{
+					AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
+					AtlasROGManager.GenerateBeetleCarapace(playerKiller);
+					playerKiller.Achieve($"{achievementMob}-Credit");;
+				}
 			}
 
 			bool canReportNews = true;
