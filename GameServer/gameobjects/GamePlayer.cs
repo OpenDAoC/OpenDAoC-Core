@@ -14992,6 +14992,11 @@ namespace DOL.GS
             get
             {
                 double speed = Properties.CRAFTING_SPEED;
+                var craftSpeedBonus = false;
+                ushort[] keepIDs = {50, 75, 100, 57, 111, 198};
+
+                ushort[] strRelicKeepIDs = {};
+
 
                 if (speed <= 0)
                     speed = 1.0;
@@ -15004,7 +15009,24 @@ namespace DOL.GS
                 if (CurrentRegion.IsCapitalCity && Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS > 0)
                 {
                     return speed * Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
+                } 
+                else if (CurrentZone.IsOF && m_currentAreas.Count > 0)
+                {
+                    foreach (var area in m_currentAreas)
+                    {
+                        if (area is KeepArea kA)
+                        {
+                            if (keepIDs.Contains(kA.Keep.KeepID))
+                                craftSpeedBonus = true;
+                        }
+                    }
+                    if (craftSpeedBonus)
+                    {
+                        var speed2 = speed * Properties.KEEP_CRAFTING_SPEED_BONUS
+                        return speed2;
+                    }
                 }
+                log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {speed}");
 
                 return speed;
             }
