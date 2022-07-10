@@ -51,6 +51,15 @@ public class Utils
         public string Timestamp { get; set; }
     }
 
+    public class ClientStatus
+    {
+        public uint PrivLevel { get; set; }
+        public bool Playing { get; set; }
+        public int State { get; set; }
+        public DateTime LastLogin { get; set; }
+        public DateTime LastDisconnect { get; set; }
+    }
+
     public class ServerUptime
     {
         public long Seconds { get; set; }
@@ -145,6 +154,29 @@ public class Utils
         }
 
         return topRP;
+    }
+
+    public IDictionary<string, ClientStatus> GetAllClientStatuses()
+    {
+        Dictionary<string, ClientStatus> playersOnline = new Dictionary<string, ClientStatus>();
+        List<GameClient> clients = (List<GameClient>)WorldMgr.GetAllClients();
+
+        foreach (GameClient client in clients)
+        {
+            if (client?.Account == null || client?.Account?.Name == null || client?.Account?.PrivLevel == null)
+            {
+                continue;
+            }
+            ClientStatus clientStatus = new ClientStatus();
+            clientStatus.PrivLevel = client?.Account?.PrivLevel ?? 1;
+            clientStatus.Playing = client.IsPlaying;
+            clientStatus.State = (int)client.ClientState;
+            clientStatus.LastLogin = client.Account.LastLogin;
+            clientStatus.LastDisconnect = client.Account.LastDisconnected;
+            playersOnline.Add(client?.Account?.Name, clientStatus);
+        }
+
+        return playersOnline;
     }
 
     #endregion
