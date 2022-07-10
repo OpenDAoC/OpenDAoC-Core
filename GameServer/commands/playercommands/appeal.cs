@@ -19,6 +19,7 @@
 
 using DOL.Language;
 using DOL.GS.Appeal;
+using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands
@@ -28,12 +29,14 @@ namespace DOL.GS.Commands
     [CmdAttribute(
         "&appeal",
         ePrivLevel.Player,
-        "Usage: '/appeal <appeal type> <appeal text>",
-        "Where <appeal type> is one of the following:",
-        "  Harassment, Naming, Conduct, Stuck, Emergency or Other",
-        "and <appeal text> is a description of your issue.",
-        "If you have submitted an appeal, you can check its",
-        "status by typing '/checkappeal'.")]
+        "/appeal")]
+    
+        // "Usage: '/appeal <appeal type> <appeal text>",
+        // "Where <appeal type> is one of the following:",
+        // "  Harassment, Naming, Conduct, Stuck, Emergency or Other",
+        // "and <appeal text> is a description of your issue.",
+        // "If you have submitted an appeal, you can check its",
+        // "status by typing '/checkappeal'."
     public class AppealCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -43,7 +46,8 @@ namespace DOL.GS.Commands
 
 			if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
             {
-                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
+                //AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
+                client.Out.SendMessage("The /appeal system has moved to Discord. Use the #appeal channel on our Discord to be assisted on urgent matters.",eChatType.CT_Staff,eChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -51,7 +55,7 @@ namespace DOL.GS.Commands
 			{
 				return;
 			}
-
+            
             //Help display
             if (args.Length == 1)
             {
@@ -61,16 +65,16 @@ namespace DOL.GS.Commands
                     AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseGMappeal"));
                 }
             }
-
+            
             //Support for EU Clients
-
+            
             if (args.Length == 2 && args[1].ToLower() == "cancel")
             {
                 CheckAppealCommandHandler cch = new CheckAppealCommandHandler();
                 cch.OnCommand(client, args);
                 return;
             }
-
+            
             if (args.Length > 1)
             {
                 bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
@@ -118,7 +122,7 @@ namespace DOL.GS.Commands
                             severity = (int)AppealMgr.eSeverity.Medium;
                             break;
                         }
-
+            
                 }
                 string message = string.Join(" ", args, 1, args.Length - 1);
                 GamePlayer p = client.Player as GamePlayer;
@@ -128,7 +132,7 @@ namespace DOL.GS.Commands
             return;
         }
     }
-
+    
     #region reportbug
     //handles /reportbug command that is issued from the client /appeal function.
     [CmdAttribute(
@@ -143,13 +147,13 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-
+    
             if (args.Length < 5)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NeedMoreDetail"));
                 return;
             }
-
+    
             //send over the info to the /report command
             args[1] = "";
             //strip these words if they are the first word in the bugreport text
