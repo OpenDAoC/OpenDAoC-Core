@@ -335,7 +335,7 @@ namespace DOL.GS.DailyQuest
 		
 		public override string QuestPropertyKey
 		{
-			get => "HardcorePlayerKillQuestHib";
+			get => "HardcorePlayerKillQuestMid";
 			set { ; }
 		}
 		
