@@ -33,6 +33,7 @@ namespace DOL.GS.API
             var _realm = new Realm();
             var _shutdown = new Shutdown();
             var _news = new News();
+            var _passwordVerification = new PasswordVerification();
 
             #endregion
 
@@ -184,10 +185,34 @@ namespace DOL.GS.API
                 var discordStatus = Player.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
             });
-            
+
+            api.MapGet("/utils/query_clients/{password}", (string password) =>
+            {
+                if (!_passwordVerification.VerifyAPIPassword(password))
+                {
+                    return Results.Problem("No bread for you!", null, 401);
+                }
+                var activePlayers = _utils.GetAllClientStatuses();
+                try
+                {
+                    var jsonObject = Newtonsoft.Json.JsonConvert.SerializeObject(activePlayers);
+                }
+                catch (Exception e)
+                {
+                    var exceptionJson = Newtonsoft.Json.JsonConvert.SerializeObject(e);
+                    return Results.Json(exceptionJson, null, null, 500);
+                }
+                
+                return Results.Ok(activePlayers);
+            });
+
             api.MapGet("/utils/shutdown/{password}", (string password) =>
             {
-                var shutdownStatus = _shutdown.ShutdownServer(password);
+                if (!_passwordVerification.VerifyAPIPassword(password))
+                {
+                    return Results.Problem("No bread for you!", null, 401);
+                }
+                var shutdownStatus = _shutdown.ShutdownServer();
                 return Results.Ok(shutdownStatus);
             });
             
