@@ -31,11 +31,11 @@ namespace DOL.GS
                 return false;
             }
 
-            if (player.Level <= 1)
-            {
-                SayTo(player,$"I'm sorry {player.Name}, come back if you are venerable to use my services.");
-                return false;
-            }
+            // if (player.Level <= 1)
+            // {
+            //     SayTo(player,$"I'm sorry {player.Name}, come back if you are venerable to use my services.");
+            //     return false;
+            // }
 
             string message = $"Greetings {player.Name}, nice meeting you.\n";
             
