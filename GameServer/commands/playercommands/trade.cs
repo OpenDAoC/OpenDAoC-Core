@@ -17,11 +17,7 @@
  *
  */
 
-using System.Collections;
-using System.Linq;
-using System.Reflection;
 using DOL.Language;
-using DOL.GS;
 using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
@@ -36,10 +32,10 @@ namespace DOL.GS.Commands
 		 "/trade <message>")]
 	public class TradeChannelCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
+		private const string tradeTimeoutString = "lastTradeTick";
+
 		public void OnCommand(GameClient client, string[] args)
 		{
-			const string BROAD_TICK = "Broad_Tick";
-
 			if (args.Length < 2)
 			{
 				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Broadcast.NoText"));
@@ -50,23 +46,25 @@ namespace DOL.GS.Commands
 				client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			string message = string.Join(" ", args, 1, args.Length - 1);
-
-			long BroadTick = client.Player.TempProperties.getProperty<long>(BROAD_TICK);
-			if (BroadTick > 0 && BroadTick - client.Player.CurrentRegion.Time <= 0)
+			
+			var lastTradeTick = client.Player.TempProperties.getProperty<long>(tradeTimeoutString);
+			var slowModeLength = Properties.TRADE_SLOWMODE_LENGTH * 1000;
+			
+			if ((GameLoop.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
 			{
-				client.Player.TempProperties.removeProperty(BROAD_TICK);
-			}
-			long changeTime = client.Player.CurrentRegion.Time - BroadTick;
-			if (changeTime < 800 && BroadTick > 0)
-			{
-				client.Player.Out.SendMessage("Slow down! Think before you say each word!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Player.TempProperties.setProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
+				// Message: You must wait {0} seconds before using this command again.
+				ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", 60 - (GameLoop.GameLoopTime - lastTradeTick) / 1000);
 				return;
 			}
+			
+			string message = string.Join(" ", args, 1, args.Length - 1);
+			
 			Broadcast(client.Player, message);
 
-			client.Player.TempProperties.setProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
+			if (client.Account.PrivLevel == 1)
+			{
+				client.Player.TempProperties.setProperty(tradeTimeoutString, GameLoop.GameLoopTime);
+			}
 		}
 
 		private void Broadcast(GamePlayer player, string message)

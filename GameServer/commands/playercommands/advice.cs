@@ -18,6 +18,7 @@
  */
 
 using System;
+using DOL.GS.API;
 using DOL.Language;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
@@ -41,6 +42,7 @@ namespace DOL.GS.Commands
 		"PLCommands.Advice.Syntax.SendAdvisor")]
 	public class AdviceCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
+		private const string advTimeoutString = "lastAdviceTick";
 		public void OnCommand(GameClient client, string[] args)
 		{
 			if (client.Player.IsMuted)
@@ -52,6 +54,16 @@ namespace DOL.GS.Commands
 
 			if (IsSpammingCommand(client.Player, "advice") || IsSpammingCommand(client.Player, "adv"))
 				return;
+			
+			var lastAdviceTick = client.Player.TempProperties.getProperty<long>(advTimeoutString);
+			var slowModeLength = Properties.ADVICE_SLOWMODE_LENGTH * 1000;
+			
+			if ((GameLoop.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
+			{
+				// Message: You must wait {0} seconds before using this command again.
+				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", 60 - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
+				return;
+			}
 
 			string msg = "";
 			if (args.Length >= 2)
@@ -107,6 +119,11 @@ namespace DOL.GS.Commands
 
 			}
 			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
+
+			if (client.Account.PrivLevel == 1)
+			{
+				client.Player.TempProperties.setProperty(advTimeoutString, GameLoop.GameLoopTime);
+			}
 
 		}
 

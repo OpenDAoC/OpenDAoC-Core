@@ -472,11 +472,23 @@ namespace DOL.GS.ServerProperties
 		public static int NECK_BOSS_SCALING;
 		
 		/// <summary>
+		/// The slowmode duration for /advice in seconds
+		/// </summary>
+		[ServerProperty("atlas", "advice_slowmode_length", "The slowmode duration for /advice in seconds", 60)]
+		public static int ADVICE_SLOWMODE_LENGTH;
+		
+		/// <summary>
+		/// The slowmode duration for /trade in seconds
+		/// </summary>
+		[ServerProperty("atlas", "trade_slowmode_length", "The slowmode duration for /trade in seconds", 60)]
+		public static int TRADE_SLOWMODE_LENGTH;
+		
+		/// <summary>
 		/// The toughness of GameNPCs
 		/// </summary>
 		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 15)]
 		public static int GAMENPC_SCALING;
-		
+
 		/// <summary>
 		/// The first factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
