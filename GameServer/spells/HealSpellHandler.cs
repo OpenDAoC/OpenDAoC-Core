@@ -17,6 +17,7 @@
  *
  */
 using System;
+using System.Collections.Specialized;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.AI.Brain;
@@ -356,6 +357,28 @@ namespace DOL.GS.Spells
                 if (heal > 0 && criticalvalue > 0)
                     MessageToCaster("Your heal criticals for an extra " + criticalvalue + " hit points!", eChatType.CT_Spell);
             }
+
+            var attackers = target.attackComponent.Attackers;
+
+            foreach (var gain in attackers)
+            {
+                if (gain is GameNPC npc)
+                {
+                    AttackData ad = new AttackData();
+                    ad.Attacker = Caster;
+                    ad.Target = target;
+                    ad.AttackType = AttackData.eAttackType.Spell;
+                    ad.SpellHandler = this;
+                    ad.AttackResult = eAttackResult.HitUnstyled;
+                    ad.IsSpellResisted = false;
+                    ad.Damage = (int)Spell.Value;
+                    ad.DamageType = Spell.DamageType;
+                    npc.OnAttackedByEnemy(ad);
+                    npc.AddXPGainer(Caster, ad.Damage);
+                }
+            }
+            
+            
 
             return true;
         }
