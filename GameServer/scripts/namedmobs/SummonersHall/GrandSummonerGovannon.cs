@@ -32,7 +32,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 40000; }
+			get { return 300000; }
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
