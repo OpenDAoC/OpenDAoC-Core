@@ -2444,7 +2444,7 @@ namespace DOL.GS.ServerRules
 
 			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
 
-			return Math.Max(5, value);
+			return Math.Max(0, value);
 		}
 
 		/// <summary>
