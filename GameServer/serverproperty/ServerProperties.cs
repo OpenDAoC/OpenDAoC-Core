@@ -2819,6 +2819,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "salvage_yield_multiplier", "The salvage yield multiplier", 0.5)]
 		public static double SALVAGE_YIELD_MULTIPLIER;
 		
+		[ServerProperty("atlas", "max_craft_time", "The maximum craft time allowed in seconds. All timers above this value will be normalised to the input value", 0)]
+		public static int MAX_CRAFT_TIME;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{

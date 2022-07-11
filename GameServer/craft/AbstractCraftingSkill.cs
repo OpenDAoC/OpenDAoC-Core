@@ -701,10 +701,13 @@ namespace DOL.GS
 
 			craftingTime = (int)(craftingTime * mod);
 
+			var maxCraftingTime = Properties.MAX_CRAFT_TIME;
+
 			if (craftingTime < 1)
 				craftingTime = 1;
-			else if (craftingTime > 90)
-				craftingTime = 90;
+			else if (maxCraftingTime > 0 && craftingTime > maxCraftingTime)
+				craftingTime = maxCraftingTime;
+			
 			if (player.Client.Account.PrivLevel > 1)
 			{
 				player.Out.SendMessage($"[DEBUG] Crafting time: {craftingTime}s", eChatType.CT_System, eChatLoc.CL_SystemWindow);
