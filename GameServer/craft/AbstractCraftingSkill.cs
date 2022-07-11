@@ -665,10 +665,6 @@ namespace DOL.GS
 
 			// Player does check for capital city bonus as well
 			craftingTime = (int)(craftingTime / player.CraftingSpeed);
-			if (player.Client.Account.PrivLevel > 1)
-			{
-				player.Out.SendMessage($"[DEBUG] Crafting time: {craftingTime}s", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
 
 			//keep bonuses reduction in crafting time
 			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_5, (eRealm)player.Realm))
@@ -707,6 +703,12 @@ namespace DOL.GS
 
 			if (craftingTime < 1)
 				craftingTime = 1;
+			else if (craftingTime > 90)
+				craftingTime = 90;
+			if (player.Client.Account.PrivLevel > 1)
+			{
+				player.Out.SendMessage($"[DEBUG] Crafting time: {craftingTime}s", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
 			return craftingTime;
 		}
 
