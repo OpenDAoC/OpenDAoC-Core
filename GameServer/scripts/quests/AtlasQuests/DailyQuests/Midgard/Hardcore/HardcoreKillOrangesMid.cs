@@ -372,7 +372,8 @@ namespace DOL.GS.DailyQuest
 			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
-
+			DeleteFromDatabase();
+			
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}
