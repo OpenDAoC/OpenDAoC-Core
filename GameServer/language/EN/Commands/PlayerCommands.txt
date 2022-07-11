@@ -22,6 +22,9 @@ PLCommands.Advice.List.AdvisorsOn:			            There are {0} Advisors online!
 ## /trade
 PLCommands.Trade.List.Wait:	                            You must wait {0} seconds before speaking on /trade again
 
+## /lfg
+PLCommands.LFG.List.Wait:	                            You must wait {0} seconds before speaking on /lfg again
+
 
 ## /advisor
 PLCommands.Advisor.Syntax.Advisor:                      '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.

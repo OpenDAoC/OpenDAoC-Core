@@ -483,6 +483,13 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "trade_slowmode_length", "The slowmode duration for /trade in seconds", 60)]
 		public static int TRADE_SLOWMODE_LENGTH;
 		
+				
+		/// <summary>
+		/// The slowmode duration for /lfg in seconds
+		/// </summary>
+		[ServerProperty("atlas", "lfg_slowmode_length", "The slowmode duration for /lfg in seconds", 60)]
+		public static int LFG_SLOWMODE_LENGTH;
+		
 		/// <summary>
 		/// The toughness of GameNPCs
 		/// </summary>

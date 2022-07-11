@@ -61,7 +61,7 @@ namespace DOL.GS.Commands
 			if ((GameLoop.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
 			{
 				// Message: You must wait {0} seconds before using this command again.
-				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", 60 - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
+				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", slowModeLength - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
 				return;
 			}
 
