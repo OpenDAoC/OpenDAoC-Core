@@ -179,5 +179,38 @@ namespace DOL.GS.ServerRules
 			
 		}
 
+		public static void SetDFOwner(GamePlayer p, eRealm NewDFOwner)
+		{
+			if (DarknessFallOwner != NewDFOwner)
+			{
+				foreach (GameClient pp in WorldMgr.GetClientsOfRegion(249))
+				{
+					if (pp == null) break;
+					if (pp.Player == null) continue;
+					if (pp.IsPlaying && pp.Player.Realm == DarknessFallOwner)
+					{
+						pp.Out.SendSoundEffect(217, 0, 0, 0, 0, 0);
+					}
+
+				}
+
+				DarknessFallOwner = NewDFOwner;
+
+				foreach (GameClient pp in WorldMgr.GetClientsOfRegion(249))
+				{
+					if (pp == null) break;
+					if (pp.Player == null) continue;
+					if (pp.IsPlaying && pp.Player.Realm == DarknessFallOwner)
+					{
+						pp.Out.SendSoundEffect(216, 0, 0, 0, 0, 0);
+					}
+
+				}
+
+				p.Out.SendMessage(string.Format("New DF Owner set to {0}", GlobalConstants.RealmToName(NewDFOwner)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else
+				p.Out.SendMessage(string.Format("DF Owner is already set to {0}", GlobalConstants.RealmToName(NewDFOwner)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
 	}
 }
