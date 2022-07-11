@@ -2439,16 +2439,12 @@ namespace DOL.GS.ServerRules
 			}
 			else if (keep is GameKeep)
 			{
-				value = Math.Max(50, ServerProperties.Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * ServerProperties.Properties.KEEP_RP_MULTIPLIER));
-			}
-			else
-			{
-				value = Math.Max(5, ServerProperties.Properties.TOWER_RP_BASE + ((keep.BaseLevel - 50) * ServerProperties.Properties.TOWER_RP_MULTIPLIER));
+				value = keep.Guild != null ? Math.Max(50,Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER)) : 0;
 			}
 
-			value += ((keep.Level - ServerProperties.Properties.STARTING_KEEP_LEVEL) * ServerProperties.Properties.UPGRADE_MULTIPLIER);
+			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
 
-			return Math.Max(5, value);
+			return Math.Max(0, value);
 		}
 
 		/// <summary>
