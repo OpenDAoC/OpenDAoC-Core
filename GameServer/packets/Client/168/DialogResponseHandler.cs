@@ -139,7 +139,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									return 0;
 								}
-								if (guildLeader.CurrentZone.IsRvR || player.CurrentZone.IsRvR)
+								if (!ServerProperties.Properties.ALLOW_GUILD_INVITE_IN_RVR && guildLeader.CurrentZone.IsRvR || player.CurrentZone.IsRvR)
 								{
 									player.Out.SendMessage("You can't join a guild while in a RvR zone.",
 										eChatType.CT_System, eChatLoc.CL_SystemWindow);

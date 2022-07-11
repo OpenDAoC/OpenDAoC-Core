@@ -2437,6 +2437,13 @@ namespace DOL.GS.ServerProperties
 		public static int GUILDS_CLAIM_LIMIT;
 
 		/// <summary>
+		/// Do we allow invite players to guild in rvr zone?
+		/// </summary>
+		[ServerProperty("guild", "allow_guild_invite_in_rvr", "Do we allow invite players to guild in rvr zone?", false)]
+		public static bool ALLOW_GUILD_INVITE_IN_RVR;
+		
+		
+		/// <summary>
 		/// Guild Crafting Buff bonus amount
 		/// </summary>
 		[ServerProperty("guild", "guild_buff_crafting", "Percent speed gain for the guild crafting buff?", (ushort)5)]
