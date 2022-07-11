@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.AI.Brain;
@@ -360,7 +361,7 @@ namespace DOL.GS.Spells
 
             var attackers = target.attackComponent.Attackers;
 
-            foreach (var gain in attackers)
+            foreach (var gain in attackers.ToList())
             {
                 if (gain is GameNPC npc)
                 {
