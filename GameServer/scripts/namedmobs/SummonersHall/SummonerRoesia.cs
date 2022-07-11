@@ -32,7 +32,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 200000; }
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
@@ -329,7 +329,7 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4414;
 					spell.Icon = 4414;
 					spell.TooltipId = 4414;
-					spell.Value = 125;
+					spell.Value = 1250;
 					spell.Frequency = 20;
 					spell.Duration = 10;
 					spell.Name = "Summoner Heal";
