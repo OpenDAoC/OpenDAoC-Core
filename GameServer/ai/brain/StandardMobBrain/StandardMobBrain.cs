@@ -569,11 +569,15 @@ namespace DOL.AI.Brain
             // do not modify aggro list if dead
             if (!brain.Body.IsAlive) return;
 
+            KeyValuePair<GameLiving, long>[] aggroTable = Array.Empty<KeyValuePair<GameLiving, long>>();
             lock ((m_aggroTable as ICollection).SyncRoot)
             {
-                Dictionary<GameLiving, long>.Enumerator dictEnum = m_aggroTable.GetEnumerator();
-                while (dictEnum.MoveNext())
-                    brain.AddToAggroList(dictEnum.Current.Key, Body.MaxHealth);
+                aggroTable = m_aggroTable.ToArray();
+            }
+
+            foreach (var aggro in aggroTable)
+            {
+                brain.AddToAggroList(aggro.Key, Body.MaxHealth);
             }
         }
 
