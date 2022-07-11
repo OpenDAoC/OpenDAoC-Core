@@ -113,6 +113,7 @@ namespace DOL.GS.Commands
                                 {
                                     var item =
                                         GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                    if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     merchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
                                         ingredient.Count * amount);
@@ -188,6 +189,7 @@ namespace DOL.GS.Commands
                                 {
                                     var item =
                                         GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                    if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     int playerAmount = 0;
 
