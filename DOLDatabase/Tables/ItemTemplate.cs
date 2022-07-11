@@ -98,6 +98,7 @@ namespace DOL.Database
 		protected int m_effect;
 		protected int m_model;
 		protected byte m_extension;
+		protected byte m_salvageextension;
 		
 		// bonuses
 		protected int m_bonus;
@@ -485,6 +486,17 @@ namespace DOL.Database
 		{
 			get { return m_weight; }
 			set { Dirty = true; m_weight = value; }
+		}
+		
+		[DataElement(AllowDbNull = true)]
+		public byte SalvageExtension
+		{
+			get { return m_salvageextension; }
+			set
+			{
+				Dirty = true;
+				m_salvageextension = value;
+			}
 		}
 
 		[DataElement(AllowDbNull = false)]

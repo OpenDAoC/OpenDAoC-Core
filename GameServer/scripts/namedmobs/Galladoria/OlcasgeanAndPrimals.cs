@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
                     if (player.IsAlive)
                     {
                         if (player.IsWithinRadius(point1, 120) && startevent == true && player.Client.Account.PrivLevel == 1)
-                        {                          
+                        {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = false;
                         }
@@ -358,12 +358,12 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get{return 300000;}
+            get { return 300000; }
         }
         public override int AttackRange
         {
-            get{return 1500;}
-            set{}
+            get { return 1500; }
+            set { }
         }
         public override bool HasAbility(string keyName)
         {
@@ -442,7 +442,7 @@ namespace DOL.GS
                 count++;
             }
             return count;
-        }      
+        }
         public override void Die(GameObject killer)
         {
             if (!(killer is Olcasgean) && !Master && Master_NPC != null)
@@ -807,7 +807,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                if (AirPrimal.DeadPrimalsCount == 4 && wake_up_boss==false)
+                if (AirPrimal.DeadPrimalsCount == 4 && wake_up_boss == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WakeUpBoss), 25000);
                     wake_up_boss = true;
@@ -821,7 +821,7 @@ namespace DOL.AI.Brain
                 if (HasAggro && Body.TargetObject != null)//Boss in combat
                 {
                     RemoveAdds = false;
-                    if(spawn_effect ==false)
+                    if (spawn_effect == false)
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnEffects), 2000);
                         spawn_effect = true;
@@ -1020,7 +1020,7 @@ namespace DOL.GS
             else//take dmg
             {
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-            }         
+            }
         }
         public override void StartAttack(GameObject target)
         {
@@ -1044,13 +1044,15 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get {return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
+            get
+            {
+                return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
             }
         }
         public override int AttackRange
         {
-            get{return 350;}
-            set{}
+            get { return 350; }
+            set { }
         }
         public override void WalkToSpawn(short speed)
         {
@@ -1586,7 +1588,7 @@ namespace DOL.AI.Brain
         public static bool message = false;
         public override void Notify(DOLEvent e, object sender, EventArgs args)
         {
-            if(e == GameNPCEvent.AddToWorld)
+            if (e == GameNPCEvent.AddToWorld)
             {
                 Point3D point1 = new Point3D();
                 point1.X = 39652; point1.Y = 60831; point1.Z = 11893;
@@ -1651,7 +1653,7 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if(HasAggro && Body.TargetObject != null)
+            if (HasAggro && Body.TargetObject != null)
             {
                 if (Util.Chance(10))
                 {
@@ -1728,11 +1730,11 @@ namespace DOL.AI.Brain
         {
             if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
             {
-                switch(Util.Random(1,2))
+                switch (Util.Random(1, 2))
                 {
                     case 1: TeleportTarget.MoveTo(Body.CurrentRegionID, 38626, 60891, 11771, 2881); break;
                     case 2: TeleportTarget.MoveTo(Body.CurrentRegionID, 40606, 60868, 11721, 1095); break;
-                }              
+                }
                 Port_Enemys.Remove(TeleportTarget);
                 TeleportTarget = null;//reset random target to null
                 IsTargetTeleported = false;
@@ -1839,8 +1841,8 @@ namespace DOL.GS
         }
         public override int AttackRange
         {
-            get{return 350;}
-            set{}
+            get { return 350; }
+            set { }
         }
 
         public override bool AddToWorld()
@@ -1919,7 +1921,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                if(CanSpawnFire==false)
+                if (CanSpawnFire == false)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnFire), 1000);
                     CanSpawnFire = true;
@@ -2072,6 +2074,10 @@ namespace DOL.GS
                     if (player != null)
                         player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
                 }
+                SetGroundTarget(X, Y, Z);
+                if (!IsCasting)
+                    CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1000);
             }
             return 0;
@@ -2114,10 +2120,10 @@ namespace DOL.GS
             if (success)
             {
                 SetGroundTarget(X, Y, Z);
-                if(!IsCasting)
-                    CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+                if (!IsCasting)
+                    CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveFire), 8000);
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveFire), 6000);
             }
             return success;
         }
@@ -2165,52 +2171,7 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if (Body.IsAlive)
-            {
-                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
-                {
-                    if (player != null)
-                    {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 100);
-                        }
-                    }
-                }
-                Body.SetGroundTarget(Body.X,Body.Y,Body.Z);
-                Body.CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-            }
             base.Think();
-        }
-        private Spell m_FireGroundDD;
-        private Spell FireGroundDD
-        {
-            get
-            {
-                if (m_FireGroundDD == null)
-                {
-                    DBSpell spell = new DBSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 2;
-                    spell.ClientEffect = 368;
-                    spell.Icon = 368;
-                    spell.TooltipId = 368;
-                    spell.Damage = 220;
-                    spell.Range = 1200;
-                    spell.Radius = 450;
-                    spell.SpellID = 11720;
-                    spell.Target = "Area";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
-                    m_FireGroundDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
-                }
-                return m_FireGroundDD;
-            }
         }
     }
 }
@@ -2279,12 +2240,12 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get{ return 200000;}
+            get { return 200000; }
         }
         public override int AttackRange
         {
-            get{return 350;}
-            set{}
+            get { return 350; }
+            set { }
         }
         public override bool AddToWorld()
         {
@@ -2347,7 +2308,7 @@ namespace DOL.AI.Brain
         public static bool CanSwitchTarget = false;
         public override void Think()
         {
-            if(!HasAggressionTable())
+            if (!HasAggressionTable())
             {
                 Body.Health = Body.MaxHealth;
                 CanSwitchTarget = false;
@@ -2370,7 +2331,7 @@ namespace DOL.AI.Brain
                     if (!target.IsWithinRadius(spawn, 900))
                     {
                         Body.MaxSpeedBase = 0;
-                        if(CanSwitchTarget==false)
+                        if (CanSwitchTarget == false)
                         {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TargetIsOut), 5000);
                             CanSwitchTarget = true;
@@ -2380,7 +2341,7 @@ namespace DOL.AI.Brain
                         Body.MaxSpeedBase = npcTemplate.MaxSpeed;
                 }
             }
-            if(Body.IsOutOfTetherRange && !HasAggro)
+            if (Body.IsOutOfTetherRange && !HasAggro)
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
@@ -2396,7 +2357,7 @@ namespace DOL.AI.Brain
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(15,25);
+                    spell.RecastDelay = Util.Random(15, 25);
                     spell.ClientEffect = 277;
                     spell.Icon = 277;
                     spell.TooltipId = 277;
@@ -3272,8 +3233,8 @@ namespace DOL.GS
         }
         public override int AttackRange
         {
-            get{return 200;}
-            set{}
+            get { return 200; }
+            set { }
         }
         public override void DropLoot(GameObject killer)//no loot
         {
@@ -3455,7 +3416,7 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);               
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
             }
             return success;
         }
@@ -3474,7 +3435,7 @@ namespace DOL.GS
         }
         public int RemoveMob(ECSGameTimer timer)
         {
-            if(IsAlive)
+            if (IsAlive)
                 RemoveFromWorld();
             return 0;
         }

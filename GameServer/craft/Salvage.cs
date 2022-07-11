@@ -23,6 +23,7 @@ using System.Reflection;
 
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.SalvageCalc;
 using DOL.Language;
 
 using log4net;
@@ -72,53 +73,98 @@ namespace DOL.GS
 				return 0;
 			}
 
-			int salvageLevel = CraftingMgr.GetItemCraftLevel(item) / 100;
-			if(salvageLevel > 9) salvageLevel = 9; // max 9
+			// int salvageLevel = CraftingMgr.GetItemCraftLevel(item) / 100;
+			// if(salvageLevel > 9) salvageLevel = 9; // max 9
 
 			var whereClause = WhereClause.Empty;
 
-			if (item.SalvageYieldID == 0)
+			// if (item.SalvageYieldID == 0)
+			// {
+			// 	whereClause = DB.Column("ObjectType").IsEqualTo(item.Object_Type).And(DB.Column("SalvageLevel").IsEqualTo(salvageLevel));
+			// }
+			// else
+			// {
+			// 	whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
+			// }
+			//
+			// if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
+			// {
+			// 	whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)eRealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
+			// }
+			if (item.SalvageYieldID > 0)
 			{
-				whereClause = DB.Column("ObjectType").IsEqualTo(item.Object_Type).And(DB.Column("SalvageLevel").IsEqualTo(salvageLevel));
+				// salvageYield = new SalvageYield();
+				whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
+				
+				salvageYield = DOLDB<SalvageYield>.SelectObject(whereClause);
+				ItemTemplate material = null;
+   
+				if (salvageYield != null && string.IsNullOrEmpty(salvageYield.MaterialId_nb) == false)
+				{
+					material = GameServer.Database.FindObjectByKey<ItemTemplate>(salvageYield.MaterialId_nb);
+   
+					if (material == null)
+					{
+						player.Out.SendMessage("Can't find material (" + material.Id_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						log.ErrorFormat("Salvage Error for ID: {0}:  Material not found: {1}", salvageYield.ID, material.Id_nb);
+					}
+				}
+   
+				if (material == null)
+				{
+					if (salvageYield == null && item.SalvageYieldID > 0)
+					{
+						player.Out.SendMessage("This items salvage recipe (" + item.SalvageYieldID + ") not implemented yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						log.ErrorFormat("SalvageYield ID {0} not found for item: {1}", item.SalvageYieldID, item.Name);
+					}
+					else if (salvageYield == null)
+					{
+						player.Out.SendMessage("Salvage recipe not found for this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						log.ErrorFormat("Salvage Lookup Error: ObjectType: {0}, Item: {1}", item.Object_Type, item.Name);
+					}
+					return 0;
+				}
+				// if (salvageYield == null)
+				// {
+				// 	player.Out.SendMessage("Can't find database entry (" + item.SalvageYieldID + ") for salvage ID, bypassing database value!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				// 	log.ErrorFormat("Salvage Error for salvageYield ID: {0}:  Entry not found, bypassing database entry", item.SalvageYieldID);
+				// 	item.SalvageYieldID = 0;
+				// }
+				if (string.IsNullOrEmpty(salvageYield.MaterialId_nb))
+				{
+					player.Out.SendMessage("MaterialId_nb is null for (" + item.Name + ") salvageYield ID!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					log.ErrorFormat("Salvage Error for item: {0}:  MaterialId_nb is null", salvageYield.ID);
+					return 0;
+				}
+				material = GameServer.Database.FindObjectByKey<ItemTemplate>(salvageYield.MaterialId_nb);
+				if (material == null)
+				{
+					player.Out.SendMessage("Can't find material (" + salvageYield.MaterialId_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					log.ErrorFormat("Salvage Error for ID: {0}:  Material not found", salvageYield.ID);
+					return 0;
+				}
+				if (player.Client.Account.PrivLevel != 1)
+				{
+					player.Out.SendDebugMessage("DATABASE: SALVAGEYIELD ID " + salvageYield.ID);
+				}
 			}
 			else
 			{
-				whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
+				var sCalc = new SalvageCalculator();
+				var ReturnSalvage = sCalc.GetSalvage(player, item);
+				salvageYield = new SalvageYield();
+				salvageYield.Count = ReturnSalvage.Count;
+				salvageYield.MaterialId_nb = (string) ReturnSalvage.ID;
 			}
 
-			if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
+			if (salvageYield.MaterialId_nb == "")
 			{
-				whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)eRealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
-			}
-
-			salvageYield = DOLDB<SalvageYield>.SelectObject(whereClause);
-			ItemTemplate material = null;
-
-			if (salvageYield != null && string.IsNullOrEmpty(salvageYield.MaterialId_nb) == false)
-			{
-				material = GameServer.Database.FindObjectByKey<ItemTemplate>(salvageYield.MaterialId_nb);
-
-				if (material == null)
-				{
-					player.Out.SendMessage("Can't find material (" + material.Id_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("Salvage Error for ID: {0}:  Material not found: {1}", salvageYield.ID, material.Id_nb);
-				}
-			}
-
-            if (material == null)
-			{
-				if (salvageYield == null && item.SalvageYieldID > 0)
-				{
-					player.Out.SendMessage("This items salvage recipe (" + item.SalvageYieldID + ") not implemented yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("SalvageYield ID {0} not found for item: {1}", item.SalvageYieldID, item.Name);
-				}
-				else if (salvageYield == null)
-				{
-					player.Out.SendMessage("Salvage recipe not found for this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("Salvage Lookup Error: ObjectType: {0}, Item: {1}", item.Object_Type, item.Name);
-				}
+				player.Out.SendMessage("No material set for this item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return 0;
 			}
+			
+			//Calculate a penalty based on players secondary crafting skill level
+			salvageYield.Count = salvageYield.Count < 1 ? 0 : GetYieldPenalty(player, item, salvageYield.Count);
 
 			if (player.IsMoving || player.IsStrafing)
 			{
@@ -130,49 +176,76 @@ namespace DOL.GS
 			{
 				player.Stealth(false);
 			}
-			
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.BeginSalvage", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			// clone the yield entry and update values to work with this salvage (not saved to the DB)
-			SalvageYield yield = salvageYield.Clone() as SalvageYield;
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.BeginSalvage", item.Template.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			if (item.SalvageYieldID == 0 || yield.Count == 0)
+			if (salvageYield.Count < 1)
 			{
-				var count = 0;
-				// Calculated salvage values
-				if (item.Object_Type == (int)eObjectType.Magical)
-				{
-					count = 1;
-					yield.Count = 1;
-				}
-				else if (item.Description.Contains("Atlas ROG"))
-				{
-					count = 2;
-					yield.Count = 2;
-				}
-				else
-				{
-					count = GetMaterialYield(player, item, yield, material);
-				}
-				if (count < 1)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". The material returned amount is zero"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return 0;
-				}
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Template.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return 0;
 			}
+			
+			
+			
 
-			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.Salvaging", item.Name), yield.Count);
+			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.Salvaging", item.Name), salvageYield.Count);
             player.CraftTimer = new ECSGameTimer(player)
             {
                 Callback = new ECSGameTimer.ECSTimerCallback(Proceed)
             };
             player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.setProperty(SALVAGED_ITEM, item);
-			player.CraftTimer.Properties.setProperty(SALVAGE_YIELD, yield);
+			player.CraftTimer.Properties.setProperty(SALVAGE_YIELD, salvageYield);
 
-			player.CraftTimer.Start(yield.Count * 1000);
+			player.CraftTimer.Start(salvageYield.Count * 1000);
 			return 1;
 		}
+		
+		 public static int GetYieldPenalty(GamePlayer player, InventoryItem item, int SalvageCount)
+        {
+            int Multiplier = 0;
+            int ReturnCount = SalvageCount;
+
+            string iType = "";
+
+            // if (item.IsCrafted)
+            // {
+            //     Multiplier = ServerProperties.Properties.SALVAGE_CRAFT_ITEM_MULTIPLIER;
+            //     iType = "SALVAGE_CRAFT_ITEM_MULTIPLIER= %";
+            // }
+            // else
+            // {
+            //     Multiplier = ServerProperties.Properties.SALVAGE_ITEM_MULTIPLIER;
+            //     iType = "SALVAGE_ITEM_MULTIPLIER= %";
+            // }
+
+            //The percentage of material to return if player does not meet the requirments
+            Multiplier = Multiplier < 1 ? 1 : Multiplier;//Not less then 0
+            Multiplier = Multiplier > 99 ? 100 : Multiplier;//Not more then 100
+
+            //Magic items cannot be salvaged so give them cloth value
+            item.Object_Type = item.Object_Type == 41 ? 32 : item.Object_Type;
+            
+            int Percent = (int) player.GetCraftingSkillValue(CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item)) * 100 / CraftingMgr.GetItemCraftLevel(item);
+            Percent = Percent > 99 ? 100 : Percent;
+
+            if (Percent < Multiplier) //Multiplier will never be below 0%
+            {
+                ReturnCount = (int)(ReturnCount * Multiplier) / 100 < 1 ? 1 : (ReturnCount * Multiplier / 100);
+                if (player.Client.Account.PrivLevel != 1)
+                {
+                    player.Out.SendDebugMessage("SkillBelow = true " + iType + Multiplier + " PlayerSkill= %" + Percent + " Returning " + ReturnCount + " of " + SalvageCount);
+                }
+                return ReturnCount;
+            }
+
+            ReturnCount = (int)(ReturnCount * Percent) / 100 < 1 ? 1 : (ReturnCount * Percent) / 100;
+            if (player.Client.Account.PrivLevel != 1)
+            {
+                player.Out.SendDebugMessage("SkillBelow = false " + iType + Multiplier + " PlayerSkill= %" + Percent + " Returning " + ReturnCount + " of " + SalvageCount);
+            }
+            return ReturnCount;
+        }
 		
 		public static int BeginWorkList(GamePlayer player, IList<InventoryItem> itemList)
 		{

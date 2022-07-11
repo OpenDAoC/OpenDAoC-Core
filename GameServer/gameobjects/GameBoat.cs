@@ -41,7 +41,7 @@ namespace DOL.GS
         private ushort m_boatModel;
         private short m_boatMaxSpeedBase;
 
-		private ECSGameTimer m_removeTimer = null;
+		private AuxECSGameTimer m_removeTimer = null;
 
         public GameBoat(byte type)
             : base()
@@ -201,7 +201,7 @@ namespace DOL.GS
 			if (CurrentRiders.Length == 0)
 			{
 				if (m_removeTimer == null)
-					m_removeTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveCallback));
+					m_removeTimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RemoveCallback));
 				else if (m_removeTimer.IsAlive)
 					m_removeTimer.Stop();
 				m_removeTimer.Start(15 * 60 * 1000);
@@ -210,7 +210,7 @@ namespace DOL.GS
 			return true;
 		}
 
-        protected int RemoveCallback(ECSGameTimer timer)
+        protected int RemoveCallback(AuxECSGameTimer timer)
 		{
 			m_removeTimer.Stop();
 			m_removeTimer = null;

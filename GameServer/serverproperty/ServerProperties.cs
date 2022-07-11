@@ -2784,6 +2784,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "carapace_dropchance", "The base Beetle Carapace drop chance in %", 0.01)]
 		public static double CARAPACE_DROPCHANCE;
 		
+		[ServerProperty("atlas", "salvage_yield_multiplier", "The salvage yield multiplier", 0.5)]
+		public static double SALVAGE_YIELD_MULTIPLIER;
+		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{

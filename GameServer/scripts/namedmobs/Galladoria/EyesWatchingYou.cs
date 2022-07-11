@@ -138,7 +138,7 @@ namespace DOL.AI.Brain
                 DoStuff();
             if (!allowTimer)
             {
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TimerDoStuff), Util.Random(25000,45000));
+                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TimerDoStuff), Util.Random(25000, 45000));
                 allowTimer = true;
             }
             base.Think();

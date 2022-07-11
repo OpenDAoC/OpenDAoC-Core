@@ -53,7 +53,7 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public List<GamePlayer> attackers = new List<GamePlayer>();
+        public static List<GamePlayer> attackers = new List<GamePlayer>();
         public static int attackers_count = 0;
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -177,6 +177,7 @@ namespace DOL.AI.Brain
             ThinkInterval = 5000;
             CanBAF = false;
         }
+        private bool ClearAttackers = false;
         public override void Think()
         {
             if (!HasAggressionTable())
@@ -185,9 +186,18 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 Silencer.attackers_count = 0;
-                Silencer silencer = new Silencer();
-                silencer.attackers.Clear();
+                //Silencer silencer = new Silencer();
+                if (!ClearAttackers)
+                {
+                    if (Silencer.attackers.Count > 0)
+                    {
+                        Silencer.attackers.Clear();
+                        ClearAttackers = true;
+                    }
+                }
             }
+            if (HasAggro && Body.TargetObject != null)
+                ClearAttackers = false;
             if (Body.IsOutOfTetherRange)
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

@@ -24,6 +24,7 @@ using DOL.GS.PacketHandler;
 using DOL.Database;
 using log4net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 using DOL.AI.Brain;
@@ -205,23 +206,51 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
 		{
 			// debug
-			if (killer == null)
-				log.Error("Dragon Killed: killer is null!");
-			else
-				log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+			log.Debug($"{Name} killed by {killer.Name}");
 			
-			GamePlayer playerKiller = killer as GamePlayer;
-			
-			if (playerKiller?.Group != null)
+			if (killer is GamePet pet) killer = pet.Owner; 
+            
+			var playerKiller = killer as GamePlayer;
+            
+			var achievementMob = Regex.Replace(Name, @"\s+", "");
+            
+			var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            
+			if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
 			{
-				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				foreach (var bgPlayer in killerBG.GetPlayersInTheBattleGroup())
 				{
-					AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
+					if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					{
+						if (bgPlayer.Level < 45) continue;
+						AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
+						AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+						bgPlayer.Achieve($"{achievementMob}-Credit");
+
+					}
 				}
 			}
-			else
+			else if (playerKiller?.Group != null)
 			{
-				AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
+				foreach (var groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				{
+					if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					{
+						if (groupPlayer.Level < 45) continue;
+						AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
+						AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
+						groupPlayer.Achieve($"{achievementMob}-Credit");
+					}
+				}
+			}
+			else if (playerKiller != null)
+			{
+				if (playerKiller.Level >= 45)
+				{
+					AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
+					AtlasROGManager.GenerateBeetleCarapace(playerKiller);
+					playerKiller.Achieve($"{achievementMob}-Credit");;
+				}
 			}
 
 			bool canReportNews = true;

@@ -70,13 +70,10 @@ namespace DOL.GS
         {
             var product = Product;
             var totalPrice = CostToCraft;
-            bool updatePrice = true;
-
-            if (product.Name.EndsWith("metal bars") ||
-                product.Name.EndsWith("leather square") ||
-                product.Name.EndsWith("cloth square") ||
-                product.Name.EndsWith("wooden boards"))
-                updatePrice = false;
+            bool updatePrice = !(product.Name.EndsWith("metal bars") ||
+                                 product.Name.EndsWith("leather square") ||
+                                 product.Name.EndsWith("cloth square") ||
+                                 product.Name.EndsWith("wooden boards"));
 
             if (product.PackageID.Contains("NoPriceUpdate"))
                 updatePrice = false;
@@ -101,9 +98,9 @@ namespace DOL.GS
                     product.Dirty = true;
                     product.Id_nb = product.Id_nb.ToLower();
                     if (GameServer.Database.SaveObject(product))
-                        log.Error("Craft Price Correction: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Actual Price= " + currentPrice + ". Corrected price to= " + pricetoset);
+                        log.Warn("Craft Price Correction: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Current Price= " + currentPrice + ". Corrected price to= " + pricetoset);
                     else
-                        log.Error("Craft Price Correction Not SAVED: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Actual Price= " + currentPrice + ". Corrected price to= " + pricetoset);
+                        log.Warn("Craft Price Correction Not SAVED: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Current Price= " + currentPrice + ". Corrected price to= " + pricetoset);
                     GameServer.Database.UpdateInCache<ItemTemplate>(product.Id_nb);
                     product.Dirty = false;
                     product.AllowUpdate = false;

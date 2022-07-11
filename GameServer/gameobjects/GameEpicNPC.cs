@@ -32,6 +32,7 @@ namespace DOL.GS {
                 {
                     if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                     {
+                        if (bgPlayer.Level < 45) continue;
                         var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                         if (numCurrentLoyalDays >= 1)
                         {
@@ -57,6 +58,8 @@ namespace DOL.GS {
                 {
                     if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                     {
+                        if (groupPlayer.Level < 45) continue;
+
                         var numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                         if (numCurrentLoyalDays >= 1)
                         {
@@ -77,21 +80,28 @@ namespace DOL.GS {
             }
             else if (playerKiller != null)
             {
-                var numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days : 0;
-                if (numCurrentLoyalDays >= 1)
+                if (playerKiller.Level >= 45)
                 {
-                    realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                    var numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null
+                        ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days
+                        : 0;
+                    if (numCurrentLoyalDays >= 1)
+                    {
+                        realmLoyalty = (int) Math.Round(20 / (numCurrentLoyalDays / 30.0));
+                    }
+
+                    if (Util.Chance(baseChance + realmLoyalty))
+                    {
+                        AtlasROGManager.GenerateOrbAmount(playerKiller, amount);
+                    }
+
+                    if (Util.ChanceDouble(carapaceChance))
+                    {
+                        AtlasROGManager.GenerateBeetleCarapace(playerKiller);
+                    }
+
+                    playerKiller.Achieve($"{achievementMob}-Credit");
                 }
-                if(Util.Chance(baseChance+realmLoyalty))
-                {
-                    AtlasROGManager.GenerateOrbAmount(playerKiller,amount);
-                }
-                if (Util.ChanceDouble(carapaceChance))
-                {
-                    AtlasROGManager.GenerateBeetleCarapace(playerKiller);
-                }
-                playerKiller.Achieve($"{achievementMob}-Credit");
-            
             }
             
             base.Die(killer);
