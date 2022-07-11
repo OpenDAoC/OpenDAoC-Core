@@ -17,6 +17,7 @@
  *
  */
 
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
 using DOL.GS.ServerProperties;
@@ -54,7 +55,7 @@ namespace DOL.GS.Commands
             if ((GameLoop.GameLoopTime - lastLFGTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
             {
                 // Message: You must wait {0} seconds before using this command again.
-                ChatUtil.SendSystemMessage(client, "PLCommands.LFG.List.Wait", slowModeLength - (GameLoop.GameLoopTime - lastLFGTick) / 1000);
+                ChatUtil.SendSystemMessage(client, "PLCommands.LFG.List.Wait", Properties.LFG_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastLFGTick) / 1000);
                 return;
             }
             
@@ -67,6 +68,7 @@ namespace DOL.GS.Commands
             {
                 if (player.Realm == c.Player.Realm || c.Account.PrivLevel > 1)
                 {
+                    if (c.Player.SerializedIgnoreList.Contains(player.Name)) continue;
                     c.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", player.Name + " (" + player.Level + ", " + player.CharacterClass.Name + ")", message), eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
                 }
             }

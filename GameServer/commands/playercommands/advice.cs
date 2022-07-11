@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Linq;
 using DOL.GS.API;
 using DOL.Language;
 using DOL.GS.PacketHandler;
@@ -61,7 +62,7 @@ namespace DOL.GS.Commands
 			if ((GameLoop.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
 			{
 				// Message: You must wait {0} seconds before using this command again.
-				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", slowModeLength - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
+				ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", Properties.ADVICE_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
 				return;
 			}
 
@@ -112,10 +113,13 @@ namespace DOL.GS.Commands
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
 				if (playerClient.Player == null) continue;
-				if ((playerClient.Player.Realm == client.Player.Realm ||
-					playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
+				if (playerClient.Player.Realm == client.Player.Realm ||
+				     playerClient.Account.PrivLevel > 1)
+				{
+					if (playerClient.Player.SerializedIgnoreList.Contains(client.Player.Name)) continue;
 					// Message: [ADVICE {0}] {1}: {2}
 					ChatUtil.SendAdviceMessage(playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), client.Player.Name, msg);
+				}
 
 			}
 			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);

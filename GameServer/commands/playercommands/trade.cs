@@ -53,7 +53,7 @@ namespace DOL.GS.Commands
 			if ((GameLoop.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
 			{
 				// Message: You must wait {0} seconds before using this command again.
-				ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", slowModeLength - (GameLoop.GameLoopTime - lastTradeTick) / 1000);
+				ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", Properties.TRADE_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastTradeTick) / 1000);
 				return;
 			}
 			
