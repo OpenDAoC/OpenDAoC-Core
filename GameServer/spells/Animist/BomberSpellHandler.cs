@@ -33,6 +33,7 @@ namespace DOL.GS.Spells
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		const string BOMBERTARGET = "bombertarget";
+        const string BOMBERSPAWNTICK = "bomberspawntick";
 
 		public BomberSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { m_isSilent = true; }
 
@@ -72,6 +73,7 @@ namespace DOL.GS.Spells
             {   
                 m_pet.Level = m_pet.Owner?.Level ?? (byte)1; // No bomber class to override SetPetLevel() in, so set level here
                 m_pet.TempProperties.setProperty(BOMBERTARGET, target);
+                m_pet.TempProperties.setProperty(BOMBERSPAWNTICK, GameLoop.GameLoopTime);
                 m_pet.Name = Spell.Name;
                 m_pet.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
                 m_pet.Flags ^= GameNPC.eFlags.PEACE;
