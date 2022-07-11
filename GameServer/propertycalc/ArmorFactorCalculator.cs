@@ -17,7 +17,7 @@
  *
  */
 using System;
-
+using System.Linq;
 using DOL.GS.Keeps;
 using log4net.Core;
 
@@ -89,7 +89,7 @@ namespace DOL.GS.PropertyCalc
 					petCap = 24;
                 }
 
-                foreach (var attacker in bossnpc.attackComponent.Attackers)
+                foreach (var attacker in bossnpc.attackComponent.Attackers.ToList())
                 {
 					if(attacker is GamePlayer)
 						epicScaleFactor -= 0.4;
