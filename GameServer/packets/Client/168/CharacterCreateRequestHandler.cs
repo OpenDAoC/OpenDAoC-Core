@@ -1061,7 +1061,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     int above = stats[stat] - raceAmount - classAmount;
 
                     // Miss Some points...
-                    if (above < 0)
+                    if (above < 0 && character.Level == 1)
                     {
                         return false;
                     }
@@ -1071,7 +1071,12 @@ namespace DOL.GS.PacketHandler.Client.v168
                     points += Math.Max(0, above - 15); // three points used
                 }
 
-                return points == MaxStartingBonusPoints;
+                var validPoints = points == MaxStartingBonusPoints;
+
+                if (character.Level > 1)
+                    return true;
+
+                return validPoints;
             }
 
             points = -1;
