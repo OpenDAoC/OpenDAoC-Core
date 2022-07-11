@@ -14622,7 +14622,7 @@ namespace DOL.GS
                 AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbquest);
                 if (quest != null)
                 {
-                    if (quest.Step == -1)
+                    if (quest.Step < 0)
                         m_questListFinished.Add(quest);
                     else
                         m_questList.Add(quest);
