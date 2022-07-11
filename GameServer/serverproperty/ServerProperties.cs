@@ -2535,6 +2535,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("craft", "capital_city_crafting_speed_bonus", "Crafting speed bonus in capital cities; 2 = 2x, 3 = 3x, ..., 1 = standard", 1.0)]
 		public static double CAPITAL_CITY_CRAFTING_SPEED_BONUS;
+		
+		/// <summary>
+		/// Crafting speed bonus in capital cities
+		/// </summary>
+		[ServerProperty("craft", "keep_crafting_speed_bonus", "Crafting speed bonus in the keeps; 2 = 2x, 3 = 3x, ..., 1 = standard", 1.0)]
+		public static double KEEP_CRAFTING_SPEED_BONUS;
 
 		/// <summary>
 		/// Allow any realm to craft items with a realm of 0 (no realm)
