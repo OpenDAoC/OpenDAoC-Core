@@ -17,6 +17,7 @@
  *
  */
 using System;
+using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -145,7 +146,8 @@ namespace DOL.GS
 
 			if (centerObject != null)
 			{
-				foreach (GamePlayer player in centerObject?.GetPlayersInRadius(distance)) // Send message to each GamePlayer within the specified distance of the centerObject
+				var newList = centerObject.GetPlayersInRadius(distance);
+				foreach (GamePlayer player in newList) // Send message to each GamePlayer within the specified distance of the centerObject
 				{
 					var excluded = false;
 
