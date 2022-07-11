@@ -14993,7 +14993,7 @@ namespace DOL.GS
             {
                 double speed = Properties.CRAFTING_SPEED;
                 var craftSpeedBonus = false;
-                ushort[] keepIDs = {50, 75, 100, 57, 111, 198};
+                ushort[] keepIDs = {50, 75, 100, 57, 111, 198}; // beno bled crauch and the strength relic keeps in each realm
 
                 ushort[] strRelicKeepIDs = {};
 
@@ -15022,8 +15022,7 @@ namespace DOL.GS
                     }
                     if (craftSpeedBonus)
                     {
-                        var speed2 = speed * Properties.KEEP_CRAFTING_SPEED_BONUS
-                        return speed2;
+                        speed = speed * Properties.KEEP_CRAFTING_SPEED_BONUS;
                     }
                 }
                 log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {speed}");
