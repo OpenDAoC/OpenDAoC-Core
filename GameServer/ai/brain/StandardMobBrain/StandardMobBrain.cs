@@ -381,7 +381,9 @@ namespace DOL.AI.Brain
 
             List<GameNPC> pets = new List<GameNPC>();
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            var players = Body?.GetPlayersInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
+
+            foreach (GamePlayer player in players)
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
                 // Don't aggro on immune players.
@@ -433,7 +435,8 @@ namespace DOL.AI.Brain
 
         private void CheckPetAggro(bool useLOS)
         {
-            foreach (var petNPC in Body.GetPetsInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            var pets = Body?.GetPetsInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
+            foreach (var petNPC in pets)
             {
                 if (petNPC is not GamePet pet) continue;
                 if (pet.Owner is not GamePlayer owner) continue;
