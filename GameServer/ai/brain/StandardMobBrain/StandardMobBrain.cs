@@ -383,6 +383,8 @@ namespace DOL.AI.Brain
 
             var players = Body?.GetPlayersInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
 
+            if (players == null) return;
+
             foreach (GamePlayer player in players)
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
@@ -436,6 +438,7 @@ namespace DOL.AI.Brain
         private void CheckPetAggro(bool useLOS)
         {
             var pets = Body?.GetPetsInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
+            if (pets == null) return;
             foreach (var petNPC in pets)
             {
                 if (petNPC is not GamePet pet) continue;
