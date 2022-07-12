@@ -285,7 +285,7 @@ namespace DOL.GS
 					if (client.Player == null) continue;
 					if (client.IsPlaying)
 					{
-						client.Out.SendMessage(Name + " laughs at the " + player.CharacterClass.Name + " who has fallen beneath his crushing blow." + Name, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+						client.Out.SendMessage(Name + " laughs at the " + player.CharacterClass.Name + " who has fallen beneath his crushing blow.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 					}
 				}
 			}

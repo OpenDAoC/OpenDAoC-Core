@@ -1,6 +1,4 @@
-﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
+﻿using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 
@@ -95,7 +93,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override bool IsVisibleToPlayers => true;
+        //public override bool IsVisibleToPlayers => true;
     }
 }
 
@@ -271,13 +269,13 @@ namespace DOL.AI.Brain
                             AddToAggroList(player, 10);//aggro players if roaming
                         }
                     }
-                    if(player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
+                   /* if(player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
                     {
                         if(AggroTable.Count>0)
                         {
                             ClearAggroList();//clear list if it contain any aggroed players
                         }
-                    }
+                    }*/
                 }
             }
             if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
@@ -286,12 +284,17 @@ namespace DOL.AI.Brain
             }
             if (HasAggro && Body.TargetObject != null) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
             {
+                GameLiving target = Body.TargetObject as GameLiving;
                 foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf")
-                            AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
+                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && AggroTable.Count > 0 && npc.Brain is StandardMobBrain brain)
+                        {
+                            if (brain != null && !brain.HasAggro && target != null && target.IsAlive)
+                                brain.AddToAggroList(target, 10);
+                        }
+                            //AddAggroListTo(npc.Brain as StandardMobBrain); // add to aggro mobs with CryptLordBaf PackageID
                     }
                 }
             }
