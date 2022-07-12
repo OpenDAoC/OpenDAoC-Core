@@ -70,7 +70,9 @@ namespace DOL.AI.Brain
 				}
 			}
 			
-			foreach (GameLiving living in Body.GetPlayersInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon))
+			var PlayerList = Body.GetPlayersInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon);
+			
+			foreach (GameLiving living in PlayerList)
 			{
 				// if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
 				// 	continue;
