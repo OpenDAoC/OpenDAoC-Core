@@ -834,7 +834,7 @@ namespace DOL.GS
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
 
-			CurrentZone.ObjectEnterZone(this);
+			CurrentZone?.ObjectEnterZone(this);
 			/*********** END OF MODIFICATION ***********/
 
 			m_spawnTick = GameLoop.GameLoopTime;
