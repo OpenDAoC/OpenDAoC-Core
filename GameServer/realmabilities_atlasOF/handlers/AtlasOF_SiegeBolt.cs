@@ -64,13 +64,18 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer m_caster = living as GamePlayer;
 			if (m_caster == null || m_caster.castingComponent == null)
 				return;
-
-            GameObject m_target = m_caster.TargetObject as GameObject;
+			GameObject m_target = m_caster.TargetObject as GameObject;
             if (m_target == null)
                 return;
             if (m_target is not GameSiegeWeapon && m_target is not GameKeepDoor)
             {
 	            m_caster.Out.SendMessage("You can only cast this spell on keep doors and siege weapons.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+	            return;
+            }
+
+            if (m_caster.GetDistance(m_target) > m_range)
+            {
+	            m_caster.Out.SendMessage("Target out of range.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 	            return;
             }
 	            
