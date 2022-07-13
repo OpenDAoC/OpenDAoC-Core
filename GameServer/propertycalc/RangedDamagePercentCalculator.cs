@@ -34,12 +34,22 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			// Hardcap 10%
-			int percent = Math.Min(10, living.BaseBuffBonusCategory[(int)property]
-				-living.DebuffCategory[(int)property]
-				+living.ItemBonus[(int)property]);
+			if (living is GameNPC)
+			{
+				int rangedDamagePercent = 8;
+				var rangedBuffBonus = living.BaseBuffBonusCategory[eProperty.Dexterity] + living.SpecBuffBonusCategory[eProperty.Dexterity];
+				var rangedDebuff = living.DebuffCategory[eProperty.Dexterity] + living.SpecDebuffCategory[eProperty.Dexterity];
+				return ((living as GameNPC).Dexterity + (rangedBuffBonus - rangedDebuff)) / rangedDamagePercent;
+			}
 
-			return percent;
+			// Hardcap 10%
+			int hardCap = 10;
+			int abilityBonus = living.AbilityBonus[(int)property];
+			int itemBonus = Math.Min(hardCap, living.ItemBonus[(int)property]);
+			int buffBonus = living.BaseBuffBonusCategory[(int)property] + living.SpecBuffBonusCategory[(int)property];
+			int debuff = Math.Min(hardCap, Math.Abs(living.DebuffCategory[(int)property]));
+			
+			return abilityBonus + buffBonus + itemBonus - debuff;
 		}
 	}
 }
