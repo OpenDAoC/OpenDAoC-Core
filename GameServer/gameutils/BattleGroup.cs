@@ -244,8 +244,10 @@ namespace DOL.GS
 			{
 				if (!m_battlegroupMembers.Contains(player))
 					return false;
+				var leader = IsBGLeader(player);
 				m_battlegroupMembers.Remove(player);
 				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
+				player.isInBG = false; //Xarik: Player is no more in the BG
                 player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
@@ -259,9 +261,20 @@ namespace DOL.GS
 					{
 						RemoveBattlePlayer(plr);
 					}
+				} else if (leader && m_battlegroupMembers.Count >= 2)
+				{
+					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);
+					bgPlayers.AddRange(m_battlegroupMembers.Keys);
+					var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count) - 1] as GamePlayer;
+					if (randomPlayer == null) return false;
+					SetBGLeader(randomPlayer);
+					m_battlegroupMembers[randomPlayer] = true;
+					foreach(GamePlayer member in Members.Keys)
+					{
+						member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+					}
 				}
 
-                player.isInBG = false; //Xarik: Player is no more in the BG
 			}
 			return true;
 		}
