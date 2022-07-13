@@ -43,10 +43,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if ((client.Player.TargetObject is IGameInventoryObject) == false)
 				return;
 
+			/*
 			for (int i = 0; i < packet.ToArray().Length; i++)
 			{
 				Console.WriteLine((i + 1) + ") " + packet.ToArray()[i].ToString("X") + " ");
-			}
+			}*/
 			var searchOffset = packet.ReadByte();
 			packet.Skip(3); // 4 bytes unused
 
