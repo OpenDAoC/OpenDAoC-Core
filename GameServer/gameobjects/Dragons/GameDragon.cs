@@ -216,9 +216,9 @@ namespace DOL.GS
             
 			var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             
-			if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+			if (killerBG != null && killerBG.Members.Contains(playerKiller))
 			{
-				foreach (var bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+				foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
 				{
 					if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 					{

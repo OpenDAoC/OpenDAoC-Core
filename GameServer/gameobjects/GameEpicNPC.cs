@@ -28,7 +28,7 @@ namespace DOL.GS {
             
             if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
             {
-                foreach (GamePlayer bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+                foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                 {
                     if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                     {

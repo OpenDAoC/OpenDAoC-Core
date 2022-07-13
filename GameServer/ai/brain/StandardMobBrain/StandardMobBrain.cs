@@ -1222,7 +1222,7 @@ namespace DOL.AI.Brain
                     // Puller isn't in a group, so we have to create the victims list for the BG
                     victims = new List<GamePlayer>(bg.PlayerCount);
 
-                foreach (GamePlayer player in bg.GetPlayersInTheBattleGroup())
+                foreach (GamePlayer player in bg.Members.Keys)
                     if (player != null && (player.InternalID == puller.InternalID || player.IsWithinRadius(puller, BAFPlayerRange, true)))
                     {
                         if (DOL.GS.ServerProperties.Properties.BAF_MOBS_COUNT_BG_MEMBERS

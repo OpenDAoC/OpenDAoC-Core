@@ -202,9 +202,9 @@ namespace DOL.GS
 				BattleGroup relicBG = (BattleGroup)relic.CurrentCarrier?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				List<GamePlayer> targets = new List<GamePlayer>();
 
-				if (relicBG != null && (relicBG.Members.Contains(relic.CurrentCarrier) || (bool) relicBG.Members[relic.CurrentCarrier]!))
+				if (relicBG != null && relicBG.Members.Contains(relic.CurrentCarrier))
 				{
-					foreach (GamePlayer bgPlayer in relicBG.GetPlayersInTheBattleGroup())
+					foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
 					{
 						if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 						{

@@ -216,19 +216,6 @@ namespace DOL.GS
                 return false;
             }
         }
-        
-        public GamePlayer[] GetPlayersInTheBattleGroup()
-        {
-            ArrayList players = new ArrayList(ServerProperties.Properties.BATTLEGROUP_MAX_MEMBER);
-            lock (m_battlegroupMembers.SyncRoot) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
-            {
-                for (int i = 0; i < m_battlegroupMembers.Count; i++)
-                {
-                    players.Add((GamePlayer)m_battlegroupMembers[i]);
-                }
-            }
-            return (GamePlayer[])players.ToArray(typeof(GamePlayer));
-        }
 
         public virtual void SendMessageToBattleGroupMembers(string msg, eChatType type, eChatLoc loc)
         {
