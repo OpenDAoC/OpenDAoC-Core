@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -35,11 +36,19 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
+		public override void StartAttack(GameObject target)
+		{
+			if (BlightBrain.canGrowth)
+				return;
+			else
+				base.StartAttack(target);
+		}
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
-
+			if (BlightBrain.canGrowth && IsAlive && keyName == GS.Abilities.DamageImmunity)
+				return true;
 			return base.HasAbility(keyName);
 		}
 		public override double GetArmorAF(eArmorSlot slot)
@@ -51,6 +60,7 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.20;
 		}
+
 		public override int MaxHealth
 		{
 			get { return 30000; }
@@ -64,14 +74,24 @@ namespace DOL.GS
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 200; }
 		#endregion
+
+		public void BroadcastMessage(String message)
+		{
+			foreach (GamePlayer player in GetPlayersInRadius(3500))
+			{
+				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+			}
+		}
 		public override bool AddToWorld()
 		{
+			BlightBrain.canGrowth = true;
 			Name = "Blight";
 			Model = 26;
 			Level = 70;
-			Size = 150;
+			Size = 35;
 			MaxDistance = 2500;
 			TetherRange = 2600;
+			BroadcastMessage("Bloody bones fly from all directions into a swirling cloud of gore in the air before you. The bones begin to join together forming a single giant skeleton.");
 
 			RespawnInterval = -1;
 			BlightBrain sbrain = new BlightBrain();
@@ -187,11 +207,33 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 100;
 			AggroRange = 800;
-			ThinkInterval = 1500;
+			ThinkInterval = 2000;
 		}
-
+		public void BroadcastMessage(String message)
+		{
+			foreach (GamePlayer player in Body.GetPlayersInRadius(3500))
+			{
+				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+			}
+		}
+		public static bool canGrowth = true;
+		bool SpamMessage = false;
 		public override void Think()
 		{
+			if(Body.IsAlive && canGrowth && Body.Size < 200)
+            {
+				Body.Size += 5;
+            }
+
+			if(Body.Size >= 200)
+				canGrowth = false;
+
+			if (!canGrowth && !SpamMessage)
+			{
+				BroadcastMessage("Blight has taken it's true form! It turns its deadful stare upon you!");
+				SpamMessage = true;
+			}
+
 			if (!HasAggressionTable())
 			{
 				//set state to RETURN TO SPAWN
@@ -253,10 +295,35 @@ namespace DOL.GS
 			LoadedFromScript = true;
 			FireBlightBrain sbrain = new FireBlightBrain();
 			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+			}
+			return success;
 		}
-        public override void Die(GameObject killer)
+		#region Show Effects
+		private protected int Show_Effect(ECSGameTimer timer)
+		{
+			if (IsAlive)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			return 0;
+		}
+		private protected int DoCast(ECSGameTimer timer)
+		{
+			if (IsAlive)
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			return 0;
+		}
+		#endregion
+		public override void Die(GameObject killer)
         {
 			++FireBlightCount;
 			base.Die(killer);
@@ -344,9 +411,34 @@ namespace DOL.GS
 			LoadedFromScript = true;
 			LateBlightBrain sbrain = new LateBlightBrain();
 			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+			}
+			return success;
 		}
+		#region Show Effects
+		private protected int Show_Effect(ECSGameTimer timer)
+		{
+			if (IsAlive)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			return 0;
+		}
+		private protected int DoCast(ECSGameTimer timer)
+		{
+			if (IsAlive)
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			return 0;
+		}
+		#endregion
 		public override void Die(GameObject killer)
 		{
 			++LateBlightCount;
@@ -427,7 +519,7 @@ namespace DOL.GS
 		{
 			Model = 26;
 			Name = "Flesh Blight";
-			Level = (byte)Util.Random(62, 65);
+			Level = (byte)Util.Random(60, 63);
 			Size = 100;
 			RespawnInterval = -1;
 			RoamingRange = 200;
@@ -435,9 +527,34 @@ namespace DOL.GS
 			LoadedFromScript = true;
 			FleshBlightBrain sbrain = new FleshBlightBrain();
 			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			bool success = base.AddToWorld();
+			if (success)
+			{
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+			}
+			return success;
 		}
+		#region Show Effects
+		private protected int Show_Effect(ECSGameTimer timer)
+		{
+			if (IsAlive)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				{
+					if (player != null)
+						player.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
+				}
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+			}
+			return 0;
+		}
+		private protected int DoCast(ECSGameTimer timer)
+		{
+			if (IsAlive)
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+			return 0;
+		}
+		#endregion
 		public override void Die(GameObject killer)
 		{
 			++FleshBlightCount;
