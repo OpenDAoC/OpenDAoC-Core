@@ -15443,7 +15443,15 @@ namespace DOL.GS
         /// <param name="controlledNpc"></param>
         public override void SetControlledBrain(IControlledBrain controlledBrain)
         {
-            CharacterClass.SetControlledBrain(controlledBrain);
+            try
+            {
+                CharacterClass.SetControlledBrain(controlledBrain);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Caught exception when trying to set controlled pet brain: {e}");
+            }
+            
         }
 		
         /// <summary>
