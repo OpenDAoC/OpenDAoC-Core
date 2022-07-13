@@ -101,6 +101,7 @@ Scripts.Players.Battlegroup.Help.Count:			/bg count - Counts the number of membe
 Scripts.Players.Battlegroup.Help.Credit:		/bg credit - Displays credit for Battlegroup Master Level encounters that have been completed within the last 10 minutes.
 Scripts.Players.Battlegroup.Help.GrantCredit:		/bg grantcredit (masterlevel) (playername) - Allows Batttlegroup Leader to grant credit for completed Master Level steps.
 Scripts.Players.Battlegroup.Help.GroupClass:		/bg groupclass - Shows the class makeup of each of the groups in the battlegroup.
+Scripts.Players.Battlegroup.Help.Solo:		    /bg solo - Shows the class makeup of each solo player in the battlegroup.
 Scripts.Players.Battlegroup.Help.Groups:		/bg groups - Displays the battlegroup members with their groups
 Scripts.Players.Battlegroup.Help.Help:			/bg help - Displays all battle group commands
 Scripts.Players.Battlegroup.Help.Invite:		/bg invite [playername] - Invites the specified player to the battle group
@@ -132,7 +133,7 @@ Scripts.Players.Battlegroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Battlegroup.NotBattleGroupLeader:	This player is not a leader of a battlegroup.
 Scripts.Players.Battlegroup.NotBattleGroupMember:	This player is not a member of a battlegroup.
 Scripts.Players.Battlegroup.NotPublic:			This battlegroup is not public.
-Scripts.Players.Battlegroup.OnlyModerator:		Only moderator can talk on this battle group.
+Scripts.Players.Battlegroup.OnlyModerator:		Only moderator can talk in this battle group.
 Scripts.Players.Battlegroup.OwnBattleGroup:		You cannot join your own battlegroup.
 Scripts.Players.Battlegroup.Password:			Password of battlegroup: {0}.
 Scripts.Players.Battlegroup.PasswordChanged:		You have changed the password of Battlegroup to: {0}.	
@@ -230,7 +231,7 @@ Scripts.Players.Chatgroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Chatgroup.NotChatGroupLeader:		This player is not a leader of a chatgroup.	
 Scripts.Players.Chatgroup.NotChatGroupMember:		This player is not a member of a chatgroup.	
 Scripts.Players.Chatgroup.NotPublic:			This chatgroup is not public.
-Scripts.Players.Chatgroup.OnlyModerator:		Only moderator can talk on this chat group.	
+Scripts.Players.Chatgroup.OnlyModerator:		Only moderator can talk in this chat group.	
 Scripts.Players.Chatgroup.OwnChatGroup:			You cannot join your own chatgroup.
 Scripts.Players.Chatgroup.Password:			The password to this chat group is currently set to {0}.
 Scripts.Players.Chatgroup.PasswordUnset:			The password to this chat group is currently unset.
