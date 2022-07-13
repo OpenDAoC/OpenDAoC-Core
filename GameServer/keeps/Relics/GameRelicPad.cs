@@ -204,12 +204,14 @@ namespace DOL.GS
 
 				if (relicBG != null)
 				{
-					foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
+					lock (relicBG.Members)
 					{
-						if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+						foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
 						{
-							targets.Add(bgPlayer);
-
+							if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+							{
+								targets.Add(bgPlayer);
+							}
 						}
 					}
 				}

@@ -29,15 +29,18 @@ namespace DOL.GS {
             
             if (killerBG != null)
             {
-                foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
+                lock (killerBG.Members)
                 {
-                    if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                     {
-                        if (bgPlayer.Level < 45) continue;
-                        AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
-                        AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
-                        bgPlayer.Achieve($"{achievementMob}-Credit");
-                    }
+                        if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                        {
+                            if (bgPlayer.Level < 45) continue;
+                            AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
+                            AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                            bgPlayer.Achieve($"{achievementMob}-Credit");
+                        }
+                    } 
                 }
             }
             else if (playerKiller?.Group != null)

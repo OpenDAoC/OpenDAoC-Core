@@ -28,27 +28,30 @@ namespace DOL.GS {
             
             if (killerBG != null)
             {
-                foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
+                lock (killerBG.Members)
                 {
-                    if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                     {
-                        if (bgPlayer.Level < 45) continue;
-                        var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                        if (numCurrentLoyalDays >= 1)
+                        if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
-                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
-                        }
-                        if(Util.Chance(baseChance+realmLoyalty))
-                        {
-                            AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
-                        }
+                            if (bgPlayer.Level < 45) continue;
+                            var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
+                            if (numCurrentLoyalDays >= 1)
+                            {
+                                realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                            }
+                            if(Util.Chance(baseChance+realmLoyalty))
+                            {
+                                AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
+                            }
 
-                        if (Util.ChanceDouble(carapaceChance))
-                        {
-                            AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
-                        }
+                            if (Util.ChanceDouble(carapaceChance))
+                            {
+                                AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                            }
                         
-                        bgPlayer.Achieve($"{achievementMob}-Credit");
+                            bgPlayer.Achieve($"{achievementMob}-Credit");
+                        }
                     }
                 }
             }
