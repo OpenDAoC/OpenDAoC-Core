@@ -30,7 +30,7 @@ namespace DOL.GS.Keeps
                 if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
                     return 0;
 
-                long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
+                long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
 
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
@@ -56,7 +56,7 @@ namespace DOL.GS.Keeps
 				if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
 					return 0;
 
-				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
@@ -75,7 +75,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
@@ -107,7 +107,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;

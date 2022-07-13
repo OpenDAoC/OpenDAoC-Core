@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using DOL.GS.Appeal;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -41,7 +42,8 @@ namespace DOL.GS.Commands
 
 			if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
 			{
-				AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
+				//AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
+				client.Out.SendMessage("The /appeal system has moved to Discord. Use the #appeal channel on our Discord to be assisted on urgent matters.",eChatType.CT_Staff,eChatLoc.CL_SystemWindow);
 				return;
 			}
 

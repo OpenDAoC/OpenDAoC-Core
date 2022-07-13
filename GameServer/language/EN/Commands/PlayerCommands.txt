@@ -14,9 +14,17 @@ AllCommands.Header.Note.Dashes:                     --------------
 PLCommands.Advice.Syntax.AdvChannel:                    '/adv <message>' - Sends a message to the Advice channel.
 PLCommands.Advice.Syntax.Advice:                        '/advice' - Lists all online Advisors.
 PLCommands.Advice.List.TheFollowing:                    The following players are flagged as Advisors:
+PLCommands.Advice.List.Wait:	                        You must wait {0} seconds before speaking on /advice again
 PLCommands.Advice.List.Result:                          {0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)
 PLCommands.Advice.List.1AdvisorOn:			            There is 1 Advisor online!
 PLCommands.Advice.List.AdvisorsOn:			            There are {0} Advisors online!
+
+## /trade
+PLCommands.Trade.List.Wait:	                            You must wait {0} seconds before speaking on /trade again
+
+## /lfg
+PLCommands.LFG.List.Wait:	                            You must wait {0} seconds before speaking on /lfg again
+
 
 ## /advisor
 PLCommands.Advisor.Syntax.Advisor:                      '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.

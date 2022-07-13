@@ -24,6 +24,8 @@ namespace DOL.AI.Brain
 {
 	public class BomberBrain : ControlledNpcBrain
 	{
+		const string BOMBERSPAWNTICK = "bomberspawntick";
+
 		public BomberBrain(GameLiving owner) : base(owner) { }
 
 		public override int ThinkInterval
@@ -44,6 +46,13 @@ namespace DOL.AI.Brain
 		#region Think
 		public override void Think()
 		{
+			var spawnTick = Body.TempProperties.getProperty<long>(BOMBERSPAWNTICK);
+
+			if (GameLoop.GameLoopTime - spawnTick > 60 * 1000)
+			{
+				Body.Delete();
+			}
+			
 			GameLiving living = Body.TempProperties.getProperty<object>("bombertarget", null) as GameLiving;
 			if(living == null) return;
 			if(Body.IsWithinRadius( living, 150 ))

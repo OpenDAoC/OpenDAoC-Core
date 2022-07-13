@@ -2020,56 +2020,57 @@ namespace DOL.GS.ServerRules
 
 				if (killedPlayer.ReleaseType != eReleaseType.Duel && expGainPlayer != null)
 				{
-					switch ((eRealm)killedPlayer.Realm)
+					if (expGainPlayer.GetConLevel(killedPlayer) > -3)
 					{
-						case eRealm.Albion:
-							expGainPlayer.KillsAlbionPlayers++;
-							expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
-							if (expGainPlayer == killer)
-							{
-								expGainPlayer.KillsAlbionDeathBlows++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
-								if ((float) de.Value == totalDamage)
+						switch ((eRealm)killedPlayer.Realm)
+						{
+							case eRealm.Albion:
+								expGainPlayer.KillsAlbionPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
+								if (expGainPlayer == killer)
 								{
-									expGainPlayer.KillsAlbionSolo++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
-								}
+									expGainPlayer.KillsAlbionDeathBlows++;
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
+										expGainPlayer.KillsAlbionSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+									}
 									
-							}
-							break;
-
-						case eRealm.Hibernia:
-							expGainPlayer.KillsHiberniaPlayers++;
-							expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
-							if (expGainPlayer == killer)
-							{
-								expGainPlayer.KillsHiberniaDeathBlows++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
-								if ((float) de.Value == totalDamage)
-								{
-									expGainPlayer.KillsHiberniaSolo++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
 								}
-							}
-							break;
+								break;
 
-						case eRealm.Midgard:
-							expGainPlayer.KillsMidgardPlayers++;
-							expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
-							if (expGainPlayer == killer)
-							{
-								expGainPlayer.KillsMidgardDeathBlows++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
-								if ((float) de.Value == totalDamage)
+							case eRealm.Hibernia:
+								expGainPlayer.KillsHiberniaPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
+								if (expGainPlayer == killer)
 								{
-									expGainPlayer.KillsMidgardSolo++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+									expGainPlayer.KillsHiberniaDeathBlows++;
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
+										expGainPlayer.KillsHiberniaSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
+									}
 								}
-									
-							}
-							break;
+								break;
+
+							case eRealm.Midgard:
+								expGainPlayer.KillsMidgardPlayers++;
+								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
+								if (expGainPlayer == killer)
+								{
+									expGainPlayer.KillsMidgardDeathBlows++;
+									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
+									if ((float) de.Value == totalDamage)
+									{
+										expGainPlayer.KillsMidgardSolo++;
+										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+									}
+								}
+								break;
+						}
 					}
-					
 				}
 			}
             
@@ -2438,16 +2439,12 @@ namespace DOL.GS.ServerRules
 			}
 			else if (keep is GameKeep)
 			{
-				value = Math.Max(50, ServerProperties.Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * ServerProperties.Properties.KEEP_RP_MULTIPLIER));
-			}
-			else
-			{
-				value = Math.Max(5, ServerProperties.Properties.TOWER_RP_BASE + ((keep.BaseLevel - 50) * ServerProperties.Properties.TOWER_RP_MULTIPLIER));
+				value = keep.Guild != null ? Math.Max(50,Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER)) : 0;
 			}
 
-			value += ((keep.Level - ServerProperties.Properties.STARTING_KEEP_LEVEL) * ServerProperties.Properties.UPGRADE_MULTIPLIER);
+			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
 
-			return Math.Max(5, value);
+			return Math.Max(0, value);
 		}
 
 		/// <summary>

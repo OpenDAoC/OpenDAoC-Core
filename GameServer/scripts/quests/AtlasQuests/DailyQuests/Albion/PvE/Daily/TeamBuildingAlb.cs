@@ -356,7 +356,7 @@ namespace DOL.GS.DailyQuest.Albion
 					//update class counters
 					if (member is GamePlayer gplayer)
 					{
-						if (gplayer.CharacterClass is ClassGuardian)
+						if (gplayer.CharacterClass is ClassFighter)
 							HasFighter = true;
 						if (gplayer.CharacterClass is ClassAcolyte)
 							HasAcolyte = true;

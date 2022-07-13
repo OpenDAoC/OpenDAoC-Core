@@ -381,7 +381,11 @@ namespace DOL.AI.Brain
 
             List<GameNPC> pets = new List<GameNPC>();
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            var players = Body?.GetPlayersInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
+
+            if (players == null) return;
+
+            foreach (GamePlayer player in players)
             {
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true)) continue;
                 // Don't aggro on immune players.
@@ -433,7 +437,9 @@ namespace DOL.AI.Brain
 
         private void CheckPetAggro(bool useLOS)
         {
-            foreach (var petNPC in Body.GetPetsInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            var pets = Body?.GetPetsInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
+            if (pets == null) return;
+            foreach (var petNPC in pets)
             {
                 if (petNPC is not GamePet pet) continue;
                 if (pet.Owner is not GamePlayer owner) continue;
@@ -569,11 +575,15 @@ namespace DOL.AI.Brain
             // do not modify aggro list if dead
             if (!brain.Body.IsAlive) return;
 
+            KeyValuePair<GameLiving, long>[] aggroTable = Array.Empty<KeyValuePair<GameLiving, long>>();
             lock ((m_aggroTable as ICollection).SyncRoot)
             {
-                Dictionary<GameLiving, long>.Enumerator dictEnum = m_aggroTable.GetEnumerator();
-                while (dictEnum.MoveNext())
-                    brain.AddToAggroList(dictEnum.Current.Key, Body.MaxHealth);
+                aggroTable = m_aggroTable.ToArray();
+            }
+
+            foreach (var aggro in aggroTable)
+            {
+                brain.AddToAggroList(aggro.Key, Body.MaxHealth);
             }
         }
 

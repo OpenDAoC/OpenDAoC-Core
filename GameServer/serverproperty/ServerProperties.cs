@@ -472,11 +472,30 @@ namespace DOL.GS.ServerProperties
 		public static int NECK_BOSS_SCALING;
 		
 		/// <summary>
+		/// The slowmode duration for /advice in seconds
+		/// </summary>
+		[ServerProperty("atlas", "advice_slowmode_length", "The slowmode duration for /advice in seconds", 60)]
+		public static int ADVICE_SLOWMODE_LENGTH;
+		
+		/// <summary>
+		/// The slowmode duration for /trade in seconds
+		/// </summary>
+		[ServerProperty("atlas", "trade_slowmode_length", "The slowmode duration for /trade in seconds", 60)]
+		public static int TRADE_SLOWMODE_LENGTH;
+		
+				
+		/// <summary>
+		/// The slowmode duration for /lfg in seconds
+		/// </summary>
+		[ServerProperty("atlas", "lfg_slowmode_length", "The slowmode duration for /lfg in seconds", 60)]
+		public static int LFG_SLOWMODE_LENGTH;
+		
+		/// <summary>
 		/// The toughness of GameNPCs
 		/// </summary>
 		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 15)]
 		public static int GAMENPC_SCALING;
-		
+
 		/// <summary>
 		/// The first factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
@@ -2418,6 +2437,13 @@ namespace DOL.GS.ServerProperties
 		public static int GUILDS_CLAIM_LIMIT;
 
 		/// <summary>
+		/// Do we allow invite players to guild in rvr zone?
+		/// </summary>
+		[ServerProperty("guild", "allow_guild_invite_in_rvr", "Do we allow invite players to guild in rvr zone?", false)]
+		public static bool ALLOW_GUILD_INVITE_IN_RVR;
+		
+		
+		/// <summary>
 		/// Guild Crafting Buff bonus amount
 		/// </summary>
 		[ServerProperty("guild", "guild_buff_crafting", "Percent speed gain for the guild crafting buff?", (ushort)5)]
@@ -2509,6 +2535,12 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("craft", "capital_city_crafting_speed_bonus", "Crafting speed bonus in capital cities; 2 = 2x, 3 = 3x, ..., 1 = standard", 1.0)]
 		public static double CAPITAL_CITY_CRAFTING_SPEED_BONUS;
+		
+		/// <summary>
+		/// Crafting speed bonus in capital cities
+		/// </summary>
+		[ServerProperty("craft", "keep_crafting_speed_bonus", "Crafting speed bonus in the keeps; 2 = 2x, 3 = 3x, ..., 1 = standard", 1.0)]
+		public static double KEEP_CRAFTING_SPEED_BONUS;
 
 		/// <summary>
 		/// Allow any realm to craft items with a realm of 0 (no realm)
@@ -2786,6 +2818,9 @@ namespace DOL.GS.ServerProperties
 		
 		[ServerProperty("atlas", "salvage_yield_multiplier", "The salvage yield multiplier", 0.5)]
 		public static double SALVAGE_YIELD_MULTIPLIER;
+		
+		[ServerProperty("atlas", "max_craft_time", "The maximum craft time allowed in seconds. All timers above this value will be normalised to the input value", 0)]
+		public static int MAX_CRAFT_TIME;
 		
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties

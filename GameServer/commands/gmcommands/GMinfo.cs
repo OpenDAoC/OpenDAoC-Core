@@ -57,6 +57,17 @@ namespace DOL.GS.Commands
 			
 			if (client.Player.TargetObject != null)
 			{
+
+				if (client.Player.TargetObject is GuardLord gl)
+				{
+					info.Add("--KEEP LORD--");
+					info.Add(" ");
+					info.Add("Name : " + client.Player.TargetObject.Name);
+					info.Add($"RP Reward: {gl.RealmPointsValue}");
+					info.Add($"BP Reward: {gl.BountyPointsValue}");
+					info.Add($"XP Reward: {gl.ExperienceValue}");
+				}
+				
 				#region Mob
 				/********************* MOB ************************/
 				if (client.Player.TargetObject is GameNPC)

@@ -25,11 +25,11 @@ using DOL.Language;
 namespace DOL.GS.Commands
 {
     [CmdAttribute(
-        "&classrogs",
+        "&classrog",
         ePrivLevel.Player,
         "change the chance% of getting ROGs outside of your current class at level 50," +
         " or the likelihood of getting items relevant to your spec while under 50",
-        "/classrogs <%chance>")]
+        "/classrog <%chance>")]
     public class ClassRogsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

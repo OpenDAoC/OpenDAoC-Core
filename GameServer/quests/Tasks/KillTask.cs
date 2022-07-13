@@ -265,6 +265,7 @@ namespace DOL.GS.Quests
 					InteractWithEventArgs myargs = (InteractWithEventArgs)args;
 					if (myargs.Target.Name == ((KillTask)player.Task).ReceiverName)
 					{
+						if (player.Level > 20) return;
 						player.Out.SendMessage(myargs.Target.Name + " says, *Good work " + player.Name + ". Here is your reward as promised.*", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						FinishTask();
 					}
@@ -278,6 +279,7 @@ namespace DOL.GS.Quests
 
 				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
+					if (player.Level > 20) return;
 					player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
 					player.Out.SendMessage(target.Name + " says, *Good work " + player.Name + ". Here is your reward as promised.*", eChatType.CT_System, eChatLoc.CL_SystemWindow);

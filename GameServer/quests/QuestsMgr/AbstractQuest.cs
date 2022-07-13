@@ -156,7 +156,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public virtual void SaveIntoDatabase()
 		{
-			if(m_dbQuest.IsPersisted)
+			if(m_dbQuest is {IsPersisted: true})
 				GameServer.Database.SaveObject(m_dbQuest);
 			else
 				GameServer.Database.AddObject(m_dbQuest);

@@ -364,7 +364,7 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
 			PlayerKilled = 0;
-			Step = -1;
+			Step = -2;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
 			DeleteFromDatabase();

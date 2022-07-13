@@ -892,7 +892,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					#endregion
 					#region BattleGroup
-				case 103: // Item info to battle group
+				case 17: // Item info to battle group
 					{
 						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
 						if (invItem == null) return;
@@ -908,10 +908,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.ChatItem", client.Player.Name, GetShortItemInfo(invItem, client));
+						string str = $"[BattleGroup] {client.Player.Name}/Item: {GetShortItemInfo(invItem, client)}";
 						foreach (GamePlayer ply in mybattlegroup.Members.Keys)
 						{
-							ply.Out.SendMessage(str, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
+							ply.Out.SendMessage(str, eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
 						}
 						return;
 					}
@@ -1406,6 +1406,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				output.Add(" ");
 				output.Insert(oldCount, LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicBonus"));
 				output.Insert(oldCount, " ");
+			}
+
+			if (item is GameInventoryItem gameItem)
+			{
+				output.Add("| Total Uti: " + gameItem.GetTotalUtility().ToString("n2") + " |");
 			}
 
 			oldCount = output.Count;
