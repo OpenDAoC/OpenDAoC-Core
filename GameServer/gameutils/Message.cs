@@ -147,6 +147,7 @@ namespace DOL.GS
 			if (centerObject != null)
 			{
 				var newList = centerObject.GetPlayersInRadius(distance);
+				if (newList == null) return;
 				foreach (GamePlayer player in newList) // Send message to each GamePlayer within the specified distance of the centerObject
 				{
 					var excluded = false;
