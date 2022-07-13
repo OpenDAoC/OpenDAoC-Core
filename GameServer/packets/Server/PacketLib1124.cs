@@ -1682,6 +1682,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0);
 				foreach (InventoryItem item in items)
 				{
+					if (item.Realm != (int)m_gameClient.Player.Realm) continue;
 					pak.WriteByte((byte)items.IndexOf(item));
 					pak.WriteByte((byte)item.Level);
 					int value1; // some object types use this field to display count
