@@ -941,6 +941,7 @@ namespace DOL.GS
                         else
                         {
                             var players = owner?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+                            if (players == null) return;
                             foreach (GamePlayer player in players)
                                 player?.Out.SendCombatAnimation(owner, null,
                                     (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
