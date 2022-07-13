@@ -1408,6 +1408,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				output.Insert(oldCount, " ");
 			}
 
+			if (item is GameInventoryItem gameItem)
+			{
+				output.Add("| Total Uti: " + gameItem.GetTotalUtility().ToString("n2") + " |");
+			}
+
 			oldCount = output.Count;
 
 			WriteFocusLine(output, item.Bonus1Type, item.Bonus1);
