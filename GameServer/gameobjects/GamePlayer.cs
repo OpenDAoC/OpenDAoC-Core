@@ -2719,7 +2719,7 @@ namespace DOL.GS
                 return PowerRegenerationPeriod;
             if (IsSitting)
             {
-                if(PowerRegenStackingBonus < 5) PowerRegenStackingBonus++;
+                if(PowerRegenStackingBonus < 3) PowerRegenStackingBonus++;
             }
             else PowerRegenStackingBonus = 0;
             int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);

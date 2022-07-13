@@ -5736,7 +5736,6 @@ namespace DOL.GS
 				double MinMana = MaxMana * 0.15;
 				double OnePercMana = Math.Ceiling(MaxMana * 0.01);
 				log.WarnFormat("current MaxMana is {0} and OnePercMana is {1}", MaxMana, OnePercMana);
-
 				
 
 				if (!InCombat)
@@ -5771,15 +5770,17 @@ namespace DOL.GS
 				}
 			}
 
+			int totalRegenPeriod = PowerRegenerationPeriod;
+
 			//If we were hit before we regenerated, we regenerate slower the next time
 			if (InCombat)
 			{
-				return (int)(PowerRegenerationPeriod * 2);//3.4);
+				totalRegenPeriod = (int)(totalRegenPeriod * 2);//3.4);
 			}
 
 			if (IsSitting)
             {
-				return (int)(PowerRegenerationPeriod / 2);
+	            totalRegenPeriod = (int)(totalRegenPeriod / 2);
             }
 			
 			#region Calculation : AtlasOF_Serenity
@@ -5789,14 +5790,14 @@ namespace DOL.GS
 			{
 				if (raSerenity.Level > 0)
 				{
-					return PowerRegenerationPeriod - (raSerenity.GetAmountForLevel(raSerenity.Level));
+					totalRegenPeriod = totalRegenPeriod - (raSerenity.GetAmountForLevel(raSerenity.Level));
 				}
 			}
 			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
 			#endregion
 
 			//regen at standard rate
-			return PowerRegenerationPeriod;
+			return totalRegenPeriod;
 		}
 		/// <summary>
 		/// Callback for the endurance regenerationTimer
