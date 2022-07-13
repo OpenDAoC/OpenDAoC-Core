@@ -26,7 +26,7 @@ namespace DOL.GS {
             
             var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             
-            if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+            if (killerBG != null)
             {
                 foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                 {

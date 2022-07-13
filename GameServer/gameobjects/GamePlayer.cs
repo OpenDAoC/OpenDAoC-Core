@@ -15981,6 +15981,8 @@ namespace DOL.GS
                 GameServer.Database.AddObject(achievement);
                 return;
             }
+            
+            //log.Warn($"[ATLAS CREDIT] {Client.Account.Name} awarded {achievement.AchievementName}");
 
             achievement.Count += count;
             GameServer.Database.SaveObject(achievement);

@@ -202,7 +202,7 @@ namespace DOL.GS
 				BattleGroup relicBG = (BattleGroup)relic.CurrentCarrier?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				List<GamePlayer> targets = new List<GamePlayer>();
 
-				if (relicBG != null && relicBG.Members.Contains(relic.CurrentCarrier))
+				if (relicBG != null)
 				{
 					foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
 					{
