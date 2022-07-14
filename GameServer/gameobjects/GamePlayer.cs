@@ -13115,14 +13115,15 @@ namespace DOL.GS
                         var eligibleMembers = from p in Group.GetPlayersInTheGroup()
                             where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
                             select p;
-                        if (!eligibleMembers.Any())
+                        var gamePlayers = eligibleMembers as GamePlayer[] ?? eligibleMembers.ToArray();
+                        if (!gamePlayers.Any())
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneGroupWantsMoney"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return false;
                         }
 
-                        long moneyToPlayer = moneyObject.TotalCopper / eligibleMembers.Count();
-                        foreach (GamePlayer eligibleMember in eligibleMembers)
+                        long moneyToPlayer = moneyObject.TotalCopper / gamePlayers.Count();
+                        foreach (GamePlayer eligibleMember in gamePlayers)
                         {
                             if (eligibleMember.Guild != null && eligibleMember.Guild.IsGuildDuesOn())
                             {
