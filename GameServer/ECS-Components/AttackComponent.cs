@@ -3041,11 +3041,11 @@ namespace DOL.GS
                         break;
                 }
 
-                List<GamePlayer> visiblePlayers = target?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE) as List<GamePlayer>;
+                var visiblePlayers = target?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
                 if (visiblePlayers == null) return;
                 //Parallel.ForEach(visiblePlayers, player =>
-                foreach (var player in visiblePlayers)
+                foreach (GamePlayer player in visiblePlayers)
                 {
                     
                     if (player == null) return;
