@@ -18,12 +18,15 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.ServerProperties;
 using log4net;
@@ -73,6 +76,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		private static DateTime m_lastAccountCreateTime;
 		private readonly Dictionary<string, LockCount> m_locks = new Dictionary<string, LockCount>();
+
+		private static HttpClient _httpClient = new HttpClient();
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
@@ -412,6 +417,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 								GameServer.Instance.Disconnect(client);
 
 								return;
+							}
+
+							// QUEUE SERVICE :^)
+							if (playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(Properties.QUEUE_API_URI))
+                            {
+								var data = new Dictionary<string, string>()
+                                {
+									{ "name", playerAccount.Name }
+                                };
+								var payload = new FormUrlEncodedContent(data);
+								var webRequest = new HttpRequestMessage(HttpMethod.Post, Properties.QUEUE_API_URI + "/api/v1/whitelist/check")
+								{
+									Content = payload
+								};
+								var response = _httpClient.Send(webRequest);
+								var statusCode = response.StatusCode;
+
+								if (statusCode != HttpStatusCode.OK)
+                                {
+									if (Log.IsInfoEnabled)
+										Log.Info("No such account found in queue service whitelist!");
+
+									client.IsConnected = false;
+									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
+									GameServer.Instance.Disconnect(client);
+								}
 							}
 
 							// save player infos
