@@ -72,10 +72,21 @@ namespace DOL.GS.Commands
                 text.Append(args[i]);
             }
             text.Append("\"");
-            string message = text.ToString();
+            var message = text.ToString();
             foreach (GamePlayer ply in mybattlegroup.Members.Keys)
             {
-                ply.Out.SendMessage(message, mybattlegroup.IsBGLeader(client.Player) ? eChatType.CT_BattleGroupLeader : eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
+                eChatType type;
+
+                if (isLeader || isModerator)
+                {
+                    type = eChatType.CT_BattleGroupLeader;
+                }
+                else
+                {
+                    type = eChatType.CT_BattleGroup;
+                }
+                
+                ply.Out.SendMessage(message,type, eChatLoc.CL_ChatWindow);
             }
         }
     }
