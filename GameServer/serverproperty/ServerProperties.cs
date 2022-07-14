@@ -424,6 +424,12 @@ namespace DOL.GS.ServerProperties
 		public static bool DISABLE_QUIT_TIMER;
 
 		/// <summary>
+		/// Queue Service Host
+		/// </summary>
+		[ServerProperty("server", "Queue_Api_Uri", "Enable queue service and provide api uri?", "")]
+		public static string QUEUE_API_URI;
+
+		/// <summary>
 		/// Enable Discord Webhook?
 		/// </summary>
 		[ServerProperty("server", "Discord_Webhook_Active", "Enable Discord webhook?", false)]
