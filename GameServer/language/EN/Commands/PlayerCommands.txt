@@ -328,7 +328,7 @@ Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' to decline the enter in guild	
 Scripts.Player.Guild.Help.GuildDemote:			'/gc demote [name] <rank#>' to set the rank from 0 to 10 of the player to an inferior rank	
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' puts money into the guild bank account.
-Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 1-100% <0 is off>
+Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 0-25% <0 is off>
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' to show list of all option in guild edit	
 Scripts.Player.Guild.Help.GuildEditACHear:		'/gc edit <ranknum> achear <y/n>' edits this rank to be able to hear Alliance chat	
 Scripts.Player.Guild.Help.GuildEditACSpeak:		'/gc edit <ranknum> acspeak <y/n>' edits this rank to be able to speak in Alliance chat	

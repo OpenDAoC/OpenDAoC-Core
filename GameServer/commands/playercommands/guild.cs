@@ -2470,7 +2470,7 @@ namespace DOL.GS.Commands
 								client.Player.Guild.SetGuildDuesPercent(0);
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DuesOff"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							}
-							else if (amount > 0 && amount <= 100)
+							else if (amount > 0 && amount <= 25)
 							{
 								client.Player.Guild.SetGuildDues(true);
 								if (ServerProperties.Properties.NEW_GUILD_DUES)
