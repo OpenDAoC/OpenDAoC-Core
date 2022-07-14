@@ -3044,8 +3044,10 @@ namespace DOL.GS
                 List<GamePlayer> visiblePlayers = target?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE) as List<GamePlayer>;
 
                 if (visiblePlayers == null) return;
-                Parallel.ForEach(visiblePlayers, player =>
+                //Parallel.ForEach(visiblePlayers, player =>
+                foreach (var player in visiblePlayers)
                 {
+                    
                     if (player == null) return;
                     int animationId;
                     switch (ad.AnimationId)
@@ -3063,7 +3065,7 @@ namespace DOL.GS
 
                     player.Out.SendCombatAnimation(owner, ad.Target, (ushort) attackersWeapon, (ushort) defendersWeapon,
                         animationId, 0, resultByte, ad.Target.HealthPercent);
-                });
+                }
             }
         }
 
