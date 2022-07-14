@@ -9,6 +9,15 @@ namespace DOL.GS {
         {
             ScalingFactor = 60;
         }
+        public override short MaxSpeedBase
+        {
+            get => (short)(191 + (Level * 2));
+            set => m_maxSpeedBase = value;
+        }
+        public override int MaxHealth
+        {
+            get { return (10000 + (Level * 125)); }
+        }
         public override void Die(GameObject killer)
         {
             // debug
