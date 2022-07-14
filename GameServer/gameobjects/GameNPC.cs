@@ -1684,7 +1684,7 @@ namespace DOL.GS
 			{
 				// if in last attack the enemy was out of range, we can attack him now immediately
 				AttackData ad = (AttackData)TempProperties.getProperty<object>(LAST_ATTACK_DATA, null);
-				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange)
+				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange && attackComponent.attackAction != null)
 				{
 					//m_attackAction.Start(1);// schedule for next tick
                     attackComponent.attackAction.StartTime = 1;
