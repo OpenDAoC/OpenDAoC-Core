@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
 
@@ -28,7 +29,13 @@ namespace DOL.GS {
             
             if (killerBG != null)
             {
+                List<GamePlayer> bgPlayers = null;
                 lock (killerBG.Members)
+                {
+                    bgPlayers = killerBG.Members.Keys as List<GamePlayer>;
+                }
+
+                if (bgPlayers != null)
                 {
                     foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                     {
@@ -49,7 +56,7 @@ namespace DOL.GS {
                             {
                                 AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
                             }
-                        
+                    
                             bgPlayer.Achieve($"{achievementMob}-Credit");
                         }
                     }
