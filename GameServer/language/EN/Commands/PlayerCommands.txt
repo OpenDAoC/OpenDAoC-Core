@@ -107,7 +107,8 @@ Scripts.Players.Battlegroup.Help.Help:			/bg help - Displays all battle group co
 Scripts.Players.Battlegroup.Help.Invite:		/bg invite [playername] - Invites the specified player to the battle group
 Scripts.Players.Battlegroup.Help.JoinPrivate:		/bg join [moderator name] [password] - Join a private battle group which has a password set
 Scripts.Players.Battlegroup.Help.JoinPublic:		/bg join [moderator name] - Join a public battle group by name of the moderator
-Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as leader; This player can invite other players into the battle group and speak when the battle group is on listen mode.
+Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as moderator; This player can invite other players into the BG, speak when the battle group is on listen mode. Use again to remove a moderator.
+Scripts.Players.Battlegroup.Help.MakeLeader:	/bg makeleader <name> - Passes the ownership of the battle group to the specified player who then becomes BG leader.
 Scripts.Players.Battlegroup.Help.Leave:			/bg leave - Remove oneself from the battle group
 Scripts.Players.Battlegroup.Help.Listen:		/bg listen - Puts the battle group on listen mode; only the moderator and leaders can speak
 Scripts.Players.Battlegroup.Help.Loot:			/bg loot (normal/treasurer) - Sets battlegroup looting to normal or a treasurer
@@ -129,6 +130,8 @@ Scripts.Players.Battlegroup.LeaderCommand:		You must be a leader of the battle g
 Scripts.Players.Battlegroup.LeaderInvite:		You must be the leader to invite a player to join the battle group.
 Scripts.Players.Battlegroup.ListenMode:			The listen mode of battlegroup is switch 
 Scripts.Players.Battlegroup.Moderator:			{0} becomes a moderator.
+Scripts.Players.Battlegroup.RemoveModerator:	{0} is no longer a moderator.
+Scripts.Players.Battlegroup.NewLeader:			{0} is the new leader of the battlegroup.
 Scripts.Players.Battlegroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Battlegroup.NotBattleGroupLeader:	This player is not a leader of a battlegroup.
 Scripts.Players.Battlegroup.NotBattleGroupMember:	This player is not a member of a battlegroup.

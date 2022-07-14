@@ -17,6 +17,7 @@
  *
  */
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using DOL.GS.PacketHandler;
 namespace DOL.GS
@@ -32,6 +33,7 @@ namespace DOL.GS
 		/// </summary>
 		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
         protected GameLiving m_battlegroupLeader;
+        protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
 
         bool battlegroupLootType = false;
         GamePlayer battlegroupTreasurer = null;
@@ -56,6 +58,12 @@ namespace DOL.GS
 		{
 			get{return m_battlegroupMembers;}
 			set{m_battlegroupMembers=value;}
+		}
+		
+		public List<GamePlayer> Moderators
+		{
+			get{return m_battlegroupModerators;}
+			set{m_battlegroupModerators=value;}
 		}
 
 		private bool listen=false;
@@ -155,6 +163,17 @@ namespace DOL.GS
             }
 
             return false;
+        }
+        
+        public bool IsBGModerator(GamePlayer living)
+        {
+	        if (m_battlegroupModerators != null && living != null)
+	        {
+		        var ismod = m_battlegroupModerators.Contains(living);
+		        return ismod;
+	        }
+
+	        return false;
         }
 
         public int GetBGLootTypeThreshold()
