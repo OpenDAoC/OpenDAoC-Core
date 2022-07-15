@@ -442,6 +442,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									client.IsConnected = false;
 									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
 									GameServer.Instance.Disconnect(client);
+
+									return;
 								}
 							}
 
