@@ -835,6 +835,84 @@ namespace DOL.GS.Commands
                         }
                     }
                     break;
+                case "recordstart":
+                    {
+                        if (client.Player == null)
+                            return;
+
+                        BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        if (mybattlegroup == null)
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        if (!mybattlegroup.IsBGLeader(client.Player))
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        
+                        if (args.Length < 3)
+                        {
+                            client.Out.SendMessage("You need to specify a valid max roll value (i.e. /bg recordstart 1000)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        int maxRoll;
+                        
+                        try
+                        {
+                            maxRoll = Convert.ToInt32(args[2]);
+                        }
+                        catch (Exception)
+                        {
+                            client.Out.SendMessage("You need to specify a valid max roll value (i.e. /bg recordstart 1000)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        
+                        mybattlegroup.StartRecordingRolls(maxRoll);
+                        
+                    }
+                    break;
+                case "recordstop":
+                {
+                    if (client.Player == null)
+                        return;
+
+                    BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    if (mybattlegroup == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+                    if (!mybattlegroup.IsBGLeader(client.Player))
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+                        
+                    mybattlegroup.StopRecordingRolls();
+                    mybattlegroup.ShowRollsWindow(client.Player);
+                        
+                } 
+                    break;
+                
+                case "showrolls":
+                {
+                    if (client.Player == null)
+                        return;
+
+                    BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    if (mybattlegroup == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+                    
+                    mybattlegroup.ShowRollsWindow(client.Player);
+                        
+                } 
+                    break;
 
                 default:
                     {
