@@ -434,13 +434,7 @@ namespace DOL.AI.Brain
         {
             if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-                {
-                    if (npc.Brain is LegionAddBrain)
-                    {
-                        npc.RemoveFromWorld();
-                    }
-                }
+                Body.RemoveFromWorld();
             }
         }
     }
