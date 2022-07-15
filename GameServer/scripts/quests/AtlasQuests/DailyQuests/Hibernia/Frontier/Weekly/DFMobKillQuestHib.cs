@@ -334,15 +334,20 @@ namespace DOL.GS.DailyQuest.Hibernia
 					_mobsKilled++;
 				else
 				{
-					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);		
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
 				}
 			}
 			else
 			{
-				if(player.GetConLevel(gArgs.Target) > -1)
-					_mobsKilled++;	
+				if (player.GetConLevel(gArgs.Target) > -1)
+					_mobsKilled++;
+				else
+				{
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
 			}
-					
 			player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					

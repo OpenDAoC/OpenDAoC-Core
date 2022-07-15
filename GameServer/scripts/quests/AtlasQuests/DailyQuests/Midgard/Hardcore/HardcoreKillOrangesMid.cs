@@ -307,9 +307,13 @@ namespace DOL.GS.DailyQuest
 			
 			if (player?.IsDoingQuest(typeof(HardcoreKillOrangesMid)) == null)
 				return;
-			
-			if(player.Group != null && Step == 1)
+
+			if (player.Group != null && Step == 1)
+			{
 				FailQuest();
+				return;
+			}
+				
 
 			if (sender != m_questPlayer)
 				return;
@@ -317,6 +321,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.Dying && Step == 1)
 			{
 				FailQuest();
+				return;
 			}
 
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
@@ -372,7 +377,8 @@ namespace DOL.GS.DailyQuest
 			Step = -2;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
-
+			m_questPlayer.QuestListFinished.Add(this);
+			
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}
