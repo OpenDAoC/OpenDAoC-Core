@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
 
@@ -7,6 +8,15 @@ namespace DOL.GS {
         public GameEpicNPC() : base()
         {
             ScalingFactor = 60;
+        }
+        public override short MaxSpeedBase
+        {
+            get => (short)(191 + (Level * 2));
+            set => m_maxSpeedBase = value;
+        }
+        public override int MaxHealth
+        {
+            get { return (10000 + (Level * 125)); }
         }
         public override void Die(GameObject killer)
         {
@@ -26,29 +36,38 @@ namespace DOL.GS {
             
             var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             
-            if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+            if (killerBG != null)
             {
-                foreach (GamePlayer bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+                List<GamePlayer> bgPlayers = null;
+                lock (killerBG.Members)
                 {
-                    if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                    {
-                        if (bgPlayer.Level < 45) continue;
-                        var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                        if (numCurrentLoyalDays >= 1)
-                        {
-                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
-                        }
-                        if(Util.Chance(baseChance+realmLoyalty))
-                        {
-                            AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
-                        }
+                    bgPlayers = killerBG.Members.Keys as List<GamePlayer>;
+                }
 
-                        if (Util.ChanceDouble(carapaceChance))
+                if (bgPlayers != null)
+                {
+                    foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
+                    {
+                        if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
-                            AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                            if (bgPlayer.Level < 45) continue;
+                            var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
+                            if (numCurrentLoyalDays >= 1)
+                            {
+                                realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                            }
+                            if(Util.Chance(baseChance+realmLoyalty))
+                            {
+                                AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
+                            }
+
+                            if (Util.ChanceDouble(carapaceChance))
+                            {
+                                AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                            }
+                    
+                            bgPlayer.Achieve($"{achievementMob}-Credit");
                         }
-                        
-                        bgPlayer.Achieve($"{achievementMob}-Credit");
                     }
                 }
             }

@@ -1614,7 +1614,8 @@ namespace DOL.GS
 		{
 			if (exactMatch)
 			{
-				return GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
+				var client = GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
+				return client.Player.Name.ToLower() == playerName.ToLower() ? client : null; //only return if it's an exact match
 			}
 			else
 			{
@@ -1647,7 +1648,8 @@ namespace DOL.GS
 						if (0 == String.Compare(client.Player.Name, playerName, StringComparison.OrdinalIgnoreCase)) // case insensitive comapre
 						{
 							potentialMatches.Add(client);
-							return potentialMatches;
+							//return potentialMatches;
+							return new List<GameClient> { client }; //return exact match
 						}
 
 						if (client.Player.Name.ToLower().StartsWith(playerName.ToLower())) potentialMatches.Add(client);
@@ -1675,7 +1677,7 @@ namespace DOL.GS
 			// first try exact match in case player with "abcde" name is
 			// before "abc" in list and user typed "abc"
 			GameClient guessedClient = GetClientByPlayerNameAndRealm(playerName, realm, activeRequired).FirstOrDefault();
-			if (guessedClient != null)
+			if (guessedClient != null && guessedClient.Player.Name.ToLower() == playerName.ToLower())
 			{
 				result = 3; // exact match
 				return guessedClient;

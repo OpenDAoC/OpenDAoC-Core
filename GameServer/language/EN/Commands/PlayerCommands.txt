@@ -101,16 +101,21 @@ Scripts.Players.Battlegroup.Help.Count:			/bg count - Counts the number of membe
 Scripts.Players.Battlegroup.Help.Credit:		/bg credit - Displays credit for Battlegroup Master Level encounters that have been completed within the last 10 minutes.
 Scripts.Players.Battlegroup.Help.GrantCredit:		/bg grantcredit (masterlevel) (playername) - Allows Batttlegroup Leader to grant credit for completed Master Level steps.
 Scripts.Players.Battlegroup.Help.GroupClass:		/bg groupclass - Shows the class makeup of each of the groups in the battlegroup.
+Scripts.Players.Battlegroup.Help.Solo:		    /bg solo - Shows the class makeup of each solo player in the battlegroup.
 Scripts.Players.Battlegroup.Help.Groups:		/bg groups - Displays the battlegroup members with their groups
 Scripts.Players.Battlegroup.Help.Help:			/bg help - Displays all battle group commands
 Scripts.Players.Battlegroup.Help.Invite:		/bg invite [playername] - Invites the specified player to the battle group
 Scripts.Players.Battlegroup.Help.JoinPrivate:		/bg join [moderator name] [password] - Join a private battle group which has a password set
 Scripts.Players.Battlegroup.Help.JoinPublic:		/bg join [moderator name] - Join a public battle group by name of the moderator
-Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as leader; This player can invite other players into the battle group and speak when the battle group is on listen mode.
+Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as moderator; This player can invite other players into the BG, speak when the battle group is on listen mode. Use again to remove a moderator.
+Scripts.Players.Battlegroup.Help.MakeLeader:	/bg makeleader <name> - Passes the ownership of the battle group to the specified player who then becomes BG leader.
 Scripts.Players.Battlegroup.Help.Leave:			/bg leave - Remove oneself from the battle group
 Scripts.Players.Battlegroup.Help.Listen:		/bg listen - Puts the battle group on listen mode; only the moderator and leaders can speak
 Scripts.Players.Battlegroup.Help.Loot:			/bg loot (normal/treasurer) - Sets battlegroup looting to normal or a treasurer
 Scripts.Players.Battlegroup.Help.LootLevel:		/bg lootlevel (level) - Sets the lootlevel for your battlegroup.
+Scripts.Players.Battlegroup.Help.RecordStart:	/bg recordstart [maxRoll] - Starts recording all battlegroup rolls in the battle group below the specified max roll.
+Scripts.Players.Battlegroup.Help.RecordStop:	/bg recordstop - Stops recording all battlegroup rolls.
+Scripts.Players.Battlegroup.Help.ShowRolls:		/bg showrolls - Shows the last battlegroup roll results.
 Scripts.Players.Battlegroup.Help.PasswordClear:		/bg password clear - Clears the current password (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordDisplay:	/bg password - Display the current password for the battle group (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordNew:		/bg password [new password]
@@ -128,11 +133,13 @@ Scripts.Players.Battlegroup.LeaderCommand:		You must be a leader of the battle g
 Scripts.Players.Battlegroup.LeaderInvite:		You must be the leader to invite a player to join the battle group.
 Scripts.Players.Battlegroup.ListenMode:			The listen mode of battlegroup is switch 
 Scripts.Players.Battlegroup.Moderator:			{0} becomes a moderator.
+Scripts.Players.Battlegroup.RemoveModerator:	{0} is no longer a moderator.
+Scripts.Players.Battlegroup.NewLeader:			{0} is the new leader of the battlegroup.
 Scripts.Players.Battlegroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Battlegroup.NotBattleGroupLeader:	This player is not a leader of a battlegroup.
 Scripts.Players.Battlegroup.NotBattleGroupMember:	This player is not a member of a battlegroup.
 Scripts.Players.Battlegroup.NotPublic:			This battlegroup is not public.
-Scripts.Players.Battlegroup.OnlyModerator:		Only moderator can talk on this battle group.
+Scripts.Players.Battlegroup.OnlyModerator:		Only moderator can talk in this battle group.
 Scripts.Players.Battlegroup.OwnBattleGroup:		You cannot join your own battlegroup.
 Scripts.Players.Battlegroup.Password:			Password of battlegroup: {0}.
 Scripts.Players.Battlegroup.PasswordChanged:		You have changed the password of Battlegroup to: {0}.	
@@ -230,7 +237,7 @@ Scripts.Players.Chatgroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Chatgroup.NotChatGroupLeader:		This player is not a leader of a chatgroup.	
 Scripts.Players.Chatgroup.NotChatGroupMember:		This player is not a member of a chatgroup.	
 Scripts.Players.Chatgroup.NotPublic:			This chatgroup is not public.
-Scripts.Players.Chatgroup.OnlyModerator:		Only moderator can talk on this chat group.	
+Scripts.Players.Chatgroup.OnlyModerator:		Only moderator can talk in this chat group.	
 Scripts.Players.Chatgroup.OwnChatGroup:			You cannot join your own chatgroup.
 Scripts.Players.Chatgroup.Password:			The password to this chat group is currently set to {0}.
 Scripts.Players.Chatgroup.PasswordUnset:			The password to this chat group is currently unset.
@@ -327,7 +334,7 @@ Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' to decline the enter in guild	
 Scripts.Player.Guild.Help.GuildDemote:			'/gc demote [name] <rank#>' to set the rank from 0 to 10 of the player to an inferior rank	
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' puts money into the guild bank account.
-Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 1-100% <0 is off>
+Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 0-25% <0 is off>
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' to show list of all option in guild edit	
 Scripts.Player.Guild.Help.GuildEditACHear:		'/gc edit <ranknum> achear <y/n>' edits this rank to be able to hear Alliance chat	
 Scripts.Player.Guild.Help.GuildEditACSpeak:		'/gc edit <ranknum> acspeak <y/n>' edits this rank to be able to speak in Alliance chat	

@@ -121,10 +121,10 @@ namespace DOL.GS
             if (p.Styles == null || p.Styles.Count < 1 || p.TargetObject == null)
                 return null;
 
-            // Chain and defensive styles skip the GAMENPC_CHANCES_TO_STYLE,
-            //	or they almost never happen e.g. NPC blocks 10% of the time,
-            //	default 20% style chance means the defensive style only happens
-            //	2% of the time, and a chain from it only happens 0.4% of the time.
+            // Chain and defensive styles are excluded from the chance roll because they would almost never happen otherwise. 
+            // For example, an NPC blocks 10% of the time, so the default 20% style chance effectively means the defensive 
+            // style would only actually occur during 2% of of a mob's attacks. In comparison, a style chain would only happen 
+            // 0.4% of the time.
             if (p.StylesChain != null && p.StylesChain.Count > 0)
                 foreach (Style s in p.StylesChain)
                     if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon))
@@ -138,9 +138,14 @@ namespace DOL.GS
 
             if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
             {
-                // Check positional styles
-                // Picking random styles allows mobs to use multiple styles from the same position
-                //	e.g. a mob with both Pincer and Ice Storm side styles will use both of them.
+                // All of the remaining lists are randomly picked from,
+                // as this creates more variety with each combat result.
+                // For example, a mob with both Pincer and Ice Storm
+                // styles could potentially use one or the other with
+                // each attack roll that succeeds.
+                
+                // First, check positional styles (in order of back, side, front)
+                // in case the defender is facing another direction
                 if (p.StylesBack != null && p.StylesBack.Count > 0)
                 {
                     Style s = p.StylesBack[Util.Random(0, p.StylesBack.Count - 1)];

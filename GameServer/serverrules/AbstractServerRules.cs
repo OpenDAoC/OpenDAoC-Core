@@ -1184,15 +1184,6 @@ namespace DOL.GS.ServerRules
 				if (de.Key is GameLiving living)
 				{
 					var player = living as GamePlayer;
-					if (living.Group != null)
-					{
-						if(highestDamageDealingGroup != null && living.Group == highestDamageDealingGroup )
-							livingsToAward.Add(living);
-						else if(player != null)
-						{
-							player.Out.SendMessage($"Your group did not deal enough damage to claim this kill.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						}
-					}
 
 					if (player != null)
 					{
@@ -1203,7 +1194,17 @@ namespace DOL.GS.ServerRules
 						} 
 						else
 						{
-							livingsToAward.Add(living);
+							if (living.Group != null)
+							{
+								if(highestDamageDealingGroup != null && living.Group == highestDamageDealingGroup )
+									livingsToAward.Add(living);
+								else if(player != null)
+								{
+									player.Out.SendMessage($"Your group did not deal enough damage to claim this kill.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+							}
+							else
+								livingsToAward.Add(living);
 						}
 					}
 				}
@@ -2439,12 +2440,12 @@ namespace DOL.GS.ServerRules
 			}
 			else if (keep is GameKeep)
 			{
-				value = keep.Guild != null ? Math.Max(50,Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER)) : 0;
+				value = Properties.KEEP_RP_BASE + (keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER;
 			}
 
 			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
 
-			return Math.Max(0, value);
+			return value;
 		}
 
 		/// <summary>

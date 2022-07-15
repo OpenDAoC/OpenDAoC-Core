@@ -3041,9 +3041,14 @@ namespace DOL.GS
                         break;
                 }
 
-                foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                var visiblePlayers = target?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+
+                if (visiblePlayers == null) return;
+                //Parallel.ForEach(visiblePlayers, player =>
+                foreach (GamePlayer player in visiblePlayers)
                 {
-                    if (player == null) continue;
+                    
+                    if (player == null) return;
                     int animationId;
                     switch (ad.AnimationId)
                     {

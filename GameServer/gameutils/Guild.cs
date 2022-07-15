@@ -270,7 +270,7 @@ namespace DOL.GS
 			m_DBguild.Bank += amount;
 
             InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
-			donating.SaveIntoDatabase();
+			//donating.SaveIntoDatabase();
 			donating.Out.SendUpdatePlayer();			
 			return;
 		}

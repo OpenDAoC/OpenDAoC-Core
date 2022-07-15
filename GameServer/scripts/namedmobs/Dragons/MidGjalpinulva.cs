@@ -421,6 +421,9 @@ namespace DOL.AI.Brain
 				ResetChecks = false;//reset it so can reset bools at end of path
 				LockIsRestless = true;
 			}
+			
+			if (Body.InCombatInLast(30000))
+				IsRestless = false;
 
 			if (IsRestless)
 				DragonFlyingPath();//make dragon follow the path

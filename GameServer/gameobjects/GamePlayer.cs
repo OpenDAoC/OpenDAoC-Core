@@ -2719,7 +2719,7 @@ namespace DOL.GS
                 return PowerRegenerationPeriod;
             if (IsSitting)
             {
-                if(PowerRegenStackingBonus < 5) PowerRegenStackingBonus++;
+                if(PowerRegenStackingBonus < 3) PowerRegenStackingBonus++;
             }
             else PowerRegenStackingBonus = 0;
             int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);
@@ -13115,14 +13115,15 @@ namespace DOL.GS
                         var eligibleMembers = from p in Group.GetPlayersInTheGroup()
                             where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
                             select p;
-                        if (!eligibleMembers.Any())
+                        var gamePlayers = eligibleMembers as GamePlayer[] ?? eligibleMembers.ToArray();
+                        if (!gamePlayers.Any())
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneGroupWantsMoney"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return false;
                         }
 
-                        long moneyToPlayer = moneyObject.TotalCopper / eligibleMembers.Count();
-                        foreach (GamePlayer eligibleMember in eligibleMembers)
+                        long moneyToPlayer = moneyObject.TotalCopper / gamePlayers.Count();
+                        foreach (GamePlayer eligibleMember in gamePlayers)
                         {
                             if (eligibleMember.Guild != null && eligibleMember.Guild.IsGuildDuesOn())
                             {
@@ -15443,7 +15444,15 @@ namespace DOL.GS
         /// <param name="controlledNpc"></param>
         public override void SetControlledBrain(IControlledBrain controlledBrain)
         {
-            CharacterClass.SetControlledBrain(controlledBrain);
+            try
+            {
+                CharacterClass.SetControlledBrain(controlledBrain);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Caught exception when trying to set controlled pet brain: {e}");
+            }
+            
         }
 		
         /// <summary>
@@ -15981,6 +15990,8 @@ namespace DOL.GS
                 GameServer.Database.AddObject(achievement);
                 return;
             }
+            
+            //log.Warn($"[ATLAS CREDIT] {Client.Account.Name} awarded {achievement.AchievementName}");
 
             achievement.Count += count;
             GameServer.Database.SaveObject(achievement);

@@ -216,17 +216,19 @@ namespace DOL.GS
             
 			var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             
-			if (killerBG != null && (killerBG.Members.Contains(playerKiller) || (bool)killerBG.Members[playerKiller]!))
+			if (killerBG != null)
 			{
-				foreach (var bgPlayer in killerBG.GetPlayersInTheBattleGroup())
+				lock (killerBG.Members)
 				{
-					if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
 					{
-						if (bgPlayer.Level < 45) continue;
-						AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
-						AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
-						bgPlayer.Achieve($"{achievementMob}-Credit");
-
+						if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+						{
+							if (bgPlayer.Level < 45) continue;
+							AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
+							AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+							bgPlayer.Achieve($"{achievementMob}-Credit");
+						}
 					}
 				}
 			}
