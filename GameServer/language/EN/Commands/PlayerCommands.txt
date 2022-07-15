@@ -107,7 +107,8 @@ Scripts.Players.Battlegroup.Help.Help:			/bg help - Displays all battle group co
 Scripts.Players.Battlegroup.Help.Invite:		/bg invite [playername] - Invites the specified player to the battle group
 Scripts.Players.Battlegroup.Help.JoinPrivate:		/bg join [moderator name] [password] - Join a private battle group which has a password set
 Scripts.Players.Battlegroup.Help.JoinPublic:		/bg join [moderator name] - Join a public battle group by name of the moderator
-Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as leader; This player can invite other players into the battle group and speak when the battle group is on listen mode.
+Scripts.Players.Battlegroup.Help.Leader:		/bg promote <name> - Declare another member of the battle group as moderator; This player can invite other players into the BG, speak when the battle group is on listen mode. Use again to remove a moderator.
+Scripts.Players.Battlegroup.Help.MakeLeader:	/bg makeleader <name> - Passes the ownership of the battle group to the specified player who then becomes BG leader.
 Scripts.Players.Battlegroup.Help.Leave:			/bg leave - Remove oneself from the battle group
 Scripts.Players.Battlegroup.Help.Listen:		/bg listen - Puts the battle group on listen mode; only the moderator and leaders can speak
 Scripts.Players.Battlegroup.Help.Loot:			/bg loot (normal/treasurer) - Sets battlegroup looting to normal or a treasurer
@@ -129,6 +130,8 @@ Scripts.Players.Battlegroup.LeaderCommand:		You must be a leader of the battle g
 Scripts.Players.Battlegroup.LeaderInvite:		You must be the leader to invite a player to join the battle group.
 Scripts.Players.Battlegroup.ListenMode:			The listen mode of battlegroup is switch 
 Scripts.Players.Battlegroup.Moderator:			{0} becomes a moderator.
+Scripts.Players.Battlegroup.RemoveModerator:	{0} is no longer a moderator.
+Scripts.Players.Battlegroup.NewLeader:			{0} is the new leader of the battlegroup.
 Scripts.Players.Battlegroup.NoPlayer:			There is no player with this name.
 Scripts.Players.Battlegroup.NotBattleGroupLeader:	This player is not a leader of a battlegroup.
 Scripts.Players.Battlegroup.NotBattleGroupMember:	This player is not a member of a battlegroup.
@@ -328,7 +331,7 @@ Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' to decline the enter in guild	
 Scripts.Player.Guild.Help.GuildDemote:			'/gc demote [name] <rank#>' to set the rank from 0 to 10 of the player to an inferior rank	
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' puts money into the guild bank account.
-Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 1-100% <0 is off>
+Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 0-25% <0 is off>
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' to show list of all option in guild edit	
 Scripts.Player.Guild.Help.GuildEditACHear:		'/gc edit <ranknum> achear <y/n>' edits this rank to be able to hear Alliance chat	
 Scripts.Player.Guild.Help.GuildEditACSpeak:		'/gc edit <ranknum> acspeak <y/n>' edits this rank to be able to speak in Alliance chat	
