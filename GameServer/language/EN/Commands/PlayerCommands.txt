@@ -113,6 +113,9 @@ Scripts.Players.Battlegroup.Help.Leave:			/bg leave - Remove oneself from the ba
 Scripts.Players.Battlegroup.Help.Listen:		/bg listen - Puts the battle group on listen mode; only the moderator and leaders can speak
 Scripts.Players.Battlegroup.Help.Loot:			/bg loot (normal/treasurer) - Sets battlegroup looting to normal or a treasurer
 Scripts.Players.Battlegroup.Help.LootLevel:		/bg lootlevel (level) - Sets the lootlevel for your battlegroup.
+Scripts.Players.Battlegroup.Help.RecordStart:	/bg recordstart [maxRoll] - Starts recording all battlegroup rolls in the battle group below the specified max roll.
+Scripts.Players.Battlegroup.Help.RecordStop:	/bg recordstop - Stops recording all battlegroup rolls.
+Scripts.Players.Battlegroup.Help.ShowRolls:		/bg showrolls - Shows the last battlegroup roll results.
 Scripts.Players.Battlegroup.Help.PasswordClear:		/bg password clear - Clears the current password (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordDisplay:	/bg password - Display the current password for the battle group (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordNew:		/bg password [new password]

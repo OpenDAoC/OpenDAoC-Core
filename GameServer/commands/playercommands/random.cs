@@ -85,6 +85,12 @@ namespace DOL.GS.Commands
 
 			// throw result
 			int thrown = Util.Random(1, thrownMax);
+			
+			BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+			if (mybattlegroup != null && mybattlegroup.IsRecordingRolls() && thrownMax <= mybattlegroup.GetRecordingThreshold())
+			{
+				mybattlegroup.AddRoll(client.Player, thrown);
+			}
 
 			// building result messages
 			string selfMessage = String.Format(MESSAGE_RESULT_SELF, thrownMax, thrown);
