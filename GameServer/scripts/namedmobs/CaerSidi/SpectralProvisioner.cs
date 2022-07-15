@@ -73,6 +73,9 @@ namespace DOL.GS.Scripts
 		    get => 180;
 		    set { }
 	    }
+		//private Point3D spawnPoint = new Point3D(30058, 40883, 17004);
+		//public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2036; }
+		//public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
 		public override bool AddToWorld()
 		{
 			Level = 77;
@@ -83,6 +86,15 @@ namespace DOL.GS.Scripts
 			RoamingRange = 0;
 			MaxSpeedBase = 300;
 			CurrentSpeed = 300;
+
+			/*SpawnPoint.X = 30058;
+			SpawnPoint.Y = 40883;
+			SpawnPoint.Z = 17004;
+
+			X = 30058;
+			Y = 40883;
+			Z = 17004;
+			Heading = 2036;*/
 
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
@@ -98,7 +110,9 @@ namespace DOL.GS.Scripts
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
 			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
+			X = sBrain.spawnPoint.X;
+			Y = sBrain.spawnPoint.Y;
+			Z = sBrain.spawnPoint.Z;
 			base.AddToWorld();
 			return true;
 		}
@@ -109,14 +123,11 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
 		}
-		public override void WalkToSpawn()
+		public override void WalkToSpawn(short speed)
 		{
-			if (CurrentRegionID == 60) //if region is caer sidi
-			{
-				if (IsAlive)
-					return;
-			}
-			base.WalkToSpawn();
+			if (IsAlive)
+				return;
+			base.WalkToSpawn(speed);
 		}
 		public override void StartAttack(GameObject target)
         {
@@ -129,6 +140,7 @@ namespace DOL.AI.Brain
 {
 	public class SpectralProvisionerBrain : StandardMobBrain
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SpectralProvisionerBrain()
 				: base()
 		{
@@ -168,21 +180,27 @@ namespace DOL.AI.Brain
 		public static bool point6check = false;
 		public static bool point7check = false;
 		public static bool point8check = false;
+		private Point3D point1 = new Point3D(30050, 39425, 17004);
+		private Point3D point2 = new Point3D(30940, 39418, 17004);
+		private Point3D point3 = new Point3D(32065, 40205, 17004);
+		private Point3D point4 = new Point3D(32075, 42378, 17004);
+		private Point3D point5 = new Point3D(32072, 40376, 17006);
+		private Point3D point6 = new Point3D(32967, 39369, 17007);
+		private Point3D point7 = new Point3D(32057, 38494, 17007);
+		private Point3D point8 = new Point3D(31022, 39382, 17006);
+		public Point3D spawnPoint = new Point3D(30058, 40883, 17004);
 		public override void Think()
 		{
+			if (Body.X < 0 || Body.Y < 0 || Body.Z < 0)
+			{
+				log.Warn(Body.Name + " position is under 0! Moving mob to spawn point! Possition was: X: "+Body.X+", Y: "+Body.Y+", Z: "+Body.Z);
+				Body.MoveTo(60, 30058, 40883, 17004, 2036);
+			}
 			if (Body.IsAlive)
 			{
-				Point3D spawn = new Point3D(30049, 40799, 17004);
+				//Point3D spawn = new Point3D(30049, 40799, 17004);
 				Body.MaxSpeedBase = 300;
 				Body.CurrentSpeed = 300;
-				Point3D point1 = new Point3D(30062, 39454, 17004);
-				Point3D point2 = new Point3D(31109, 39425, 17004);
-				Point3D point3 = new Point3D(32012, 40286, 17004);
-				Point3D point4 = new Point3D(32064, 42195, 17004);
-				Point3D point5 = new Point3D(32089, 40241, 17004);
-				Point3D point6 = new Point3D(33021, 39384, 17004);
-				Point3D point7 = new Point3D(32059, 38549, 17004);
-				Point3D point8 = new Point3D(31124, 39405, 17004);
 
 				// if (HasAggro && Body.TargetObject != null)
 				// {
@@ -197,6 +215,7 @@ namespace DOL.AI.Brain
 				if (!Body.IsWithinRadius(point1, 30) && point1check == false)
 				{
 					Body.WalkTo(point1, (short)Util.Random(195, 300));
+					//log.Warn("Moving to point1, " + point1+"Corrent Pos: "+Body.X+", "+Body.Y+", "+Body.Z);
 				}
 				else
 				{
@@ -205,6 +224,7 @@ namespace DOL.AI.Brain
 					if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
 					{
 						Body.WalkTo(point2, (short)Util.Random(195, 300));
+						//log.Warn("Arrived at point1,Moving to point2, " + point2);
 					}
 					else
 					{
@@ -213,6 +233,7 @@ namespace DOL.AI.Brain
 							point3check == false)
 						{
 							Body.WalkTo(point3, (short)Util.Random(195, 300));
+							//log.Warn("Arrived at point2,Moving to point3, " + point3);
 						}
 						else
 						{
@@ -221,6 +242,7 @@ namespace DOL.AI.Brain
 								point3check == true && point4check == false)
 							{
 								Body.WalkTo(point4, (short)Util.Random(195, 300));
+								//log.Warn("Arrived at point3,Moving to point4, " + point4);
 							}
 							else
 							{
@@ -229,6 +251,7 @@ namespace DOL.AI.Brain
 									point3check == true && point4check == true && point5check == false)
 								{
 									Body.WalkTo(point5, (short)Util.Random(195, 300));
+									//log.Warn("Arrived at point4,Moving to point5, " + point4);
 								}
 								else
 								{
@@ -237,6 +260,7 @@ namespace DOL.AI.Brain
 									point3check == true && point4check == true && point5check == true && point6check == false)
 									{
 										Body.WalkTo(point6, (short)Util.Random(195, 300));
+										//log.Warn("Arrived at point5,Moving to point6, " + point6);
 									}
 									else
 									{
@@ -245,6 +269,7 @@ namespace DOL.AI.Brain
 										point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
 										{
 											Body.WalkTo(point7, (short)Util.Random(195, 300));
+											//log.Warn("Arrived at point6,Moving to point7, " + point7);
 										}
 										else
 										{
@@ -253,6 +278,7 @@ namespace DOL.AI.Brain
 											point3check == true && point4check == true && point5check == true && point6check == true && point7check == true && !point8check)
 											{
 												Body.WalkTo(point8, (short)Util.Random(195, 300));
+												//log.Warn("Arrived at point7,Moving to point8, " + point8);
 											}
 											else
 											{
@@ -264,6 +290,7 @@ namespace DOL.AI.Brain
 												point4check = false;
 												point5check = false;
 												point6check = false;
+												//log.Warn("Clearing flags");
 											}
 										}
 									}
