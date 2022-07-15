@@ -309,9 +309,12 @@ namespace DOL.GS.DailyQuest
 
 			if (player?.IsDoingQuest(typeof(HardcoreKillAPlayerAlb)) == null)
 				return;
-			
-			if(player.Group != null && Step == 1)
+
+			if (player.Group != null && Step == 1)
+			{
 				FailQuest();
+				return;
+			}				
 
 			if (sender != m_questPlayer)
 				return;
@@ -319,6 +322,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.Dying && Step == 1)
 			{
 				FailQuest();
+				return;
 			}
 
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
@@ -365,10 +369,10 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
 			PlayerKilled = 0;
-			Step = -2;
+			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
-			DeleteFromDatabase();
+			m_questPlayer.QuestListFinished.Add(this);
 			
 			m_questPlayer.Out.SendQuestListUpdate();
 		}

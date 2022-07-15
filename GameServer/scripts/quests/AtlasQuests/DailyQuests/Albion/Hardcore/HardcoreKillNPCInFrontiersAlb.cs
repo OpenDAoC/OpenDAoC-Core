@@ -146,7 +146,7 @@ namespace DOL.GS.DailyQuest
 			if (player == null)
 				return;
 
-			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillNPCInFrontiersAlb), player)  <= 0)
+			if (SucciAlb.CanGiveQuest(typeof(HardcoreKillNPCInFrontiersAlb), player) <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -373,11 +373,11 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
 			FrontierMobsKilled = 0;
-			Step = -2;
+			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
-			DeleteFromDatabase();
-			
+			m_questPlayer.QuestListFinished.Add(this);
+
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}
