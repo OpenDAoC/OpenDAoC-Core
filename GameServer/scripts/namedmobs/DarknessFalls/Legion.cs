@@ -315,7 +315,14 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
                 {
-                    var spawnAmount = Util.Random(10, 15);
+                    int spawnAmount = 0;
+                    if (Util.Chance(50))
+                        spawnAmount++;
+
+                    if (Util.Chance(5))
+                        spawnAmount++;
+                    
+                    //var spawnAmount = Util.Random(10, 15);
                     SpawnAdds(playerNearby, spawnAmount);
                 }
             }
