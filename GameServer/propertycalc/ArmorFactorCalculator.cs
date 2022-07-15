@@ -89,7 +89,9 @@ namespace DOL.GS.PropertyCalc
 					petCap = 24;
                 }
 
-                foreach (var attacker in bossnpc.attackComponent.Attackers.ToList())
+				var attackerList = bossnpc.attackComponent.Attackers.ToList();
+
+                foreach (var attacker in attackerList)
                 {
 					if(attacker is GamePlayer)
 						epicScaleFactor -= 0.4;
