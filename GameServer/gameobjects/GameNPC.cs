@@ -5018,8 +5018,18 @@ namespace DOL.GS
 				}
 
 				GamePlayer playerAttacker = null;
+				BattleGroup activeBG = null;
+				if (killer is GamePlayer playerKiller &&
+				    playerKiller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+					activeBG = playerKiller.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
+					//if a battlegroup killed the mob, filter out any non BG players
+					if (activeBG != null && gainer is GamePlayer p &&
+					    p.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						continue;
+					
 					if (gainer is GamePlayer)
 					{
 						playerAttacker = gainer as GamePlayer;
