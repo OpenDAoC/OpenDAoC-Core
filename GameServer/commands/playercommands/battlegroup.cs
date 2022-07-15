@@ -896,7 +896,6 @@ namespace DOL.GS.Commands
                         
                 } 
                     break;
-                
                 case "showrolls":
                 {
                     if (client.Player == null)
@@ -947,6 +946,9 @@ namespace DOL.GS.Commands
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Loot"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Treasurer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.RecordStart"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.RecordStop"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.ShowRolls"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
         }
 
         protected const string JOIN_BATTLEGROUP_PROPERTY = "JOIN_BATTLEGROUP_PROPERTY";
