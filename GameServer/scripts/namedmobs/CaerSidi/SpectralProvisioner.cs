@@ -4,6 +4,7 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS.Scripts
 {
@@ -73,9 +74,6 @@ namespace DOL.GS.Scripts
 		    get => 180;
 		    set { }
 	    }
-		//private Point3D spawnPoint = new Point3D(30058, 40883, 17004);
-		//public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2036; }
-		//public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
 		public override bool AddToWorld()
 		{
 			Level = 77;
@@ -86,15 +84,6 @@ namespace DOL.GS.Scripts
 			RoamingRange = 0;
 			MaxSpeedBase = 300;
 			CurrentSpeed = 300;
-
-			/*SpawnPoint.X = 30058;
-			SpawnPoint.Y = 40883;
-			SpawnPoint.Z = 17004;
-
-			X = 30058;
-			Y = 40883;
-			Z = 17004;
-			Heading = 2036;*/
 
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
@@ -109,10 +98,7 @@ namespace DOL.GS.Scripts
 			SpectralProvisionerBrain.point8check = false;
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
-			LoadedFromScript = false;//load from database
-			X = sBrain.spawnPoint.X;
-			Y = sBrain.spawnPoint.Y;
-			Z = sBrain.spawnPoint.Z;
+			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
 		}
@@ -188,14 +174,8 @@ namespace DOL.AI.Brain
 		private Point3D point6 = new Point3D(32967, 39369, 17007);
 		private Point3D point7 = new Point3D(32057, 38494, 17007);
 		private Point3D point8 = new Point3D(31022, 39382, 17006);
-		public Point3D spawnPoint = new Point3D(30058, 40883, 17004);
 		public override void Think()
 		{
-			if (Body.X < 0 || Body.Y < 0 || Body.Z < 0)
-			{
-				log.Warn(Body.Name + " position is under 0! Moving mob to spawn point! Possition was: X: "+Body.X+", Y: "+Body.Y+", Z: "+Body.Z);
-				Body.MoveTo(60, 30058, 40883, 17004, 2036);
-			}
 			if (Body.IsAlive)
 			{
 				//Point3D spawn = new Point3D(30049, 40799, 17004);
@@ -311,3 +291,79 @@ namespace DOL.AI.Brain
 		}		
 	}
 }
+#region Spectral Provisioner Spawner
+namespace DOL.GS
+{
+	public class SpectralProvisionerSpawner : GameNPC
+	{
+		public SpectralProvisionerSpawner() : base()
+		{
+		}
+		public override bool AddToWorld()
+		{
+			Name = "Spectral Provisioner Spawner";
+			GuildName = "DO NOT REMOVE";
+			Level = 50;
+			Model = 665;
+			RespawnInterval = 5000;
+			Flags = (GameNPC.eFlags)28;
+
+			SpectralProvisionerSpawnerBrain sbrain = new SpectralProvisionerSpawnerBrain();
+			SetOwnBrain(sbrain);
+			base.AddToWorld();
+			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class SpectralProvisionerSpawnerBrain : StandardMobBrain
+	{
+		private static readonly log4net.ILog log =
+			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public SpectralProvisionerSpawnerBrain()
+			: base()
+		{
+			AggroLevel = 0;
+			AggroRange = 500;
+		}
+		private bool CanSpawnProvisioner = false;
+		public override void Think()
+		{
+			if(Body.IsAlive)
+            {
+				if(!CanSpawnProvisioner)
+                {
+					foreach(GamePlayer player in Body.GetPlayersInRadius(500))
+                    {
+						if(player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+							SpawnSpectralProvisioner(player);
+							CanSpawnProvisioner = true;
+                        }
+                    }
+                }
+            }
+			base.Think();
+		}
+		public void SpawnSpectralProvisioner(GamePlayer player)
+		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is SpectralProvisionerBrain)
+					return;
+			}
+			SpectralProvisioner boss = new SpectralProvisioner();
+			boss.X = Body.X;
+			boss.Y = Body.Y;
+			boss.Z = Body.Z;
+			boss.Heading = Body.Heading;
+			boss.CurrentRegion = Body.CurrentRegion;
+			boss.AddToWorld();
+			if (player != null)
+				log.Debug("Player "+player.Name + " initialized Spectral Provisioner spawn event.");
+		}
+	}
+}
+#endregion
