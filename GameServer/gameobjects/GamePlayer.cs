@@ -15017,8 +15017,11 @@ namespace DOL.GS
                     {
                         if (area is KeepArea kA)
                         {
-                            if (keepIDs.Contains(kA.Keep.KeepID))
+                            if (keepIDs.Contains(kA.Keep.KeepID) && kA.Keep.Realm == Realm)
+                            {
                                 craftSpeedBonus = true;
+                                break;
+                            }
                         }
                     }
                     if (craftSpeedBonus)
@@ -15026,7 +15029,7 @@ namespace DOL.GS
                         speed = speed * Properties.KEEP_CRAFTING_SPEED_BONUS;
                     }
                 }
-                log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {speed}");
+                //log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {Math.Round(speed*100)}%");
 
                 return speed;
             }
