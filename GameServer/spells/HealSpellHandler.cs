@@ -374,7 +374,12 @@ namespace DOL.GS.Spells
                     ad.IsSpellResisted = false;
                     ad.Damage = (int)Spell.Value;
                     ad.DamageType = Spell.DamageType;
-                    npc.OnAttackedByEnemy(ad);
+                    ad.CausesCombat = false;
+                    //npc.OnAttackedByEnemy(ad);
+                    if (npc.Brain is StandardMobBrain mobBrain)
+                    {
+                        mobBrain.AddToAggroList(Caster, ad.Damage);
+                    }
                     npc.AddXPGainer(Caster, ad.Damage);
                 }
             }

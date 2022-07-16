@@ -13,7 +13,7 @@ namespace DOL.GS.Keeps
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private eRealm m_lastRealm = eRealm.None;
-		private long m_lastKillTime = 0;
+		private long m_lastSpawnTime = 0;
 
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
@@ -30,7 +30,7 @@ namespace DOL.GS.Keeps
                 if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
                     return 0;
 
-                long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
+                long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
 
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
@@ -56,7 +56,7 @@ namespace DOL.GS.Keeps
 				if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
 					return 0;
 
-				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
@@ -75,7 +75,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
@@ -107,7 +107,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				long duration = (GameLoop.GameLoopTime - m_lastKillTime) / 1000L;
+				long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
 				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
@@ -212,7 +212,6 @@ namespace DOL.GS.Keeps
 				GameServer.ServerRules.ResetKeep(this, killer);
 			}
 
-			m_lastKillTime = CurrentRegion.Time;
 		}
 
 		/// <summary>
@@ -248,6 +247,7 @@ namespace DOL.GS.Keeps
 			if (base.AddToWorld())
 			{
 				m_lastRealm = Realm;
+				m_lastSpawnTime = GameLoop.GameLoopTime;
 				return true;
 			}
 
