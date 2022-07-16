@@ -411,8 +411,9 @@ namespace DOL.GS.ServerRules
 
 			// Safe area support for defender
 			if (defender.CurrentAreas is not null)
-            {
-				foreach (AbstractArea area in defender.CurrentAreas.ToList())
+			{
+				var defenderAreas = defender.CurrentAreas.ToList();
+				foreach (AbstractArea area in defenderAreas)
 				{
 					if (area is null) continue;
 
@@ -426,7 +427,8 @@ namespace DOL.GS.ServerRules
 			}		
 
 			//safe area support for attacker
-			foreach (AbstractArea area in attacker.CurrentAreas.ToList())
+			var attackerAreas = attacker.CurrentAreas.ToList();
+			foreach (AbstractArea area in attackerAreas)
 			{
 				if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
 				{
