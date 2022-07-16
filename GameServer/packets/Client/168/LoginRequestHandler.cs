@@ -420,7 +420,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// QUEUE SERVICE :^)
-							if (playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(Properties.QUEUE_API_URI))
+							if (!playerAccount.IsTester && playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(Properties.QUEUE_API_URI))
                             {
 								var data = new Dictionary<string, string>()
                                 {
