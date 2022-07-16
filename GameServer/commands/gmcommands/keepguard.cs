@@ -134,6 +134,13 @@ namespace DOL.GS.Commands
 								break;
 							}
 							#endregion Merchant
+							#region CurrencyMerchant
+							case "currencymerchant":
+							{
+								guard = new GuardCurrencyMerchant();
+								break;
+							}
+							#endregion CurrencyMerchant
 							#region Hastener
 							case "hastener":
 								{
