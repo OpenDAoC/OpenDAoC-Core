@@ -642,6 +642,8 @@ namespace DOL.GS.Keeps
 							guard.Inventory = ClothingMgr.Albion_Lord.CloneTemplate();
 						else if (guard is GuardMerchant)
 							guard.Inventory = ClothingMgr.Albion_Merchant.CloneTemplate();
+						else if (guard is GuardCurrencyMerchant)
+							guard.Inventory = ClothingMgr.Albion_Merchant.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Albion_Healer.CloneTemplate();
 						else if (guard is GuardArcher)
@@ -676,6 +678,8 @@ namespace DOL.GS.Keeps
 							guard.Inventory = ClothingMgr.Midgard_Lord.CloneTemplate();
 						else if (guard is GuardMerchant)
 							guard.Inventory = ClothingMgr.Midgard_Merchant.CloneTemplate();
+						else if (guard is GuardCurrencyMerchant)
+							guard.Inventory = ClothingMgr.Midgard_Merchant.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Midgard_Healer.CloneTemplate();
 						else if (guard is GuardArcher)
@@ -709,6 +713,8 @@ namespace DOL.GS.Keeps
                         else if (guard is GuardLord || guard is MissionMaster)
 							guard.Inventory = ClothingMgr.Hibernia_Lord.CloneTemplate();
 						else if (guard is GuardMerchant)
+							guard.Inventory = ClothingMgr.Hibernia_Merchant.CloneTemplate();
+						else if (guard is GuardCurrencyMerchant)
 							guard.Inventory = ClothingMgr.Hibernia_Merchant.CloneTemplate();
 						else if (guard is GuardHealer)
 							guard.Inventory = ClothingMgr.Hibernia_Healer.CloneTemplate();
