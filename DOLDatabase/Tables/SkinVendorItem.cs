@@ -8,7 +8,7 @@ namespace DOLDatabase.Tables
     /// <summary>
     /// The InventoryItem table holds all Items of the SkinVendor
     /// </summary>
- 
+
     [DataTable(TableName = "SkinVendorItems")]
     public class SkinVendorItem : DataObject
     {
@@ -17,26 +17,19 @@ namespace DOLDatabase.Tables
         protected bool m_hasLoggedError = false;
         #region Inventory fields
 
-        protected string m_skinVendorItemId;
-        [DataElement(AllowDbNull = false, Index = true)]
-        public string SkinVendorItemId
-        {
-            get { return m_skinVendorItemId; }
-            set { Dirty = false; m_skinVendorItemId = value; }
-        }
         protected string m_name;
         [DataElement(AllowDbNull = false, Index = false)]
         public string Name
         {
             get { return m_name; }
-            set { Dirty = false; m_name = value; }
+            set { m_name = value; }
         }
         protected int m_modelId;
         [DataElement(AllowDbNull = false, Index = false)]
         public int ModelId
         {
             get { return m_modelId; }
-            set { Dirty = false; m_modelId = value; }
+            set {  m_modelId = value; }
         }
 
         protected int m_itemType;
@@ -44,7 +37,7 @@ namespace DOLDatabase.Tables
         public int ItemType
         {
             get { return m_itemType; }
-            set { Dirty = false; m_itemType = value; }
+            set {  m_itemType = value; }
         }
 
         protected int m_playerRealmRank;
@@ -52,14 +45,15 @@ namespace DOLDatabase.Tables
         public int PlayerRealmRank
         {
             get { return m_playerRealmRank; }
-            set { Dirty = false; m_playerRealmRank = value; }
+            set { m_playerRealmRank = value; }
         }
         protected int m_accountRealmRank;
 
+        [DataElement(AllowDbNull = false, Index = false)]
         public int AccountRealmRank
         {
             get { return m_accountRealmRank; }
-            set { Dirty = false; m_accountRealmRank = value; }
+            set { m_accountRealmRank = value; }
         }
         protected int m_drake;
 
@@ -67,42 +61,42 @@ namespace DOLDatabase.Tables
         public int Drake
         {
             get { return m_drake; }
-            set { Dirty = false; m_drake = value; }
+            set { m_drake = value; }
         }
         protected int m_orbs;
         [DataElement(AllowDbNull = false, Index = false)]
         public int Orbs
         {
             get { return m_orbs; }
-            set { Dirty = false; m_orbs = value; }
+            set {  m_orbs = value; }
         }
         protected int m_realm;
         [DataElement(AllowDbNull = false, Index = false)]
         public int Realm
         {
             get { return m_realm; }
-            set { Dirty = false; m_realm = value; }
+            set { m_realm = value; }
         }
         protected int m_characterClass;
         [DataElement(AllowDbNull = false, Index = false)]
         public int CharacterClass
         {
             get { return m_characterClass; }
-            set { Dirty = false; m_characterClass = value; }
+            set { m_characterClass = value; }
         }
         protected int m_objectType;
         [DataElement(AllowDbNull = false, Index = false)]
         public int ObjectType
         {
             get { return m_objectType; }
-            set { Dirty = false; m_objectType = value; }
+            set { m_objectType = value; }
         }
         protected int m_damageType;
         [DataElement(AllowDbNull = false, Index = false)]
         public int DamageType
         {
             get { return m_damageType; }
-            set { Dirty = false; m_damageType = value; }
+            set { m_damageType = value; }
         }
 
         protected int m_price;
@@ -110,12 +104,11 @@ namespace DOLDatabase.Tables
         public int Price
         {
             get { return m_price; }
-            set { Dirty = false; m_price = value; }
+            set { m_price = value; }
         }
 
-        public SkinVendorItem(string skinVendorItemId, string name, int modelId, int itemType, int playerRealmRank,int accountRealmRank, int drake, int orbs, int realm, int characterClass, int objectType,int damagetype, int price)
+        public SkinVendorItem(string name, int modelId, int itemType, int playerRealmRank, int accountRealmRank, int drake, int orbs, int realm, int characterClass, int objectType, int damagetype, int price)
         {
-            SkinVendorItemId = skinVendorItemId;
             Name = name;
             ModelId = modelId;
             ItemType = itemType;
