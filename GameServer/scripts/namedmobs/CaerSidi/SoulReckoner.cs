@@ -1,6 +1,5 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -246,22 +245,19 @@ namespace DOL.AI.Brain
                 BafMobs = false;
                 Spawn_Souls = false;
             }
-            if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
-            {
-                Body.Health = Body.MaxHealth;
-                Spawn_Souls = false;
-            }
 
-            if (HasAggro)
+            if (HasAggro && Body.TargetObject != null)
             {
                 AwayFromRoom();
-                if (Util.Chance(15)) // 15% chance to cast lifetap dmg
+                if (Util.Chance(50))
                 {
-                    if (Body.TargetObject != null)
-                    {
-                        Body.TurnTo(Body.TargetObject);
-                        Body.CastSpell(Reckoner_Lifetap, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-                    }
+                    Body.TurnTo(Body.TargetObject);
+                    Body.CastSpell(Reckoner_Lifetap, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                }
+                if(!Spawn_Souls)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSouls), Util.Random(10000, 15000));
+                    Spawn_Souls = true;
                 }
                 if (BafMobs == false)
                 {
@@ -282,25 +278,23 @@ namespace DOL.AI.Brain
         }
         #region Spawn Soul
         public static bool Spawn_Souls = false;
-        public void SpawnSouls()
+        private int SpawnSouls(ECSGameTimer timer)
         {
-            ReckonedSoul Add = new ReckonedSoul();
-            Add.X = Body.X + Util.Random(-50, 80);
-            Add.Y = Body.Y + Util.Random(-50, 80);
-            Add.Z = Body.Z;
-            Add.CurrentRegion = Body.CurrentRegion;
-            Add.Heading = Body.Heading;
-            Add.AddToWorld();
-        }
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-            if(ad != null && !Spawn_Souls && Util.Chance(10))
+            if (Body.IsAlive && HasAggro)
             {
-                SpawnSouls();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
-                Spawn_Souls = true;
+                for (int i = 0; i < Util.Random(1, 2); i++)
+                {
+                    ReckonedSoul Add = new ReckonedSoul();
+                    Add.X = Body.X + Util.Random(-50, 80);
+                    Add.Y = Body.Y + Util.Random(-50, 80);
+                    Add.Z = Body.Z;
+                    Add.CurrentRegion = Body.CurrentRegion;
+                    Add.Heading = Body.Heading;
+                    Add.AddToWorld();
+                }
             }
-            base.OnAttackedByEnemy(ad);
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
+            return 0;
         }
         private int ResetRespawnSouls(ECSGameTimer timer)
         {
@@ -382,6 +376,9 @@ namespace DOL.GS
         {
             --SoulCount;
             base.Die(killer);
+        }
+        public override void DropLoot(GameObject killer)
+        {
         }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 150; }
