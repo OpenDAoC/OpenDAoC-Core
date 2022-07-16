@@ -186,7 +186,7 @@ namespace DOL.GS.API
                 return Results.Ok(discordStatus);
             });
 
-            api.MapGet("/utils/query_max_cap/", () =>
+            api.MapGet("/utils/query_max_cap", () =>
             {
                 var dict = new Dictionary<string, int>()
                 {
