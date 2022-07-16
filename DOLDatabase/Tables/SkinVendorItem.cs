@@ -47,14 +47,22 @@ namespace DOLDatabase.Tables
             set { Dirty = false; m_itemType = value; }
         }
 
-        protected int m_realmRank;
+        protected int m_playerRealmRank;
         [DataElement(AllowDbNull = false, Index = false)]
-        public int RealmRank
+        public int PlayerRealmRank
         {
-            get { return m_realmRank; }
-            set { Dirty = false; m_realmRank = value; }
+            get { return m_playerRealmRank; }
+            set { Dirty = false; m_playerRealmRank = value; }
+        }
+        protected int m_accountRealmRank;
+
+        public int AccountRealmRank
+        {
+            get { return m_accountRealmRank; }
+            set { Dirty = false; m_accountRealmRank = value; }
         }
         protected int m_drake;
+
         [DataElement(AllowDbNull = false, Index = false)]
         public int Drake
         {
@@ -105,13 +113,14 @@ namespace DOLDatabase.Tables
             set { Dirty = false; m_price = value; }
         }
 
-        public SkinVendorItem(string skinVendorItemId, string name, int modelId, int itemType, int realmRank, int drake, int orbs, int realm, int characterClass, int objectType,int damagetype, int price)
+        public SkinVendorItem(string skinVendorItemId, string name, int modelId, int itemType, int playerRealmRank,int accountRealmRank, int drake, int orbs, int realm, int characterClass, int objectType,int damagetype, int price)
         {
             SkinVendorItemId = skinVendorItemId;
             Name = name;
             ModelId = modelId;
             ItemType = itemType;
-            RealmRank = realmRank;
+            PlayerRealmRank = playerRealmRank;
+            AccountRealmRank = accountRealmRank;
             Drake = drake;
             Orbs = orbs;
             Realm = realm;
