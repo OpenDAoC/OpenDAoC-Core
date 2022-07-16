@@ -827,7 +827,7 @@ namespace DOL.AI.Brain
 #region 2nd Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisSecondHead : GameEpicNPC
+	public class MyrddraxisSecondHead : GameNPC
 	{
 		public MyrddraxisSecondHead() : base() { }
 
@@ -1043,7 +1043,7 @@ namespace DOL.AI.Brain
 #region 3th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisThirdHead : GameEpicNPC
+	public class MyrddraxisThirdHead : GameNPC
 	{
 		public MyrddraxisThirdHead() : base() { }
 
@@ -1260,7 +1260,7 @@ namespace DOL.AI.Brain
 #region 4th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisFourthHead : GameEpicNPC
+	public class MyrddraxisFourthHead : GameNPC
 	{
 		public MyrddraxisFourthHead() : base() { }
 
@@ -1477,7 +1477,7 @@ namespace DOL.AI.Brain
 #region 5th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisFifthHead : GameEpicNPC
+	public class MyrddraxisFifthHead : GameNPC
 	{
 		public MyrddraxisFifthHead() : base() { }
 
