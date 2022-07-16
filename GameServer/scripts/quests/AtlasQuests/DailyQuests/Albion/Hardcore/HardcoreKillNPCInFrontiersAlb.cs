@@ -329,6 +329,7 @@ namespace DOL.GS.DailyQuest
 			
 			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
 			    !player.CurrentZone.IsRvR) return;
+			if (gArgs.Target.XPGainers.Count > 1) return;
 			FrontierMobsKilled++;
 			player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);

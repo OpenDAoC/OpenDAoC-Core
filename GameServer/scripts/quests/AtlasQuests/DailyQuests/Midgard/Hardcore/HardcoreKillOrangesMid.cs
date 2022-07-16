@@ -331,6 +331,7 @@ namespace DOL.GS.DailyQuest
 				return;
 
 			if (!(player.GetConLevel(gArgs.Target) > 0)) return;
+			if (gArgs.Target.XPGainers.Count > 1) return;
 			OrangeConKilled++;
 			player.Out.SendMessage("[Hardcore] Monster Killed: (" + OrangeConKilled + " | " + MAX_KillGoal + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
