@@ -309,7 +309,7 @@ GMCommands.Keep.AddTeleport.StoneAdded:		Teleport Stone added!
 ## /keepguard
 GMCommands.KeepGuard.Description:			Various keep guard commands!
 GMCommands.KeepGuard.Information:			Use '/mob' command if you want to change other param of guard.
-GMCommands.KeepGuard.Usage.Create:			'/keepguard create <lord|fighter|archer|healer|stealther|caster|hastener|mission|patrol|corpsesummoner|gatekeeperin|gatekeeperout> <static(optional for archer and caster)>'.
+GMCommands.KeepGuard.Usage.Create:			'/keepguard create <lord|fighter|archer|healer|stealther|caster|merchant|hastener|mission|patrol|corpsesummoner|gatekeeperin|gatekeeperout> <static(optional for archer and caster)>'.
 GMCommands.KeepGuard.Usage.Position.Add:	'/keepguard position add <height(optional)>'.
 GMCommands.KeepGuard.Usage.Position.Remove:	'/keepguard position remove'.
 GMCommands.KeepGuard.Usage.Path.Create:		'/keepguard path create'.
