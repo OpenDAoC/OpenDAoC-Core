@@ -16,6 +16,14 @@ namespace DOLDatabase.Tables
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected bool m_hasLoggedError = false;
         #region Inventory fields
+        
+        protected int m_SkinVendorItemID;
+        [PrimaryKey(AutoIncrement = true)]
+        public int SkinVendorItemID
+        {
+            get { return m_SkinVendorItemID; }
+            set {  m_SkinVendorItemID = value; }
+        }
 
         protected string m_name;
         [DataElement(AllowDbNull = false, Index = false)]
@@ -26,7 +34,7 @@ namespace DOLDatabase.Tables
         }
         protected int m_modelId;
         [DataElement(AllowDbNull = false, Index = false)]
-        public int ModelId
+        public int ModelID
         {
             get { return m_modelId; }
             set {  m_modelId = value; }
@@ -110,7 +118,7 @@ namespace DOLDatabase.Tables
         public SkinVendorItem(string name, int modelId, int itemType, int playerRealmRank, int accountRealmRank, int drake, int orbs, int realm, int characterClass, int objectType, int damagetype, int price)
         {
             Name = name;
-            ModelId = modelId;
+            ModelID = modelId;
             ItemType = itemType;
             PlayerRealmRank = playerRealmRank;
             AccountRealmRank = accountRealmRank;
@@ -122,8 +130,6 @@ namespace DOLDatabase.Tables
             DamageType = damagetype;
             Price = price;
         }
-
-
 
         #endregion
     }

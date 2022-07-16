@@ -509,6 +509,15 @@ namespace DOL.GS
 			return String.Format("Loaded {0} Albion, {1} Midgard and {2} Hibernia teleport locations", numTeleports[0], numTeleports[1], numTeleports[2]);
 		}
 
+		/// <summary>
+		/// Load available reskin options
+		public static string LoadReskinOptions()
+		{
+			//todo do stuff
+
+			return "Reskin options reloaded";
+
+		}
 
 		/// <summary>
 		/// Initializes the WorldMgr. This function must be called
@@ -530,7 +539,7 @@ namespace DOL.GS
 				                                	Region reg;
 				                                	if (m_regions.TryGetValue(data.Id, out reg))
 				                                		reg.LoadFromDatabase(data.Mobs, ref mobs, ref merchants, ref items, ref bindpoints);
-				                                });
+				});
 
 				if (log.IsInfoEnabled)
 				{
