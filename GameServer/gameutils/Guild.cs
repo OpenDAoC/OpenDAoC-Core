@@ -625,6 +625,8 @@ namespace DOL.GS
 			if (log.IsDebugEnabled)
 				log.Debug("Adding player to the guild, guild name=\"" + Name + "\"; player name=" + addPlayer.Name);
 
+			if (addPlayer.Realm != this.Realm) return;
+
 			try
 			{
 				AddOnlineMember(addPlayer);
