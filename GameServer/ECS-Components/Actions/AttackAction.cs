@@ -207,7 +207,9 @@ namespace DOL.GS
                         return; //Don't start the attack if the last one fumbled
                     }
 
-                    combatStyle = owner.styleComponent.GetStyleToUse();
+                    // Figure out which combat style may be (GamePlayer) or is being (GameNPC) used
+                    combatStyle = owner is GamePlayer ? owner.styleComponent.GetStyleToUse() : owner.styleComponent.NPCGetStyleToUse();
+                    
                     if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
                     {
                         attackWeapon = leftWeapon;

@@ -304,9 +304,12 @@ namespace DOL.GS.DailyQuest
 
 			if (player?.IsDoingQuest(typeof(HardcoreKillOrangesAlb)) == null)
 				return;
-			
-			if(player.Group != null && Step == 1)
+
+			if (player.Group != null && Step == 1)
+			{
 				FailQuest();
+				return;
+			}
 
 			if (sender != m_questPlayer)
 				return;
@@ -314,6 +317,7 @@ namespace DOL.GS.DailyQuest
 			if (e == GameLivingEvent.Dying && Step == 1)
 			{
 				FailQuest();
+				return;
 			}
 
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
@@ -324,6 +328,7 @@ namespace DOL.GS.DailyQuest
 				return;
 			
 			if (!(player.GetConLevel(gArgs.Target) > 0)) return;
+			if (gArgs.Target.XPGainers.Count > 1) return;
 			OrangeConKilled++;
 			player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
@@ -368,10 +373,11 @@ namespace DOL.GS.DailyQuest
 			OrangeConKilled = 0;
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
-			Step = -2;
+			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
-
+			m_questPlayer.QuestListFinished.Add(this);
+			
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}

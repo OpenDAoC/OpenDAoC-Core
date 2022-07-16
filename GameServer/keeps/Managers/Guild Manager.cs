@@ -65,13 +65,13 @@ namespace DOL.GS.Keeps
             {
                 return;
             }
-			message = "Your guild is starting to " + changeleveltext + " its area " + keep.Name + " to level 10.";
+			message = "Your guild is starting to " + changeleveltext + " its area " + keep.Name + " to level " + maxlevel;
 			TimeSpan time = keep.ChangeLevelTimeRemaining;
 			message += " It will take ";
 			if (time.Hours > 0)
 				message += time.Hours + " hour(s) ";
 			if (time.Minutes > 0)
-				message += time.Minutes + " minute(s) ";
+				message += time.Minutes + " minute(s)";
 			else message += time.Seconds + " second(s)";
 			message += " to reach the next level.";
 			SendMessageToGuild(message, keep.Guild);

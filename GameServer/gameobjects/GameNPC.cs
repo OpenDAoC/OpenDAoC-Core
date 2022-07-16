@@ -1684,7 +1684,7 @@ namespace DOL.GS
 			{
 				// if in last attack the enemy was out of range, we can attack him now immediately
 				AttackData ad = (AttackData)TempProperties.getProperty<object>(LAST_ATTACK_DATA, null);
-				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange)
+				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange && attackComponent.attackAction != null)
 				{
 					//m_attackAction.Start(1);// schedule for next tick
                     attackComponent.attackAction.StartTime = 1;
@@ -5018,8 +5018,18 @@ namespace DOL.GS
 				}
 
 				GamePlayer playerAttacker = null;
+				BattleGroup activeBG = null;
+				if (killer is GamePlayer playerKiller &&
+				    playerKiller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+					activeBG = playerKiller.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
+					//if a battlegroup killed the mob, filter out any non BG players
+					if (activeBG != null && gainer is GamePlayer p &&
+					    p.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						continue;
+					
 					if (gainer is GamePlayer)
 					{
 						playerAttacker = gainer as GamePlayer;

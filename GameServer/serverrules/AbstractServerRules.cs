@@ -411,8 +411,9 @@ namespace DOL.GS.ServerRules
 
 			// Safe area support for defender
 			if (defender.CurrentAreas is not null)
-            {
-				foreach (AbstractArea area in defender.CurrentAreas.ToList())
+			{
+				var defenderAreas = defender.CurrentAreas.ToList();
+				foreach (AbstractArea area in defenderAreas)
 				{
 					if (area is null) continue;
 
@@ -426,7 +427,8 @@ namespace DOL.GS.ServerRules
 			}		
 
 			//safe area support for attacker
-			foreach (AbstractArea area in attacker.CurrentAreas.ToList())
+			var attackerAreas = attacker.CurrentAreas.ToList();
+			foreach (AbstractArea area in attackerAreas)
 			{
 				if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
 				{
@@ -1184,15 +1186,6 @@ namespace DOL.GS.ServerRules
 				if (de.Key is GameLiving living)
 				{
 					var player = living as GamePlayer;
-					if (living.Group != null)
-					{
-						if(highestDamageDealingGroup != null && living.Group == highestDamageDealingGroup )
-							livingsToAward.Add(living);
-						else if(player != null)
-						{
-							player.Out.SendMessage($"Your group did not deal enough damage to claim this kill.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						}
-					}
 
 					if (player != null)
 					{
@@ -1203,7 +1196,17 @@ namespace DOL.GS.ServerRules
 						} 
 						else
 						{
-							livingsToAward.Add(living);
+							if (living.Group != null)
+							{
+								if(highestDamageDealingGroup != null && living.Group == highestDamageDealingGroup )
+									livingsToAward.Add(living);
+								else if(player != null)
+								{
+									player.Out.SendMessage($"Your group did not deal enough damage to claim this kill.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+							}
+							else
+								livingsToAward.Add(living);
 						}
 					}
 				}
@@ -2439,12 +2442,12 @@ namespace DOL.GS.ServerRules
 			}
 			else if (keep is GameKeep)
 			{
-				value = keep.Guild != null ? Math.Max(50,Properties.KEEP_RP_BASE + ((keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER)) : 0;
+				value = Properties.KEEP_RP_BASE + (keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER;
 			}
 
 			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
 
-			return Math.Max(0, value);
+			return value;
 		}
 
 		/// <summary>

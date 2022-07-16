@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using DOL;
 using DOL.GS;
@@ -96,6 +97,26 @@ namespace DOL.GS
 		{
 			get { return (int)eInventorySlot.Consignment_Last; } // not used
 		}
+		
+		public eRealm GetRealmOfLot(ushort houseNumber)
+		{
+			if (houseNumber <= 1382)
+			{
+				return eRealm.Albion;
+			}
+
+			if (houseNumber <= 2573)
+			{
+				return eRealm.Midgard;
+			}
+
+			if (houseNumber <= 4398)
+			{
+				return eRealm.Hibernia;
+			}
+
+			return eRealm.None;
+		}
 
 
 		/// <summary>
@@ -104,9 +125,8 @@ namespace DOL.GS
 		public virtual bool SearchInventory(GamePlayer player, MarketSearch.SearchData searchData)
 		{
 			MarketSearch marketSearch = new MarketSearch(player);
-			List<InventoryItem> items = marketSearch.FindItemsInList(DBItems(), searchData);
 
-			if (items != null)
+			if (marketSearch.FindItemsInList(DBItems(), searchData).Where(item => item.OwnerLot != 0 && GetRealmOfLot(item.OwnerLot) == player.Realm) is List<InventoryItem> items)
 			{
 				int maxPerPage = 20;
 				byte maxPages = (byte)(Math.Ceiling((double)items.Count / (double)maxPerPage) - 1);

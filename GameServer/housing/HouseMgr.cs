@@ -636,6 +636,9 @@ namespace DOL.GS.Housing
 
 			var house = GetHouse(p.Guild.GuildHouseNumber);
 
+			if (p.Realm != house?.Realm)
+				return null;
+
 			if (house != null)
 				return house;
 

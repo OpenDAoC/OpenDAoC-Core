@@ -58,13 +58,39 @@ namespace DOL.GS {
                 int chance = BASE_ROG_CHANCE + ((killedcon < 0 ? killedcon + 1 : killedcon) * 3);
 
                 //chance = 100;
+                
+                BattleGroup bg = (BattleGroup)player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
+                if (bg != null)
+                {
+                    var maxDropCap = bg.PlayerCount / 40;
+                    if (maxDropCap < 1) maxDropCap = 1;
+                    if (mob is GameEpicNPC || mob is GameDragon)
+                        maxDropCap *= 2;
+                    chance = 5;
+
+                    int numDrops = 0;
+                    foreach (GamePlayer bgMember in bg.Members.Keys)
+                    {
+                        if(bgMember.GetDistance(player) > WorldMgr.VISIBILITY_DISTANCE)
+                            continue;
+                        
+                        if (Util.Chance(chance) && numDrops < maxDropCap)
+                        {
+                            classForLoot = GetRandomClassFromBattlegroup(bg);
+                            var item = GenerateItemTemplate(player, classForLoot, (byte)(mob.Level + 1), killedcon);
+                            loot.AddFixed(item, 1);
+                            numDrops++;
+                        }
+                    }
+                }
                 //players below level 50 will always get loot for their class, 
                 //or a valid class for one of their groupmates
-                if (player.Group != null)
+                else if (player.Group != null)
                 {
                     var MaxDropCap = Math.Round((decimal) (player.Group.MemberCount)/3);
                     if (MaxDropCap < 1) MaxDropCap = 1;
+                    if (MaxDropCap > 3) MaxDropCap = 3;
                     if (mob.Level > 65) MaxDropCap++; //increase drop cap beyond lvl 60
                     int guaranteedDrop = mob.Level > 67 ? 1 : 0; //guarantee a drop for very high level mobs
                     
@@ -201,7 +227,19 @@ namespace DOL.GS {
             eCharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
             return ranClass;
+        }
+        
+        private eCharacterClass GetRandomClassFromBattlegroup(BattleGroup battlegroup)
+        {
+            List<eCharacterClass> validClasses = new List<eCharacterClass>();
 
+            foreach (GamePlayer player in battlegroup.Members.Keys)
+            {
+                validClasses.Add((eCharacterClass)player.CharacterClass.ID);
+            }
+            eCharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
+
+            return ranClass;
         }
 
         private eCharacterClass GetRandomClassFromRealm(eRealm realm)

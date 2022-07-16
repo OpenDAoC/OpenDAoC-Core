@@ -634,6 +634,8 @@ namespace DOL.GS
             //check if any group member has a valid timer to use
             foreach (GamePlayer groupMember in player.Group.GetPlayersInTheGroup())
             {
+                if ((player.CurrentZone != groupMember.CurrentZone) ||
+                    player.CurrentRegion != groupMember.CurrentRegion) continue;
                 if (player.GetDistance(groupMember) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
                 long tempProp = groupMember.TempProperties.getProperty<long>(xpItemKey, 0);
                 if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)

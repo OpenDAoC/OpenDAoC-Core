@@ -909,9 +909,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 							return;
 						}
 						string str = $"[BattleGroup] {client.Player.Name}/Item: {GetShortItemInfo(invItem, client)}";
+						
 						foreach (GamePlayer ply in mybattlegroup.Members.Keys)
 						{
-							ply.Out.SendMessage(str, eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
+							ply.Out.SendMessage(str, mybattlegroup.IsBGLeader(client.Player) ? eChatType.CT_BattleGroupLeader : eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
 						}
 						return;
 					}

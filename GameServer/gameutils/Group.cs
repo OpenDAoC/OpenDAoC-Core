@@ -553,15 +553,7 @@ namespace DOL.GS
 				BattleGroup mybattlegroup = (BattleGroup)player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
-					if (mybattlegroup.IsInTheBattleGroup(plr))
-					{
-						if ((bool)mybattlegroup.Members[plr] == true)
-						{
-							text.Append("<Leader> ");
-						}
-					}
-					text.Append("(" + plr.CharacterClass.Name + ")");
-					text.Append(plr.Name + " ");
+					text.Append($"{plr.Name} ({plr.CharacterClass.Name}) ");
 				}
 				return text.ToString();
 			}

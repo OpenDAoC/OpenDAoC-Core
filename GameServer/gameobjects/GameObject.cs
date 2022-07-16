@@ -382,7 +382,21 @@ namespace DOL.GS
 		/// </summary>
 		public virtual IList<IArea> CurrentAreas
 		{
-			get => CurrentZone != null ? CurrentZone.GetAreasOfSpot(this) : new List<IArea>();
+			get
+			{
+				List<IArea> areas = new List<IArea>();
+				try
+				{
+					if(CurrentZone != null) areas = CurrentZone.GetAreasOfSpot(this) as List<IArea>;
+				}
+				catch (Exception e)
+				{
+					log.Error($"Error encountered when querying current zone of {this.Name}: {e}");
+				}
+
+				return areas;
+			}
+			
 			set { }
 		}
 

@@ -4,6 +4,7 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS.Scripts
 {
@@ -97,8 +98,7 @@ namespace DOL.GS.Scripts
 			SpectralProvisionerBrain.point8check = false;
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
+			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
 		}
@@ -109,14 +109,11 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
 		}
-		public override void WalkToSpawn()
+		public override void WalkToSpawn(short speed)
 		{
-			if (CurrentRegionID == 60) //if region is caer sidi
-			{
-				if (IsAlive)
-					return;
-			}
-			base.WalkToSpawn();
+			if (IsAlive)
+				return;
+			base.WalkToSpawn(speed);
 		}
 		public override void StartAttack(GameObject target)
         {
@@ -129,6 +126,7 @@ namespace DOL.AI.Brain
 {
 	public class SpectralProvisionerBrain : StandardMobBrain
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SpectralProvisionerBrain()
 				: base()
 		{
@@ -168,21 +166,21 @@ namespace DOL.AI.Brain
 		public static bool point6check = false;
 		public static bool point7check = false;
 		public static bool point8check = false;
+		private Point3D point1 = new Point3D(30050, 39425, 17004);
+		private Point3D point2 = new Point3D(30940, 39418, 17004);
+		private Point3D point3 = new Point3D(32065, 40205, 17004);
+		private Point3D point4 = new Point3D(32075, 42378, 17004);
+		private Point3D point5 = new Point3D(32072, 40376, 17006);
+		private Point3D point6 = new Point3D(32967, 39369, 17007);
+		private Point3D point7 = new Point3D(32057, 38494, 17007);
+		private Point3D point8 = new Point3D(31022, 39382, 17006);
 		public override void Think()
 		{
 			if (Body.IsAlive)
 			{
-				Point3D spawn = new Point3D(30049, 40799, 17004);
+				//Point3D spawn = new Point3D(30049, 40799, 17004);
 				Body.MaxSpeedBase = 300;
 				Body.CurrentSpeed = 300;
-				Point3D point1 = new Point3D(30062, 39454, 17004);
-				Point3D point2 = new Point3D(31109, 39425, 17004);
-				Point3D point3 = new Point3D(32012, 40286, 17004);
-				Point3D point4 = new Point3D(32064, 42195, 17004);
-				Point3D point5 = new Point3D(32089, 40241, 17004);
-				Point3D point6 = new Point3D(33021, 39384, 17004);
-				Point3D point7 = new Point3D(32059, 38549, 17004);
-				Point3D point8 = new Point3D(31124, 39405, 17004);
 
 				// if (HasAggro && Body.TargetObject != null)
 				// {
@@ -197,6 +195,7 @@ namespace DOL.AI.Brain
 				if (!Body.IsWithinRadius(point1, 30) && point1check == false)
 				{
 					Body.WalkTo(point1, (short)Util.Random(195, 300));
+					//log.Warn("Moving to point1, " + point1+"Corrent Pos: "+Body.X+", "+Body.Y+", "+Body.Z);
 				}
 				else
 				{
@@ -205,6 +204,7 @@ namespace DOL.AI.Brain
 					if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
 					{
 						Body.WalkTo(point2, (short)Util.Random(195, 300));
+						//log.Warn("Arrived at point1,Moving to point2, " + point2);
 					}
 					else
 					{
@@ -213,6 +213,7 @@ namespace DOL.AI.Brain
 							point3check == false)
 						{
 							Body.WalkTo(point3, (short)Util.Random(195, 300));
+							//log.Warn("Arrived at point2,Moving to point3, " + point3);
 						}
 						else
 						{
@@ -221,6 +222,7 @@ namespace DOL.AI.Brain
 								point3check == true && point4check == false)
 							{
 								Body.WalkTo(point4, (short)Util.Random(195, 300));
+								//log.Warn("Arrived at point3,Moving to point4, " + point4);
 							}
 							else
 							{
@@ -229,6 +231,7 @@ namespace DOL.AI.Brain
 									point3check == true && point4check == true && point5check == false)
 								{
 									Body.WalkTo(point5, (short)Util.Random(195, 300));
+									//log.Warn("Arrived at point4,Moving to point5, " + point4);
 								}
 								else
 								{
@@ -237,6 +240,7 @@ namespace DOL.AI.Brain
 									point3check == true && point4check == true && point5check == true && point6check == false)
 									{
 										Body.WalkTo(point6, (short)Util.Random(195, 300));
+										//log.Warn("Arrived at point5,Moving to point6, " + point6);
 									}
 									else
 									{
@@ -245,6 +249,7 @@ namespace DOL.AI.Brain
 										point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
 										{
 											Body.WalkTo(point7, (short)Util.Random(195, 300));
+											//log.Warn("Arrived at point6,Moving to point7, " + point7);
 										}
 										else
 										{
@@ -253,6 +258,7 @@ namespace DOL.AI.Brain
 											point3check == true && point4check == true && point5check == true && point6check == true && point7check == true && !point8check)
 											{
 												Body.WalkTo(point8, (short)Util.Random(195, 300));
+												//log.Warn("Arrived at point7,Moving to point8, " + point8);
 											}
 											else
 											{
@@ -264,6 +270,7 @@ namespace DOL.AI.Brain
 												point4check = false;
 												point5check = false;
 												point6check = false;
+												//log.Warn("Clearing flags");
 											}
 										}
 									}
@@ -284,3 +291,79 @@ namespace DOL.AI.Brain
 		}		
 	}
 }
+#region Spectral Provisioner Spawner
+namespace DOL.GS
+{
+	public class SpectralProvisionerSpawner : GameNPC
+	{
+		public SpectralProvisionerSpawner() : base()
+		{
+		}
+		public override bool AddToWorld()
+		{
+			Name = "Spectral Provisioner Spawner";
+			GuildName = "DO NOT REMOVE";
+			Level = 50;
+			Model = 665;
+			RespawnInterval = 5000;
+			Flags = (GameNPC.eFlags)28;
+
+			SpectralProvisionerSpawnerBrain sbrain = new SpectralProvisionerSpawnerBrain();
+			SetOwnBrain(sbrain);
+			base.AddToWorld();
+			return true;
+		}
+	}
+}
+namespace DOL.AI.Brain
+{
+	public class SpectralProvisionerSpawnerBrain : StandardMobBrain
+	{
+		private static readonly log4net.ILog log =
+			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public SpectralProvisionerSpawnerBrain()
+			: base()
+		{
+			AggroLevel = 0;
+			AggroRange = 500;
+		}
+		private bool CanSpawnProvisioner = false;
+		public override void Think()
+		{
+			if(Body.IsAlive)
+            {
+				if(!CanSpawnProvisioner)
+                {
+					foreach(GamePlayer player in Body.GetPlayersInRadius(500))
+                    {
+						if(player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+							SpawnSpectralProvisioner(player);
+							CanSpawnProvisioner = true;
+                        }
+                    }
+                }
+            }
+			base.Think();
+		}
+		public void SpawnSpectralProvisioner(GamePlayer player)
+		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			{
+				if (npc.Brain is SpectralProvisionerBrain)
+					return;
+			}
+			SpectralProvisioner boss = new SpectralProvisioner();
+			boss.X = Body.X;
+			boss.Y = Body.Y;
+			boss.Z = Body.Z;
+			boss.Heading = Body.Heading;
+			boss.CurrentRegion = Body.CurrentRegion;
+			boss.AddToWorld();
+			if (player != null)
+				log.Debug("Player "+player.Name + " initialized Spectral Provisioner spawn event.");
+		}
+	}
+}
+#endregion

@@ -300,7 +300,7 @@ namespace DOL.AI.Brain
                 RemoveAdds = false;
                 if(IsCreatingSouls==false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(25000, 30000));//every 25-30s it will spawn tortured souls
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(30000, 35000));//every 30-35s it will spawn tortured souls
                     IsCreatingSouls = true;
                 }
             }
@@ -315,7 +315,14 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
                 {
-                    var spawnAmount = Util.Random(15, 20);
+                    int spawnAmount = 0;
+                    if (Util.Chance(50))
+                        spawnAmount++;
+
+                    if (Util.Chance(5))
+                        spawnAmount++;
+                    
+                    //var spawnAmount = Util.Random(10, 15);
                     SpawnAdds(playerNearby, spawnAmount);
                 }
             }
@@ -428,6 +435,14 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 1500;
+        }
+
+        public override void Think()
+        {
+            if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
+            {
+                Body.RemoveFromWorld();
+            }
         }
     }
 }
