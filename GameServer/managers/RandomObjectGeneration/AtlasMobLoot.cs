@@ -63,7 +63,7 @@ namespace DOL.GS {
 
                 if (bg != null)
                 {
-                    var maxDropCap = bg.PlayerCount / 20;
+                    var maxDropCap = bg.PlayerCount / 40;
                     if (maxDropCap < 1) maxDropCap = 1;
                     if (mob is GameEpicNPC || mob is GameDragon)
                         maxDropCap *= 2;
