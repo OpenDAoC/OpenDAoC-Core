@@ -99,14 +99,14 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("7", "Briton War Pick 2h", 646, Slot.TWOHAND, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Thrust, lowbie));
 
         //rr4
-        VendorItemList.Add(new SkinVendorItem("8", "Zweihander 2h", 841, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("8", "Zweihander 2h", 841, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
 
-        VendorItemList.Add(new SkinVendorItem("9", "Claymore 2h", 843, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
-        VendorItemList.Add(new SkinVendorItem("10", "Great Mace 2h", 842, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, toageneric));
-        VendorItemList.Add(new SkinVendorItem("11", "Dire Hammer 2h", 844, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, toageneric));
-        VendorItemList.Add(new SkinVendorItem("12", "Dire Axe 2h", 845, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
-        VendorItemList.Add(new SkinVendorItem("13", "Great Mattock 2h", 846, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Thrust, toageneric));
-        VendorItemList.Add(new SkinVendorItem("14", "Great Scimitar 2h", 847, Slot.TWOHAND, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("9", "Claymore 2h", 843, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("10", "Great Mace 2h", 842, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("11", "Dire Hammer 2h", 844, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("12", "Dire Axe 2h", 845, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("13", "Great Mattock 2h", 846, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("14", "Great Scimitar 2h", 847, Slot.TWOHAND, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, toageneric));
 
         //mid
 
