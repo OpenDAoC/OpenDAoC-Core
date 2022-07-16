@@ -426,7 +426,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Queue Service Host
 		/// </summary>
-		[ServerProperty("server", "Queue_Api_Uri", "Enable queue service and provide api uri?", "")]
+		[ServerProperty("server", "Queue_Api_Uri", "Enable queue service and provide api uri?", "https://queue.atlasfreeshard.com")]
 		public static string QUEUE_API_URI;
 
 		/// <summary>
