@@ -152,7 +152,7 @@ namespace DOL.GS.ServerRules
 
 			Account account = GameServer.Database.FindObjectByKey<Account>(username);
 
-			if (Properties.MAX_PLAYERS > 0)
+			if (Properties.MAX_PLAYERS > 0 && string.IsNullOrEmpty(Properties.QUEUE_API_URI))
 			{
 				if (WorldMgr.GetAllClients().Count >= Properties.MAX_PLAYERS)
 				{
@@ -165,7 +165,7 @@ namespace DOL.GS.ServerRules
 						log.Debug("IsAllowedToConnect deny access due to too many players.");
 						return false;
 					}
-
+			
 				}
 			}
 

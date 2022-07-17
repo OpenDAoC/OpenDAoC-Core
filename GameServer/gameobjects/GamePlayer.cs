@@ -5731,8 +5731,8 @@ namespace DOL.GS
             
             if (Level == 39)
             {
-                var today = DateTime.Today;
-                var endSoftLaunch = new DateTime(2022, 07, 18);
+                var today = DateTime.Now;
+                var endSoftLaunch = new DateTime(2022, 07, 18, 15, 30,00);
 
                 if (today <= endSoftLaunch)
                 {
@@ -13864,16 +13864,16 @@ namespace DOL.GS
             //let's only check if we can use /level once shall we,
             //this is nice because i want to check the property often for the new catacombs classes
 
-            //find all characters in the database
-            foreach (DOLCharacters plr in Client.Account.Characters)
-            {
-                //where the level of one of the characters if 50
-                if (plr.Level == ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT && GameServer.ServerRules.CountsTowardsSlashLevel(plr))
-                {
-                    m_canUseSlashLevel = true;
-                    break;
-                }
-            }
+            // //find all characters in the database
+            // foreach (DOLCharacters plr in Client.Account.Characters)
+            // {
+            //     //where the level of one of the characters if 50
+            //     if (plr.Level == ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT && GameServer.ServerRules.CountsTowardsSlashLevel(plr))
+            //     {
+            //         m_canUseSlashLevel = true;
+            //         break;
+            //     }
+            // }
 
             // check the account for the Muted flag
             if (Client.Account.IsMuted)

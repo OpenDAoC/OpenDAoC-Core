@@ -1,95 +1,146 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using DOL.GS;
+using System;
 using DOL.Database;
-using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS.Commands
 {
-	[CmdAttribute("&level", //command to handle
+	[Cmd("&level", //command to handle
 	ePrivLevel.Player, //minimum privelege level
-	"Allows you to level 20 instantly if you have a level 50", "/level")] //usage
+	"Allows you to level a character to level 20 instantly if you have reached level 39 during soft launch", "/level - use this command at level 1 while at a trainer", "/level gear - use this command once you are level 20 to receive a full ROG suit")] //usage
 	public class LevelCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
+		private const string SoftLaunchLevelKey = "SoftLaunchSlashLevel";
+		private const string SoftLaunchLevelGearKey = "SoftLaunchSlashLevelGear";
+
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (ServerProperties.Properties.SLASH_LEVEL_TARGET <= 1)
-			{
-				DisplayMessage(client, "/level is disabled on this server.");
-				return;
-			}
 
-			if (client.Player.TargetObject is GameTrainer == false)
+			if (args.Length < 2)
 			{
-				client.Player.Out.SendMessage("You need to be at your trainer to use this command", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (!ServerProperties.Properties.ALLOW_CATA_SLASH_LEVEL)
-			{
-				switch ((eCharacterClass)client.Player.CharacterClass.ID)
+				var today = DateTime.Now;
+				var endSoftLaunch = new DateTime(2022, 07, 18, 15, 30,00);
+			
+				if (ServerProperties.Properties.SLASH_LEVEL_TARGET <= 1)
 				{
-					case eCharacterClass.Heretic:
-					case eCharacterClass.Valkyrie:
-					case eCharacterClass.Warlock:
-					case eCharacterClass.Vampiir:
-					case eCharacterClass.Bainshee:
-					case eCharacterClass.MaulerAlb:
-					case eCharacterClass.MaulerHib:
-					case eCharacterClass.MaulerMid:
-						{
-							client.Player.Out.SendMessage("Your class cannot use /level command.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							return;
-						}
+					DisplayMessage(client, "/level is disabled on this server.");
+					return;
+				}
+			
+				if (today < endSoftLaunch && client.Account.PrivLevel == 1)
+				{
+					client.Player.Out.SendMessage($"This command will be available after {endSoftLaunch} UTC+1", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				
+				var hasCredit = AchievementUtils.CheckPlayerCredit("SoftLaunch39", client.Player, (int)client.Player.Realm);
+				var alreadyUsed = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelKey)));
+			
+				if (!hasCredit)
+				{
+					client.Player.Out.SendMessage("You are not eligible to use /level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				
+				if (alreadyUsed != null)
+				{
+					client.Player.Out.SendMessage("You have already used your /level credit.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				
+				if (client.Player.TargetObject is not (GameTrainer or AtlasTrainer))
+				{
+					client.Player.Out.SendMessage("You need to be at your trainer to use this command", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				
+				if (client.Player.Level != 1)
+				{
+					client.Player.Out.SendMessage("/level can only be used at level 1.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+			
+				client.Out.SendCustomDialog("Do you want to use /level on this character?\n The reward can only be redeemed once per account no matter how many level 39 you have.", SlashLevelResponseHandler);
+			}
+			else
+			{
+				if (args[1] == "gear")
+				{
+					if (!client.Player.UsedLevelCommand)
+					{
+						client.Player.Out.SendMessage("This command can only be used by /level characters.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					
+					if(client.Player.Level != 20)
+					{
+						client.Player.Out.SendMessage("This command can only be used at level 20.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					
+					var alreadyUsed = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelGearKey)));
+					
+					if (alreadyUsed != null)
+					{
+						client.Player.Out.SendMessage("You have already received your /level complementary gear.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					
+					BattlegroundEventLoot.GenerateArmor(client.Player);
+					BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)client.Player.CharacterClass.ID, client.Player);
+					BattlegroundEventLoot.GenerateGems(client.Player);
+					
+					var slashlevelgear = new AccountXCustomParam();
+					slashlevelgear.Name = client.Account.Name;
+					slashlevelgear.KeyName = SoftLaunchLevelGearKey;
+					slashlevelgear.Value = "1";
+					GameServer.Database.AddObject(slashlevelgear);
+					
+					client.Player.Out.SendMessage("You have been given gear for your level 20.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					
+				}
+				else
+				{
+					DisplaySyntax(client);
 				}
 			}
-			if (!client.Player.CanUseSlashLevel)
+			
+			
+		}
+		
+		protected virtual void SlashLevelResponseHandler(GamePlayer player, byte response)
+		{
+			if (response == 1)
 			{
-				client.Player.Out.SendMessage("You don't have a level " + ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT + " on your account!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			//if there is a level 50.. calculate the xp needed to get to
-			//level x from the current level and give it to the player
+				int targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
 
-			// only do this if the players level is  < target level
-			if (client.Player.Experience >= client.Player.GetExperienceNeededForLevel(ServerProperties.Properties.SLASH_LEVEL_TARGET - 1))
+				if( targetLevel < 1 || targetLevel > 50 )
+					targetLevel = 20;
+
+				long newXP;
+				newXP = player.GetExperienceNeededForLevel(targetLevel) - player.Experience;
+
+				if (newXP < 0)
+					newXP = 0;
+
+				player.GainExperience(eXPSource.Other, newXP);
+				player.UsedLevelCommand = true;
+				player.Out.SendMessage("You have been rewarded enough Experience to reach level " + ServerProperties.Properties.SLASH_LEVEL_TARGET + ", right click on your trainer to gain levels!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.SaveIntoDatabase();
+				
+				var slashlevel = new AccountXCustomParam();
+				slashlevel.Name = player.Client.Account.Name;
+				slashlevel.KeyName = SoftLaunchLevelKey;
+				slashlevel.Value = "1";
+				GameServer.Database.AddObject(slashlevel);
+                
+			}
+			else
 			{
-				client.Player.Out.SendMessage("/level only allows you to level to " + ServerProperties.Properties.SLASH_LEVEL_TARGET, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+				player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
-
-			int targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
-
-			if( targetLevel < 1 || targetLevel > 50 )
-				targetLevel = 20;
-
-			long newXP;
-			newXP = client.Player.GetExperienceNeededForLevel(targetLevel - 1) - client.Player.Experience;
-
-			if (newXP < 0)
-				newXP = 0;
-
-			client.Player.GainExperience(eXPSource.Other, newXP);
-			client.Player.UsedLevelCommand = true;
-			client.Player.Out.SendMessage("You have been rewarded enough Experience to reach level " + ServerProperties.Properties.SLASH_LEVEL_TARGET + ", right click on your trainer to gain levels!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Player.SaveIntoDatabase();
 		}
 	}
+
 }
+
