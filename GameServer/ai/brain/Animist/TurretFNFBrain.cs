@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.GS;
@@ -69,8 +71,19 @@ namespace DOL.AI.Brain
 						newTargets.Add(living);
 				}
 			}
+
+			IEnumerable PlayerList = null;
+			try
+			{
+				PlayerList = Body.GetPlayersInRadius((ushort) turretBody.TurretSpell.Range,
+					!Body.CurrentRegion.IsDungeon);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error encountered in animist FNF turret: {e}");
+				PlayerList = new List<GameLiving>();
+			}
 			
-			var PlayerList = Body.GetPlayersInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon);
 			
 			foreach (GameLiving living in PlayerList)
 			{
@@ -117,7 +130,17 @@ namespace DOL.AI.Brain
 								
 			}
 
-			var NPCList = Body.GetNPCsInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon);
+			IEnumerable NPCList = null;
+			try
+			{
+				NPCList = Body.GetNPCsInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error encountered in animist FNF turret: {e}");
+				NPCList = new List<GameLiving>();
+			}
+			
 			foreach (GameNPC living in NPCList)
 			{
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
