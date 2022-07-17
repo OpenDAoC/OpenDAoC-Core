@@ -30,6 +30,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Events;
 
+
 using log4net;
 
 namespace DOL.GS
@@ -539,8 +540,14 @@ namespace DOL.GS
 
 			foreach (InventoryItem item in inventoryItems)
 			{
-				// Error checking
+				
+				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				{
+					log.DebugFormat("Analyzing cached item {0} to see if it fits search criteria.", item.Name);
+				}
 
+
+				// Error checking
 				if (m_searchHasError)
 					break;
 
@@ -657,10 +664,20 @@ namespace DOL.GS
 				if (search.damageType > 0 && CheckForDamageType(item, search.damageType) == false)
 					continue;
 
+				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				{
+					log.DebugFormat("Adding item '{0}' to the list of search ...", item.Name);
+				}
+				
 				items.Add(item);
 
 				if (++count >= ServerProperties.Properties.MARKET_SEARCH_LIMIT)
 					break;
+			}
+
+			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+			{
+				log.DebugFormat("Returning '{0}' items from search.", items.Count);
 			}
 
 			return items;
@@ -668,6 +685,14 @@ namespace DOL.GS
 
 		protected virtual bool CheckSlot(InventoryItem item, int slot)
 		{
+		
+			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+			{
+				log.DebugFormat("Market Explorer Search for items on slot '{0}' and for item '{1}'", slot, item.Name);
+				log.DebugFormat("Market Explorer Search current item '{0}' as itemType '{1}' comparing with '{2}'.", item.Name, item.Item_Type, (int)eInventorySlot.ArmsArmor);
+				log.DebugFormat("Market Explorer Search for items on slot '{0}' and for item.Type '{1}'.", slot, item.Item_Type);
+			}
+
 			if (slot != -1)
 			{
 				switch (slot)
@@ -715,8 +740,8 @@ namespace DOL.GS
 
 					default:
 
-						// log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
-						// ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
+						//log.Error("There has been an unexpected slot passed to CheckSlot: " + slot);
+						//ChatUtil.SendErrorMessage(m_searchPlayer, "Unhandled slot (" + slot + ") specified in search!");
 						//m_searchHasError = true;
 						break;
 

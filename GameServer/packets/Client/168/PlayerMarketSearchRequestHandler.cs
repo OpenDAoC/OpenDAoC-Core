@@ -35,9 +35,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		// TODO: CHANGE BEFORE PRODUCTION
-		private bool localDevelopment = true;
-
+		
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
 			if (client == null || client.Player == null)
@@ -172,8 +170,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			Console.WriteLine(search);
 
-			if (localDevelopment)
+			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
+			
 				Console.WriteLine(" ");
 				Console.WriteLine("----- MARKET EXPLORER SEARCH PACKET ANALYSIS ---------------------");
 				Console.WriteLine(" ");
@@ -200,6 +199,33 @@ namespace DOL.GS.PacketHandler.Client.v168
 				Console.WriteLine(" ");
 				Console.WriteLine("------------------------------------------------------------------");
 				Console.WriteLine(" ");
+
+				log.DebugFormat(" ");
+				log.DebugFormat("----- MARKET EXPLORER SEARCH PACKET ANALYSIS ---------------------");
+				log.DebugFormat(" ");
+				log.DebugFormat("name          : {0}", search.name.ToString());
+				log.DebugFormat("slot          : {0}", GetPacketDescriptionSlot(search.slot));
+				log.DebugFormat("bonus1        : {0}", GetPacketDescriptionBonuses(search.bonus1));
+				log.DebugFormat("bonus1Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus1, search.bonus1Value));
+				log.DebugFormat("bonus2        : {0}", GetPacketDescriptionBonuses(search.bonus2));
+				log.DebugFormat("bonus2Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus2, search.bonus2Value));
+				log.DebugFormat("bonus3        : {0}", GetPacketDescriptionBonuses(search.bonus3));
+				log.DebugFormat("bonus3Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus3, search.bonus3Value));
+				log.DebugFormat("item ability  : {0}", GetPacketDescriptionItemAbilities(search.proc));
+				log.DebugFormat("armorType     : {0}", GetPacketDescriptionArmorType(search.armorType));
+				log.DebugFormat("damageType    : {0}", GetPacketDescriptionDamageType(search.damageType));
+				log.DebugFormat("levelMin      : {0}", search.levelMin.ToString());
+				log.DebugFormat("levelMax      : {0}", search.levelMax.ToString());
+				log.DebugFormat("minQual       : {0}", search.minQual.ToString());
+				log.DebugFormat("priceMin      : {0}", search.priceMin.ToString());
+				log.DebugFormat("priceMax      : {0}", search.priceMax.ToString());
+				log.DebugFormat("playerCrafted : {0}", search.playerCrafted.ToString());
+				log.DebugFormat("visual        : {0}", search.visual.ToString());
+				log.DebugFormat("page          : {0}", search.page.ToString());
+				log.DebugFormat("clientVersion : {0}", search.clientVersion.ToString());
+				log.DebugFormat(" ");
+				log.DebugFormat("------------------------------------------------------------------");
+				log.DebugFormat(" ");
 			}
 
 
