@@ -169,6 +169,8 @@ namespace DOL.GS
         {
             lock (_npcsArray)
             {
+                if (!_npcsArray.Contains(o)) return;
+                
                 _npcsArray[o.id] = null;
                 _npcsLastDeleted = o.id;
                 npcsIsDirty = true;
