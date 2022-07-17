@@ -365,14 +365,17 @@ namespace DOL.GS
 				} else if (leader && m_battlegroupMembers.Count >= 2)
 				{
 					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);
-					bgPlayers.AddRange(m_battlegroupMembers.Keys);
-					var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count) - 1] as GamePlayer;
-					if (randomPlayer == null) return false;
-					SetBGLeader(randomPlayer);
-					m_battlegroupMembers[randomPlayer] = true;
-					foreach(GamePlayer member in Members.Keys)
+					lock (bgPlayers)
 					{
-						member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						bgPlayers.AddRange(m_battlegroupMembers.Keys);
+						var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count - 1)] as GamePlayer;
+						if (randomPlayer == null) return false;
+						SetBGLeader(randomPlayer);
+						m_battlegroupMembers[randomPlayer] = true;
+						foreach(GamePlayer member in Members.Keys)
+						{
+							member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						}
 					}
 				}
 
