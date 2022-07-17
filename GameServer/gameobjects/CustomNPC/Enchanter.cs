@@ -160,6 +160,8 @@ namespace DOL.GS
 
 			InventoryItem item = (InventoryItem) itemWeak.Target;
 
+			if (item == null) return;
+
 			if (response != 0x01 || !this.IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
 			{
 				// Message: You decline to have your {0} repaired.
