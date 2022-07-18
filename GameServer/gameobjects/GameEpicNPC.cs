@@ -54,7 +54,7 @@ namespace DOL.GS {
                             var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                             if (numCurrentLoyalDays >= 1)
                             {
-                                realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                                realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
                             }
                             if(Util.Chance(baseChance+realmLoyalty))
                             {
@@ -82,7 +82,7 @@ namespace DOL.GS {
                         var numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                         if (numCurrentLoyalDays >= 1)
                         {
-                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                            realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
                         }
                         if(Util.Chance(baseChance+realmLoyalty))
                         {
@@ -106,7 +106,7 @@ namespace DOL.GS {
                         : 0;
                     if (numCurrentLoyalDays >= 1)
                     {
-                        realmLoyalty = (int) Math.Round(20 / (numCurrentLoyalDays / 30.0));
+                        realmLoyalty = (int) Math.Round(20 * (numCurrentLoyalDays / 30.0));
                     }
 
                     if (Util.Chance(baseChance + realmLoyalty))

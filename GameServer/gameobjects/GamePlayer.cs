@@ -17119,6 +17119,7 @@ namespace DOL.GS
             //Add to EntityManager
             EntityManager.AddPlayer((this));
             EntityManager.RemoveNpc(this);
+            EntityManager.RemoveNpc(this);
         }
 
         /// <summary>
