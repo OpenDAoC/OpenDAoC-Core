@@ -829,38 +829,55 @@ namespace DOL.AI.Brain
         }
         private protected bool Point1check = false;
         private protected bool Point2check = false;
+        bool SetNpcTarget = false;
+
+        private protected static GameNPC trostnpc = null;
+        private protected static GameNPC TrostNpc
+        {
+            get { return trostnpc; }
+            set { trostnpc = value; }
+        }
         public override void Think()
         {
             Body.CurrentSpeed = 300;
-            foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
+            if (!SetNpcTarget)
             {
-                if(npc != null && npc.IsAlive && npc.Brain is TorstBrain)
+                foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
                 {
-                    Point3D oldPoint = new Point3D(npc.X + Util.Random(-200, 200), npc.Y + Util.Random(-200, 200), npc.Z + Util.Random(0, 100));
-                    Point3D newPoint = new Point3D(npc.X + Util.Random(-200, 200), npc.Y + Util.Random(-200, 200), npc.Z + Util.Random(0, 100));
-                    if (!Body.IsWithinRadius(oldPoint, 20) && !Point1check)
+                    if (npc != null && npc.IsAlive && npc.Brain is TorstBrain)
                     {
-                        Body.WalkTo(oldPoint, 300);                  
-                    }
-                    else
-                    {
-                        Point1check = true;
-                        Point2check = false;
-                        if (!Body.IsWithinRadius(newPoint, 20) && Point1check && !Point2check)
-                        {
-                            Body.WalkTo(newPoint, 300);
-                        }
-                        else 
-                        { 
-                            Point2check = true;
-                            Point1check = false;
-                        }
+                        trostnpc = npc;
+                        SetNpcTarget = true;
                     }
                 }
             }
-            if(HasAggro && Body.TargetObject != null)
+
+            if (TrostNpc != null && TrostNpc.IsAlive)
             {
-                Body.CastSpell(ColdGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
+                Point3D oldPoint = new Point3D(TrostNpc.X + Util.Random(-200, 200), TrostNpc.Y + Util.Random(-200, 200), TrostNpc.Z + Util.Random(0, 100));
+                Point3D newPoint = new Point3D(TrostNpc.X + Util.Random(-200, 200), TrostNpc.Y + Util.Random(-200, 200), TrostNpc.Z + Util.Random(0, 100));
+                if (!Body.IsWithinRadius(oldPoint, 20) && !Point1check)
+                {
+                    Body.WalkTo(oldPoint, 300);
+                }
+                else
+                {
+                    Point1check = true;
+                    Point2check = false;
+                    if (!Body.IsWithinRadius(newPoint, 20) && Point1check && !Point2check)
+                    {
+                        Body.WalkTo(newPoint, 300);
+                    }
+                    else
+                    {
+                        Point2check = true;
+                        Point1check = false;
+                    }
+                }
+            }
+            if (HasAggro && Body.TargetObject != null)
+            {
+                Body.CastSpell(ColdGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             }
             base.Think();
         }
