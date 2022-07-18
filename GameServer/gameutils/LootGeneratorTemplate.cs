@@ -629,10 +629,10 @@ namespace DOL.GS
             return loot;
         }
 
-        private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GameLiving player)
+        private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GamePlayer player)
         {
             //check if any group member has a valid timer to use
-            foreach (GamePlayer groupMember in player.Group.GetPlayersInTheGroup())
+            foreach (GamePlayer groupMember in player.Group.GetNearbyPlayersInTheGroup(player))
             {
                 if ((player.CurrentZone != groupMember.CurrentZone) ||
                     player.CurrentRegion != groupMember.CurrentRegion) continue;
