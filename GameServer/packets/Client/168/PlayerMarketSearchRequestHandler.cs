@@ -69,10 +69,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//};
 
 			search.name = packet.ReadString(searchOffset);
-			// this is for debug only, found weird searches
+			// found weird searches after searching for a string, so we are forcing the weirdness
 			if (search.name.Equals("|"))
 			{
-				search.name = "NEWSEARCH";
+				search.name = "";
 			}
 
 			//packet.Skip(1);
@@ -145,9 +145,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//search.qtyMax = (int)packet.ReadInt();
 
 
-
-
-
 			//byte unk1 = (byte)packet.ReadByte();
 			////short unk2 = (short)packet.ReadShort();
 
@@ -173,33 +170,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
 			
-				Console.WriteLine(" ");
-				Console.WriteLine("----- MARKET EXPLORER SEARCH PACKET ANALYSIS ---------------------");
-				Console.WriteLine(" ");
-				Console.WriteLine("name          : {0}", search.name.ToString());
-				Console.WriteLine("slot          : {0}", GetPacketDescriptionSlot(search.slot));
-				Console.WriteLine("bonus1        : {0}", GetPacketDescriptionBonuses(search.bonus1));
-				Console.WriteLine("bonus1Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus1, search.bonus1Value));
-				Console.WriteLine("bonus2        : {0}", GetPacketDescriptionBonuses(search.bonus2));
-				Console.WriteLine("bonus2Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus2, search.bonus2Value));
-				Console.WriteLine("bonus3        : {0}", GetPacketDescriptionBonuses(search.bonus3));
-				Console.WriteLine("bonus3Value   : {0}", GetPacketDescriptionBonusesValues(search.bonus3, search.bonus3Value));
-				Console.WriteLine("item ability  : {0}", GetPacketDescriptionItemAbilities(search.proc));
-				Console.WriteLine("armorType     : {0}", GetPacketDescriptionArmorType(search.armorType));
-				Console.WriteLine("damageType    : {0}", GetPacketDescriptionDamageType(search.damageType));
-				Console.WriteLine("levelMin      : {0}", search.levelMin.ToString());
-				Console.WriteLine("levelMax      : {0}", search.levelMax.ToString());
-				Console.WriteLine("minQual       : {0}", search.minQual.ToString());
-				Console.WriteLine("priceMin      : {0}", search.priceMin.ToString());
-				Console.WriteLine("priceMax      : {0}", search.priceMax.ToString());
-				Console.WriteLine("playerCrafted : {0}", search.playerCrafted.ToString());
-				Console.WriteLine("visual        : {0}", search.visual.ToString());
-				Console.WriteLine("page          : {0}", search.page.ToString());
-				Console.WriteLine("clientVersion : {0}", search.clientVersion.ToString());
-				Console.WriteLine(" ");
-				Console.WriteLine("------------------------------------------------------------------");
-				Console.WriteLine(" ");
-
 				log.DebugFormat(" ");
 				log.DebugFormat("----- MARKET EXPLORER SEARCH PACKET ANALYSIS ---------------------");
 				log.DebugFormat(" ");
