@@ -7,6 +7,8 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using log4net;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS.Scripts
 {
@@ -82,11 +84,14 @@ namespace DOL.GS.Scripts
             Empathy = npcTemplate.Empathy;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
+            LegionBrain.CanThrow = false;
+            LegionBrain.RemoveAdds = false;
+            LegionBrain.IsCreatingSouls = false;
 
             // demon
             BodyType = 2;
             Race = 2001;
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+            RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
@@ -135,6 +140,20 @@ namespace DOL.GS.Scripts
                     canReportNews = false;
             }
 
+            var throwPlayer = TempProperties.getProperty<ECSGameTimer>("legion_throw");//cancel teleport
+            if (throwPlayer != null)
+            {
+                throwPlayer.Stop();
+                TempProperties.removeProperty("legion_throw");
+            }
+
+            var spawnadds = TempProperties.getProperty<ECSGameTimer>("legion_spawnadds");//cancel spawn adds
+            if (spawnadds != null)
+            {
+                spawnadds.Stop();
+                TempProperties.removeProperty("legion_spawnadds");
+            }
+
             base.Die(killer);
 
             if (canReportNews)
@@ -168,9 +187,9 @@ namespace DOL.GS.Scripts
                         nearbyPlayer.Out.SendSpellEffectAnimation(mob, player, 5933, 0, false, 1);
                     }
 
-                    player.Die(mob);
+                    //player.Die(mob);
                 }
-                else
+               /* else
                 {
                     foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
                     {
@@ -179,9 +198,9 @@ namespace DOL.GS.Scripts
                     }
 
                     player.MoveTo(249, 48200, 49566, 20833, 1028);
-                }
+                }*/
 
-                player.BroadcastUpdate();
+               // player.BroadcastUpdate();
             }
         }
         private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
@@ -203,11 +222,11 @@ namespace DOL.GS.Scripts
                 mob.UpdateHealthManaEndu();
             }
 
-            foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
+           /* foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
             {
                 playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                 playerNearby.BroadcastUpdate();
-            }
+            }*/
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -270,16 +289,42 @@ namespace DOL.AI.Brain
     public class LegionBrain : StandardMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private bool IsCreatingSouls = false;
+        
         public LegionBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
         }
-        private bool RemoveAdds = false;
+        public static bool RemoveAdds = false;
+        public static bool IsCreatingSouls = false;
+        public static bool CanThrow = false;
         public override void Think()
         {
+            if(!HasAggressionTable())
+            {
+                IsCreatingSouls = false;
+                CanThrow = false;
+
+                if (Port_Enemys.Count > 0)//clear port players
+                    Port_Enemys.Clear();
+                if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
+                    randomlyPickedPlayers.Clear();
+
+                var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("legion_throw");//cancel teleport
+                if (throwPlayer != null)
+                {
+                    throwPlayer.Stop();
+                    Body.TempProperties.removeProperty("legion_throw");
+                }
+
+                var spawnadds = Body.TempProperties.getProperty<ECSGameTimer>("legion_spawnadds");//cancel spawn adds
+                if (spawnadds != null)
+                {
+                    spawnadds.Stop();
+                    Body.TempProperties.removeProperty("legion_spawnadds");
+                }
+            }
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
@@ -288,9 +333,7 @@ namespace DOL.AI.Brain
                     foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                     {
                         if (npc.Brain is LegionAddBrain)
-                        {
                             npc.RemoveFromWorld();
-                        }
                     }
                     RemoveAdds = true;
                 }
@@ -298,10 +341,17 @@ namespace DOL.AI.Brain
             if (HasAggro && Body.TargetObject != null)
             {
                 RemoveAdds = false;
-                if(IsCreatingSouls==false)
+                if(!IsCreatingSouls)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(30000, 35000));//every 30-35s it will spawn tortured souls
+                    ECSGameTimer spawnadds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(20000, 30000));//every 20-30s it will spawn tortured souls
+                    Body.TempProperties.setProperty("legion_spawnadds", spawnadds);
                     IsCreatingSouls = true;
+                }
+                if(!CanThrow)
+                {
+                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
+                    Body.TempProperties.setProperty("legion_throw", throwPlayer);
+                    CanThrow = true;
                 }
             }
 
@@ -344,19 +394,73 @@ namespace DOL.AI.Brain
                 add.Z = target.Z;
                 add.CurrentRegionID = target.CurrentRegionID;
                 */
-                add.X = 45092;
-                add.Y = 51689;
-                add.Z = 15468;
+                add.X = Body.X +Util.Random(-150,150);
+                add.Y = Body.Y + Util.Random(-150, 150);
+                add.Z = Body.Z;
                 add.CurrentRegionID = 249;
                 add.IsWorthReward = false;
                 add.Level = (byte) level;
                 add.AddToWorld();
-                add.StartAttack(target);
+                //add.StartAttack(target);
             }
         }
+        #region Legion Port
+        List<GamePlayer> Port_Enemys = new List<GamePlayer>();
+        List<GamePlayer> randomlyPickedPlayers = new List<GamePlayer>();
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+            }
+        }
+        public static List<t> GetRandomElements<t>(IEnumerable<t> list, int elementsCount)//pick X elements from list
+        {
+            return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
+        }
+        private int ThrowPlayer(ECSGameTimer timer)
+        {
+            if (Body.IsAlive && HasAggro)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                {
+                    if (player != null)
+                    {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        {
+                            if (!Port_Enemys.Contains(player))
+                            {
+                                if (player != Body.TargetObject)//dont throw main target
+                                    Port_Enemys.Add(player);
+                            }
+                        }
+                    }
+                }
+                if (Port_Enemys.Count > 0)
+                {
+                    randomlyPickedPlayers = GetRandomElements(Port_Enemys, Util.Random(5, 8));//pick 5-8players from list to new list
+
+                    if (randomlyPickedPlayers.Count > 0)
+                    {
+                        foreach (GamePlayer player in randomlyPickedPlayers)
+                        {
+                            if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && HasAggro && player.IsWithinRadius(Body, 2500))
+                            {
+                                player.MoveTo(249, 48200, 49566, 20833, 1028);
+                                //player.BroadcastUpdate();
+                            }
+                        }
+                        randomlyPickedPlayers.Clear();//clear list after port
+                    }
+                }
+                CanThrow = false;// set to false, so can throw again
+            }
+            return 0;
+        }
+        #endregion
     }
 }
-
+#region Legion adds
 namespace DOL.GS
 {
     public class LegionAdd : GameNPC
@@ -382,7 +486,10 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-
+        public override void DropLoot(GameObject killer)
+        {
+        }
+        public override long ExperienceValue => 0;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 250;
@@ -443,6 +550,117 @@ namespace DOL.AI.Brain
             {
                 Body.RemoveFromWorld();
             }
+            base.Think();
         }
     }
 }
+#endregion
+
+#region Behemoth
+namespace DOL.GS
+{
+    public class Behemoth : GameEpicBoss
+    {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public Behemoth()
+            : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                default: return 70; // dmg reduction for rest resists
+            }
+        }
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+        public override int MaxHealth
+        {
+            get { return 600000; }
+        }
+
+        public override int AttackRange
+        {
+            get { return 450; }
+            set { }
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.50;
+        }
+        public override void OnAttackEnemy(AttackData ad)
+        {
+            if (ad != null && ad.Target != null && ad.Target.IsAlive)
+                ad.Target.Die(this);
+
+            base.OnAttackEnemy(ad);
+        }
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158340);
+            LoadTemplate(npcTemplate);
+
+            Strength = npcTemplate.Strength;
+            Constitution = npcTemplate.Constitution;
+            Dexterity = npcTemplate.Dexterity;
+            Quickness = npcTemplate.Quickness;
+            Empathy = npcTemplate.Empathy;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+
+            BehemothBrain sBrain = new BehemothBrain();
+            RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+            SetOwnBrain(sBrain);
+            sBrain.AggroLevel = 100;
+            sBrain.AggroRange = 500;
+            base.AddToWorld();
+            return true;
+        }
+    }
+}
+
+namespace DOL.AI.Brain
+{
+    public class BehemothBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public BehemothBrain()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 500;
+        }
+        public override void Think()
+        {
+            if (!HasAggressionTable())
+            {
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                Body.Health = Body.MaxHealth;
+            }
+            base.Think();
+        }
+    }
+}
+#endregion
