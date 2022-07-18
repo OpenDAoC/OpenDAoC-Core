@@ -7143,8 +7143,6 @@ namespace DOL.GS
 			m_healthRegenerationTimer = null;
 			m_powerRegenerationTimer = null;
 			m_enduRegenerationTimer = null;
-			
-			EntityManager.RemoveNpc(this);
 			return true;
 		}
 
