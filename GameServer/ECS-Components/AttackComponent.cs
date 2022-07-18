@@ -943,9 +943,17 @@ namespace DOL.GS
                             var players = owner?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
                             if (players == null) return;
                             foreach (GamePlayer player in players)
-                                player?.Out.SendCombatAnimation(owner, null,
-                                    (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
-                                    0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
+                                try
+                                {
+                                    player?.Out.SendCombatAnimation(owner, null,
+                                        (ushort) (AttackWeapon?.Model ?? 0),
+                                        0x00, player.Out.BowPrepare, (byte) (speed / 100), 0x00, 0x00);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Error encountered when sending player attack animations: {e}");
+                                }
+                                
                         }
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
                         attackAction.StartTime =
