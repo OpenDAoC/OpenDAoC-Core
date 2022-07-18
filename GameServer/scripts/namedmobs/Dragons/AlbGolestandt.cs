@@ -133,7 +133,16 @@ namespace DOL.GS
 						canReportNews = false;
 				}
 			}
+
+			var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("golestandt_messengers");
+			if (spawnMessengers != null)
+			{
+				spawnMessengers.Stop();
+				TempProperties.removeProperty("golestandt_messengers");
+			}
+
 			base.Die(killer);
+
 			foreach (String message in m_deathAnnounce)
 			{
 				BroadcastMessage(String.Format(message, Name));
