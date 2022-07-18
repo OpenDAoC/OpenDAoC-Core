@@ -2607,6 +2607,9 @@ namespace DOL.GS
                         double levelMod = (double) (leftHand.Level - 1) / 50 * 0.15;
                         guardchance +=
                             levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+                        
+                        if( attackerCount > shieldSize )
+                            guardchance *= (shieldSize / (double)attackerCount);
 
                         if (guardchance < 0.01)
                             guardchance = 0.01;
@@ -2697,7 +2700,7 @@ namespace DOL.GS
                         if (leftHand != null)
                             shieldSize = leftHand.Type_Damage;
                         if (m_attackers.Count > shieldSize)
-                            guardchance /= (m_attackers.Count - shieldSize + 1);
+                            guardchance *= (shieldSize / (double)attackerCount);
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;
 
                         double parrychance = double.MinValue;
