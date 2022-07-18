@@ -6065,6 +6065,8 @@ namespace DOL.GS.PacketHandler
 				foreach (KeyValuePair<eCraftingSkill, int> de in m_gameClient.Player.CraftingSkills)
 				{
 					AbstractCraftingSkill curentCraftingSkill = CraftingMgr.getSkillbyEnum((eCraftingSkill)de.Key);
+					var value = de.Value;
+					if (value < 0) value = 0;
 					pak.WriteShort(Convert.ToUInt16(de.Value)); //points
 					pak.WriteByte(curentCraftingSkill.Icon); //icon
 					pak.WriteInt(1);
