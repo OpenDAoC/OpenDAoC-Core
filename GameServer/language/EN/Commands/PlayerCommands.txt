@@ -327,7 +327,7 @@ Scripts.Player.Guild.Help.GuildARemoveAlli:		'/gc aremove alliance [#]' to Remov
 Scripts.Player.Guild.Help.GuildAutoRemove:		'/gc autoremove <playername>' 	
 Scripts.Player.Guild.Help.GuildAutoRemoveAcc:		'/gc autoremove account <playername>'	
 Scripts.Player.Guild.Help.GuildBannerSummon:		'/gc summon' summons the guild banner if you have one	
-Scripts.Player.Guild.Help.GuildBuff:			'/gc buff <artifact, crafting, rps, bps, xp or mlxp>' sets the guild buff 	
+Scripts.Player.Guild.Help.GuildBuff:			'/gc buff <crafting, rps, xp>' sets the guild buff 	
 Scripts.Player.Guild.Help.GuildBuyBanner:		'/gc buybanner' - Spend points to buy a guild banner.	
 Scripts.Player.Guild.Help.GuildCancel:			'/gc cancel <option> [value]' to cancel all command done before	
 Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep	
@@ -381,7 +381,11 @@ Scripts.Player.Guild.Help.GuildWebpage:			'/gc webpage <the.guildpage.com>' is a
 Scripts.Player.Guild.Help.GuildWho:			'/gc who' to show all player in your guild	
 Scripts.Player.Guild.Help.GuildWithdraw:	'/gc withdraw <amount>' gets money from the guild bank account.
 Scripts.Player.Guild.AccountRemoved:			{0} has removed {1} from the guild.	
-Scripts.Player.Guild.ActiveBuff:			Your guild already has an active buff. You must wait for it to expire first.	
+Scripts.Player.Guild.ActiveBuff:			Your guild already has an active buff. You must wait for it to expire first.
+Scripts.Player.Guild.XPBuffActive:              Your guild already has an experience bonus.
+Scripts.Player.Guild.RPBuffActive:              Your guild already has a realmpoints bonus.
+Scripts.Player.Guild.BPBuffActive:              Your guild already has a bountypoints bonus.
+Scripts.Player.Guild.CraftBuffActive:           Your guild already has a crafting bonus.
 Scripts.Player.Guild.AllianceAlreadyOther:		That guild already has an alliance.	
 Scripts.Player.Guild.AllianceAnsCancel:			The alliance offer has been cancelled.	
 Scripts.Player.Guild.AllianceDeclined:			You decline the alliance offer.	
