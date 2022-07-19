@@ -215,7 +215,7 @@ public class BountyManager
 
                 if (!playerBountyFound)
                 {
-                    ActiveBounties.Add(killed.Realm, poster);
+                    realmBounties.Add(poster);
                 }
             }
         }
