@@ -133,7 +133,16 @@ namespace DOL.GS
 						canReportNews = false;
 				}
 			}
+
+			var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("golestandt_messengers");
+			if (spawnMessengers != null)
+			{
+				spawnMessengers.Stop();
+				TempProperties.removeProperty("golestandt_messengers");
+			}
+
 			base.Die(killer);
+
 			foreach (String message in m_deathAnnounce)
 			{
 				BroadcastMessage(String.Format(message, Name));
@@ -402,7 +411,7 @@ namespace DOL.AI.Brain
 			}
 
 			#region Dragon IsRestless fly route activation
-			if (Body.CurrentRegion.IsPM && Body.CurrentRegion.IsNightTime == false && !LockIsRestless)//Dragon will start roam
+			if (Body.CurrentRegion.IsPM && Body.CurrentRegion.IsNightTime == false && !LockIsRestless && !Body.InCombatInLast(30000))//Dragon will start roam
 			{
 				if (Glare_Enemys.Count > 0)
 					Glare_Enemys.Clear();
@@ -431,8 +440,6 @@ namespace DOL.AI.Brain
 				LockIsRestless = true;
 			}
 			
-			if (Body.InCombatInLast(30000))
-				IsRestless = false;
 
 			if (IsRestless)
 				DragonFlyingPath();//make dragon follow the path
