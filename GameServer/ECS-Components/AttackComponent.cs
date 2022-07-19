@@ -943,9 +943,17 @@ namespace DOL.GS
                             var players = owner?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
                             if (players == null) return;
                             foreach (GamePlayer player in players)
-                                player?.Out.SendCombatAnimation(owner, null,
-                                    (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
-                                    0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
+                                try
+                                {
+                                    player?.Out.SendCombatAnimation(owner, null,
+                                        (ushort) (AttackWeapon?.Model ?? 0),
+                                        0x00, player.Out.BowPrepare, (byte) (speed / 100), 0x00, 0x00);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Error encountered when sending player attack animations: {e}");
+                                }
+                                
                         }
                         //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
                         attackAction.StartTime =
@@ -2607,6 +2615,9 @@ namespace DOL.GS
                         double levelMod = (double) (leftHand.Level - 1) / 50 * 0.15;
                         guardchance +=
                             levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
+                        
+                        if( attackerCount > shieldSize )
+                            guardchance *= (shieldSize / (double)attackerCount);
 
                         if (guardchance < 0.01)
                             guardchance = 0.01;
@@ -2697,7 +2708,7 @@ namespace DOL.GS
                         if (leftHand != null)
                             shieldSize = leftHand.Type_Damage;
                         if (m_attackers.Count > shieldSize)
-                            guardchance /= (m_attackers.Count - shieldSize + 1);
+                            guardchance *= (shieldSize / (double)attackerCount);
                         if (ad.AttackType == AttackData.eAttackType.MeleeDualWield) guardchance /= 2;
 
                         double parrychance = double.MinValue;

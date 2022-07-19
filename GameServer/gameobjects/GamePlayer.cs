@@ -13040,7 +13040,7 @@ namespace DOL.GS
                     {
                         List<GameObject> owners = new List<GameObject>((GameObject[])floorItem.Owners);
                         List<GamePlayer> eligibleMembers = new List<GamePlayer>(8);
-                        foreach (GamePlayer ply in group.GetPlayersInTheGroup())
+                        foreach (GamePlayer ply in group.GetNearbyPlayersInTheGroup(this))
                         {
                             if (ply.IsAlive
                                 && ply.CanSeeObject(floorObject)
@@ -13112,7 +13112,7 @@ namespace DOL.GS
                     if (Group != null && Group.AutosplitCoins)
                     {
                         //Spread the money in the group
-                        var eligibleMembers = from p in Group.GetPlayersInTheGroup()
+                        var eligibleMembers = from p in Group.GetNearbyPlayersInTheGroup(this)
                             where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
                             select p;
                         var gamePlayers = eligibleMembers as GamePlayer[] ?? eligibleMembers.ToArray();

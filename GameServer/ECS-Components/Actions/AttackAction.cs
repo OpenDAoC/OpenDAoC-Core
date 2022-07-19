@@ -398,7 +398,7 @@ namespace DOL.GS
                         {
                             var attacker = p.attackComponent.Attackers.Last();
                             double mod = p.GetConLevel(attacker);
-                            double chance = 65;
+                            double chance = 90;
                             chance += mod != null ? mod * 10 : 0;
                             chance = Math.Max(1, chance);
                             chance = Math.Min(99, chance);

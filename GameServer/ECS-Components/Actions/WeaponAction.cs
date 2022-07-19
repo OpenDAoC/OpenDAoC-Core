@@ -168,7 +168,7 @@ namespace DOL.GS
                 if (owner is GameNPC)
                     usingOH = false;
 
-                if (mainWeapon.SlotPosition == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
+                if (mainWeapon.Item_Type == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
                     usingOH = false;
 
                 // no left hand used, all is simple here
