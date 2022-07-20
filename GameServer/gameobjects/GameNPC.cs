@@ -3217,7 +3217,7 @@ namespace DOL.GS
 			if (Flags.HasFlag(eFlags.STEALTH))
 				m_wasStealthed = true;
 
-			if (id == 0)
+			if (id < 0)
 				id = EntityManager.AddNpc(this);
 			return true;
 		}
@@ -3269,7 +3269,7 @@ namespace DOL.GS
 			}
 			
 			EntityManager.RemoveNpc(this);
-			id = 0;
+			id = -1;
 
 			return true;
 		}
