@@ -15,10 +15,20 @@ namespace DOL.GS {
 
         public static void GenerateROG(GameLiving living)
         {
-            GenerateROG(living, false);
+            GenerateROG(living, false, (byte)(living.Level + 3));
         }
 
-        public static void GenerateROG(GameLiving living, bool UseEventColors)
+        public static void GenerateROG(GameLiving living, byte itemLevel)
+        {
+            GenerateROG(living, false, itemLevel);
+        }
+
+        public static void GenerateROG(GameLiving living, bool useEventColor)
+        {
+            GenerateROG(living, useEventColor, (byte)(living.Level + 3));
+        }
+
+        public static void GenerateROG(GameLiving living, bool UseEventColors, byte itemLevel)
         {
             if (living != null && living is GamePlayer)
             {
@@ -27,7 +37,7 @@ namespace DOL.GS {
                 eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
-                item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + 3));
+                item = new GeneratedUniqueItem(realm, charclass, itemLevel);
                 item.AllowAdd = true;
                 item.IsTradable = true;
 
@@ -56,6 +66,30 @@ namespace DOL.GS {
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
+        }
+
+
+        public static void GenerateJewel(GameLiving living, byte itemLevel)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                GamePlayer player = living as GamePlayer;
+                eRealm realm = player.Realm;
+                eCharacterClass charclass = (eCharacterClass) player.CharacterClass.ID;
+
+                GeneratedUniqueItem item = null;
+                item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical);
+                item.AllowAdd = true;
+                item.IsTradable = true;
+
+                GameServer.Database.AddObject(item);
+                InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+                invitem.IsROG = true;
+                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Out.SendMessage(
+                    LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet",
+                        invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
 
