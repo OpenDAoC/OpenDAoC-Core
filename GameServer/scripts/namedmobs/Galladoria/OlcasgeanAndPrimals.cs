@@ -1540,7 +1540,7 @@ namespace DOL.GS
         {
             get
             {
-                return 200000;
+                return 125000;
             }
         }
 
@@ -1883,7 +1883,7 @@ namespace DOL.GS
         {
             get
             {
-                return 200000;
+                return 125000;
             }
         }
         public override int AttackRange
@@ -2287,7 +2287,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 125000; }
         }
         public override int AttackRange
         {
