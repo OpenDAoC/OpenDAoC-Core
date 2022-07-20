@@ -135,10 +135,16 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Celtic Sword 2h", 459, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, freebie));
         VendorItemList.Add(new SkinVendorItem("Celtic Great Hammer 2h", 462, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, freebie));
         VendorItemList.Add(new SkinVendorItem("Celtic Spiked Mace 2h", 463, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Scythe", 927, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Harvest Scythe", 929, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("War Scythe", 932, Slot.TWOHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
 
         //rr2
         VendorItemList.Add(new SkinVendorItem("Celtic Falcata 2h", 639, Slot.TWOHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, lowbie));
         VendorItemList.Add(new SkinVendorItem("Celtic Sledgehammer 2h", 640, Slot.TWOHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Great Scythe", 926, Slot.TWOHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great War Scythe", 928, Slot.TWOHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Martial Scythe", 930, Slot.TWOHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
 
         //rr4
         VendorItemList.Add(new SkinVendorItem("Celtic Hammer 2h", 904, Slot.TWOHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, toageneric));
@@ -150,24 +156,227 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Firbolg Trollsplitter 2h", 910, Slot.TWOHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, toageneric));
         VendorItemList.Add(new SkinVendorItem("Leaf Point 2h", 911, Slot.TWOHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, toageneric));
         VendorItemList.Add(new SkinVendorItem("Shod Shillelagh 2h", 912, Slot.TWOHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Scythe", 2213, Slot.TWOHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // var added = GameServer.Database.AddObject(VendorItemList);
-        // var itemCount = GameServer.Database.GetObjectCount<SkinVendorItem>();
 
         // OneHanded Weapons
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // Generic
+        VendorItemList.Add(new SkinVendorItem("Wakazashi 1h", 2209, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wakazashi 1h", 2209, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wakazashi 1h", 2209, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Magma Hammer 1h", 2214, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Hammer 1h", 2214, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Hammer 1h", 2214, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Aerus Hammer 1h", 2205, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Hammer 1h", 2205, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Hammer 1h", 2205, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Khopesh 1h", 2195, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Khopesh 1h", 2195, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Khopesh 1h", 2195, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Aerus Sword 1h", 2203, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Sword 1h", 2203, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Sword 1h", 2203, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, toageneric));
+
+        VendorItemList.Add(new SkinVendorItem("Traitor's Dagger 1h", 1668, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Traitor's Dagger 1h", 1668, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Croc Tooth Dagger 1h", 1669, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Croc Tooth Dagger 1h", 1669, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Golden Spear 1h", 1807, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Golden Spear 1h", 1807, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Battler Hammer 1h", 3453, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Battler Hammer 1h", 3453, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Battler Hammer 1h", 3453, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, artifact));
+
+
+        VendorItemList.Add(new SkinVendorItem("Malice Hammer 1h", 3447, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Malice Hammer 1h", 3447, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Malice Hammer 1h", 3447, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Bruiser Hammer 1h", 1671, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Bruiser Hammer 1h", 1671, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Bruiser Hammer 1h", 1671, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Scepter of the Meritorious", 1672, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Scepter of the Meritorious", 1672, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+        VendorItemList.Add(new SkinVendorItem("Scepter of the Meritorious", 1672, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Battler Sword 1h", 2112, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Battler Sword 1h", 2112, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, artifact));
+        VendorItemList.Add(new SkinVendorItem("Battler Sword 1h", 2112, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
+
         // alb
-        VendorItemList.Add(new SkinVendorItem("Flex Chain", 857, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Reaver, (int)eObjectType.Flexible, (int)eDamageType.Thrust, freebie));
+
+        //flex unsure of dmgtype
+        VendorItemList.Add(new SkinVendorItem("Flex Chain", 857, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Flex Whip", 859, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Flex Flail", 861, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Flex Dagger Flail", 860, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Flex Morning Star", 862, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Flex Pick Flail", 863, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Slash, freebie));
+
+        VendorItemList.Add(new SkinVendorItem("Dirk 1h", 21, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Rapier 1h", 22, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Main Gauche 1h", 25, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Club 1h", 11, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Hammer 1h", 12, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Mace 1h", 13, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Short Sword 1h", 3, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Longsword 1h", 4, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Handaxe 1h", 2, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Scimitar 1h", 8, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, freebie));
+
+
+        //rr2 
+        //flex unsure of dmgtype
+        VendorItemList.Add(new SkinVendorItem("Flex Spiked Flail", 864, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Flex Spiked Whip", 865, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Flex War Chain", 866, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Flex Whip Dagger", 868, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Flex Whip Mace", 869, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Toothpick 1h", 876, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Highlander Dirk 1h", 889, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Foil 1h", 29, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Guarded Rapier 1h", 653, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Spiked Mace 1h", 20, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("War Hammer 1h", 15, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Flanged Mace 1h", 14, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Jambiya 1h", 651, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Cinquedea 1h", 877, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Falchion 1h", 879, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Coffin Axe 1h", 876, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, lowbie));
+
+        //rr4
+        VendorItemList.Add(new SkinVendorItem("Duelists Dagger 1h", 885, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Duelists Rapier 1h", 886, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Parrying Dagger 1h", 887, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Parrying Rapier 1h", 888, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.ThrustWeapon, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Bishops Mace 1h", 854, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Coffin Hammer Mace 1h", 855, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Coffin Mace 1h", 856, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.CrushingWeapon, (int)eDamageType.Crush, toageneric));
+
+        //rr6
+        VendorItemList.Add(new SkinVendorItem("Snakecharmer's Whip", 2119, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Flexible, (int)eDamageType.Slash, artifact));
+      
+
         // hib
+        VendorItemList.Add(new SkinVendorItem("Celtic Dirk 1h", 454, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Rapier 1h", 455, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Stiletto 1h", 456, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Club 1h", 449, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Mace 1h", 450, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Short Sword 1h", 445, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Longsword 1h", 456, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Broadsword 1h", 447, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
+
+        //rr2 
+        VendorItemList.Add(new SkinVendorItem("Curved Dagger 1h", 457, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Guarded Rapier 1h", 643, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Lurikeen Dagger 1h", 943, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Spiked Club 1h", 452, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Spiked Mace 1h", 451, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Hammer 1h", 461, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Sickle 1h", 453, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Celtic Hooked Sword 1h", 460, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Falcata 1h", 444, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, lowbie));
+
+        //rr4
+        VendorItemList.Add(new SkinVendorItem("Elven Dagger 1h", 895, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Dagger 1h", 898, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leaf Dagger 1h", 902, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Adze 1h", 940, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Barbed Adze 1h", 941, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Adze 1h", 942, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("War Adze 1h", 947, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Celt Hammer 1h", 913, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Dire Mace 1h", 915, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Hammer 1h", 916, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Elven Short Sword 1h", 897, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Elven Longsword 1h", 896, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Short Sword 1h", 900, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Firbolg Longsword 1h", 899, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leaf Short Sword 1h", 903, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leaf Longsword 1h", 901, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+
         // mid
-        VendorItemList.Add(new SkinVendorItem("Bladed Claw Greave", 959, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
-        VendorItemList.Add(new SkinVendorItem("Bladed Fang Greave", 960, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
-        VendorItemList.Add(new SkinVendorItem("Bladed Moon Claw", 961, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
-        VendorItemList.Add(new SkinVendorItem("Bladed Moon Fang", 962, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
-        VendorItemList.Add(new SkinVendorItem("Claw Greave", 963, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
-        VendorItemList.Add(new SkinVendorItem("Fang Greave", 964, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
+        //handtohand unsure of dmgtype
+        VendorItemList.Add(new SkinVendorItem("Bladed Claw Greave", 959, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Bladed Fang Greave", 960, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Bladed Moon Claw", 961, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Bladed Moon Fang", 962, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Claw Greave", 963, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Fang Greave", 964, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, freebie));
+
+        VendorItemList.Add(new SkinVendorItem("Small Hammer 1h", 320, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Norse Hammer 1h", 321, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Norse Short Sword 1h", 311, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Norse Broadsword 1h", 310, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Norse Spiked Axe 1h", 315, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //rr2 
+        VendorItemList.Add(new SkinVendorItem("Great Bladed Claw Greave", 965, Slot.RIGHTHAND, 0,2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Bladed Fang Greave", 966, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Bladed Moon Claw", 967, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Bladed Moon Fang", 968, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Claw Greave", 969, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Fang Greave", 970, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Great Hammer 1h", 324, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Pick Hammer 1h", 323, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Spiked Hammer 1h", 656, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Dwarven Short Sword 1h", 655, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 653, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Double Axe 1h", 573, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Norse Bearded Axe 1h", 316, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
+
+        //rr4
+        VendorItemList.Add(new SkinVendorItem("Troll Hammer 1h", 950, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll War Hammer 1h", 954, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold Sap 1h", 1016, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold War Club 1h", 1019, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll Dagger 1h", 949, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll Short Sword 1h", 952, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll Long Sword 1h", 948, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold Dagger 1h", 1013, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold Short Sword 1h", 1017, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold Long Sword 1h", 1015, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll Hand Axe 1h", 1023, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Troll War Axe 1h", 1025, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold Hand Axe 1h", 1014, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Kobold War Axe 1h", 1018, Slot.RIGHTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+
+
+        //rr6
+        VendorItemList.Add(new SkinVendorItem("Snakecharmer's Fist", 2469, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, artifact));
+
+        // var added = GameServer.Database.AddObject(VendorItemList);
+        // var itemCount = GameServer.Database.GetObjectCount<SkinVendorItem>();
 
         DisplayReskinPreviewTo(t, item);
 
