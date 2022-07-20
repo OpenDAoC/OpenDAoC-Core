@@ -15,7 +15,7 @@ namespace DOL.GS
         private static object _playersLock = new object();
 
         private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
-        private static int? _npcsLastDeleted = null;
+        private static int _nextNPCIndex = 0;
 
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
         private static object _effectsLock = new object();
@@ -29,15 +29,7 @@ namespace DOL.GS
         private static Queue<int> IDQueue = new Queue<int>(maxEntities);
 
         private static bool npcsIsDirty;
-
-        static EntityManager()
-        {
-            for (int i = 0; i < maxEntities; i++)
-            {
-                IDQueue.Enqueue(i);
-                Console.WriteLine($"Queued ID {i} on queue size {IDQueue.Count}");
-            }
-        }
+        
 
         public static void AddService(Type t)
         {
@@ -138,7 +130,7 @@ namespace DOL.GS
 
         public static int? GetSkip(this Array array)
         {
-            return _npcsLastDeleted;
+            return _nextNPCIndex;
         }
 
         public static bool GetAllNpcsDirty()
@@ -162,16 +154,26 @@ namespace DOL.GS
                     var ID = IDQueue.Dequeue();
                     _npcsArray[ID] = o;
                     npcsIsDirty = true;
-                    Console.WriteLine($"Adding NPC {o.Name} with ID {ID}");
-                    return (ID);
+                    Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
+                    return ID;
                 }
                 else
                 {
-                    int last_id = (int)_npcsLastDeleted;
-                    _npcsArray[(int)_npcsLastDeleted] = o;
-                    _npcsLastDeleted = null;
+                    int newID = (int)_nextNPCIndex;
+                    if (newID > _npcsArray.Length - 1)
+                    {
+                        GameLiving[] newArray = new GameLiving[_npcsArray.Length * 2];
+                        Console.WriteLine($"NPC Array too short, doubling from {_npcsArray.Length} to {newArray.Length}");
+                        _npcsArray.CopyTo(newArray, 0);
+                        _npcsArray = newArray;
+                    }
+                    
+                    //Console.WriteLine($"Adding NPC {o.Name} with new ID {newID}");
+                    //set array here
+                    _npcsArray[(int)_nextNPCIndex] = o;
+                    _nextNPCIndex++;
                     npcsIsDirty = true;
-                    return last_id;
+                    return newID;
                 }
             }
         }
@@ -181,7 +183,7 @@ namespace DOL.GS
             lock (_npcsArray)
             {
                 _npcsArray[o.id] = null;
-                Console.WriteLine($"Removing NPC {o.Name} with ID {o.id}");
+                Console.WriteLine($"Removing NPC {o.Name} with ID {o.id} npcarraylength {_npcsArray.Length}");
                 IDQueue.Enqueue(o.id); 
                 npcsIsDirty = true;
             }
