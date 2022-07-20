@@ -149,6 +149,7 @@ namespace DOL.GS
         {
             lock (_npcsArray)
             {
+                //grab and ID from the queue if one is available
                 if (IDQueue.Count > 0)
                 {
                     var ID = IDQueue.Dequeue();
@@ -157,9 +158,14 @@ namespace DOL.GS
                     Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
                     return ID;
                 }
+                //if no free ID is available, we add a new one
                 else
                 {
                     int newID = (int)_nextNPCIndex;
+                    
+                    //if our array of entities is not big enough to accept a new entity
+                    //double the array size and then add it
+                    //NOTE: copying this array is an expensive operation, but it should happen infrequently enough to not be an issue
                     if (newID > _npcsArray.Length - 1)
                     {
                         GameLiving[] newArray = new GameLiving[_npcsArray.Length * 2];
@@ -184,6 +190,7 @@ namespace DOL.GS
             {
                 _npcsArray[o.id] = null;
                 Console.WriteLine($"Removing NPC {o.Name} with ID {o.id} npcarraylength {_npcsArray.Length}");
+                //return our ID to the queue to be re-used by something else
                 IDQueue.Enqueue(o.id); 
                 npcsIsDirty = true;
             }
