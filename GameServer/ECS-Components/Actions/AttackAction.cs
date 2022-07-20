@@ -389,7 +389,7 @@ namespace DOL.GS
 
             if (RangeInterruptTime > time)
             {
-                if (owner.rangeAttackComponent?.RangedAttackState == eRangedAttackState.Aim)
+                if (owner.rangeAttackComponent?.RangedAttackState is eRangedAttackState.Aim or eRangedAttackState.AimFire or eRangedAttackState.AimFireReload)
                 {
                     var p = owner as GamePlayer;
                     if (p != null && p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)

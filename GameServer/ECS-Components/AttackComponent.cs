@@ -960,7 +960,7 @@ namespace DOL.GS
                             (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire)
                                 ? Math.Max(1500, speed / 2)
                                 : speed;
-                        attackAction.RangeInterruptTime = 750;
+                        attackAction.RangeInterruptTime = speed;
                     }
                 }
                 else
