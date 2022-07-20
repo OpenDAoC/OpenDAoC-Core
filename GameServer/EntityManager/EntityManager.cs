@@ -16,7 +16,6 @@ namespace DOL.GS
 
         private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
         private static int? _npcsLastDeleted = null;
-        private static int _npcsCount = 0;
 
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
         private static object _effectsLock = new object();
@@ -27,7 +26,18 @@ namespace DOL.GS
         private static Dictionary<Type, HashSet<GameLiving>> _components = new Dictionary<Type, HashSet<GameLiving>>(5000);
         private static object _componentLock = new object();
 
+        private static Queue<int> IDQueue = new Queue<int>(maxEntities);
+
         private static bool npcsIsDirty;
+
+        static EntityManager()
+        {
+            for (int i = 0; i < maxEntities; i++)
+            {
+                IDQueue.Enqueue(i);
+                Console.WriteLine($"Queued ID {i} on queue size {IDQueue.Count}");
+            }
+        }
 
         public static void AddService(Type t)
         {
@@ -147,12 +157,13 @@ namespace DOL.GS
         {
             lock (_npcsArray)
             {
-                if (_npcsLastDeleted == null)
+                if (IDQueue.Count > 0)
                 {
-                    _npcsArray[_npcsCount] = o;
-                    _npcsCount++;
+                    var ID = IDQueue.Dequeue();
+                    _npcsArray[ID] = o;
                     npcsIsDirty = true;
-                    return (_npcsCount - 1);
+                    Console.WriteLine($"Adding NPC {o.Name} with ID {ID}");
+                    return (ID);
                 }
                 else
                 {
@@ -170,7 +181,8 @@ namespace DOL.GS
             lock (_npcsArray)
             {
                 _npcsArray[o.id] = null;
-                _npcsLastDeleted = o.id;
+                Console.WriteLine($"Removing NPC {o.Name} with ID {o.id}");
+                IDQueue.Enqueue(o.id); 
                 npcsIsDirty = true;
             }
         }
