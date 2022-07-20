@@ -86,9 +86,9 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius(7000))
                 {
-                    if (player.IsAlive && player != null && player.Client.Account.PrivLevel == 1)
+                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
-                        if (player.IsWithinRadius(point1, 200) && !startevent && DeadPrimalsCount == 0)
+                        if (player.IsWithinRadius(point1, 200) && !startevent && DeadPrimalsCount == 0 && !startevent)
                         {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = true;
@@ -345,7 +345,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 300000; }
+            get { return 250000; }
         }
         public override int AttackRange
         {
@@ -840,7 +840,7 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius(10000))
                 {
-                    if (player.IsAlive && player != null)
+                    if (player != null && player.IsAlive && !spawn3)
                     {
                         foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
                         {
@@ -938,7 +938,7 @@ namespace DOL.AI.Brain
 
                     if (ported_player.Count > 0)
                     {
-                        GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(1, player_to_port.Count) - 1]));
+                        GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(0, player_to_port.Count) - 1]));
                         TeleportTarget = port;
 
                         if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50 && TeleportTarget.IsAlive && TeleportTarget != null)
