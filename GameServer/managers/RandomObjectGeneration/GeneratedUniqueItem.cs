@@ -6338,7 +6338,7 @@ namespace DOL.GS {
                     }
                 case eObjectType.PolearmWeapon:
                     {
-                        this.SPD_ABS = Util.Random(48, 56);
+                        this.SPD_ABS = Util.Random(53, 56);
                         return;
                     }
                 case eObjectType.Staff:
