@@ -3216,6 +3216,9 @@ namespace DOL.GS
 
 			if (Flags.HasFlag(eFlags.STEALTH))
 				m_wasStealthed = true;
+
+			if (id == 0)
+				id = EntityManager.AddNpc(this);
 			return true;
 		}
 
@@ -3264,6 +3267,9 @@ namespace DOL.GS
 				m_teleporterIndicator.RemoveFromWorld();
 				m_teleporterIndicator = null;
 			}
+			
+			EntityManager.RemoveNpc(this);
+			id = 0;
 
 			return true;
 		}
