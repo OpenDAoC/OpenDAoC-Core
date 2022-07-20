@@ -86,9 +86,9 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius(7000))
                 {
-                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                    if (!startevent && player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
-                        if (player.IsWithinRadius(point1, 200) && !startevent && DeadPrimalsCount == 0 && !startevent)
+                        if (player.IsWithinRadius(point1, 350) && !startevent && DeadPrimalsCount == 0 && !startevent)
                         {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = true;
@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
         }
         public int Message1(ECSGameTimer timer)
         {
-            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
+            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have entered inner sanctum.'"));
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message2), 5000);
             return 0;
         }
@@ -2147,7 +2147,7 @@ namespace DOL.GS
         public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
         public override bool AddToWorld()
         {
-            Model = 665;
+            Model = 2000;
             Name = "trail of fire";
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.CANTTARGET;
