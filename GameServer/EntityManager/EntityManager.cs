@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Effects;
@@ -16,7 +15,8 @@ namespace DOL.GS
         private static object _playersLock = new object();
 
         private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
-        private static int _nextNPCIndex = 0;
+        private static int? _npcsLastDeleted = null;
+        private static int _npcsCount = 0;
 
         private static List<ECSGameEffect> _effects = new List<ECSGameEffect>(50000);
         private static object _effectsLock = new object();
@@ -27,10 +27,7 @@ namespace DOL.GS
         private static Dictionary<Type, HashSet<GameLiving>> _components = new Dictionary<Type, HashSet<GameLiving>>(5000);
         private static object _componentLock = new object();
 
-        private static ConcurrentQueue<int> IDQueue = new ConcurrentQueue<int>();
-
         private static bool npcsIsDirty;
-        
 
         public static void AddService(Type t)
         {
@@ -131,7 +128,7 @@ namespace DOL.GS
 
         public static int? GetSkip(this Array array)
         {
-            return _nextNPCIndex;
+            return _npcsLastDeleted;
         }
 
         public static bool GetAllNpcsDirty()
@@ -150,41 +147,20 @@ namespace DOL.GS
         {
             lock (_npcsArray)
             {
-                //grab and ID from the queue if one is available
-                if (IDQueue.Count > 0)
+                if (_npcsLastDeleted == null)
                 {
-                    int ID = -1;
-                    bool success = IDQueue.TryDequeue(out ID);
-                    if (success)
-                    {
-                        _npcsArray[ID] = o;
-                        npcsIsDirty = true;
-                        //Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
-                        return ID;    
-                    }
-                }
-                
-                //if no free ID is available, we add a new one
-                {
-                    int newID = (int)_nextNPCIndex;
-                    
-                    //if our array of entities is not big enough to accept a new entity
-                    //double the array size and then add it
-                    //NOTE: copying this array is an expensive operation, but it should happen infrequently enough to not be an issue
-                    if (newID > _npcsArray.Length - 1)
-                    {
-                        GameLiving[] newArray = new GameLiving[_npcsArray.Length * 2];
-                        //Console.WriteLine($"NPC Array too short, doubling from {_npcsArray.Length} to {newArray.Length}");
-                        _npcsArray.CopyTo(newArray, 0);
-                        _npcsArray = newArray;
-                    }
-                    
-                    //Console.WriteLine($"Adding NPC {o.Name} with new ID {newID}");
-                    //set array here
-                    _npcsArray[(int)_nextNPCIndex] = o;
-                    _nextNPCIndex++;
+                    _npcsArray[_npcsCount] = o;
+                    _npcsCount++;
                     npcsIsDirty = true;
-                    return newID;
+                    return (_npcsCount - 1);
+                }
+                else
+                {
+                    int last_id = (int)_npcsLastDeleted;
+                    _npcsArray[(int)_npcsLastDeleted] = o;
+                    _npcsLastDeleted = null;
+                    npcsIsDirty = true;
+                    return last_id;
                 }
             }
         }
@@ -194,9 +170,7 @@ namespace DOL.GS
             lock (_npcsArray)
             {
                 _npcsArray[o.id] = null;
-                //Console.WriteLine($"Removing NPC {o.Name} with ID {o.id} npcarraylength {_npcsArray.Length}");
-                //return our ID to the queue to be re-used by something else
-                IDQueue.Enqueue(o.id); 
+                _npcsLastDeleted = o.id;
                 npcsIsDirty = true;
             }
         }
