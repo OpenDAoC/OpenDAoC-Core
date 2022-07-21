@@ -297,9 +297,17 @@ namespace DOL.GS.Keeps
 		public virtual void BroadcastDoorStatus()
 		{
 
+			
 			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 			{
-				player.SendDoorUpdate(this);
+				try
+				{
+					player.SendDoorUpdate(this);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"Critical error encountered in Relic Door health broadcast: {e}");
+				}
 			});
 
 			// foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
