@@ -982,6 +982,26 @@ namespace DOL.GS.Keeps
 		{
 			ClothingMgr.EquipGuard(this);
 
+			if (this is GuardMerchant)
+			{
+				if (IsAlive)
+				{
+					BroadcastLivingEquipmentUpdate();
+				}
+
+				GuildName = "Merchant";
+				return;
+			}
+			else if (this is GuardCurrencyMerchant)
+			{
+				if (IsAlive)
+				{
+					BroadcastLivingEquipmentUpdate();
+				}
+
+				GuildName = "Orb Merchant";
+				return;
+			}
 			Guild guild = Component.Keep.Guild;
 			string guildname = "";
 			if (guild != null)
@@ -1177,6 +1197,14 @@ namespace DOL.GS.Keeps
 			else if (Component.Keep.Guild == null)
 			{
 				GuildName = "";
+			}
+			else if ((Component.Keep.Guild == null || Component.Keep.Guild != null)&& this is GuardMerchant)
+			{
+				GuildName = "Merchant";
+			}
+			else if ((Component.Keep.Guild == null || Component.Keep.Guild != null) && this is GuardCurrencyMerchant)
+			{
+				GuildName = "Orb Merchant";
 			}
 			else
 			{
