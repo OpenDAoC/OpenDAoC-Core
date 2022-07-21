@@ -155,7 +155,7 @@ namespace DOL.GS
                     var ID = IDQueue.Dequeue();
                     _npcsArray[ID] = o;
                     npcsIsDirty = true;
-                    Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
+                    //Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
                     return ID;
                 }
                 //if no free ID is available, we add a new one
@@ -169,7 +169,7 @@ namespace DOL.GS
                     if (newID > _npcsArray.Length - 1)
                     {
                         GameLiving[] newArray = new GameLiving[_npcsArray.Length * 2];
-                        Console.WriteLine($"NPC Array too short, doubling from {_npcsArray.Length} to {newArray.Length}");
+                        //Console.WriteLine($"NPC Array too short, doubling from {_npcsArray.Length} to {newArray.Length}");
                         _npcsArray.CopyTo(newArray, 0);
                         _npcsArray = newArray;
                     }
@@ -189,7 +189,7 @@ namespace DOL.GS
             lock (_npcsArray)
             {
                 _npcsArray[o.id] = null;
-                Console.WriteLine($"Removing NPC {o.Name} with ID {o.id} npcarraylength {_npcsArray.Length}");
+                //Console.WriteLine($"Removing NPC {o.Name} with ID {o.id} npcarraylength {_npcsArray.Length}");
                 //return our ID to the queue to be re-used by something else
                 IDQueue.Enqueue(o.id); 
                 npcsIsDirty = true;
