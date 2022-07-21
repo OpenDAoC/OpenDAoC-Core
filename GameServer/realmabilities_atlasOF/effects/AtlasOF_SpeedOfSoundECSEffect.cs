@@ -69,6 +69,19 @@ namespace DOL.GS.Effects
                 if(speedBuff.GetType() != typeof(SpeedOfSoundECSEffect))
                     EffectService.RequestDisableEffect(speedBuff);
             }
+
+            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
+            {
+                EffectService.RequestDisableEffect(snare);
+            }
+            
+            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            {
+                EffectService.RequestDisableEffect(root);
+            }
+            
+            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Ichor))
+                EffectService.RequestDisableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.Ichor));
             
             OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this,
                 PropertyCalc.MaxSpeedCalculator.SPEED4);
@@ -91,6 +104,19 @@ namespace DOL.GS.Effects
                     EffectService.RequestEnableEffect(speedBuff);                   
                 }
             }
+            
+            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
+            {
+                EffectService.RequestEnableEffect(snare);
+            }
+            
+            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            {
+                EffectService.RequestEnableEffect(root);
+            }
+            
+            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Ichor))
+                EffectService.RequestEnableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.Ichor));
             
             OwnerPlayer.Out.SendUpdateMaxSpeed();
             
