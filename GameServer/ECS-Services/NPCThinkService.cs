@@ -50,27 +50,34 @@ namespace DOL.GS
 
             Parallel.ForEach(arr, npc =>
             {
-                if (npc == null)
+                try
                 {
-                    return;
-                }
-                if (npc is GameNPC && (npc as GameNPC).Brain != null)
-                {
-                    var brain = (npc as GameNPC).Brain;
-
-                    if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
+                    if (npc == null)
                     {
-                        long startTick = GameTimer.GetTickCount();
-                        brain.Think();
-                        long stopTick = GameTimer.GetTickCount();
-                        if((stopTick - startTick)  > 25 && brain != null)
-                            log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
-                        brain.LastThinkTick = tick;
+                        return;
                     }
+                    if (npc is GameNPC && (npc as GameNPC).Brain != null)
+                    {
+                        var brain = (npc as GameNPC).Brain;
 
-                    if (brain.Body is not {NeedsBroadcastUpdate: true}) return;
-                    brain.Body.BroadcastUpdate();
-                    brain.Body.NeedsBroadcastUpdate = false;
+                        if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
+                        {
+                            long startTick = GameTimer.GetTickCount();
+                            brain.Think();
+                            long stopTick = GameTimer.GetTickCount();
+                            if((stopTick - startTick)  > 25 && brain != null)
+                                log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
+                            brain.LastThinkTick = tick;
+                        }
+
+                        if (brain.Body is not {NeedsBroadcastUpdate: true}) return;
+                        brain.Body.BroadcastUpdate();
+                        brain.Body.NeedsBroadcastUpdate = false;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Critical error encountered in NPC Think: {e}");
                 }
             });
 
