@@ -156,6 +156,7 @@ namespace DOL.GS
         ForestheartAmbusher,
         Volley,
         StrikingTheSoul,
-        SpeedOfSound
+        SpeedOfSound,
+        Ichor
     }
 }

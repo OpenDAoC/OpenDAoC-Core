@@ -162,9 +162,9 @@ namespace DOL.GS.RealmAbilities
 
 		private int CalculateDamageWithFalloff(int initialDamage, GameLiving initTarget, GameLiving aetarget)
 		{
-			Console.WriteLine($"initial {initialDamage} caster {initTarget} target {aetarget}");
+			//Console.WriteLine($"initial {initialDamage} caster {initTarget} target {aetarget}");
 			int modDamage = (int)Math.Round((decimal) (initialDamage * ((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)));
-			Console.WriteLine($"distance {((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)} Mod {modDamage}");
+			//Console.WriteLine($"distance {((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)} Mod {modDamage}");
 			return modDamage;
 		}
 
@@ -291,6 +291,7 @@ namespace DOL.GS.RealmAbilities
 			var targetSoS = EffectListService.GetEffectOnTarget(target, eEffect.SpeedOfSound);
 			if (targetCharge == null && targetSoS == null && targetShade == null)
 			{
+				/*
 				// Send spell message to player if applicable
 				if (target is GamePlayer gpMessage)
 					gpMessage.Out.SendMessage("Constricting bonds surround your body!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
@@ -309,6 +310,8 @@ namespace DOL.GS.RealmAbilities
 					if (player.IsWithinRadius(target, WorldMgr.INFO_DISTANCE) && player != target)
 						player.Out.SendMessage(target.GetName(0, false) + " is surrounded by constricting bonds!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				}
+				*/
+				new AtlasOF_IchorECSEffect(new ECSGameEffectInitParams(target, duration, 1));
 			}
 			else
 				// Send resist animation if they cannot be rooted
