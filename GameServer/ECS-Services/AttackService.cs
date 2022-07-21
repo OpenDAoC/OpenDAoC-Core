@@ -31,16 +31,22 @@ namespace DOL.GS
             GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(AttackComponent));
             Parallel.ForEach(arr, p =>
             {
-                if (p == null || p.attackComponent == null)
+                try
                 {
-                    return;
-                }
+                    if (p == null || p.attackComponent == null)
+                    {
+                        return;
+                    }
 
-                long startTick = GameTimer.GetTickCount();
-                p.attackComponent.Tick(tick);
-                long stopTick = GameTimer.GetTickCount();
-                if((stopTick - startTick)  > 25 )
-                    log.Warn($"Long AttackComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                    long startTick = GameTimer.GetTickCount();
+                    p.attackComponent.Tick(tick);
+                    long stopTick = GameTimer.GetTickCount();
+                    if((stopTick - startTick)  > 25 )
+                        log.Warn($"Long AttackComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                } catch (Exception e)
+                {
+                    Console.WriteLine($"Critical error encountered in Attack Service: {e}");
+                }
             });
 
             Diagnostics.StopPerfCounter(ServiceName);

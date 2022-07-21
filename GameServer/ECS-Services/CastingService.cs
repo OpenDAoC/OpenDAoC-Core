@@ -28,11 +28,19 @@ namespace DOL.GS
             
             Parallel.ForEach(arr, p =>
             {
-                long startTick = GameTimer.GetTickCount();
-                HandleTick(p, tick);
-                long stopTick = GameTimer.GetTickCount();
-                if((stopTick - startTick)  > 25 )
-                    log.Warn($"Long CastingComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                try
+                {
+                    long startTick = GameTimer.GetTickCount();
+                    HandleTick(p, tick);
+                    long stopTick = GameTimer.GetTickCount();
+                    if ((stopTick - startTick) > 25)
+                        log.Warn(
+                            $"Long CastingComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                }
+                catch (Exception e)
+                {
+                    log.Error($"Critical error encountered in CastingService: {e}");
+                }
             });
 
             Diagnostics.StopPerfCounter(ServiceName);
