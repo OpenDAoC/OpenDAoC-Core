@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Effects;
@@ -26,7 +27,7 @@ namespace DOL.GS
         private static Dictionary<Type, HashSet<GameLiving>> _components = new Dictionary<Type, HashSet<GameLiving>>(5000);
         private static object _componentLock = new object();
 
-        private static Queue<int> IDQueue = new Queue<int>(maxEntities);
+        private static ConcurrentQueue<int> IDQueue = new ConcurrentQueue<int>();
 
         private static bool npcsIsDirty;
         
@@ -152,14 +153,18 @@ namespace DOL.GS
                 //grab and ID from the queue if one is available
                 if (IDQueue.Count > 0)
                 {
-                    var ID = IDQueue.Dequeue();
-                    _npcsArray[ID] = o;
-                    npcsIsDirty = true;
-                    //Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
-                    return ID;
+                    int ID = -1;
+                    bool success = IDQueue.TryDequeue(out ID);
+                    if (success)
+                    {
+                        _npcsArray[ID] = o;
+                        npcsIsDirty = true;
+                        //Console.WriteLine($"Adding NPC {o.Name} with ID {ID} from queue");
+                        return ID;    
+                    }
                 }
+                
                 //if no free ID is available, we add a new one
-                else
                 {
                     int newID = (int)_nextNPCIndex;
                     
