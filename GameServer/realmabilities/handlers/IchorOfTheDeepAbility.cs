@@ -116,20 +116,14 @@ namespace DOL.GS.RealmAbilities
 				*/
 
 			// Do the effect and damage if all went well... not sure why this is a timer
-			m_expireTimerID = new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(EndCast), 1);
-			m_expireTimerID.Start();
+			//m_expireTimerID = new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(EndCast), 1);
+			//m_expireTimerID.Start();
+			EndCast();
 		}
 
-		protected virtual int EndCast(ECSGameTimer timer)
+		protected virtual int EndCast()
 		{
 			GameLiving living = caster.TargetObject as GameLiving;
-
-			if (living == null)
-			{
-				timer.Stop();
-				timer = null;
-				return 0;
-			}
 
 			foreach (GamePlayer i_player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
@@ -163,8 +157,6 @@ namespace DOL.GS.RealmAbilities
 			}
 
 			DisableSkill(caster);
-			timer.Stop();
-			timer = null;
 			return 0;
 		}
 
@@ -296,7 +288,8 @@ namespace DOL.GS.RealmAbilities
 			// Make sure they're not using SoS (needs fixing), Charge, or in Shade form
 			var targetCharge = EffectListService.GetEffectOnTarget(target, eEffect.Charge);
 			var targetShade = EffectListService.GetEffectOnTarget(target, eEffect.Shade);
-			if (targetCharge == null && target.EffectList.GetOfType<SpeedOfSoundEffect>() == null && targetShade == null)
+			var targetSoS = EffectListService.GetEffectOnTarget(target, eEffect.SpeedOfSound);
+			if (targetCharge == null && targetSoS == null && targetShade == null)
 			{
 				// Send spell message to player if applicable
 				if (target is GamePlayer gpMessage)
