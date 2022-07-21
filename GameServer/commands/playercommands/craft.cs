@@ -24,25 +24,30 @@ namespace DOL.GS.Commands
             {
                 #region set
 
-                // if (args[1] == "set")
-                // {
-                //     if (args.Length >= 3)
-                //     {
-                //         int.TryParse(args[2], out int count);
-                //         if (count == 0)
-                //         {
-                //             DisplayMessage(client, "Use: /craft set <#>");
-                //             return;
-                //         }
-                //
-                //         client.Player.TempProperties.setProperty(CraftQueueLength, count);
-                //         DisplayMessage(client, $"Crafting queue set to {count} items");
-                //     }
-                //     else
-                //     {
-                //         DisplayMessage(client, "Use: /craft set <#>");
-                //     }
-                // }
+                if (args[1] == "set")
+                {
+                    if (args.Length >= 3)
+                    {
+                        int.TryParse(args[2], out int count);
+                        if (count == 0)
+                        {
+                            DisplayMessage(client, "Use: /craft set <#>");
+                            return;
+                        }
+
+                        if (count > 100)
+                        {
+                            count = 100;
+                        }
+                
+                        client.Player.TempProperties.setProperty(CraftQueueLength, count);
+                        DisplayMessage(client, $"Crafting queue set to {count} items");
+                    }
+                    else
+                    {
+                        DisplayMessage(client, "Use: /craft set <#>");
+                    }
+                }
 
                 #endregion
 
