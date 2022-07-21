@@ -963,28 +963,44 @@ namespace DOL.GS.Commands
 								}
 								else
 								{
-									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.ActiveBuff"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+									switch (client.Player.Guild.BonusType)
+									{
+										case Guild.eBonusType.Experience:
+											client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.XPBuffActive"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+											break;
+										case Guild.eBonusType.RealmPoints:
+											client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.RPBuffActive"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+											break;
+										case Guild.eBonusType.BountyPoints:
+											client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.BPBuffActive"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+											break;
+										case Guild.eBonusType.CraftingHaste:
+											client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.CraftBuffActive"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+											break;
+									}
+									//client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.ActiveBuff"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								}
 							}
 
-							client.Out.SendMessage("Available buffs:", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+							if(client.Player.Guild.BonusType == Guild.eBonusType.None)
+								client.Out.SendMessage("Available buffs:", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP > 0)
-								client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.ArtifactXP), ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+							//if (ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP > 0)
+							//	client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.ArtifactXP), ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_BP > 0)
+							if (ServerProperties.Properties.GUILD_BUFF_BP > 0 && client.Player.Guild.BonusType == Guild.eBonusType.None)
 								client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.BountyPoints), ServerProperties.Properties.GUILD_BUFF_BP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_CRAFTING > 0)
+							if (ServerProperties.Properties.GUILD_BUFF_CRAFTING > 0 && client.Player.Guild.BonusType == Guild.eBonusType.None)
 								client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.CraftingHaste), ServerProperties.Properties.GUILD_BUFF_CRAFTING), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_XP > 0)
+							if (ServerProperties.Properties.GUILD_BUFF_XP > 0 && client.Player.Guild.BonusType == Guild.eBonusType.None)
 								client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.Experience), ServerProperties.Properties.GUILD_BUFF_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
 							//if (ServerProperties.Properties.GUILD_BUFF_MASTERLEVEL_XP > 0)
 							//    client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.MasterLevelXP), ServerProperties.Properties.GUILD_BUFF_MASTERLEVEL_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_RP > 0)
+							if (ServerProperties.Properties.GUILD_BUFF_RP > 0 && client.Player.Guild.BonusType == Guild.eBonusType.None)
 								client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.RealmPoints), ServerProperties.Properties.GUILD_BUFF_RP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
 							return;

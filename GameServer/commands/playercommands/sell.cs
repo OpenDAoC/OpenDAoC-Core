@@ -137,7 +137,7 @@ namespace DOL.GS.Commands
 
 						if (item != null)
 						{
-							if (item is {PackageID: "AtlasXPItem"}) continue;
+							if (item is {PackageID: "AtlasXPItem"} or {PackageID: "atlas_orbs_item"}) continue;
 							if (skipPotions && item.Object_Type == 41) continue;
 						}
 						merchant.OnPlayerSell(player, item);
