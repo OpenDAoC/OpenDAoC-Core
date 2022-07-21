@@ -199,6 +199,22 @@ Scripts.Players.Bountyrent.ToManyMoney:                That is more money than w
 Scripts.Players.Bountyrent.YouSpend:                   You spend {0} personal bounty points to pay for {1} gold pieces worth of rent.
 Scripts.Players.Bountyrent.YouSpendGuild:              You spend {0} guild bounty points to pay for {1} gold pieces worth of rent.
 
+## /rent
+#Scripts.Players.Rent.InHouseError:		               You have to be in your house to use this command!
+#Scripts.Players.Rent.NoHouseError:		       You don't own a house!
+Scripts.Players.Rent.AlreadyMaxMoney:            This house already has the maximum amount of money placed in the lockbox!
+Scripts.Players.Rent.CmdUsage:                   Use /rent personal/guild <gold> to pay.
+Scripts.Players.Rent.CorrectFormat:              Correct format is /rent personal | guild <gold>
+Scripts.Players.Rent.NotAHouseGuildLeader:       This house does not belong to your guild!
+Scripts.Players.Rent.NotEnoughMoney:                You don't have enough gold!
+Scripts.Players.Rent.NotEnoughGuildMoney:           Your guild don't have enough gold!
+Scripts.Players.Rent.NoPayRentPerm:              You don't have permission to use /rent here!
+Scripts.Players.Rent.NoHouse:		            You don't own a house!
+Scripts.Players.Rent.NoGuildHouse:		            Your guild doesn't own a house!
+Scripts.Players.Rent.TooMuchMoney:                That is more money than will fit in the lockbox!
+Scripts.Players.Rent.YouSpend:                   You spend {0} personal gold to pay rent.
+Scripts.Players.Rent.YouSpendGuild:              You spend {0} guild gold to pay for rent.
+
 ## /broadcast
 Scripts.Players.Broadcast.NoHere:			You cannot broadcast here.
 Scripts.Players.Broadcast.NoText:			You must broadcast something...
