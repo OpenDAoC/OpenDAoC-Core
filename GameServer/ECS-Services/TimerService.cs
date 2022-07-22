@@ -123,7 +123,7 @@ public class TimerService
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Critical error encountered in Timer Service: {e}");
+                log.Error($"Critical error encountered in Timer Service: {e}");
             }
             
         });

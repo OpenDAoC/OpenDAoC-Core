@@ -45,7 +45,7 @@ namespace DOL.GS
                         log.Warn($"Long AttackComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
                 } catch (Exception e)
                 {
-                    Console.WriteLine($"Critical error encountered in Attack Service: {e}");
+                    log.Error($"Critical error encountered in Attack Service: {e}");
                 }
             });
 
