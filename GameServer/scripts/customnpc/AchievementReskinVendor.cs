@@ -337,7 +337,7 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Norse Hammer 1h", 321, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, freebie));
         VendorItemList.Add(new SkinVendorItem("Norse Short Sword 1h", 311, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
         VendorItemList.Add(new SkinVendorItem("Norse Broadsword 1h", 310, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
-        VendorItemList.Add(new SkinVendorItem("Norse Spiked Axe 1h", 315, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Norse Spiked Axe 1h", 315, Slot.RIGHTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, freebie));
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         //rr2 
@@ -351,7 +351,7 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Pick Hammer 1h", 323, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
         VendorItemList.Add(new SkinVendorItem("Spiked Hammer 1h", 656, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
         VendorItemList.Add(new SkinVendorItem("Dwarven Short Sword 1h", 655, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
-        VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 653, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 654, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
         VendorItemList.Add(new SkinVendorItem("Double Axe 1h", 573, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
         VendorItemList.Add(new SkinVendorItem("Norse Bearded Axe 1h", 316, Slot.RIGHTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
 
@@ -375,6 +375,479 @@ public class AchievementReskinVendor : GameNPC
         //rr6
         VendorItemList.Add(new SkinVendorItem("Snakecharmer's Fist", 2469, Slot.RIGHTHAND, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.HandToHand, (int)eDamageType.Slash, artifact));
 
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // Shields
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // Generic
+        VendorItemList.Add(new SkinVendorItem("Oceanus Small Shield", 2192, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Small Shield", 2210, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Small Shield", 2218, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Small Shield", 2200, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Medium Shield", 2193, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Medium Shield", 2211, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Medium Shield", 2219, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Medium Shield", 2201, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aten's Shield", 1663, Slot.LEFTHAND, 0, 6, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Cyclop's Eye", 1664, Slot.LEFTHAND, 0, 6, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Shield Of Khaos", 1665, Slot.LEFTHAND, 0, 6, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, artifact));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Large Shield", 2194, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Large Shield", 2212, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Magma Large Shield", 2220, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Large Shield", 2202, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+
+
+        // alb
+        VendorItemList.Add(new SkinVendorItem("Leather Buckler", 140, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Buckler", 141, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Buckler", 142, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Albion Dragonslayer Buckler", 3965, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Heater", 1049, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Heater", 1050, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Heater", 1051, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Tower", 1085, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Tower", 1086, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Tower", 1087, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Albion Dragonslayer Medium", 3966, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Heater", 1067, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Heater", 1068, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Heater", 1069, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Tower", 1058, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Tower", 1059, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Tower", 1060, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Round", 1076, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Round", 1077, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Round", 1078, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Albion Dragonslayer Large", 3967, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, dragonCost * 2));
+        // rr2
+        VendorItemList.Add(new SkinVendorItem("Leather Tri-Tip Buckler", 1103, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Tri-Tip Buckler", 1104, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Tri-Tip Buckler", 1105, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Horned", 1112, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Horned", 1113, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Horned", 1114, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Horned", 1106, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Horned", 1107, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Horned", 1108, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+
+        // rr4
+        VendorItemList.Add(new SkinVendorItem("Leather Kite Buckler", 1118, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Kite Buckler", 1119, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Kite Buckler", 1120, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Kite", 1115, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Kite", 1116, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Kite", 1117, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Kite", 1109, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Kite", 1110, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Kite", 1111, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Studded Tower", 1121, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Studded Tower", 1122, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Studded Tower", 1123, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+
+        // hib
+        VendorItemList.Add(new SkinVendorItem("Leather Buckler", 146, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Buckler", 147, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Buckle", 148, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Hibernia Dragonslayer Buckler", 3888, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Heater", 1055, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Heater", 1056, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Heater", 1057, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Tower", 1088, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Tower", 1089, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Tower", 1090, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Hibernia Dragonslayer Medium", 3889, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Heater", 1073, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Heater", 1074, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Heater", 1075, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Tower", 1064, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Tower", 1065, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Tower", 1066, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Round", 1082, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Round", 1083, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Round", 1084, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Hibernia Dragonslayer Large", 3890, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, dragonCost * 2));
+
+        // rr2
+        VendorItemList.Add(new SkinVendorItem("Leather Celtic Buckler", 1148, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Celtic Buckler", 1149, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Celtic Buckler", 1150, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Celtic", 1145, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Celtic", 1146, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Celtic", 1147, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Celtic", 1154, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Celtic", 1155, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Celtic", 1156, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+
+        // rr4
+        VendorItemList.Add(new SkinVendorItem("Leather Leaf Buckler", 1163, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Leaf Buckler", 1164, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Leaf Buckler", 1165, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Leaf", 1160, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Leaf", 1161, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Leaf", 1162, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Leaf", 1157, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Leaf", 1158, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Leaf", 1159, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Celtic Tower", 1151, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Celtic Tower", 1152, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Celtic Tower", 1153, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+
+        // mid
+        VendorItemList.Add(new SkinVendorItem("Leather Buckler", 143, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Buckler", 144, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Buckler", 145, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, freebie));
+        VendorItemList.Add(new SkinVendorItem("Midgard Dragonslayer Buckler", 3929, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Heater", 1052, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Heater", 1053, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Heater", 1054, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Tower", 1091, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Tower", 1092, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Tower", 1093, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, freebie));
+        VendorItemList.Add(new SkinVendorItem("Midgard Dragonslayer Medium", 3930, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Heater", 1070, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Heater", 1071, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Heater", 1072, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Tower", 1061, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Tower", 1062, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Tower", 1063, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Round", 1079, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Round", 1080, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Round", 1081, Slot.LEFTHAND, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, freebie));
+        VendorItemList.Add(new SkinVendorItem("Midgard Dragonslayer Large", 3931, Slot.LEFTHAND, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, dragonCost * 2));
+        // rr2
+        VendorItemList.Add(new SkinVendorItem("Leather Norse Buckler", 1139, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Norse Buckler", 1140, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Norse Buckler", 1141, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Crescent", 1124, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Crescent", 1125, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Crescent", 1126, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Crescent", 1133, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Crescent", 1134, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Crescent", 1135, Slot.LEFTHAND, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, lowbie));
+
+        // rr3
+        VendorItemList.Add(new SkinVendorItem("Leather Grave Buckler", 1130, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Grave Buckler", 1131, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Grave Buckler", 1132, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Crush, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Medium Grave", 1132, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Medium Grave", 1128, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Medium Grave", 1129, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Slash, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Large Grave", 1136, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Large Grave", 1137, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Large Grave", 1138, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Leather Norse Tower", 1142, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Metal Norse Tower", 1143, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Wood Norse Tower", 1144, Slot.LEFTHAND, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Shield, (int)eDamageType.Thrust, toageneric));
+
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // Helm
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // Generic
+
+        // alb
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 822, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 62, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 824, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 824, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 63, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 64, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 823, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1231, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1233, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1233, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 2812, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 93, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1229, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 2800, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1234, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1234, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1236, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1238, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1281, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Tarboosh", 1284, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Jester Hat", 1287, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wizard Hat", 1278, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+
+
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3864, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3862, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3866, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3861, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4056, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4054, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4055, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4055, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4057, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4053, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, dragonCost * 2));
+
+        //rr 2
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1230, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1231, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1234, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1234, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1236, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1239, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1230, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1232, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1235, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1235, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1236, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1240, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, lowbie));
+        //rr 4
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2253, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2256, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2262, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2262, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2265, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2268, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2307, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2310, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2316, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2316, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2313, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2322, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2361, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2364, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2370, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2370, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2373, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2376, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2415, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2418, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2424, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2424, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2421, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2430, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, toageneric));
+        //rr 6
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1839, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1842, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+
+        // hib
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 826, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 438, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 835, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 835, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 838, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1197, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 439, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 836, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 836, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1202, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1197, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 440, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 837, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 837, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 840, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1282, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1282, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1282, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1282, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Robin Hood Hat", 1282, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Leaf Hat", 1285, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Leaf Hat", 1285, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Leaf Hat", 1285, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Leaf Hat", 1285, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Leaf Hat", 1285, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Stag Helm", 1288, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Stag Helm", 1288, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Stag Helm", 1288, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Stag Helm", 1288, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Stag Helm", 1288, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wizard Hat", 1279, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3864, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3862, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3867, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4063, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4061, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4062, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4062, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4066, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, dragonCost * 2));
+        //rr2
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1197, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1198, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1199, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1199, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1200, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1197, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1198, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1199, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1199, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1200, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, lowbie));
+        //rr4
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2289, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2292, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2298, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2298, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2301, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2343, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2346, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2352, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2352, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2355, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2397, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2400, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2406, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2406, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2409, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2451, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2454, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2460, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2460, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2463, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType.Heat, toageneric));
+        //rr6
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1840, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1843, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2225, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+        // mid
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 825, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 335, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 829, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 829, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 832, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1213, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 336, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 830, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 830, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 833, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1213, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 337, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 831, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 831, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 834, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, freebie));
+        VendorItemList.Add(new SkinVendorItem("Fur Cap", 1283, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Fur Cap", 1283, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Fur Cap", 1283, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Fur Cap", 1283, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Fur Cap", 1283, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wing Hat", 1286, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wing Hat", 1286, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wing Hat", 1286, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wing Hat", 1286, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wing Hat", 1286, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wolf Helm", 1289, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wolf Helm", 1289, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wolf Helm", 1289, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wolf Helm", 1289, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wolf Helm", 1289, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Wizard Hat", 1280, Slot.HELM, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, festive));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3864, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3862, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3863, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Helm", 3866, Slot.HELM, 0, 0, 10, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4070, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4068, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4069, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4069, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Helm", 4072, Slot.HELM, 0, 0, 25, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, dragonCost * 2));
+
+        //rr2
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1213, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1214, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1215, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1215, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 4", 1216, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1213, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1214, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1215, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1215, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Helm 5", 1216, Slot.HELM, 0, 2, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, lowbie));
+        //rr4
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2271, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2274, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2280, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2280, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Helm", 2277, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2325, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2328, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2334, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2334, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Helm", 2331, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2379, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2382, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2388, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2388, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Helm", 2385, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2433, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2436, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2442, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2442, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Aerus Helm", 2439, Slot.HELM, 0, 4, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, toageneric));
+        //rr6
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur", 1841, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Crown of Zahur variant", 1844, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType.Heat, artifact));
+        VendorItemList.Add(new SkinVendorItem("Winged Helm", 2224, Slot.HELM, 0, 6, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType.Heat, artifact));
+
         // var added = GameServer.Database.AddObject(VendorItemList);
         // var itemCount = GameServer.Database.GetObjectCount<SkinVendorItem>();
 
@@ -394,7 +867,27 @@ public class AchievementReskinVendor : GameNPC
         switch (item.Item_Type)
         {
             case Slot.HELM:
-                DisplayHelmOption(t, item);
+                //DisplayHelmOption(t, item);
+              List<SkinVendorItem> foundItems = VendorItemList.FindAll(x => (x.ItemType == item.Item_Type)
+              && (x.Realm == playerRealm || x.Realm == noneRealm)
+              && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
+              && x.PlayerRealmRank <= playerRealmRank
+              && x.AccountRealmRank <= accountRealmRank
+              && x.Orbs <= playerOrbs
+              && x.Drake <= playerDragonKills
+              && x.DamageType == damageType
+              && x.ObjectType == item.Object_Type);
+
+                foreach (var sItem in foundItems)
+                {
+                    sb.Append($"[{sItem.Name}] ({sItem.Price} {currencyName})\n");
+                }
+
+
+                Console.WriteLine("item type is " + item.Item_Type + " realm is " + playerRealm + "realmrank is " + playerRealmRank + " orbs is " + playerOrbs + " drake is " + playerDragonKills + " damageType is" + damageType + " objectType is " + item.Object_Type);
+
+                SendReply(t, sb.ToString());
+
                 break;
             case Slot.TORSO:
                 DisplayTorsoOption(t, item);
@@ -416,7 +909,7 @@ public class AchievementReskinVendor : GameNPC
                 break;
             case Slot.RIGHTHAND:
             case Slot.LEFTHAND:
-               List<SkinVendorItem> foundItems = VendorItemList.FindAll(x => x.ItemType == item.Item_Type
+               List<SkinVendorItem> foundItems3 = VendorItemList.FindAll(x => (x.ItemType == item.Item_Type || x.ItemType == Slot.LEFTHAND) 
                && (x.Realm == playerRealm || x.Realm == noneRealm)
                && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
                && x.PlayerRealmRank <= playerRealmRank
@@ -424,9 +917,9 @@ public class AchievementReskinVendor : GameNPC
                && x.Orbs <= playerOrbs
                && x.Drake <= playerDragonKills
                && x.DamageType == damageType
-               && x.ObjectType == item.Object_Type);
+               && x.ObjectType == item.Object_Type );
 
-                foreach (var sItem in foundItems)
+                foreach (var sItem in foundItems3)
                 {
                     sb.Append($"[{sItem.Name}] ({sItem.Price} {currencyName})\n");
                 }
@@ -2240,7 +2733,6 @@ public class AchievementReskinVendor : GameNPC
                         if (player.Realm == eRealm.Midgard) modelIDToAssign = 336;
                         if (player.Realm == eRealm.Hibernia) modelIDToAssign = 439;
                         break;
-
                     case eObjectType.Studded:
                     case eObjectType.Reinforced:
                         if (player.Realm == eRealm.Albion) modelIDToAssign = 824;
@@ -10541,7 +11033,7 @@ public class AchievementReskinVendor : GameNPC
                 price = epic;
                 modelIDToAssign = 3458;
                 break;
-            case "wakazashi":
+            case "wakazashi 1h":
                 if (item.Item_Type != Slot.RIGHTHAND &&
                     item.Item_Type != Slot.LEFTHAND &&
                     item.Type_Damage != (int)eDamageType.Thrust &&
