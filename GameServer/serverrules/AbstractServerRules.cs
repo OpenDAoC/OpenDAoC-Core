@@ -30,6 +30,7 @@ using DOL.GS.API;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
@@ -1192,7 +1193,10 @@ namespace DOL.GS.ServerRules
 						BattleGroup clientBattleGroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 						if (clientBattleGroup != null)
 						{
-							player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							if (killedNPC is GuardLord or GameKeepGuard)
+								livingsToAward.Add(living);
+							else
+								player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						} 
 						else
 						{
