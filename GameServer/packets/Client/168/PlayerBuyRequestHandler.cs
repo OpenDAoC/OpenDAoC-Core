@@ -68,6 +68,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 							//Let merchant choose what happens
 							merchant.OnPlayerBuy(client.Player, item_slot, item_count);
 						}
+						else if (client.Player.TargetObject is GameGuardMerchant guardMerchant)
+						{
+							guardMerchant.OnPlayerBuy(client.Player, item_slot, item_count);
+						}
+						else if (client.Player.TargetObject is GameItemCurrencyGuardMerchant guardCurrencyMerchant)
+						{
+							guardCurrencyMerchant.OnPlayerBuy(client.Player, item_slot, item_count);
+						}
 						else if (client.Player.TargetObject is GameLotMarker lot)
 						{
 							lot.OnPlayerBuy(client.Player, item_slot, item_count);
