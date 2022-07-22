@@ -4435,7 +4435,8 @@ namespace DOL.GS.Spells
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
-					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
+					Console.WriteLine($"WS {player.GetWeaponSkill(player.AttackWeapon)} scalar {weaponskillScalar} total {(player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 3  + 200) / 200}");
+					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 3  + 200) / 200;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
@@ -4460,7 +4461,7 @@ namespace DOL.GS.Spells
 					    or eCharacterClass.Theurgist
 					    or eCharacterClass.Cabalist or eCharacterClass.Sorcerer or eCharacterClass.Necromancer
 					    or eCharacterClass.Eldritch or eCharacterClass.Enchanter or eCharacterClass.Mentalist
-					    or eCharacterClass.Animist
+					    or eCharacterClass.Animist or eCharacterClass.Valewalker
 					    or eCharacterClass.Runemaster or eCharacterClass.Spiritmaster or eCharacterClass.Bonedancer)
 					{
 						spellDamage *= 1.10;
