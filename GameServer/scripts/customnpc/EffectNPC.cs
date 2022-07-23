@@ -44,6 +44,9 @@ namespace DOL.GS {
 
         public override bool Interact(GamePlayer player)
         {
+            SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+            return true;
+            
             if (base.Interact(player))
             {
                 TurnTo(player, 250);
@@ -67,6 +70,10 @@ namespace DOL.GS {
 
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
+            if(source is GamePlayer p)
+                SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+            return true;
+            
             GamePlayer t = source as GamePlayer;
             if (t == null || item == null || item.Id_nb == "token_many") return false;
             if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
@@ -85,6 +92,11 @@ namespace DOL.GS {
 
         public override bool WhisperReceive(GameLiving source, string str)
         {
+            if(source is GamePlayer p)
+                SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+            
+            return true;
+            
             if (!base.WhisperReceive(source, str)) return false;
 
             if (!(source is GamePlayer)) return false;
