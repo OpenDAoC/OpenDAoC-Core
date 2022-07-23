@@ -593,6 +593,12 @@ namespace DOL.GS
                             if (LASpec > 0)
                             {
                                 var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
+                                
+                                if (p.GetModified(eProperty.OffhandDamageAndChance) > 0)
+                                {
+                                    leftAxeEffectiveness += .01 * p.GetModified(eProperty.OffhandDamageAndChance);
+                                }
+                                
                                 damage *= leftAxeEffectiveness;
                             }
                         }
