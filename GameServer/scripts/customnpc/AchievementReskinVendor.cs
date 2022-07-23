@@ -1724,7 +1724,9 @@ private void SendNotQualifiedMessage(GamePlayer player)
 }
 public override bool WhisperReceive(GameLiving source, string str)
 {
-    SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+    if(source is GamePlayer p)
+        SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+            
     return true;
     /*
     if (!base.WhisperReceive(source, str)) return false;
