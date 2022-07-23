@@ -852,6 +852,8 @@ public class AchievementReskinVendor : GameNPC
 
         // Torso
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // Generic
+
 
         // alb
         VendorItemList.Add(new SkinVendorItem("Crafted Torso 1", 139, Slot.TORSO, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
@@ -1234,14 +1236,11 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.TORSO, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
 
 
-        // var added = GameServer.Database.AddObject(VendorItemList);
-        // var itemCount = GameServer.Database.GetObjectCount<SkinVendorItem>();
-
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         // Amor Cloaks
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        //Genereic
+        //Generic
         VendorItemList.Add(new SkinVendorItem("Basic Cloak", 57, Slot.CLOAK, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Magical, (int)eDamageType._FirstResist, freebie));
         VendorItemList.Add(new SkinVendorItem("Hooded Cloak", 96, Slot.CLOAK, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Magical, (int)eDamageType._FirstResist, freebie));
         VendorItemList.Add(new SkinVendorItem("Bordered Cloak", 92, Slot.CLOAK, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Magical, (int)eDamageType._FirstResist, freebie));
@@ -1273,7 +1272,234 @@ public class AchievementReskinVendor : GameNPC
         VendorItemList.Add(new SkinVendorItem("Realm Cloak", 3801, Slot.CLOAK, 0, 5, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Magical, (int)eDamageType._FirstResist, epic));
         VendorItemList.Add(new SkinVendorItem("Dragonslayer Cloak", 4107, Slot.CLOAK, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Magical, (int)eDamageType._FirstResist, dragonCost * 2));
 
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+        // Amor Sleeves
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //Generic
+        //rr 4
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 1625, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 1639, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 1847, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 1847, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 2100, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 1770, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Oceanus Sleeves", 2091, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 2152, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 2134, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 1756, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 1756, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 1808, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 1788, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Stygia Sleeves", 2123, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 2161, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 2175, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1779, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1779, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1693, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1711, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, toageneric));
+        VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1702, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, toageneric));
+        //rr 6
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, artifact));
+        VendorItemList.Add(new SkinVendorItem("Arms of the Wind", 1733, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, artifact));
+        //drake
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3785, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3760, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3780, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3780, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3765, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3775, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonsworn Sleeves", 3770, Slot.ARMS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
+        //epic boss kill
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2731, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2737, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2743, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2743, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2749, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2749, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Possessed Realm Sleeves", 2755, Slot.ARMS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+        // craft
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2793, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2799, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2805, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2805, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2811, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2811, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Realm Sleeves", 2817, Slot.ARMS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+        //orbs
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 3020, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 2990, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 3014, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 3014, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 2996, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 3002, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Shar Sleeves", 3008, Slot.ARMS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3061, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3066, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3118, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3118, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3045, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3050, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+        VendorItemList.Add(new SkinVendorItem("Good Inconnu Sleeves", 3055, Slot.ARMS, 0, 0, 0, 250000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+
+        //alb
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 141, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 33, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 51, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 51, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 43, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 48, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 141, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 38, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 81, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 81, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 183, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 88, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 141, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 76, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 156, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 156, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 188, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 203, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4017, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 3992, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4012, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4012, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 3997, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4002, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
+        //rr 2
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 141, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 136, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 216, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 216, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 1248, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 208, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 141, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 136, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 221, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 221, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 1253, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 213, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
+        //rr 5
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 690, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Armsman, (int)eObjectType.Plate, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Cabalist, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 690, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Cleric, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Friar, (int)eObjectType.Leather, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 794, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Infiltrator, (int)eObjectType.Leather, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 720, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Mercenary, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 725, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Minstrel, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Necromancer, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 695, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Paladin, (int)eObjectType.Plate, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 1269, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Reaver, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 730, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Scout, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Sorcerer, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Theurgist, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Wizard, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+
+
+        //hib
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 360, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 375, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 363, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 363, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 370, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 380, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 395, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 383, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 383, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 390, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 400, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 415, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 403, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 403, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 410, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4101, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4076, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4096, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4096, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4091, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
+        //rr 2
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 420, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 435, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 423, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 423, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 430, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 420, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 435, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 1256, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 1256, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 1274, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, lowbie));
+        //rr 5
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Animist, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 736, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Bard, (int)eObjectType.Studded, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 784, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Blademaster, (int)eObjectType.Studded, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 812, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Champion, (int)eObjectType.Scale, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 741, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Druid, (int)eObjectType.Scale, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Eldritch, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Enchanter, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 710, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Hero, (int)eObjectType.Scale, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Mentalist, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 748, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Nightshade, (int)eObjectType.Leather, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 817, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Ranger, (int)eObjectType.Studded, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 0, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Valewalker, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 807, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Warden, (int)eObjectType.Scale, (int)eDamageType._FirstResist, epic));
+        //mid
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 247, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 242, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 230, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 230, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 1", 237, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 267, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 262, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 250, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 250, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 2", 257, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 287, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 282, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 270, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 270, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 3", 277, Slot.ARMS, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4048, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4023, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4043, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4043, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+        VendorItemList.Add(new SkinVendorItem("Dragonslayer Sleeves", 4028, Slot.ARMS, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
+        //rr 2
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 307, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 302, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 1215, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 1215, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 4", 1002, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
+        VendorItemList.Add(new SkinVendorItem("Crafted Sleeves 5", 1265, Slot.ARMS, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
+        //rr 5
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 753, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Berserker, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 1189, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Bonedancer, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 700, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Healer, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 758, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Hunter, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 705, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Runemaster, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 1194, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Savage, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 763, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Shadowblade, (int)eObjectType.Leather, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 768, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Shaman, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 773, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Skald, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 801, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Spiritmaster, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 3372, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Thane, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+        VendorItemList.Add(new SkinVendorItem("Class Epic Sleeves", 778, Slot.ARMS, 5, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Warrior, (int)eObjectType.Chain, (int)eDamageType._FirstResist, epic));
+
+
+        // var added = GameServer.Database.AddObject(VendorItemList);
+        // var itemCount = GameServer.Database.GetObjectCount<SkinVendorItem>();
 
 
         DisplayReskinPreviewTo(t, item);
