@@ -127,6 +127,27 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
+			if(Body.TargetObject != null && HasAggro)
+            {
+				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				{
+					GameLiving target = Body.TargetObject as GameLiving;
+					if (npc != null && npc.IsAlive)
+					{
+						if (npc.Brain is CaithorDorochaBrain brain)
+						{
+							if (brain != null && target != null && !brain.HasAggro && target.IsAlive)
+								brain.AddToAggroList(target, 10);
+						}
+						if(npc.PackageID == "RealCaithorDorocha" && npc.Brain is StandardMobBrain brain2)
+                        {
+							if (brain2 != null && target != null && !brain2.HasAggro && target.IsAlive)
+								brain2.AddToAggroList(target, 10);
+						}
+
+					}
+				}
+            }
 			base.Think();
 		}
 	}
@@ -182,11 +203,11 @@ namespace DOL.GS
 				if (npc.Brain is GhostOfCaithorBrain)
 					return false;
 			}
-			Name = "Ghost of Caithor";
+			Name = "Giant Caithor";
 			Level = (byte)Util.Random(62, 65);
 			Model = 339;
-			Size = 80;
-			Flags = eFlags.GHOST;
+			Size = 160;
+			Flags = 0;
 			LoadEquipmentTemplateFromDatabase("65b95161-a813-41cb-be0c-a57d132f8173");
 			GhostCaithorUP = true;
 
