@@ -78,6 +78,24 @@ namespace DOLDatabase.Tables
             get { return m_orbs; }
             set {  m_orbs = value; }
         }
+
+
+        protected int m_epicBossKills;
+        [DataElement(AllowDbNull = false, Index = false)]
+        public int EpicBossKills
+        {
+            get { return m_epicBossKills; }
+            set { m_epicBossKills = value; }
+        }
+
+        protected int m_masteredCrafts;
+        [DataElement(AllowDbNull = false, Index = false)]
+        public int MasteredCrafts
+        {
+            get { return m_masteredCrafts; }
+            set { m_masteredCrafts = value; }
+        }
+
         protected int m_realm;
         [DataElement(AllowDbNull = false, Index = false)]
         public int Realm
@@ -115,7 +133,7 @@ namespace DOLDatabase.Tables
             set { m_price = value; }
         }
 
-        public SkinVendorItem(string name, int modelId, int itemType, int playerRealmRank, int accountRealmRank, int drake, int orbs, int realm, int characterClass, int objectType, int damagetype, int price)
+        public SkinVendorItem(string name, int modelId, int itemType, int playerRealmRank, int accountRealmRank, int drake, int orbs,int epicBossKills,int masteredCrafts, int realm, int characterClass, int objectType, int damagetype, int price)
         {
             Name = name;
             ModelID = modelId;
@@ -124,11 +142,14 @@ namespace DOLDatabase.Tables
             AccountRealmRank = accountRealmRank;
             Drake = drake;
             Orbs = orbs;
+            EpicBossKills = epicBossKills;
+            MasteredCrafts = masteredCrafts;
             Realm = realm;
             CharacterClass = characterClass;
             ObjectType = objectType;
             DamageType = damagetype;
             Price = price;
+
         }
 
         #endregion
