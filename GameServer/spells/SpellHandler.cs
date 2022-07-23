@@ -4435,8 +4435,7 @@ namespace DOL.GS.Spells
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
-					Console.WriteLine($"WS {player.GetWeaponSkill(player.AttackWeapon)} scalar {weaponskillScalar} total {(player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 3  + 200) / 200}");
-					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 3  + 200) / 200;
+					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar /2 + 200) / 200;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
