@@ -16,6 +16,10 @@ namespace DOL.GS
 				ScalingFactor = 27;
 			}
 
+			if (npcTemplate.Name.ToLower().Contains("air"))
+			{
+				ScalingFactor = 12;
+			}
 		}
 
 		public override void OnAttackedByEnemy(AttackData ad) 
