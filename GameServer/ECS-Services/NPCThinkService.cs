@@ -73,11 +73,17 @@ namespace DOL.GS
                 {
                     if (npc == null)
                     {
-                        NumNullSlots++;
+                        if(thinkTimer)
+                            Interlocked.Increment(ref NumNullSlots);;
+                        
                         return;
                     }
 
-                    NumOfNPCs++;
+                    if (thinkTimer)
+                    {
+                        Interlocked.Increment(ref NumOfNPCs);
+                    }
+                    
                     
                     if (npc is GameNPC && (npc as GameNPC).Brain != null)
                     {
@@ -87,7 +93,7 @@ namespace DOL.GS
                         {
                             if (thinkTimer)
                             {
-                                ActiveThinkTimerTickCount++;
+                                Interlocked.Increment(ref ActiveThinkTimerTickCount);
                             }
                             
                             long startTick = GameTimer.GetTickCount();
