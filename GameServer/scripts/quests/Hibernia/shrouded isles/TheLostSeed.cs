@@ -301,6 +301,11 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateFeairnaAthar(GamePlayer player)
 		{
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(181, 288348, 319950, 2328,8000))
+			{
+				if (npc.Brain is SINeckBossBrain)
+					return;
+			}
 			Feairna_Athar = new SINeckBoss();
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
@@ -322,6 +327,8 @@ namespace DOL.GS.Quests.Hibernia
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Feairna_Athar.SetOwnBrain(brain);
+			Feairna_Athar.LoadedFromScript = true;
+			Feairna_Athar.RespawnInterval = -1;
 
 			Feairna_Athar.AddToWorld();
 

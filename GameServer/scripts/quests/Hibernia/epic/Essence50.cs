@@ -147,7 +147,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ghost of Caithor", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Giant Caithor", eRealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -160,14 +160,14 @@ namespace DOL.GS.Quests.Hibernia
 			if (Caithor == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Ghost of Caithor , creating it ...");
+					log.Warn("Could not find Giant Caithor , creating it ...");
 				Caithor = new GhostOfCaithor();
 				Caithor.Model = 339;
-				Caithor.Name = "Ghost of Caithor";
+				Caithor.Name = "Giant Caithor";
 				Caithor.GuildName = "";
 				Caithor.Realm = eRealm.None;
 				Caithor.CurrentRegionID = 200;
-				Caithor.Size = 60;
+				Caithor.Size = 160;
 				Caithor.Level = (byte)Util.Random(62,64);
 				Caithor.X = 470547;
 				Caithor.Y = 531497;
@@ -1432,7 +1432,7 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Caithor in Cursed Forest Loc 20k,48k kill him!";
+						return "[Step #1] Seek out far dorocha in Cursed Forest Loc 20k,48k kill them to spawn Giant Caithor! After you kill Giant Caithor seek out real Caithor and kill him!";
 					case 2:
 						return "[Step #2] Return to Brigit and give the Moonstone!";
 				}
