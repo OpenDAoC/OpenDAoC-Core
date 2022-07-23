@@ -35,6 +35,18 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const string ServiceName = "NPCThinkService";
+        
+        //thinkTimer is for outputting active brain count/array size info for debug purposes
+        public static bool thinkTimer = false;
+        
+        //Number of ticks to debug the Timer
+        public static int ActiveThinkTimerTickCount = 0;
+        public static int NumOfNPCs = 0;
+        public static int NumNullSlots = 0;
+        
+        
+        //Number of ticks to debug the Timer
+        public static int debugTimerTickCount = 0;
 
         static NPCThinkService()
         {
@@ -47,6 +59,13 @@ namespace DOL.GS
             Diagnostics.StartPerfCounter(ServiceName);
 
             GameLiving[] arr = EntityManager.GetAllNpcsArrayRef();
+            
+            if (thinkTimer)
+            {
+                ActiveThinkTimerTickCount = 0;
+                NumOfNPCs = 0;
+                NumNullSlots = 0;
+            }
 
             Parallel.ForEach(arr, npc =>
             {
@@ -54,14 +73,23 @@ namespace DOL.GS
                 {
                     if (npc == null)
                     {
+                        NumNullSlots++;
                         return;
                     }
+
+                    NumOfNPCs++;
+                    
                     if (npc is GameNPC && (npc as GameNPC).Brain != null)
                     {
                         var brain = (npc as GameNPC).Brain;
 
                         if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
                         {
+                            if (thinkTimer)
+                            {
+                                ActiveThinkTimerTickCount++;
+                            }
+                            
                             long startTick = GameTimer.GetTickCount();
                             brain.Think();
                             long stopTick = GameTimer.GetTickCount();
@@ -80,6 +108,26 @@ namespace DOL.GS
                     log.Error($"Critical error encountered in NPC Think: {e}");
                 }
             });
+            
+            //Output Debug info
+            if(thinkTimer && ActiveThinkTimerTickCount > 0)
+            {
+                log.Debug($"==== NPCThink Debug - Total ActiveThinkTimers: {ActiveThinkTimerTickCount} ====");
+
+                log.Debug($"==== Non-Null NPCs in EntityManager Array: {NumOfNPCs} | Null NPCs: {NumNullSlots} |  Total Size: {arr.Length}====");
+                
+             
+
+                log.Debug("---------------------------------------------------------------------------");
+
+                if(debugTimerTickCount > 1)
+                    debugTimerTickCount --;
+                else
+                {
+                    thinkTimer = false;
+                    debugTimerTickCount = 0;
+                }
+            }
 
             Diagnostics.StopPerfCounter(ServiceName);
         }

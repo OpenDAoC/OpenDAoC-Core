@@ -249,6 +249,7 @@ namespace DOL.GS.Commands
     "/diag perf <on|off> to toggle performance diagnostics logging on server.",
     "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.",
     "/diag timer <tickcount> enables debugging of the TimerService for <tickcount> ticks and outputs to the server Console.",
+    "/diag think <tickcount> enables debugging of the NPCThinkService for <tickcount> ticks and outputs to the server Console.",
     "/diag currentservicetick - returns the current service the gameloop tick is on; useful for debugging lagging/frozen server.")]
     public class ECSDiagnosticsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -326,13 +327,27 @@ namespace DOL.GS.Commands
                 int tickcount = Int32.Parse(args[2]);
                 if (tickcount <= 0)
                 {
-                    DisplayMessage(client, "Invalid tickcount argument. Please specify a positive interger value.");
+                    DisplayMessage(client, "Invalid tickcount argument. Please specify a positive integer value.");
                     return;
                 }
 
                 TimerService.debugTimer = true;
                 TimerService.debugTimerTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " TimerService tick(s)");
+            }
+            
+            if (args[1].ToLower().Equals("think"))
+            {
+                int tickcount = Int32.Parse(args[2]);
+                if (tickcount <= 0)
+                {
+                    DisplayMessage(client, "Invalid tickcount argument. Please specify a positive integer value.");
+                    return;
+                }
+
+                NPCThinkService.thinkTimer = true;
+                NPCThinkService.debugTimerTickCount = tickcount;
+                DisplayMessage(client, "Debugging next " + tickcount + " NPCThinkService tick(s)");
             }
         }
     }
