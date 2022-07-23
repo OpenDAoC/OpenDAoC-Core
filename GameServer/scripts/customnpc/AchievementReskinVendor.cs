@@ -42,12 +42,16 @@ public class AchievementReskinVendor : GameNPC
 
     public override bool Interact(GamePlayer player)
     {
+        SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+        return true;
+        
         if (base.Interact(player))
         {
             TurnTo(player, 500);
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
             InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
 
+            
             if (item == null)
             {
                 SendReply(player, "Hello there! \n" +
@@ -62,7 +66,7 @@ public class AchievementReskinVendor : GameNPC
             if (displayItem != null)
                 DisplayReskinPreviewTo(player, (InventoryItem) displayItem.Clone());
 
-            return true;
+        
         }
 
         return false;
@@ -70,6 +74,7 @@ public class AchievementReskinVendor : GameNPC
 
     public override bool ReceiveItem(GameLiving source, InventoryItem item)
     {
+        return false;
         GamePlayer t = source as GamePlayer;
         if (t == null || item == null || item.Template.Name.Equals("token_many")) return false;
         if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
@@ -1719,6 +1724,8 @@ private void SendNotQualifiedMessage(GamePlayer player)
 }
 public override bool WhisperReceive(GameLiving source, string str)
 {
+    SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+    return true;
     /*
     if (!base.WhisperReceive(source, str)) return false;
     if (!(source is GamePlayer)) return false;
