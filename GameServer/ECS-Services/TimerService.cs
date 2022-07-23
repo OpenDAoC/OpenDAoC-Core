@@ -200,7 +200,9 @@ public class TimerService
 
     public static bool HasActiveTimer(ECSGameTimer timer)
     {
-        return ActiveTimers.Contains(timer) || TimerToAdd.Contains(timer);
+        var currentTimers = ActiveTimers.ToList();
+        var timerAdds = TimerToAdd.ToList();
+        return currentTimers.Contains(timer) || timerAdds.Contains(timer);
     }
 }
 
