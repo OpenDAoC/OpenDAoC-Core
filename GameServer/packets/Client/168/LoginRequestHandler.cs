@@ -477,6 +477,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					client.Out.SendLoginGranted();
 					client.ClientState = GameClient.eClientState.Connecting;
+					
+					GameServer.Database.FillObjectRelations(client.Account);
 
 					// var clIP = ((IPEndPoint) client.Socket.RemoteEndPoint)?.Address.ToString();
 					// var sharedClients = WorldMgr.GetClientsFromIP(clIP);
