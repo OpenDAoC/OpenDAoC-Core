@@ -11,9 +11,10 @@ namespace DOL.GS
 	{
 		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{
+			
 			if (npcTemplate.Name.ToLower().Contains("earth"))
 			{
-				ScalingFactor = 27;
+				ScalingFactor = 20;
 			}
 
 			if (npcTemplate.Name.ToLower().Contains("air"))
