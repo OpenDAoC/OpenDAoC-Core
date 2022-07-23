@@ -77,7 +77,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Critical error encountered in NPC Think: {e}");
+                    log.Error($"Critical error encountered in NPC Think: {e}");
                 }
             });
 

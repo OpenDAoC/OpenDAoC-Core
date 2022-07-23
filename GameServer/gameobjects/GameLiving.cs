@@ -4228,7 +4228,7 @@ namespace DOL.GS
 				tw.EventHandler(ad);
             }
 
-			if (ad.Target is GamePlayer)
+			if (ad.Target is GamePlayer && ad.Target != this)
 			{
 				LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
@@ -4321,7 +4321,7 @@ namespace DOL.GS
 						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
 						ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
 					}
-					else
+					else if (ad.Attacker != this) //Check if the attacker is not this living (some things like Res Sickness have attacker/target the same)
 					{
 						LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 						ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
