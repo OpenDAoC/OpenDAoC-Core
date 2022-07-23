@@ -584,8 +584,21 @@ namespace DOL.GS
                 {
                     //Melee damage buff,debuff,Relic,RA
                     effectiveness += p.GetModified(eProperty.MeleeDamage) * 0.01;
+                    if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    {
+                        var leftWep = p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                        if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
+                        {
+                            int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                            if (LASpec > 0)
+                            {
+                                var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
+                                damage *= leftAxeEffectiveness;
+                            }
+                        }
+                    }
                 }
-
+                
                 damage *= effectiveness;
                 return damage;
             }
