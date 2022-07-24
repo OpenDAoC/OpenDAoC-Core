@@ -156,9 +156,10 @@ namespace DOL.GS
                                         {
                                             addEffect = true;
                                         }
-                                        // Better Effect so disable the current Effect
-                                        else if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
-                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                        // Better Effect of the current enabled effect so disable the current Effect
+                                        else if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage) &&
+                                            !existingEffects[i].IsDisabled)
                                         {
                                             if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
                                                 spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
