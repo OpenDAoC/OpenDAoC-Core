@@ -20,6 +20,7 @@ namespace DOL.GS.Commands
 
         public void OnCommand(GameClient client, string[] args)
         {
+            return;
             if (args.Length >= 2)
             {
                 #region set
