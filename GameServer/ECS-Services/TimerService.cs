@@ -200,8 +200,14 @@ public class TimerService
 
     public static bool HasActiveTimer(ECSGameTimer timer)
     {
-        var currentTimers = ActiveTimers.ToList();
-        var timerAdds = TimerToAdd.ToList();
+        List<ECSGameTimer> currentTimers = new List<ECSGameTimer>();
+        List<ECSGameTimer> timerAdds = new List<ECSGameTimer>();
+        lock (TimerService._addTimerLockObject)
+        {
+            currentTimers = ActiveTimers.ToList();
+            timerAdds = TimerToAdd.ToList();
+        }
+        
         return currentTimers.Contains(timer) || timerAdds.Contains(timer);
     }
 }
