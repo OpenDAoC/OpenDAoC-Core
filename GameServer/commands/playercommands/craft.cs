@@ -20,13 +20,13 @@ namespace DOL.GS.Commands
 
         public void OnCommand(GameClient client, string[] args)
         {
-            return;
             if (args.Length >= 2)
             {
                 #region set
 
                 if (args[1] == "set")
                 {
+                    return;
                     if (args.Length >= 3)
                     {
                         int.TryParse(args[2], out int count);
