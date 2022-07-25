@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles dialog responses from players
 		/// </summary>
-		protected class DialogBoxResponseAction : RegionECSAction
+		protected class DialogBoxResponseAction : AuxRegionECSAction
 		{
 			/// <summary>
 			/// The general data field
@@ -91,7 +91,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(AuxECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
 

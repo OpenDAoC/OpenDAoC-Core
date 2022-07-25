@@ -828,6 +828,8 @@ namespace DOL.GS
 
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
+				log.Info($"GarbageCollection IsServerGC: {System.Runtime.GCSettings.IsServerGC}" );
+
 				//---------------------------------------------------------------
 				//Open the server, players can now connect if webhook, inform Discord!
 				m_status = eGameServerStatus.GSS_Open;
