@@ -410,6 +410,8 @@ namespace DOL.GS.ServerRules
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return false;
 
+			//flame - Commenting out Safe Area check as it was causing lots of lock contention in the GetAreasOfSpot() code. We currently dont have safe-areas so this doesnt affect anything
+
 			// // Safe area support for defender
 			// if (defender.CurrentAreas is not null)
 			// {
