@@ -31,6 +31,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
@@ -2108,11 +2109,24 @@ namespace DOL.GS.ServerRules
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                 AtlasROGManager.GenerateOrbs(player);
-                if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
+
+                int bonusRegion = 0;
+                switch (ZoneBonusRotator.GetCurrentBonusRealm())
                 {
-                    if (!player.ReceiveROG) continue;
-                    //Console.WriteLine($"Generating ROG for {player}");
-                    AtlasROGManager.GenerateROG(player, true);
+	                case eRealm.Albion:
+		                bonusRegion = 1;
+		                break;
+	                case eRealm.Hibernia:
+		                bonusRegion = 200;
+		                break;
+	                case eRealm.Midgard:
+		                bonusRegion = 100;
+		                break;
+                }
+                
+                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
+                {
+	                AtlasROGManager.GenerateROG(player, true);
                 }
             }
 
