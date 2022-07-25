@@ -39,7 +39,8 @@ namespace DOL.GS.Spells
 		{
 			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
 			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
-				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null || 
+				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null ||
+				EffectListService.GetEffectOnTarget(target, eEffect.SpeedOfSound) != null || 
 				(effect != null && effect.SpellHandler.Spell.Value == 99)
 				&& !Spell.Name.Equals("Prevent Flight"))
 			{
