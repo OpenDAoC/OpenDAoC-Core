@@ -56,7 +56,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Masrim = null; // Start NPC
-		private static GameNPC Oona = null; // Mob to kill
+		private static Oona Oona = null; // Mob to kill
 		private static GameNPC MorlinCaan = null; // Trainer for reward
 
 		private static ItemTemplate oona_head = null; //ball of flame
@@ -140,7 +140,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 607233 && npc.Y == 786850)
 					{
-						Oona = npc;
+						Oona = npc as Oona;
 						break;
 					}
 
@@ -148,7 +148,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Oona , creating it ...");
-				Oona = new GameNPC();
+				Oona = new Oona();
 				Oona.Model = 356;
 				Oona.Name = "Oona";
 				Oona.GuildName = "";
