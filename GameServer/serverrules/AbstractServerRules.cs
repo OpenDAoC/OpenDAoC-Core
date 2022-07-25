@@ -410,39 +410,39 @@ namespace DOL.GS.ServerRules
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return false;
 
-			// Safe area support for defender
-			if (defender.CurrentAreas is not null)
-			{
-				var defenderAreas = defender.CurrentAreas.ToList();
-				foreach (AbstractArea area in defenderAreas)
-				{
-					if (area is null) continue;
+			// // Safe area support for defender
+			// if (defender.CurrentAreas is not null)
+			// {
+			// 	var defenderAreas = defender.CurrentAreas.ToList();
+			// 	foreach (AbstractArea area in defenderAreas)
+			// 	{
+			// 		if (area is null) continue;
 
-					if (!area.IsSafeArea)
-						continue;
+			// 		if (!area.IsSafeArea)
+			// 			continue;
 
-					if (defender is not GamePlayer) continue;
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}		
+			// 		if (defender is not GamePlayer) continue;
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }		
 
-			//safe area support for attacker
-			var attackerAreas = attacker.CurrentAreas.ToList();
-			foreach (AbstractArea area in attackerAreas)
-			{
-				if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
+			// //safe area support for attacker
+			// var attackerAreas = attacker.CurrentAreas.ToList();
+			// foreach (AbstractArea area in attackerAreas)
+			// {
+			// 	if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
 
-				if ((area.IsSafeArea) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}
+			// 	if ((area.IsSafeArea) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }
 
 			//I don't want mobs attacking guards
 			if (defender is GameKeepGuard && attacker is GameNPC && attacker.Realm == 0)
