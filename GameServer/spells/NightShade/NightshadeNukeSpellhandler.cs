@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 			if (player != null)
 			{
 				int strValue = player.GetModified((eProperty)player.Strength);
-				spellDamage *= (strValue + 300) / 275.0;
+				spellDamage *= (strValue -player.Level) / 200.0 + 1;
 			}
 
 			if (spellDamage < 0)
