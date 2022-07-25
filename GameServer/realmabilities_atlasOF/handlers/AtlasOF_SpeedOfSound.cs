@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Collections;
 using System.Linq;
@@ -52,12 +53,18 @@ namespace DOL.GS.RealmAbilities
 				{
 					if (player.IsWithinRadius( p, m_range ) && p.IsAlive)
 						targets.Add(p);
+					
+					Console.WriteLine($"controlled brain? {p.ControlledBrain}");
+
+					if (p.ControlledBrain != null && p.ControlledBrain.Body != null)
+						targets.Add(p.ControlledBrain.Body);
 				}
 			}
 
 			bool success;
-			foreach (GamePlayer target in targets)
+			foreach (GameLiving target in targets)
 			{
+				Console.WriteLine($"SoSing target: {target}");
 				//send spelleffect
 				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					visPlayer.Out.SendSpellEffectAnimation(player, target, 7021, 0, false, CastSuccess(true));
