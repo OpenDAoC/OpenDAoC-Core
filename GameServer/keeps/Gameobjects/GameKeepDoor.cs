@@ -405,6 +405,11 @@ namespace DOL.GS.Keeps
 				toughness = Properties.SET_TOWER_DOOR_TOUGHNESS;
 			}
 
+			if (Component.Keep.KeepID == 11) //Reduce toughness for Thid CK
+			{
+				toughness = 25; //Our "normal" toughness is 10% for OF keeps, increasing damage on Thid CK doors
+			}
+
 			if (source is GamePlayer)
 			{
 				baseDamage = (baseDamage - (baseDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
