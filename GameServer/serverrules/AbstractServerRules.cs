@@ -410,39 +410,41 @@ namespace DOL.GS.ServerRules
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return false;
 
-			// Safe area support for defender
-			if (defender.CurrentAreas is not null)
-			{
-				var defenderAreas = defender.CurrentAreas.ToList();
-				foreach (AbstractArea area in defenderAreas)
-				{
-					if (area is null) continue;
+			//flame - Commenting out Safe Area check as it was causing lots of lock contention in the GetAreasOfSpot() code. We currently dont have safe-areas so this doesnt affect anything
 
-					if (!area.IsSafeArea)
-						continue;
+			// // Safe area support for defender
+			// if (defender.CurrentAreas is not null)
+			// {
+			// 	var defenderAreas = defender.CurrentAreas.ToList();
+			// 	foreach (AbstractArea area in defenderAreas)
+			// 	{
+			// 		if (area is null) continue;
 
-					if (defender is not GamePlayer) continue;
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}		
+			// 		if (!area.IsSafeArea)
+			// 			continue;
 
-			//safe area support for attacker
-			var attackerAreas = attacker.CurrentAreas.ToList();
-			foreach (AbstractArea area in attackerAreas)
-			{
-				if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
+			// 		if (defender is not GamePlayer) continue;
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }		
 
-				if ((area.IsSafeArea) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}
+			// //safe area support for attacker
+			// var attackerAreas = attacker.CurrentAreas.ToList();
+			// foreach (AbstractArea area in attackerAreas)
+			// {
+			// 	if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+
+			// 	if ((area.IsSafeArea) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }
 
 			//I don't want mobs attacking guards
 			if (defender is GameKeepGuard && attacker is GameNPC && attacker.Realm == 0)
