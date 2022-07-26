@@ -2126,7 +2126,8 @@ namespace DOL.GS.ServerRules
                 
                 if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
                 {
-	                AtlasROGManager.GenerateROG(player, true);
+	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
+	                AtlasROGManager.GenerateROG(player, (byte)(player.Level + RRMod));
                 }
             }
 
