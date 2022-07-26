@@ -842,7 +842,7 @@ namespace DOL.GS.Quests.Midgard
 							Masrim.SayTo(player, "Hey, you are back! Please give me the head of Oona and visit "+MorlinCaan.Name+" and bring him the [sealed pouch]!");
 							break;
 						case 3:
-							Masrim.SayTo(player, $"Hello ${player.Name}, have you visited "+MorlinCaan.Name+" already?");
+							Masrim.SayTo(player, $"Hello {player.Name}, have you visited "+MorlinCaan.Name+" already?");
 							break;
 					}
 				}
