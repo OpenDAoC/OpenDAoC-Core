@@ -1360,12 +1360,12 @@ namespace DOL.GS.Quests.Albion
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Bechard and Silcharde at the fallen tower in Lyonesse and kill them with rest of summoned demons!\n" +
+						return "Seek out Bechard and Silcharde at the fallen tower in Lyonesse and kill them with rest of summoned demons!\n" +
 							"Bechard killed: ("+_BechardKilled+" | 1)\n" +
 							"Silcharde killed: (" + _SilchardeKilled + " | 1)\n" +
 							"Summoned demons killed: (" + _DemonicMinionsKilled + " | 20)";
 					case 2:
-						return "[Step #2] Return the pouch to Ferowl for your reward!";
+						return "Return the pouch to Ferowl for your reward!";
 				}
 				return base.Description;
 			}

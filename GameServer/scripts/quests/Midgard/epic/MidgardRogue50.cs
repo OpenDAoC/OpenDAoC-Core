@@ -1035,7 +1035,7 @@ namespace DOL.GS.Quests.Midgard
 				if (!Masrim.GiveQuest(typeof (Rogue_50), player, 1))
 					return;
 
-				player.Out.SendMessage("Kill Oona in Raumarik loc 20k,51k!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Kill Oona in Raumarik!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			}
 		}
 

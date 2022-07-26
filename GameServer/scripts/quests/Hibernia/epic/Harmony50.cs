@@ -2276,7 +2276,7 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Seek out Cailean in Cursed Forest and kill it! Cailean is in the midlle of north-west forest";
+						return "Seek out Cailean in Cursed Forest and kill it! Cailean is in the middle of north-west forest";
 					case 2:
 						return "Return to Revelin and give him the Horn!";
 				}
