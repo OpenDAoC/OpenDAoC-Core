@@ -1226,10 +1226,10 @@ namespace DOL.GS.Quests.Albion
 						case "give it to me":
 							if (quest.Step == 2)
 							{
+								RemoveItem(player, sealed_pouch);
 								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
 									    eInventorySlot.LastBackpack))
 								{
-									RemoveItem(player, sealed_pouch);
 									Ferowl.SayTo(player, "Thank you for the sealed pouch.");
 									quest.FinishQuest();
 								}
@@ -1253,7 +1253,6 @@ namespace DOL.GS.Quests.Albion
 						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
 							eInventorySlot.LastBackpack))
 						{
-							RemoveItem(player, sealed_pouch);
 							Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 							quest.FinishQuest();
 						}
@@ -1407,17 +1406,9 @@ namespace DOL.GS.Quests.Albion
 						Morgana.Yell("You may have stopped me here, but I'll come back! Albion will be mine!");
 						//DeleteMorgana();
 						player.Out.SendMessage("A sense of calm settles about you!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-						if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
-							    eInventorySlot.LastBackpack))
-						{
-							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-							return;
-						}
 						GiveItem(m_questPlayer, sealed_pouch);
 						m_questPlayer.Out.SendMessage("Take the pouch to " + Ferowl.GetName(0, true), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						Step = 2;
-						
-						return;
 					}
 				}
 			}
