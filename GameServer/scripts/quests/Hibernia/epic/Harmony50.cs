@@ -2104,7 +2104,15 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (quest != null)
 				{
-					Revelin.SayTo(player, "Check your Journal for instructions!");
+					switch (quest.Step)
+					{
+						case 1:
+							Revelin.SayTo(player, "Seek out Cailean in Cursed Forest and kill it. Cailean is a terrored tree that can be found North-West of Granny Fort across the river.");
+							break;
+						case 2:
+							Revelin.SayTo(player, "Were you able to [fulfill] your given task?");
+							break;
+					}
 				}
 				else
 				{
@@ -2129,11 +2137,41 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "fulfill":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, Horn);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Revelin.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == Horn.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Revelin.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 		}
 
@@ -2220,7 +2258,7 @@ namespace DOL.GS.Quests.Hibernia
 				// Check to see if we can add quest
 				if (!Revelin.GiveQuest(typeof(Harmony_50), player, 1))
 					return;
-				player.Out.SendMessage("Kill Cailean in Cursed Forest loc 28k 24k ", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Please kill Cailean in Cursed Forest.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -2238,9 +2276,9 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Cailean in Cursed Forest Loc 26k, 23k and kill him!";
+						return "Seek out Cailean in Cursed Forest and kill it! Cailean is in the midlle of north-west forest";
 					case 2:
-						return "[Step #2] Return to Revelin and give the Horn!";
+						return "Return to Revelin and give him the Horn!";
 				}
 				return base.Description;
 			}
@@ -2262,20 +2300,8 @@ namespace DOL.GS.Quests.Hibernia
 					m_questPlayer.Out.SendMessage("You collect the Horn from Cailean", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, Horn);
 					Step = 2;
-					return;
 				}
 
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
-				if (gArgs.Target.Name == Revelin.Name && gArgs.Item.Id_nb == Horn.Id_nb)
-				{
-					Revelin.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
-				}
 			}
 		}
 
@@ -2288,93 +2314,86 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Revelin, m_questPlayer, Horn);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				RemoveItem(Revelin, m_questPlayer, Horn);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
-				{
-					case eCharacterClass.Blademaster:
-						{
-							GiveItem(m_questPlayer, BlademasterEpicArms);
-							GiveItem(m_questPlayer, BlademasterEpicBoots);
-							GiveItem(m_questPlayer, BlademasterEpicGloves);
-							GiveItem(m_questPlayer, BlademasterEpicHelm);
-							GiveItem(m_questPlayer, BlademasterEpicLegs);
-							GiveItem(m_questPlayer, BlademasterEpicVest);
-							break;
-						}
-					case eCharacterClass.Animist:
-						{
-							GiveItem(m_questPlayer, AnimistEpicArms);
-							GiveItem(m_questPlayer, AnimistEpicBoots);
-							GiveItem(m_questPlayer, AnimistEpicGloves);
-							GiveItem(m_questPlayer, AnimistEpicHelm);
-							GiveItem(m_questPlayer, AnimistEpicLegs);
-							GiveItem(m_questPlayer, AnimistEpicVest);
-							break;
-						}
-					case eCharacterClass.Mentalist:
-						{
-							GiveItem(m_questPlayer, MentalistEpicArms);
-							GiveItem(m_questPlayer, MentalistEpicBoots);
-							GiveItem(m_questPlayer, MentalistEpicGloves);
-							GiveItem(m_questPlayer, MentalistEpicHelm);
-							GiveItem(m_questPlayer, MentalistEpicLegs);
-							GiveItem(m_questPlayer, MentalistEpicVest);
-							break;
-						}
-					case eCharacterClass.Druid:
-						{
-							GiveItem(m_questPlayer, DruidEpicArms);
-							GiveItem(m_questPlayer, DruidEpicBoots);
-							GiveItem(m_questPlayer, DruidEpicGloves);
-							GiveItem(m_questPlayer, DruidEpicHelm);
-							GiveItem(m_questPlayer, DruidEpicLegs);
-							GiveItem(m_questPlayer, DruidEpicVest);
-							break;
-						}
-					case eCharacterClass.Valewalker:
-						{
-							GiveItem(m_questPlayer, ValewalkerEpicArms);
-							GiveItem(m_questPlayer, ValewalkerEpicBoots);
-							GiveItem(m_questPlayer, ValewalkerEpicGloves);
-							GiveItem(m_questPlayer, ValewalkerEpicHelm);
-							GiveItem(m_questPlayer, ValewalkerEpicLegs);
-							GiveItem(m_questPlayer, ValewalkerEpicVest);
-							break;
-						}
-					case eCharacterClass.Vampiir:
-						{
-							GiveItem(m_questPlayer, VampiirEpicArms);
-							GiveItem(m_questPlayer, VampiirEpicBoots);
-							GiveItem(m_questPlayer, VampiirEpicGloves);
-							GiveItem(m_questPlayer, VampiirEpicHelm);
-							GiveItem(m_questPlayer, VampiirEpicLegs);
-							GiveItem(m_questPlayer, VampiirEpicVest);
-							break;
-						}
-					case eCharacterClass.Bainshee:
-						{
-							GiveItem(m_questPlayer, BainsheeEpicArms);
-							GiveItem(m_questPlayer, BainsheeEpicBoots);
-							GiveItem(m_questPlayer, BainsheeEpicGloves);
-							GiveItem(m_questPlayer, BainsheeEpicHelm);
-							GiveItem(m_questPlayer, BainsheeEpicLegs);
-							GiveItem(m_questPlayer, BainsheeEpicVest);
-							break;
-						}
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				case eCharacterClass.Blademaster:
+					{
+						GiveItem(m_questPlayer, BlademasterEpicArms);
+						GiveItem(m_questPlayer, BlademasterEpicBoots);
+						GiveItem(m_questPlayer, BlademasterEpicGloves);
+						GiveItem(m_questPlayer, BlademasterEpicHelm);
+						GiveItem(m_questPlayer, BlademasterEpicLegs);
+						GiveItem(m_questPlayer, BlademasterEpicVest);
+						break;
+					}
+				case eCharacterClass.Animist:
+					{
+						GiveItem(m_questPlayer, AnimistEpicArms);
+						GiveItem(m_questPlayer, AnimistEpicBoots);
+						GiveItem(m_questPlayer, AnimistEpicGloves);
+						GiveItem(m_questPlayer, AnimistEpicHelm);
+						GiveItem(m_questPlayer, AnimistEpicLegs);
+						GiveItem(m_questPlayer, AnimistEpicVest);
+						break;
+					}
+				case eCharacterClass.Mentalist:
+					{
+						GiveItem(m_questPlayer, MentalistEpicArms);
+						GiveItem(m_questPlayer, MentalistEpicBoots);
+						GiveItem(m_questPlayer, MentalistEpicGloves);
+						GiveItem(m_questPlayer, MentalistEpicHelm);
+						GiveItem(m_questPlayer, MentalistEpicLegs);
+						GiveItem(m_questPlayer, MentalistEpicVest);
+						break;
+					}
+				case eCharacterClass.Druid:
+					{
+						GiveItem(m_questPlayer, DruidEpicArms);
+						GiveItem(m_questPlayer, DruidEpicBoots);
+						GiveItem(m_questPlayer, DruidEpicGloves);
+						GiveItem(m_questPlayer, DruidEpicHelm);
+						GiveItem(m_questPlayer, DruidEpicLegs);
+						GiveItem(m_questPlayer, DruidEpicVest);
+						break;
+					}
+				case eCharacterClass.Valewalker:
+					{
+						GiveItem(m_questPlayer, ValewalkerEpicArms);
+						GiveItem(m_questPlayer, ValewalkerEpicBoots);
+						GiveItem(m_questPlayer, ValewalkerEpicGloves);
+						GiveItem(m_questPlayer, ValewalkerEpicHelm);
+						GiveItem(m_questPlayer, ValewalkerEpicLegs);
+						GiveItem(m_questPlayer, ValewalkerEpicVest);
+						break;
+					}
+				case eCharacterClass.Vampiir:
+					{
+						GiveItem(m_questPlayer, VampiirEpicArms);
+						GiveItem(m_questPlayer, VampiirEpicBoots);
+						GiveItem(m_questPlayer, VampiirEpicGloves);
+						GiveItem(m_questPlayer, VampiirEpicHelm);
+						GiveItem(m_questPlayer, VampiirEpicLegs);
+						GiveItem(m_questPlayer, VampiirEpicVest);
+						break;
+					}
+				case eCharacterClass.Bainshee:
+					{
+						GiveItem(m_questPlayer, BainsheeEpicArms);
+						GiveItem(m_questPlayer, BainsheeEpicBoots);
+						GiveItem(m_questPlayer, BainsheeEpicGloves);
+						GiveItem(m_questPlayer, BainsheeEpicHelm);
+						GiveItem(m_questPlayer, BainsheeEpicLegs);
+						GiveItem(m_questPlayer, BainsheeEpicVest);
+						break;
+					}
 			}
-			else
-			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source
