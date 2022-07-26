@@ -1320,10 +1320,10 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Ainrebh.SayTo(player, "Check your Journal for instructions!");
+							Ainrebh.SayTo(player, "Seek out Green Maw in Cursed Forest and kill it. Green Maw is guarded by grannies and spectral manslayers.");
 							break;
 						case 2:
-							Ainrebh.SayTo(player, "You have [earned] this Epic Armor!");
+							Ainrebh.SayTo(player, "Were you able to [fulfill] your given task?");
 							break;
 					}
 				}
@@ -1351,10 +1351,18 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
-						case "earned":
+						case "fulfill":
 							if (quest.Step == 2)
 							{
-								quest.FinishQuest();
+								RemoveItem(player, GreenMaw_key);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 							}
 							break;
 						case "abort":
@@ -1363,16 +1371,21 @@ namespace DOL.GS.Quests.Hibernia
 					}
 				}
 			}
-			else if (e == GameLivingEvent.ReceiveItem)
+			else if (e == GameObjectEvent.ReceiveItem)
 			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs)args;
+				var rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
-				{
-					if (rArgs.Item.Id_nb == GreenMaw_key.Id_nb)
+					if (rArgs.Item.Id_nb == GreenMaw_key.Id_nb && quest.Step == 2)
 					{
-						Ainrebh.SayTo(player, "Thank you " + player.Name + ", you have [earned] your Epic Armor.");
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					}
-				}
 			}
 		}
 
@@ -1475,9 +1488,9 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Green Maw in Cursed Forest Loc 37k,38k kill it!";
+						return "Seek out Green Maw in Cursed Forest and kill it!";
 					case 2:
-						return "[Step #2] Return to Ainrebh and give her Green Maw's Key!";
+						return "Return to Ainrebh and give her Green Maw's Key!";
 				}
 				return base.Description;
 			}
@@ -1507,7 +1520,6 @@ namespace DOL.GS.Quests.Hibernia
 					m_questPlayer.Out.SendMessage("You collect Green Maw's Key", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, GreenMaw_key);
 					Step = 2;
-					return;
 				}
 			}		
 		}
@@ -1521,65 +1533,58 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Ainrebh, m_questPlayer, GreenMaw_key);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Hero)
 			{
-				RemoveItem(Ainrebh, m_questPlayer, GreenMaw_key);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Hero)
-				{
-					GiveItem(m_questPlayer, HeroEpicArms);
-					GiveItem(m_questPlayer, HeroEpicBoots);
-					GiveItem(m_questPlayer, HeroEpicGloves);
-					GiveItem(m_questPlayer, HeroEpicHelm);
-					GiveItem(m_questPlayer, HeroEpicLegs);
-					GiveItem(m_questPlayer, HeroEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Ranger)
-				{
-					GiveItem(m_questPlayer, RangerEpicArms);
-					GiveItem(m_questPlayer, RangerEpicBoots);
-					GiveItem(m_questPlayer, RangerEpicGloves);
-					GiveItem(m_questPlayer, RangerEpicHelm);
-					GiveItem(m_questPlayer, RangerEpicLegs);
-					GiveItem(m_questPlayer, RangerEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Eldritch)
-				{
-					GiveItem(m_questPlayer, EldritchEpicArms);
-					GiveItem(m_questPlayer, EldritchEpicBoots);
-					GiveItem(m_questPlayer, EldritchEpicGloves);
-					GiveItem(m_questPlayer, EldritchEpicHelm);
-					GiveItem(m_questPlayer, EldritchEpicLegs);
-					GiveItem(m_questPlayer, EldritchEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Warden)
-				{
-					GiveItem(m_questPlayer, WardenEpicArms);
-					GiveItem(m_questPlayer, WardenEpicBoots);
-					GiveItem(m_questPlayer, WardenEpicGloves);
-					GiveItem(m_questPlayer, WardenEpicHelm);
-					GiveItem(m_questPlayer, WardenEpicLegs);
-					GiveItem(m_questPlayer, WardenEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.MaulerHib)
-				{
-					GiveItem(m_questPlayer, MaulerHibEpicBoots);
-					GiveItem(m_questPlayer, MaulerHibEpicArms);
-					GiveItem(m_questPlayer, MaulerHibEpicGloves);
-					GiveItem(m_questPlayer, MaulerHibEpicHelm);
-					GiveItem(m_questPlayer, MaulerHibEpicVest);
-					GiveItem(m_questPlayer, MaulerHibEpicLegs);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, HeroEpicArms);
+				GiveItem(m_questPlayer, HeroEpicBoots);
+				GiveItem(m_questPlayer, HeroEpicGloves);
+				GiveItem(m_questPlayer, HeroEpicHelm);
+				GiveItem(m_questPlayer, HeroEpicLegs);
+				GiveItem(m_questPlayer, HeroEpicVest);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Ranger)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, RangerEpicArms);
+				GiveItem(m_questPlayer, RangerEpicBoots);
+				GiveItem(m_questPlayer, RangerEpicGloves);
+				GiveItem(m_questPlayer, RangerEpicHelm);
+				GiveItem(m_questPlayer, RangerEpicLegs);
+				GiveItem(m_questPlayer, RangerEpicVest);
 			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Eldritch)
+			{
+				GiveItem(m_questPlayer, EldritchEpicArms);
+				GiveItem(m_questPlayer, EldritchEpicBoots);
+				GiveItem(m_questPlayer, EldritchEpicGloves);
+				GiveItem(m_questPlayer, EldritchEpicHelm);
+				GiveItem(m_questPlayer, EldritchEpicLegs);
+				GiveItem(m_questPlayer, EldritchEpicVest);
+			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Warden)
+			{
+				GiveItem(m_questPlayer, WardenEpicArms);
+				GiveItem(m_questPlayer, WardenEpicBoots);
+				GiveItem(m_questPlayer, WardenEpicGloves);
+				GiveItem(m_questPlayer, WardenEpicHelm);
+				GiveItem(m_questPlayer, WardenEpicLegs);
+				GiveItem(m_questPlayer, WardenEpicVest);
+			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.MaulerHib)
+			{
+				GiveItem(m_questPlayer, MaulerHibEpicBoots);
+				GiveItem(m_questPlayer, MaulerHibEpicArms);
+				GiveItem(m_questPlayer, MaulerHibEpicGloves);
+				GiveItem(m_questPlayer, MaulerHibEpicHelm);
+				GiveItem(m_questPlayer, MaulerHibEpicVest);
+				GiveItem(m_questPlayer, MaulerHibEpicLegs);
+			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source
