@@ -55,7 +55,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Lynnleigh = null; // Start NPC
-		private static GameNPC Ydenia = null; // Mob to kill
+		private static Ydenia Ydenia = null; // Mob to kill
 		private static GameNPC Elizabeth = null; // reward NPC
 
 		private static ItemTemplate tome_enchantments = null;
@@ -199,13 +199,13 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ydenia of Seithkona", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Ydenia of the Seithkona", eRealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 637680 && npc.Y == 767189)
+					if (npc.CurrentRegionID == 100 && npc.X == 665111 && npc.Y == 894558)
 					{
-						Ydenia = npc;
+						Ydenia = npc as Ydenia;
 						break;
 					}
 
@@ -213,20 +213,20 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Ydenia , creating it ...");
-				Ydenia = new GameNPC();
-				Ydenia.Model = 217;
-				Ydenia.Name = "Ydenia of Seithkona";
+				Ydenia = new Ydenia();
+				Ydenia.Model = 439;
+				Ydenia.Name = "Ydenia of the Seithkona";
 				Ydenia.GuildName = "";
 				Ydenia.Realm = eRealm.None;
 				Ydenia.CurrentRegionID = 100;
-				Ydenia.Size = 100;
+				Ydenia.Size = 60;
 				Ydenia.Level = 65;
-				Ydenia.X = 637680;
-				Ydenia.Y = 767189;
-				Ydenia.Z = 4480;
-				Ydenia.Heading = 2156;
+				Ydenia.X = 665111;
+				Ydenia.Y = 894558;
+				Ydenia.Z = 1791;
+				Ydenia.Heading = 1;
 				Ydenia.Flags ^= GameNPC.eFlags.GHOST;
-				Ydenia.MaxSpeedBase = 200;
+				Ydenia.MaxSpeedBase = 280;
 				Ydenia.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
