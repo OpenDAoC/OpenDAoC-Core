@@ -73,7 +73,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 15000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -93,10 +93,9 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 			SpawnWolfs();
 
+			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			LokenBrain sbrain = new LokenBrain();
 			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
@@ -133,12 +132,19 @@ namespace DOL.AI.Brain
 		public LokenBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 500;
+			AggroRange = 1000;
 			ThinkInterval = 1500;
 		}
 		private bool SpawnWolf = false;
 		public override void Think()
 		{
+			if(Body.IsAlive)
+            {
+				if (!Body.Spells.Contains(LokenDD))
+					Body.Spells.Add(LokenDD);
+				if (!Body.Spells.Contains(LokenBolt))
+					Body.Spells.Add(LokenBolt);
+			}
 			if(!HasAggressionTable())
             {
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -163,6 +169,8 @@ namespace DOL.AI.Brain
 							brian.AddToAggroList(target, 10);
 					}
 				}
+				if(Util.Chance(100) && !Body.IsCasting)
+					Body.CastSpell(LokenDD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			if (Body.IsOutOfTetherRange && Body.TargetObject != null)
 			{
@@ -198,6 +206,97 @@ namespace DOL.AI.Brain
 				}
 			}
 		}
+		#region Spells
+		private Spell m_LokenDD;
+		private Spell LokenDD
+		{
+			get
+			{
+				if (m_LokenDD == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 3;
+					spell.Power = 0;
+					spell.RecastDelay = 0;
+					spell.ClientEffect = 360;
+					spell.Icon = 360;
+					spell.Damage = 280;
+					spell.Duration = 30;
+					spell.Value = 20;
+					spell.DamageType = (int)eDamageType.Heat;
+					spell.Description = "Damages the target and lowers their resistance to Heat by 20%";
+					spell.Name = "Searing Blast";
+					spell.Range = 1500;
+					spell.SpellID = 12001;
+					spell.Target = "Enemy";
+					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
+					m_LokenDD = new Spell(spell, 60);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD);
+				}
+				return m_LokenDD;
+			}
+		}
+		private Spell m_LokenDD2;
+		private Spell LokenDD2
+		{
+			get
+			{
+				if (m_LokenDD2 == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 3;
+					spell.Power = 0;
+					spell.RecastDelay = Util.Random(5,10);
+					spell.ClientEffect = 360;
+					spell.Icon = 360;
+					spell.Damage = 280;
+					spell.Duration = 30;
+					spell.Value = 20;
+					spell.DamageType = (int)eDamageType.Heat;
+					spell.Description = "Damages the target and lowers their resistance to Heat by 20%";
+					spell.Name = "Searing Blast";
+					spell.Range = 1500;
+					spell.SpellID = 12002;
+					spell.Target = "Enemy";
+					spell.Uninterruptible = true;
+					spell.MoveCast = true;
+					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
+					m_LokenDD2 = new Spell(spell, 60);
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD2);
+				}
+				return m_LokenDD2;
+			}
+		}
+		private Spell m_LokenBolt;
+		private Spell LokenBolt
+		{
+			get
+			{
+				if (m_LokenBolt == null)
+				{
+					DBSpell spell = new DBSpell();
+					spell.AllowAdd = false;
+					spell.CastTime = 3;
+					spell.RecastDelay = Util.Random(15,20);
+					spell.ClientEffect = 378;
+					spell.Icon = 378;
+					spell.Damage = 200;
+					spell.DamageType = (int)eDamageType.Heat;
+					spell.Name = "Flame Spear";
+					spell.Range = 1800;
+					spell.SpellID = 12003;
+					spell.Target = "Enemy";
+					spell.Type = eSpellType.Bolt.ToString();
+					m_LokenBolt = new Spell(spell, 60);
+					spell.Uninterruptible = true;
+					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenBolt);
+				}
+				return m_LokenBolt;
+			}
+		}
+		#endregion
 	}
 }
 
@@ -209,9 +308,9 @@ namespace DOL.GS
 		public LokenWolf() : base() { }
 		#region Stats
 		public override short Constitution { get => base.Constitution; set => base.Constitution = 200; }
-		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
+		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 150; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
-		public override short Strength { get => base.Strength; set => base.Strength = 120; }
+		public override short Strength { get => base.Strength; set => base.Strength = 100; }
 		#endregion
 		public override bool AddToWorld()
 		{

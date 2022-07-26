@@ -62,7 +62,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Danica = null; // Start NPC
-		private static GameNPC Kelic = null; // Mob to kill
+		private static Kelic Kelic = null; // Mob to kill
 
 		private static ItemTemplate kelics_totem = null;
 		private static ItemTemplate SpiritmasterEpicBoots = null;
@@ -158,7 +158,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 621577 && npc.Y == 745848)
 					{
-						Kelic = npc;
+						Kelic = npc as Kelic;
 						break;
 					}
 
@@ -166,7 +166,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Kelic , creating it ...");
-				Kelic = new GameNPC();
+				Kelic = new Kelic();
 				Kelic.Model = 26;
 				Kelic.Name = "Kelic";
 				Kelic.GuildName = "";
