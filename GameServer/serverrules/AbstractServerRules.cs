@@ -2129,6 +2129,11 @@ namespace DOL.GS.ServerRules
 	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
 	                AtlasROGManager.GenerateROG(player, (byte)(player.Level + RRMod));
                 }
+
+                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(1))
+                {
+	                AtlasROGManager.GenerateBeetleCarapace(player);
+                }
             }
 
             if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)
