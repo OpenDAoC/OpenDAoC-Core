@@ -30,12 +30,12 @@ namespace DOL.GS
             {
                 try
                 {
-                    long startTick = GameTimer.GetTickCount();
+                    // long startTick = GameTimer.GetTickCount();
                     HandleTick(p, tick);
-                    long stopTick = GameTimer.GetTickCount();
-                    if ((stopTick - startTick) > 25)
-                        log.Warn(
-                            $"Long CastingComponent.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                    // long stopTick = GameTimer.GetTickCount();
+                    // if ((stopTick - startTick) > 25)
+                    //     log.Warn(
+                    //         $"Long CastingComponent.Tick for: {p.Name}({p.ObjectID}) Spell: {p.castingComponent?.spellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {
@@ -58,7 +58,12 @@ namespace DOL.GS
 
             var handler = p.castingComponent.spellHandler;
 
+            long startTick = GameTimer.GetTickCount();
             handler?.Tick(tick);
+            long stopTick = GameTimer.GetTickCount();
+            if ((stopTick - startTick) > 25)
+                log.Warn(
+                    $"Long CastingComponent.Tick for: {p.Name}({p.ObjectID}) Spell: {p.castingComponent?.spellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
         }
     }
 }
