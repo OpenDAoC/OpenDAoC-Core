@@ -1172,7 +1172,16 @@ namespace DOL.GS.Quests.Albion
 				// Nag to finish quest
 				if (quest != null)
 				{
-					Ferowl.SayTo(player, "Were you able to [fulfill] your given task? Albions fate lies in you hands. ");
+					switch (quest.Step)
+					{
+						case 1:
+							Ferowl.SayTo(player, "Albions fate lies in you hands. Seek out [Morgana] at the fallen tower in Lyonesse!");
+							break;
+						case 2:
+							Ferowl.SayTo(player, "Were you able to [fulfill] your given task? Albions fate lies in you hands. ");
+							break;
+					}
+					
 				}
 				else
 				{
@@ -1212,7 +1221,21 @@ namespace DOL.GS.Quests.Albion
 
 							// once the deomns are dead:
 						case "fulfill":
-							Ferowl.SayTo(player, "Did you find anything near the fallen tower? If yes give it to me, we could need any hints we can get on our crusade against Morgana.");
+							Ferowl.SayTo(player, "Did you find anything near the fallen tower? If yes [give it to me], we could need any hints we can get on our crusade against Morgana.");
+							break;
+						case "give it to me":
+							if (quest.Step == 2)
+							{
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									RemoveItem(player, sealed_pouch);
+									Ferowl.SayTo(player, "Thank you for the sealed pouch.");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
 							break;
 
 						case "abort":
@@ -1220,6 +1243,23 @@ namespace DOL.GS.Quests.Albion
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							eInventorySlot.LastBackpack))
+						{
+							RemoveItem(player, sealed_pouch);
+							Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 		}
 
@@ -1367,22 +1407,18 @@ namespace DOL.GS.Quests.Albion
 						Morgana.Yell("You may have stopped me here, but I'll come back! Albion will be mine!");
 						//DeleteMorgana();
 						player.Out.SendMessage("A sense of calm settles about you!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-						m_questPlayer.Out.SendMessage("Take the pouch to " + Ferowl.GetName(0, true), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							return;
+						}
 						GiveItem(m_questPlayer, sealed_pouch);
+						m_questPlayer.Out.SendMessage("Take the pouch to " + Ferowl.GetName(0, true), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						Step = 2;
+						
 						return;
 					}
-				}
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Ferowl.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
-				{
-					Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-					FinishQuest();
-					return;
 				}
 			}
 		}
@@ -1396,48 +1432,41 @@ namespace DOL.GS.Quests.Albion
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Ferowl, m_questPlayer, sealed_pouch);
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Minstrel)
 			{
-				RemoveItem(Ferowl, m_questPlayer, sealed_pouch);
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Minstrel)
-				{
-					GiveItem(m_questPlayer, MinstrelEpicBoots);
-					GiveItem(m_questPlayer, MinstrelEpicHelm);
-					GiveItem(m_questPlayer, MinstrelEpicGloves);
-					GiveItem(m_questPlayer, MinstrelEpicArms);
-					GiveItem(m_questPlayer, MinstrelEpicVest);
-					GiveItem(m_questPlayer, MinstrelEpicLegs);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Wizard)
-				{
-					GiveItem(m_questPlayer, WizardEpicBoots);
-					GiveItem(m_questPlayer, WizardEpicHelm);
-					GiveItem(m_questPlayer, WizardEpicGloves);
-					GiveItem(m_questPlayer, WizardEpicVest);
-					GiveItem(m_questPlayer, WizardEpicArms);
-					GiveItem(m_questPlayer, WizardEpicLegs);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Sorcerer)
-				{
-					GiveItem(m_questPlayer, SorcerorEpicBoots);
-					GiveItem(m_questPlayer, SorcerorEpicHelm);
-					GiveItem(m_questPlayer, SorcerorEpicGloves);
-					GiveItem(m_questPlayer, SorcerorEpicVest);
-					GiveItem(m_questPlayer, SorcerorEpicArms);
-					GiveItem(m_questPlayer, SorcerorEpicLegs);
-				}
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, MinstrelEpicBoots);
+				GiveItem(m_questPlayer, MinstrelEpicHelm);
+				GiveItem(m_questPlayer, MinstrelEpicGloves);
+				GiveItem(m_questPlayer, MinstrelEpicArms);
+				GiveItem(m_questPlayer, MinstrelEpicVest);
+				GiveItem(m_questPlayer, MinstrelEpicLegs);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Wizard)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, WizardEpicBoots);
+				GiveItem(m_questPlayer, WizardEpicHelm);
+				GiveItem(m_questPlayer, WizardEpicGloves);
+				GiveItem(m_questPlayer, WizardEpicVest);
+				GiveItem(m_questPlayer, WizardEpicArms);
+				GiveItem(m_questPlayer, WizardEpicLegs);
 			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Sorcerer)
+			{
+				GiveItem(m_questPlayer, SorcerorEpicBoots);
+				GiveItem(m_questPlayer, SorcerorEpicHelm);
+				GiveItem(m_questPlayer, SorcerorEpicGloves);
+				GiveItem(m_questPlayer, SorcerorEpicVest);
+				GiveItem(m_questPlayer, SorcerorEpicArms);
+				GiveItem(m_questPlayer, SorcerorEpicLegs);
+			}
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, false);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source
