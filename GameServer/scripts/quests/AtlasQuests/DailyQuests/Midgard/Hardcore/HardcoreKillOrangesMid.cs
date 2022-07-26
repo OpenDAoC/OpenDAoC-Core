@@ -331,7 +331,24 @@ namespace DOL.GS.DailyQuest
 				return;
 
 			if (!(player.GetConLevel(gArgs.Target) > 0)) return;
-			if (gArgs.Target.XPGainers.Count > 1) return;
+			if (gArgs.Target.XPGainers.Count > 1)
+			{
+				Array gainers = new GameObject[gArgs.Target.XPGainers.Count];
+				lock (gArgs.Target._xpGainersLock)
+				{
+
+					foreach (GameLiving living in gArgs.Target.XPGainers.Keys)
+					{
+						if (living == player ||
+						    (player.ControlledBrain is {Body: { }} && player.ControlledBrain.Body == living) ||
+						    (living is BDPet bdpet &&
+						     (bdpet.Owner == player || bdpet.Owner == player.ControlledBrain?.Body)))
+							continue;
+
+						return;
+					}
+				}
+			}
 			OrangeConKilled++;
 			player.Out.SendMessage("[Hardcore] Monster Killed: (" + OrangeConKilled + " | " + MAX_KillGoal + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
