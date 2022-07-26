@@ -1004,38 +1004,31 @@ namespace DOL.GS.Quests.Albion
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(m_questPlayer, statue_of_arawn, true);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Cleric)
 			{
-				RemoveItem(m_questPlayer, statue_of_arawn, true);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Cleric)
-				{
-					GiveItem(m_questPlayer, ClericEpicBoots);
-					GiveItem(m_questPlayer, ClericEpicArms);
-					GiveItem(m_questPlayer, ClericEpicGloves);
-					GiveItem(m_questPlayer, ClericEpicHelm);
-					GiveItem(m_questPlayer, ClericEpicVest);
-					GiveItem(m_questPlayer, ClericEpicLegs);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Paladin)
-				{
-					GiveItem(m_questPlayer, PaladinEpicBoots);
-					GiveItem(m_questPlayer, PaladinEpicArms);
-					GiveItem(m_questPlayer, PaladinEpicGloves);
-					GiveItem(m_questPlayer, PaladinEpicHelm);
-					GiveItem(m_questPlayer, PaladinEpicVest);
-					GiveItem(m_questPlayer, PaladinEpicLegs);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, ClericEpicBoots);
+				GiveItem(m_questPlayer, ClericEpicArms);
+				GiveItem(m_questPlayer, ClericEpicGloves);
+				GiveItem(m_questPlayer, ClericEpicHelm);
+				GiveItem(m_questPlayer, ClericEpicVest);
+				GiveItem(m_questPlayer, ClericEpicLegs);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Paladin)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, PaladinEpicBoots);
+				GiveItem(m_questPlayer, PaladinEpicArms);
+				GiveItem(m_questPlayer, PaladinEpicGloves);
+				GiveItem(m_questPlayer, PaladinEpicHelm);
+				GiveItem(m_questPlayer, PaladinEpicVest);
+				GiveItem(m_questPlayer, PaladinEpicLegs);
 			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source
