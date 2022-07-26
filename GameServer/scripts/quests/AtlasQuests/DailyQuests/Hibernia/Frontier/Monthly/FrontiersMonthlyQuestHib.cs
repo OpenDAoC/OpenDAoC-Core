@@ -12,16 +12,16 @@ using DOL.GS.Quests;
 using DOL.GS.WeeklyQuests.Albion;
 using log4net;
 
-namespace DOL.GS.MonthlyQuest.Albion
+namespace DOL.GS.MonthlyQuest.Hibernia
 {
-	public class FrontiersMonthlyQuestAlb : Quests.MonthlyQuest
+	public class FrontiersMonthlyQuestHib : Quests.MonthlyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const string questTitle = "[Monthly] Bring Order and Security to Albion";
+		private const string questTitle = "[Monthly] Bring Order and Security to Hibernia";
 		private const int minimumLevel = 45;
 		private const int maximumLevel = 50;
 
@@ -38,19 +38,19 @@ namespace DOL.GS.MonthlyQuest.Albion
 		private const int MIN_PLAYER_CON = -3;
 
 		// Constructors
-		public FrontiersMonthlyQuestAlb() : base()
+		public FrontiersMonthlyQuestHib() : base()
 		{
 		}
 
-		public FrontiersMonthlyQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public FrontiersMonthlyQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public FrontiersMonthlyQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public FrontiersMonthlyQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public FrontiersMonthlyQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public FrontiersMonthlyQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -71,12 +71,12 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 1 && npc.X == 584592 && npc.Y == 476805)
+					if (npc.CurrentRegionID == 200 && npc.X == 334215 && npc.Y == 421276)
 					{
 						Kelteen = npc;
 						break;
@@ -86,28 +86,28 @@ namespace DOL.GS.MonthlyQuest.Albion
 			if (Kelteen == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Kelteen, creating it ...");
+					log.Warn("Could not find KelteenHib, creating it ...");
 				Kelteen = new GameNPC();
-				Kelteen.Model = 37;
+				Kelteen.Model = 315;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
-				Kelteen.Realm = eRealm.Albion;
-				//Castle Sauvage Location
-				Kelteen.CurrentRegionID = 1;
+				Kelteen.Realm = eRealm.Hibernia;
+				//Druim Ligen Location
+				Kelteen.CurrentRegionID = 200;
 				Kelteen.Size = 60;
 				Kelteen.Level = 59;
-				Kelteen.X = 584592;
-				Kelteen.Y = 476805;
-				Kelteen.Z = 2600;
-				Kelteen.Heading = 4066;
+				Kelteen.X = 334215;
+				Kelteen.Y = 421276;
+				Kelteen.Z = 5180;
+				Kelteen.Heading = 1566;
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
-				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-				templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 1722);
-				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
-				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
-				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
-				templateAlb.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
-				Kelteen.Inventory = templateAlb.CloseTemplate();
+				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 1722);
+				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
+				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
+				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
+				templateHib.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
+				Kelteen.Inventory = templateHib.CloseTemplate();
 				Kelteen.VisibleActiveWeaponSlots = (byte) eInventorySlot.DistanceWeapon;
 				Kelteen.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -131,7 +131,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			GameEventMgr.AddHandler(Kelteen, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToKelteen));
 
 			/* Now we bring to Kelteen the possibility to give this quest to players */
-			Kelteen.AddQuestToGive(typeof (FrontiersMonthlyQuestAlb));
+			Kelteen.AddQuestToGive(typeof (FrontiersMonthlyQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -151,7 +151,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			GameEventMgr.RemoveHandler(Kelteen, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToKelteen));
 
 			/* Now we remove to Kelteen the possibility to give this quest to players */
-			Kelteen.RemoveQuestToGive(typeof (FrontiersMonthlyQuestAlb));
+			Kelteen.RemoveQuestToGive(typeof (FrontiersMonthlyQuestHib));
 		}
 
 		private static void TalkToKelteen(DOLEvent e, object sender, EventArgs args)
@@ -161,11 +161,11 @@ namespace DOL.GS.MonthlyQuest.Albion
 			if (player == null)
 				return;
 
-			if(Kelteen.CanGiveQuest(typeof (FrontiersMonthlyQuestAlb), player)  <= 0)
+			if(Kelteen.CanGiveQuest(typeof (FrontiersMonthlyQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			FrontiersMonthlyQuestAlb quest = player.IsDoingQuest(typeof (FrontiersMonthlyQuestAlb)) as FrontiersMonthlyQuestAlb;
+			FrontiersMonthlyQuestHib quest = player.IsDoingQuest(typeof (FrontiersMonthlyQuestHib)) as FrontiersMonthlyQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -174,7 +174,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Kelteen.SayTo(player, $"Hello ${player.CharacterClass.Name}, you will find enemies in Midgard, Hibernia or in our lands. " +
+							Kelteen.SayTo(player, $"Hello ${player.CharacterClass.Name}, you will find enemies in Midgard, Albion or in our lands. " +
 							                      $"Come back when you have killed enough enemies and taken keeps for our safety.");
 							break;
 						case 2:
@@ -198,7 +198,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "order and security":
-							player.Out.SendQuestSubscribeCommand(Kelteen, QuestMgr.GetIDForQuestType(typeof(FrontiersMonthlyQuestAlb)), "Will you help "+Kelteen.Name+" to slay enemies and capture keeps? " + questTitle + "?");
+							player.Out.SendQuestSubscribeCommand(Kelteen, QuestMgr.GetIDForQuestType(typeof(FrontiersMonthlyQuestHib)), "Will you help "+Kelteen.Name+" to slay enemies and capture keeps? " + questTitle + "?");
 							break;
 					}
 				}
@@ -209,7 +209,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 						case "capturing keeps and killing enemies":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your help! Albion will thank you for your contribution.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your help! Hibernia will thank you for your contribution.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -224,7 +224,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (FrontiersMonthlyQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (FrontiersMonthlyQuestHib)) != null)
 				return true;
 
 			if (player.Level < minimumLevel || player.Level > maximumLevel)
@@ -235,7 +235,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			FrontiersMonthlyQuestAlb quest = player.IsDoingQuest(typeof (FrontiersMonthlyQuestAlb)) as FrontiersMonthlyQuestAlb;
+			FrontiersMonthlyQuestHib quest = player.IsDoingQuest(typeof (FrontiersMonthlyQuestHib)) as FrontiersMonthlyQuestHib;
 
 			if (quest == null)
 				return;
@@ -257,7 +257,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(FrontiersMonthlyQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(FrontiersMonthlyQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -268,10 +268,10 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Kelteen.CanGiveQuest(typeof (FrontiersMonthlyQuestAlb), player)  <= 0)
+			if(Kelteen.CanGiveQuest(typeof (FrontiersMonthlyQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (FrontiersMonthlyQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (FrontiersMonthlyQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -281,7 +281,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Kelteen.GiveQuest(typeof (FrontiersMonthlyQuestAlb), player, 1))
+				if (!Kelteen.GiveQuest(typeof (FrontiersMonthlyQuestHib), player, 1))
 					return;
 
 				Kelteen.SayTo(player, "You will find suitable players in the old frontiers.");
@@ -303,11 +303,11 @@ namespace DOL.GS.MonthlyQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Defend your realm!\nSlay enemies in the frontiers and capture Keeps for Albion." +
+						return "Defend your realm!\nSlay enemies in the frontiers and capture Keeps for Hibernia." +
 						       "\nEnemies Killed: ("+ PlayersKilled +" | "+ MAX_KILLING_GOAL +")" +
 						       "\nCaptured Keeps: ("+ CapturedKeeps + " | "+ MAX_CAPTURED_KEEPS_GOAL +")";
 					case 2:
-						return "Return to Kelteen in Castle Sauvage for your Reward.";
+						return "Return to Kelteen in Druim Ligen for your Reward.";
 				}
 				return base.Description;
 			}
@@ -317,7 +317,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player == null || player.IsDoingQuest(typeof(FrontiersMonthlyQuestAlb)) == null)
+			if (player == null || player.IsDoingQuest(typeof(FrontiersMonthlyQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -353,7 +353,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		
 		public override string QuestPropertyKey
 		{
-			get => "FrontiersMonthlyQuestAlb";
+			get => "FrontiersMonthlyQuestHib";
 			set { ; }
 		}
 		
@@ -386,7 +386,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("Clear three slot of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_questPlayer.Out.SendMessage("Clear three slots of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
 	}
