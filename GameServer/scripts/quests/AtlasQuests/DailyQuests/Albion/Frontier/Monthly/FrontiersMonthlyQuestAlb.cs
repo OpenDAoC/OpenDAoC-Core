@@ -103,6 +103,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
 				templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 1722);
+				templateAlb.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
 				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
 				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
 				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);

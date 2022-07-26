@@ -103,6 +103,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
 				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 1722);
+				templateHib.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
 				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
 				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
 				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);

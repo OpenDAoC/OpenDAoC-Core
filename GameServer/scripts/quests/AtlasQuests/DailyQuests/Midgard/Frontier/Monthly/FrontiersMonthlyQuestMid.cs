@@ -103,6 +103,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
 				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 1722);
+				templateMid.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
 				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
 				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
 				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
