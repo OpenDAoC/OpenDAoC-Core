@@ -1230,7 +1230,7 @@ namespace DOL.GS.Quests.Albion
 								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
 									    eInventorySlot.LastBackpack))
 								{
-									Ferowl.SayTo(player, "Thank you for the sealed pouch.");
+									Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 									quest.FinishQuest();
 								}
 								else
