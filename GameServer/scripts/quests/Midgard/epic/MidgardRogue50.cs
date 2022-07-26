@@ -1078,31 +1078,6 @@ namespace DOL.GS.Quests.Midgard
 					m_questPlayer.Out.SendMessage("You collect Oona's Head", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, oona_head);
 					Step = 2;
-					return;
-				}
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
-				{
-					RemoveItem(Masrim, player, oona_head);
-					Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
-					GiveItem(player, sealed_pouch);
-					Step = 3;
-					return;
-				}
-			}
-
-			if (Step == 3 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
-				{
-					MorlinCaan.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
 				}
 			}
 		}
