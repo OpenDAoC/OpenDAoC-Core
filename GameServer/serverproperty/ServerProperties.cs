@@ -2828,6 +2828,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "max_craft_time", "The maximum craft time allowed in seconds. All timers above this value will be normalised to the input value", 0)]
 		public static int MAX_CRAFT_TIME;
 		
+		[ServerProperty("atlas", "of_teleport_interval", "The seconds between OF porting ceremonies", 120)]
+		public static int OF_REPORT_INTERVAL;
+
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{
