@@ -1899,6 +1899,13 @@ namespace DOL.GS
         //-from armsman by crossbow
         //-from infiltrator by crossbow
         //-from scouts by longbow
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(4000))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -1913,6 +1920,7 @@ namespace DOL.GS
                 else
                 {
                     truc.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    BroadcastMessage(String.Format("Funus takes damage from " + source.Name + " and restoring it's whole health."));
                     Health += MaxHealth;
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -1923,6 +1931,7 @@ namespace DOL.GS
                 GamePet truc = source as GamePet;
                 GamePlayer pet_owner = truc.Owner as GamePlayer;
                 pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                BroadcastMessage(String.Format("Funus takes damage from " + pet_owner.Name + " and restoring it's whole health."));
                 Health += MaxHealth;
                 base.TakeDamage(source, damageType, 0, 0);
                 return;
@@ -1960,7 +1969,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 15000; }
+            get { return 20000; }
         }
         public override void Die(GameObject killer)//on kill generate orbs
         {
