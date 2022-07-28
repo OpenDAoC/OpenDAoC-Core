@@ -21,10 +21,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -54,7 +54,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 30000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -68,7 +68,7 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			FlameBrain sbrain = new FlameBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -78,11 +78,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25))
-			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
-					CastSpell(FlameDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
+			CastSpell(FlameDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			base.OnAttackEnemy(ad);
 		}
 		private Spell m_FlameDD;
@@ -99,7 +95,7 @@ namespace DOL.GS
 					spell.RecastDelay = 2;
 					spell.ClientEffect = 360;
 					spell.Icon = 360;
-					spell.Damage = 400;
+					spell.Damage = 300;
 					spell.DamageType = (int)eDamageType.Heat;
 					spell.Name = "Flame Strike";
 					spell.Range = 500;
@@ -121,7 +117,7 @@ namespace DOL.AI.Brain
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FlameBrain() : base()
 		{
-			AggroLevel = 100;
+			AggroLevel = 0;//flame should be neutral
 			AggroRange = 800;
 			ThinkInterval = 1500;
 		}

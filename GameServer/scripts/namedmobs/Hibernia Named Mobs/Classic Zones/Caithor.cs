@@ -20,10 +20,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 		public CaithorBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 450;
+			AggroRange = 1200;
 			ThinkInterval = 1500;
 		}
 
@@ -162,10 +162,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -207,20 +207,36 @@ namespace DOL.GS
 			Level = (byte)Util.Random(62, 65);
 			Model = 339;
 			Size = 160;
+			MaxDistance = 3500;
+			TetherRange = 4000;
 			Flags = 0;
 			LoadEquipmentTemplateFromDatabase("65b95161-a813-41cb-be0c-a57d132f8173");
 			GhostCaithorUP = true;
+			GhostOfCaithorBrain.CanDespawn = false;
+			GhostOfCaithorBrain.despawnGiantCaithor = false;
 
 			GhostOfCaithorBrain sbrain = new GhostOfCaithorBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			SaveIntoDatabase();
 			base.AddToWorld();
 			return true;
 		}
         public override void Die(GameObject killer)
         {
+			var despawnGiantCaithorTimer2 = TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn2");
+			if (despawnGiantCaithorTimer2 != null)
+			{
+				despawnGiantCaithorTimer2.Stop();
+				TempProperties.removeProperty("giantcaithor_despawn2");
+			}
+			var despawnGiantCaithorTimer = TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn");
+			if (despawnGiantCaithorTimer != null)
+			{
+				despawnGiantCaithorTimer.Stop();
+				TempProperties.removeProperty("giantcaithor_despawn");
+			}
 			GhostCaithorUP = false;
 			SpawnCaithor();
             base.Die(killer);
@@ -245,12 +261,14 @@ namespace DOL.AI.Brain
 		public GhostOfCaithorBrain() : base()
 		{
 			AggroLevel = 100;
-			AggroRange = 500;
+			AggroRange = 1200;
 			ThinkInterval = 1500;
 		}
 		ushort oldModel;
 		GameNPC.eFlags oldFlags;
 		bool changed;
+		public static bool despawnGiantCaithor = false;
+		public static bool CanDespawn = false;
 		public override void Think()
 		{
 			if (CaithorDorocha.DorochaKilled >= 5 && !Caithor.RealCaithorUp)
@@ -278,7 +296,39 @@ namespace DOL.AI.Brain
 					changed = true;
 				}
 			}
+			if (!Body.InCombatInLast(30000) && !despawnGiantCaithor && Body.Model == 339)//5min
+            {
+				ECSGameTimer _despawnTimer2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DespawnGiantCaithor), 300000);//5min to despawn
+				Body.TempProperties.setProperty("giantcaithor_despawn2", _despawnTimer2);
+				despawnGiantCaithor = true;
+            }
 			base.Think();
+		}
+		
+		private int DespawnGiantCaithor(ECSGameTimer timer)
+		{
+			if (!HasAggro)
+			{
+				var despawnGiantCaithorTimer = Body.TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn");
+				if (despawnGiantCaithorTimer != null)
+				{
+					despawnGiantCaithorTimer.Stop();
+					Body.TempProperties.removeProperty("giantcaithor_despawn");
+				}				
+				CaithorDorocha.DorochaKilled = 0;
+				oldFlags = Body.Flags;
+				Body.Flags ^= GameNPC.eFlags.CANTTARGET;
+				Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
+				Body.Flags ^= GameNPC.eFlags.PEACE;
+
+				if (oldModel == 0)
+					oldModel = Body.Model;
+
+				Body.Model = 1;
+				changed = true;
+			}
+			despawnGiantCaithor = false;
+			return 0;
 		}
 	}
 }

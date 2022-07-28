@@ -58,7 +58,7 @@ namespace DOL.AI.Brain
 
 		public override int ThinkInterval
 		{
-			get { return 1000; }
+			get { return 500; }
 		}
 
 

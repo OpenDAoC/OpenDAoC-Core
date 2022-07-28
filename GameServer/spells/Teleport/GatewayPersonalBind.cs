@@ -72,6 +72,11 @@ namespace DOL.GS.Spells
 				player.Out.SendMessage("You have been in combat recently and cannot use this item!", DOL.GS.PacketHandler.eChatType.CT_System, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
 				return false;
 			}
+			if(player.CurrentRegion.ID == 497 && player.Client.Account.PrivLevel == 1)
+            {
+				player.Out.SendMessage("You can't use Bind Stone in Jail!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
 
 			return true;
 		}

@@ -593,6 +593,7 @@ namespace DOL.GS
 
                 //misc 
                 case (byte)eSpellType.SavageCombatSpeedBuff:
+                    return eEffect.MeleeHasteBuff;
                 case (byte)eSpellType.SavageCrushResistanceBuff:
                 case (byte)eSpellType.SavageDPSBuff:
                 case (byte)eSpellType.SavageEnduranceHeal:

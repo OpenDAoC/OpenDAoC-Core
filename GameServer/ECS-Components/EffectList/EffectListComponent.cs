@@ -156,7 +156,7 @@ namespace DOL.GS
                                         {
                                             addEffect = true;
                                         }
-                                        // Better Effect of the current enabled effect so disable the current Effect
+                                        //New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
                                         else if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                             spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage) &&
                                             !existingEffects[i].IsDisabled)
@@ -170,14 +170,15 @@ namespace DOL.GS
 
                                             addEffect = true;
                                         }
+                                        //New Effect is not as good as current effect.
                                         else if (spellEffect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
                                             spellEffect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
                                         {
                                             if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
                                                 || existingEffects[i].SpellHandler.Spell.IsPulsing)
                                             {
-                                                EffectService.RequestDisableEffect(spellEffect);
-                                                addEffect = true;
+                                                // EffectService.RequestDisableEffect(spellEffect);
+                                                // addEffect = true;
                                             }
                                             else
                                                 addEffect = false;

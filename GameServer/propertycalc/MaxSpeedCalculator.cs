@@ -143,6 +143,11 @@ namespace DOL.GS.PropertyCalc
 								if (distance > 20)
 									speed *= 1.25;
 
+								if (living is NecromancerPet && distance > 700)
+								{
+									speed *= 1.25;
+								}
+
 								double ownerSpeedAdjust = (double)owner.MaxSpeed / (double)GamePlayer.PLAYER_BASE_SPEED;
 
 								if (ownerSpeedAdjust > 1.0)
