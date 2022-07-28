@@ -14,6 +14,8 @@ namespace DOL.GS {
                 return true;
             if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
                 return true;
+            if (IsAlive && keyName == GS.Abilities.NSImmunity)
+                return true;
 
             return base.HasAbility(keyName);
         }
