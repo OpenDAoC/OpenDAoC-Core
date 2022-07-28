@@ -333,10 +333,10 @@ namespace DOL.GS.Keeps
 				if (m_oldHealthPercent != HealthPercent)
 				{
 					m_oldHealthPercent = HealthPercent;
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 					{
-						player.Client.Out.SendObjectUpdate(this);
-					}
+						player?.Client.Out.SendObjectUpdate(this);
+					});
 				}
 			}
 
@@ -373,12 +373,20 @@ namespace DOL.GS.Keeps
 		private void BroadcastRelicGateDamage()
 		{
 			var message = $"{Component.Keep.Name} is under attack!";
+			Parallel.ForEach(WorldMgr.GetClientsOfRealm(Realm), cl =>
+			{
+				if (cl.Player.ObjectState != eObjectState.Active) return;
+				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			});
+			
+			/*
 			foreach (var cl in WorldMgr.GetClientsOfRealm(Realm))
 			{
 				if (cl.Player.ObjectState != eObjectState.Active) continue;
 				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
+			}*/
 			
 			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
