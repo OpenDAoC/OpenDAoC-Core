@@ -175,7 +175,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Kelteen.SayTo(player, $"Hello ${player.CharacterClass.Name}, you will find enemies in Midgard, Albion or in our lands. " +
+							Kelteen.SayTo(player, $"Hello {player.CharacterClass.Name}, you will find enemies in Midgard, Albion or in our lands. " +
 							                      $"Come back when you have killed enough enemies and taken keeps for our safety.");
 							break;
 						case 2:
