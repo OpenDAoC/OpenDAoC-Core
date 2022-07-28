@@ -8,6 +8,17 @@ namespace DOL.GS {
             ScalingFactor = 80;
             OrbsReward = Properties.EPICBOSS_ORBS;
         }
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+            if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
+                return true;
+            if (IsAlive && keyName == GS.Abilities.NSImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
         public override void Die(GameObject killer)//current orb reward for epic boss is 1500
         {
             if (MaxHealth <= 40000 && MaxHealth > 30000)// 750 orbs for normal nameds

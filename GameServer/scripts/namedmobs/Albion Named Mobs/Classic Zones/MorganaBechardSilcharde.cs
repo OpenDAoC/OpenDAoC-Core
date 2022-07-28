@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000001);
 			if(Morgana.BechardMinionCount > 0 && Morgana.BechardDemonicMinionsCount > 0 && Morgana.SilchardeMinionCount > 0 && Morgana.SilchardeDemonicMinionsCount > 0)
             {
-				if(Morgana.BechardDemonicMinionsCount >= Morgana.BechardMinionCount && Morgana.SilchardeDemonicMinionsCount >= Morgana.SilchardeMinionCount)
+				if(Morgana.BechardDemonicMinionsCount >= 10 && Morgana.SilchardeDemonicMinionsCount >= 10)
                 {
 					if(!Morganacast)
                     {
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 					player.Out.SendSpellEffectAnimation(Body, Body, 9103, 0, false, 1);
 			}
 			CanRemoveMorgana = true;
-			int resetTimer = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
+			int resetTimer = Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RestartMorgana), resetTimer);//reset whole encounter here
 			return 0;
         }
@@ -262,10 +262,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -295,7 +295,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -329,7 +329,7 @@ namespace DOL.GS
 		private void SpawnDemonic()
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
-			for (int i = 0; i < Morgana.BechardMinionCount; i++)
+			for (int i = 0; i < Morgana.BechardMinionCount + Util.Random(4, 6); i++)
 			{
 				DemonicMinion npc = new DemonicMinion();
 				npc.X = spawn.X + Util.Random(-150, 150);
@@ -427,10 +427,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 60;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -460,7 +460,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -495,7 +495,7 @@ namespace DOL.GS
 		private void SpawnDemonic()
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
-			for (int i = 0; i < Morgana.SilchardeMinionCount; i++)
+			for (int i = 0; i < Morgana.SilchardeMinionCount + Util.Random(4, 6); i++)
 			{
 				DemonicMinion npc = new DemonicMinion();
 				npc.X = spawn.X + Util.Random(-150, 150);

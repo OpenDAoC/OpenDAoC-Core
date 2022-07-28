@@ -20,10 +20,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -76,7 +76,7 @@ namespace DOL.GS
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 			MaxSpeedBase = 280;
 
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			ZytkaBrain sbrain = new ZytkaBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database

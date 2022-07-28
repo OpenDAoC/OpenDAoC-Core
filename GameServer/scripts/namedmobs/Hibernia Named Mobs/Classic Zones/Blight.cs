@@ -127,7 +127,7 @@ namespace DOL.GS
 		#endregion
 		public override void Die(GameObject killer)
         {
-			int respawnTime = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
+			int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
 			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnFireBlight), respawnTime);
             base.Die(killer);
         }

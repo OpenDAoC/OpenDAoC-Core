@@ -39,6 +39,13 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			//Nearsight Immunity check
+			if (target.HasAbility(Abilities.NSImmunity))
+			{
+				MessageToCaster(target.Name + " can't be nearsighted!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
+				return;
+			}
 			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)
             {
 				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);

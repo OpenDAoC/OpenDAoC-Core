@@ -47,10 +47,10 @@ namespace DOL.GS
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-                default: return 70; // dmg reduction for rest resists
+                case eDamageType.Slash: return 30; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 30; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+                default: return 40; // dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
@@ -64,7 +64,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 30000; }
+            get { return 40000; }
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -125,7 +125,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -183,7 +183,7 @@ namespace DOL.GS
                 HOC.Size = 50;
                 HOC.CurrentRegionID = 277; //hall of the corrupt
                 HOC.MeleeDamageType = eDamageType.Slash;
-                HOC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+                HOC.RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
