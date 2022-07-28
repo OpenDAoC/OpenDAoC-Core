@@ -48,6 +48,11 @@ namespace DOL.GS.Spells
 				MessageToCaster(target.Name + " can't be confused!", eChatType.CT_SpellResisted);
 				return;
 			}
+			if (target.HasAbility(Abilities.NSImmunity))
+			{
+				MessageToCaster(target.Name + " can't be nearsighted!", eChatType.CT_SpellResisted);
+				return;
+			}
 			if (target.EffectList.GetOfType<ChargeEffect>() != null || target.TempProperties.getProperty("Charging", false))
 			{
 				MessageToCaster(target.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
