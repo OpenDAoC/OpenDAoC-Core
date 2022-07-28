@@ -302,6 +302,15 @@ namespace DOL.GS.Commands
 						EffectService.RequestCancelEffect(e);
 					}
                 }
+
+				//Remove self-casted pulsing effects
+				foreach (ECSGameEffect e in player.effectListComponent.GetAllPulseEffects())
+                {
+					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
+                    {
+						EffectService.RequestCancelEffect(e);
+					}
+                }
             }
 		}
 	}
