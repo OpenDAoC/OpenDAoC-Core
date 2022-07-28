@@ -253,26 +253,26 @@ namespace DOL.GS.Quests.Hibernia
                     {
                         case 1:
                             Theresa.SayTo(player,
-                                $"Greetings {player.Name}, i don't know what to say, thank you very much for helping me. I will give you some [information] about him now.");
+                                $"Greetings, {player.Name}, I don't know what to say. Thank you very much for helping me. I will give you some [information] about him now.");
                             break;
                         case 2:
                             Theresa.SayTo(player,
-                                $"Hey {player.Name}, exit the East Entrance to Lough Derg, and move south to the little lake, I hope you will find my father there.");
+                                $"{player.Name}, exit the East Entrance to Lough Derg and move south to the little lake. I hope you will find my father there.");
                             break;
                         case 3:
                             Theresa.SayTo(player, $"Hello {player.Name}, you found my father? What did he [say]?");
                             break;
                         case 4:
                             Theresa.SayTo(player,
-                                "Thank you so much, I never met a kind person like you. You helped me a lot and I want to reward you with some silver. You told me something about [Power of Nature], what does that mean?");
+                                "Thank you so much, I've never met a person as kind as you. You helped me more than you realize, and I want to reward you with some silver. You told me something about [Power of Nature], what does that mean?");
                             break;
                     }
                 }
                 else
                 {
                     Theresa.SayTo(player,
-                        $"Hello {player.CharacterClass.Name}, for many years there has been war in our areas and I am afraid that those days will come back. " +
-                        $"My father hasn't been to Tir na Nog since then. I miss him and I hope he's doing well. Could you [help me] to find him?");
+                        $"Hello {player.CharacterClass.Name}. For many years there has been war in our areas and I am afraid that those days will come back. " +
+                        $"My father hasn't been to Tir na Nog since before the wars. I miss him dearly, and I hope he's doing well. Could you [help me] to find him?");
                 }
             }
             // The player whispered to the NPC
@@ -296,20 +296,20 @@ namespace DOL.GS.Quests.Hibernia
                     {
                         case "information":
                             Theresa.SayTo(player,
-                                "Karl the fighter, the defender, the honorable, my father is an amazing person. " +
-                                "When I was younger, he always brought me something from his travels. " +
-                                "I still have these things to this day and will never lose them! As I got older, the trips got longer and I started to miss him way more. " +
-                                "My mother didn't have it easy. She got sick and needed him. Now she is gone and he has not been to Tir na Nog for several years. We all [needed him].");
+                                "Karl the fighter, the defender, the honorable. My father is an amazing person. " +
+                                "When I was younger, he always brought me things from his travels. " +
+                                "I still have them to this day and will never lose them! As I got older, the trips got longer and I started to miss him more. " +
+                                "However, my mother suffered even more than I. She fell sick and needed him... and now she is gone, and he has not been to Tir na Nog for several years. We all [needed him].");
                             break;
                         case "needed him":
                             Theresa.SayTo(player,
-                                "When I was a kid we used to walk to the little lake in Lough Derg and look at the trees and the bugs. This for several hours, I loved it. " +
-                                "I always had a [toy] with me on the way, which my father gave me from his travels. " +
-                                "It would be nice if you could go to this lake, maybe he is there, that would be my greatest hope.");
+                                "When I was a kid we used to walk to the little lake in Lough Derg and look at the trees and the bugs, sometimes for several hours. I loved it. " +
+                                "I always kept a [toy] with me on the way, which my father gave me from his travels. " +
+                                "It would be nice if you could go to this lake. Maybe he is there, that would be my greatest hope.");
                             break;
                         case "toy":
                             Theresa.SayTo(player,
-                                "I want to give you this toy to take it with you on your way to this lake. If you meet him, give him this as a sign of love. I will never forget him!");
+                                "(She pauses for a moment) I want to give you this toy to take it with you on your way to the lake. If you meet him, give him this as a sign of love. I will never forget him!");
                             if (quest.Step == 1 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
                                     eInventorySlot.LastBackpack))
                             {
@@ -319,7 +319,7 @@ namespace DOL.GS.Quests.Hibernia
                             else
                             {
                                 Theresa.SayTo(player,
-                                    "Oh you have too much in your inventory, come back when you can get this [toy].");
+                                    "Oh you have too much in your inventory. Come back when you can hold this [toy].");
                             }
 
                             break;
@@ -327,14 +327,14 @@ namespace DOL.GS.Quests.Hibernia
                             if (quest.Step == 3)
                             {
                                 Theresa.SayTo(player,
-                                    "I am so glad that I sent you. Now that I know he is fine and is still alive gives me peace and strength.");
+                                    "I am so glad that I sent you. Knowing that he is still alive and healthy gives me peace and strength.");
                             }
                             break;
                         case "Power of Nature":
                             if (quest.Step == 4)
                             {
                                 Theresa.SayTo(player,
-                                    "The small lake in Lough Derg is the source of [natural powers] and he gives me this power as a sign of its return?");
+                                    "I see now. The small lake in Lough Derg is the source of [natural powers]. Now I understand why we spent so much time there in my youth.");
                             }
                             break;
                         case "natural powers":
@@ -342,7 +342,7 @@ namespace DOL.GS.Quests.Hibernia
                             {
                                 RemoveItem(player, magical_theresas_doll);
                                 Theresa.SayTo(player,
-                                "You bring the doll back to me, thank you very much. My father is coming back!");
+                                "Father imbued this doll with magic, and I can feel his presence within it. I am confident he will return soon, and I can go with peace now. Thank you so much for bringing my father back to me, and to all of us in Tir na Nog. ");
                                 Theresa.Emote(eEmote.Cheer);
                                 new ECSGameTimer(Theresa, new ECSGameTimer.ECSTimerCallback(StartTheresaEffect), 2000);
                                 Theresa.SayTo(player,
@@ -381,7 +381,7 @@ namespace DOL.GS.Quests.Hibernia
                             break;
                         case 2:
                             Karl.SayTo(player,
-                                $"Hello {player.CharacterClass.Name}, you are very brave to come here, it just swarms with creatures and tramps, but i am happy for every further visitor to [this place].");
+                                $"Hello {player.CharacterClass.Name}, you are very brave to come here. This lake swarms with monsters and vermin, but I am happy for every visitor to [this place].");
                             break;
                         case 3:
                             Karl.SayTo(player,
@@ -389,7 +389,7 @@ namespace DOL.GS.Quests.Hibernia
                             break;
                         case 4:
                             Karl.SayTo(player,
-                                $"Okay, now bring this magical doll to my daughter in Tir na Nog and tell her about the Power of Nature. " +
+                                $"Okay, now bring this magical doll to my daughter in Tir na Nog and tell her about the Power of Nature." +
                                 $"I will come back soon and will stay by her side. \nThank you {player.Name}, that you visited me, I really appreciated that!");
                             break;
                     }
@@ -414,18 +414,18 @@ namespace DOL.GS.Quests.Hibernia
                     {
                         case "this place":
                             Karl.SayTo(player,
-                                "This place is very special to me, it's not just a retreat. Here I feel the nature that blossoms in all of Hibernia, " +
-                                "I wanted to bring this power and this life closer to everyone who comes by here. " +
-                                "I wanted to show this to [my daughter] too, but she was too young and her mother used to worry.");
+                                "This place is very special to me, it's not just a retreat. Here I feel the nature that blossoms in all of Hibernia. " +
+                                "I wanted to bring this power and this life closer to everybody who comes here. " +
+                                "I wanted to show this to [my daughter] too, but she was too young to travel here and her mother used to worry.");
                             break;
                         case "my daughter":
                             Karl.SayTo(player,
-                                $"I see [a doll] peeking out of your backpack, I gave it to my daughter, what's the deal with that?");
+                                $"That [doll] peeking out of your backpack, I remember it. I brought it back from a tour in Hadrian's Wall many years ago and gave it to my daughter. Why do you have it? (He eyes you suspiciously)");
                             break;
-                        case "a doll":
+                        case "doll":
                             Karl.SayTo(player,
-                                $"I am so sorry for all these years. I heard about my wife and this broke me a lot. Theresa needs me more than ever and I was not there. " +
-                                $"Please give me this doll, so that I can show her the [strength and aura] of all forces of nature.");
+                                $"(You hand the doll to him and tell him of Theresa. Tears begin to form in his eyes) I am so sorry for all these years... I heard about my wife passing and it broke me. Theresa needed me more than ever, and I was not there. " +
+                                $"Please give me the doll. I will show her the [strength and aura] of all forces of nature, and give her proof that I'm still alive.");
                             break;
                         case "strength and aura":
                             if (quest.Step == 2)
@@ -447,7 +447,7 @@ namespace DOL.GS.Quests.Hibernia
                                 GiveItem(player, magical_theresas_doll);
                                 Karl.SayTo(player,
                                     $"Okay, now bring this magical doll to my daughter in Tir na Nog and tell her about the Power of Nature. " +
-                                    $"I will come back soon and will stay by her side. \nThank you {player.Name}, that you visited me, I really appreciated that!");
+                                    $"I will return soon and stay by her side. \nThank you {player.Name}, for visiting me. Truly!");
                             }
 
                             break;
@@ -686,7 +686,7 @@ namespace DOL.GS.Quests.Hibernia
                     case 1:
                         return "Continue speaking with Theresa and get more information about Karl.";
                     case 2:
-                        return "Travel to the little Lake in Lough Derg and search for Karl.";
+                        return "Travel to the little lake in Lough Derg and search for Karl.";
                     case 3:
                         return "Speak with Karl and help him with the ceremony.";
                     case 4:
