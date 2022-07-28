@@ -10,8 +10,31 @@ namespace DOL.GS {
         public SINeckBoss() : base()
         {
         }
+		public override int GetResist(eDamageType damageType)
+		{
+			switch (damageType)
+			{
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
+			}
+		}
+		public override int MaxHealth
+		{
+			get { return (6000 + (Level * 125)); }
+		}
+		public override double GetArmorAF(eArmorSlot slot)
+		{
+			return 350;
+		}
 
-        public override void OnAttackEnemy(AttackData ad)
+		public override double GetArmorAbsorb(eArmorSlot slot)
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
+		public override void OnAttackEnemy(AttackData ad)
         {
            // if(Util.Chance(20))
              //   CastSpell(spell, sl, false);
