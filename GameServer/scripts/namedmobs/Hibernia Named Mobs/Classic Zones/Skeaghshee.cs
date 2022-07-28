@@ -4,6 +4,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -81,6 +82,22 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
+		public static int TauntID = 247;
+		public static int TauntClassID = 44;
+		public static Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
+
+		public static int BehindID = 256;
+		public static int BehindClassID = 44;
+		public static Style behind = SkillBase.GetStyleByID(BehindID, BehindClassID);
+
+		public static int BehindFollowUpID = 259;
+		public static int BehindFollowUpClassID = 44;
+		public static Style behindFollowUp = SkillBase.GetStyleByID(BehindFollowUpID, BehindFollowUpClassID);
+
+		public static int AfterParryID = 246;
+		public static int AfterParryClassID = 44;
+		public static Style afterParry = SkillBase.GetStyleByID(AfterParryID, AfterParryClassID);
+
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166165);
@@ -92,6 +109,15 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
+			LoadEquipmentTemplateFromDatabase("d39e7d76-c7f3-4f79-a074-1eb441e83271");
+			if (!Styles.Contains(taunt))
+				Styles.Add(taunt);
+			if (!Styles.Contains(behind))
+				Styles.Add(behind);
+			if (!Styles.Contains(behindFollowUp))
+				Styles.Add(behindFollowUp);
+			if (!Styles.Contains(afterParry))
+				Styles.Add(afterParry);
 
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			SkeaghsheeBrain sbrain = new SkeaghsheeBrain();
@@ -101,7 +127,31 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-	}
+        public override void OnAttackedByEnemy(AttackData ad)
+        {
+			if (ad != null)
+            {
+				if(ad.AttackResult == eAttackResult.Parried)
+                {
+					styleComponent.NextCombatStyle = afterParry;
+					styleComponent.NextCombatBackupStyle = taunt;
+                }
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        public override void OnAttackEnemy(AttackData ad)
+        {
+			if(ad != null)
+            {
+				if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 259 && ad.Style.ClassID == 44)
+				{
+					styleComponent.NextCombatStyle = behindFollowUp;
+					styleComponent.NextCombatBackupStyle = taunt;
+				}
+			}
+            base.OnAttackEnemy(ad);
+        }
+    }
 }
 namespace DOL.AI.Brain
 {
@@ -110,7 +160,7 @@ namespace DOL.AI.Brain
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SkeaghsheeBrain() : base()
 		{
-			AggroLevel = 100;
+			AggroLevel = 0;//he is neutral
 			AggroRange = 800;
 			ThinkInterval = 1500;
 		}
@@ -122,6 +172,23 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
+				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166165);
+				Body.ParryChance = npcTemplate.ParryChance;
+			}
+			if(Body.TargetObject != null && HasAggro)
+            {
+				float angle = Body.TargetObject.GetAngle(Body);
+				if (angle >= 160 && angle <= 200)
+                {
+					Body.styleComponent.NextCombatStyle = Skeaghshee.behind;//do backstyle when angle allow it
+					Body.styleComponent.NextCombatBackupStyle = Skeaghshee.behindFollowUp;
+				}
+				else
+                {
+					Body.ParryChance = 15;
+					Body.styleComponent.NextCombatStyle = Skeaghshee.afterParry;//do backstyle when angle allow it
+					Body.styleComponent.NextCombatBackupStyle = Skeaghshee.taunt;
+				}
 			}
 			base.Think();
 		}
