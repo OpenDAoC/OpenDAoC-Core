@@ -190,12 +190,6 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
-		{
-			if (Body.IsAlive && !HasAggro)
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-			return 0;
-		}
 		private Spell m_Boss_PBAOE;
 		private Spell Boss_PBAOE
 		{
