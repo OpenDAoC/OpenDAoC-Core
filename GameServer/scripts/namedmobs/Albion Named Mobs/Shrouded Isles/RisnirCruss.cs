@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -179,12 +181,12 @@ namespace DOL.AI.Brain
 		{
 			if (Body.IsAlive && !HasAggro)
 			{
-				foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
+				Parallel.ForEach(Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-						player.Out.SendSpellEffectAnimation(Body, Body, 6085, 0, false, 0x01);
-				}
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+					player?.Out.SendSpellEffectAnimation(Body, Body, 6085, 0, false, 0x01);
+				});
+
+				return 3000;
 			}
 			return 0;
 		}
