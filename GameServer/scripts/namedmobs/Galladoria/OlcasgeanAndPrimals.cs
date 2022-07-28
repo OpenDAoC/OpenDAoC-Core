@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
@@ -2116,25 +2118,19 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                 {
-                    if (player != null)
-                        player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
-                }
+                    player?.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
+                });
                 SetGroundTarget(X, Y, Z);
                 if (!IsCasting)
                     CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1000);
+                return 2000;
             }
             return 0;
         }
-        private int DoCast(ECSGameTimer timer)
-        {
-            if (IsAlive)
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
-            return 0;
-        }
+       
         private int RemoveFire(ECSGameTimer timer)
         {
             if (IsAlive)
