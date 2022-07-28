@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		private const int MAX_KILLED = 10;
 		
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNPC Anthony = null; // Start NPC
 
 		private int OctonidKilled = 0;
 
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
 					{
-						Dean = npc;
+						Anthony = npc;
 						break;
 					}
 
-			if (Dean == null)
+			if (Anthony == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
-				Dean.Model = 355;
-				Dean.Name = "Dean";
-				Dean.GuildName = "Advisor to the King";
-				Dean.Realm = eRealm.Hibernia;
+					log.Warn("Could not find Anthony , creating it ...");
+				Anthony = new GameNPC();
+				Anthony.Model = 355;
+				Anthony.Name = "Anthony";
+				Anthony.GuildName = "Advisor to the King";
+				Anthony.Realm = eRealm.Hibernia;
 				//Druim Ligen Location
-				Dean.CurrentRegionID = 200;
-				Dean.Size = 50;
-				Dean.Level = 59;
-				Dean.X = 334962;
-				Dean.Y = 420687;
-				Dean.Z = 5184;
-				Dean.Heading = 1571;
-				Dean.AddToWorld();
+				Anthony.CurrentRegionID = 200;
+				Anthony.Size = 50;
+				Anthony.Level = 59;
+				Anthony.X = 334962;
+				Anthony.Y = 420687;
+				Anthony.Z = 5184;
+				Anthony.Heading = 1571;
+				Anthony.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Dean.SaveIntoDatabase();
+					Anthony.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +111,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.AddHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+			GameEventMgr.AddHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 
-			/* Now we bring to Dean the possibility to give this quest to players */
-			Dean.AddQuestToGive(typeof (OctonidKillQuestHib));
+			Anthony.AddQuestToGive(typeof (OctonidKillQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,27 +124,26 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Dean == null)
+			if (Anthony == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-			GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+			GameEventMgr.RemoveHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+			GameEventMgr.RemoveHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 
-			/* Now we remove to Dean the possibility to give this quest to players */
-			Dean.RemoveQuestToGive(typeof (OctonidKillQuestHib));
+			Anthony.RemoveQuestToGive(typeof (OctonidKillQuestHib));
 		}
 
-		private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToAnthony(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Anthony.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,16 +156,16 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Dean.SayTo(player, "You will find Octonids in the South East of World\'s End.");
+							Anthony.SayTo(player, "You will find Octonids in the South East of World\'s End.");
 							break;
 						case 2:
-							Dean.SayTo(player, "Hello " + player.Name + ", did you [kill] the Octonids?");
+							Anthony.SayTo(player, "Hello " + player.Name + ", did you [kill] the Octonids?");
 							break;
 					}
 				}
 				else
 				{
-					Dean.SayTo(player, "Hello "+ player.Name +", I am Dean. I help the king with logistics, and he's tasked me with getting things done around here. "+
+					Anthony.SayTo(player, "Hello "+ player.Name +", I am Anthony. I help the king with logistics, and he's tasked me with getting things done around here. "+
 					                   "The Octonids out in World's End are devouring the natural flora and fauna of the Shrouded Isles. They may soon destroy the ecosystem entirely.\n"+
 					                   "\nCan you [clear the Octonids] to save the Shrouded Isles?");
 				}
@@ -181,7 +179,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text.ToLower())
 					{
 						case "clear the octonids":
-							player.Out.SendQuestSubscribeCommand(Dean, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Dean "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Anthony, QuestMgr.GetIDForQuestType(typeof(OctonidKillQuestHib)), "Will you help Anthony "+questTitle+"");
 							break;
 					}
 				}
@@ -269,7 +267,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Dean.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
+			if(Anthony.CanGiveQuest(typeof (OctonidKillQuestHib), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (OctonidKillQuestHib)) != null)
@@ -282,10 +280,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!Dean.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
+				if (!Anthony.GiveQuest(typeof (OctonidKillQuestHib), player, 1))
 					return;
 
-				Dean.SayTo(player, "You will find the Octonids in World\'s End.");
+				Anthony.SayTo(player, "You will find the Octonids in World\'s End.");
 
 			}
 		}
@@ -306,7 +304,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					case 1:
 						return "Find Octonids South East in World\'s End. \nKilled: Octonids ("+ OctonidKilled +" | 10)";
 					case 2:
-						return "Return to Dean for your Reward.";
+						return "Return to Anthony in Grove of Domnann for your Reward.";
 				}
 				return base.Description;
 			}
@@ -331,7 +329,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 					
 			if (OctonidKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Dean
 				Step = 2;
 			}
 
