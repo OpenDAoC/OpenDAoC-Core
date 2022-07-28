@@ -12,10 +12,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -53,7 +53,7 @@ namespace DOL.GS
         public override short Strength { get => base.Strength; set => base.Strength = 300; }
         public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 470;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -151,10 +151,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -192,7 +192,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 300; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 453;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -290,10 +290,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -331,7 +331,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 330; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 577;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -428,10 +428,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -469,7 +469,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 330; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 1770;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -559,10 +559,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -600,7 +600,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 300; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 460;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -690,10 +690,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -731,7 +731,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 300; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 126;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -821,10 +821,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -862,7 +862,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 300; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 440;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -952,10 +952,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -993,7 +993,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 400; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 441;
 			Name = "Wretch of Winter";
 			Size = 250;
@@ -1083,10 +1083,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 30;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -1124,7 +1124,7 @@ namespace DOL.GS
 		public override short Strength { get => base.Strength; set => base.Strength = 400; }
 		public override bool AddToWorld()
 		{
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Model = 466;
 			Name = "Wretch of Winter";
 			Size = 250;
