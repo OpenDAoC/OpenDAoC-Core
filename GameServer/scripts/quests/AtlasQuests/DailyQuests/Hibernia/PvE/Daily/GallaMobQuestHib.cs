@@ -96,8 +96,8 @@ namespace DOL.GS.DailyQuest.Hibernia
                 Anthony.Heading = 1234;
                 GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
                 templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-                templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 401);
-                templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 402);
+                templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361);
+                templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362);
                 Anthony.Inventory = templateHib.CloseTemplate();
                 Anthony.AddToWorld();
                 if (SAVE_INTO_DATABASE)
