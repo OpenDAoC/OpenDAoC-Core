@@ -5,6 +5,8 @@ using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -461,25 +463,18 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in this.GetPlayersInRadius(8000))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-						player.Out.SendSpellEffectAnimation(this, this, 7025, 0, false, 0x01);
-				}
+					player?.Out.SendSpellEffectAnimation(this, this, 7025, 0, false, 0x01);
+				});
+				
 				SetGroundTarget(X, Y, Z);
 				CastSpell(Fire_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				return 3000;
 			}
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
-		{
-			if (IsAlive)
-			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-			}
-			return 0;
-		}
+		
 		private Spell m_Fire_aoe;
 		private Spell Fire_aoe
 		{
