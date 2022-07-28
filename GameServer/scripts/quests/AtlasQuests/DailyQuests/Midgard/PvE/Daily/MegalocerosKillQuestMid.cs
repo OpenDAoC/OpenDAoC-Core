@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Kill Goal
 		private const int MAX_KILLED = 10;
 		
-		private static GameNPC Isaac = null; // Start NPC
+		private static GameNPC Jarek = null; // Start NPC
 
 		private int megalocerosKilled = 0;
 
@@ -66,37 +66,44 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
+					if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
 					{
-						Isaac = npc;
+						Jarek = npc;
 						break;
 					}
 
-			if (Isaac == null)
+			if (Jarek == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Isaac , creating it ...");
-				Isaac = new GameNPC();
-				Isaac.Model = 774;
-				Isaac.Name = "Isaac";
-				Isaac.GuildName = "Advisor to the King";
-				Isaac.Realm = eRealm.Midgard;
-				Isaac.CurrentRegionID = 100;
-				Isaac.Size = 50;
-				Isaac.Level = 59;
-				//Castle Sauvage Location
-				Isaac.X = 766590;
-				Isaac.Y = 670407;
-				Isaac.Z = 5736;
-				Isaac.Heading = 2358;
-				Isaac.AddToWorld();
+					log.Warn("Could not find Jarek , creating it ...");
+				Jarek = new GameNPC();
+				Jarek.Model = 774;
+				Jarek.Name = "Jarek";
+				Jarek.GuildName = "Advisor to the King";
+				Jarek.Realm = eRealm.Midgard;
+				Jarek.CurrentRegionID = 151;
+				Jarek.Size = 50;
+				Jarek.Level = 59;
+				//Aegirhamn Location
+				Jarek.X = 292291;
+				Jarek.Y = 354975;
+				Jarek.Z = 3867;
+				Jarek.Heading = 3867;
+				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
+				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
+				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
+				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985);
+				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
+				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
+				Jarek.Inventory = templateMid.CloseTemplate();
+				Jarek.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Isaac.SaveIntoDatabase();
+					Jarek.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +118,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-			GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
-
-			/* Now we bring to Isaac the possibility to give this quest to players */
-			Isaac.AddQuestToGive(typeof (MegalocerosKillQuestMid));
+			GameEventMgr.AddHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.AddHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			
+			Jarek.AddQuestToGive(typeof (MegalocerosKillQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,27 +131,26 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Isaac == null)
+			if (Jarek == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-			GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
-
-			/* Now we remove to Isaac the possibility to give this quest to players */
-			Isaac.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
+			GameEventMgr.RemoveHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.RemoveHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			
+			Jarek.RemoveQuestToGive(typeof (MegalocerosKillQuestMid));
 		}
 
-		private static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToJarek(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Jarek.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,16 +163,16 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Isaac.SayTo(player, "You will find Megaloceros in the South East of Gripklosa Mountains.");
+							Jarek.SayTo(player, "You will find Megaloceros in the South East of Gripklosa Mountains.");
 							break;
 						case 2:
-							Isaac.SayTo(player, "Hello " + player.Name + ", did you [kill] the Megaloceros?");
+							Jarek.SayTo(player, "Hello " + player.Name + ", did you [kill] the Megaloceros?");
 							break;
 					}
 				}
 				else
 				{
-					Isaac.SayTo(player, "Hello "+ player.Name +", I am Isaac, Fen\'s friend. "+
+					Jarek.SayTo(player, "Hello "+ player.Name +", I am Jarek, Fen\'s friend. "+
 					                    "The Megaloceros out in Gripklosa Mountains are devouring the natural flora and fauna of the Shrouded Isles. They may soon destroy the ecosystem entirely.\n"+
 					                    "\nCan you [clear the Megaloceros] to save the Shrouded Isles?");
 				}
@@ -181,7 +186,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text.ToLower())
 					{
 						case "clear the megaloceros":
-							player.Out.SendQuestSubscribeCommand(Isaac, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Isaac "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Jarek, QuestMgr.GetIDForQuestType(typeof(MegalocerosKillQuestMid)), "Will you help Jarek "+questTitle+"");
 							break;
 					}
 				}
@@ -269,7 +274,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Isaac.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
+			if(Jarek.CanGiveQuest(typeof (MegalocerosKillQuestMid), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (MegalocerosKillQuestMid)) != null)
@@ -282,10 +287,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Isaac.GiveQuest(typeof (MegalocerosKillQuestMid), player, 1))
+				if (!Jarek.GiveQuest(typeof (MegalocerosKillQuestMid), player, 1))
 					return;
 
-				Isaac.SayTo(player, "You will find the Megaloceros in Gripklosa Mountains.");
+				Jarek.SayTo(player, "You will find the Megaloceros in Gripklosa Mountains.");
 
 			}
 		}
@@ -306,7 +311,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					case 1:
 						return "Find Megaloceros in the South East of Gripklosa Mountains. \nKilled: Megaloceros ("+ megalocerosKilled +" | "+MAX_KILLED+")";
 					case 2:
-						return "Return to Isaac for your Reward.";
+						return "Return to Jarek in Aegirhamn for your Reward.";
 				}
 				return base.Description;
 			}
@@ -331,7 +336,6 @@ namespace DOL.GS.DailyQuest.Midgard
 					
 			if (megalocerosKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Isaac
 				Step = 2;
 			}
 
