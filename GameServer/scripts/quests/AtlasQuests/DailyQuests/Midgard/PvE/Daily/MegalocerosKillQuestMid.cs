@@ -92,7 +92,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Jarek.X = 292291;
 				Jarek.Y = 354975;
 				Jarek.Z = 3867;
-				Jarek.Heading = 3867;
+				Jarek.Heading = 1239;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
 				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
 				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
