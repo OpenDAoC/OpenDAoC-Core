@@ -469,7 +469,7 @@ namespace DOL.GS.Quests.Hibernia
                 MobEffect.Realm = eRealm.Hibernia;
                 MobEffect.Race = 2007;
                 MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
-                MobEffect.Size = 150;
+                MobEffect.Size = 100;
                 MobEffect.Level = 65;
                 MobEffect.Flags ^= GameNPC.eFlags.CANTTARGET;
                 MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
