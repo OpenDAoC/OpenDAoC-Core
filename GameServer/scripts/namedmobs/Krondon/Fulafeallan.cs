@@ -32,10 +32,10 @@ namespace DOL.GS
 			{
 				switch (damageType)
 				{
-					case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-					case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-					case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-					default: return 70;// dmg reduction for rest resists
+					case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+					case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+					case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+					default: return 30;// dmg reduction for rest resists
 				}
 			}
 		}
@@ -87,7 +87,7 @@ namespace DOL.GS
 			MaxSpeedBase = 250;
 			MaxDistance = 3500;
 			TetherRange = 3800;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
