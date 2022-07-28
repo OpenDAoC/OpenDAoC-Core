@@ -63,7 +63,7 @@ public class MonthlyQuestService
                 List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
                 foreach (var quest in player.QuestListFinished)
                 {
-                    if (quest is MonthlyQuest)
+                    if (quest is Quests.MonthlyQuest)
                     {
                         quest.AbortQuest();
                         questsToRemove.Add(quest);    
