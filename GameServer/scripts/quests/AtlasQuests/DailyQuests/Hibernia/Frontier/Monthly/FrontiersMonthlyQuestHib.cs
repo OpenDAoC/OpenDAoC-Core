@@ -324,9 +324,10 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			if (sender != m_questPlayer)
 				return;
 			
-			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			
 			if (e == GameLivingEvent.EnemyKilled && Step == 1 && PlayersKilled != MAX_KILLING_GOAL)
 			{
+				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
 				    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
 				if (gArgs.Target.CurrentRegionID != 100 || gArgs.Target.CurrentRegionID != 200 ||
