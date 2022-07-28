@@ -381,6 +381,8 @@ namespace DOL.GS
 
 		public const string CCImmunity = "CCImmunity";
 
+		public const string NSImmunity = "NSImmunity";
+
 		public const string DamageImmunity = "DamageImmunity";
 
 		public const string RootImmunity = "RootImmunity";
