@@ -376,6 +376,9 @@ namespace DOL.GS
 		/// <summary>
 		/// Crowd Control Immunity - NPC Only ability
 		/// </summary>
+
+		public const string ConfusionImmunity = "ConfusionImmunity";
+
 		public const string CCImmunity = "CCImmunity";
 
 		public const string DamageImmunity = "DamageImmunity";
