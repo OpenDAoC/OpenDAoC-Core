@@ -48,6 +48,11 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			if (target.HasAbility(Abilities.ConfusionImmunity))
+			{
+				MessageToCaster(target.Name + " can't be confused!", eChatType.CT_SpellResisted);
+				return;
+			}
 			base.ApplyEffectOnTarget(target, effectiveness);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}

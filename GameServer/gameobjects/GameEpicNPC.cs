@@ -9,6 +9,17 @@ namespace DOL.GS {
         {
             ScalingFactor = 60;
         }
+        public override bool HasAbility(string keyName)
+        {
+            //if (IsAlive && keyName == GS.Abilities.CCImmunity) //incase we decide to make them immune to any cc
+                //return true;
+            if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
+                return true;
+            if (IsAlive && keyName == GS.Abilities.NSImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
         public override short MaxSpeedBase
         {
             get => (short)(191 + (Level * 2));

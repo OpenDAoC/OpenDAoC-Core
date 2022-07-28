@@ -1417,6 +1417,18 @@ namespace DOL.GS.ServerProperties
 		public static int SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL;
 
 		/// <summary>
+		/// Respawn Interval for Normal Epic Game Boss Encounter
+		/// </summary>
+		[ServerProperty("world", "set_epic_game_encounter_respawninterval", "Respawn Time, in minutes, for Normal Epic Game Encounters", 60)]
+		public static int SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
+		/// Respawn Interval for Epic Quest Mobs
+		/// </summary>
+		[ServerProperty("world", "set_epic_quest_encounter_respawninterval", "Respawn Time, in minutes, for Epic Quest Encounters", 30)]
+		public static int SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
 		/// Weapon damage cap for epic encounters that use melee weapons
 		/// </summary>
 		[ServerProperty("npc", "set_epic_encounter_weapon_damage_cap", "Maximum damage cap multipler for epic encounters that use melee weapons", 1.5)]

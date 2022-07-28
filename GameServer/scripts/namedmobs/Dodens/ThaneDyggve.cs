@@ -33,7 +33,7 @@ namespace DOL.GS.Scripts
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			ScalingFactor = 60;
 			base.SetOwnBrain(new ThaneDyggveBrain());
@@ -63,10 +63,10 @@ namespace DOL.GS.Scripts
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-				default: return 70; // dmg reduction for rest resists
+				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				default: return 30; // dmg reduction for rest resists
 			}
 		}
 		public override double GetArmorAF(eArmorSlot slot)
