@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
@@ -794,21 +796,16 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(3000))
+                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                 {
-                    if (player != null)
-                        player.Out.SendSpellEffectAnimation(this, this, 4168, 0, false, 0x01);
-                }
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 800);
+                    player?.Out.SendSpellEffectAnimation(this, this, 4168, 0, false, 0x01);
+                });
+
+                return 1600;
             }
             return 0;
         }
-        protected int DoCast(ECSGameTimer timer)
-        {
-            if (IsAlive)
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 800);
-            return 0;
-        }
+      
         #endregion
         public override void Die(GameObject killer)
         {
