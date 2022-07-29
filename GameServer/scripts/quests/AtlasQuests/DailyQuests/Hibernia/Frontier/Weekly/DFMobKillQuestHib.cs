@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		private const int MAX_KILLED = 200;
 
-		private static GameNPC Cola = null; // Start NPC
+		private static GameNPC Stefano = null; // Start NPC
 
 		private int _mobsKilled = 0;
 
@@ -61,37 +61,37 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Stefano", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 200 && npc.X == 334793 && npc.Y == 420805)
+					if (npc.CurrentRegionID == 249 && npc.X == 46083 && npc.Y == 39681)
 					{
-						Cola = npc;
+						Stefano = npc;
 						break;
 					}
 
-			if (Cola == null)
+			if (Stefano == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Cola , creating it ...");
-				Cola = new GameNPC();
-				Cola.Model = 583;
-				Cola.Name = "Cola";
-				Cola.GuildName = "Realm Logistics";
-				Cola.Realm = eRealm.Hibernia;
-				//Druim Ligen Location
-				Cola.CurrentRegionID = 200;
-				Cola.Size = 50;
-				Cola.Level = 59;
-				Cola.X = 334793;
-				Cola.Y = 420805;
-				Cola.Z = 5184;
-				Cola.Heading = 1586;
-				Cola.AddToWorld();
+					log.Warn("Could not find Stefano , creating it ...");
+				Stefano = new GameNPC();
+				Stefano.Model = 306;
+				Stefano.Name = "Stefano";
+				Stefano.GuildName = "Realm Logistics";
+				Stefano.Realm = eRealm.Hibernia;
+				//Darkness Falls Hib Entrance Location
+				Stefano.CurrentRegionID = 249;
+				Stefano.Size = 50;
+				Stefano.Level = 59;
+				Stefano.X = 46083;
+				Stefano.Y = 39681;
+				Stefano.Z = 21357;
+				Stefano.Heading = 3066;
+				Stefano.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Cola.SaveIntoDatabase();
+					Stefano.SaveIntoDatabase();
 				}
 			}
 
@@ -106,11 +106,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Stefano, GameObjectEvent.Interact, new DOLEventHandler(TalkToStefano));
+			GameEventMgr.AddHandler(Stefano, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStefano));
 
-			/* Now we bring to Cola the possibility to give this quest to players */
-			Cola.AddQuestToGive(typeof (DFMobKillQuestHib));
+			Stefano.AddQuestToGive(typeof (DFMobKillQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" Hib initialized");
@@ -120,27 +119,26 @@ namespace DOL.GS.DailyQuest.Hibernia
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Cola == null)
+			if (Stefano == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new DOLEventHandler(TalkToCola));
-			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Stefano, GameObjectEvent.Interact, new DOLEventHandler(TalkToStefano));
+			GameEventMgr.RemoveHandler(Stefano, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStefano));
 
-			/* Now we remove to Cola the possibility to give this quest to players */
-			Cola.RemoveQuestToGive(typeof (DFMobKillQuestHib));
+			Stefano.RemoveQuestToGive(typeof (DFMobKillQuestHib));
 		}
 
-		private static void TalkToCola(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToStefano(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Cola.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
+			if(Stefano.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -153,16 +151,16 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Cola.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
+							Stefano.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
 							break;
 						case 2:
-							Cola.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
+							Stefano.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I have received word from a ranger that forces are building in Darkness Falls. "+
+					Stefano.SayTo(player, "Hello "+ player.Name +", I am Stefano. I have received word from a ranger that forces are building in Darkness Falls. "+
 					                       "Clear out as many demons as you can find, and come back to me only when the halls of the dungeon are purged of their influence. \n\n"+
 					                       "Can you [stop the invasion]?");
 				}
@@ -176,7 +174,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 					switch (wArgs.Text)
 					{
 						case "stop the invasion":
-							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Cola "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Stefano, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestHib)), "Will you help Stefano "+questTitle+"?");
 							break;
 					}
 				}
@@ -263,7 +261,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Cola.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
+			if(Stefano.CanGiveQuest(typeof (DFMobKillQuestHib), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (DFMobKillQuestHib)) != null)
@@ -276,10 +274,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 			else
 			{
 				//Check if we can add the quest!
-				if (!Cola.GiveQuest(typeof (DFMobKillQuestHib), player, 1))
+				if (!Stefano.GiveQuest(typeof (DFMobKillQuestHib), player, 1))
 					return;
 
-				Cola.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
+				Stefano.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
 
 			}
 		}
@@ -298,10 +296,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Enter Darkness Falls and kill monsters for Hibernia. \nKilled: Monster (" +
+						return "Head into Darkness Falls and kill monsters for Hibernia. \nKilled: Monster (" +
 						       _mobsKilled + " | " + MAX_KILLED + ")";
 					case 2:
-						return "Return to Cola for your Reward.";
+						return "Return to Stefano in Darkness Falls for your Reward.";
 				}
 				return base.Description;
 			}
@@ -353,7 +351,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 					
 			if (_mobsKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Dean
 				Step = 2;
 			}
 
