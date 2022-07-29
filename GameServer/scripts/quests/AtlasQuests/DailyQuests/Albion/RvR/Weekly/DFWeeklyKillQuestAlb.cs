@@ -20,7 +20,7 @@ namespace DOL.GS.DailyQuest.Albion
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const string questTitle = "[Weekly] Vacuum Darkness Falls";
+		private const string questTitle = "[Weekly] Femurs From Darkness Falls";
 		private const int minimumLevel = 15;
 		private const int maximumLevel = 50;
 		
