@@ -906,7 +906,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>0</returns>
-        protected int LinkdeathTimerCallback(ECSGameTimer callingTimer)
+        protected int LinkdeathTimerCallback(AuxECSGameTimer callingTimer)
         {
             log.Debug("call back");
             //If we died during our callback time we release
@@ -978,7 +978,7 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
             log.Debug("starting timer");
-            ECSGameTimer timer = new ECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
+            AuxECSGameTimer timer = new AuxECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
             
             // timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
             // timer.StartTick = 1 + secondsToQuit * 1000;
