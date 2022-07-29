@@ -93,6 +93,14 @@ namespace DOL.GS.DailyQuest.Albion
 				Joe.Y = 27679;
 				Joe.Z = 22893;
 				Joe.Heading = 466;
+				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
+				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 713,0,0,3);
+				templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 714);
+				templateAlb.AddNPCEquipment(eInventorySlot.ArmsArmor, 715);
+				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 716, 0,0,3);
+				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 717, 0, 0, 3);
+				templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 676);
+				Joe.Inventory = templateAlb.CloseTemplate();
 				Joe.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
