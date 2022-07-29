@@ -64,7 +64,7 @@ public class TimerService
             {
                 if(debugTimer && TimerToRemoveCallbacks != null && TimerToRemove.Peek()!=null && TimerToRemove.Peek().Callback != null)
                 {
-                    String callbackMethodName = TimerToRemove.Peek().Callback.Method.Name;
+                    String callbackMethodName = TimerToRemove.Peek().Callback.Method.DeclaringType+"."+TimerToRemove.Peek().Callback.Method.Name;
                     if(TimerToRemoveCallbacks.ContainsKey(callbackMethodName))
                         TimerToRemoveCallbacks[callbackMethodName]++;
                     else
@@ -86,7 +86,7 @@ public class TimerService
             {
                 if(debugTimer && TimerToAddCallbacks != null && TimerToAdd.Peek()!=null && TimerToAdd.Peek().Callback != null)
                 {
-                    String callbackMethodName = TimerToAdd.Peek().Callback.Method.Name;
+                    String callbackMethodName = TimerToAdd.Peek().Callback.Method.DeclaringType+"."+TimerToAdd.Peek().Callback.Method.Name;
                     if(TimerToAddCallbacks.ContainsKey(callbackMethodName))
                         TimerToAddCallbacks[callbackMethodName]++;
                     else
@@ -134,15 +134,15 @@ public class TimerService
         {
             log.Debug($"==== TimerService Debug - Total ActiveTimers: {ActiveTimers.Count} ====");
 
-            log.Debug($"==== TimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
+            log.Debug($"==== TimerService RemoveTimer Top 10 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
              
-            foreach (var callbacks in TimerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+            foreach (var callbacks in TimerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(10))
             {
                 log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
             }
 
-            log.Debug($"==== TimerService AddTimer Top 5 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
-            foreach (var callbacks in TimerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+            log.Debug($"==== TimerService AddTimer Top 10 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
+            foreach (var callbacks in TimerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(10))
             {
                 log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
             }
