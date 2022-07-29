@@ -95,6 +95,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Stefano.Y = 39681;
 				Stefano.Z = 21357;
 				Stefano.Heading = 3066;
+				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 734,0,0,3);
+				templateHib.AddNPCEquipment(eInventorySlot.LegsArmor, 735);
+				templateHib.AddNPCEquipment(eInventorySlot.ArmsArmor, 736);
+				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 737, 0,0,3);
+				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 738, 0, 0, 3);
+				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 678);
+				Stefano.Inventory = templateHib.CloseTemplate();
 				Stefano.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
