@@ -20,7 +20,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const string questTitle = "[Weekly] Vacuum Darkness Falls";
+		private const string questTitle = "[Weekly] Femurs from Darkness Falls";
 		private const int minimumLevel = 15;
 		private const int maximumLevel = 50;
 		
@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Kill Goal
 		private const int MAX_KILLED = 50;
 
-		private static GameNPC ReyMid = null; // Start NPC
+		private static GameNPC Patrick = null; // Start NPC
 
 		private int EnemiesKilled = 0;
 
@@ -68,40 +68,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 			
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Patrick", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-				{
-					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
+					if (npc.CurrentRegionID == 249 && npc.X == 16639 && npc.Y == 18947)
 					{
-						ReyMid = npc;
+						Patrick = npc;
 						break;
 					}
-				}
 
-			if (ReyMid == null)
+			if (Patrick == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Rey , creating it ...");
-				ReyMid = new GameNPC();
-				ReyMid.Model = 26;
-				ReyMid.Name = "Rey";
-				ReyMid.GuildName = "Bone Collector";
-				ReyMid.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				ReyMid.CurrentRegionID = 100;
-				ReyMid.Size = 60;
-				ReyMid.Level = 59;
-				ReyMid.X = 766491;
-				ReyMid.Y = 670375;
-				ReyMid.Z = 5736;
-				ReyMid.Heading = 2358;
-				ReyMid.Flags |= GameNPC.eFlags.PEACE;
-				ReyMid.AddToWorld();
+					log.Warn("Could not find Patrick , creating it ...");
+				Patrick = new GameNPC();
+				Patrick.Model = 138;
+				Patrick.Name = "Patrick";
+				Patrick.GuildName = "Realm Logistics";
+				Patrick.Realm = eRealm.Midgard;
+				//Darkness Falls Mid Entrance Location
+				Patrick.CurrentRegionID = 249;
+				Patrick.Size = 50;
+				Patrick.Level = 59;
+				Patrick.X = 16639;
+				Patrick.Y = 18947;
+				Patrick.Z = 22892;
+				Patrick.Heading = 2117;
+				Patrick.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					ReyMid.SaveIntoDatabase();
+					Patrick.SaveIntoDatabase();
 				}
 			}
 
@@ -116,11 +113,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.AddHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(Patrick, GameObjectEvent.Interact, new DOLEventHandler(TalkToPatrick));
+			GameEventMgr.AddHandler(Patrick, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToPatrick));
 
-			/* Now we bring to Herou the possibility to give this quest to players */
-			ReyMid.AddQuestToGive(typeof (DFWeeklyKillQuestMid));
+			Patrick.AddQuestToGive(typeof (DFWeeklyKillQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -130,27 +126,26 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (ReyMid == null)
+			if (Patrick == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(ReyMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.RemoveHandler(ReyMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(Patrick, GameObjectEvent.Interact, new DOLEventHandler(TalkToPatrick));
+			GameEventMgr.RemoveHandler(Patrick, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToPatrick));
 
-			/* Now we remove to Herou the possibility to give this quest to players */
-			ReyMid.RemoveQuestToGive(typeof (DFWeeklyKillQuestMid));
+			Patrick.RemoveQuestToGive(typeof (DFWeeklyKillQuestMid));
 		}
 
-		private static void TalkToRey(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToPatrick(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(ReyMid.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
+			if(Patrick.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -163,16 +158,16 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							ReyMid.SayTo(player, "Please enter Darkness Falls and harvest parts from Hibernia's enemies!");
+							Patrick.SayTo(player, "Please head into Darkness Falls and harvest parts from Midgard's enemies!");
 							break;
 						case 2:
-							ReyMid.SayTo(player, "Hello " + player.Name + ", did you [find the bones] we needed?");
+							Patrick.SayTo(player, "Hello " + player.Name + ", did you [find the bones] we needed?");
 							break;
 					}
 				}
 				else
 				{
-					ReyMid.SayTo(player, "Oh, "+ player.Name +", glad you finally returned. Boss has a new recipe that requires bones that have been steeped in a [demonic aura]. \n"+
+					Patrick.SayTo(player, "Oh, "+ player.Name +", glad you finally returned. Boss has a new recipe that requires bones that have been steeped in a [demonic aura]. \n"+
 					                     "Sure hope you know what that means, because I sure don't. My best guess is to try looking in Darkness Falls.");
 				}
 			}
@@ -185,7 +180,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "demonic aura":
-							player.Out.SendQuestSubscribeCommand(ReyMid, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Herou "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Patrick, QuestMgr.GetIDForQuestType(typeof(DFWeeklyKillQuestMid)), "Will you help Patrick "+questTitle+"?");
 							break;
 					}
 				}
@@ -262,7 +257,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(ReyMid.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
+			if(Patrick.CanGiveQuest(typeof (DFWeeklyKillQuestMid), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (DFWeeklyKillQuestMid)) != null)
@@ -275,10 +270,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!ReyMid.GiveQuest(typeof (DFWeeklyKillQuestMid), player, 1))
+				if (!Patrick.GiveQuest(typeof (DFWeeklyKillQuestMid), player, 1))
 					return;
 
-				ReyMid.SayTo(player, "Find your realm's enemies in Darkness Falls and kill them for your reward.");
+				Patrick.SayTo(player, "Find your realm's enemies in Darkness Falls and kill them for your reward.");
 
 			}
 		}
@@ -299,7 +294,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					case 1:
 						return "Defend Midgard in Darkness Falls. \nKilled: Enemies ("+ EnemiesKilled +" | 50)";
 					case 2:
-						return "Return to Rey for your Reward.";
+						return "Return to Patrick in Darkness Falls for your Reward.";
 				}
 				return base.Description;
 			}
@@ -317,8 +312,6 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-			//prevent grey killing
-
 
 			if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
 			    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON) || gArgs.Target.CurrentRegionID != 249) return;
@@ -328,7 +321,6 @@ namespace DOL.GS.DailyQuest.Midgard
 					
 			if (EnemiesKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Herou
 				Step = 2;
 			}
 
