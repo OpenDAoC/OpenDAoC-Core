@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Kill Goal
 		private const int MAX_KILLED = 200;
 
-		private static GameNPC Herou = null; // Start NPC
+		private static GameNPC Patrick = null; // Start NPC
 
 		private int _mobsKilled = 0;
 
@@ -66,37 +66,37 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Patrick", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
+					if (npc.CurrentRegionID == 249 && npc.X == 16639 && npc.Y == 18947)
 					{
-						Herou = npc;
+						Patrick = npc;
 						break;
 					}
 
-			if (Herou == null)
+			if (Patrick == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Herou , creating it ...");
-				Herou = new GameNPC();
-				Herou.Model = 142;
-				Herou.Name = "Herou";
-				Herou.GuildName = "Realm Logistics";
-				Herou.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				Herou.CurrentRegionID = 100;
-				Herou.Size = 50;
-				Herou.Level = 59;
-				Herou.X = 766401;
-				Herou.Y = 670349;
-				Herou.Z = 5736;
-				Herou.Heading = 2284;
-				Herou.AddToWorld();
+					log.Warn("Could not find Patrick , creating it ...");
+				Patrick = new GameNPC();
+				Patrick.Model = 138;
+				Patrick.Name = "Patrick";
+				Patrick.GuildName = "Realm Logistics";
+				Patrick.Realm = eRealm.Midgard;
+				//Darkness Falls Mid Entrance Location
+				Patrick.CurrentRegionID = 249;
+				Patrick.Size = 50;
+				Patrick.Level = 59;
+				Patrick.X = 16639;
+				Patrick.Y = 18947;
+				Patrick.Z = 22892;
+				Patrick.Heading = 2117;
+				Patrick.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Herou.SaveIntoDatabase();
+					Patrick.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +111,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.AddHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(Patrick, GameObjectEvent.Interact, new DOLEventHandler(TalkToPatrick));
+			GameEventMgr.AddHandler(Patrick, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToPatrick));
 
-			/* Now we bring to Herou the possibility to give this quest to players */
-			Herou.AddQuestToGive(typeof (DFMobKillQuestMid));
+			Patrick.AddQuestToGive(typeof (DFMobKillQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" Mid initialized");
@@ -125,27 +124,26 @@ namespace DOL.GS.DailyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Herou == null)
+			if (Patrick == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Herou, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.RemoveHandler(Herou, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(Patrick, GameObjectEvent.Interact, new DOLEventHandler(TalkToPatrick));
+			GameEventMgr.RemoveHandler(Patrick, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToPatrick));
 
-			/* Now we remove to Herou the possibility to give this quest to players */
-			Herou.RemoveQuestToGive(typeof (DFMobKillQuestMid));
+			Patrick.RemoveQuestToGive(typeof (DFMobKillQuestMid));
 		}
 
-		private static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToPatrick(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
+			if(Patrick.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,16 +156,16 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Herou.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
+							Patrick.SayTo(player, "Head into Darkness Falls and slay monsters so they don\'t spread in our realm!");
 							break;
 						case 2:
-							Herou.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
+							Patrick.SayTo(player, "Hello " + player.Name + ", did you [slay monsters] for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Herou.SayTo(player, "Hello "+ player.Name +", I am Herou. I have received word from a hunter that forces are building in Darkness Falls. "+
+					Patrick.SayTo(player, "Hello "+ player.Name +", I am Patrick. I have received word from a hunter that forces are building in Darkness Falls. "+
 					                    "Clear out as many demons as you can find, and come back to me only when the halls of the dungeon are purged of their influence. \n\n"+
 					                    "Can you [stop the invasion]?");
 				}
@@ -181,7 +179,7 @@ namespace DOL.GS.DailyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "stop the invasion":
-							player.Out.SendQuestSubscribeCommand(Herou, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)), "Will you help Herou "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Patrick, QuestMgr.GetIDForQuestType(typeof(DFMobKillQuestMid)), "Will you help Patrick "+questTitle+"?");
 							break;
 					}
 				}
@@ -268,7 +266,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Herou.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
+			if(Patrick.CanGiveQuest(typeof (DFMobKillQuestMid), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (DFMobKillQuestMid)) != null)
@@ -281,10 +279,10 @@ namespace DOL.GS.DailyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Herou.GiveQuest(typeof (DFMobKillQuestMid), player, 1))
+				if (!Patrick.GiveQuest(typeof (DFMobKillQuestMid), player, 1))
 					return;
 
-				Herou.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
+				Patrick.SayTo(player, "Defend your realm, head into Darkness Falls and kill monsters for your reward.");
 
 			}
 		}
@@ -303,9 +301,9 @@ namespace DOL.GS.DailyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Enter Darkness Falls and kill monsters for Midgard. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
+						return "Head into Darkness Falls and kill monsters for Midgard. \nKilled: Monster ("+ _mobsKilled +" | "+ MAX_KILLED +")";
 					case 2:
-						return "Return to Herou for your Reward.";
+						return "Return to Patrick in Darkness Falls for your Reward.";
 				}
 				return base.Description;
 			}
@@ -356,7 +354,6 @@ namespace DOL.GS.DailyQuest.Midgard
 					
 			if (_mobsKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Herou
 				Step = 2;
 			}
 
