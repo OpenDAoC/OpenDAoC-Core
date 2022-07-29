@@ -93,6 +93,14 @@ namespace DOL.GS.DailyQuest.Midgard
 				Patrick.Y = 18947;
 				Patrick.Z = 22892;
 				Patrick.Heading = 2117;
+				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
+				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 751,0,0,3);
+				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 752);
+				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 753);
+				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 754, 0,0,3);
+				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 755, 0, 0, 3);
+				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 677);
+				Patrick.Inventory = templateMid.CloseTemplate();
 				Patrick.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
