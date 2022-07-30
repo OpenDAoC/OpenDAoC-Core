@@ -449,7 +449,12 @@ namespace DOL.GS
                         foreach (GameNPC npc in CopyNPC)
                         {
                             if (npc.IsAlive)
-                                npc.Die(this);//if one die all others aswell
+                            {
+                                if(PackageID == "Olcasgean1" && npc.PackageID == "Olcasgean2")
+                                    npc.RemoveFromWorld();//if main boss die other root will be removed
+                                if (PackageID == "Olcasgean2" && npc.PackageID == "Olcasgean1")
+                                    npc.Die(this);//if main boss die other root will be removed
+                            }
                             OlcasgeanBrain.spawn3 = false;
                             --OlcasgeanBrain.OlcasgeanCount;
                             //OIBrain.DeadPrimalsCount = 0;
