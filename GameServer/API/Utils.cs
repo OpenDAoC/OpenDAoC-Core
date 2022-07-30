@@ -169,7 +169,7 @@ public class Utils
             clientStatus.PrivLevel = client?.Account?.PrivLevel ?? 1;
             clientStatus.State = (int)client.ClientState;
             clientStatus.IsTester = client.Account.IsTester;
-            playersOnline.Add(client?.Account?.Name, clientStatus);
+            playersOnline.TryAdd(client?.Account?.Name, clientStatus);
         }
 
         return playersOnline;
