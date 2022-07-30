@@ -145,11 +145,14 @@ namespace DOL.GS
                         else
                         {                           
                             bool addEffect = false;
+                            //foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
+                            bool foundIsOverwriteableEffect = false;
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
                                 if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) || spellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
+                                    foundIsOverwriteableEffect = true;
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
                                         if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
@@ -198,11 +201,17 @@ namespace DOL.GS
                                         }
                                     }
                                 }
-                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
-                                {
-                                    addEffect = true;
-                                }
+                                //Commenting the snip below as it was causing issues with some effects stacking incorrectly. using the foundIsOverwriteableEffect bool instead.
+                                // else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
+                                // {
+                                //     addEffect = true;
+                                // }
                             }
+    
+                            //No overwriteable effects found that match new spell effect, so add it!
+                            if (!foundIsOverwriteableEffect)
+                                addEffect = true;
+
                             if (addEffect)
                             {
                                 Effects[spellEffect.EffectType].Add(spellEffect);
