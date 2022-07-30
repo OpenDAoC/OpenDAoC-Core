@@ -317,7 +317,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							//Sending reminder as Text Window as the Help window wasnt properly popping up on the client
 							var guildmessage = new List<string>();
-							guildmessage.Add("Rent for guild house " + house.HouseNumber + " due in " + due.Days + " days!");
+							guildmessage.Add("Rent for guild house " + ghouse.HouseNumber + " due in " + due.Days + " days!");
 							player.Out.SendCustomTextWindow("Guild House Rent Reminder", guildmessage);
 							//player.Out.SendRentReminder(ghouse);
 						}
