@@ -120,6 +120,11 @@ public class AchievementReskinVendor : GameNPC
                   && x.Price != 2500).OrderBy(o => o.Price).ToList();
         }
 
+        if(foundItems.Count == 0)
+        {
+            SendReply(t, "There are no skinoptions available for this item at the moment, please check back in a few days !");
+            return true;
+        }
 
 
         foreach (var sItem in foundItems)
@@ -130,12 +135,12 @@ public class AchievementReskinVendor : GameNPC
 
         if (item.Item_Type == Slot.FEET || item.Item_Type == Slot.TORSO || item.Item_Type == Slot.HANDS)
         {
-            SendReply(t, sb.ToString() + "\n\n" + "I can offer the following pad types for 2500 orbs per piece: \n\n" +
-                               "[Type 1] \n" +
-                               "[Type 2] \n" +
-                               "[Type 3] \n" +
-                               "[Type 4] \n" +
-                               "[Type 5]");
+            SendReply(t, sb.ToString() + "\n\n" + "I can offer the following pad types: \n\n" +
+                               "[Type 1] (2500 Orbs)  \n" +
+                               "[Type 2] (2500 Orbs) \n" +
+                               "[Type 3] (2500 Orbs) \n" +
+                               "[Type 4] (2500 Orbs) \n" +
+                               "[Type 5] (2500 Orbs)");
         }
         else
         {
@@ -1683,6 +1688,77 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.TORSO, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
             VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.TORSO, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
 
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.FEET, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 1", 1, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 2", 2, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 3", 3, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 4", 4, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, armorpads));
+            VendorItemList.Add(new SkinVendorItem("Type 5", 5, Slot.HANDS, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, armorpads));
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
