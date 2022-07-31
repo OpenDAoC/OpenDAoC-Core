@@ -4041,8 +4041,8 @@ namespace DOL.GS
 	            double statBasedReduction = living.GetWeaponStat(weapon) * .05;
 				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
 				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
-				//divide by final 2 to use the 2.0 damage table as our anchor. classes below 2.0 damage table will have slightly reduced penetration, above 2.0 will have increased penetration
-				double tableMod = p.CharacterClass.WeaponSkillBase / 200.0 / 1.8;
+				//divide by final 2.1 to use the 2.1 damage table as our anchor. classes below 2.1 damage table will have slightly reduced penetration, above 2.1 will have increased penetration
+				double tableMod = p.CharacterClass.WeaponSkillBase / 200.0 / 2.1;
 				totalReduction = (skillBasedReduction + statBasedReduction) * tableMod;
             }
 			else
