@@ -93,8 +93,8 @@ namespace DOL.GS
             double leftHandEffectiveness = m_effectiveness;
             double mainHandEffectiveness = m_effectiveness;
 
-            mainHandEffectiveness *= owner.attackComponent.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
-            leftHandEffectiveness *= owner.attackComponent.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
+            //mainHandEffectiveness *= owner.attackComponent.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
+            //leftHandEffectiveness *= owner.attackComponent.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
 
             // GameNPC can Dual Swing even with no weapon
             if (owner is GameNPC && owner.attackComponent.CanUseLefthandedWeapon)
