@@ -833,7 +833,18 @@ namespace DOL.GS.Quests.Midgard
 				// Nag to finish quest
 				if (quest != null)
 				{
-					Masrim.SayTo(player, "Check your Journal for instructions!");
+					switch (quest.Step)
+					{
+						case 1:
+							Masrim.SayTo(player, "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.");
+							break;
+						case 2:
+							Masrim.SayTo(player, "Hey, you are back! Please give me the head of Oona and visit "+MorlinCaan.Name+" and bring him the [sealed pouch]!");
+							break;
+						case 3:
+							Masrim.SayTo(player, $"Hello {player.Name}, have you visited "+MorlinCaan.Name+" already?");
+							break;
+					}
 				}
 				else
 				{
@@ -864,6 +875,18 @@ namespace DOL.GS.Quests.Midgard
 					}
 				}
 			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == oona_head.Id_nb && quest.Step == 2)
+					{
+						Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+						GiveItem(player, sealed_pouch);
+						quest.Step = 3;
+					}
+			}
+			
 		}
 
 		protected static void TalkToMorlinCaan(DOLEvent e, object sender, EventArgs args)
@@ -873,9 +896,6 @@ namespace DOL.GS.Quests.Midgard
 			if (player == null)
 				return;
 
-			if(Masrim.CanGiveQuest(typeof (Rogue_50), player)  <= 0)
-				return;
-
 			//We also check if the player is already doing the quest
 			Rogue_50 quest = player.IsDoingQuest(typeof (Rogue_50)) as Rogue_50;
 
@@ -883,9 +903,56 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (quest != null)
 				{
-					MorlinCaan.SayTo(player, "Check your journal for instructions!");
+					if (quest.Step == 3)
+					{
+						MorlinCaan.SayTo(player, "Were you able to [fulfill] your given task?");
+					}
 				}
-				return;
+				
+			}
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				//Check player is already doing quest
+				if (quest == null)
+				{
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						case "fulfill":
+							if (quest.Step == 3)
+							{
+								RemoveItem(player, sealed_pouch);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
+					}
+				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 3)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 		}
 
@@ -968,7 +1035,7 @@ namespace DOL.GS.Quests.Midgard
 				if (!Masrim.GiveQuest(typeof (Rogue_50), player, 1))
 					return;
 
-				player.Out.SendMessage("Kill Oona in Raumarik loc 20k,51k!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Kill Oona in Raumarik!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -986,11 +1053,11 @@ namespace DOL.GS.Quests.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Oona in Raumarik Loc 20k,51k kill it!";
+						return "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.";
 					case 2:
-						return "[Step #2] Return to Masrim and give her Oona's Head!";
+						return "Return to Masrim and give her Oona's Head!";
 					case 3:
-						return "[Step #3] Go to Morlin Caan in Jordheim and give him the Sealed Pouch for your reward!";
+						return "Go to Morlin Caan in Jordheim and give him the Sealed Pouch for your reward!";
 				}
 				return base.Description;
 			}
@@ -1011,31 +1078,6 @@ namespace DOL.GS.Quests.Midgard
 					m_questPlayer.Out.SendMessage("You collect Oona's Head", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, oona_head);
 					Step = 2;
-					return;
-				}
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
-				{
-					RemoveItem(Masrim, player, oona_head);
-					Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
-					GiveItem(player, sealed_pouch);
-					Step = 3;
-					return;
-				}
-			}
-
-			if (Step == 3 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
-				{
-					MorlinCaan.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
 				}
 			}
 		}
@@ -1049,38 +1091,31 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(MorlinCaan, m_questPlayer, sealed_pouch);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Shadowblade)
 			{
-				RemoveItem(MorlinCaan, m_questPlayer, sealed_pouch);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Shadowblade)
-				{
-					GiveItem(m_questPlayer, ShadowbladeEpicArms);
-					GiveItem(m_questPlayer, ShadowbladeEpicBoots);
-					GiveItem(m_questPlayer, ShadowbladeEpicGloves);
-					GiveItem(m_questPlayer, ShadowbladeEpicHelm);
-					GiveItem(m_questPlayer, ShadowbladeEpicLegs);
-					GiveItem(m_questPlayer, ShadowbladeEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Hunter)
-				{
-					GiveItem(m_questPlayer, HunterEpicArms);
-					GiveItem(m_questPlayer, HunterEpicBoots);
-					GiveItem(m_questPlayer, HunterEpicGloves);
-					GiveItem(m_questPlayer, HunterEpicHelm);
-					GiveItem(m_questPlayer, HunterEpicLegs);
-					GiveItem(m_questPlayer, HunterEpicVest);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, ShadowbladeEpicArms);
+				GiveItem(m_questPlayer, ShadowbladeEpicBoots);
+				GiveItem(m_questPlayer, ShadowbladeEpicGloves);
+				GiveItem(m_questPlayer, ShadowbladeEpicHelm);
+				GiveItem(m_questPlayer, ShadowbladeEpicLegs);
+				GiveItem(m_questPlayer, ShadowbladeEpicVest);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Hunter)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, HunterEpicArms);
+				GiveItem(m_questPlayer, HunterEpicBoots);
+				GiveItem(m_questPlayer, HunterEpicGloves);
+				GiveItem(m_questPlayer, HunterEpicHelm);
+				GiveItem(m_questPlayer, HunterEpicLegs);
+				GiveItem(m_questPlayer, HunterEpicVest);
 			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source

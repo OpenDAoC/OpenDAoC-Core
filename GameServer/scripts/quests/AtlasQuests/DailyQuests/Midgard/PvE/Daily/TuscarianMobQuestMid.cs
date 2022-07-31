@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Midgard
         private int _deadTuscaMob = 0;
         private const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Isaac = null; // Start NPC
+        private static GameNPC Jarek = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,44 @@ namespace DOL.GS.DailyQuest.Midgard
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", eRealm.Midgard);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", eRealm.Midgard);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
+                    if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
                     {
-                        Isaac = npc;
+                        Jarek = npc;
                         break;
                     }
 
-            if (Isaac == null)
+            if (Jarek == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Isaac , creating it ...");
-                Isaac = new GameNPC();
-                Isaac.Model = 774;
-                Isaac.Name = "Isaac";
-                Isaac.GuildName = "Advisor to the King";
-                Isaac.Realm = eRealm.Midgard;
-                Isaac.CurrentRegionID = 100;
-                Isaac.Size = 50;
-                Isaac.Level = 59;
-                //Castle Sauvage Location
-                Isaac.X = 766590;
-                Isaac.Y = 670407;
-                Isaac.Z = 5736;
-                Isaac.Heading = 2358;
-                Isaac.AddToWorld();
+                    log.Warn("Could not find Jarek , creating it ...");
+                Jarek = new GameNPC();
+                Jarek.Model = 774;
+                Jarek.Name = "Jarek";
+                Jarek.GuildName = "Advisor to the King";
+                Jarek.Realm = eRealm.Midgard;
+                Jarek.CurrentRegionID = 151;
+                Jarek.Size = 50;
+                Jarek.Level = 59;
+                //Aegirhamn Location
+                Jarek.X = 292291;
+                Jarek.Y = 354975;
+                Jarek.Z = 3867;
+                Jarek.Heading = 1239;
+                GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
+                templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
+                templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
+                templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985);
+                templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
+                templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
+                Jarek.Inventory = templateMid.CloseTemplate();
+                Jarek.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Isaac.SaveIntoDatabase();
+                    Jarek.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +121,10 @@ namespace DOL.GS.DailyQuest.Midgard
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-            GameEventMgr.AddHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
-
-            /* Now we bring to Herou the possibility to give this quest to players */
-            Isaac.AddQuestToGive(typeof(TuscarianMobQuestMid));
+            GameEventMgr.AddHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
+            GameEventMgr.AddHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+            
+            Jarek.AddQuestToGive(typeof(TuscarianMobQuestMid));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Mid initialized");
@@ -128,27 +134,26 @@ namespace DOL.GS.DailyQuest.Midgard
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Isaac == null)
+            if (Jarek == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Isaac, GameObjectEvent.Interact, new DOLEventHandler(TalkToIsaac));
-            GameEventMgr.RemoveHandler(Isaac, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToIsaac));
+            GameEventMgr.RemoveHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
+            GameEventMgr.RemoveHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
 
-            /* Now we remove to Herou the possibility to give this quest to players */
-            Isaac.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
+            Jarek.RemoveQuestToGive(typeof(TuscarianMobQuestMid));
         }
 
-        public static void TalkToIsaac(DOLEvent e, object sender, EventArgs args)
+        public static void TalkToJarek(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Isaac.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Jarek.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,17 +166,17 @@ namespace DOL.GS.DailyQuest.Midgard
                     switch (quest.Step)
                     {
                         case 1:
-                            Isaac.SayTo(player,
+                            Jarek.SayTo(player,
                                 "Please, enter Tuscaran Glacier and slay some monsters. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Isaac.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Jarek.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Isaac.SayTo(player, "Hello " + player.Name + ", I am Isaac. " +
+                    Jarek.SayTo(player, "Hello " + player.Name + ", I am Jarek. " +
                                         "The king is preparing to send forces into Tuscaren Glacier to clear it out. \n" +
                                         "We could use your help [clearing the way] into the front gate, if you're so inclined.");
                 }
@@ -185,9 +190,9 @@ namespace DOL.GS.DailyQuest.Midgard
                     switch (wArgs.Text)
                     {
                         case "clearing the way":
-                            player.Out.SendQuestSubscribeCommand(Isaac,
+                            player.Out.SendQuestSubscribeCommand(Jarek,
                                 QuestMgr.GetIDForQuestType(typeof(TuscarianMobQuestMid)),
-                                "Will you help Isaac with " + questTitle + "");
+                                "Will you help Jarek with " + questTitle + "");
                             break;
                     }
                 }
@@ -268,7 +273,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Isaac.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
+            if (Jarek.CanGiveQuest(typeof(TuscarianMobQuestMid), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(TuscarianMobQuestMid)) != null)
@@ -281,10 +286,10 @@ namespace DOL.GS.DailyQuest.Midgard
             else
             {
                 //Check if we can add the quest!
-                if (!Isaac.GiveQuest(typeof(TuscarianMobQuestMid), player, 1))
+                if (!Jarek.GiveQuest(typeof(TuscarianMobQuestMid), player, 1))
                     return;
 
-                Isaac.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Jarek.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +310,7 @@ namespace DOL.GS.DailyQuest.Midgard
                         return "Find a way to Tuscaran Glacier and kill some monsters. \nKilled: Monsters in Tuscaran Glacier (" +
                                _deadTuscaMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Isaac for your Reward.";
+                        return "Return to Jarek in Aegirhamn for your Reward.";
                 }
 
                 return base.Description;
@@ -340,7 +345,6 @@ namespace DOL.GS.DailyQuest.Midgard
 
                 if (_deadTuscaMob >= MAX_KILLGOAL)
                 {
-                    // FinishQuest or go back to Herou
                     Step = 2;
                 }
             }
