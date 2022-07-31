@@ -1091,6 +1091,35 @@ namespace DOL.GS.Quests.Midgard
 					Step = 2;
 				}
 			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
+				{
+					RemoveItem(Masrim, player, oona_head);
+					Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+					GiveItem(player, sealed_pouch);
+					Step = 3;
+					return;
+				}
+			}
+
+			if (Step == 3 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						RemoveItem(MorlinCaan, player, sealed_pouch);
+						MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+			}
 		}
 
 		public override void AbortQuest()
