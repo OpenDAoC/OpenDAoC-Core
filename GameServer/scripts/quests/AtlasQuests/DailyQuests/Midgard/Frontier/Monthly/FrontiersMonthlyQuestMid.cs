@@ -93,7 +93,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				Kelteen.GuildName = "Atlas Logistics";
 				Kelteen.Realm = eRealm.Midgard;
 				//Svasud Faste Location
-				Kelteen.CurrentRegionID = 1;
+				Kelteen.CurrentRegionID = 100;
 				Kelteen.Size = 60;
 				Kelteen.Level = 59;
 				Kelteen.X = 765463;
