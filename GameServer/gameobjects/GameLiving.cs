@@ -2072,7 +2072,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int BaseInterruptChance
 		{
-			get { return 65; }
+			get { return 95; }
 		}
 
 		/// <summary>
