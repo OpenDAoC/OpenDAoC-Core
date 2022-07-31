@@ -70,7 +70,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 181 && npc.X == 422864 && npc.Y == 444362)
+					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
 					{
 						Anthony = npc;
 						break;
@@ -81,23 +81,18 @@ namespace DOL.GS.DailyQuest.Hibernia
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Anthony , creating it ...");
 				Anthony = new GameNPC();
-				Anthony.Model = 289;
+				Anthony.Model = 355;
 				Anthony.Name = "Anthony";
 				Anthony.GuildName = "Advisor to the King";
 				Anthony.Realm = eRealm.Hibernia;
-				//Domnann Location
-				Anthony.CurrentRegionID = 181;
+				//Druim Ligen Location
+				Anthony.CurrentRegionID = 200;
 				Anthony.Size = 50;
 				Anthony.Level = 59;
-				Anthony.X = 422864;
-				Anthony.Y = 444362;
-				Anthony.Z = 5952;
-				Anthony.Heading = 1234;
-				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 401);
-				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 402);
-				Anthony.Inventory = templateHib.CloseTemplate();
+				Anthony.X = 334962;
+				Anthony.Y = 420687;
+				Anthony.Z = 5184;
+				Anthony.Heading = 1571;
 				Anthony.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
