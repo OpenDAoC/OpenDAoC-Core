@@ -1985,9 +1985,9 @@ namespace DOL.GS.Quests.Midgard
 						case "get something":
 							if (quest.Step == 2)
 							{
-								Lynnleigh.SayTo(player, "Great! Please visit Elizabeth in Mularn and bring her the [sealed pouch].");
 								RemoveItem(player, tome_enchantments);
 								quest.Step = 3;
+								Lynnleigh.SayTo(player, "Great! Please visit Elizabeth in Mularn and bring her the [sealed pouch].");
 							}
 							break;
 						case "sealed pouch":
@@ -2035,6 +2035,11 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (quest.Step)
 					{
+						case 3:
+						{
+							Elizabeth.SayTo(player, "Hello, Lynnleigh sent you with a [sealed pouch], right?");
+							break;
+						}
                         case 4:
                             {
                                 Elizabeth.SayTo(player, "Greetings, there are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
@@ -2052,10 +2057,18 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
+						case "sealed pouch":
+							if (quest.Step == 3)
+							{
+								RemoveItem(player, sealed_pouch);
+								quest.Step = 4;
+								Elizabeth.SayTo(player, "There are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+							}
+							
+							break;
 						case "take them":
 							if (quest.Step == 4)
 							{
-								RemoveItem(player, sealed_pouch);
 								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
 									    eInventorySlot.LastBackpack))
 								{
@@ -2193,7 +2206,7 @@ namespace DOL.GS.Quests.Midgard
 					case 2:
 						return "Return to Lynnleigh and give her Tome of Enchantments!";
 					case 3:
-						return "Take the Sealed Pouch to Elizabeth in Mularn";
+						return "Take the Sealed Pouch to Elizabeth in Mularn!";
 					case 4:
 						return "Speak with Elizabeth for your reward!";
 				}
@@ -2217,6 +2230,17 @@ namespace DOL.GS.Quests.Midgard
 					Step = 2;
 					GiveItem(m_questPlayer, tome_enchantments);
 					m_questPlayer.Out.SendMessage("Ydenia drops the Tome of Enchantments and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Lynnleigh.Name && gArgs.Item.Id_nb == tome_enchantments.Id_nb)
+				{
+					RemoveItem(Lynnleigh, player, tome_enchantments);
+					Lynnleigh.SayTo(player, "Take this sealed pouch to Elizabeth in Mularn for your reward!");
+					GiveItem(Lynnleigh, player, sealed_pouch);
+					Step = 3;
 				}
 			}
 		}
