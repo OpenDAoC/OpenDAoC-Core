@@ -3,6 +3,7 @@ using DOL.Database.Attributes;
 using log4net;
 using System.Reflection;
 
+
 namespace DOLDatabase.Tables
 {
     /// <summary>

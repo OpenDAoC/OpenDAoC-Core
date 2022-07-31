@@ -34,6 +34,7 @@ using DOL.Config;
 using DOL.GS.Housing;
 
 using log4net;
+using DOLDatabase.Tables;
 
 namespace DOL.GS
 {
@@ -509,15 +510,6 @@ namespace DOL.GS
 			return String.Format("Loaded {0} Albion, {1} Midgard and {2} Hibernia teleport locations", numTeleports[0], numTeleports[1], numTeleports[2]);
 		}
 
-		/// <summary>
-		/// Load available reskin options
-		public static string LoadReskinOptions()
-		{
-			//todo do stuff
-
-			return "Reskin options reloaded";
-
-		}
 
 		/// <summary>
 		/// Initializes the WorldMgr. This function must be called
