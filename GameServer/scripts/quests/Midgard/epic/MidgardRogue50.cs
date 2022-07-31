@@ -218,8 +218,8 @@ namespace DOL.GS.Quests.Midgard
 				oona_head.Level = 8;
 				oona_head.Item_Type = 29;
 				oona_head.Model = 503;
-				oona_head.IsDropable = false;
-				oona_head.IsPickable = false;
+				oona_head.IsDropable = true;
+				oona_head.IsPickable = true;
 				oona_head.DPS_AF = 0;
 				oona_head.SPD_ABS = 0;
 				oona_head.Object_Type = 41;
@@ -869,6 +869,15 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
+						case "sealed pouch":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, oona_head);
+								Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+								GiveItem(player, sealed_pouch);
+								quest.Step = 3;
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
@@ -877,16 +886,15 @@ namespace DOL.GS.Quests.Midgard
 			}
 			else if (e == GameObjectEvent.ReceiveItem)
 			{
-				var rArgs = (ReceiveItemEventArgs) args;
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
-					if (rArgs.Item.Id_nb == oona_head.Id_nb && quest.Step == 2)
+					if (rArgs.Item.Id_nb == oona_head.Id_nb)
 					{
 						Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
 						GiveItem(player, sealed_pouch);
 						quest.Step = 3;
 					}
 			}
-			
 		}
 
 		protected static void TalkToMorlinCaan(DOLEvent e, object sender, EventArgs args)
@@ -896,6 +904,9 @@ namespace DOL.GS.Quests.Midgard
 			if (player == null)
 				return;
 
+			if(Masrim.CanGiveQuest(typeof (Rogue_50), player)  <= 0)
+				return;
+			
 			//We also check if the player is already doing the quest
 			Rogue_50 quest = player.IsDoingQuest(typeof (Rogue_50)) as Rogue_50;
 
@@ -1078,6 +1089,35 @@ namespace DOL.GS.Quests.Midgard
 					m_questPlayer.Out.SendMessage("You collect Oona's Head", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, oona_head);
 					Step = 2;
+				}
+			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
+				{
+					RemoveItem(Masrim, player, oona_head);
+					Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+					GiveItem(player, sealed_pouch);
+					Step = 3;
+					return;
+				}
+			}
+
+			if (Step == 3 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						RemoveItem(MorlinCaan, player, sealed_pouch);
+						MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}

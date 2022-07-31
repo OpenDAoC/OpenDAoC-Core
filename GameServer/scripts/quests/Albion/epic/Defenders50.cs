@@ -1438,7 +1438,7 @@ namespace DOL.GS.Quests.Albion
 				if (!Lidmann.GiveQuest(typeof (Defenders_50), player, 1))
 					return;
 
-				player.Out.SendMessage("Kill Cailleach Uragaig in Lyonesse loc 29k, 33k!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Kill Cailleach Uragaig in Lyonesse!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -1487,6 +1487,21 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, sealed_pouch);
 						Step = 2;
 					}
+				}
+			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Lidmann.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}

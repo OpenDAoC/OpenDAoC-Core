@@ -1521,7 +1521,22 @@ namespace DOL.GS.Quests.Hibernia
 					GiveItem(m_questPlayer, GreenMaw_key);
 					Step = 2;
 				}
-			}		
+			}	
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Ainrebh.Name && gArgs.Item.Id_nb == GreenMaw_key.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+			}
 		}
 
 		public override void AbortQuest()

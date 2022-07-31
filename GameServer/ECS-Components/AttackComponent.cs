@@ -584,27 +584,31 @@ namespace DOL.GS
                 {
                     //Melee damage buff,debuff,Relic,RA
                     effectiveness += p.GetModified(eProperty.MeleeDamage) * 0.01;
-                    if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+
+                    if (weapon.Item_Type != Slot.TWOHAND)
                     {
-                        var leftWep = p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                        if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
+                        if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
                         {
-                            int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
-                            if (LASpec > 0)
+                            var leftWep = p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
                             {
-                                var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
-                                
-                                if (p.GetModified(eProperty.OffhandDamageAndChance) > 0)
+                                int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                                if (LASpec > 0)
                                 {
-                                    leftAxeEffectiveness += .01 * p.GetModified(eProperty.OffhandDamageAndChance);
-                                }
+                                    var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
                                 
-                                damage *= leftAxeEffectiveness;
+                                    if (p.GetModified(eProperty.OffhandDamageAndChance) > 0)
+                                    {
+                                        leftAxeEffectiveness += .01 * p.GetModified(eProperty.OffhandDamageAndChance);
+                                    }
+
+                                    damage *= leftAxeEffectiveness;
+                                }
                             }
                         }
                     }
                 }
-                
+
                 damage *= effectiveness;
                 return damage;
             }
