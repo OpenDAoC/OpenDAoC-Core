@@ -58,6 +58,7 @@ public class TimerService
             TimerToAddCallbacks = new Dictionary<String, int>();
         }
         
+        long addRemoveStartTick = GameTimer.GetTickCount();
         while (TimerToRemove.Count > 0)
         {
             lock (_removeTimerLockObject)
@@ -79,7 +80,11 @@ public class TimerService
                 }
             }
         }
+        long addRemoveStopTick = GameTimer.GetTickCount();
+        if((addRemoveStopTick - addRemoveStartTick)  > 25 )
+            log.Warn($"Long TimerService Remove Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
 
+        addRemoveStartTick = GameTimer.GetTickCount();
         while (TimerToAdd.Count > 0)
         {
             lock (_addTimerLockObject)
@@ -99,6 +104,9 @@ public class TimerService
                     TimerToAdd.Pop();
             }
         }
+        addRemoveStopTick = GameTimer.GetTickCount();
+        if((addRemoveStopTick - addRemoveStartTick)  > 25 )
+            log.Warn($"Long TimerService Add Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
 
         //Console.WriteLine($"timer size {ActiveTimers.Count}");
         /*
