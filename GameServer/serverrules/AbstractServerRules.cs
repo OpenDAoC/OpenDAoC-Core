@@ -1196,7 +1196,7 @@ namespace DOL.GS.ServerRules
 						BattleGroup clientBattleGroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 						if (clientBattleGroup != null)
 						{
-							if (killedNPC is GuardLord or GameKeepGuard)
+							if (killedNPC is GuardLord or GameKeepGuard or GameEpicBoss)
 								livingsToAward.Add(living);
 							else
 								player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

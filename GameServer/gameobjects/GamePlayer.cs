@@ -69,6 +69,9 @@ namespace DOL.GS
         public double RegenAfterTireless { get; set; }
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
+        
+        public double SpecLock { get; set; }
+        
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
         {
@@ -7763,31 +7766,9 @@ namespace DOL.GS
                     ? CharacterClass.WeaponSkillRangedBase
                     : CharacterClass.WeaponSkillBase);
 
-            var effectiveness = 1.0;
-            
-            if (Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null && Realm == eRealm.Midgard)
-            {
-                var leftWep = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
-                {
-                    int LASpec = this.GetModifiedSpecLevel(Specs.Left_Axe);
-                    if (LASpec > 0)
-                    {
-                        var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
-
-                        if (GetModified(eProperty.OffhandDamageAndChance) > 0)
-                        {
-                            leftAxeEffectiveness += .01 * GetModified(eProperty.OffhandDamageAndChance);
-                        }
-                                
-                        effectiveness = leftAxeEffectiveness;
-                    }
-                }
-            }
-
             //added for WS Poisons
             //double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
-            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon)/2)) * effectiveness;
+            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon)/2)) * Effectiveness;
             
             //return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
             return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);

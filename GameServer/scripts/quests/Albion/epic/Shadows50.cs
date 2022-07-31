@@ -1784,14 +1784,22 @@ namespace DOL.GS.Quests.Albion
 				// Nag to finish quest
 				if (quest != null)
 				{
-					Lidmann.SayTo(player, "Check your Journal for instructions!");
-					return;
+					switch (quest.Step)
+					{
+						case 1:
+							Lidmann.SayTo(player, "Seek out Cailleach Uragaig in Lyonesse! Follow the road southwest into Lyonesse past the lesser telamon. " +
+							                      "Keep going until you pass the two houses with the pikemen and pygmy goblins. " +
+							                      "There is a clearing straight west where you see ruins of pillars. The cailleach sisterhood calls those ruins home.");
+							break;
+						case 2:
+							Lidmann.SayTo(player, $"Hey ${player.Name}, did you [slay] Cailleach Uragaig?");
+							break;
+					}
 				}
 				else
 				{
 					// Check if player is qualifed for quest                
 					Lidmann.SayTo(player, "Albion needs your [services]");
-					return;
 				}
 			}
 
@@ -1813,11 +1821,41 @@ namespace DOL.GS.Quests.Albion
 				{
 					switch (wArgs.Text)
 					{
+						case "slay":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, sealed_pouch);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 
 		}
@@ -1923,9 +1961,11 @@ namespace DOL.GS.Quests.Albion
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Cailleach Uragaig in Lyonesse Loc 29k,33k kill her!";
+						return "Seek out Cailleach Uragaig in Lyonesse and kill her!\n" +
+						       "There is a clearing straight west in Lyonesse where you see ruins of pillars. " +
+						       "The cailleach sisterhood calls those ruins home.";
 					case 2:
-						return "[Step #2] Return to Lidmann Halsey for your reward!";
+						return "Give the sealed pouch to Lidmann Halsey at Adribard's Retreat.";
 				}
 				return base.Description;
 			}
@@ -1951,19 +1991,7 @@ namespace DOL.GS.Quests.Albion
 						m_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						GiveItem(m_questPlayer, sealed_pouch);
 						Step = 2;
-						return;
 					}
-				}
-			}
-
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
-				if (gArgs.Target.Name == Lidmann.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
-				{
-					Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-					FinishQuest();
-					return;
 				}
 			}
 		}
@@ -1977,83 +2005,76 @@ namespace DOL.GS.Quests.Albion
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Lidmann, m_questPlayer, sealed_pouch);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				RemoveItem(Lidmann, m_questPlayer, sealed_pouch);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
-				{
-					case eCharacterClass.Reaver:
-						{
-							GiveItem(m_questPlayer, ReaverEpicArms);
-							GiveItem(m_questPlayer, ReaverEpicBoots);
-							GiveItem(m_questPlayer, ReaverEpicGloves);
-							GiveItem(m_questPlayer, ReaverEpicHelm);
-							GiveItem(m_questPlayer, ReaverEpicLegs);
-							GiveItem(m_questPlayer, ReaverEpicVest);
-							break;
-						}
-					case eCharacterClass.Mercenary:
-						{
-							GiveItem(m_questPlayer, MercenaryEpicArms);
-							GiveItem(m_questPlayer, MercenaryEpicBoots);
-							GiveItem(m_questPlayer, MercenaryEpicGloves);
-							GiveItem(m_questPlayer, MercenaryEpicHelm);
-							GiveItem(m_questPlayer, MercenaryEpicLegs);
-							GiveItem(m_questPlayer, MercenaryEpicVest);
-							break;
-						}
-					case eCharacterClass.Cabalist:
-						{
-							GiveItem(m_questPlayer, CabalistEpicArms);
-							GiveItem(m_questPlayer, CabalistEpicBoots);
-							GiveItem(m_questPlayer, CabalistEpicGloves);
-							GiveItem(m_questPlayer, CabalistEpicHelm);
-							GiveItem(m_questPlayer, CabalistEpicLegs);
-							GiveItem(m_questPlayer, CabalistEpicVest);
-							break;
-						}
-					case eCharacterClass.Infiltrator:
-						{
-							GiveItem(m_questPlayer, InfiltratorEpicArms);
-							GiveItem(m_questPlayer, InfiltratorEpicBoots);
-							GiveItem(m_questPlayer, InfiltratorEpicGloves);
-							GiveItem(m_questPlayer, InfiltratorEpicHelm);
-							GiveItem(m_questPlayer, InfiltratorEpicLegs);
-							GiveItem(m_questPlayer, InfiltratorEpicVest);
-							break;
-						}
-					case eCharacterClass.Necromancer:
-						{
-							GiveItem(m_questPlayer, NecromancerEpicArms);
-							GiveItem(m_questPlayer, NecromancerEpicBoots);
-							GiveItem(m_questPlayer, NecromancerEpicGloves);
-							GiveItem(m_questPlayer, NecromancerEpicHelm);
-							GiveItem(m_questPlayer, NecromancerEpicLegs);
-							GiveItem(m_questPlayer, NecromancerEpicVest);
-							break;
-						}
-					case eCharacterClass.Heretic:
-						{
-							GiveItem(m_questPlayer, HereticEpicArms);
-							GiveItem(m_questPlayer, HereticEpicBoots);
-							GiveItem(m_questPlayer, HereticEpicGloves);
-							GiveItem(m_questPlayer, HereticEpicHelm);
-							GiveItem(m_questPlayer, HereticEpicLegs);
-							GiveItem(m_questPlayer, HereticEpicVest);
-							break;
-						}
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				case eCharacterClass.Reaver:
+					{
+						GiveItem(m_questPlayer, ReaverEpicArms);
+						GiveItem(m_questPlayer, ReaverEpicBoots);
+						GiveItem(m_questPlayer, ReaverEpicGloves);
+						GiveItem(m_questPlayer, ReaverEpicHelm);
+						GiveItem(m_questPlayer, ReaverEpicLegs);
+						GiveItem(m_questPlayer, ReaverEpicVest);
+						break;
+					}
+				case eCharacterClass.Mercenary:
+					{
+						GiveItem(m_questPlayer, MercenaryEpicArms);
+						GiveItem(m_questPlayer, MercenaryEpicBoots);
+						GiveItem(m_questPlayer, MercenaryEpicGloves);
+						GiveItem(m_questPlayer, MercenaryEpicHelm);
+						GiveItem(m_questPlayer, MercenaryEpicLegs);
+						GiveItem(m_questPlayer, MercenaryEpicVest);
+						break;
+					}
+				case eCharacterClass.Cabalist:
+					{
+						GiveItem(m_questPlayer, CabalistEpicArms);
+						GiveItem(m_questPlayer, CabalistEpicBoots);
+						GiveItem(m_questPlayer, CabalistEpicGloves);
+						GiveItem(m_questPlayer, CabalistEpicHelm);
+						GiveItem(m_questPlayer, CabalistEpicLegs);
+						GiveItem(m_questPlayer, CabalistEpicVest);
+						break;
+					}
+				case eCharacterClass.Infiltrator:
+					{
+						GiveItem(m_questPlayer, InfiltratorEpicArms);
+						GiveItem(m_questPlayer, InfiltratorEpicBoots);
+						GiveItem(m_questPlayer, InfiltratorEpicGloves);
+						GiveItem(m_questPlayer, InfiltratorEpicHelm);
+						GiveItem(m_questPlayer, InfiltratorEpicLegs);
+						GiveItem(m_questPlayer, InfiltratorEpicVest);
+						break;
+					}
+				case eCharacterClass.Necromancer:
+					{
+						GiveItem(m_questPlayer, NecromancerEpicArms);
+						GiveItem(m_questPlayer, NecromancerEpicBoots);
+						GiveItem(m_questPlayer, NecromancerEpicGloves);
+						GiveItem(m_questPlayer, NecromancerEpicHelm);
+						GiveItem(m_questPlayer, NecromancerEpicLegs);
+						GiveItem(m_questPlayer, NecromancerEpicVest);
+						break;
+					}
+				case eCharacterClass.Heretic:
+					{
+						GiveItem(m_questPlayer, HereticEpicArms);
+						GiveItem(m_questPlayer, HereticEpicBoots);
+						GiveItem(m_questPlayer, HereticEpicGloves);
+						GiveItem(m_questPlayer, HereticEpicHelm);
+						GiveItem(m_questPlayer, HereticEpicLegs);
+						GiveItem(m_questPlayer, HereticEpicVest);
+						break;
+					}
 			}
-			else
-			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source

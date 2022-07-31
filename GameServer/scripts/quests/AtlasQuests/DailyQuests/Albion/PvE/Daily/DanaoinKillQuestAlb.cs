@@ -27,7 +27,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Kill Goal
 		private const int MAX_KILLED = 10;
 		
-		private static GameNPC Hector = null; // Start NPC
+		private static GameNPC James = null; // Start NPC
 
 		private int danaoinKilled = 0;
 
@@ -66,37 +66,42 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("James", eRealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
+					if (npc.CurrentRegionID == 51 && npc.X == 534044 && npc.Y == 549664)
 					{
-						Hector = npc;
+						James = npc;
 						break;
 					}
 
-			if (Hector == null)
+			if (James == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hector , creating it ...");
-				Hector = new GameNPC();
-				Hector.Model = 716;
-				Hector.Name = "Hector";
-				Hector.GuildName = "Advisor To The King";
-				Hector.Realm = eRealm.Albion;
-				Hector.CurrentRegionID = 1;
-				Hector.Size = 50;
-				Hector.Level = 59;
-				//Castle Sauvage Location
-				Hector.X = 583860;
-				Hector.Y = 477619;
-				Hector.Z = 2600;
-				Hector.Heading = 3111;
-				Hector.AddToWorld();
+					log.Warn("Could not find James , creating it ...");
+				James = new GameNPC();
+				James.Model = 254;
+				James.Name = "James";
+				James.GuildName = "Advisor To The King";
+				James.Realm = eRealm.Albion;
+				James.CurrentRegionID = 51;
+				James.Size = 50;
+				James.Level = 59;
+				//Caer Gothwaite Location
+				James.X = 534044;
+				James.Y = 549664;
+				James.Z = 4940;
+				James.Heading = 3143;
+				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
+				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005);
+				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142);
+				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143);
+				James.Inventory = templateAlb.CloseTemplate();
+				James.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Hector.SaveIntoDatabase();
+					James.SaveIntoDatabase();
 				}
 			}
 
@@ -111,11 +116,10 @@ namespace DOL.GS.DailyQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+			GameEventMgr.AddHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
+			GameEventMgr.AddHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
 
-			/* Now we bring to Hector the possibility to give this quest to players */
-			Hector.AddQuestToGive(typeof (DanaoinKillQuestAlb));
+			James.AddQuestToGive(typeof (DanaoinKillQuestAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -125,27 +129,26 @@ namespace DOL.GS.DailyQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Hector == null)
+			if (James == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+			GameEventMgr.RemoveHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
+			GameEventMgr.RemoveHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
 
-			/* Now we remove to Hector the possibility to give this quest to players */
-			Hector.RemoveQuestToGive(typeof (DanaoinKillQuestAlb));
+			James.RemoveQuestToGive(typeof (DanaoinKillQuestAlb));
 		}
 
-		private static void TalkToHector(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToJames(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Hector.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
+			if(James.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -158,16 +161,16 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Hector.SayTo(player, "You will find Danaoin Farmers in the North or West of Lyonesse.");
+							James.SayTo(player, "You will find Danaoin Farmers in the North or West of Lyonesse.");
 							break;
 						case 2:
-							Hector.SayTo(player, "Hello " + player.Name + ", did you [kill] the Danaoin Farmers?");
+							James.SayTo(player, "Hello " + player.Name + ", did you [kill] the Danaoin Farmers?");
 							break;
 					}
 				}
 				else
 				{
-					Hector.SayTo(player, "Hello "+ player.Name +", I am Hector. "+
+					James.SayTo(player, "Hello "+ player.Name +", I am James. "+
 					                       "The Danaoin Farmers down in Lyonesse are overfarming the land and destroying Albion's natural resources.\n"+
 					                       "\nCan you [clear the Danaoin] to save Albion?");
 				}
@@ -181,7 +184,7 @@ namespace DOL.GS.DailyQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "clear the Danaoin":
-							player.Out.SendQuestSubscribeCommand(Hector, QuestMgr.GetIDForQuestType(typeof(DanaoinKillQuestAlb)), "Will you help Hector "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(James, QuestMgr.GetIDForQuestType(typeof(DanaoinKillQuestAlb)), "Will you help James "+questTitle+"");
 							break;
 					}
 				}
@@ -266,7 +269,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Hector.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
+			if(James.CanGiveQuest(typeof (DanaoinKillQuestAlb), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (DanaoinKillQuestAlb)) != null)
@@ -279,10 +282,10 @@ namespace DOL.GS.DailyQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Hector.GiveQuest(typeof (DanaoinKillQuestAlb), player, 1))
+				if (!James.GiveQuest(typeof (DanaoinKillQuestAlb), player, 1))
 					return;
 
-				Hector.SayTo(player, "You will find the Danaoin Farmers in Lyonesse.");
+				James.SayTo(player, "You will find the Danaoin Farmers in Lyonesse.");
 
 			}
 		}
@@ -303,7 +306,7 @@ namespace DOL.GS.DailyQuest.Albion
 					case 1:
 						return "Find Danaoin Farmers in the West or North in Lyonesse. \nKilled: Danaoin Farmers ("+ danaoinKilled +" | 10)";
 					case 2:
-						return "Return to Hector in Castle Sauvage for your Reward.";
+						return "Return to James in Caer Gothwaite for your Reward.";
 				}
 				return base.Description;
 			}
@@ -328,7 +331,6 @@ namespace DOL.GS.DailyQuest.Albion
 					
 			if (danaoinKilled >= MAX_KILLED)
 			{
-				// FinishQuest or go back to Hector
 				Step = 2;
 			}
 
