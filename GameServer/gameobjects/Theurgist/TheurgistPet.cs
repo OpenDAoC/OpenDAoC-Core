@@ -14,12 +14,12 @@ namespace DOL.GS
 			
 			if (npcTemplate.Name.ToLower().Contains("earth"))
 			{
-				ScalingFactor = 20;
+				ScalingFactor = 17;
 			}
 
 			if (npcTemplate.Name.ToLower().Contains("air"))
 			{
-				ScalingFactor = 12;
+				ScalingFactor = 11;
 			}
 		}
 
