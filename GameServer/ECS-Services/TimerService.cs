@@ -59,10 +59,11 @@ public class TimerService
         }
         
         long addRemoveStartTick = GameTimer.GetTickCount();
-        while (TimerToRemove.Count > 0)
+        lock (_removeTimerLockObject)
         {
-            lock (_removeTimerLockObject)
+            while (TimerToRemove.Count > 0)
             {
+            
                 if(debugTimer && TimerToRemoveCallbacks != null && TimerToRemove.Peek()!=null && TimerToRemove.Peek().Callback != null)
                 {
                     String callbackMethodName = TimerToRemove.Peek().Callback.Method.DeclaringType+"."+TimerToRemove.Peek().Callback.Method.Name;
@@ -85,9 +86,9 @@ public class TimerService
             log.Warn($"Long TimerService Remove Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
 
         addRemoveStartTick = GameTimer.GetTickCount();
-        while (TimerToAdd.Count > 0)
+        lock (_addTimerLockObject)
         {
-            lock (_addTimerLockObject)
+            while (TimerToAdd.Count > 0)
             {
                 if(debugTimer && TimerToAddCallbacks != null && TimerToAdd.Peek()!=null && TimerToAdd.Peek().Callback != null)
                 {
@@ -198,11 +199,11 @@ public class TimerService
     {
         lock (_removeTimerLockObject)
         {
-            if (ActiveTimers.Contains(timerToRemove))
-            {
+            // if (ActiveTimers.Contains(timerToRemove))
+            // {
                 TimerToRemove?.Push(timerToRemove);
                 //Console.WriteLine($"removed {timerToRemove.Callback.GetMethodInfo()}");
-            }
+            // }
         }
     }
 
