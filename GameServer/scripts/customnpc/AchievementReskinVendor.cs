@@ -130,7 +130,7 @@ public class AchievementReskinVendor : GameNPC
 
         if (item.Item_Type == Slot.FEET || item.Item_Type == Slot.TORSO || item.Item_Type == Slot.HANDS)
         {
-            SendReply(t, sb.ToString() + "\n\n" + "I can offer the following pad types: \n\n" +
+            SendReply(t, sb.ToString() + "\n\n" + "I can offer the following pad types for 2500 orbs per piece: \n\n" +
                                "[Type 1] \n" +
                                "[Type 2] \n" +
                                "[Type 3] \n" +
