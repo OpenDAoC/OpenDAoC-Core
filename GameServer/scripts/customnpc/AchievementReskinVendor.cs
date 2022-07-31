@@ -95,14 +95,14 @@ public class AchievementReskinVendor : GameNPC
               && x.EpicBossKills <= epicBossPlayerKills
               && x.MasteredCrafts <= masteredCrafts
               && x.DamageType == damageType
-              && x.ObjectType == item.Object_Type);
+              && x.ObjectType == item.Object_Type
+              && x.Price != 2500);
 
         foreach (var sItem in foundItems)
         {
             sb.Append($"[{sItem.Name}] ({sItem.Price} {currencyName})\n");
         }
 
-        SendReply(t, sb.ToString());
 
         if (item.Item_Type == Slot.FEET || item.Item_Type == Slot.TORSO || item.Item_Type == Slot.HANDS)
         {
@@ -112,6 +112,10 @@ public class AchievementReskinVendor : GameNPC
                                "[Type 3] \n" +
                                "[Type 4] \n" +
                                "[Type 5]");
+        }
+        else
+        {
+            SendReply(t, sb.ToString());
         }
 
         SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
@@ -427,6 +431,27 @@ public class AchievementReskinVendor : GameNPC
                 {
                     modelIDToAssign = foundItem.ModelID;
                     price = foundItem.Price;
+
+                    if (price == 2500)
+                    {
+                        InventoryItem tmpItem = (InventoryItem)displayItem.Clone();
+                        byte tmp = tmpItem.Extension;
+                        tmpItem.Extension = (byte)modelIDToAssign;
+                        DisplayReskinPreviewTo(player, tmpItem);
+                        //tmpItem.Extension = tmp;
+                    }
+                    else
+                    {
+                        InventoryItem tmpItem = (InventoryItem)displayItem.Clone();
+                        int tmp = tmpItem.Model;
+                        tmpItem.Model = modelIDToAssign;
+                        DisplayReskinPreviewTo(player, tmpItem);
+                        tmpItem.Model = tmp;
+                    }
+
+                    player.TempProperties.setProperty(TempModelID, modelIDToAssign);
+                    player.TempProperties.setProperty(TempModelPrice, price);
+
                 }
                 else
                 {
@@ -434,27 +459,6 @@ public class AchievementReskinVendor : GameNPC
                 }
                 break;
         }
-
-        if (price == 2500)
-        {
-            InventoryItem tmpItem = (InventoryItem)displayItem.Clone();
-            byte tmp = tmpItem.Extension;
-            tmpItem.Extension = (byte)modelIDToAssign;
-            DisplayReskinPreviewTo(player, tmpItem);
-            //tmpItem.Extension = tmp;
-        }
-        else
-        {
-            InventoryItem tmpItem = (InventoryItem)displayItem.Clone();
-            int tmp = tmpItem.Model;
-            tmpItem.Model = modelIDToAssign;
-            DisplayReskinPreviewTo(player, tmpItem);
-            tmpItem.Model = tmp;
-        }
-
-        player.TempProperties.setProperty(TempModelID, modelIDToAssign);
-        player.TempProperties.setProperty(TempModelPrice, price);
-
         return true;
     }
 
@@ -948,18 +952,18 @@ public class AchievementReskinVendor : GameNPC
             // Generic
 
             // alb
-            VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 822, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 1229, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 62, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 824, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 824, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 63, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 64, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 823, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1230, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1231, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1233, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1233, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 2812, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 93, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Helm 2", 1238, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1229, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 2800, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 3", 1234, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
@@ -1995,19 +1999,19 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 1", 51, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 1", 51, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 1", 41, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Pants 1", 46, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Pants 1", 47, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 140, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 38, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 81, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 81, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 186, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 86, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Pants 2", 87, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 140, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 76, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 156, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 156, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 196, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, freebie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 201, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Pants 3", 1273, Slot.LEGS, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Pants", 4016, Slot.LEGS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Pants", 3991, Slot.LEGS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Pants", 4011, Slot.LEGS, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
@@ -2020,13 +2024,13 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 4", 156, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 4", 156, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 4", 196, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Pants 4", 201, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Pants 4", 1273, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 141, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 136, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 221, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 221, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, lowbie));
             VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 1251, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 211, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Crafted Pants 5", 1273, Slot.LEGS, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, lowbie));
             //rr5
             VendorItemList.Add(new SkinVendorItem("Class Epic Pants", 689, Slot.LEGS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Armsman, (int)eObjectType.Plate, (int)eDamageType._FirstResist, epic));
             VendorItemList.Add(new SkinVendorItem("Class Epic Pants", 0, Slot.LEGS, 5, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Cabalist, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
