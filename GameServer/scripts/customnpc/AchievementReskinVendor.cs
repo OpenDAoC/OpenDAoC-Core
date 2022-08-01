@@ -494,7 +494,13 @@ public class AchievementReskinVendor : GameNPC
             case "confirm model":
 
                 foundItem = VendorItemList.Find(x => x.ModelID == cachedModelID
-                && x.ItemType == item.Item_Type 
+                && x.ItemType == item.Item_Type
+                // && x.PlayerRealmRank <= playerRealmRank
+                //&& x.AccountRealmRank <= accountRealmRank
+                //&& x.Orbs <= playerOrbs
+                //&& x.Drake <= playerDragonKills
+                //&& x.EpicBossKills <= epicBossPlayerKills
+                //&& x.MasteredCrafts <= masteredCrafts
                 && x.ObjectType == item.Object_Type 
                 && x.DamageType == damageType 
                 && (x.Realm == playerRealm || x.Realm == noneRealm) 
@@ -786,7 +792,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Celtic Club 1h", 449, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Celtic Mace 1h", 450, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blunt, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Celtic Short Sword 1h", 445, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("Celtic Longsword 1h", 456, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Celtic Longsword 1h", 446, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Celtic Broadsword 1h", 447, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, freebie));
 
             //rr2 
