@@ -94,12 +94,12 @@ public class AchievementReskinVendor : GameNPC
             foundItems = VendorItemList.FindAll(x => (x.ItemType == item.Item_Type || x.ItemType == Slot.RIGHTHAND)
                   && (x.Realm == playerRealm || x.Realm == noneRealm)
                   && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
-                  && x.PlayerRealmRank <= playerRealmRank
-                  && x.AccountRealmRank <= accountRealmRank
-                  && x.Orbs <= playerOrbs
-                  && x.Drake <= playerDragonKills
-                  && x.EpicBossKills <= epicBossPlayerKills
-                  && x.MasteredCrafts <= masteredCrafts
+               //   && x.PlayerRealmRank <= playerRealmRank
+               //   && x.AccountRealmRank <= accountRealmRank
+               //   && x.Orbs <= playerOrbs
+               //   && x.Drake <= playerDragonKills
+               //   && x.EpicBossKills <= epicBossPlayerKills
+              //    && x.MasteredCrafts <= masteredCrafts
                   && x.DamageType == damageType
                   && x.ObjectType == item.Object_Type
                   && x.Price != 2500).OrderBy(o => o.Price).ToList();
@@ -109,12 +109,12 @@ public class AchievementReskinVendor : GameNPC
             foundItems = VendorItemList.FindAll(x => (x.ItemType == item.Item_Type)
                   && (x.Realm == playerRealm || x.Realm == noneRealm)
                   && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
-                  && x.PlayerRealmRank <= playerRealmRank
-                  && x.AccountRealmRank <= accountRealmRank
-                  && x.Orbs <= playerOrbs
-                  && x.Drake <= playerDragonKills
-                  && x.EpicBossKills <= epicBossPlayerKills
-                  && x.MasteredCrafts <= masteredCrafts
+             //     && x.PlayerRealmRank <= playerRealmRank
+            //      && x.AccountRealmRank <= accountRealmRank
+           //       && x.Orbs <= playerOrbs
+           //       && x.Drake <= playerDragonKills
+           //       && x.EpicBossKills <= epicBossPlayerKills
+          //        && x.MasteredCrafts <= masteredCrafts
                   && x.DamageType == damageType
                   && x.ObjectType == item.Object_Type
                   && x.Price != 2500).OrderBy(o => o.Price).ToList();
@@ -429,12 +429,12 @@ public class AchievementReskinVendor : GameNPC
            && x.Name == str
            && (x.Realm == playerRealm || x.Realm == noneRealm)
            && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
-           && x.PlayerRealmRank <= playerRealmRank
-           && x.AccountRealmRank <= accountRealmRank
-           && x.Orbs <= playerOrbs
-           && x.Drake <= playerDragonKills
-           && x.EpicBossKills <= epicBossPlayerKills
-           && x.MasteredCrafts <= masteredCrafts
+           // && x.PlayerRealmRank <= playerRealmRank
+           //&& x.AccountRealmRank <= accountRealmRank
+           //&& x.Orbs <= playerOrbs
+           //&& x.Drake <= playerDragonKills
+           //&& x.EpicBossKills <= epicBossPlayerKills
+           //&& x.MasteredCrafts <= masteredCrafts
            && x.DamageType == damageType
            && x.ObjectType == item.Object_Type);
         }
@@ -444,12 +444,12 @@ public class AchievementReskinVendor : GameNPC
           && x.Name == str
           && (x.Realm == playerRealm || x.Realm == noneRealm)
           && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
-          && x.PlayerRealmRank <= playerRealmRank
-          && x.AccountRealmRank <= accountRealmRank
-          && x.Orbs <= playerOrbs
-          && x.Drake <= playerDragonKills
-          && x.EpicBossKills <= epicBossPlayerKills
-          && x.MasteredCrafts <= masteredCrafts
+         // && x.PlayerRealmRank <= playerRealmRank
+         // && x.AccountRealmRank <= accountRealmRank
+        // && x.Orbs <= playerOrbs
+         // && x.Drake <= playerDragonKills
+         // && x.EpicBossKills <= epicBossPlayerKills
+        //  && x.MasteredCrafts <= masteredCrafts
           && x.DamageType == damageType
           && x.ObjectType == item.Object_Type);
         }
@@ -459,8 +459,22 @@ public class AchievementReskinVendor : GameNPC
         switch (str.ToLower())
         {
             case "confirm model":
+
+                foundItem = VendorItemList.Find(x => (x.ItemType == item.Item_Type)
+                && x.Name == str
+                && (x.Realm == playerRealm || x.Realm == noneRealm)
+                && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
+                // && x.PlayerRealmRank <= playerRealmRank
+                // && x.AccountRealmRank <= accountRealmRank
+                // && x.Orbs <= playerOrbs
+                // && x.Drake <= playerDragonKills
+                // && x.EpicBossKills <= epicBossPlayerKills
+                //  && x.MasteredCrafts <= masteredCrafts
+                && x.DamageType == damageType
+                && x.ObjectType == item.Object_Type);
+
                 //Console.WriteLine($"Cached: {cachedModelID}");
-                if (cachedModelID > 0 && cachedModelPrice > 0)
+                if (cachedModelID > 0 && cachedModelPrice > 0 && foundItem != null)
                 {
                     if (cachedModelPrice == 2500)
                         SetExtension(player, (byte)cachedModelID, cachedModelPrice);
