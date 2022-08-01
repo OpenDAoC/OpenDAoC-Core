@@ -171,15 +171,31 @@ public class AchievementReskinVendor : GameNPC
                 return false;
             }
 
-            SendReply(player, "Thanks for your donation. " +
-                              "I have changed your item's model, you can now use it. \n\n" +
-                              "I look forward to doing business with you in the future.");
+            eInventorySlot slot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+            if (slot == eInventorySlot.Invalid)
+            {
+                SendReply(player, "I'm sorry, but you currently have no available inventoryspace for this Item.");
+                return false;
+            }
 
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
             InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
 
+            InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.ObjectId, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+            if (foundItem == null)
+            {
+                SendReply(player, "I'm sorry, the Item you want to Skin is not in your Inventory.");
+                return false;
+            }
+
             if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                 return false;
+
+            SendReply(player, "Thanks for your donation. " +
+                          "I have changed your item's model, you can now use it. \n\n" +
+                          "I look forward to doing business with you in the future.");
 
             player.TempProperties.removeProperty(TempProperty);
             player.TempProperties.removeProperty(DisplayedItem);
@@ -199,6 +215,7 @@ public class AchievementReskinVendor : GameNPC
             if (item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
+           
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             // player.RemoveBountyPoints(300);
@@ -231,8 +248,24 @@ public class AchievementReskinVendor : GameNPC
                 return;
             }
 
+            eInventorySlot slot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+            if (slot == eInventorySlot.Invalid)
+            {
+                SendReply(player, "I'm sorry, but you currently have no available inventoryspace for this Item.");
+                return;
+            }
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
             InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+
+            InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.ObjectId, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+            if (foundItem == null)
+            {
+                SendReply(player, "I'm sorry, the Item you want to Skin is not in your Inventory.");
+                return;
+            }
+
 
             if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                 return;
@@ -460,10 +493,15 @@ public class AchievementReskinVendor : GameNPC
         {
             case "confirm model":
 
-                foundItem = VendorItemList.Find(x => x.ModelID == cachedModelID);
+                foundItem = VendorItemList.Find(x => x.ModelID == cachedModelID
+                && x.ItemType == item.Item_Type 
+                && x.ObjectType == item.Object_Type 
+                && x.DamageType == damageType 
+                && (x.Realm == playerRealm || x.Realm == noneRealm) 
+                && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown));
 
                 //Console.WriteLine($"Cached: {cachedModelID}");
-                if (cachedModelID > 0 && cachedModelPrice > 0 && foundItem.ItemType == item.Item_Type && foundItem.ObjectType == item.Object_Type && foundItem.DamageType == damageType && (foundItem.Realm == playerRealm || foundItem.Realm == noneRealm) && (foundItem.CharacterClass == playerClass || foundItem.CharacterClass == characterClassUnknown))
+                if (cachedModelID > 0 && cachedModelPrice > 0  && foundItem != null)
                 {
                     if (cachedModelPrice == 2500)
                         SetExtension(player, (byte)cachedModelID, cachedModelPrice);
