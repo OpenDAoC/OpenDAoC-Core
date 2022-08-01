@@ -1498,6 +1498,21 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Brigit.Name && gArgs.Item.Id_nb == Moonstone.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						eInventorySlot.LastBackpack))
+					{
+						Brigit.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+			}
 		}
 
 		public override void AbortQuest()
