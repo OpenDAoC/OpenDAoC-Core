@@ -1693,7 +1693,7 @@ namespace DOL.GS
                            specModifier = lowerLimit + Util.Random(varianceRange) * 0.01;
                        }
 
-                       double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 32 / 50d : 2;
+                       double playerBaseAF = ad.Target is GamePlayer ? ad.Target.Level * 30 / 50d : 2;
                     if (playerBaseAF < 1)
                         playerBaseAF = 1;
 

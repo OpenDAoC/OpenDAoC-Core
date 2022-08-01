@@ -104,8 +104,12 @@ namespace DOL.GS {
                 InventoryItem item = GameInventoryItem.Create(orbs);
                 
                 var maxCount = Util.Random(20, 50);
+
+                var totalLoyalty = player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) > 30
+                    ? 30
+                    : player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY);
                 
-                var orbBonus = (int) Math.Floor((decimal) ((maxCount * .2) * (player.TempProperties.getProperty<int>(GamePlayer.CURRENT_LOYALTY_KEY) / 30))); //up to 20% bonus orbs from loyalty
+                var orbBonus = (int) Math.Floor((decimal) ((maxCount * .2) * ( totalLoyalty/ 30))); //up to 20% bonus orbs from loyalty
                 
                 var totOrbs = maxCount + orbBonus;
 
