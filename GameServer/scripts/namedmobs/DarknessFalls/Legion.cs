@@ -154,12 +154,24 @@ namespace DOL.GS.Scripts
                 TempProperties.removeProperty("legion_spawnadds");
             }
 
+            var castaoe = TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+            if (castaoe != null)
+            {
+                castaoe.Stop();
+                TempProperties.removeProperty("legion_castaoe");
+            }
+
             base.Die(killer);
 
             if (canReportNews)
             {
                 ReportNews(killer);
             }
+        }
+        public override void EnemyKilled(GameLiving enemy)
+        {
+            Health += MaxHealth / 20; //heals if boss kill enemy 5% of health
+            base.EnemyKilled(enemy);
         }
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
@@ -281,6 +293,12 @@ namespace DOL.GS.Scripts
             }
             return count;
         }
+        public override void DealDamage(AttackData ad)
+        {
+            if (ad != null && ad.DamageType == eDamageType.Body)
+                Health += ad.Damage / 2;
+            base.DealDamage(ad);
+        }
     }
 }
 
@@ -299,6 +317,8 @@ namespace DOL.AI.Brain
         public static bool RemoveAdds = false;
         public static bool IsCreatingSouls = false;
         public static bool CanThrow = false;
+        public static bool CanPbaoe = false;
+
         public override void Think()
         {
             if(!HasAggressionTable())
@@ -324,6 +344,12 @@ namespace DOL.AI.Brain
                     spawnadds.Stop();
                     Body.TempProperties.removeProperty("legion_spawnadds");
                 }
+                var castaoe = Body.TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+                if (castaoe != null)
+                {
+                    castaoe.Stop();
+                    Body.TempProperties.removeProperty("legion_castaoe");
+                }
             }
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
@@ -341,15 +367,23 @@ namespace DOL.AI.Brain
             if (HasAggro && Body.TargetObject != null)
             {
                 RemoveAdds = false;
+                DestroyDamnBubble();
+                if(bladeturnConsumed >= 5 && !CanPbaoe)
+                {
+                    ReleaseAoeLifetap();
+                    ECSGameTimer castAoe = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetAoe), 10000);
+                    Body.TempProperties.setProperty("legion_castaoe", castAoe);
+                    CanPbaoe = true;
+                }
                 if(!IsCreatingSouls)
                 {
-                    ECSGameTimer spawnadds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(20000, 30000));//every 20-30s it will spawn tortured souls
+                    ECSGameTimer spawnadds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(15000, 25000));//every 15-25s it will spawn tortured souls
                     Body.TempProperties.setProperty("legion_spawnadds", spawnadds);
                     IsCreatingSouls = true;
                 }
                 if(!CanThrow)
                 {
-                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
+                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 35000));//throw players
                     Body.TempProperties.setProperty("legion_throw", throwPlayer);
                     CanThrow = true;
                 }
@@ -357,7 +391,48 @@ namespace DOL.AI.Brain
 
             base.Think();
         }
-        
+        private int bladeturnConsumed = 0;
+        private void DestroyDamnBubble()
+        {
+            if (Body.TargetObject != null && HasAggro)
+            {
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (Util.Chance(100))
+                {
+                    if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Bladeturn) && target != null && target.IsAlive)
+                    {
+                        var effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
+                        if (effect != null)
+                        {
+                            EffectService.RequestImmediateCancelEffect(effect);//remove snare immunity here
+                            bladeturnConsumed++;
+                            if(target is GamePlayer player)
+                            {
+                                if (player != null && player.IsAlive)
+                                    player.Out.SendMessage("Legion consume you bladeturn effect!", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public void ReleaseAoeLifetap()
+        {
+            if (Body.TargetObject != null)
+            {
+                if (!Body.IsCasting)
+                {
+                    BroadcastMessage("Legion unleashing massive soul consumption blast.");
+                    Body.CastSpell(LegionLifetapAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+                }
+            }
+            bladeturnConsumed = 0;
+        }
+        private int ResetAoe(ECSGameTimer timer)
+        {
+            CanPbaoe = false;
+            return 0;
+        }
         public int DoSpawn(ECSGameTimer timer)
         {
 
@@ -422,7 +497,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive && HasAggro)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
+                foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
                 {
                     if (player != null)
                     {
@@ -438,7 +513,7 @@ namespace DOL.AI.Brain
                 }
                 if (Port_Enemys.Count > 0)
                 {
-                    randomlyPickedPlayers = GetRandomElements(Port_Enemys, Util.Random(5, 8));//pick 5-8players from list to new list
+                    randomlyPickedPlayers = GetRandomElements(Port_Enemys, Util.Random(8, 16));//pick 5-8players from list to new list
 
                     if (randomlyPickedPlayers.Count > 0)
                     {
@@ -456,6 +531,36 @@ namespace DOL.AI.Brain
                 CanThrow = false;// set to false, so can throw again
             }
             return 0;
+        }
+        #endregion
+        #region Spells
+        private Spell m_LegionLifetapAoe;
+        public Spell LegionLifetapAoe
+        {
+            get
+            {
+                if (m_LegionLifetapAoe == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.Power = 0;
+                    spell.RecastDelay = 5;
+                    spell.ClientEffect = 9191;
+                    spell.Icon = 9191;
+                    spell.Damage = 1200;
+                    spell.DamageType = (int)eDamageType.Body;
+                    spell.Name = "Lifetap";
+                    spell.Range = 0;
+                    spell.Radius = 1500;
+                    spell.SpellID = 12013;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    m_LegionLifetapAoe = new Spell(spell, 60);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LegionLifetapAoe);
+                }
+                return m_LegionLifetapAoe;
+            }
         }
         #endregion
     }
@@ -601,7 +706,7 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 350;
+            return 550;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
