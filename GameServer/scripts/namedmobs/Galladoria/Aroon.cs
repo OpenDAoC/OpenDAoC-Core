@@ -852,30 +852,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false)
+                if (Aroon.Aroon_slash)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1054,30 +1047,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1262,30 +1248,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1470,31 +1449,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1680,31 +1652,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1890,31 +1855,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -2100,32 +2058,25 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
+                    && Aroon.Aroon_heat)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -2311,32 +2262,25 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat == false && Aroon.Aroon_matter == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
+                    && Aroon.Aroon_heat && Aroon.Aroon_matter)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
