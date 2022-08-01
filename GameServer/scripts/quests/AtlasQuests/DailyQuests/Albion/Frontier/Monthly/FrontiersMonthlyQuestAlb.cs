@@ -325,12 +325,12 @@ namespace DOL.GS.MonthlyQuest.Albion
 				return;
 			
 			
-			if (e == GameLivingEvent.EnemyKilled && Step == 1 && PlayersKilled != MAX_KILLING_GOAL)
+			if (e == GameLivingEvent.EnemyKilled && Step == 1 && PlayersKilled < MAX_KILLING_GOAL)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (gArgs.Target.Realm == 0 || gArgs.Target.Realm == player.Realm || gArgs.Target is not GamePlayer ||
 				    !(player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON)) return;
-				if (gArgs.Target.CurrentRegionID != 100 || gArgs.Target.CurrentRegionID != 200 ||
+				if (gArgs.Target.CurrentRegionID != 100 && gArgs.Target.CurrentRegionID != 200 &&
 				    gArgs.Target.CurrentRegionID != 1)
 				{
 					player.Out.SendMessage("[Monthly] You need to find enemies in the old frontiers.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -340,7 +340,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 				player.Out.SendMessage("[Monthly] Enemies Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			if (e == GamePlayerEvent.CapturedKeepsChanged && Step == 1 && CapturedKeeps != MAX_CAPTURED_KEEPS_GOAL)
+			if (e == GamePlayerEvent.CapturedKeepsChanged && Step == 1 && CapturedKeeps < MAX_CAPTURED_KEEPS_GOAL)
 			{
 				CapturedKeeps++;
 				player.Out.SendMessage("[Monthly] Captured Keeps: ("+CapturedKeeps+" | "+MAX_CAPTURED_KEEPS_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
