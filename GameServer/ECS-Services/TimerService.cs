@@ -17,7 +17,7 @@ public class TimerService
     private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     private const string ServiceName = "Timer Service";
 
-    private static List<ECSGameTimer> ActiveTimers;
+    private static HashSet<ECSGameTimer> ActiveTimers;
     private static Stack<ECSGameTimer> TimerToRemove;
     private static Stack<ECSGameTimer> TimerToAdd;
 
@@ -33,7 +33,7 @@ public class TimerService
     static TimerService()
     {
         EntityManager.AddService(typeof(TimerService));
-        ActiveTimers = new List<ECSGameTimer>();
+        ActiveTimers = new HashSet<ECSGameTimer>();
         TimerToAdd = new Stack<ECSGameTimer>();
         TimerToRemove = new Stack<ECSGameTimer>();
     }
@@ -117,7 +117,7 @@ public class TimerService
             debugTick = tick;
         }*/
 
-        Parallel.ForEach(ActiveTimers, timer =>
+        Parallel.ForEach(ActiveTimers.ToArray(), timer =>
         {
             try
             {
