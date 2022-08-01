@@ -258,20 +258,24 @@ namespace DOL.AI.Brain
         {
             if (AggroRange > 0)
             {
-                var currentPlayersSeen = new List<GamePlayer>();
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
+                if (Body.ambientTexts != null && Body.ambientTexts.Any(item => item.Trigger == "seeing"))
                 {
-                    if (!PlayersSeen.Contains(player))
+                    //Check if we can "see" players and fire off ambient text
+                    var currentPlayersSeen = new List<GamePlayer>();
+                    foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
                     {
-                        Body.FireAmbientSentence(GameNPC.eAmbientTrigger.seeing, player as GameLiving);
-                        PlayersSeen.Add(player);
+                        if (!PlayersSeen.Contains(player))
+                        {
+                            Body.FireAmbientSentence(GameNPC.eAmbientTrigger.seeing, player as GameLiving);
+                            PlayersSeen.Add(player);
+                        }
+                        currentPlayersSeen.Add(player);
                     }
-                    currentPlayersSeen.Add(player);
-                }
 
-                for (int i = 0; i < PlayersSeen.Count; i++)
-                {
-                    if (!currentPlayersSeen.Contains(PlayersSeen[i])) PlayersSeen.RemoveAt(i);
+                    for (int i = 0; i < PlayersSeen.Count; i++)
+                    {
+                        if (!currentPlayersSeen.Contains(PlayersSeen[i])) PlayersSeen.RemoveAt(i);
+                    }
                 }
 
             }
