@@ -51,6 +51,7 @@ namespace DOL.GS.Spells
 			if (target.HasAbility(Abilities.ConfusionImmunity))
 			{
 				MessageToCaster(target.Name + " can't be confused!", eChatType.CT_SpellResisted);
+				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
 			base.ApplyEffectOnTarget(target, effectiveness);
