@@ -182,7 +182,7 @@ public class AchievementReskinVendor : GameNPC
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
             InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
 
-            InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.ObjectId, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
             if (foundItem == null)
             {
