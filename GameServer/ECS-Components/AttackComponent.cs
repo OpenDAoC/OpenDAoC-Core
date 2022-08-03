@@ -1815,8 +1815,7 @@ namespace DOL.GS
 
                 if (ad.IsOffHand)
                 {
-                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) +
-                                    owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
+                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage)) * .01);
                 }
 
                 //against NPC targets this just doubles the resists
