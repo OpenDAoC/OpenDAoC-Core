@@ -689,6 +689,22 @@ public class AchievementReskinVendor : GameNPC
 
             // Two Handed Weapons //
             //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            //Generic
+            VendorItemList.Add(new SkinVendorItem("Battler Hammer 2h", 3448, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Battler Hammer 2h", 3448, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Battler Hammer 2h", 3448, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Battler Sword 2h", 1670, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Battler Sword 2h", 1670, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Battler Sword 2h", 1670, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Hammer 2h", 3449, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Hammer 2h", 3449, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Hammer 2h", 3449, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Axe 2h", 2110, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Axe 2h", 2110, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Axe 2h", 2110, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, artifact));
+
+
             //alb
             VendorItemList.Add(new SkinVendorItem("Battle Axe 2h", 9, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("War Mattock 2h", 16, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, freebie));
