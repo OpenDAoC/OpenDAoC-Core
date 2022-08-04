@@ -591,7 +591,7 @@ namespace DOL.GS
                         if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
                         {
                             var leftWep = p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                            if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
+                            if (p.GetModifiedSpecLevel(Specs.Left_Axe) > 0)
                             {
                                 int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
                                 if (LASpec > 0)
@@ -1816,8 +1816,7 @@ namespace DOL.GS
 
                 if (ad.IsOffHand)
                 {
-                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage) +
-                                    owner.GetModified(eProperty.OffhandDamageAndChance)) * .01);
+                    damage *= 1 + ((owner.GetModified(eProperty.OffhandDamage)) * .01);
                 }
 
                 //against NPC targets this just doubles the resists
@@ -1854,7 +1853,7 @@ namespace DOL.GS
                 ad.Damage = (int) damage;
 
                 // apply total damage cap
-                // Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)}");
+                //Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)} ");
                 ad.UncappedDamage = ad.Damage;
                 if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
@@ -1936,42 +1935,7 @@ namespace DOL.GS
 
             // Attacked living may modify the attack data.  Primarily used for keep doors and components.
             ad.Target.ModifyAttack(ad);
-
-            if (ad.AttackResult == eAttackResult.HitStyle)
-            {
-                if (owner is GamePlayer)
-                {
-                    GamePlayer player = owner as GamePlayer;
-
-                    string damageAmount = (ad.StyleDamage > 0)
-                        ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
-                        : "";
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                            "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
-                        eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                }
-                else if (owner is GameNPC)
-                {
-                    ControlledNpcBrain brain = ((GameNPC) owner).Brain as ControlledNpcBrain;
-
-                    if (brain != null)
-                    {
-                        GamePlayer owner = brain.GetPlayerOwner();
-                        if (owner != null)
-                        {
-                            string damageAmount = (ad.StyleDamage > 0)
-                                ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
-                                : "";
-                            owner.Out.SendMessage(
-                                LanguageMgr.GetTranslation(owner.Client.Account.Language,
-                                    "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
-                                    damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                        }
-                    }
-                }
-            }
-
+            
             string message = "";
             bool broadcast = true;
             ArrayList excludes = new ArrayList();
@@ -2047,6 +2011,41 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
+                    if (ad.AttackResult == eAttackResult.HitStyle)
+                    {
+                        if (owner is GamePlayer)
+                        {
+                            GamePlayer player = owner as GamePlayer;
+
+                            string damageAmount = (ad.StyleDamage > 0)
+                                ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
+                                : "";
+                            player.Out.SendMessage(
+                                LanguageMgr.GetTranslation(player.Client.Account.Language,
+                                    "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
+                                eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        }
+                        else if (owner is GameNPC)
+                        {
+                            ControlledNpcBrain brain = ((GameNPC) owner).Brain as ControlledNpcBrain;
+
+                            if (brain != null)
+                            {
+                                GamePlayer owner = brain.GetPlayerOwner();
+                                if (owner != null)
+                                {
+                                    string damageAmount = (ad.StyleDamage > 0)
+                                        ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
+                                        : "";
+                                    owner.Out.SendMessage(
+                                        LanguageMgr.GetTranslation(owner.Client.Account.Language,
+                                            "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
+                                            damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                }
+                            }
+                        }
+                    }
+                    
                     if (target != null && target != ad.Target)
                     {
                         message = string.Format("{0} attacks {1} but hits {2}!", ad.Attacker.GetName(0, true),
