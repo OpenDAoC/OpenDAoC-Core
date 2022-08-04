@@ -424,6 +424,12 @@ namespace DOL.GS.ServerProperties
 		public static bool DISABLE_QUIT_TIMER;
 
 		/// <summary>
+		/// Queue Service Host
+		/// </summary>
+		[ServerProperty("server", "queue_api_url", "Provide the URL for the queue service endpoint - blank to disable", "")]
+		public static string QUEUE_API_URI;
+
+		/// <summary>
 		/// Enable Discord Webhook?
 		/// </summary>
 		[ServerProperty("server", "Discord_Webhook_Active", "Enable Discord webhook?", false)]
@@ -1409,6 +1415,18 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("world", "set_si_epic_encounter_respawninterval", "Respawn Time, in minutes, for Epic Encounters in Shrouded Isles", 60)]
 		public static int SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
+		/// Respawn Interval for Normal Epic Game Boss Encounter
+		/// </summary>
+		[ServerProperty("world", "set_epic_game_encounter_respawninterval", "Respawn Time, in minutes, for Normal Epic Game Encounters", 60)]
+		public static int SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL;
+
+		/// <summary>
+		/// Respawn Interval for Epic Quest Mobs
+		/// </summary>
+		[ServerProperty("world", "set_epic_quest_encounter_respawninterval", "Respawn Time, in minutes, for Epic Quest Encounters", 30)]
+		public static int SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL;
 
 		/// <summary>
 		/// Weapon damage cap for epic encounters that use melee weapons
@@ -2822,6 +2840,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "max_craft_time", "The maximum craft time allowed in seconds. All timers above this value will be normalised to the input value", 0)]
 		public static int MAX_CRAFT_TIME;
 		
+		[ServerProperty("atlas", "of_teleport_interval", "The seconds between OF porting ceremonies", 120)]
+		public static int OF_REPORT_INTERVAL;
+
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
 		{

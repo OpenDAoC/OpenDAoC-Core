@@ -643,7 +643,7 @@ namespace DOL.GS
 		public void LoadPlayer(int accountindex)
 		{
 			LoadPlayer(accountindex, Properties.PLAYER_CLASS);
-		}
+		} 
 		public void LoadPlayer(DOLCharacters dolChar)
 		{
 			LoadPlayer(dolChar, Properties.PLAYER_CLASS);

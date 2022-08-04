@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Albion
         private int _deadSidiBossMob = 0;
         private const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Hector = null; // Start NPC
+        private static GameNPC James = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,42 @@ namespace DOL.GS.DailyQuest.Albion
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Albion);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("James", eRealm.Albion);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 1 && npc.X == 583860 && npc.Y == 477619)
+                    if (npc.CurrentRegionID == 51 && npc.X == 534044 && npc.Y == 549664)
                     {
-                        Hector = npc;
+                        James = npc;
                         break;
                     }
 
-            if (Hector == null)
+            if (James == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Hector , creating it ...");
-                Hector = new GameNPC();
-                Hector.Model = 716;
-                Hector.Name = "Hector";
-                Hector.GuildName = "Advisor to the King";
-                Hector.Realm = eRealm.Albion;
-                Hector.CurrentRegionID = 1;
-                Hector.Size = 50;
-                Hector.Level = 59;
-                //Castle Sauvage Location
-                Hector.X = 583860;
-                Hector.Y = 477619;
-                Hector.Z = 2600;
-                Hector.Heading = 3111;
-                Hector.AddToWorld();
+                    log.Warn("Could not find James , creating it ...");
+                James = new GameNPC();
+                James.Model = 254;
+                James.Name = "James";
+                James.GuildName = "Advisor To The King";
+                James.Realm = eRealm.Albion;
+                James.CurrentRegionID = 51;
+                James.Size = 50;
+                James.Level = 59;
+                //Caer Gothwaite Location
+                James.X = 534044;
+                James.Y = 549664;
+                James.Z = 4940;
+                James.Heading = 3143;
+                GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
+                templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005);
+                templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142);
+                templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143);
+                James.Inventory = templateAlb.CloseTemplate();
+                James.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Hector.SaveIntoDatabase();
+                    James.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +119,10 @@ namespace DOL.GS.DailyQuest.Albion
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-            GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+            GameEventMgr.AddHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
+            GameEventMgr.AddHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
 
-            /* Now we bring to Haszan the possibility to give this quest to players */
-            Hector.AddQuestToGive(typeof(SidiBossQuestAlb));
+            James.AddQuestToGive(typeof(SidiBossQuestAlb));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Alb initialized");
@@ -128,27 +132,26 @@ namespace DOL.GS.DailyQuest.Albion
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Hector == null)
+            if (James == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-            GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+            GameEventMgr.RemoveHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
+            GameEventMgr.RemoveHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
 
-            /* Now we remove to Haszan the possibility to give this quest to players */
-            Hector.RemoveQuestToGive(typeof(SidiBossQuestAlb));
+            James.RemoveQuestToGive(typeof(SidiBossQuestAlb));
         }
 
-        protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToJames(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Hector.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
+            if (James.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,17 +164,17 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (quest.Step)
                     {
                         case 1:
-                            Hector.SayTo(player,
+                            James.SayTo(player,
                                 "Please, enter Caer Sidi and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Hector.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            James.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Hector.SayTo(player, "Hello " + player.Name + ", I am Hector. " +
+                    James.SayTo(player, "Hello " + player.Name + ", I am James. " +
                                          "An infiltrator has reported the forces in Caer Sidi are planning an attack. \n" +
                                          "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
@@ -185,9 +188,9 @@ namespace DOL.GS.DailyQuest.Albion
                     switch (wArgs.Text)
                     {
                         case "end their plotting":
-                            player.Out.SendQuestSubscribeCommand(Hector,
+                            player.Out.SendQuestSubscribeCommand(James,
                                 QuestMgr.GetIDForQuestType(typeof(SidiBossQuestAlb)),
-                                "Will you help Dean " + questTitle + "");
+                                "Will you help James " + questTitle + "");
                             break;
                     }
                 }
@@ -268,7 +271,7 @@ namespace DOL.GS.DailyQuest.Albion
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Hector.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
+            if (James.CanGiveQuest(typeof(SidiBossQuestAlb), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(SidiBossQuestAlb)) != null)
@@ -281,10 +284,10 @@ namespace DOL.GS.DailyQuest.Albion
             else
             {
                 //Check if we can add the quest!
-                if (!Hector.GiveQuest(typeof(SidiBossQuestAlb), player, 1))
+                if (!James.GiveQuest(typeof(SidiBossQuestAlb), player, 1))
                     return;
 
-                Hector.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                James.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +308,7 @@ namespace DOL.GS.DailyQuest.Albion
                         return "Find a way to Caer Sidi and kill strong opponents. \nKilled: Bosses in Caer Sidi (" +
                                _deadSidiBossMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Hector for your Reward.";
+                        return "Return to James in Caer Gothwaite for your Reward.";
                 }
 
                 return base.Description;
@@ -336,7 +339,6 @@ namespace DOL.GS.DailyQuest.Albion
 
             if (_deadSidiBossMob >= MAX_KILLGOAL)
             {
-                // FinishQuest or go back to Haszan
                 Step = 2;
             }
         }

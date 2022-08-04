@@ -19,6 +19,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using DOL.GS.PacketHandler;
 namespace DOL.GS
 {
@@ -34,6 +35,10 @@ namespace DOL.GS
 		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
         protected GameLiving m_battlegroupLeader;
         protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
+
+        protected Dictionary<GamePlayer, int> m_battlegroupRolls;
+        protected bool recordingRolls;
+        protected int rollRecordThreshold;
 
         bool battlegroupLootType = false;
         GamePlayer battlegroupTreasurer = null;
@@ -124,6 +129,83 @@ namespace DOL.GS
         public bool GetBGLootType()
         {
             return battlegroupLootType;
+        }
+        
+        public bool IsRecordingRolls()
+        {
+	        return recordingRolls;
+        }
+        
+        public int GetRecordingThreshold()
+        {
+	        return rollRecordThreshold;
+        }
+        
+        public void StartRecordingRolls(int maxRoll = 1000)
+		{
+	        recordingRolls = true;
+	        rollRecordThreshold = maxRoll;
+	        m_battlegroupRolls = new Dictionary<GamePlayer, int>();
+	        
+	        foreach (GamePlayer ply in Members.Keys)
+	        {
+		        ply.Out.SendMessage($"{Leader.Name} has initiated the recording. Use /random {maxRoll} now to roll for this item.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
+	        }
+		}
+
+        public void StopRecordingRolls()
+        {
+	        recordingRolls = false;
+	        foreach (GamePlayer ply in Members.Keys)
+	        {
+		        ply.Out.SendMessage($"{Leader.Name} stopped the recording. Use /bg showrolls to display the results.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
+	        }
+        }
+        
+        public void AddRoll(GamePlayer player, int roll)
+		{
+	        if(!recordingRolls)
+		        return;
+	        if (roll > rollRecordThreshold)
+		        return;
+	        lock (m_battlegroupRolls)
+	        {
+		        if(m_battlegroupRolls.ContainsKey(player))
+			        return;
+		        m_battlegroupRolls.Add(player, roll);
+	        }
+		}
+        public void ShowRollsWindow(GamePlayer player)
+        {
+	        if (recordingRolls)
+	        {
+		        player.Client.Out.SendMessage("Rolls are being recorded. Please wait.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		        return;
+	        }
+
+	        if (m_battlegroupRolls == null || m_battlegroupRolls.Count == 0)
+	        {
+		        player.Client.Out.SendMessage("No rolls have been recorded yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		        return;
+	        }
+	        
+	        var output = new List<string>();
+
+	        var sorted = new List<KeyValuePair<GamePlayer, int>>();
+
+	        sorted = m_battlegroupRolls.ToList();
+	        sorted.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value));
+	        
+
+	        var i = 1;
+	        foreach (var value in sorted)
+	        {
+		        output.Add($"{i}) {value.Key.Name} rolled {value.Value}");
+		        i++;
+	        }
+	        
+	        player.Out.SendCustomTextWindow("LAST ROLL RESULTS", output);
+
         }
 
         public GamePlayer GetBGTreasurer()
@@ -283,14 +365,17 @@ namespace DOL.GS
 				} else if (leader && m_battlegroupMembers.Count >= 2)
 				{
 					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);
-					bgPlayers.AddRange(m_battlegroupMembers.Keys);
-					var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count) - 1] as GamePlayer;
-					if (randomPlayer == null) return false;
-					SetBGLeader(randomPlayer);
-					m_battlegroupMembers[randomPlayer] = true;
-					foreach(GamePlayer member in Members.Keys)
+					lock (bgPlayers)
 					{
-						member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						bgPlayers.AddRange(m_battlegroupMembers.Keys);
+						var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count - 1)] as GamePlayer;
+						if (randomPlayer == null) return false;
+						SetBGLeader(randomPlayer);
+						m_battlegroupMembers[randomPlayer] = true;
+						foreach(GamePlayer member in Members.Keys)
+						{
+							member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						}
 					}
 				}
 

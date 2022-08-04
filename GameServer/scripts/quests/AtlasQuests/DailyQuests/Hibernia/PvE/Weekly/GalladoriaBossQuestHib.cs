@@ -29,7 +29,7 @@ namespace DOL.GS.DailyQuest.Hibernia
         private int _deadGallaBossMob = 0;
         private const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Dean = null; // Start NPC
+        private static GameNPC Anthony = null; // Start NPC
 
 
         // Constructors
@@ -67,37 +67,42 @@ namespace DOL.GS.DailyQuest.Hibernia
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", eRealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
-                    if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
+                    if (npc.CurrentRegionID == 181 && npc.X == 422864 && npc.Y == 444362)
                     {
-                        Dean = npc;
+                        Anthony = npc;
                         break;
                     }
 
-            if (Dean == null)
+            if (Anthony == null)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn("Could not find Dean , creating it ...");
-                Dean = new GameNPC();
-                Dean.Model = 355;
-                Dean.Name = "Dean";
-                Dean.GuildName = "Advisor to the King";
-                Dean.Realm = eRealm.Hibernia;
-                //Druim Ligen Location
-                Dean.CurrentRegionID = 200;
-                Dean.Size = 50;
-                Dean.Level = 59;
-                Dean.X = 334962;
-                Dean.Y = 420687;
-                Dean.Z = 5184;
-                Dean.Heading = 1571;
-                Dean.AddToWorld();
+                    log.Warn("Could not find Anthony , creating it ...");
+                Anthony = new GameNPC();
+                Anthony.Model = 289;
+                Anthony.Name = "Anthony";
+                Anthony.GuildName = "Advisor to the King";
+                Anthony.Realm = eRealm.Hibernia;
+                //Domnann Location
+                Anthony.CurrentRegionID = 181;
+                Anthony.Size = 50;
+                Anthony.Level = 59;
+                Anthony.X = 422864;
+                Anthony.Y = 444362;
+                Anthony.Z = 5952;
+                Anthony.Heading = 1234;
+                GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+                templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
+                templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361);
+                templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362);
+                Anthony.Inventory = templateHib.CloseTemplate();
+                Anthony.AddToWorld();
                 if (SAVE_INTO_DATABASE)
                 {
-                    Dean.SaveIntoDatabase();
+                    Anthony.SaveIntoDatabase();
                 }
             }
 
@@ -114,11 +119,10 @@ namespace DOL.GS.DailyQuest.Hibernia
             GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-            GameEventMgr.AddHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+            GameEventMgr.AddHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+            GameEventMgr.AddHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 
-            /* Now we bring to Dean the possibility to give this quest to players */
-            Dean.AddQuestToGive(typeof(GalladoriaBossQuestHib));
+            Anthony.AddQuestToGive(typeof(GalladoriaBossQuestHib));
 
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" Hib initialized");
@@ -128,27 +132,26 @@ namespace DOL.GS.DailyQuest.Hibernia
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
-            if (Dean == null)
+            if (Anthony == null)
                 return;
             // remove handlers
             GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
             GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Dean, GameObjectEvent.Interact, new DOLEventHandler(TalkToDean));
-            GameEventMgr.RemoveHandler(Dean, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToDean));
+            GameEventMgr.RemoveHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+            GameEventMgr.RemoveHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 
-            /* Now we remove to Dean the possibility to give this quest to players */
-            Dean.RemoveQuestToGive(typeof(GalladoriaBossQuestHib));
+            Anthony.RemoveQuestToGive(typeof(GalladoriaBossQuestHib));
         }
 
-        private static void TalkToDean(DOLEvent e, object sender, EventArgs args)
+        private static void TalkToAnthony(DOLEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
             if (player == null)
                 return;
 
-            if (Dean.CanGiveQuest(typeof(GalladoriaBossQuestHib), player) <= 0)
+            if (Anthony.CanGiveQuest(typeof(GalladoriaBossQuestHib), player) <= 0)
                 return;
 
             //We also check if the player is already doing the quest
@@ -161,18 +164,18 @@ namespace DOL.GS.DailyQuest.Hibernia
                     switch (quest.Step)
                     {
                         case 1:
-                            Dean.SayTo(player,
+                            Anthony.SayTo(player,
                                 "Please, enter Galladoria and slay strong opponents. If you succeed come back for your reward.");
                             break;
                         case 2:
-                            Dean.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
+                            Anthony.SayTo(player, "Hello " + player.Name + ", did you [succeed]?");
                             break;
                     }
                 }
                 else
                 {
-                    Dean.SayTo(player, "Hello " + player.Name + ", I am Dean. " +
-                                       "A Nightshade has reported the forces in Galladoria are planning an attack. \n" +
+                    Anthony.SayTo(player, "Hello " + player.Name + ", I am Anthony. " +
+                                       "A nightshade has reported the forces in Galladoria are planning an attack. \n" +
                                        "We want to pre-empt them and [end their plotting] before they have the chance. Care to help?");
                 }
             }
@@ -185,9 +188,9 @@ namespace DOL.GS.DailyQuest.Hibernia
                     switch (wArgs.Text)
                     {
                         case "end their plotting":
-                            player.Out.SendQuestSubscribeCommand(Dean,
+                            player.Out.SendQuestSubscribeCommand(Anthony,
                                 QuestMgr.GetIDForQuestType(typeof(GalladoriaBossQuestHib)),
-                                "Will you help Dean " + questTitle + "");
+                                "Will you help Anthony " + questTitle + "");
                             break;
                     }
                 }
@@ -268,7 +271,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
         private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
         {
-            if (Dean.CanGiveQuest(typeof(GalladoriaBossQuestHib), player) <= 0)
+            if (Anthony.CanGiveQuest(typeof(GalladoriaBossQuestHib), player) <= 0)
                 return;
 
             if (player.IsDoingQuest(typeof(GalladoriaBossQuestHib)) != null)
@@ -281,10 +284,10 @@ namespace DOL.GS.DailyQuest.Hibernia
             else
             {
                 //Check if we can add the quest!
-                if (!Dean.GiveQuest(typeof(GalladoriaBossQuestHib), player, 1))
+                if (!Anthony.GiveQuest(typeof(GalladoriaBossQuestHib), player, 1))
                     return;
 
-                Dean.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
+                Anthony.SayTo(player, "Thank you " + player.Name + ", be an enrichment for our realm!");
             }
         }
 
@@ -305,7 +308,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                         return "Find a way to Galladoria and kill strong opponents. \nKilled: Bosses in Galladoria (" +
                                _deadGallaBossMob + " | "+ MAX_KILLGOAL +")";
                     case 2:
-                        return "Return to Dean for your Reward.";
+                        return "Return to Anthony in Grove of Domnann for your Reward.";
                 }
 
                 return base.Description;
@@ -336,7 +339,6 @@ namespace DOL.GS.DailyQuest.Hibernia
 
                 if (_deadGallaBossMob >= MAX_KILLGOAL)
                 {
-                    // FinishQuest or go back to Dean
                     Step = 2;
                 }
             }

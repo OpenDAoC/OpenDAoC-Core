@@ -145,20 +145,24 @@ namespace DOL.GS
                         else
                         {                           
                             bool addEffect = false;
+                            //foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
+                            bool foundIsOverwriteableEffect = false;
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
                                 if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) || spellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
+                                    foundIsOverwriteableEffect = true;
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
                                         if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
                                         {
                                             addEffect = true;
                                         }
-                                        // Better Effect so disable the current Effect
-                                        else if (spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
-                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage)
+                                        //New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
+                                        else if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage) &&
+                                            !existingEffects[i].IsDisabled)
                                         {
                                             if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
                                                 spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
@@ -169,14 +173,15 @@ namespace DOL.GS
 
                                             addEffect = true;
                                         }
+                                        //New Effect is not as good as current effect.
                                         else if (spellEffect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
                                             spellEffect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
                                         {
                                             if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
                                                 || existingEffects[i].SpellHandler.Spell.IsPulsing)
                                             {
-                                                EffectService.RequestDisableEffect(spellEffect);
-                                                addEffect = true;
+                                                // EffectService.RequestDisableEffect(spellEffect);
+                                                // addEffect = true;
                                             }
                                             else
                                                 addEffect = false;
@@ -196,11 +201,17 @@ namespace DOL.GS
                                         }
                                     }
                                 }
-                                else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
-                                {
-                                    addEffect = true;
-                                }
+                                //Commenting the snip below as it was causing issues with some effects stacking incorrectly. using the foundIsOverwriteableEffect bool instead.
+                                // else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
+                                // {
+                                //     addEffect = true;
+                                // }
                             }
+    
+                            //No overwriteable effects found that match new spell effect, so add it!
+                            if (!foundIsOverwriteableEffect)
+                                addEffect = true;
+
                             if (addEffect)
                             {
                                 Effects[spellEffect.EffectType].Add(spellEffect);

@@ -2,6 +2,8 @@
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -38,21 +40,16 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-						player.Out.SendSpellEffectAnimation(this, this, 5920, 0, false, 0x01);
-				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1000);
+					player?.Out.SendSpellEffectAnimation(this, this, 5920, 0, false, 0x01);
+				});
+
+				return 2000;
 			}
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
-		{
-			if (IsAlive)
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
-			return 0;
-		}
+		
 		#endregion
 		public override void Die(GameObject killer)
         {

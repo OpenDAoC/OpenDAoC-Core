@@ -62,7 +62,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Danica = null; // Start NPC
-		private static GameNPC Kelic = null; // Mob to kill
+		private static Kelic Kelic = null; // Mob to kill
 
 		private static ItemTemplate kelics_totem = null;
 		private static ItemTemplate SpiritmasterEpicBoots = null;
@@ -158,7 +158,7 @@ namespace DOL.GS.Quests.Midgard
 				foreach (GameNPC npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 621577 && npc.Y == 745848)
 					{
-						Kelic = npc;
+						Kelic = npc as Kelic;
 						break;
 					}
 
@@ -166,7 +166,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Kelic , creating it ...");
-				Kelic = new GameNPC();
+				Kelic = new Kelic();
 				Kelic.Model = 26;
 				Kelic.Name = "Kelic";
 				Kelic.GuildName = "";
@@ -190,7 +190,7 @@ namespace DOL.GS.Quests.Midgard
 
 				#endregion
 
-				#region defineItems
+			#region defineItems
 
 				kelics_totem = GameServer.Database.FindObjectByKey<ItemTemplate>("kelics_totem");
 			if (kelics_totem == null)
@@ -1305,7 +1305,7 @@ namespace DOL.GS.Quests.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Danica == null)
+			if (Danica == null || Kelic == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
@@ -1346,7 +1346,7 @@ namespace DOL.GS.Quests.Midgard
 								"Return to me when you have the totem. May all the gods be with you.");
 							break;
 						case 2:
-							Danica.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's totem now! Hurry!");
+							Danica.SayTo(player, "It is good to see you were strong enough to survive Kelic. I can sense you have the controlling totem on you. Give me Kelic's [totem] now! Hurry!");
 							break;
 						case 3:
 							Danica.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
@@ -1380,22 +1380,44 @@ namespace DOL.GS.Quests.Midgard
 					{
 						case "take them":
 							if (quest.Step == 3)
-								quest.FinishQuest();
+							{
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Danica.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
 							break;
-
+						case "totem":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, kelics_totem);
+								quest.Step = 3;
+								Danica.SayTo(player, "The curse is broken and the clan is safe. " +
+								                     "They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. " +
+								                     "There are six parts to it, so make sure you have room for them. " +
+								                     "Just let me know when you are ready, and then you can [take them] with our thanks!");
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
 			}
-			else if (e == GameLivingEvent.ReceiveItem)
+			else if (e == GameObjectEvent.ReceiveItem)
 			{
 				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
 				if (quest != null)
 				{
-					if (rArgs.Item.Id_nb == kelics_totem.Id_nb && quest.Step >= 2)
+					if (rArgs.Item.Id_nb == kelics_totem.Id_nb)
 					{
+						RemoveItem(player, kelics_totem);
+						Danica.SayTo(player, "Ah, I can see how he wore the curse around the totem. I can now break the curse that is destroying the clan!");
+						Danica.SayTo(player, "The curse is broken and the clan is safe. They are in your debt, but I think Arnfinn, has come up with a suitable reward for you. There are six parts to it, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
 						quest.Step = 3;
 					}
 				}
@@ -1413,13 +1435,6 @@ namespace DOL.GS.Quests.Midgard
 				player.CharacterClass.ID != (byte) eCharacterClass.Bonedancer &&
 				player.CharacterClass.ID != (byte) eCharacterClass.Warlock)
 				return false;
-
-			// This checks below are only performed is player isn't doing quest already
-
-			//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
-
-			//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
-			//	return false;
 
 			if (player.Level < minimumLevel || player.Level > maximumLevel)
 				return false;
@@ -1483,13 +1498,13 @@ namespace DOL.GS.Quests.Midgard
 				if (!Danica.GiveQuest(typeof (Mystic_50), player, 1))
 					return;
 
-				Danica.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong." +
-					"He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
-					"I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
-					"According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
-					"Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
-					"Return to me when you have the totem. May all the gods be with you.");
 			}
+			Danica.SayTo(player, "Yes, you must face and defeat him! There is a note scrawled in the corner of the map that even in death Kelic is strong. " +
+			                     "He has gathered followers to protect him in his spirit state and they will come to his aid if he is attacked. Even though you have improved your skills quite a bit, " +
+			                     "I would highley recommed taking some friends with you to face Kelic. It is imperative that you defeat him and obtain the totem he holds if I am to end the spell. " +
+			                     "According to the map you can find Kelic in Raumarik. Head to the river in Raumarik and go north. When you reach the end of it, go northwest to the next river. " +
+			                     "Cross the river and head west. Follow the snowline until you reach a group of trees. That is where you will find Kelic and his followers. " +
+			                     "Return to me when you have the totem. May all the gods be with you.");
 		}
 
 		//Set quest name
@@ -1506,11 +1521,11 @@ namespace DOL.GS.Quests.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Find Kelic in Raumarik. Head to the river and go north. At the end go northwest to the next river, cross and head west. Follow the snowline until you reach a group of trees.";
+						return "Find Kelic in Raumarik. Head to the river and go north. At the end go northwest to the next river, cross and head west. Follow the snowline until you reach a group of trees.";
 					case 2:
-						return "[Step #2] Return to Danica and give her the totem!";
+						return "Return to Danica and give her the totem!";
 					case 3:
-						return "[Step #3] Tell Danica you can 'take them' for your rewards!";
+						return "Speak with Danica for your reward!";
 				}
 				return base.Description;
 			}
@@ -1531,10 +1546,8 @@ namespace DOL.GS.Quests.Midgard
 					Step = 2;
 					GiveItem(m_questPlayer, kelics_totem);
 					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return;
 				}
 			}
-
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
@@ -1558,62 +1571,56 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-			{
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
-				{
-					case eCharacterClass.Spiritmaster:
-						{
-							GiveItem(m_questPlayer, SpiritmasterEpicArms);
-							GiveItem(m_questPlayer, SpiritmasterEpicBoots);
-							GiveItem(m_questPlayer, SpiritmasterEpicGloves);
-							GiveItem(m_questPlayer, SpiritmasterEpicHelm);
-							GiveItem(m_questPlayer, SpiritmasterEpicLegs);
-							GiveItem(m_questPlayer, SpiritmasterEpicVest);
-							break;
-						}
-					case eCharacterClass.Runemaster:
-						{
-							GiveItem(m_questPlayer, RunemasterEpicArms);
-							GiveItem(m_questPlayer, RunemasterEpicBoots);
-							GiveItem(m_questPlayer, RunemasterEpicGloves);
-							GiveItem(m_questPlayer, RunemasterEpicHelm);
-							GiveItem(m_questPlayer, RunemasterEpicLegs);
-							GiveItem(m_questPlayer, RunemasterEpicVest);
-							break;
-						}
-					case eCharacterClass.Bonedancer:
-						{
-							GiveItem(m_questPlayer, BonedancerEpicArms);
-							GiveItem(m_questPlayer, BonedancerEpicBoots);
-							GiveItem(m_questPlayer, BonedancerEpicGloves);
-							GiveItem(m_questPlayer, BonedancerEpicHelm);
-							GiveItem(m_questPlayer, BonedancerEpicLegs);
-							GiveItem(m_questPlayer, BonedancerEpicVest);
-							break;
-						}
-					case eCharacterClass.Warlock:
-						{
-							GiveItem(m_questPlayer, WarlockEpicArms);
-							GiveItem(m_questPlayer, WarlockEpicBoots);
-							GiveItem(m_questPlayer, WarlockEpicGloves);
-							GiveItem(m_questPlayer, WarlockEpicHelm);
-							GiveItem(m_questPlayer, WarlockEpicLegs);
-							GiveItem(m_questPlayer, WarlockEpicVest);
-							break;
-						}
-				}
-				Danica.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
-			}
-			else
+			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				case eCharacterClass.Spiritmaster:
+					{
+						GiveItem(m_questPlayer, SpiritmasterEpicArms);
+						GiveItem(m_questPlayer, SpiritmasterEpicBoots);
+						GiveItem(m_questPlayer, SpiritmasterEpicGloves);
+						GiveItem(m_questPlayer, SpiritmasterEpicHelm);
+						GiveItem(m_questPlayer, SpiritmasterEpicLegs);
+						GiveItem(m_questPlayer, SpiritmasterEpicVest);
+						break;
+					}
+				case eCharacterClass.Runemaster:
+					{
+						GiveItem(m_questPlayer, RunemasterEpicArms);
+						GiveItem(m_questPlayer, RunemasterEpicBoots);
+						GiveItem(m_questPlayer, RunemasterEpicGloves);
+						GiveItem(m_questPlayer, RunemasterEpicHelm);
+						GiveItem(m_questPlayer, RunemasterEpicLegs);
+						GiveItem(m_questPlayer, RunemasterEpicVest);
+						break;
+					}
+				case eCharacterClass.Bonedancer:
+					{
+						GiveItem(m_questPlayer, BonedancerEpicArms);
+						GiveItem(m_questPlayer, BonedancerEpicBoots);
+						GiveItem(m_questPlayer, BonedancerEpicGloves);
+						GiveItem(m_questPlayer, BonedancerEpicHelm);
+						GiveItem(m_questPlayer, BonedancerEpicLegs);
+						GiveItem(m_questPlayer, BonedancerEpicVest);
+						break;
+					}
+				case eCharacterClass.Warlock:
+					{
+						GiveItem(m_questPlayer, WarlockEpicArms);
+						GiveItem(m_questPlayer, WarlockEpicBoots);
+						GiveItem(m_questPlayer, WarlockEpicGloves);
+						GiveItem(m_questPlayer, WarlockEpicHelm);
+						GiveItem(m_questPlayer, WarlockEpicLegs);
+						GiveItem(m_questPlayer, WarlockEpicVest);
+						break;
+					}
 			}
+			Danica.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				
 		}
 
 		#region Allakhazam Epic Source

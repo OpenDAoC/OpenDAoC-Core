@@ -23,6 +23,7 @@ using System.Text;
 using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.Database;
+using DOL.GS.API;
 
 namespace DOL.GS
 {
@@ -173,6 +174,12 @@ namespace DOL.GS
 		public ICollection<GamePlayer> GetPlayersInTheGroup()
 		{
 			return m_groupMembers.OfType<GamePlayer>().ToArray();
+		}
+
+		public ICollection<GamePlayer> GetNearbyPlayersInTheGroup(GamePlayer source)
+		{
+			return m_groupMembers.OfType<GamePlayer>().Where(groupmate =>
+				source.GetDistance(groupmate) <= WorldMgr.MAX_EXPFORKILL_DISTANCE).ToArray();
 		}
 		
 		/// <summary>

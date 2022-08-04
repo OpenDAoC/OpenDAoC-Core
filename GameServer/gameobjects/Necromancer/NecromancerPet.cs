@@ -52,11 +52,7 @@ namespace DOL.GS
             }
         }
         
-        public override short MaxSpeed {
-	        get {
-		        return (Brain as IControlledBrain).Owner.MaxSpeed;
-	        }
-        }
+        public override short MaxSpeed => (short)GetModified(eProperty.MaxSpeed);
 
         /// <summary>
 		/// Proc IDs for various pet weapons.

@@ -150,6 +150,12 @@ namespace DOL.GS.Commands
 				return false;
 			}
 
+			if (obj.InCombat)
+			{
+				DisplayMessage(player, "You can't repair an object under attack.");
+				return false;
+			}
+
 			if (!player.IsWithinRadius(obj, WorldMgr.INTERACT_DISTANCE))
 			{
 				DisplayMessage(player, "You are too far away to repair this component.");

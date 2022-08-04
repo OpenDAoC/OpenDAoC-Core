@@ -125,29 +125,31 @@ namespace DOL.GS.Scripts
 
 				if (player.Level < 50)
 				{
-					List<eInventorySlot> gemSlots = new List<eInventorySlot>();
-					gemSlots.Add(eInventorySlot.Cloak);
-					gemSlots.Add(eInventorySlot.Neck);
-					gemSlots.Add(eInventorySlot.Waist);
-					gemSlots.Add(eInventorySlot.Jewellery);
-					gemSlots.Add(eInventorySlot.LeftRing);
-					gemSlots.Add(eInventorySlot.RightRing);
-					gemSlots.Add(eInventorySlot.LeftBracer);
-					gemSlots.Add(eInventorySlot.RightBracer);
-
-					foreach (eInventorySlot islot in gemSlots)
-					{
-						GeneratedUniqueItem item = null;
-						item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
-						item.AllowAdd = true;
-						item.Color = (int)color;
-						item.IsTradable = false;
-						item.Price = 1;
-						GameServer.Database.AddObject(item);
-						InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
-						player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
-						//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
+					
+					GenerateGems(player);
+					// List<eInventorySlot> gemSlots = new List<eInventorySlot>();
+					// gemSlots.Add(eInventorySlot.Cloak);
+					// gemSlots.Add(eInventorySlot.Neck);
+					// gemSlots.Add(eInventorySlot.Waist);
+					// gemSlots.Add(eInventorySlot.Jewellery);
+					// gemSlots.Add(eInventorySlot.LeftRing);
+					// gemSlots.Add(eInventorySlot.RightRing);
+					// gemSlots.Add(eInventorySlot.LeftBracer);
+					// gemSlots.Add(eInventorySlot.RightBracer);
+					//
+					// foreach (eInventorySlot islot in gemSlots)
+					// {
+					// 	GeneratedUniqueItem item = null;
+					// 	item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
+					// 	item.AllowAdd = true;
+					// 	item.Color = (int)color;
+					// 	item.IsTradable = false;
+					// 	item.Price = 1;
+					// 	GameServer.Database.AddObject(item);
+					// 	InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+					// 	player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					// 	//player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					// }
 				}
 				else
 				{
@@ -251,6 +253,37 @@ namespace DOL.GS.Scripts
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
             log.Info("\t BG Loot NPC initialized: true");
+        }
+
+
+        public static void GenerateGems(GamePlayer player)
+        {
+	        var realm = player.Realm;
+	        var charclass = (eCharacterClass)player.CharacterClass.ID;
+	        
+	        List<eInventorySlot> gemSlots = new List<eInventorySlot>();
+	        gemSlots.Add(eInventorySlot.Cloak);
+	        gemSlots.Add(eInventorySlot.Neck);
+	        gemSlots.Add(eInventorySlot.Waist);
+	        gemSlots.Add(eInventorySlot.Jewellery);
+	        gemSlots.Add(eInventorySlot.LeftRing);
+	        gemSlots.Add(eInventorySlot.RightRing);
+	        gemSlots.Add(eInventorySlot.LeftBracer);
+	        gemSlots.Add(eInventorySlot.RightBracer);
+
+	        foreach (eInventorySlot islot in gemSlots)
+	        {
+		        GeneratedUniqueItem item = null;
+		        item = new GeneratedUniqueItem(realm, charclass, (byte)(player.Level + freeLootLevelOffset), eObjectType.Magical, islot);
+		        item.AllowAdd = true;
+		        item.Color = 0;
+		        item.IsTradable = false;
+		        item.Price = 1;
+		        GameServer.Database.AddObject(item);
+		        InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+		        player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+		        //player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	        }
         }
 
 		public static void GenerateWeapon(GameLiving player, eCharacterClass charClass, eObjectType type, eInventorySlot invSlot)

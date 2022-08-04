@@ -58,7 +58,7 @@ namespace DOL.AI.Brain
 
 		public override int ThinkInterval
 		{
-			get { return 1000; }
+			get { return 500; }
 		}
 
 
@@ -588,7 +588,7 @@ namespace DOL.AI.Brain
         #region Tether
 
         private const int m_softTether = 750;    // TODO: Check on Pendragon
-        private const int m_hardTether = 1500;
+        private const int m_hardTether = 2000;
         private TetherTimer m_tetherTimer = null;
 
         private void CheckTether()

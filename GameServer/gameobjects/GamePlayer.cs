@@ -69,6 +69,9 @@ namespace DOL.GS
         public double RegenAfterTireless { get; set; }
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
+        
+        public double SpecLock { get; set; }
+        
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
         {
@@ -906,7 +909,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>0</returns>
-        protected int LinkdeathTimerCallback(ECSGameTimer callingTimer)
+        protected int LinkdeathTimerCallback(AuxECSGameTimer callingTimer)
         {
             log.Debug("call back");
             //If we died during our callback time we release
@@ -978,7 +981,7 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
             log.Debug("starting timer");
-            ECSGameTimer timer = new ECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
+            AuxECSGameTimer timer = new AuxECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
             
             // timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
             // timer.StartTick = 1 + secondsToQuit * 1000;
@@ -5731,8 +5734,8 @@ namespace DOL.GS
             
             if (Level == 39)
             {
-                var today = DateTime.Today;
-                var endSoftLaunch = new DateTime(2022, 07, 18);
+                var today = DateTime.Now;
+                var endSoftLaunch = new DateTime(2022, 07, 18, 15, 30,00);
 
                 if (today <= endSoftLaunch)
                 {
@@ -7766,7 +7769,7 @@ namespace DOL.GS
             //added for WS Poisons
             //double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
             double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon)/2)) * Effectiveness;
-
+            
             //return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
             return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
         }
@@ -9830,7 +9833,9 @@ namespace DOL.GS
 
                     // Artifacts don't require charges.
 
-                    if (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1)
+                    if ((type < 2 && useItem.SpellID > 0 && useItem.Charges < 1 && useItem.MaxCharges > -1) ||
+                        (type == 2 && useItem.SpellID1 > 0 && useItem.Charges1 < 1 && useItem.MaxCharges1 > -1) ||
+                        (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1))
                     {
                         Out.SendMessage("The " + useItem.Name + " is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
@@ -13040,7 +13045,7 @@ namespace DOL.GS
                     {
                         List<GameObject> owners = new List<GameObject>((GameObject[])floorItem.Owners);
                         List<GamePlayer> eligibleMembers = new List<GamePlayer>(8);
-                        foreach (GamePlayer ply in group.GetPlayersInTheGroup())
+                        foreach (GamePlayer ply in group.GetNearbyPlayersInTheGroup(this))
                         {
                             if (ply.IsAlive
                                 && ply.CanSeeObject(floorObject)
@@ -13112,7 +13117,7 @@ namespace DOL.GS
                     if (Group != null && Group.AutosplitCoins)
                     {
                         //Spread the money in the group
-                        var eligibleMembers = from p in Group.GetPlayersInTheGroup()
+                        var eligibleMembers = from p in Group.GetNearbyPlayersInTheGroup(this)
                             where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
                             select p;
                         var gamePlayers = eligibleMembers as GamePlayer[] ?? eligibleMembers.ToArray();
@@ -13864,16 +13869,16 @@ namespace DOL.GS
             //let's only check if we can use /level once shall we,
             //this is nice because i want to check the property often for the new catacombs classes
 
-            //find all characters in the database
-            foreach (DOLCharacters plr in Client.Account.Characters)
-            {
-                //where the level of one of the characters if 50
-                if (plr.Level == ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT && GameServer.ServerRules.CountsTowardsSlashLevel(plr))
-                {
-                    m_canUseSlashLevel = true;
-                    break;
-                }
-            }
+            // //find all characters in the database
+            // foreach (DOLCharacters plr in Client.Account.Characters)
+            // {
+            //     //where the level of one of the characters if 50
+            //     if (plr.Level == ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT && GameServer.ServerRules.CountsTowardsSlashLevel(plr))
+            //     {
+            //         m_canUseSlashLevel = true;
+            //         break;
+            //     }
+            // }
 
             // check the account for the Muted flag
             if (Client.Account.IsMuted)
@@ -15017,8 +15022,11 @@ namespace DOL.GS
                     {
                         if (area is KeepArea kA)
                         {
-                            if (keepIDs.Contains(kA.Keep.KeepID))
+                            if (keepIDs.Contains(kA.Keep.KeepID) && kA.Keep.Realm == Realm)
+                            {
                                 craftSpeedBonus = true;
+                                break;
+                            }
                         }
                     }
                     if (craftSpeedBonus)
@@ -15026,7 +15034,7 @@ namespace DOL.GS
                         speed = speed * Properties.KEEP_CRAFTING_SPEED_BONUS;
                     }
                 }
-                log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {speed}");
+                //log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {Math.Round(speed*100)}%");
 
                 return speed;
             }
@@ -15479,7 +15487,7 @@ namespace DOL.GS
                 return;
             }
 			
-            if (!IsWithinRadius(TargetObject, 1500))
+            if (!IsWithinRadius(TargetObject, 2000))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.TooFarAwayForPet"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;

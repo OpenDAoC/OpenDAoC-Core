@@ -93,8 +93,8 @@ namespace DOL.GS
             double leftHandEffectiveness = m_effectiveness;
             double mainHandEffectiveness = m_effectiveness;
 
-            mainHandEffectiveness *= owner.attackComponent.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
-            leftHandEffectiveness *= owner.attackComponent.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
+            //mainHandEffectiveness *= owner.attackComponent.CalculateMainHandEffectiveness(mainWeapon, leftWeapon);
+            //leftHandEffectiveness *= owner.attackComponent.CalculateLeftHandEffectiveness(mainWeapon, leftWeapon);
 
             // GameNPC can Dual Swing even with no weapon
             if (owner is GameNPC && owner.attackComponent.CanUseLefthandedWeapon)
@@ -168,7 +168,7 @@ namespace DOL.GS
                 if (owner is GameNPC)
                     usingOH = false;
 
-                if (mainWeapon.SlotPosition == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
+                if (mainWeapon.Item_Type == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
                     usingOH = false;
 
                 // no left hand used, all is simple here

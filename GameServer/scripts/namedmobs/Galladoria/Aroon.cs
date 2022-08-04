@@ -284,7 +284,7 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 300000; }
         }
 
         public override int AttackRange
@@ -292,7 +292,7 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-        public override int GetResist(eDamageType damageType)
+       /* public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
             {
@@ -301,7 +301,7 @@ namespace DOL.GS
                 case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
-        }
+        }*/
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -852,30 +852,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false)
+                if (Aroon.Aroon_slash)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -883,9 +876,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             SpioradScaithBrain.Message2 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Spiorad Scaith";
             RespawnInterval = -1;
@@ -959,7 +949,6 @@ namespace DOL.AI.Brain
         {
             if(Aroon.Aroon_slash && Message2==false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message2 = true;
             }
@@ -1058,30 +1047,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1089,9 +1071,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             RopadhScaithBrain.Message3 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Ropadh Scaith";
             RespawnInterval = -1;
@@ -1169,7 +1148,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_thrust && Message3 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message3 = true;
             }
@@ -1270,30 +1248,23 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1301,9 +1272,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             DamhnaScaithBrain.Message4 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Damhna Scaith";
             RespawnInterval = -1;
@@ -1381,7 +1349,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_crush && Message4 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message4 = true;
             }
@@ -1482,31 +1449,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1514,9 +1474,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             FuinneamgScaithBrain.Message5 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Fuinneamg Scaith";
             Strength = 350;
@@ -1595,7 +1552,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_body && Message5 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message5 = true;
             }
@@ -1696,31 +1652,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1728,9 +1677,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             BruScaithBrain.Message6 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Bru Scaith";
             RespawnInterval = -1;
@@ -1809,7 +1755,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_cold && Message6 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message6 = true;
             }
@@ -1910,31 +1855,24 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -1942,9 +1880,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             FuarScaithBrain.Message7 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Fuar Scaith";
             RespawnInterval = -1;
@@ -2023,7 +1958,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_energy && Message7 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message7 = true;
             }
@@ -2124,32 +2058,25 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
+                    && Aroon.Aroon_heat)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -2157,9 +2084,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             TaesScaithBrain.Message8 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Taes Scaith";
             RespawnInterval = -1;
@@ -2238,7 +2162,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_heat && Message8 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message8 = true;
             }
@@ -2339,32 +2262,25 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GamePet)
             {
-                if (Aroon.Aroon_slash == false && Aroon.Aroon_thrust == false && Aroon.Aroon_crush == false &&
-                    Aroon.Aroon_body == false && Aroon.Aroon_cold == false && Aroon.Aroon_energy == false
-                    && Aroon.Aroon_heat == false && Aroon.Aroon_matter == false)
+                if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
+                    Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
+                    && Aroon.Aroon_heat && Aroon.Aroon_matter)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GamePet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
-
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
+                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
                 else
                 {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+                    GamePlayer truc;
+                    if (source is GamePlayer)
+                        truc = (source as GamePlayer);
+                    else
+                        truc = ((source as GamePet).Owner as GamePlayer);
+                    if (truc != null)
+                        truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
+                            eChatLoc.CL_ChatWindow);
+
+                    base.TakeDamage(source, damageType, 0, 0);
+                    return;
                 }
             }
         }
@@ -2372,9 +2288,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             ScorScaithBrain.Message9 = false;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.STATUE;
             Model = (ushort) Util.Random(889, 890);
             Name = "Scor Scaith";
             RespawnInterval = -1;
@@ -2453,7 +2366,6 @@ namespace DOL.AI.Brain
         {
             if (Aroon.Aroon_heat && Message9 == false)
             {
-                Body.Flags = 0;
                 BroadcastMessage(String.Format(Body.Name + " eyes are glowing, indicating he's being controlled by Aroon."));
                 Message9 = true;
             }

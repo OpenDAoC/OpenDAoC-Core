@@ -30,7 +30,35 @@ namespace DOL.GS.PacketHandler.Client.v168
 			packet.ReadShort();
 
 			new HandleCheckAction(client.Player, checkerOID, targetOID, response).Start(1);
+			// LOSResponseHandler(client.Player, checkerOID, targetOID, response);
+
 		}
+
+		// private void LOSResponseHandler(GamePlayer m_actionSource, int m_checkerOid, int m_targetOid, int m_response)
+		// {
+		// 	// Check for Old Callback first
+
+		// 	string key = $"LOS C:0x{m_checkerOid} T:0x{m_targetOid}";
+
+		// 	GamePlayer player = (GamePlayer)m_actionSource;
+
+		// 	CheckLOSResponse callback = player.TempProperties.getProperty<CheckLOSResponse>(key, null);
+		// 	if (callback != null)
+		// 	{
+		// 		callback(player, (ushort)m_response, (ushort)m_targetOid);
+		// 		player.TempProperties.removeProperty(key);
+		// 	}
+
+		// 	string newkey = $"LOSMGR C:0x{m_checkerOid} T:0x{m_targetOid}";
+
+		// 	CheckLOSMgrResponse new_callback = player.TempProperties.getProperty<CheckLOSMgrResponse>(newkey, null);
+
+		// 	if (new_callback != null)
+		// 	{
+		// 		new_callback(player, (ushort)m_response, (ushort)m_checkerOid, (ushort)m_targetOid);
+		// 		player.TempProperties.removeProperty(newkey);
+		// 	}
+		// }
 
 		/// <summary>
 		/// Handles the LOS check response

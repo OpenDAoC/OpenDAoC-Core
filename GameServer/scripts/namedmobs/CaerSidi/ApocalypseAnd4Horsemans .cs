@@ -6,8 +6,6 @@ using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 using Timer = System.Timers.Timer;
 using System.Timers;
 
@@ -17,11 +15,6 @@ namespace DOL.GS
     public class ApocInitializator : GameNPC
     {
         public ApocInitializator() : base() { }
-        public static int HorsemanCount = 4;
-        public static int ApocCount = 1;
-        public static bool horseman2 = false;
-        public static bool horseman3 = false;
-        public static bool horseman4 = false;
         public static bool spawn_apoc = false;
         public static bool start_respawn_check = false;
         public static bool StartEncounter = false;
@@ -44,34 +37,6 @@ namespace DOL.GS
             {
                 PlayerEnter();
                 DontAllowLeaveRoom();
-                if(HorsemanCount == 3 && horseman2==false)
-                {
-                    BroadcastMessage(String.Format("Bellum says, 'Prepare yourselves for war. One minute, you are granted.'"));
-                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanBellum), 60000);//60s before starting
-                    horseman2 = true;
-                }
-                if(HorsemanCount == 2 && horseman2 == true && horseman3==false)
-                {
-                    BroadcastMessage(String.Format("Morbus says, 'Sometimes it is the smallest things that are the most deadly. Be prepared in one minute..'"));
-                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanMorbus), 60000);//60s before starting
-                    horseman3 = true;
-                }
-                if (HorsemanCount == 1 && horseman2 == true && horseman3 == true && horseman4 == false)
-                {
-                    BroadcastMessage(String.Format("Funus says, 'Prepare to die. Sixty seconds you are given to arrange for the event.'\n" +
-                    "For a brief moment, the clerics in the area glow softly as if bathed in a divine light, and their eyes shine as if a sudden" +
-                    " rush of energy now courses through them. A faint whisper in your mind warns you that mundane attacks on this creature of death" +
-                    " would have little effect or even make the situation worse, but it also reassures you that the clerics, a direct conduit between the " +
-                    "divine and this world, posses an unexpected advantage over the creature, Funus."));
-                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanFunus), 60000);//60s before starting
-                    horseman4 = true;
-                }
-                if (HorsemanCount == 0 && horseman2 == true && horseman3 == true && horseman4 == true && spawn_apoc==false)
-                {
-                    BroadcastMessage(String.Format("A thunderous voice echoes off the walls, 'Well done. You have succeeded in besting my harbingers.'"));
-                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnApoc), 5000);
-                    spawn_apoc = true;
-                }
                 StartRespawnEncounter();
             }
         }
@@ -86,8 +51,7 @@ namespace DOL.GS
             }
         }
         public int Message_timer(ECSGameTimer timer)
-        {
-            start_respawn_check = false;
+        {         
             BroadcastMessage(String.Format("Fames says loudly, 'I sense presence of many, the presence of power and ambition...'"));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Message_timer2), 6000);//60s before starting
             return 0;
@@ -138,7 +102,7 @@ namespace DOL.GS
         }
         #endregion
 
-        #region Spawn Boss Timers
+        #region Spawn Fames Timer
         public int SpawnHorsemanFames(ECSGameTimer timer)
         {
             Fames Add = new Fames();
@@ -153,53 +117,9 @@ namespace DOL.GS
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(OtherPlayersCanInteract), 60000);
             return 0;
         }
-        public int SpawnHorsemanBellum(ECSGameTimer timer)
-        {
-            Bellum Add = new Bellum();
-            Add.X = X; 
-            Add.Y = Y;
-            Add.Z = Z;
-            Add.CurrentRegion = this.CurrentRegion;
-            Add.Heading = 4072;
-            Add.AddToWorld();
-            return 0;
-        }
-        public int SpawnHorsemanMorbus(ECSGameTimer timer)
-        {
-            Morbus Add = new Morbus();
-            Add.X = X;
-            Add.Y = Y;
-            Add.Z = Z;
-            Add.CurrentRegion = this.CurrentRegion;
-            Add.Heading = 4072;
-            Add.AddToWorld();
-            return 0;
-        }
-        public int SpawnHorsemanFunus(ECSGameTimer timer)
-        {
-            Funus Add = new Funus();//inside controller
-            Add.X = X;
-            Add.Y = Y;
-            Add.Z = Z;
-            Add.CurrentRegion = this.CurrentRegion;
-            Add.Heading = 4072;
-            Add.AddToWorld();
-            return 0;
-        }
-        public int SpawnApoc(ECSGameTimer timer)
-        {
-            Apocalypse Add = new Apocalypse();
-            Add.X = X;
-            Add.Y = Y;
-            Add.Z = Z;
-            Add.CurrentRegion = this.CurrentRegion;
-            Add.Heading = 4072;
-            Add.AddToWorld();
-            return 0;
-        }
         public static bool OthersCanInteract = false;
         private int OtherPlayersCanInteract(ECSGameTimer timer)
-        {
+        {          
             OthersCanInteract = true;
             RandomTarget = null;
             return 0;
@@ -246,12 +166,9 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                if (ApocCount == 0 && HorsemanCount == 0 && start_respawn_check == false && horseman2 == true && horseman3 == true && horseman4 == true)
+                if (!Fames.FamesIsUp && !Bellum.BellumUP && !Morbus.MorbusUP && !Funus.FunusUp && !Apocalypse.ApocUP && !start_respawn_check)
                 {
                     RandomTarget = null;//reset picked player
-                    horseman2 = false;
-                    horseman3 = false;
-                    horseman4 = false;
                     PlayersInRoom.Clear();
                     int time = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
                     new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoRespawnNow), time);
@@ -261,9 +178,7 @@ namespace DOL.GS
             }
         }
         public int DoRespawnNow(ECSGameTimer timer)
-        {
-            ApocCount = 1;
-            HorsemanCount = 4;
+        {           
             PickedTarget = false;//we start encounter again here!
             OthersCanInteract = false;//other players can interact too!
             return 0;
@@ -497,12 +412,37 @@ namespace DOL.GS
         {
             get { return 200000; }
         }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        private bool prepareBellum = false;
         public override void Die(GameObject killer)//on kill generate orbs
         {
+            
+            if(!prepareBellum)
+            { 
+                BroadcastMessage(String.Format("Bellum says, 'Prepare yourselves for war. One minute, you are granted.'"));
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanBellum), 60000);//60s before starting
+                prepareBellum = true;
+            }
             FamesIsUp = false;
-            --ApocInitializator.HorsemanCount;
             FamesBrain.StartedFames = false;
             base.Die(killer);
+        }
+        public int SpawnHorsemanBellum(ECSGameTimer timer)
+        {
+            Bellum Add = new Bellum();
+            Add.X = 29468;
+            Add.Y = 25235;
+            Add.Z = 19490;
+            Add.CurrentRegion = this.CurrentRegion;
+            Add.Heading = 29;
+            Add.AddToWorld();
+            return 0;
         }
 
         public override bool AddToWorld()
@@ -535,6 +475,7 @@ namespace DOL.GS
             CanInteract = false;
             FamesBrain.StartedFames = false;
             FamesIsUp = true;
+            prepareBellum = false;
 
             FamesBrain adds = new FamesBrain();
             SetOwnBrain(adds);
@@ -663,10 +604,25 @@ namespace DOL.GS
         {
             get { return 200000; }
         }
+        public static bool BellumUP = true;
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
+        private bool prepareMorbus = false;
         public override void Die(GameObject killer)//on kill generate orbs
         {
+            if (!prepareMorbus)
+            {
+                BroadcastMessage(String.Format("Morbus says, 'Sometimes it is the smallest things that are the most deadly. Be prepared in one minute..'"));
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanMorbus), 60000);//60s before starting
+                prepareMorbus = true;
+            }
 
-            foreach(GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
                 if(npc != null)
                 {
@@ -680,10 +636,21 @@ namespace DOL.GS
                 }
             }
             
-            --ApocInitializator.HorsemanCount;
             BellumBrain.StartedBellum = false;
+            BellumUP = false;
             spawn_fate2 = false;
             base.Die(killer);
+        }
+        public int SpawnHorsemanMorbus(ECSGameTimer timer)
+        {
+            Morbus Add = new Morbus();
+            Add.X = 29467;
+            Add.Y = 25235;
+            Add.Z = 19490;
+            Add.CurrentRegion = this.CurrentRegion;
+            Add.Heading = 29;
+            Add.AddToWorld();
+            return 0;
         }
         public static bool spawn_fate2 = false;
         public void SpawnFateBearer()
@@ -731,6 +698,8 @@ namespace DOL.GS
             Realm = eRealm.None;
             BellumBrain.StartedBellum = false;
             BellumBrain.SpawnWeapons = false;
+            BellumUP = true;
+            prepareMorbus = false;
 
             AbilityBonus[(int)eProperty.Resist_Body] = -10;
             AbilityBonus[(int)eProperty.Resist_Heat] = -10;
@@ -1434,12 +1403,42 @@ namespace DOL.GS
         {
             get { return 200000; }
         }
+        public static bool MorbusUP = true;
+        private bool prepareFunus = false;
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            --ApocInitializator.HorsemanCount;
+            if (!prepareFunus)
+            {
+                BroadcastMessage(String.Format("Funus says, 'Prepare to die. Sixty seconds you are given to arrange for the event.'\n" +
+                "For a brief moment, the clerics in the area glow softly as if bathed in a divine light, and their eyes shine as if a sudden" +
+                " rush of energy now courses through them. A faint whisper in your mind warns you that mundane attacks on this creature of death" +
+                " would have little effect or even make the situation worse, but it also reassures you that the clerics, a direct conduit between the " +
+                "divine and this world, posses an unexpected advantage over the creature, Funus."));
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanFunus), 60000);//60s before starting
+                prepareFunus = true;
+            }
             MorbusBrain.StartedMorbus = false;
             spawn_fate3 = false;
+            MorbusUP = false;
             base.Die(killer);
+        }
+        public int SpawnHorsemanFunus(ECSGameTimer timer)
+        {
+            Funus Add = new Funus();//inside controller
+            Add.X = 29467;
+            Add.Y = 25235;
+            Add.Z = 19490;
+            Add.CurrentRegion = this.CurrentRegion;
+            Add.Heading = 29;
+            Add.AddToWorld();
+            return 0;
         }
         public static bool spawn_fate3 = false;
         public static int Morbus_Swarm_count = 0;
@@ -1490,6 +1489,8 @@ namespace DOL.GS
             MorbusBrain.spawn_swarm = false;
             MorbusBrain.message_warning1 = false;
             MorbusBrain.IsBug = false;
+            MorbusUP = true;
+            prepareFunus = false;
 
             AbilityBonus[(int)eProperty.Resist_Body] = 26;
             AbilityBonus[(int)eProperty.Resist_Heat] = 26;
@@ -1643,7 +1644,7 @@ namespace DOL.AI.Brain
                 {
                     if (spawn_swarm == false)
                     {
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSwarm), Util.Random(40000, 60000));//40s-60s
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSwarm), Util.Random(25000, 40000));//25s-40s
 
                         foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
@@ -1665,7 +1666,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < Util.Random(6,10); i++)
                 {
                     MorbusSwarm Add = new MorbusSwarm();
                     Add.X = Body.X + Util.Random(-100, 100);
@@ -1716,7 +1717,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 20000; }
+            get { return 15000; }
         }
         public override void Die(GameObject killer)
         {
@@ -1838,11 +1839,13 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if(Body.InCombat || HasAggro)
+            if(Body.InCombat && HasAggro && Body.TargetObject != null)
             {
-                if(Util.Chance(15))
+                GameLiving target = Body.TargetObject as GameLiving;
+                if (target != null && target.IsAlive)
                 {
-                    Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                    if (Util.Chance(15) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+                        Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
             base.Think();
@@ -1899,6 +1902,13 @@ namespace DOL.GS
         //-from armsman by crossbow
         //-from infiltrator by crossbow
         //-from scouts by longbow
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(4000))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
@@ -1913,6 +1923,7 @@ namespace DOL.GS
                 else
                 {
                     truc.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    BroadcastMessage(String.Format("Funus takes damage from " + source.Name + " and restoring it's whole health."));
                     Health += MaxHealth;
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -1923,6 +1934,7 @@ namespace DOL.GS
                 GamePet truc = source as GamePet;
                 GamePlayer pet_owner = truc.Owner as GamePlayer;
                 pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                BroadcastMessage(String.Format("Funus takes damage from " + pet_owner.Name + " and restoring it's whole health."));
                 Health += MaxHealth;
                 base.TakeDamage(source, damageType, 0, 0);
                 return;
@@ -1951,23 +1963,42 @@ namespace DOL.GS
         }
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 350;
+            return 250;
         }
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.20;
+            return 0.10;
         }
         public override int MaxHealth
         {
-            get { return 15000; }
+            get { return 50000; }
         }
+        public static bool FunusUp = true;
+        private bool prepareApoc = false;
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            --ApocInitializator.HorsemanCount;
+            if (!prepareApoc)
+            {
+                BroadcastMessage(String.Format("A thunderous voice echoes off the walls, 'Well done. You have succeeded in besting my harbingers.'"));
+                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnApoc), 5000);
+                prepareApoc = true;
+            }
             spawn_fate4 = false;
             FunusBrain.StartedFunus = false;
+            FunusUp = false;
             base.Die(killer);
+        }
+        public int SpawnApoc(ECSGameTimer timer)
+        {
+            Apocalypse Add = new Apocalypse();
+            Add.X = 29467;
+            Add.Y = 25235;
+            Add.Z = 19490;
+            Add.CurrentRegion = this.CurrentRegion;
+            Add.Heading = 29;
+            Add.AddToWorld();
+            return 0;
         }
         public void SpawnFateBearer()
         {
@@ -2015,16 +2046,18 @@ namespace DOL.GS
             Realm = eRealm.None;
             FunusBrain.StartedFunus = false;
             FunusBrain.BafMobs4 = false;
+            FunusUp = true;
+            prepareApoc = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 25;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 25;
-            AbilityBonus[(int)eProperty.Resist_Cold] = 25;
-            AbilityBonus[(int)eProperty.Resist_Matter] = -10;
-            AbilityBonus[(int)eProperty.Resist_Energy] = -10;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            AbilityBonus[(int)eProperty.Resist_Crush] = -10;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            AbilityBonus[(int)eProperty.Resist_Body] = -25;
+            AbilityBonus[(int)eProperty.Resist_Heat] = -25;
+            AbilityBonus[(int)eProperty.Resist_Cold] = -25;
+            AbilityBonus[(int)eProperty.Resist_Matter] = -25;
+            AbilityBonus[(int)eProperty.Resist_Energy] = -25;
+            AbilityBonus[(int)eProperty.Resist_Spirit] = -25;
+            AbilityBonus[(int)eProperty.Resist_Slash] = -25;
+            AbilityBonus[(int)eProperty.Resist_Crush] = -25;
+            AbilityBonus[(int)eProperty.Resist_Thrust] = -25;
 
             if (spawn_fate4 == false)
             {
@@ -2071,7 +2104,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
+            if (Body.TargetObject != null && HasAggro)//bring mobs from rooms if mobs got set PackageID="FamesBaf"
             {
                 StartedFunus = true;
                 if (BafMobs4 == false)
@@ -2153,6 +2186,7 @@ namespace DOL.GS
         {
             get { return 300000; }
         }
+        public static bool ApocUP = true;
         public override void Die(GameObject killer)//on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(4000))
@@ -2170,8 +2204,9 @@ namespace DOL.GS
 
             AwardEpicEncounterKillPoint();
            
-            --ApocInitializator.ApocCount;
             ApocalypseBrain.StartedApoc = false;
+            ApocInitializator.start_respawn_check = false;
+            ApocUP = false;
             base.Die(killer);
         }      
         
@@ -2227,6 +2262,7 @@ namespace DOL.GS
             ApocalypseBrain.pop_harbringers = false;
             ApocalypseBrain.StartedApoc = false;
             HarbringerOfFate.HarbringersCount = 0;
+            ApocUP = true;
 
 
             foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))

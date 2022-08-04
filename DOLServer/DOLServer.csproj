@@ -16,6 +16,8 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DefineConstants>DEBUG;TRACE</DefineConstants>

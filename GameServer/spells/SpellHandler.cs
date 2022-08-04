@@ -4435,7 +4435,7 @@ namespace DOL.GS.Spells
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.AttackWeapon)) /
 					                           (1 + .005 * player.GetWeaponStat(player.AttackWeapon));
-					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar / 5  + 200) / 275;
+					spellDamage *= (player.GetWeaponSkill(player.AttackWeapon) * weaponskillScalar /3 + 200) / 200;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
@@ -4446,13 +4446,26 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
+					var baseDmg = spellDamage;
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
-					spellDamage *= ((manaStatValue) * 0.005) + 1;
+					spellDamage *= ((manaStatValue - player.Level) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
 					               player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
+
+					//list casters get a little extra sauce
+					if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Wizard
+					    or eCharacterClass.Theurgist
+					    or eCharacterClass.Cabalist or eCharacterClass.Sorcerer or eCharacterClass.Necromancer
+					    or eCharacterClass.Eldritch or eCharacterClass.Enchanter or eCharacterClass.Mentalist
+					    or eCharacterClass.Animist or eCharacterClass.Valewalker
+					    or eCharacterClass.Runemaster or eCharacterClass.Spiritmaster or eCharacterClass.Bonedancer)
+					{
+						spellDamage *= 1.10;
+					}
+					
 					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 				}
 			}

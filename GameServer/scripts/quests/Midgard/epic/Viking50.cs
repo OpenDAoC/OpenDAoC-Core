@@ -55,7 +55,7 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static GameNPC Lynnleigh = null; // Start NPC
-		private static GameNPC Ydenia = null; // Mob to kill
+		private static Ydenia Ydenia = null; // Mob to kill
 		private static GameNPC Elizabeth = null; // reward NPC
 
 		private static ItemTemplate tome_enchantments = null;
@@ -199,34 +199,34 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ydenia of Seithkona", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Ydenia of the Seithkona", eRealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 637680 && npc.Y == 767189)
+					if (npc.CurrentRegionID == 100 && npc.X == 665094 && npc.Y == 894559)
 					{
-						Ydenia = npc;
+						Ydenia = npc as Ydenia;
 						break;
 					}
 
 			if (Ydenia == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Ydenia , creating it ...");
-				Ydenia = new GameNPC();
-				Ydenia.Model = 217;
-				Ydenia.Name = "Ydenia of Seithkona";
+					log.Warn("Could not find Ydenia, creating it ...");
+				Ydenia = new Ydenia();
+				Ydenia.Model = 439;
+				Ydenia.Name = "Ydenia of the Seithkona";
 				Ydenia.GuildName = "";
 				Ydenia.Realm = eRealm.None;
 				Ydenia.CurrentRegionID = 100;
-				Ydenia.Size = 100;
+				Ydenia.Size = 60;
 				Ydenia.Level = 65;
-				Ydenia.X = 637680;
-				Ydenia.Y = 767189;
-				Ydenia.Z = 4480;
-				Ydenia.Heading = 2156;
-				Ydenia.Flags ^= GameNPC.eFlags.GHOST;
-				Ydenia.MaxSpeedBase = 200;
+				Ydenia.X = 665094;
+				Ydenia.Y = 894559;
+				Ydenia.Z = 1791;
+				Ydenia.Heading = 1;
+				Ydenia.Flags |= GameNPC.eFlags.GHOST;
+				Ydenia.MaxSpeedBase = 280;
 				Ydenia.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1940,7 +1940,21 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (quest != null)
 				{
-					Lynnleigh.SayTo(player, "Check your Journal for information about what to do!");
+					switch (quest.Step)
+					{
+						case 1:
+							Lynnleigh.SayTo(player, "Seek out Ydenia in Vanern Swamp and kill her. You can find her on an island in the swamp.");
+							break;
+						case 2:
+							Lynnleigh.SayTo(player, "Hello Adventurer, did you [get something] for me?");
+							break;
+						case 3:
+							Lynnleigh.SayTo(player, $"Hey {player.Name}, please visit Elizabeth in Mularn. You can find her in the Healer House. Bring her the [sealed pouch]!");
+							break;
+						case 4:
+							Lynnleigh.SayTo(player, $"Hey {player.Name}, have you visited Elizabeth in Mularn yet?");
+							break;
+					}
 				}
 				else
 				{
@@ -1957,7 +1971,7 @@ namespace DOL.GS.Quests.Midgard
 					switch (wArgs.Text)
 					{
 						case "worries me":
-							Lynnleigh.SayTo(player, "Yes, it worries me, but I think that you are ready to [face Ydenia] and his minions.");
+							Lynnleigh.SayTo(player, "Yes, it worries me, but I think that you are ready to [face Ydenia] and her minions.");
 							break;
 						case "face Ydenia":
 							player.Out.SendQuestSubscribeCommand(Lynnleigh, QuestMgr.GetIDForQuestType(typeof(Viking_50)), "Will you face Ydenia [Viking Level 50 Epic]?");
@@ -1968,11 +1982,37 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
+						case "get something":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, tome_enchantments);
+								quest.Step = 3;
+								Lynnleigh.SayTo(player, "Great! Please visit Elizabeth in Mularn and bring her the [sealed pouch].");
+							}
+							break;
+						case "sealed pouch":
+							if (quest.Step == 3)
+							{
+								Lynnleigh.SayTo(player, "You can find Elizabeth in an Healer House in Mularn.");
+								GiveItem(player, sealed_pouch);
+								quest.Step = 4;
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == tome_enchantments.Id_nb && quest.Step == 2)
+					{
+						quest.Step = 3;
+						Lynnleigh.SayTo(player, "Take this [sealed pouch] to Elizabeth in Mularn for your reward!");
+					}
 			}
 		}
 
@@ -1995,12 +2035,16 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (quest.Step)
 					{
+						case 3:
+						{
+							Elizabeth.SayTo(player, "Hello, Lynnleigh sent you with a [sealed pouch], right?");
+							break;
+						}
                         case 4:
                             {
-                                Elizabeth.SayTo(player, "There are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+                                Elizabeth.SayTo(player, "Greetings, there are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
                                 break;
                             }
-
 					}
 				}
 			}
@@ -2013,12 +2057,46 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
+						case "sealed pouch":
+							if (quest.Step == 3)
+							{
+								RemoveItem(player, sealed_pouch);
+								quest.Step = 4;
+								Elizabeth.SayTo(player, "There are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
+							}
+							
+							break;
 						case "take them":
 							if (quest.Step == 4)
-								quest.FinishQuest();
+							{
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Elizabeth.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 4)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Elizabeth.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 		}
 
@@ -2124,13 +2202,13 @@ namespace DOL.GS.Quests.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Ydenia in Raumarik Loc 48k, 30k kill her!";
+						return "Seek out Ydenia in Vanern Swamp and kill her!";
 					case 2:
-						return "[Step #2] Return to Lynnleigh and give her tome of Enchantments!";
+						return "Return to Lynnleigh and give her Tome of Enchantments!";
 					case 3:
-						return "[Step #3] Take the Sealed Pouch to Elizabeth in Mularn";
+						return "Take the Sealed Pouch to Elizabeth in Mularn!";
 					case 4:
-						return "[Step #4] Tell Elizabeth you can 'take them' for your rewards!";
+						return "Speak with Elizabeth for your reward!";
 				}
 				return base.Description;
 			}
@@ -2152,30 +2230,17 @@ namespace DOL.GS.Quests.Midgard
 					Step = 2;
 					GiveItem(m_questPlayer, tome_enchantments);
 					m_questPlayer.Out.SendMessage("Ydenia drops the Tome of Enchantments and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return;
 				}
 			}
-
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
-        		GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Lynnleigh.Name && gArgs.Item.Id_nb == tome_enchantments.Id_nb)
 				{
 					RemoveItem(Lynnleigh, player, tome_enchantments);
 					Lynnleigh.SayTo(player, "Take this sealed pouch to Elizabeth in Mularn for your reward!");
 					GiveItem(Lynnleigh, player, sealed_pouch);
 					Step = 3;
-				}
-			}
-
-			if (Step == 3 && e == GamePlayerEvent.GiveItem)
-			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Elizabeth.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
-				{
-					RemoveItem(Elizabeth, player, sealed_pouch);
-					Elizabeth.SayTo(player, "There are six parts to your reward, so make sure you have room for them. Just let me know when you are ready, and then you can [take them] with our thanks!");
-					Step = 4;
 				}
 			}
 		}
@@ -2190,91 +2255,84 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-			{
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
-				{
-					case eCharacterClass.Warrior:
-						{
-							GiveItem(m_questPlayer, WarriorEpicArms);
-							GiveItem(m_questPlayer, WarriorEpicBoots);
-							GiveItem(m_questPlayer, WarriorEpicGloves);
-							GiveItem(m_questPlayer, WarriorEpicHelm);
-							GiveItem(m_questPlayer, WarriorEpicLegs);
-							GiveItem(m_questPlayer, WarriorEpicVest);
-							break;
-						}
-					case eCharacterClass.Berserker:
-						{
-							GiveItem(m_questPlayer, BerserkerEpicArms);
-							GiveItem(m_questPlayer, BerserkerEpicBoots);
-							GiveItem(m_questPlayer, BerserkerEpicGloves);
-							GiveItem(m_questPlayer, BerserkerEpicHelm);
-							GiveItem(m_questPlayer, BerserkerEpicLegs);
-							GiveItem(m_questPlayer, BerserkerEpicVest);
-							break;
-						}
-					case eCharacterClass.Thane:
-						{
-							GiveItem(m_questPlayer, ThaneEpicArms);
-							GiveItem(m_questPlayer, ThaneEpicBoots);
-							GiveItem(m_questPlayer, ThaneEpicGloves);
-							GiveItem(m_questPlayer, ThaneEpicHelm);
-							GiveItem(m_questPlayer, ThaneEpicLegs);
-							GiveItem(m_questPlayer, ThaneEpicVest);
-							break;
-						}
-					case eCharacterClass.Skald:
-						{
-							GiveItem(m_questPlayer, SkaldEpicArms);
-							GiveItem(m_questPlayer, SkaldEpicBoots);
-							GiveItem(m_questPlayer, SkaldEpicGloves);
-							GiveItem(m_questPlayer, SkaldEpicHelm);
-							GiveItem(m_questPlayer, SkaldEpicLegs);
-							GiveItem(m_questPlayer, SkaldEpicVest);
-							break;
-						}
-					case eCharacterClass.Savage:
-						{
-							GiveItem(m_questPlayer, SavageEpicArms);
-							GiveItem(m_questPlayer, SavageEpicBoots);
-							GiveItem(m_questPlayer, SavageEpicGloves);
-							GiveItem(m_questPlayer, SavageEpicHelm);
-							GiveItem(m_questPlayer, SavageEpicLegs);
-							GiveItem(m_questPlayer, SavageEpicVest);
-							break;
-						}
-					case eCharacterClass.Valkyrie:
-						{
-							GiveItem(m_questPlayer, ValkyrieEpicArms);
-							GiveItem(m_questPlayer, ValkyrieEpicBoots);
-							GiveItem(m_questPlayer, ValkyrieEpicGloves);
-							GiveItem(m_questPlayer, ValkyrieEpicHelm);
-							GiveItem(m_questPlayer, ValkyrieEpicLegs);
-							GiveItem(m_questPlayer, ValkyrieEpicVest);
-							break;
-						}
-					case eCharacterClass.MaulerMid:
-						{
-							GiveItem(m_questPlayer, MaulerMidEpicArms);
-							GiveItem(m_questPlayer, MaulerMidEpicBoots);
-							GiveItem(m_questPlayer, MaulerMidEpicGloves);
-							GiveItem(m_questPlayer, MaulerMidEpicHelm);
-							GiveItem(m_questPlayer, MaulerMidEpicLegs);
-							GiveItem(m_questPlayer, MaulerMidEpicVest);
-							break;
-						}
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
-			}
-			else
+			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				case eCharacterClass.Warrior:
+					{
+						GiveItem(m_questPlayer, WarriorEpicArms);
+						GiveItem(m_questPlayer, WarriorEpicBoots);
+						GiveItem(m_questPlayer, WarriorEpicGloves);
+						GiveItem(m_questPlayer, WarriorEpicHelm);
+						GiveItem(m_questPlayer, WarriorEpicLegs);
+						GiveItem(m_questPlayer, WarriorEpicVest);
+						break;
+					}
+				case eCharacterClass.Berserker:
+					{
+						GiveItem(m_questPlayer, BerserkerEpicArms);
+						GiveItem(m_questPlayer, BerserkerEpicBoots);
+						GiveItem(m_questPlayer, BerserkerEpicGloves);
+						GiveItem(m_questPlayer, BerserkerEpicHelm);
+						GiveItem(m_questPlayer, BerserkerEpicLegs);
+						GiveItem(m_questPlayer, BerserkerEpicVest);
+						break;
+					}
+				case eCharacterClass.Thane:
+					{
+						GiveItem(m_questPlayer, ThaneEpicArms);
+						GiveItem(m_questPlayer, ThaneEpicBoots);
+						GiveItem(m_questPlayer, ThaneEpicGloves);
+						GiveItem(m_questPlayer, ThaneEpicHelm);
+						GiveItem(m_questPlayer, ThaneEpicLegs);
+						GiveItem(m_questPlayer, ThaneEpicVest);
+						break;
+					}
+				case eCharacterClass.Skald:
+					{
+						GiveItem(m_questPlayer, SkaldEpicArms);
+						GiveItem(m_questPlayer, SkaldEpicBoots);
+						GiveItem(m_questPlayer, SkaldEpicGloves);
+						GiveItem(m_questPlayer, SkaldEpicHelm);
+						GiveItem(m_questPlayer, SkaldEpicLegs);
+						GiveItem(m_questPlayer, SkaldEpicVest);
+						break;
+					}
+				case eCharacterClass.Savage:
+					{
+						GiveItem(m_questPlayer, SavageEpicArms);
+						GiveItem(m_questPlayer, SavageEpicBoots);
+						GiveItem(m_questPlayer, SavageEpicGloves);
+						GiveItem(m_questPlayer, SavageEpicHelm);
+						GiveItem(m_questPlayer, SavageEpicLegs);
+						GiveItem(m_questPlayer, SavageEpicVest);
+						break;
+					}
+				case eCharacterClass.Valkyrie:
+					{
+						GiveItem(m_questPlayer, ValkyrieEpicArms);
+						GiveItem(m_questPlayer, ValkyrieEpicBoots);
+						GiveItem(m_questPlayer, ValkyrieEpicGloves);
+						GiveItem(m_questPlayer, ValkyrieEpicHelm);
+						GiveItem(m_questPlayer, ValkyrieEpicLegs);
+						GiveItem(m_questPlayer, ValkyrieEpicVest);
+						break;
+					}
+				case eCharacterClass.MaulerMid:
+					{
+						GiveItem(m_questPlayer, MaulerMidEpicArms);
+						GiveItem(m_questPlayer, MaulerMidEpicBoots);
+						GiveItem(m_questPlayer, MaulerMidEpicGloves);
+						GiveItem(m_questPlayer, MaulerMidEpicHelm);
+						GiveItem(m_questPlayer, MaulerMidEpicLegs);
+						GiveItem(m_questPlayer, MaulerMidEpicVest);
+						break;
+					}
 			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 	}
 }

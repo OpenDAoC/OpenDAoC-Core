@@ -17,6 +17,7 @@
  *
  */
 
+using System;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
@@ -139,8 +140,13 @@ namespace DOL.GS.PropertyCalc
 						{
 							if (owner == brain.Body.CurrentFollowTarget)
 							{
-								if (distance > 50)
+								if (distance > 20)
 									speed *= 1.25;
+
+								if (living is NecromancerPet && distance > 700)
+								{
+									speed *= 1.25;
+								}
 
 								double ownerSpeedAdjust = (double)owner.MaxSpeed / (double)GamePlayer.PLAYER_BASE_SPEED;
 
@@ -151,12 +157,12 @@ namespace DOL.GS.PropertyCalc
 
                                 if (owner is GamePlayer && (owner as GamePlayer).IsOnHorse)
                                 {
-									speed *= 1.45;
+									speed *= 3.0;
 								}
                                 
                                 if (owner is GamePlayer && (owner as GamePlayer).IsSprinting)
                                 {
-	                                speed *= 1.3;
+	                                speed *= 1.4;
                                 }
 							}
 						}

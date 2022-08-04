@@ -796,7 +796,7 @@ namespace DOL.GS.Quests.Albion
 							Roben.SayTo(player, "You must not let this occur " + player.GetName(0, false) + "! I am familar with [Lyonesse]. I suggest that you gather a strong group of adventurers in order to succeed in this endeavor!");
 							break;
 						case 2:
-							Roben.SayTo(player, "Were you able to defeat the cult of the dark lord Arawn?");
+							Roben.SayTo(player, "Were you able to [defeat] the cult of the dark lord Arawn?");
 							break;
 					}
 				}
@@ -828,12 +828,42 @@ namespace DOL.GS.Quests.Albion
 						case "Lyonesse":
 							Roben.SayTo(player, "The cathedral that Axton speaks of lies deep at the heart of that land, behind the Pikeman, across from the Trees. Its remaining walls can be seen at great distances during the day so you should not miss it. I would travel with thee, but my services are required elswhere. Fare thee well " + player.CharacterClass.Name + ".");
 							break;
+						case "defeat":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, statue_of_arawn);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
 
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == statue_of_arawn.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 		}
 
@@ -935,9 +965,9 @@ namespace DOL.GS.Quests.Albion
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Gather a strong group of adventures and travel to the ancient temple of Arawn. This temple can be found within Lyonesse, surrounded by the dark one's priests. Only by slaying their leader can this evil be stopped!";
+						return "Gather a strong group of adventures and travel to the ancient temple of Arawn. This temple can be found within Lyonesse, surrounded by the dark one's priests. Only by slaying their leader can this evil be stopped!";
 					case 2:
-						return "[Step #2] Return the statue of Arawn to Roben Fraomar for your reward!";
+						return "Return the statue of Arawn to Roben Fraomar for your reward!";
 				}
 				return base.Description;
 			}
@@ -960,20 +990,22 @@ namespace DOL.GS.Quests.Albion
 						m_questPlayer.Out.SendMessage("As you search the dead body of sister Blythe, you find a sacred " + statue_of_arawn.Name + ", bring it to " + Roben.Name + " has proof of your success.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						GiveItem(m_questPlayer, statue_of_arawn);
 						Step = 2;
-						return;
 					}
 				}
 			}
-
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Roben.Name && gArgs.Item.Id_nb == statue_of_arawn.Id_nb)
 				{
-					Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-
-					FinishQuest();
-					return;
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -987,38 +1019,31 @@ namespace DOL.GS.Quests.Albion
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(m_questPlayer, statue_of_arawn, true);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Cleric)
 			{
-				RemoveItem(m_questPlayer, statue_of_arawn, true);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Cleric)
-				{
-					GiveItem(m_questPlayer, ClericEpicBoots);
-					GiveItem(m_questPlayer, ClericEpicArms);
-					GiveItem(m_questPlayer, ClericEpicGloves);
-					GiveItem(m_questPlayer, ClericEpicHelm);
-					GiveItem(m_questPlayer, ClericEpicVest);
-					GiveItem(m_questPlayer, ClericEpicLegs);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Paladin)
-				{
-					GiveItem(m_questPlayer, PaladinEpicBoots);
-					GiveItem(m_questPlayer, PaladinEpicArms);
-					GiveItem(m_questPlayer, PaladinEpicGloves);
-					GiveItem(m_questPlayer, PaladinEpicHelm);
-					GiveItem(m_questPlayer, PaladinEpicVest);
-					GiveItem(m_questPlayer, PaladinEpicLegs);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, ClericEpicBoots);
+				GiveItem(m_questPlayer, ClericEpicArms);
+				GiveItem(m_questPlayer, ClericEpicGloves);
+				GiveItem(m_questPlayer, ClericEpicHelm);
+				GiveItem(m_questPlayer, ClericEpicVest);
+				GiveItem(m_questPlayer, ClericEpicLegs);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Paladin)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, PaladinEpicBoots);
+				GiveItem(m_questPlayer, PaladinEpicArms);
+				GiveItem(m_questPlayer, PaladinEpicGloves);
+				GiveItem(m_questPlayer, PaladinEpicHelm);
+				GiveItem(m_questPlayer, PaladinEpicVest);
+				GiveItem(m_questPlayer, PaladinEpicLegs);
 			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source

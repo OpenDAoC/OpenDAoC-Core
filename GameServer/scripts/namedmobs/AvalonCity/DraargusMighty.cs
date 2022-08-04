@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -21,10 +23,10 @@ namespace DOL.GS
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-				default: return 70; // dmg reduction for rest resists
+				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				default: return 30; // dmg reduction for rest resists
 			}
 		}
 		public override double GetArmorAF(eArmorSlot slot)
@@ -75,7 +77,7 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(9);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(9));
@@ -246,21 +248,16 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(3000))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-						player.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
-				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+					player?.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
+				});
+
+				return 3000;
 			}
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
-		{
-			if (IsAlive)
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-			return 0;
-		}
+		
 		public override void StartAttack(GameObject target)
         {
         }

@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -16,14 +17,44 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Cailean Initializing...");
 		}
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			if (source is GamePlayer || source is GamePet)
+			{
+				if (IsOutOfTetherRange)
+				{
+					if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
+						damageType == eDamageType.Energy || damageType == eDamageType.Heat
+						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
+						damageType == eDamageType.Crush || damageType == eDamageType.Thrust
+						|| damageType == eDamageType.Slash)
+					{
+						GamePlayer truc;
+						if (source is GamePlayer)
+							truc = (source as GamePlayer);
+						else
+							truc = ((source as GamePet).Owner as GamePlayer);
+						if (truc != null)
+							truc.Out.SendMessage(Name + " is too far away from it's habbitat and is immune to your damage!", eChatType.CT_System,
+								eChatLoc.CL_ChatWindow);
+						base.TakeDamage(source, damageType, 0, 0);
+						return;
+					}
+				}
+				else //take dmg
+				{
+					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+				}
+			}
+		}
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
-				default: return 70;// dmg reduction for rest resists
+				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				default: return 20;// dmg reduction for rest resists
 			}
 		}
 		public override double AttackDamage(InventoryItem weapon)
@@ -72,7 +103,7 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			CaileanBrain sbrain = new CaileanBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -134,6 +165,7 @@ namespace DOL.AI.Brain
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
+				GameLiving target = Body.TargetObject as GameLiving;
 				RemoveTrees = false;
 				if (!CanSpawnTree)
                 {
@@ -142,14 +174,29 @@ namespace DOL.AI.Brain
 					CanSpawnTree = true;
                 }
 				if(Body.TargetObject != null)
-                {
-					GameLiving target = Body.TargetObject as GameLiving;
+                {					
 					if(Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
 						Body.CastSpell(TreeRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
 						Body.CastSpell(BossMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
-            }
+				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				{
+					if (npc != null && npc.IsAlive)
+					{
+						if (npc.Brain is WalkingTreeBrain brain)
+						{
+							if (brain != null && target != null && !brain.HasAggro && target.IsAlive)
+								brain.AddToAggroList(target, 10);
+						}
+						if (npc.Brain is WalkingTree2Brain brain2)
+						{
+							if (brain2 != null && target != null && !brain2.HasAggro && target.IsAlive)
+								brain2.AddToAggroList(target, 10);
+						}
+					}
+				}
+			}
 			if (Body.HealthPercent <= 30)
 				Body.CastSpell(CaileanHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
@@ -221,12 +268,12 @@ namespace DOL.AI.Brain
 				{
 					DBSpell spell = new DBSpell();
 					spell.AllowAdd = false;
-					spell.CastTime = 3;
+					spell.CastTime = 0;
 					spell.RecastDelay = 6;
 					spell.ClientEffect = 1340;
 					spell.Icon = 1340;
 					spell.TooltipId = 1340;
-					spell.Value = 200;
+					spell.Value = 400;
 					spell.Name = "Cailean's Heal";
 					spell.Range = 1500;
 					spell.SpellID = 11902;
@@ -321,7 +368,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 1500; }
+			get { return 2000; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -463,7 +510,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 1000; }
+			get { return 1500; }
 		}
 		public override double GetArmorAF(eArmorSlot slot)
 		{
@@ -540,7 +587,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 70;
 					spell.DamageType = (int)eDamageType.Matter;
 					spell.Name = "Root";
-					spell.Range = 1500;
+					spell.Range = 4500;
 					spell.SpellID = 11981;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.SpeedDecrease.ToString();
@@ -568,7 +615,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.DamageType = (int)eDamageType.Matter;
 					spell.Name = "Snare";
-					spell.Range = 1000;
+					spell.Range = 4500;
 					spell.SpellID = 11982;
 					spell.Target = "Enemy";
 					spell.Type = eSpellType.SpeedDecrease.ToString();

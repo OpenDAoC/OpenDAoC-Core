@@ -9,7 +9,19 @@ namespace DOL.GS
 {
 	public class TheurgistPet : GamePet
 	{
-		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate)
+		{
+			
+			if (npcTemplate.Name.ToLower().Contains("earth"))
+			{
+				ScalingFactor = 17;
+			}
+
+			if (npcTemplate.Name.ToLower().Contains("air"))
+			{
+				ScalingFactor = 11;
+			}
+		}
 
 		public override void OnAttackedByEnemy(AttackData ad) 
 		{
@@ -23,10 +35,9 @@ namespace DOL.GS
 					(Brain as TheurgistPetBrain).Melee = true;
 			}
 		}
+		
 
-        public override int Health { get => base.Health; set => base.Health = value; }
-
-        //public override int MaxHealth => Constitution * 10;
+		//public override int MaxHealth => Constitution * 10;
 
         /// <summary>
         /// not each summoned pet 'll fire ambiant sentences

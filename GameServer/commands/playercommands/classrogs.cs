@@ -68,7 +68,7 @@ namespace DOL.GS.Commands
             client.Player.OutOfClassROGPercent = cachedInput;
             
             if(client.Player.Level == 50)
-                DisplayMessage(client, "You will now receive out of class ROGs " + args[1] + "% of the time.");
+                DisplayMessage(client, "You will now receive out of class ROGs " + client.Player.OutOfClassROGPercent + "% of the time.");
             else
             {
                 //DisplayMessage(client, "You are now " + client.Player.OutOfClassROGPercent + "% more likely to get ROGs relevant to your spec.");

@@ -215,7 +215,7 @@ public class BountyManager
 
                 if (!playerBountyFound)
                 {
-                    ActiveBounties.Add(killed.Realm, poster);
+                    realmBounties.Add(poster);
                 }
             }
         }
@@ -250,9 +250,11 @@ public class BountyManager
 
         if (ActiveBounties.Count > 0)
         {
-            foreach (List<BountyPoster> bPL in ActiveBounties.Values)
+            var activeBounties = ActiveBounties.Values;
+            foreach (List<BountyPoster> bPL in activeBounties)
             {
-                foreach (BountyPoster bP in bPL)
+                var bountyList = bPL.ToList();
+                foreach (BountyPoster bP in bountyList)
                 {
                     if (bP == null) continue;
                     if (bP.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;

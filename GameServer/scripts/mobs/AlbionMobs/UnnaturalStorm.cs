@@ -1,6 +1,8 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.GS;
 using DOL.Database;
 
@@ -41,24 +43,18 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(10000))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-					{
-						player.Out.SendSpellCastAnimation(this, 14323, 1);
-						player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-					}
-				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+					if (player == null) return;
+					player.Out.SendSpellCastAnimation(this, 14323, 1);
+					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
+				});
+
+				return 3000;
 			}
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
-		{
-			if (IsAlive)
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-			return 0;
-		}
+		
 		#endregion
 		public void BroadcastMessage(String message)
 		{
@@ -181,24 +177,18 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(6000))
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
 				{
-					if (player != null)
-					{
-						player.Out.SendSpellCastAnimation(this, 14323, 1);
-						player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-					}
-				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+					if (player == null) return;
+					player.Out.SendSpellCastAnimation(this, 14323, 1);
+					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
+				});
+
+				return 3000;
 			}
 			return 0;
 		}
-		private protected int DoCast(ECSGameTimer timer)
-		{
-			if (IsAlive)
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
-			return 0;
-		}
+		
 		#endregion
 		public void BroadcastMessage(String message)
 		{

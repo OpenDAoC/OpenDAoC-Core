@@ -355,12 +355,20 @@ namespace DOL.GS.DailyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/3, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);
-			PlayersKilled = 0;
-			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			
+			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			{
+				m_questPlayer.GainExperience(eXPSource.Quest,
+					(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
+				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 2, 32, Util.Random(50)),
+					"You receive {0} as a reward.");
+				AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);
+				PlayersKilled = 0;
+				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+			}
+			else
+			{
+				m_questPlayer.Out.SendMessage("Clear one slot of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
 		}
 	}
 }

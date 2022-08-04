@@ -133,6 +133,9 @@ namespace DOL.GS
 				item.SpellID = tincture.SpellID;
 			}
 
+			item.LevelRequirement = tincture.LevelRequirement;
+			//item.Level = tincture.LevelRequirement;
+
 			player.Inventory.RemoveCountFromStack(tincture, 1);
 			InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, tincture.Template);
 

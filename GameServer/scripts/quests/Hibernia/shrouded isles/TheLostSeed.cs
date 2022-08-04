@@ -209,48 +209,8 @@ namespace DOL.GS.Quests.Hibernia
 			#endregion
 
 			#region defineItems
-			paidrean_necklace = GameServer.Database.FindObjectByKey<ItemTemplate>("paidrean_necklace");
-	        if (paidrean_necklace == null)
-	        {
-	            if (log.IsWarnEnabled)
-	                log.Warn("Could not find Paidrean Necklace, creating it ...");
-	            paidrean_necklace = new ItemTemplate();
-	            paidrean_necklace.Id_nb = "paidrean_necklace";
-	            paidrean_necklace.Name = "Paidrean Necklace";
-	            paidrean_necklace.Level = 51;
-	            paidrean_necklace.Durability = 50000;
-	            paidrean_necklace.MaxDurability = 50000;
-	            paidrean_necklace.Condition = 50000;
-	            paidrean_necklace.MaxCondition = 50000;
-	            paidrean_necklace.Item_Type = 29;
-	            paidrean_necklace.Object_Type = (int) eObjectType.Magical;
-	            paidrean_necklace.Model = 101;
-	            paidrean_necklace.Bonus = 35;
-	            paidrean_necklace.IsDropable = true;
-	            paidrean_necklace.IsTradable = true;
-	            paidrean_necklace.IsIndestructible = false;
-	            paidrean_necklace.IsPickable = true;
-	            paidrean_necklace.Bonus1 = 10;
-	            paidrean_necklace.Bonus2 = 10;
-	            paidrean_necklace.Bonus3 = 10;
-	            paidrean_necklace.Bonus4 = 10;
-	            paidrean_necklace.Bonus1Type = 11;
-	            paidrean_necklace.Bonus2Type = 19;
-	            paidrean_necklace.Bonus3Type = 18;
-	            paidrean_necklace.Bonus4Type = 13;
-	            paidrean_necklace.Price = 0;
-	            paidrean_necklace.Realm = (int) eRealm.Hibernia;
-	            paidrean_necklace.DPS_AF = 0;
-	            paidrean_necklace.SPD_ABS = 0;
-	            paidrean_necklace.Hand = 0;
-	            paidrean_necklace.Type_Damage = 0;
-	            paidrean_necklace.Quality = 100;
-	            paidrean_necklace.Weight = 10;
-	            paidrean_necklace.LevelRequirement = 50;
-	            paidrean_necklace.BonusLevel = 30;
-	            paidrean_necklace.Description = "";
-	            if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(paidrean_necklace);
-	        }
+			paidrean_necklace = GameServer.Database.FindObjectByKey<ItemTemplate>("Paidrean Necklace");
+
 	        glowing_red_jewel = GameServer.Database.FindObjectByKey<ItemTemplate>("glowing_red_jewel");
 	        if (glowing_red_jewel == null)
 	        {
@@ -341,6 +301,11 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateFeairnaAthar(GamePlayer player)
 		{
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(181, 288348, 319950, 2328,8000))
+			{
+				if (npc.Brain is SINeckBossBrain)
+					return;
+			}
 			Feairna_Athar = new SINeckBoss();
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
@@ -362,6 +327,8 @@ namespace DOL.GS.Quests.Hibernia
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			Feairna_Athar.SetOwnBrain(brain);
+			Feairna_Athar.LoadedFromScript = true;
+			Feairna_Athar.RespawnInterval = -1;
 
 			Feairna_Athar.AddToWorld();
 

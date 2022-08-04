@@ -318,7 +318,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (sender != m_questPlayer)
 				return;
 
-			if (e != GameLivingEvent.EnemyKilled) return;
+			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
 			if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
@@ -361,8 +361,9 @@ namespace DOL.GS.DailyQuest.Midgard
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 2,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 250);
+			AtlasROGManager.GenerateJewel(m_questPlayer, 65);
 			_playersKilledHib = 0;
 			_playersKilledAlb = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

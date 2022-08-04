@@ -210,50 +210,9 @@ namespace DOL.GS.Quests.Hibernia
 			#endregion
 
 			#region defineItems
-			beaded_resisting_stone = GameServer.Database.FindObjectByKey<ItemTemplate>("beaded_resisting_stone");
-	        if (beaded_resisting_stone == null)
-	        {
-	            if (log.IsWarnEnabled)
-	                log.Warn("Could not find Beaded Resisting Stone, creating it ...");
-	            beaded_resisting_stone = new ItemTemplate();
-	            beaded_resisting_stone.Id_nb = "beaded_resisting_stone";
-	            beaded_resisting_stone.Name = "Beaded Resisting Stone";
-	            beaded_resisting_stone.Level = 51;
-	            beaded_resisting_stone.Durability = 50000;
-	            beaded_resisting_stone.MaxDurability = 50000;
-	            beaded_resisting_stone.Condition = 50000;
-	            beaded_resisting_stone.MaxCondition = 50000;
-	            beaded_resisting_stone.Item_Type = 29;
-	            beaded_resisting_stone.Object_Type = (int) eObjectType.Magical;
-	            beaded_resisting_stone.Model = 101;
-	            beaded_resisting_stone.Bonus = 35;
-	            beaded_resisting_stone.IsDropable = true;
-	            beaded_resisting_stone.IsTradable = true;
-	            beaded_resisting_stone.IsIndestructible = false;
-	            beaded_resisting_stone.IsPickable = true;
-	            beaded_resisting_stone.Bonus1 = 10;
-	            beaded_resisting_stone.Bonus2 = 10;
-	            beaded_resisting_stone.Bonus3 = 10;
-	            beaded_resisting_stone.Bonus4 = 10;
-	            beaded_resisting_stone.Bonus1Type = 11;
-	            beaded_resisting_stone.Bonus2Type = 19;
-	            beaded_resisting_stone.Bonus3Type = 18;
-	            beaded_resisting_stone.Bonus4Type = 13;
-	            beaded_resisting_stone.Price = 0;
-	            beaded_resisting_stone.Realm = (int) eRealm.Midgard;
-	            beaded_resisting_stone.DPS_AF = 0;
-	            beaded_resisting_stone.SPD_ABS = 0;
-	            beaded_resisting_stone.Hand = 0;
-	            beaded_resisting_stone.Type_Damage = 0;
-	            beaded_resisting_stone.Quality = 100;
-	            beaded_resisting_stone.Weight = 10;
-	            beaded_resisting_stone.LevelRequirement = 50;
-	            beaded_resisting_stone.BonusLevel = 30;
-	            beaded_resisting_stone.Description = "";
-	            if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(beaded_resisting_stone);
-	        }
-	        
-	        quest_pendant = GameServer.Database.FindObjectByKey<ItemTemplate>("quest_pendant");
+			beaded_resisting_stone = GameServer.Database.FindObjectByKey<ItemTemplate>("Beaded Resisting Stones");
+
+			quest_pendant = GameServer.Database.FindObjectByKey<ItemTemplate>("quest_pendant");
 	        if (quest_pendant == null)
 	        {
 		        if (log.IsWarnEnabled)

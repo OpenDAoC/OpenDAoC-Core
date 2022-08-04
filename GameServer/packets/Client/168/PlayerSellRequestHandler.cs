@@ -53,6 +53,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 					merchant.OnPlayerSell(client.Player, item);
 
 				}
+				else if (client.Player.TargetObject is GameGuardMerchant guardMerchant)
+				{
+					guardMerchant.OnPlayerSell(client.Player, item);
+				}
+				else if (client.Player.TargetObject is GameItemCurrencyGuardMerchant guardCurrencyMerchant)
+				{
+					guardCurrencyMerchant.OnPlayerSell(client.Player, item);
+				}
 				else if (client.Player.TargetObject is GameLotMarker lot)
 				{
 					lot.OnPlayerSell(client.Player, item);

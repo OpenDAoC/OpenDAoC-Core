@@ -9,6 +9,17 @@ namespace DOL.GS {
         {
             ScalingFactor = 60;
         }
+        public override bool HasAbility(string keyName)
+        {
+            //if (IsAlive && keyName == GS.Abilities.CCImmunity) //incase we decide to make them immune to any cc
+                //return true;
+            if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
+                return true;
+            if (IsAlive && keyName == GS.Abilities.NSImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
         public override short MaxSpeedBase
         {
             get => (short)(191 + (Level * 2));
@@ -54,7 +65,7 @@ namespace DOL.GS {
                             var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                             if (numCurrentLoyalDays >= 1)
                             {
-                                realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                                realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
                             }
                             if(Util.Chance(baseChance+realmLoyalty))
                             {
@@ -82,7 +93,7 @@ namespace DOL.GS {
                         var numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
                         if (numCurrentLoyalDays >= 1)
                         {
-                            realmLoyalty = (int)Math.Round(20 / (numCurrentLoyalDays / 30.0) );
+                            realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
                         }
                         if(Util.Chance(baseChance+realmLoyalty))
                         {
@@ -106,7 +117,7 @@ namespace DOL.GS {
                         : 0;
                     if (numCurrentLoyalDays >= 1)
                     {
-                        realmLoyalty = (int) Math.Round(20 / (numCurrentLoyalDays / 30.0));
+                        realmLoyalty = (int) Math.Round(20 * (numCurrentLoyalDays / 30.0));
                     }
 
                     if (Util.Chance(baseChance + realmLoyalty))

@@ -4756,13 +4756,13 @@ namespace DOL.GS {
         {
             int cap = 0;
 
-            cap = mobLevel - 10;
+            cap = mobLevel - 5;
             
             if (mobLevel > 70)
                 cap = mobLevel + (Util.Random(1, 5));
             
             if (mobLevel < 65)
-                cap -= (Util.Random(1, 10));
+                cap -= (Util.Random(1, 5));
             
             if (mobLevel > 70 && cap < 60)
                 cap = mobLevel-10;
@@ -6338,7 +6338,7 @@ namespace DOL.GS {
                     }
                 case eObjectType.PolearmWeapon:
                     {
-                        this.SPD_ABS = Util.Random(48, 56);
+                        this.SPD_ABS = Util.Random(53, 56);
                         return;
                     }
                 case eObjectType.Staff:

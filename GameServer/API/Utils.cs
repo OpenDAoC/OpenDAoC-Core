@@ -54,10 +54,8 @@ public class Utils
     public class ClientStatus
     {
         public uint PrivLevel { get; set; }
-        public bool Playing { get; set; }
         public int State { get; set; }
-        public DateTime LastLogin { get; set; }
-        public DateTime LastDisconnect { get; set; }
+        public bool IsTester { get; set; }
     }
 
     public class ServerUptime
@@ -169,11 +167,9 @@ public class Utils
             }
             ClientStatus clientStatus = new ClientStatus();
             clientStatus.PrivLevel = client?.Account?.PrivLevel ?? 1;
-            clientStatus.Playing = client.IsPlaying;
             clientStatus.State = (int)client.ClientState;
-            clientStatus.LastLogin = client.Account.LastLogin;
-            clientStatus.LastDisconnect = client.Account.LastDisconnected;
-            playersOnline.Add(client?.Account?.Name, clientStatus);
+            clientStatus.IsTester = client.Account.IsTester;
+            playersOnline.TryAdd(client?.Account?.Name, clientStatus);
         }
 
         return playersOnline;

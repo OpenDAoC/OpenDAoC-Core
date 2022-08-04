@@ -47,10 +47,10 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			// Check for root immunity.
-			if (Spell.Value == 99 && target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity))
+			if (Spell.Value == 99 && (target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity) || target.effectListComponent.Effects.ContainsKey(eEffect.SpeedOfSound)))
 				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
 			{
-				MessageToCaster("Your target is immune!", eChatType.CT_System);
+				MessageToCaster("Your target is immune!", eChatType.CT_SpellResisted);
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				OnSpellResisted(target);
 				return;

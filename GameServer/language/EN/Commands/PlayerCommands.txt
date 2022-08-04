@@ -113,6 +113,9 @@ Scripts.Players.Battlegroup.Help.Leave:			/bg leave - Remove oneself from the ba
 Scripts.Players.Battlegroup.Help.Listen:		/bg listen - Puts the battle group on listen mode; only the moderator and leaders can speak
 Scripts.Players.Battlegroup.Help.Loot:			/bg loot (normal/treasurer) - Sets battlegroup looting to normal or a treasurer
 Scripts.Players.Battlegroup.Help.LootLevel:		/bg lootlevel (level) - Sets the lootlevel for your battlegroup.
+Scripts.Players.Battlegroup.Help.RecordStart:	/bg recordstart [maxRoll] - Starts recording all battlegroup rolls in the battle group below the specified max roll.
+Scripts.Players.Battlegroup.Help.RecordStop:	/bg recordstop - Stops recording all battlegroup rolls.
+Scripts.Players.Battlegroup.Help.ShowRolls:		/bg showrolls - Shows the last battlegroup roll results.
 Scripts.Players.Battlegroup.Help.PasswordClear:		/bg password clear - Clears the current password (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordDisplay:	/bg password - Display the current password for the battle group (moderator only)
 Scripts.Players.Battlegroup.Help.PasswordNew:		/bg password [new password]
@@ -195,6 +198,22 @@ Scripts.Players.Bountyrent.RangeOfAHouse:		       You must be in range of a hous
 Scripts.Players.Bountyrent.ToManyMoney:                That is more money than will fit in the lockbock! Deposit cancelled.
 Scripts.Players.Bountyrent.YouSpend:                   You spend {0} personal bounty points to pay for {1} gold pieces worth of rent.
 Scripts.Players.Bountyrent.YouSpendGuild:              You spend {0} guild bounty points to pay for {1} gold pieces worth of rent.
+
+## /rent
+#Scripts.Players.Rent.InHouseError:		               You have to be in your house to use this command!
+#Scripts.Players.Rent.NoHouseError:		       You don't own a house!
+Scripts.Players.Rent.AlreadyMaxMoney:            This house already has the maximum amount of money placed in the lockbox!
+Scripts.Players.Rent.CmdUsage:                   Use /rent personal/guild <gold> to pay.
+Scripts.Players.Rent.CorrectFormat:              Correct format is /rent personal | guild <gold>
+Scripts.Players.Rent.NotAHouseGuildLeader:       This house does not belong to your guild!
+Scripts.Players.Rent.NotEnoughMoney:                You don't have enough gold!
+Scripts.Players.Rent.NotEnoughGuildMoney:           Your guild don't have enough gold!
+Scripts.Players.Rent.NoPayRentPerm:              You don't have permission to use /rent here!
+Scripts.Players.Rent.NoHouse:		            You don't own a house!
+Scripts.Players.Rent.NoGuildHouse:		            Your guild doesn't own a house!
+Scripts.Players.Rent.TooMuchMoney:                That is more money than will fit in the lockbox!
+Scripts.Players.Rent.YouSpend:                   You spend {0} personal gold to pay rent.
+Scripts.Players.Rent.YouSpendGuild:              You spend {0} guild gold to pay for rent.
 
 ## /broadcast
 Scripts.Players.Broadcast.NoHere:			You cannot broadcast here.
@@ -324,7 +343,7 @@ Scripts.Player.Guild.Help.GuildARemoveAlli:		'/gc aremove alliance [#]' to Remov
 Scripts.Player.Guild.Help.GuildAutoRemove:		'/gc autoremove <playername>' 	
 Scripts.Player.Guild.Help.GuildAutoRemoveAcc:		'/gc autoremove account <playername>'	
 Scripts.Player.Guild.Help.GuildBannerSummon:		'/gc summon' summons the guild banner if you have one	
-Scripts.Player.Guild.Help.GuildBuff:			'/gc buff <artifact, crafting, rps, bps, xp or mlxp>' sets the guild buff 	
+Scripts.Player.Guild.Help.GuildBuff:			'/gc buff <crafting, rps, xp>' sets the guild buff 	
 Scripts.Player.Guild.Help.GuildBuyBanner:		'/gc buybanner' - Spend points to buy a guild banner.	
 Scripts.Player.Guild.Help.GuildCancel:			'/gc cancel <option> [value]' to cancel all command done before	
 Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep	
@@ -378,7 +397,11 @@ Scripts.Player.Guild.Help.GuildWebpage:			'/gc webpage <the.guildpage.com>' is a
 Scripts.Player.Guild.Help.GuildWho:			'/gc who' to show all player in your guild	
 Scripts.Player.Guild.Help.GuildWithdraw:	'/gc withdraw <amount>' gets money from the guild bank account.
 Scripts.Player.Guild.AccountRemoved:			{0} has removed {1} from the guild.	
-Scripts.Player.Guild.ActiveBuff:			Your guild already has an active buff. You must wait for it to expire first.	
+Scripts.Player.Guild.ActiveBuff:			Your guild already has an active buff. You must wait for it to expire first.
+Scripts.Player.Guild.XPBuffActive:              Your guild already has an experience bonus.
+Scripts.Player.Guild.RPBuffActive:              Your guild already has a realmpoints bonus.
+Scripts.Player.Guild.BPBuffActive:              Your guild already has a bountypoints bonus.
+Scripts.Player.Guild.CraftBuffActive:           Your guild already has a crafting bonus.
 Scripts.Player.Guild.AllianceAlreadyOther:		That guild already has an alliance.	
 Scripts.Player.Guild.AllianceAnsCancel:			The alliance offer has been cancelled.	
 Scripts.Player.Guild.AllianceDeclined:			You decline the alliance offer.	

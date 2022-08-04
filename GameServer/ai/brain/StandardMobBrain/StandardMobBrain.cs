@@ -258,20 +258,24 @@ namespace DOL.AI.Brain
         {
             if (AggroRange > 0)
             {
-                var currentPlayersSeen = new List<GamePlayer>();
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
+                if (Body.ambientTexts != null && Body.ambientTexts.Any(item => item.Trigger == "seeing"))
                 {
-                    if (!PlayersSeen.Contains(player))
+                    //Check if we can "see" players and fire off ambient text
+                    var currentPlayersSeen = new List<GamePlayer>();
+                    foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
                     {
-                        Body.FireAmbientSentence(GameNPC.eAmbientTrigger.seeing, player as GameLiving);
-                        PlayersSeen.Add(player);
+                        if (!PlayersSeen.Contains(player))
+                        {
+                            Body.FireAmbientSentence(GameNPC.eAmbientTrigger.seeing, player as GameLiving);
+                            PlayersSeen.Add(player);
+                        }
+                        currentPlayersSeen.Add(player);
                     }
-                    currentPlayersSeen.Add(player);
-                }
 
-                for (int i = 0; i < PlayersSeen.Count; i++)
-                {
-                    if (!currentPlayersSeen.Contains(PlayersSeen[i])) PlayersSeen.RemoveAt(i);
+                    for (int i = 0; i < PlayersSeen.Count; i++)
+                    {
+                        if (!currentPlayersSeen.Contains(PlayersSeen[i])) PlayersSeen.RemoveAt(i);
+                    }
                 }
 
             }
@@ -319,7 +323,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckNPCAggro()
         {
-            if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
+            // if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
             
             if (Body.attackComponent.AttackState)
                 return;
@@ -327,7 +331,7 @@ namespace DOL.AI.Brain
             if (Body.CurrentRegion == null)
                 return;
 
-            LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
+            // LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
             
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
             {
@@ -432,7 +436,7 @@ namespace DOL.AI.Brain
                 }
             }
             
-            CheckPetAggro(useLOS);
+            // CheckPetAggro(useLOS);
         }
 
         private void CheckPetAggro(bool useLOS)
@@ -487,7 +491,12 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
+            get { 
+                
+                if(Body is GameMerchant || Body is GameTrainer || Body is GameHastener)
+                    return 5000; //Merchants and other special NPCs don't need to think that often
+
+                return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
         }
 
         /// <summary>
@@ -839,67 +848,71 @@ namespace DOL.AI.Brain
         protected virtual GameLiving CalculateNextAttackTarget()
         {
             GameLiving maxAggroObject = null;
+            List<KeyValuePair<GameLiving, long>> aggroList = new List<KeyValuePair<GameLiving, long>>();
             lock ((m_aggroTable as ICollection).SyncRoot)
             {
-                double maxAggro = 0;
-                Dictionary<GameLiving, long>.Enumerator aggros = m_aggroTable.GetEnumerator();
-                List<GameLiving> removable = new List<GameLiving>();
-                while (aggros.MoveNext())
+                aggroList = m_aggroTable.ToList();
+            }
+
+            double maxAggro = 0;
+            List<GameLiving> removable = new List<GameLiving>();
+            
+            foreach(var currentKey in aggroList)
+            {
+                GameLiving living = currentKey.Key;
+                if(living == null)
+                    continue;
+
+                // check to make sure this target is still valid
+                if (living.IsAlive == false ||
+                    living.ObjectState != GameObject.eObjectState.Active ||
+                    living.IsStealthed ||
+                    Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
+                    GameServer.ServerRules.IsAllowedToAttack(Body, living, true) == false)
                 {
-                    GameLiving living = aggros.Current.Key;
-                    if(living == null)
-                        continue;
+                    removable.Add(living);
+                    continue;
+                }
 
-                    // check to make sure this target is still valid
-                    if (living.IsAlive == false ||
-                        living.ObjectState != GameObject.eObjectState.Active ||
-                        living.IsStealthed ||
-                        Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
-                        GameServer.ServerRules.IsAllowedToAttack(Body, living, true) == false)
+                // Don't bother about necro shade, can't attack it anyway.
+                if (living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+                    continue;
+
+                long amount = currentKey.Value;
+
+                if (living.IsAlive
+                    && amount > maxAggro
+                    && living.CurrentRegion == Body.CurrentRegion
+                    && living.ObjectState == GameObject.eObjectState.Active)
+                {
+                    int distance = Body.GetDistanceTo(living);
+                    int maxAggroDistance = (this is IControlledBrain) ? MAX_PET_AGGRO_DISTANCE : MAX_AGGRO_DISTANCE;
+
+                    if (distance <= maxAggroDistance)
                     {
-                        removable.Add(living);
-                        continue;
-                    }
-
-                    // Don't bother about necro shade, can't attack it anyway.
-                    if (living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-                        continue;
-
-                    long amount = aggros.Current.Value;
-
-                    if (living.IsAlive
-                        && amount > maxAggro
-                        && living.CurrentRegion == Body.CurrentRegion
-                        && living.ObjectState == GameObject.eObjectState.Active)
-                    {
-                        int distance = Body.GetDistanceTo(living);
-                        int maxAggroDistance = (this is IControlledBrain) ? MAX_PET_AGGRO_DISTANCE : MAX_AGGRO_DISTANCE;
-
-                        if (distance <= maxAggroDistance)
+                        double aggro = amount * Math.Min(500.0 / distance, 1);
+                        if (aggro > maxAggro)
                         {
-                            double aggro = amount * Math.Min(500.0 / distance, 1);
-                            if (aggro > maxAggro)
-                            {
-                                maxAggroObject = living;
-                                maxAggro = aggro;
-                            }
+                            maxAggroObject = living;
+                            maxAggro = aggro;
                         }
                     }
                 }
+            }
 
-                foreach (GameLiving l in removable)
-                {
-                    RemoveFromAggroList(l);
-                    Body.attackComponent.RemoveAttacker(l);
-                }
+            foreach (GameLiving l in removable)
+            {
+                RemoveFromAggroList(l);
+                Body.attackComponent.RemoveAttacker(l);
+            }
 
-                if (maxAggroObject == null)
+            if (maxAggroObject == null)
+            {
+                lock ((m_aggroTable as ICollection).SyncRoot)
                 {
                     m_aggroTable.Clear();
                 }
             }
-
-            
 
             return maxAggroObject;
         }

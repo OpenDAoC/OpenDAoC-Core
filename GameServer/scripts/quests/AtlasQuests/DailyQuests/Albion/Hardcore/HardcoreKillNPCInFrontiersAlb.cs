@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Cache;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
@@ -146,7 +147,7 @@ namespace DOL.GS.DailyQuest
 			if (player == null)
 				return;
 
-			if(SucciAlb.CanGiveQuest(typeof (HardcoreKillNPCInFrontiersAlb), player)  <= 0)
+			if (SucciAlb.CanGiveQuest(typeof(HardcoreKillNPCInFrontiersAlb), player) <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -329,6 +330,24 @@ namespace DOL.GS.DailyQuest
 			
 			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
 			    !player.CurrentZone.IsRvR) return;
+			if (gArgs.Target.XPGainers.Count > 1)
+			{
+				Array gainers = new GameObject[gArgs.Target.XPGainers.Count];
+				lock (gArgs.Target._xpGainersLock)
+				{
+
+					foreach (GameLiving living in gArgs.Target.XPGainers.Keys)
+					{
+						if (living == player ||
+						    (player.ControlledBrain is {Body: { }} && player.ControlledBrain.Body == living) ||
+						    (living is BDPet bdpet &&
+						     (bdpet.Owner == player || bdpet.Owner == player.ControlledBrain?.Body)))
+							continue;
+
+						return;
+					}
+				}
+			}
 			FrontierMobsKilled++;
 			player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
@@ -373,9 +392,10 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
 			FrontierMobsKilled = 0;
-			Step = -2;
+			Step = -1;
 			// move quest from active list to finished list...
 			m_questPlayer.QuestList.Remove(this);
+			m_questPlayer.QuestListFinished.Add(this);
 
 			m_questPlayer.Out.SendQuestListUpdate();
 		}

@@ -833,11 +833,23 @@ namespace DOL.GS.Quests.Midgard
 				// Nag to finish quest
 				if (quest != null)
 				{
-					Inaksha.SayTo(player, "Check your Journal for instructions!");
+					switch (quest.Step)
+					{
+						case 1:
+							Inaksha.SayTo(player, $"Hey {player.Name}, please travel to Raumarik and find Loken!");
+							break;
+						case 2:
+							Inaksha.SayTo(player, $"Welcome back {player.Name}, do you [have something] for me?");
+							break;
+						case 3:
+							Inaksha.SayTo(player, $"Hey {player.Name}, please visit Miri in Jordheim and bring her the [sealed pouch]!");
+							break;
+					}
+					
 				}
 				else
 				{
-					Inaksha.SayTo(player, "Midgard needs your [services]");
+					Inaksha.SayTo(player, "Midgard needs your [services].");
 				}
 			}
 				// The player whispered to the NPC
@@ -858,7 +870,15 @@ namespace DOL.GS.Quests.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "dead":
+						case "have something":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, ball_of_flame);
+								quest.Step = 3;
+								Inaksha.SayTo(player, "Great! Please visit Miri in Jordheim now and bring her the [sealed pouch].");
+							}
+							break;
+						case "sealed pouch":
 							if (quest.Step == 3)
 							{
 								Inaksha.SayTo(player, "Take this sealed pouch to Miri in Jordheim for your reward!");
@@ -872,6 +892,19 @@ namespace DOL.GS.Quests.Midgard
 					}
 				}
 
+			}
+			else if (e == GameLivingEvent.ReceiveItem)
+			{
+				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+				{
+					if (rArgs.Item.Id_nb == ball_of_flame.Id_nb && quest.Step >= 2)
+					{
+						RemoveItem(player, ball_of_flame);
+						Inaksha.SayTo(player, "Great! Please visit Miri in Jordheim now and bring her the [sealed pouch].");
+						quest.Step = 3;
+					}
+				}
 			}
 
 		}
@@ -893,12 +926,59 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (quest != null)
 				{
-					Miri.SayTo(player, "Check your journal for instructions!");
+					if (quest.Step == 4)
+					{
+						Miri.SayTo(player, "Were you able to [fulfill] your given task?");
+					}
 				}
 				else
 				{
-					Miri.SayTo(player, "I need your help to seek out loken in raumarik Loc 47k, 25k, 4k, and kill him ");
+					Miri.SayTo(player, "Danica and I need your help to seek out Loken in Raumarik and to kill him!");
 				}
+			}
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				//Check player is already doing quest
+				if (quest == null)
+				{
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						case "fulfill":
+							if (quest.Step == 4)
+							{
+								RemoveItem(player, sealed_pouch);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Miri.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
+					}
+				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 4)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Miri.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 
 		}
@@ -1000,13 +1080,13 @@ namespace DOL.GS.Quests.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Loken in Raumarik Loc 47k, 25k kill him!";
+						return "Seek out Loken in Raumarik and kill him!";
 					case 2:
-						return "[Step #2] Return to Inaksha and give her the Ball of Flame!";
+						return "Return to Inaksha and give her the Ball of Flame!";
 					case 3:
-						return "[Step #3] Talk with Inaksha about Loken�s demise!";
+						return "Talk with Inaksha about Loken's demise!";
 					case 4:
-						return "[Step #4] Go to Miri in Jordheim and give her the Sealed Pouch for your reward!";
+						return "Go to Miri in Jordheim and give her the Sealed Pouch for your reward!";
 				}
 				return base.Description;
 			}
@@ -1027,7 +1107,6 @@ namespace DOL.GS.Quests.Midgard
 					m_questPlayer.Out.SendMessage("You get a ball of flame", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					GiveItem(m_questPlayer, ball_of_flame);
 					Step = 2;
-					return;
 				}
 			}
 
@@ -1036,10 +1115,8 @@ namespace DOL.GS.Quests.Midgard
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Inaksha.Name && gArgs.Item.Id_nb == ball_of_flame.Id_nb)
 				{
-					RemoveItem(Inaksha, player, ball_of_flame);
-					Inaksha.SayTo(player, "So it seems Logan's [dead]");
+					Inaksha.SayTo(player, "Great! Please visit Miri in Jordheim now and bring her the [sealed pouch].");
 					Step = 3;
-					return;
 				}
 			}
 
@@ -1048,9 +1125,14 @@ namespace DOL.GS.Quests.Midgard
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Miri.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
 				{
-					Miri.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						    eInventorySlot.LastBackpack))
+					{
+						Miri.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -1065,38 +1147,31 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Miri, m_questPlayer, sealed_pouch);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Shaman)
 			{
-				RemoveItem(Miri, m_questPlayer, sealed_pouch);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Shaman)
-				{
-					GiveItem(m_questPlayer, ShamanEpicArms);
-					GiveItem(m_questPlayer, ShamanEpicBoots);
-					GiveItem(m_questPlayer, ShamanEpicGloves);
-					GiveItem(m_questPlayer, ShamanEpicHelm);
-					GiveItem(m_questPlayer, ShamanEpicLegs);
-					GiveItem(m_questPlayer, ShamanEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Healer)
-				{
-					GiveItem(m_questPlayer, HealerEpicArms);
-					GiveItem(m_questPlayer, HealerEpicBoots);
-					GiveItem(m_questPlayer, HealerEpicGloves);
-					GiveItem(m_questPlayer, HealerEpicHelm);
-					GiveItem(m_questPlayer, HealerEpicLegs);
-					GiveItem(m_questPlayer, HealerEpicVest);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, ShamanEpicArms);
+				GiveItem(m_questPlayer, ShamanEpicBoots);
+				GiveItem(m_questPlayer, ShamanEpicGloves);
+				GiveItem(m_questPlayer, ShamanEpicHelm);
+				GiveItem(m_questPlayer, ShamanEpicLegs);
+				GiveItem(m_questPlayer, ShamanEpicVest);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Healer)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, HealerEpicArms);
+				GiveItem(m_questPlayer, HealerEpicBoots);
+				GiveItem(m_questPlayer, HealerEpicGloves);
+				GiveItem(m_questPlayer, HealerEpicHelm);
+				GiveItem(m_questPlayer, HealerEpicLegs);
+				GiveItem(m_questPlayer, HealerEpicVest);
 			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source

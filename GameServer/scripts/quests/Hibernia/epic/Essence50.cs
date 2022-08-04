@@ -147,7 +147,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ghost of Caithor", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Giant Caithor", eRealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -160,14 +160,14 @@ namespace DOL.GS.Quests.Hibernia
 			if (Caithor == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Ghost of Caithor , creating it ...");
+					log.Warn("Could not find Giant Caithor , creating it ...");
 				Caithor = new GhostOfCaithor();
 				Caithor.Model = 339;
-				Caithor.Name = "Ghost of Caithor";
+				Caithor.Name = "Giant Caithor";
 				Caithor.GuildName = "";
 				Caithor.Realm = eRealm.None;
 				Caithor.CurrentRegionID = 200;
-				Caithor.Size = 60;
+				Caithor.Size = 160;
 				Caithor.Level = (byte)Util.Random(62,64);
 				Caithor.X = 470547;
 				Caithor.Y = 531497;
@@ -1298,7 +1298,17 @@ namespace DOL.GS.Quests.Hibernia
 			{
 				if (quest != null)
 				{
-					Brigit.SayTo(player, "Check your Journal for instructions!");
+					switch (quest.Step)
+					{
+						case 1:
+							Brigit.SayTo(player, "Seek out Far Dorocha in Cursed Forest and kill them to spawn Giant Caithor! " +
+							                     "After you kill Giant Caithor seek out real Caithor and kill him!");
+							break;
+						case 2:
+							Brigit.SayTo(player, "Were you able to [fulfill] your given task?");
+							break;
+					}
+					
 				}
 				else
 				{
@@ -1324,12 +1334,41 @@ namespace DOL.GS.Quests.Hibernia
 				{
 					switch (wArgs.Text)
 					{
+						case "fulfill":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, Moonstone);
+								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+									    eInventorySlot.LastBackpack))
+								{
+									Brigit.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+							break;
 						case "abort":
 							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
 							break;
 					}
 				}
-
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == Moonstone.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+							    eInventorySlot.LastBackpack))
+						{
+							Brigit.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
 			}
 
 		}
@@ -1414,7 +1453,7 @@ namespace DOL.GS.Quests.Hibernia
 				//Check if we can add the quest!
 				if (!Brigit.GiveQuest(typeof (Essence_50), player, 1))
 					return;
-				player.Out.SendMessage("Kill Caithor in Cursed Forest loc 28k 48k ", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Please kill Caithor in Cursed Forest!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -1432,9 +1471,9 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "[Step #1] Seek out Caithor in Cursed Forest Loc 20k,48k kill him!";
+						return "Seek out Far Dorocha in Cursed Forest and kill them to spawn Giant Caithor! After you kill Giant Caithor seek out real Caithor and kill him!";
 					case 2:
-						return "[Step #2] Return to Brigit and give the Moonstone!";
+						return "Return to Brigit and give her the Moonstone!";
 				}
 				return base.Description;
 			}
@@ -1459,15 +1498,19 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
-
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Brigit.Name && gArgs.Item.Id_nb == Moonstone.Id_nb)
 				{
-					Brigit.SayTo(player, "You have earned this Epic Armour!");
-					FinishQuest();
-					return;
+					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
+						eInventorySlot.LastBackpack))
+					{
+						Brigit.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -1481,56 +1524,49 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			RemoveItem(Brigit, m_questPlayer, Moonstone);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Champion)
 			{
-				RemoveItem(Brigit, m_questPlayer, Moonstone);
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Champion)
-				{
-					GiveItem(m_questPlayer, ChampionEpicArms);
-					GiveItem(m_questPlayer, ChampionEpicBoots);
-					GiveItem(m_questPlayer, ChampionEpicGloves);
-					GiveItem(m_questPlayer, ChampionEpicHelm);
-					GiveItem(m_questPlayer, ChampionEpicLegs);
-					GiveItem(m_questPlayer, ChampionEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Bard)
-				{
-					GiveItem(m_questPlayer, BardEpicArms);
-					GiveItem(m_questPlayer, BardEpicBoots);
-					GiveItem(m_questPlayer, BardEpicGloves);
-					GiveItem(m_questPlayer, BardEpicHelm);
-					GiveItem(m_questPlayer, BardEpicLegs);
-					GiveItem(m_questPlayer, BardEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Enchanter)
-				{
-					GiveItem(m_questPlayer, EnchanterEpicArms);
-					GiveItem(m_questPlayer, EnchanterEpicBoots);
-					GiveItem(m_questPlayer, EnchanterEpicGloves);
-					GiveItem(m_questPlayer, EnchanterEpicHelm);
-					GiveItem(m_questPlayer, EnchanterEpicLegs);
-					GiveItem(m_questPlayer, EnchanterEpicVest);
-				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Nightshade)
-				{
-					GiveItem(m_questPlayer, NightshadeEpicArms);
-					GiveItem(m_questPlayer, NightshadeEpicBoots);
-					GiveItem(m_questPlayer, NightshadeEpicGloves);
-					GiveItem(m_questPlayer, NightshadeEpicHelm);
-					GiveItem(m_questPlayer, NightshadeEpicLegs);
-					GiveItem(m_questPlayer, NightshadeEpicVest);
-				}
-
-				m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				GiveItem(m_questPlayer, ChampionEpicArms);
+				GiveItem(m_questPlayer, ChampionEpicBoots);
+				GiveItem(m_questPlayer, ChampionEpicGloves);
+				GiveItem(m_questPlayer, ChampionEpicHelm);
+				GiveItem(m_questPlayer, ChampionEpicLegs);
+				GiveItem(m_questPlayer, ChampionEpicVest);
 			}
-			else
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Bard)
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				GiveItem(m_questPlayer, BardEpicArms);
+				GiveItem(m_questPlayer, BardEpicBoots);
+				GiveItem(m_questPlayer, BardEpicGloves);
+				GiveItem(m_questPlayer, BardEpicHelm);
+				GiveItem(m_questPlayer, BardEpicLegs);
+				GiveItem(m_questPlayer, BardEpicVest);
 			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Enchanter)
+			{
+				GiveItem(m_questPlayer, EnchanterEpicArms);
+				GiveItem(m_questPlayer, EnchanterEpicBoots);
+				GiveItem(m_questPlayer, EnchanterEpicGloves);
+				GiveItem(m_questPlayer, EnchanterEpicHelm);
+				GiveItem(m_questPlayer, EnchanterEpicLegs);
+				GiveItem(m_questPlayer, EnchanterEpicVest);
+			}
+			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Nightshade)
+			{
+				GiveItem(m_questPlayer, NightshadeEpicArms);
+				GiveItem(m_questPlayer, NightshadeEpicBoots);
+				GiveItem(m_questPlayer, NightshadeEpicGloves);
+				GiveItem(m_questPlayer, NightshadeEpicHelm);
+				GiveItem(m_questPlayer, NightshadeEpicLegs);
+				GiveItem(m_questPlayer, NightshadeEpicVest);
+			}
+
+			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 
 		#region Allakhazam Epic Source

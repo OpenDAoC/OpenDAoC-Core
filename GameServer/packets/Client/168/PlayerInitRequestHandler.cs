@@ -298,7 +298,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					TimeSpan due = (house.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
 					if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && house.KeptMoney < HouseMgr.GetRentByModel(house.Model))
-						player.Out.SendRentReminder(house);
+					{
+						//Sending reminder as Text Window as the Help window wasnt properly popping up on the client
+						var message = new List<string>();
+						message.Add("Rent for personal house " + house.HouseNumber + " due in " + due.Days + " days!");
+						player.Out.SendCustomTextWindow("Personal House Rent Reminder", message);
+						//player.Out.SendRentReminder(house);
+					}
 				}
 
 				if (player.Guild != null)
@@ -308,7 +314,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						TimeSpan due = (ghouse.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
 						if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && ghouse.KeptMoney < HouseMgr.GetRentByModel(ghouse.Model))
-							player.Out.SendRentReminder(ghouse);
+						{
+							//Sending reminder as Text Window as the Help window wasnt properly popping up on the client
+							var guildmessage = new List<string>();
+							guildmessage.Add("Rent for guild house " + ghouse.HouseNumber + " due in " + due.Days + " days!");
+							player.Out.SendCustomTextWindow("Guild House Rent Reminder", guildmessage);
+							//player.Out.SendRentReminder(ghouse);
+						}
 					}
 				}
 			}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
@@ -64,7 +66,7 @@ namespace DOL.AI.Brain
         public OIBrain()
             : base()
         {
-            ThinkInterval = 1500;
+            ThinkInterval = 1000;
         }
 
         public static bool startevent = false;
@@ -86,9 +88,9 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius(7000))
                 {
-                    if (player.IsAlive && player != null && player.Client.Account.PrivLevel == 1)
+                    if (!startevent && player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
-                        if (player.IsWithinRadius(point1, 200) && !startevent && DeadPrimalsCount == 0)
+                        if (player.IsWithinRadius(point1, 350) && !startevent && DeadPrimalsCount == 0 && !startevent)
                         {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message1), 5000);//5s to start
                             startevent = true;
@@ -100,7 +102,7 @@ namespace DOL.AI.Brain
         }
         public int Message1(ECSGameTimer timer)
         {
-            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have eneteres inner sanctum.'"));
+            BroadcastMessage(String.Format("A voice that seems to come from all around you says: 'Intruders have entered inner sanctum.'"));
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Message2), 5000);
             return 0;
         }
@@ -318,16 +320,9 @@ namespace DOL.GS
     public class Olcasgean : GameEpicBoss
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public bool Master = true;
-        public GameNPC Master_NPC;
-        public List<GameNPC> CopyNPC;
         public Olcasgean()
             : base()
         {
-        }
-        public Olcasgean(bool master)
-        {
-            Master = master;
         }
         public override int GetResist(eDamageType damageType)
         {
@@ -345,7 +340,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 300000; }
+            get { return 250000; }
         }
         public override int AttackRange
         {
@@ -370,23 +365,15 @@ namespace DOL.GS
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-
-            if (!Master && Master_NPC != null)
-                Master_NPC.TakeDamage(source, damageType, damageAmount, criticalAmount);
-            else
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            int damageDealt = damageAmount + criticalAmount;
+            foreach (GameNPC copy in GetNPCsInRadius(10000))
             {
-                base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                int damageDealt = damageAmount + criticalAmount;
-
-                if (CopyNPC != null && CopyNPC.Count > 0)
+                if (copy != null)
                 {
-                    lock (CopyNPC)
+                    if (copy is Olcasgean2 && copy.IsAlive)
                     {
-                        foreach (GameNPC npc in CopyNPC)
-                        {
-                            if (npc == null) break;
-                            npc.Health = Health;//they share same healthpool
-                        }
+                        copy.Health = Health;
                     }
                 }
             }
@@ -401,20 +388,17 @@ namespace DOL.GS
         }
         protected void ReportNews(GameObject killer)
         {
-            if (PackageID == "Olcasgean1")
-            {
-                int numPlayers = AwardEpicEncounterKillPoint();
-                String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
-                NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+            int numPlayers = AwardEpicEncounterKillPoint();
+            String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+            NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
-                if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+            if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    if (player.IsEligibleToGiveMeritPoints)
                     {
-                        if (player.IsEligibleToGiveMeritPoints)
-                        {
-                            GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
-                        }
+                        GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
                     }
                 }
             }
@@ -432,159 +416,93 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            if (!(killer is Olcasgean) && !Master && Master_NPC != null)
+            foreach (GameNPC npc in GetNPCsInRadius(10000))
             {
-                Master_NPC.Die(killer);
-                OlcasgeanBrain.spawn3 = false;
-                //OIBrain.DeadPrimalsCount = 0;
+                if (npc != null)
+                {
+                    if (npc.IsAlive)
+                    {
+                        if (npc is Olcasgean2 boss)
+                        {
+                            if (boss != null && boss.IsAlive && boss.Brain is OlcasgeanBrain2)
+                                boss.RemoveFromWorld();
+                        }
+
+                        if (npc.Brain is VortexBrain)
+                            npc.RemoveFromWorld();
+
+                        if (npc.Brain is WaterfallAntipassBrain)
+                            npc.RemoveFromWorld();
+                    }
+                }
             }
-            else
+            OIBrain.DeadPrimalsCount = 0;
+
+            bool canReportNews = true;
+            // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (CopyNPC != null && CopyNPC.Count > 0)
-                {
-                    lock (CopyNPC)
-                    {
-                        foreach (GameNPC npc in CopyNPC)
-                        {
-                            if (npc.IsAlive)
-                                npc.Die(this);//if one die all others aswell
-                            OlcasgeanBrain.spawn3 = false;
-                            --OlcasgeanBrain.OlcasgeanCount;
-                            //OIBrain.DeadPrimalsCount = 0;
-                        }
-                    }
-                }
-                foreach (GameNPC npc in GetNPCsInRadius(10000))
-                {
-                    if (npc != null)
-                    {
-                        if (npc.IsAlive)
-                        {
-                            if (npc.Brain is VortexBrain)
-                                npc.RemoveFromWorld();
+                player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
-                            if (npc.Brain is WaterfallAntipassBrain)
-                                npc.RemoveFromWorld();
-                        }
-                    }
-                }
-                CopyNPC = new List<GameNPC>();
-                OlcasgeanBrain.spawn3 = false;
-                OIBrain.DeadPrimalsCount = 0;
-
-                bool canReportNews = true;
-                // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
                 {
-                    player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
-
-                    if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
-                    {
-                        if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-                            canReportNews = false;
-                    }
+                    if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                        canReportNews = false;
                 }
-                if (canReportNews)
-                {
+            }
+            if (canReportNews)
+            {
+                if (killer is not Olcasgean or Olcasgean2)
                     ReportNews(killer);
-                }
-                base.Die(killer);
             }
-        }
-        public override void Follow(GameObject target, int minDistance, int maxDistance)
-        {
-            if (TargetObject != null)
-                return;
-            base.Follow(target, minDistance, maxDistance);
+            base.Die(killer);
         }
         #endregion
         public override bool AddToWorld()
         {
-            if (PackageID == "Olcasgean1")
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164624);
+            LoadTemplate(npcTemplate);
+
+            Strength = npcTemplate.Strength;
+            Constitution = npcTemplate.Constitution;
+            Dexterity = npcTemplate.Dexterity;
+            Quickness = npcTemplate.Quickness;
+            Empathy = npcTemplate.Empathy;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;            
+
+            X = 39237;
+            Y = 62644;
+            Z = 11685;
+            Heading = 102;
+            CurrentRegionID = 191;         
+
+            Flags = (GameNPC.eFlags)156;
+            RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+            OIBrain.startevent = false;
+            OIBrain.DeadPrimalsCount = 0;
+            OlcasgeanBrain.setbossflags = false;
+            OlcasgeanBrain.wake_up_boss = false;
+            OlcasgeanBrain.Spawn_Copy = false;
+            foreach (GameNPC npc in GetNPCsInRadius(5500))
             {
-                Flags = (GameNPC.eFlags)156;
-                RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                OIBrain.startevent = false;
-                OIBrain.DeadPrimalsCount = 0;
-                OlcasgeanBrain.setbossflags = false;
-                OlcasgeanBrain.wake_up_boss = false;
-                foreach (GameNPC npc in GetNPCsInRadius(3500))
+                if (npc != null && npc.IsAlive)
                 {
-                    if (npc != null && npc.IsAlive)
+                    if (npc.Brain is WaterPrimalBrain || npc.Brain is AirPrimalBrain || npc.Brain is FirePrimalBrain || npc.Brain is EarthPrimalBrain
+                        || npc.Brain is GuardianEarthmenderBrain || npc.Brain is MagicalEarthmenderBrain || npc.Brain is NaturalEarthmenderBrain || npc.Brain is ShadowyEarthmenderBrain || npc.Brain is OlcasgeanBrain2)
                     {
-                        if (npc.Brain is WaterPrimalBrain || npc.Brain is AirPrimalBrain || npc.Brain is FirePrimalBrain || npc.Brain is EarthPrimalBrain
-                            || npc.Brain is GuardianEarthmenderBrain || npc.Brain is MagicalEarthmenderBrain || npc.Brain is NaturalEarthmenderBrain || npc.Brain is ShadowyEarthmenderBrain)
-                        {
-                            npc.RemoveFromWorld();
-                        }
+                        npc.RemoveFromWorld();
                     }
                 }
             }
-            else
-            {
-                RespawnInterval = -1;
-                Flags = (GameNPC.eFlags)156;
-            }
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            OlcasgeanBrain sBrain = new OlcasgeanBrain();
+            SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
         }
-        #region Olcasgean Stats
-        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
-        public override short Constitution { get => base.Constitution; set => base.Constitution = 100; }
-        public override short Empathy { get => base.Empathy; set => base.Empathy = 400; }
-        public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
-        public override short Piety { get => base.Piety; set => base.Piety = 200; }
-        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
-        public override short Quickness { get => base.Quickness; set => base.Quickness = 20; }
-        public override short Strength { get => base.Strength; set => base.Strength = 350; }
-        #endregion
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            GameNPC[] npcs;
-            OlcasgeanBrain ob = new OlcasgeanBrain();
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Olcasgean", 191, (eRealm)0);
-            if (npcs.Length == 0)
-            {
-                log.Warn("Olcasgean not found, creating it...");
 
-                log.Warn("Initializing Olcasgean nr1...");
-                Olcasgean OLC = new Olcasgean();
-                OLC.Name = "Olcasgean";
-                OLC.PackageID = "Olcasgean1";
-                OLC.Model = 862;
-                OLC.Realm = 0;
-                OLC.Level = 87;
-                OLC.Size = 50;
-                OLC.CurrentRegionID = 191;//galladoria
-
-                OLC.X = 40170;
-                OLC.Y = 62600;
-                OLC.Z = 11681;
-                OLC.Heading = 2491;
-
-                OLC.RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-                OLC.MeleeDamageType = eDamageType.Slash;
-                OLC.Faction = FactionMgr.GetFactionByID(96);
-                OLC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
-                OLC.MaxDistance = 2000;
-                OLC.TetherRange = 2500;
-                OLC.MaxSpeedBase = 0;
-                OLC.Heading = 2491;
-                OLC.AttackRange = 1500;
-
-                OlcasgeanBrain ubrain = new OlcasgeanBrain();
-                ubrain.AggroLevel = 100;
-                ubrain.AggroRange = 1500;
-                OLC.SetOwnBrain(ubrain);
-                OLC.AddToWorld();
-                OLC.Brain.Start();
-                OLC.SaveIntoDatabase();
-            }
-            else
-                log.Warn("Olcasgean exist ingame, remove it and restart server if you want to add by script code.");
-        }
         public override void OnAttackedByEnemy(AttackData ad)// on Boss being attacked
         {
             if (ad != null && ad.Damage > 0 && ad.Attacker != null && ad.Attacker.IsAlive && ad.Attacker is GamePlayer)
@@ -595,7 +513,7 @@ namespace DOL.GS
                         CastSpell(OlcasgeanDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
                 if (HealthPercent > 50)
-                    if (Util.Chance(15))
+                    if (Util.Chance(25))
                         CastSpell(OlcasgeanDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
             base.OnAttackedByEnemy(ad);
@@ -610,7 +528,7 @@ namespace DOL.GS
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
-                    spell.RecastDelay = 2;
+                    spell.RecastDelay = 1;
                     spell.ClientEffect = 11027;
                     spell.Icon = 11027;
                     spell.TooltipId = 11027;
@@ -642,85 +560,9 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 1500;
-            ThinkInterval = 3000;
+            ThinkInterval = 1000;
         }
-        public static int OlcasgeanCount = 0;
-        public static bool spawn3 = false;
-        public static bool cast1 = true;
-        public void SpawnOlcasgean2()
-        {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
-            {
-                if (npc.Brain is OlcasgeanBrain && npc.PackageID == "Olcasgean2")
-                    return;
-            }
-            GameLiving ptarget = CalculateNextAttackTarget();
-            Olcasgean Add = new Olcasgean();
-            Add.Name = "Olcasgean";
-            Add.Model = 862;
-            Add.Level = 87;
-            Add.Size = 50;
-            Add.Faction = FactionMgr.GetFactionByID(96);
-            Add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-
-            Add.Strength = 5;
-            Add.Intelligence = 200;
-            Add.Piety = 200;
-            Add.Dexterity = 200;
-            Add.Constitution = 100;
-            Add.Quickness = 80;
-            Add.Empathy = 300;
-            Add.MaxSpeedBase = 0;
-            Add.AttackRange = 1500;
-            Add.RespawnInterval = -1;
-
-            Add.X = 39237;
-            Add.Y = 62644;
-            Add.Z = 11685;
-            Add.PackageID = "Olcasgean2";
-            Add.CurrentRegionID = 191;
-            Add.Heading = 102;
-            OlcasgeanBrain smb = new OlcasgeanBrain();
-            smb.AggroLevel = 100;
-            smb.AggroRange = 1500;
-            Add.AddBrain(smb);
-            Add.AddToWorld();
-
-            OlcasgeanBrain brain = (OlcasgeanBrain)Add.Brain;
-            brain.AddToAggroList(ptarget, 1);
-            Add.StartAttack(ptarget);
-            Add.Master_NPC = Body;
-            Add.Master = false;
-            ++OlcasgeanCount;
-            if (Body is Olcasgean)
-            {
-                Olcasgean sg = Body as Olcasgean;
-                sg.CopyNPC.Add(Add);
-            }
-        }
-        public override void AddToAggroList(GameLiving living, int aggroamount, bool NaturalAggro)
-        {
-            base.AddToAggroList(living, aggroamount, NaturalAggro);
-
-            if (!(Body as Olcasgean).Master && (Body as Olcasgean).Master_NPC != null && !((Body as Olcasgean).Master_NPC.Brain as OlcasgeanBrain).HasAggro)
-            {
-                ((Body as Olcasgean).Master_NPC.Brain as OlcasgeanBrain).AddToAggroList(living, aggroamount, NaturalAggro);
-            }
-
-            if ((Body as Olcasgean).Master && (Body as Olcasgean).CopyNPC != null && (Body as Olcasgean).CopyNPC.Count > 0)
-            {
-                foreach (GameNPC npc in (Body as Olcasgean).CopyNPC)
-                {
-                    if (npc.IsAlive && !(npc.Brain as OlcasgeanBrain).HasAggro)
-                        (npc.Brain as OlcasgeanBrain).AddToAggroList(living, aggroamount, NaturalAggro);
-                }
-            }
-        }
-        private int PopBoss(ECSGameTimer timer)
-        {
-            SpawnOlcasgean2();
-            return 0;
-        }
+        public static bool cast1 = true;         
         private GamePlayer teleporttarget = null;
         private GamePlayer TeleportTarget//teleport target 
         {
@@ -733,6 +575,7 @@ namespace DOL.AI.Brain
         public static bool spawn_antipass = false;
         public static bool wake_up_boss = false;
         public static bool spawn_effect = false;
+        public static bool Spawn_Copy = false;
         private bool RemoveAdds = false;
         List<GamePlayer> player_in_range;
         List<GamePlayer> player_in_range2;
@@ -783,21 +626,7 @@ namespace DOL.AI.Brain
         public int WakeUpBoss(ECSGameTimer timer)
         {
             BroadcastMessage(String.Format("A deep booming voice echoes: 'I am eternal. You and your kind will die.'"));
-            foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
-            {
-                if (boss.Brain is OlcasgeanBrain)
-                {
-                    if (Body.PackageID == "Olcasgean1" && boss.PackageID == "Olcasgean2")
-                    {
-                        if (!setbossflags)
-                        {
-                            Body.Flags = 0;
-                            boss.Flags = 0;
-                            setbossflags = true;
-                        }
-                    }
-                }
-            }
+            Body.Flags = 0;
             return 0;
         }
         #region Think()
@@ -826,36 +655,15 @@ namespace DOL.AI.Brain
                     RemoveAdds = true;
                 }
             }
-            if (!(Body is Olcasgean))
-            {
-                base.Think();
-                return;
-            }
-            Olcasgean sg = Body as Olcasgean;
-
-            if (sg.CopyNPC == null || sg.CopyNPC.Count == 0)
-                sg.CopyNPC = new List<GameNPC>();
 
             if (Body.IsAlive)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius(10000))
+                if (!Spawn_Copy)
                 {
-                    if (player.IsAlive && player != null)
-                    {
-                        foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-                        {
-                            if (npc.Name == "Olcasgean" && npc.Brain is OlcasgeanBrain && npc.PackageID != "Olcasgean2")
-                            {
-                                if (OlcasgeanCount < 1 && !spawn3 && Body.PackageID == "Olcasgean1")
-                                {
-                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PopBoss), 1000);//create copy of himself
-                                    spawn3 = true;
-                                }
-                            }
-                        }
-                    }
+                    SpawnCopy();
+                    Spawn_Copy = true;
                 }
-                if (OIBrain.DeadPrimalsCount >= 4 && wake_up_boss == false && Body.PackageID == "Olcasgean1")
+                if (OIBrain.DeadPrimalsCount >= 4 && !wake_up_boss)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WakeUpBoss), 25000);
                     wake_up_boss = true;
@@ -938,10 +746,10 @@ namespace DOL.AI.Brain
 
                     if (ported_player.Count > 0)
                     {
-                        GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(1, player_to_port.Count) - 1]));
+                        GamePlayer port = ((GamePlayer)(player_to_port[Util.Random(0, player_to_port.Count) - 1]));
                         TeleportTarget = port;
 
-                        if (teleport_player == false && Body.PackageID == "Olcasgean1" && Body.HealthPercent <= 50 && TeleportTarget.IsAlive && TeleportTarget != null)
+                        if (TeleportTarget != null && TeleportTarget.IsAlive && !teleport_player && Body.HealthPercent <= 50)
                         {
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoPort), Util.Random(12000,20000));//do teleport every 12-20s
                             teleport_player = true;
@@ -951,6 +759,21 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
+        private void SpawnCopy()
+        {
+            foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+            {
+                if (npc.Brain is OlcasgeanBrain2)
+                    return;
+            }
+            Olcasgean2 copy = new Olcasgean2();
+            copy.X = 40170;
+            copy.Y = 62600;
+            copy.Z = 11681;
+            copy.Heading = 2491;
+            copy.CurrentRegion = Body.CurrentRegion;
+            copy.AddToWorld();
+        }
         #endregion
         #region DOPort
         public int DoPort(ECSGameTimer timer)
@@ -958,7 +781,7 @@ namespace DOL.AI.Brain
             if (player_to_port.Count > 0)
             {
                 int random = Util.Random(1, 3);
-                if (Body.HealthPercent <= 50 && Body.PackageID == "Olcasgean1")
+                if (Body.HealthPercent <= 50)
                 {
                     switch (random)
                     {
@@ -1032,6 +855,266 @@ namespace DOL.AI.Brain
                 return m_OlcasgeanDD;
             }
         }
+    }
+}
+#endregion Olcasgean Brain
+
+#region Olcasgean2
+namespace DOL.GS
+{
+    public class Olcasgean2 : GameEpicBoss
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public Olcasgean2()
+            : base()
+        {
+        }
+        public override int GetResist(eDamageType damageType)
+        {
+            switch (damageType)
+            {
+                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                default: return 70;// dmg reduction for rest resists
+            }
+        }
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * Strength / 100;
+        }
+        public override int MaxHealth
+        {
+            get { return 250000; }
+        }
+        public override int AttackRange
+        {
+            get { return 1500; }
+            set { }
+        }
+        public override bool HasAbility(string keyName)
+        {
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+                return true;
+
+            return base.HasAbility(keyName);
+        }
+        public override double GetArmorAF(eArmorSlot slot)
+        {
+            return 350;
+        }
+        public override double GetArmorAbsorb(eArmorSlot slot)
+        {
+            // 85% ABS is cap.
+            return 0.20;
+        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            int damageDealt = damageAmount + criticalAmount;
+            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            {
+                if (copy != null)
+                {
+                    if (copy is Olcasgean && copy.IsAlive)
+                    {
+                        copy.Health = Health;
+                    }
+                }
+            }
+        }
+        #region Custom Methods
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+            }
+        }
+        protected void ReportNews(GameObject killer)
+        {
+            int numPlayers = AwardEpicEncounterKillPoint();
+            String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+            NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+            if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    if (player.IsEligibleToGiveMeritPoints)
+                    {
+                        GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+                    }
+                }
+            }
+        }
+        protected int AwardEpicEncounterKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.KillsEpicBoss++;
+                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
+                count++;
+            }
+            return count;
+        }
+        public override void Die(GameObject killer)
+        {
+            foreach (GameNPC npc in GetNPCsInRadius(10000))
+            {
+                if (npc != null)
+                {
+                    if (npc.IsAlive)
+                    {
+                        if (npc is Olcasgean boss)
+                        {
+                            if (boss != null && boss.IsAlive && boss.Brain is OlcasgeanBrain)
+                                boss.Die(boss);
+                        }
+
+                        if (npc.Brain is VortexBrain)
+                            npc.RemoveFromWorld();
+
+                        if (npc.Brain is WaterfallAntipassBrain)
+                            npc.RemoveFromWorld();
+                    }
+                }
+            }
+
+            bool canReportNews = true;
+            // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+                {
+                    if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                        canReportNews = false;
+                }
+            }
+            if (canReportNews)
+            {
+                if(killer is not Olcasgean or Olcasgean2)
+                    ReportNews(killer);
+            }
+            base.Die(killer);
+        }
+        #endregion
+        public override bool AddToWorld()
+        {
+            INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164624);
+            LoadTemplate(npcTemplate);
+
+            Strength = npcTemplate.Strength;
+            Constitution = npcTemplate.Constitution;
+            Dexterity = npcTemplate.Dexterity;
+            Quickness = npcTemplate.Quickness;
+            Empathy = npcTemplate.Empathy;
+            Piety = npcTemplate.Piety;
+            Intelligence = npcTemplate.Intelligence;
+
+            OlcasgeanBrain2.wake_up_boss2 = false;
+            Flags = (GameNPC.eFlags)156;
+            LoadedFromScript = true;
+            RespawnInterval = -1;
+
+            Faction = FactionMgr.GetFactionByID(96);
+            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
+            OlcasgeanBrain2 sBrain = new OlcasgeanBrain2();
+            SetOwnBrain(sBrain);
+            base.AddToWorld();
+            return true;
+        }
+
+        public override void OnAttackedByEnemy(AttackData ad)// on Boss being attacked
+        {
+            if (ad != null && ad.Damage > 0 && ad.Attacker != null && ad.Attacker.IsAlive && ad.Attacker is GamePlayer)
+            {
+                if (HealthPercent <= 50)
+                {
+                    if (Util.Chance(50))
+                        CastSpell(OlcasgeanDD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                }
+                if (HealthPercent > 50)
+                    if (Util.Chance(25))
+                        CastSpell(OlcasgeanDD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            }
+            base.OnAttackedByEnemy(ad);
+        }
+        private Spell m_OlcasgeanDD2;
+        private Spell OlcasgeanDD2
+        {
+            get
+            {
+                if (m_OlcasgeanDD2 == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.RecastDelay = 1;
+                    spell.ClientEffect = 11027;
+                    spell.Icon = 11027;
+                    spell.TooltipId = 11027;
+                    spell.Name = "Olcasgean's Root";
+                    spell.Damage = 450;
+                    spell.Range = 1800;
+                    spell.SpellID = 12011;
+                    spell.Target = "Enemy";
+                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.DamageType = (int)eDamageType.Matter;
+                    m_OlcasgeanDD2 = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OlcasgeanDD2);
+                }
+                return m_OlcasgeanDD2;
+            }
+        }
+    }
+}
+#endregion Olcasgean
+
+#region Olcasgean2 Brain
+namespace DOL.AI.Brain
+{
+    public class OlcasgeanBrain2 : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public OlcasgeanBrain2()
+            : base()
+        {
+            AggroLevel = 100;
+            AggroRange = 1500;
+            ThinkInterval = 3000;
+        }
+        public static bool wake_up_boss2 = false;
+        public override void Think()
+        {
+            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
+            {
+                Body.Health = Body.MaxHealth;
+            }
+            if (!HasAggressionTable())
+            {
+                //set state to RETURN TO SPAWN
+                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            }
+
+            if (Body.IsAlive)
+            {
+                if (OIBrain.DeadPrimalsCount >= 4 && !wake_up_boss2)
+                {
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WakeUpBoss), 25000);
+                    wake_up_boss2 = true;
+                }
+            }
+            base.Think();
+        }
+        private int WakeUpBoss(ECSGameTimer timer)
+        {
+            Body.Flags = 0;
+            return 0;
+        } 
     }
 }
 #endregion Olcasgean Brain
@@ -1540,7 +1623,7 @@ namespace DOL.GS
         {
             get
             {
-                return 200000;
+                return 125000;
             }
         }
 
@@ -1883,7 +1966,7 @@ namespace DOL.GS
         {
             get
             {
-                return 200000;
+                return 125000;
             }
         }
         public override int AttackRange
@@ -2116,25 +2199,19 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                 {
-                    if (player != null)
-                        player.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
-                }
+                    player?.Out.SendSpellEffectAnimation(this, this, 5906, 0, false, 0x01);
+                });
                 SetGroundTarget(X, Y, Z);
                 if (!IsCasting)
                     CastSpell(FireGroundDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1000);
+                return 2000;
             }
             return 0;
         }
-        private int DoCast(ECSGameTimer timer)
-        {
-            if (IsAlive)
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
-            return 0;
-        }
+       
         private int RemoveFire(ECSGameTimer timer)
         {
             if (IsAlive)
@@ -2147,7 +2224,7 @@ namespace DOL.GS
         public override short Empathy { get => base.Empathy; set => base.Empathy = 200; }
         public override bool AddToWorld()
         {
-            Model = 665;
+            Model = 2000;
             Name = "trail of fire";
             Flags ^= eFlags.DONTSHOWNAME;
             Flags ^= eFlags.CANTTARGET;
@@ -2287,7 +2364,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 125000; }
         }
         public override int AttackRange
         {
@@ -2552,6 +2629,9 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
+        public override void AttackMostWanted()
+        {
+        }
         public int CastHeal(ECSGameTimer timer)
         {
             GameObject oldTarget = Body.TargetObject;
@@ -2577,7 +2657,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
                 {
                     if (npc != null)
                     {
@@ -2585,16 +2665,19 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.HealthPercent < 100)
                             {
-                                if (!inRangeLiving.Contains(npc))
-                                {
-                                    inRangeLiving.Add(npc);
-                                }
-                                if (inRangeLiving.Count > 0)
-                                {
-                                    GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-                                    RandomTarget = ptarget;
-                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
-                                }
+                                /* if (!inRangeLiving.Contains(npc))
+                                 {
+                                     inRangeLiving.Add(npc);
+                                 }
+                                 if (inRangeLiving.Count > 0)
+                                 {
+                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                                     RandomTarget = ptarget;
+                                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
+                                 }*/
+                                Body.TargetObject = npc;
+                                if (!Body.IsCasting)                               
+                                    Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                             }
                         }
                     }
@@ -2611,12 +2694,12 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 4858;
                     spell.Icon = 4858;
                     spell.TooltipId = 4858;
-                    spell.Value = 200;
+                    spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11722;
                     spell.Target = "Realm";
@@ -2751,6 +2834,9 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        public override void AttackMostWanted()
+        {
+        }
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -2790,16 +2876,19 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.HealthPercent < 100)
                             {
-                                if (!inRangeLiving.Contains(npc))
-                                {
-                                    inRangeLiving.Add(npc);
-                                }
-                                if (inRangeLiving.Count > 0)
-                                {
-                                    GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-                                    RandomTarget = ptarget;
-                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
-                                }
+                                /* if (!inRangeLiving.Contains(npc))
+                                 {
+                                     inRangeLiving.Add(npc);
+                                 }
+                                 if (inRangeLiving.Count > 0)
+                                 {
+                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                                     RandomTarget = ptarget;
+                                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
+                                 }*/
+                                Body.TargetObject = npc;
+                                if (!Body.IsCasting)
+                                    Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                             }
                         }
                     }
@@ -2816,12 +2905,12 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 4858;
                     spell.Icon = 4858;
                     spell.TooltipId = 4858;
-                    spell.Value = 200;
+                    spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11723;
                     spell.Target = "Realm";
@@ -2953,6 +3042,9 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        public override void AttackMostWanted()
+        {
+        }
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -2992,16 +3084,19 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.HealthPercent < 100)
                             {
-                                if (!inRangeLiving.Contains(npc))
-                                {
-                                    inRangeLiving.Add(npc);
-                                }
-                                if (inRangeLiving.Count > 0)
-                                {
-                                    GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-                                    RandomTarget = ptarget;
-                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
-                                }
+                                /* if (!inRangeLiving.Contains(npc))
+                                 {
+                                     inRangeLiving.Add(npc);
+                                 }
+                                 if (inRangeLiving.Count > 0)
+                                 {
+                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                                     RandomTarget = ptarget;
+                                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
+                                 }*/
+                                Body.TargetObject = npc;
+                                if (!Body.IsCasting)
+                                    Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                             }
                         }
                     }
@@ -3018,12 +3113,12 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 4858;
                     spell.Icon = 4858;
                     spell.TooltipId = 4858;
-                    spell.Value = 200;
+                    spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11724;
                     spell.Target = "Realm";
@@ -3155,6 +3250,9 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
+        public override void AttackMostWanted()
+        {
+        }
         private GameLiving randomtarget;
         private GameLiving RandomTarget
         {
@@ -3194,16 +3292,19 @@ namespace DOL.AI.Brain
                         {
                             if (npc.IsAlive && npc.HealthPercent < 100)
                             {
-                                if (!inRangeLiving.Contains(npc))
-                                {
-                                    inRangeLiving.Add(npc);
-                                }
-                                if (inRangeLiving.Count > 0)
-                                {
-                                    GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-                                    RandomTarget = ptarget;
-                                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
-                                }
+                                /* if (!inRangeLiving.Contains(npc))
+                                 {
+                                     inRangeLiving.Add(npc);
+                                 }
+                                 if (inRangeLiving.Count > 0)
+                                 {
+                                     GameNPC ptarget = ((GameNPC)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+                                     RandomTarget = ptarget;
+                                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 2000);
+                                 }*/
+                                Body.TargetObject = npc;
+                                if (!Body.IsCasting)
+                                    Body.CastSpell(EarthmenderHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                             }
                         }
                     }
@@ -3220,12 +3321,12 @@ namespace DOL.AI.Brain
                 {
                     DBSpell spell = new DBSpell();
                     spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = 3;
+                    spell.CastTime = 3;
+                    spell.RecastDelay = 0;
                     spell.ClientEffect = 4858;
                     spell.Icon = 4858;
                     spell.TooltipId = 4858;
-                    spell.Value = 200;
+                    spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11725;
                     spell.Target = "Realm";

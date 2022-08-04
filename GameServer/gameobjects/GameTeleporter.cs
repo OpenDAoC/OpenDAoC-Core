@@ -130,6 +130,8 @@ namespace DOL.GS
 				}
 			}
 
+			if (text == "Entrance") text = text.ToLower();
+
 			// Another special case is personal house, as there is no location
 			// that will work for every player.
 			if (text.ToLower() == "personal")

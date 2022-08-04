@@ -629,11 +629,13 @@ namespace DOL.GS
             return loot;
         }
 
-        private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GameLiving player)
+        private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GamePlayer player)
         {
             //check if any group member has a valid timer to use
-            foreach (GamePlayer groupMember in player.Group.GetPlayersInTheGroup())
+            foreach (GamePlayer groupMember in player.Group.GetNearbyPlayersInTheGroup(player))
             {
+                if ((player.CurrentZone != groupMember.CurrentZone) ||
+                    player.CurrentRegion != groupMember.CurrentRegion) continue;
                 if (player.GetDistance(groupMember) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
                 long tempProp = groupMember.TempProperties.getProperty<long>(xpItemKey, 0);
                 if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)

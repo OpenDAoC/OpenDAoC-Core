@@ -30,6 +30,8 @@ using DOL.GS.API;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
+using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
@@ -152,7 +154,7 @@ namespace DOL.GS.ServerRules
 
 			Account account = GameServer.Database.FindObjectByKey<Account>(username);
 
-			if (Properties.MAX_PLAYERS > 0)
+			if (Properties.MAX_PLAYERS > 0 && string.IsNullOrEmpty(Properties.QUEUE_API_URI))
 			{
 				if (WorldMgr.GetAllClients().Count >= Properties.MAX_PLAYERS)
 				{
@@ -165,7 +167,7 @@ namespace DOL.GS.ServerRules
 						log.Debug("IsAllowedToConnect deny access due to too many players.");
 						return false;
 					}
-
+			
 				}
 			}
 
@@ -409,37 +411,41 @@ namespace DOL.GS.ServerRules
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return false;
 
-			// Safe area support for defender
-			if (defender.CurrentAreas is not null)
-            {
-				foreach (AbstractArea area in defender.CurrentAreas.ToList())
-				{
-					if (area is null) continue;
+			//flame - Commenting out Safe Area check as it was causing lots of lock contention in the GetAreasOfSpot() code. We currently dont have safe-areas so this doesnt affect anything
 
-					if (!area.IsSafeArea)
-						continue;
+			// // Safe area support for defender
+			// if (defender.CurrentAreas is not null)
+			// {
+			// 	var defenderAreas = defender.CurrentAreas.ToList();
+			// 	foreach (AbstractArea area in defenderAreas)
+			// 	{
+			// 		if (area is null) continue;
 
-					if (defender is not GamePlayer) continue;
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}		
+			// 		if (!area.IsSafeArea)
+			// 			continue;
 
-			//safe area support for attacker
-			foreach (AbstractArea area in attacker.CurrentAreas.ToList())
-			{
-				if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
+			// 		if (defender is not GamePlayer) continue;
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }		
 
-				if ((area.IsSafeArea) && (attacker is GamePlayer))
-				{
-					if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
-					return false;
-				}
-			}
+			// //safe area support for attacker
+			// var attackerAreas = attacker.CurrentAreas.ToList();
+			// foreach (AbstractArea area in attackerAreas)
+			// {
+			// 	if ((area.IsSafeArea) && (defender is GamePlayer) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+
+			// 	if ((area.IsSafeArea) && (attacker is GamePlayer))
+			// 	{
+			// 		if (quiet == false) MessageToLiving(attacker, "You can't attack someone in a safe area!");
+			// 		return false;
+			// 	}
+			// }
 
 			//I don't want mobs attacking guards
 			if (defender is GameKeepGuard && attacker is GameNPC && attacker.Realm == 0)
@@ -1190,7 +1196,10 @@ namespace DOL.GS.ServerRules
 						BattleGroup clientBattleGroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 						if (clientBattleGroup != null)
 						{
-							player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							if (killedNPC is GuardLord or GameKeepGuard or GameEpicBoss)
+								livingsToAward.Add(living);
+							else
+								player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						} 
 						else
 						{
@@ -2100,11 +2109,30 @@ namespace DOL.GS.ServerRules
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                 AtlasROGManager.GenerateOrbs(player);
-                if (Properties.EVENT_THIDRANKI || Properties.EVENT_TUTORIAL)
+
+                int bonusRegion = 0;
+                switch (ZoneBonusRotator.GetCurrentBonusRealm())
                 {
-                    if (!player.ReceiveROG) continue;
-                    //Console.WriteLine($"Generating ROG for {player}");
-                    AtlasROGManager.GenerateROG(player, true);
+	                case eRealm.Albion:
+		                bonusRegion = 1;
+		                break;
+	                case eRealm.Hibernia:
+		                bonusRegion = 200;
+		                break;
+	                case eRealm.Midgard:
+		                bonusRegion = 100;
+		                break;
+                }
+                
+                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
+                {
+	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
+	                AtlasROGManager.GenerateROG(player, (byte)(player.Level + RRMod));
+                }
+
+                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(1))
+                {
+	                AtlasROGManager.GenerateBeetleCarapace(player);
                 }
             }
 
@@ -2440,10 +2468,7 @@ namespace DOL.GS.ServerRules
 			}
 			else if (keep is GameKeep)
 			{
-				if (keep.Guild != null)
-					value = Properties.KEEP_RP_BASE + (keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER;
-				else
-					value = Properties.KEEP_RP_BASE / 2;
+				value = Properties.KEEP_RP_BASE + (keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER;
 			}
 
 			value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);

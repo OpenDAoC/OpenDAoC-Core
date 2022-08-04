@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
                     case 3: TeleportTarget.MoveTo(Body.CurrentRegionID, 38292, 31794, 13940, 986); break;
                 }
             }
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTeleport), Util.Random(25000,35000));
+            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTeleport), Util.Random(12000,18000));
             return 0;
         }
         private int ResetTeleport(ECSGameTimer timer)

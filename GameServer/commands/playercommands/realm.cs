@@ -161,7 +161,8 @@ namespace DOL.GS.Commands
 						realmName = "Albion";
 					if (DFEnterJumpPoint.PreviousOwner == eRealm.Midgard)
 						realmName = "Midgard";
-					realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
+					if(realmName != "")
+						realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 				}	
 			}
 			
