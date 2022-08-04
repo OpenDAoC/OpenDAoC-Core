@@ -323,7 +323,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void CheckNPCAggro()
         {
-            if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
+            // if (GameLoop.GameLoopTime - LastNPCAggroCheckTick < NPC_AGGRO_DELAY) return;
             
             if (Body.attackComponent.AttackState)
                 return;
@@ -331,7 +331,7 @@ namespace DOL.AI.Brain
             if (Body.CurrentRegion == null)
                 return;
 
-            LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
+            // LastNPCAggroCheckTick = GameLoop.GameLoopTime + Util.Random((int)(NPC_AGGRO_DELAY/10));
             
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
             {
@@ -436,7 +436,7 @@ namespace DOL.AI.Brain
                 }
             }
             
-            CheckPetAggro(useLOS);
+            // CheckPetAggro(useLOS);
         }
 
         private void CheckPetAggro(bool useLOS)
@@ -491,7 +491,12 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
+            get { 
+                
+                if(Body is GameMerchant || Body is GameTrainer || Body is GameHastener)
+                    return 5000; //Merchants and other special NPCs don't need to think that often
+
+                return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
         }
 
         /// <summary>

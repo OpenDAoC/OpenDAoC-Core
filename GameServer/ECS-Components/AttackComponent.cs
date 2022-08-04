@@ -357,7 +357,8 @@ namespace DOL.GS
                     }
 
 
-                    int meleerange = 128;
+                    // int meleerange = 128;
+                    int meleerange = 150; //Increase default melee range to 150 to help with higher latency players
                     GameKeepComponent
                         keepcomponent =
                             livingTarget as GameKeepComponent; // TODO better component melee attack range check

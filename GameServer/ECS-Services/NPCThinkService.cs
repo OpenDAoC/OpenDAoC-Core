@@ -100,8 +100,14 @@ namespace DOL.GS
                             brain.Think();
                             long stopTick = GameTimer.GetTickCount();
                             if((stopTick - startTick)  > 25 && brain != null)
-                                log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
-                            brain.LastThinkTick = tick;
+                                log.Warn($"Long NPCThink for {brain.Body?.Name}({brain.Body?.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType().ToString()} Time: {stopTick - startTick}ms");
+
+                            //Set the LastThinkTick. Offset the LastThinkTick interval for non-controlled mobs so NPC Think ticks are not all "grouped" in one tick.
+                            if(brain is ControlledNpcBrain)
+                                brain.LastThinkTick = tick; //We wamt controlled pets to keep their normal interval.
+                            else
+                                brain.LastThinkTick = tick + (Util.Random(10) * 50); //Offsets the LastThinkTick by 0-500ms
+
                         }
 
                         if (brain.Body is not {NeedsBroadcastUpdate: true}) return;
