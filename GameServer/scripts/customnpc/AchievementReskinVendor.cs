@@ -196,7 +196,7 @@ public class AchievementReskinVendor : GameNPC
                          && x.Price != 2500).OrderBy(o => o.Price).ToList();
         }
     }
-
+    
     public bool SetModel(GamePlayer player, int number, int price)
     {
         if (price > 0)
@@ -245,8 +245,21 @@ public class AchievementReskinVendor : GameNPC
             player.Inventory.RemoveItem(item);
             ItemUnique unique = new ItemUnique(item.Template);
             unique.Model = number;
-            item.IsTradable = false;
-            item.IsDropable = false;
+            //item.IsTradable = false;
+            //item.IsDropable = false;
+            
+            var CharacterBoundIDs = VendorItemList.FindAll(x => x.PlayerRealmRank is >= 10 or 5);
+            var AccountBoundIDs = VendorItemList.FindAll(x => x.AccountRealmRank is >= 10 || x.Drake >= 25 || x.EpicBossKills >= 25);
+
+            foreach (var charSkins in CharacterBoundIDs)
+            {
+                if (unique.Model == charSkins.ModelID)
+                {
+                    item.IsTradable = false; //no trading/selling
+                    item.IsDropable = false; //no account vault
+                }
+            }
+
             GameServer.Database.AddObject(unique);
             //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
             InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
