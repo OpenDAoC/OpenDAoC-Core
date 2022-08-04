@@ -197,6 +197,16 @@ public class AchievementReskinVendor : GameNPC
         }
     }
     
+    private List<SkinVendorItem> GetCharacterLockedSkinIDs()
+    {
+        return VendorItemList.FindAll(x => x.PlayerRealmRank is >= 10 or 5);
+    }
+
+    private List<SkinVendorItem> GetAccountLockedSkinIDs()
+    {
+        return VendorItemList.FindAll(x => x.AccountRealmRank is >= 10 || x.Drake >= 25 || x.EpicBossKills >= 25);
+    }
+    
     public bool SetModel(GamePlayer player, int number, int price)
     {
         if (price > 0)
@@ -248,22 +258,14 @@ public class AchievementReskinVendor : GameNPC
             //item.IsTradable = false;
             //item.IsDropable = false;
             
-            var CharacterBoundIDs = VendorItemList.FindAll(x => x.PlayerRealmRank is >= 10 or 5);
-            var AccountBoundIDs = VendorItemList.FindAll(x => x.AccountRealmRank is >= 10 || x.Drake >= 25 || x.EpicBossKills >= 25);
-
-            foreach (var charSkins in CharacterBoundIDs)
+            if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
-                if (unique.Model == charSkins.ModelID)
-                {
-                    item.IsTradable = false; //no trading/selling
-                    item.IsDropable = false; //no account vault
-                }
+                item.IsTradable = false; //no trading/selling
+                item.IsDropable = false; //no account vault
             }
-            
-            foreach (var accountSkins in AccountBoundIDs)
+            else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
-                if (unique.Model == accountSkins.ModelID)
-                    item.IsTradable = false; //no trading/selling
+                item.IsTradable = false; //no trading/selling
             }
 
             GameServer.Database.AddObject(unique);
@@ -292,7 +294,7 @@ public class AchievementReskinVendor : GameNPC
                           "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         return false;
     }
-
+    
     public void SetExtension(GamePlayer player, byte number, int price)
     {
         if (price > 0)
@@ -544,7 +546,18 @@ public class AchievementReskinVendor : GameNPC
                     if (cachedModelPrice == 2500)
                         SetExtension(player, (byte)cachedModelID, cachedModelPrice);
                     else
-                        SetModel(player, cachedModelID, cachedModelPrice);
+                    {
+                        //if restricted, use a pop-up
+                        if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
+                        {
+                            
+                        }else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
+                        {
+                            
+                        }else
+                            SetModel(player, cachedModelID, cachedModelPrice);
+                    }
+                        
 
                     return true;
                 }
