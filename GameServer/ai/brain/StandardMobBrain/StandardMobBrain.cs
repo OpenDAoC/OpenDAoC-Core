@@ -491,7 +491,12 @@ namespace DOL.AI.Brain
         /// 10 seconds for 0 aggro mobs
         /// </summary>
         public override int ThinkInterval {
-            get { return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
+            get { 
+                
+                if(Body is GameMerchant || Body is GameTrainer || Body is GameHastener)
+                    return 5000; //Merchants and other special NPCs don't need to think that often
+
+                return Math.Max(500, 1500 - (AggroLevel/10) * 100); }
         }
 
         /// <summary>
