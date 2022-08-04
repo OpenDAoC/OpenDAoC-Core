@@ -56,28 +56,80 @@ public class ConquestObjective
                 break;
         }
 
+        var locs = GetFlagLocsForKeep(keep);
+
         FlagOne = new GameStaticItemTimed(45 * 60 * 1000);
         FlagOne.Model = modelID;
-        FlagOne.X = keep.X + 5000;
-        FlagOne.Y = keep.Y + 5000;
+        FlagOne.X = locs[0].X;
+        FlagOne.Y = locs[0].Y;
+        FlagOne.Z = locs[0].Z;
+        FlagOne.CurrentRegion = WorldMgr.GetRegion(keep.Region);
+        FlagOne.SpawnTick = GameLoop.GameLoopTime;
+        FlagOne.AddToWorld();
         
         FlagTwo = new GameStaticItemTimed(45 * 60 * 1000);
         FlagTwo.Model = modelID;
-        FlagTwo.X = keep.X - 5000;
-        FlagTwo.Y = keep.Y + 5000;
+        FlagTwo.X = locs[1].X;
+        FlagTwo.Y = locs[1].Y;
+        FlagTwo.Z = locs[1].Z;
+        FlagTwo.CurrentRegion = FlagOne.CurrentRegion;
+        FlagTwo.SpawnTick = GameLoop.GameLoopTime;
+        FlagTwo.AddToWorld();
         
         FlagThree = new GameStaticItemTimed(45 * 60 * 1000);
         FlagThree.Model = modelID;
-        FlagThree.X = keep.X + 5000;
-        FlagThree.Y = keep.Y - 5000;
+        FlagThree.X = locs[2].X;
+        FlagThree.Y = locs[2].Y;
+        FlagThree.Z = locs[2].Z;
+        FlagThree.CurrentRegion = FlagOne.CurrentRegion;
+        FlagThree.SpawnTick = GameLoop.GameLoopTime;
+        FlagThree.AddToWorld();
         
         FlagFour = new GameStaticItemTimed(45 * 60 * 1000);
         FlagFour.Model = modelID;
-        FlagFour.X = keep.X - 5000;
-        FlagFour.Y = keep.Y - 5000;
+        FlagFour.X = locs[3].X;
+        FlagFour.Y = locs[3].Y;
+        FlagFour.Z = locs[3].Z;
+        FlagFour.CurrentRegion = FlagOne.CurrentRegion;
+        FlagFour.SpawnTick = GameLoop.GameLoopTime;
+        FlagFour.AddToWorld();
     }
-    
-    
+
+    private List<Point3D> GetFlagLocsForKeep(AbstractGameKeep keep)
+    {
+        List<Point3D> flagLocs = new List<Point3D>();
+
+        switch (keep.Name.ToLower())
+        {
+            case "bledmeer faste":
+                flagLocs.Add(new Point3D(632183, 585097, 5400)); //near hmg
+                flagLocs.Add(new Point3D(629067, 631012, 5355)); //near amg
+                flagLocs.Add(new Point3D(648889, 596948, 5511)); //near the keep
+                flagLocs.Add(new Point3D(636055, 601363, 5448)); //crossroads
+                break;
+            case "dun crauchon":
+                flagLocs.Add(new Point3D(447813, 341818, 3457)); //near amg
+                flagLocs.Add(new Point3D(447201, 297120, 4254)); //near mmg
+                flagLocs.Add(new Point3D(434208, 317595, 3033)); //near the keep
+                flagLocs.Add(new Point3D(432212, 345540, 2841)); //near briefine
+                break;
+            case "caer benowyc":
+                flagLocs.Add(new Point3D(608127, 320648, 3864)); //near hmg
+                flagLocs.Add(new Point3D(653422, 322966, 4335)); //near mmg
+                flagLocs.Add(new Point3D(645242, 344503, 4325)); //near the keep
+                flagLocs.Add(new Point3D(624610, 345270, 4290)); //southern crossroads
+                break;
+            default:
+                flagLocs.Add(new Point3D(0, 0, 0)); //near hmg
+                flagLocs.Add(new Point3D(0, 0, 0)); //near mmg
+                flagLocs.Add(new Point3D(0, 0, 0)); //near the keep
+                flagLocs.Add(new Point3D(0, 0, 0)); //southern crossroads
+                break;
+                
+        }
+        
+        return flagLocs;
+    }
 
     public void DoPeriodicReward()
     {
