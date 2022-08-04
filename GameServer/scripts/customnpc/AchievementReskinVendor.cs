@@ -260,12 +260,12 @@ public class AchievementReskinVendor : GameNPC
             
             if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
-                item.IsTradable = false; //no trading/selling
-                item.IsDropable = false; //no account vault
+                unique.IsTradable = false; //no trading/selling
+                unique.IsDropable = false; //no account vault
             }
             else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
-                item.IsTradable = false; //no trading/selling
+                unique.IsTradable = false; //no trading/selling
             }
 
             GameServer.Database.AddObject(unique);
@@ -550,10 +550,15 @@ public class AchievementReskinVendor : GameNPC
                         //if restricted, use a pop-up
                         if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
                         {
-                            
+                            //come back to me
+                            player.Out.SendCustomDialog(
+                                "THIS WILL MAKE THE ITEM CHARACTER-BOUND. CONTINUE?",
+                                new CustomDialogResponse(CharacterBindResponseHandler));
                         }else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
                         {
-                            
+                            player.Out.SendCustomDialog(
+                                "THIS WILL MAKE THE ITEM ACCOUNT-BOUND. CONTINUE?",
+                                new CustomDialogResponse(CharacterBindResponseHandler));
                         }else
                             SetModel(player, cachedModelID, cachedModelPrice);
                     }
@@ -601,6 +606,16 @@ public class AchievementReskinVendor : GameNPC
                 break;
         }
         return true;
+    }
+    
+    protected virtual void CharacterBindResponseHandler(GamePlayer player, byte response)
+    {
+        if (response == 1)
+        {
+            int cachedModelID = player.TempProperties.getProperty<int>(TempModelID);
+            int cachedModelPrice = player.TempProperties.getProperty<int>(TempModelPrice);
+            SetModel(player, cachedModelID, cachedModelPrice);
+        }
     }
 
     private SkinVendorItem FindChoosenOptionOtherItems(string str, InventoryItem item, int playerRealm, int noneRealm, int damageType, int characterClassUnknown, int playerClass, int playerRealmRank, int accountRealmRank, int playerDragonKills, int playerOrbs, int epicBossPlayerKills, int masteredCrafts,bool isGm)
