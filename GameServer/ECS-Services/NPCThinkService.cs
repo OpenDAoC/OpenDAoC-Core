@@ -106,7 +106,7 @@ namespace DOL.GS
                             if(brain is ControlledNpcBrain)
                                 brain.LastThinkTick = tick; //We wamt controlled pets to keep their normal interval.
                             else
-                                brain.LastThinkTick = tick + (Util.Random(10) *50); //Offsets the LastThinkTick by 0-500ms
+                                brain.LastThinkTick = tick + (Util.Random(10) * 50); //Offsets the LastThinkTick by 0-500ms
 
                         }
 
