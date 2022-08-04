@@ -9,7 +9,6 @@ using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
-using DOL.GS.WeeklyQuests.Albion;
 using log4net;
 
 namespace DOL.GS.MonthlyQuest.Midgard
@@ -359,14 +358,14 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		
 		public override void LoadQuestParameters()
 		{
-			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
-			CapturedKeeps = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			PlayersKilled = GetCustomProperty("FrontiersMonthlyMidKill") != null ? int.Parse(GetCustomProperty("FrontiersMonthlyMidKill")) : 0;
+			CapturedKeeps = GetCustomProperty("FrontiersMonthlyMidKeep") != null ? int.Parse(GetCustomProperty("FrontiersMonthlyMidKeep")) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
-			SetCustomProperty(QuestPropertyKey, CapturedKeeps.ToString());
+			SetCustomProperty("FrontiersMonthlyMidKill", PlayersKilled.ToString());
+			SetCustomProperty("FrontiersMonthlyMidKeep", CapturedKeeps.ToString());
 		}
 
 		public override void FinishQuest()
