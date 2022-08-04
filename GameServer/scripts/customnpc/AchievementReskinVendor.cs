@@ -259,6 +259,12 @@ public class AchievementReskinVendor : GameNPC
                     item.IsDropable = false; //no account vault
                 }
             }
+            
+            foreach (var accountSkins in AccountBoundIDs)
+            {
+                if (unique.Model == accountSkins.ModelID)
+                    item.IsTradable = false; //no trading/selling
+            }
 
             GameServer.Database.AddObject(unique);
             //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
