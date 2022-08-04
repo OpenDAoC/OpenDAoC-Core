@@ -93,6 +93,7 @@ namespace DOL.GS.DailyQuest.Albion
 				Joe.Y = 27679;
 				Joe.Z = 22893;
 				Joe.Heading = 466;
+				Joe.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
 				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 713,0,0,3);
 				templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 714);

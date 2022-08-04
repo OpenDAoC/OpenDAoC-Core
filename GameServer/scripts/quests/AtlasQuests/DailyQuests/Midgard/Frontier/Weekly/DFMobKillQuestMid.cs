@@ -93,6 +93,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Patrick.Y = 18947;
 				Patrick.Z = 22892;
 				Patrick.Heading = 2117;
+				Patrick.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
 				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 751,0,0,3);
 				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 752);
