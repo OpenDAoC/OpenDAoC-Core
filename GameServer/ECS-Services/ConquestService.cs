@@ -21,16 +21,33 @@ public class ConquestService
     {
         EntityManager.AddService(typeof(ConquestService));
         ConquestManager = new ConquestManager();
+        ConquestManager.StartConquest();
     }
 
     public static void Tick(long tick)
     {
         Diagnostics.StartPerfCounter(ServiceName);
-
+        
         long fullCycle = ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000; //multiply by 60000 to accomodate for minute input
-        long maxConquestTime = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //multiply by 60000 to accomodate for minute input
         long tallyCycle = ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
 
+        var ActiveObjective = ConquestManager.ActiveObjective;
+
+        if (ActiveObjective == null)
+        {
+            ConquestManager.ConquestTimeout();
+            Diagnostics.StopPerfCounter(ServiceName);
+            return;
+        }
+        
+        if(ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
+            ConquestManager.BeginNextConquest();
+
+        if (ActiveObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
+        {
+            ConquestManager.ActiveObjective.DoPeriodicReward();
+        }
+        /*       
         if (ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
         {
             ConquestManager.StartConquest();
@@ -45,17 +62,16 @@ public class ConquestService
             }
             else
             {
-                foreach (var activeObjective in ConquestManager.GetActiveObjectives)
+                
+                if (ConquestManager.ActiveObjective != null && ConquestManager.ActiveObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
                 {
-                    if (activeObjective != null && activeObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
-                    {
-                        activeObjective.DoRollover();
-                    }
-                       
+                    ConquestManager.ActiveObjective.DoRollover();
                 }
+                       
+                
             }
                 
-        }
+        }*/
         
         /*
         if(ConquestManager.LastConquestStartTime + 7200000 < GameLoop.GameLoopTime) //multiply by 60k ms to accomodate minute input
