@@ -16,7 +16,8 @@ public class ConquestObjective
     private int SubTickMaxReward = ServerProperties.Properties.MAX_SUBTASK_RP_REWARD; //maximum of 1000 rps awarded every interval (5 minutes atm)
 
     public long LastRolloverTick = 0;
-    
+    public long StartTick;
+
     public int TotalContribution => AlbionContribution + HiberniaContribution + MidgardContribution;
 
     private Dictionary<GamePlayer, int> PlayerToContributionDict;
@@ -25,41 +26,14 @@ public class ConquestObjective
     {
         Keep = keep;
         PlayerToContributionDict = new Dictionary<GamePlayer, int>();
+        StartTick = GameLoop.GameLoopTime;
+        LastRolloverTick = StartTick;
         ResetContribution();
     }
 
-    public void Contribute(GamePlayer contributor, int contributionValue)
-    {
-        if (!ConquestService.ConquestManager.ConquestIsActive) return;
-        
-        if (contributor is null) return;
-
-        if (PlayerToContributionDict.Keys.Contains(contributor))
-        {
-            int existing = PlayerToContributionDict[contributor];
-            PlayerToContributionDict[contributor] += contributionValue;
-        }
-        else
-            PlayerToContributionDict.Add(contributor, contributionValue);
-
-        switch (contributor.Realm)
-        {
-            case eRealm.Albion:
-                AlbionContribution += contributionValue;
-                break;
-            case eRealm.Midgard:
-                MidgardContribution += contributionValue;
-                break;
-            case eRealm.Hibernia:
-                HiberniaContribution += contributionValue;
-                break;
-        }
-    }
-
-    public void DoRollover()
+    public void DoPeriodicReward()
     {
         AwardContributors();
-        UpdateTotalContribution();
         PlayerToContributionDict.Clear();
         ResetContribution();
         LastRolloverTick = GameLoop.GameLoopTime;
@@ -67,11 +41,13 @@ public class ConquestObjective
 
     public void ConquestCapture()
     {
-        DoRollover();
+        DoPeriodicReward();
     }
 
     private void AwardContributors()
     {
+        //TODO: Redo the award algo
+        /*
         ConquestManager conqMan = ConquestService.ConquestManager;
         foreach (var player in PlayerToContributionDict.Keys.Where(x => PlayerToContributionDict[x] > 0))
         {
@@ -96,12 +72,7 @@ public class ConquestObjective
                     player.GainRealmPoints(midaward, false, true);
                     break;
             }
-        }
-    }
-
-    private void UpdateTotalContribution()
-    {
-        ConquestService.ConquestManager.AddSubtotalToOverallFrom(this);
+        }*/
     }
 
     public List<GamePlayer> GetContributingPlayers()
