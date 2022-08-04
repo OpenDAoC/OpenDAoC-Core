@@ -591,7 +591,7 @@ namespace DOL.GS
                         if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
                         {
                             var leftWep = p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                            if (leftWep is {Object_Type: (int) eObjectType.LeftAxe})
+                            if (p.GetModifiedSpecLevel(Specs.Left_Axe) > 0)
                             {
                                 int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
                                 if (LASpec > 0)
@@ -1853,7 +1853,7 @@ namespace DOL.GS
                 ad.Damage = (int) damage;
 
                 // apply total damage cap
-                Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)} ");
+                //Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)} ");
                 ad.UncappedDamage = ad.Damage;
                 if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
