@@ -485,7 +485,8 @@ public class ConquestManager
         temp.Add("");
         
         //TODO: Add flag details here
-        
+        temp.Add($"Flags: {ActiveObjective.FlagOne} | {ActiveObjective.FlagTwo} | {ActiveObjective.FlagThree} | {ActiveObjective.FlagFour}");
+
         temp.Add($"Objective Capture Reward: {SumOfContributions}");
         temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
         temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");

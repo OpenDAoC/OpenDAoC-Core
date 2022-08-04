@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.Database;
 using DOL.GS;
 using DOL.GS.Keeps;
 
@@ -22,14 +23,61 @@ public class ConquestObjective
 
     private Dictionary<GamePlayer, int> PlayerToContributionDict;
 
+    public GameStaticItemTimed FlagOne;
+    public GameStaticItemTimed FlagTwo;
+    public GameStaticItemTimed FlagThree;
+    public GameStaticItemTimed FlagFour;
+
     public ConquestObjective(AbstractGameKeep keep)
     {
         Keep = keep;
+
+        InitializeFlags(keep);
+        
         PlayerToContributionDict = new Dictionary<GamePlayer, int>();
         StartTick = GameLoop.GameLoopTime;
         LastRolloverTick = StartTick;
         ResetContribution();
     }
+
+    private void InitializeFlags(AbstractGameKeep keep)
+    {
+        ushort modelID = 0;
+        switch (keep.Realm)
+        {
+            case eRealm.Hibernia:
+                modelID = 466;
+                break;
+            case eRealm.Albion:
+                modelID = 464;
+                break;
+            case eRealm.Midgard:
+                modelID = 465;
+                break;
+        }
+
+        FlagOne = new GameStaticItemTimed(45 * 60 * 1000);
+        FlagOne.Model = modelID;
+        FlagOne.X = keep.X + 5000;
+        FlagOne.Y = keep.Y + 5000;
+        
+        FlagTwo = new GameStaticItemTimed(45 * 60 * 1000);
+        FlagTwo.Model = modelID;
+        FlagTwo.X = keep.X - 5000;
+        FlagTwo.Y = keep.Y + 5000;
+        
+        FlagThree = new GameStaticItemTimed(45 * 60 * 1000);
+        FlagThree.Model = modelID;
+        FlagThree.X = keep.X + 5000;
+        FlagThree.Y = keep.Y - 5000;
+        
+        FlagFour = new GameStaticItemTimed(45 * 60 * 1000);
+        FlagFour.Model = modelID;
+        FlagFour.X = keep.X - 5000;
+        FlagFour.Y = keep.Y - 5000;
+    }
+    
+    
 
     public void DoPeriodicReward()
     {
@@ -41,7 +89,8 @@ public class ConquestObjective
 
     public void ConquestCapture()
     {
-        DoPeriodicReward();
+        //DoPeriodicReward();
+        //TODO: make a capture reward here
     }
 
     private void AwardContributors()

@@ -8654,25 +8654,25 @@ namespace DOL.GS
 
             if (CurrentZone.IsRvR)
             {
-                var activeConquests = ConquestService.ConquestManager.GetActiveObjectives;
+                var activeConquest = ConquestService.ConquestManager.ActiveObjective;
                 int baseContribution = enemy.RealmPointsValue / 2; //todo turn it into a server prop?
-                foreach (var conquestObjective in activeConquests)
+                
+                if (activeConquest != null && this.GetDistance(new Point2D(activeConquest.Keep.X, activeConquest.Keep.Y)) <=
+                    ServerProperties.Properties.MAX_CONQUEST_RANGE)
                 {
-                    if (conquestObjective != null && this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
-                        ServerProperties.Properties.MAX_CONQUEST_RANGE)
+                    //TODO: add something here
+                    if (Group != null)
                     {
-                        if (Group != null)
-                        {
-                            conquestObjective.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
-                        }
-                        else
-                        {
-                            conquestObjective.Contribute(this, baseContribution); 
-                        }
+                        //activeConquest.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
                     }
+                    else
+                    {
+                        //activeConquest.Contribute(this, baseContribution); 
+                    }
+                }
                         
                     
-                }
+                
             }
 
             base.EnemyKilled(enemy);
