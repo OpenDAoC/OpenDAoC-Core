@@ -61,6 +61,7 @@ namespace DOL.GS
 		/// Tested - min distance for mob sticking within combat range to player is 25
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
+		public bool isDeadOrDying = false;
 
 		private int m_databaseLevel;
 		
