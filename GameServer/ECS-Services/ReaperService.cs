@@ -46,16 +46,13 @@ public class ReaperService
                     {
                         if (!KilledToKillerDict.Keys.Contains(newDeath.Key))
                             KilledToKillerDict.Add(newDeath.Key, newDeath.Value);
-                        KillsToAdd.Remove(newDeath.Key);
                     }
                     KillsToAdd.Clear();
                     Diagnostics.StopPerfCounter(ServiceName+"-KillsToAdd");
                 }
             }
         }
-        
-        
-        
+
         if (KilledToKillerDict.Keys.Count > 0)
         {
             int killsToProcess = KilledToKillerDict.Keys.Count;
