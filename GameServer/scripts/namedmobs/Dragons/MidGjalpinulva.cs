@@ -117,38 +117,42 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			// debug
-			if (killer == null)
-				log.Error("Dragon Killed: killer is null!");
-			else
-				log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
-			bool canReportNews = true;
-			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			if (this.isDeadOrDying == false)
 			{
-				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
-				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+				this.isDeadOrDying = true;
+				// debug
+				if (killer == null)
+					log.Error("Dragon Killed: killer is null!");
+				else
+					log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+				bool canReportNews = true;
+				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-						canReportNews = false;
+					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+					{
+						if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+							canReportNews = false;
+					}
 				}
-			}
 
-			var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("gjalpinulva_messengers");
-			if (spawnMessengers != null)
-			{
-				spawnMessengers.Stop();
-				TempProperties.removeProperty("gjalpinulva_messengers");
-			}
+				var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("gjalpinulva_messengers");
+				if (spawnMessengers != null)
+				{
+					spawnMessengers.Stop();
+					TempProperties.removeProperty("gjalpinulva_messengers");
+				}
 
-			base.Die(killer);
-			foreach (String message in m_deathAnnounce)
-			{
-				BroadcastMessage(String.Format(message, Name));
-			}
-			if (canReportNews)
-			{
-				ReportNews(killer);
+				base.Die(killer);
+				foreach (String message in m_deathAnnounce)
+				{
+					BroadcastMessage(String.Format(message, Name));
+				}
+				if (canReportNews)
+				{
+					ReportNews(killer);
+				}
 			}
 		}
 		#endregion
