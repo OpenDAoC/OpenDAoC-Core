@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
 
-namespace DOL.GS {
-    public class GameEpicNPC : GameNPC {
+namespace DOL.GS
+{
+    public class GameEpicNPC : GameNPC
+    {
         public GameEpicNPC() : base()
         {
             ScalingFactor = 60;
@@ -12,7 +14,7 @@ namespace DOL.GS {
         public override bool HasAbility(string keyName)
         {
             //if (IsAlive && keyName == GS.Abilities.CCImmunity) //incase we decide to make them immune to any cc
-                //return true;
+            //return true;
             if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
                 return true;
             if (IsAlive && keyName == GS.Abilities.NSImmunity)
@@ -46,6 +48,20 @@ namespace DOL.GS {
                 var carapaceChance = Properties.CARAPACE_DROPCHANCE;
                 var realmLoyalty = 0;
 
+                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null
+                           ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days
+                           : 0;
+
+                if (numCurrentLoyalDays > 30)
+                {
+                    numCurrentLoyalDays = 30;
+                }
+
+                if (numCurrentLoyalDays >= 1)
+                {
+                    realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
+                }
+
                 var achievementMob = Regex.Replace(Name, @"\s+", "");
 
                 var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
@@ -65,11 +81,7 @@ namespace DOL.GS {
                             if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             {
                                 if (bgPlayer.Level < 45) continue;
-                                var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                                if (numCurrentLoyalDays >= 1)
-                                {
-                                    realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
-                                }
+
                                 if (Util.Chance(baseChance + realmLoyalty))
                                 {
                                     AtlasROGManager.GenerateOrbAmount(bgPlayer, amount);
@@ -93,11 +105,6 @@ namespace DOL.GS {
                         {
                             if (groupPlayer.Level < 45) continue;
 
-                            var numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                            if (numCurrentLoyalDays >= 1)
-                            {
-                                realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
-                            }
                             if (Util.Chance(baseChance + realmLoyalty))
                             {
                                 AtlasROGManager.GenerateOrbAmount(groupPlayer, amount);
@@ -115,14 +122,6 @@ namespace DOL.GS {
                 {
                     if (playerKiller.Level >= 45)
                     {
-                        var numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null
-                            ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days
-                            : 0;
-                        if (numCurrentLoyalDays >= 1)
-                        {
-                            realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
-                        }
-
                         if (Util.Chance(baseChance + realmLoyalty))
                         {
                             AtlasROGManager.GenerateOrbAmount(playerKiller, amount);
@@ -136,9 +135,8 @@ namespace DOL.GS {
                         playerKiller.Achieve($"{achievementMob}-Credit");
                     }
                 }
-
-                base.Die(killer);
             }
+            base.Die(killer);
         }
     }
 }

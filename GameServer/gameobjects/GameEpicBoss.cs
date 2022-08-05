@@ -82,8 +82,9 @@ namespace DOL.GS {
                     }
                 }
 
-                base.Die(killer);
             }
+
+            base.Die(killer);
         }
     }
 }
