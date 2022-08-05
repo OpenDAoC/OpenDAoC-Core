@@ -117,9 +117,6 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			if (this.isDeadOrDying == false)
-			{
-				this.isDeadOrDying = true;
 				// debug
 				if (killer == null)
 					log.Error("Dragon Killed: killer is null!");
@@ -153,7 +150,7 @@ namespace DOL.GS
 				{
 					ReportNews(killer);
 				}
-			}
+			
 		}
 		#endregion
 		public override int GetResist(eDamageType damageType)
