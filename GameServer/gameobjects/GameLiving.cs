@@ -59,6 +59,8 @@ namespace DOL.GS
         /// Holds the AttackData object of last attack
         /// </summary>
         public const string LAST_ATTACK_DATA = "LastAttackData";
+        
+        public bool isDeadOrDying = false;
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -4798,6 +4800,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void Die(GameObject killer)
 		{
+			isDeadOrDying = true;
+			Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
 			ReaperService.KillLiving(this, killer);
 		}
 
@@ -4912,6 +4916,8 @@ namespace DOL.GS
 			
 			LastAttackedByEnemyTickPvE = 0;
 			LastAttackedByEnemyTickPvP = 0;
+			
+			isDeadOrDying = false;
 			//Let's send the notification at the end
 			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
 		}
