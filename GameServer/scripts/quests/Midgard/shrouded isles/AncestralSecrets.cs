@@ -328,7 +328,11 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateAncestralKeeper(GamePlayer player)
 		{
-		
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
+			{
+				if (npc.Brain is SINeckBossBrain)
+					return;
+			}
 			AncestralKeeper = new SINeckBoss();
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
@@ -344,7 +348,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.Y = player.Y;
 			AncestralKeeper.Z = player.Z;
 			AncestralKeeper.MaxSpeedBase = 250;
-			AncestralKeeper.AddToWorld();
+			//AncestralKeeper.AddToWorld();
 
 			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
@@ -365,7 +369,28 @@ namespace DOL.GS.Quests.Hibernia
         
 			if (player == null)
 				return;
-        
+
+			if (args.Killer is GamePet pet)
+			{
+				if(pet != null && pet.Owner != null)
+                {
+					GamePlayer pet_owner = pet.Owner as GamePlayer;
+					if (pet_owner != null && pet_owner.IsAlive)
+					{
+						if (pet_owner.Group != null)
+						{
+							foreach (var gpl in pet_owner.Group.GetPlayersInTheGroup())//gain credit for every one in petowner grp
+							{
+								AdvanceAfterKill(gpl);
+							}
+						}
+						else//player not in grp
+						{
+							AdvanceAfterKill(pet_owner);
+						}
+					}
+				}
+			}
 			if (player.Group != null)
 			{
 				foreach (var gpl in player.Group.GetPlayersInTheGroup())
