@@ -205,81 +205,85 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		public override void Die(GameObject killer)
 		{
-			// debug
-			log.Debug($"{Name} killed by {killer.Name}");
-			
-			if (killer is GamePet pet) killer = pet.Owner; 
-            
-			var playerKiller = killer as GamePlayer;
-            
-			var achievementMob = Regex.Replace(Name, @"\s+", "");
-            
-			var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-            
-			if (killerBG != null)
+			if (this.isDeadOrDying == false)
 			{
-				lock (killerBG.Members)
+				this.isDeadOrDying = true;
+				// debug
+				log.Debug($"{Name} killed by {killer.Name}");
+
+				if (killer is GamePet pet) killer = pet.Owner;
+
+				var playerKiller = killer as GamePlayer;
+
+				var achievementMob = Regex.Replace(Name, @"\s+", "");
+
+				var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
+				if (killerBG != null)
 				{
-					foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
+					lock (killerBG.Members)
 					{
-						if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+						foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
 						{
-							if (bgPlayer.Level < 45) continue;
-							AtlasROGManager.GenerateOrbAmount(bgPlayer,OrbsReward);
-							AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
-							bgPlayer.Achieve($"{achievementMob}-Credit");
+							if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+							{
+								if (bgPlayer.Level < 45) continue;
+								AtlasROGManager.GenerateOrbAmount(bgPlayer, OrbsReward);
+								AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+								bgPlayer.Achieve($"{achievementMob}-Credit");
+							}
 						}
 					}
 				}
-			}
-			else if (playerKiller?.Group != null)
-			{
-				foreach (var groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+				else if (playerKiller?.Group != null)
 				{
-					if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					foreach (var groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
 					{
-						if (groupPlayer.Level < 45) continue;
-						AtlasROGManager.GenerateOrbAmount(groupPlayer,OrbsReward);
-						AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
-						groupPlayer.Achieve($"{achievementMob}-Credit");
+						if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+						{
+							if (groupPlayer.Level < 45) continue;
+							AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
+							AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
+							groupPlayer.Achieve($"{achievementMob}-Credit");
+						}
 					}
 				}
-			}
-			else if (playerKiller != null)
-			{
-				if (playerKiller.Level >= 45)
+				else if (playerKiller != null)
 				{
-					AtlasROGManager.GenerateOrbAmount(playerKiller,OrbsReward);
-					AtlasROGManager.GenerateBeetleCarapace(playerKiller);
-					playerKiller.Achieve($"{achievementMob}-Credit");;
-				}
-			}
-
-			bool canReportNews = true;
-
-			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
-
-				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
-				{
-					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-						canReportNews = false;
+					if (playerKiller.Level >= 45)
+					{
+						AtlasROGManager.GenerateOrbAmount(playerKiller, OrbsReward);
+						AtlasROGManager.GenerateBeetleCarapace(playerKiller);
+						playerKiller.Achieve($"{achievementMob}-Credit"); ;
+					}
 				}
 
-			}
+				bool canReportNews = true;
 
-			base.Die(killer);
+				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
-			foreach (String message in m_deathAnnounce)
-			{
-				BroadcastMessage(String.Format(message, Name));
-			}
+					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+					{
+						if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+							canReportNews = false;
+					}
 
-			if (canReportNews)
-			{
-				ReportNews(killer);
+				}
+
+				base.Die(killer);
+
+				foreach (String message in m_deathAnnounce)
+				{
+					BroadcastMessage(String.Format(message, Name));
+				}
+
+				if (canReportNews)
+				{
+					ReportNews(killer);
+				}
 			}
 		}
 

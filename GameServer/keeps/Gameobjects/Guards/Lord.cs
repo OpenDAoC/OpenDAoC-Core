@@ -147,69 +147,73 @@ namespace DOL.GS.Keeps
 		/// <param name="killer">The killer object</param>
 		public override void Die(GameObject killer)
 		{
-			m_lastRealm = eRealm.None;
-
-			if (Properties.LOG_KEEP_CAPTURES)
+			if (this.isDeadOrDying == false)
 			{
-				try
+				this.isDeadOrDying = true;
+				m_lastRealm = eRealm.None;
+
+				if (Properties.LOG_KEEP_CAPTURES)
 				{
-					if (this.Component != null)
+					try
 					{
-						Database.KeepCaptureLog keeplog = new Database.KeepCaptureLog();
-						keeplog.KeepName = Component.Keep.Name;
-
-						if (Component.Keep is GameKeep)
-							keeplog.KeepType = "Keep";
-						else
-							keeplog.KeepType = "Tower";
-
-						keeplog.NumEnemies = GetEnemyCountInArea();
-						keeplog.RPReward = RealmPointsValue;
-						keeplog.BPReward = BountyPointsValue;
-						keeplog.XPReward = ExperienceValue;
-						keeplog.MoneyReward = MoneyValue;
-
-						if (Component.Keep.StartCombatTick > 0)
+						if (this.Component != null)
 						{
-							keeplog.CombatTime = (int)((Component.Keep.CurrentRegion.Time - Component.Keep.StartCombatTick) / 1000 / 60);
-						}
+							Database.KeepCaptureLog keeplog = new Database.KeepCaptureLog();
+							keeplog.KeepName = Component.Keep.Name;
 
-						keeplog.CapturedBy = GlobalConstants.RealmToName(killer.Realm);
+							if (Component.Keep is GameKeep)
+								keeplog.KeepType = "Keep";
+							else
+								keeplog.KeepType = "Tower";
 
-						string listRPGainers = "";
+							keeplog.NumEnemies = GetEnemyCountInArea();
+							keeplog.RPReward = RealmPointsValue;
+							keeplog.BPReward = BountyPointsValue;
+							keeplog.XPReward = ExperienceValue;
+							keeplog.MoneyReward = MoneyValue;
 
-						lock (XPGainers.SyncRoot)
-						{
-							foreach (System.Collections.DictionaryEntry de in XPGainers)
+							if (Component.Keep.StartCombatTick > 0)
 							{
-								GameLiving living = de.Key as GameLiving;
-								if (living != null)
+								keeplog.CombatTime = (int)((Component.Keep.CurrentRegion.Time - Component.Keep.StartCombatTick) / 1000 / 60);
+							}
+
+							keeplog.CapturedBy = GlobalConstants.RealmToName(killer.Realm);
+
+							string listRPGainers = "";
+
+							lock (XPGainers.SyncRoot)
+							{
+								foreach (System.Collections.DictionaryEntry de in XPGainers)
 								{
-									listRPGainers += living.Name + ";";
+									GameLiving living = de.Key as GameLiving;
+									if (living != null)
+									{
+										listRPGainers += living.Name + ";";
+									}
 								}
 							}
+
+							keeplog.RPGainerList = listRPGainers.TrimEnd(';');
+
+							GameServer.Database.AddObject(keeplog);
 						}
-
-						keeplog.RPGainerList = listRPGainers.TrimEnd(';');
-
-						GameServer.Database.AddObject(keeplog);
+						else
+						{
+							log.Error("Component null for Guard Lord " + Name);
+						}
 					}
-					else
+					catch (System.Exception ex)
 					{
-						log.Error("Component null for Guard Lord " + Name);
+						log.Error("KeepCaptureLog Exception", ex);
 					}
 				}
-				catch (System.Exception ex)
+
+				base.Die(killer);
+
+				if (Component != null)
 				{
-					log.Error("KeepCaptureLog Exception", ex);
+					GameServer.ServerRules.ResetKeep(this, killer);
 				}
-			}
-
-			base.Die(killer);
-
-			if (Component != null)
-			{
-				GameServer.ServerRules.ResetKeep(this, killer);
 			}
 
 		}
