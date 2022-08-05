@@ -7,6 +7,7 @@ namespace DOL.GS {
         {
             ScalingFactor = 80;
             OrbsReward = Properties.EPICBOSS_ORBS;
+            
         }
         public override bool HasAbility(string keyName)
         {
@@ -21,6 +22,10 @@ namespace DOL.GS {
         }
         public override void Die(GameObject killer)//current orb reward for epic boss is 1500
         {
+            if(this.isDeadOrDying == false)
+            {
+                this.isDeadOrDying = true;
+
             if (MaxHealth <= 40000 && MaxHealth > 30000)// 750 orbs for normal nameds
                 OrbsReward = Properties.EPICBOSS_ORBS / 2;
 
@@ -77,7 +82,8 @@ namespace DOL.GS {
                 }
             }
 
-            base.ProcessDeath(killer);
+            base.Die(killer);
+            }
         }
     }
 }
