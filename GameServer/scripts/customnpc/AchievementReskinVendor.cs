@@ -258,12 +258,13 @@ public class AchievementReskinVendor : GameNPC
             //item.IsTradable = false;
             //item.IsDropable = false;
             
+            /*
             if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
                 unique.IsTradable = false; //no trading/selling
                 unique.IsDropable = false; //no account vault
-            }
-            else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
+            }*/
+            if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null || GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == unique.Model) != null)
             {
                 unique.IsTradable = false; //no trading/selling
             }
@@ -548,19 +549,23 @@ public class AchievementReskinVendor : GameNPC
                     else
                     {
                         //if restricted, use a pop-up
-                        if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
+                        if (GetCharacterLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null || GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
                         {
                             //come back to me
                             player.Out.SendCustomDialog(
                                 "THIS WILL MAKE THE ITEM CHARACTER-BOUND. CONTINUE?",
                                 new CustomDialogResponse(CharacterBindResponseHandler));
-                        }else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
+                        }
+                        else
+                            SetModel(player, cachedModelID, cachedModelPrice);
+                        /*
+                        else if (GetAccountLockedSkinIDs().FirstOrDefault(x => x.ModelID == cachedModelID) != null)
                         {
                             player.Out.SendCustomDialog(
                                 "THIS WILL MAKE THE ITEM ACCOUNT-BOUND. CONTINUE?",
                                 new CustomDialogResponse(CharacterBindResponseHandler));
-                        }else
-                            SetModel(player, cachedModelID, cachedModelPrice);
+                        }*/
+                       
                     }
                         
 
