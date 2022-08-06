@@ -63,7 +63,7 @@ public class WeeklyQuestService
                 List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
                 foreach (var quest in player.QuestListFinished)
                 {
-                    if (quest is WeeklyQuest)
+                    if (quest is Quests.WeeklyQuest)
                     {
                         quest.AbortQuest();
                         questsToRemove.Add(quest);    

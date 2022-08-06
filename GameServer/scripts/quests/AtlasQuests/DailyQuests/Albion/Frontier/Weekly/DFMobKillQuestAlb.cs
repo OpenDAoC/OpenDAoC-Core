@@ -11,9 +11,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.WeeklyQuest.Albion
 {
-	public class DFMobKillQuestAlb : WeeklyQuest
+	public class DFMobKillQuestAlb : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -93,6 +93,7 @@ namespace DOL.GS.DailyQuest.Albion
 				Joe.Y = 27679;
 				Joe.Z = 22893;
 				Joe.Heading = 466;
+				Joe.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
 				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 713,0,0,3);
 				templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 714);
