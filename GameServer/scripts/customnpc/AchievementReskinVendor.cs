@@ -1896,7 +1896,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Class Epic Chestpiece", 1187, Slot.TORSO, 5, 5, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Bonedancer, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, epic));
             //rr 6
             VendorItemList.Add(new SkinVendorItem("Eirene's Chest", 2227, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, artifact));
-            VendorItemList.Add(new SkinVendorItem("Naliah's Robe", 2518, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
+            VendorItemList.Add(new SkinVendorItem("Naliah's Robe", 2518, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
             VendorItemList.Add(new SkinVendorItem("Guard of Valor", 2121, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
             VendorItemList.Add(new SkinVendorItem("Guard of Valor", 2471, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, artifact));
             VendorItemList.Add(new SkinVendorItem("Guard of Valor", 2474, Slot.TORSO, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, artifact));
