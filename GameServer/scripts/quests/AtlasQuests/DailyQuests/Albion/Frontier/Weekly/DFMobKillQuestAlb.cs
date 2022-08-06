@@ -11,9 +11,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.WeeklyQuest.Albion
 {
-	public class DFMobKillQuestAlb : WeeklyQuest
+	public class DFMobKillQuestAlb : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.

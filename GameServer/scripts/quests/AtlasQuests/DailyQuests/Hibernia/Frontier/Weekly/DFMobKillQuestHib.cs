@@ -6,9 +6,9 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.WeeklyQuest.Hibernia
 {
-	public class DFMobKillQuestHib : WeeklyQuest
+	public class DFMobKillQuestHib : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.

@@ -11,7 +11,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Midgard
+namespace DOL.GS.WeeklyQuest.Midgard
 {
 	public class DFWeeklyKillQuestMid : Quests.WeeklyQuest
 	{

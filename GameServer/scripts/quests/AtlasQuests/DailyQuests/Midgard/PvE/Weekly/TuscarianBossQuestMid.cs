@@ -12,9 +12,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Midgard
+namespace DOL.GS.WeeklyQuest.Midgard
 {
-    public class TuscarianBossQuestMid : WeeklyQuest
+    public class TuscarianBossQuestMid : Quests.WeeklyQuest
     {
         /// <summary>
         /// Defines a logger for this class.
