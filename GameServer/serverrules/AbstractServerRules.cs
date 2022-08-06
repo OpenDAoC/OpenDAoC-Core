@@ -2108,7 +2108,7 @@ namespace DOL.GS.ServerRules
             foreach (var player in playersToAward)
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
-                AtlasROGManager.GenerateOrbs(player);
+                AtlasROGManager.GenerateOrbAmount(player, Util.Random(20, 50));
 
                 int bonusRegion = 0;
                 switch (ZoneBonusRotator.GetCurrentBonusRealm())

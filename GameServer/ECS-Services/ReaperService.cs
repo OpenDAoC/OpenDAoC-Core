@@ -44,7 +44,7 @@ public class ReaperService
                     Diagnostics.StartPerfCounter(ServiceName+"-KillsToAdd");
                     foreach (var newDeath in KillsToAdd)
                     {
-                        if (!KilledToKillerDict.Keys.Contains(newDeath.Key))
+                        if (!KilledToKillerDict.ContainsKey(newDeath.Key))
                             KilledToKillerDict.Add(newDeath.Key, newDeath.Value);
                     }
                     KillsToAdd.Clear();
@@ -61,24 +61,22 @@ public class ReaperService
             Parallel.ForEach(KilledToKillerDict, killed =>
             {
                 killed.Key.ProcessDeath(killed.Value);
-                DeadLivings.Add(killed.Key);
+                Console.WriteLine($"Dead or Dying set to {killed.Key.isDeadOrDying} for {killed.Key.Name} in reaper");
             });
 
             Diagnostics.StopPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
             Diagnostics.StartPerfCounter(ServiceName+"-RemoveKills");
+            
             lock (KillerDictLock)
             {
                 //remove everything we killed
-                foreach (var deadLiving in DeadLivings)
+                foreach (var deadLiving in KilledToKillerDict.Keys.Where(x=> x.isDeadOrDying == false))
                 {
-                    if(deadLiving != null && KilledToKillerDict.Keys.Contains(deadLiving))
-                        KilledToKillerDict.Remove(deadLiving);
+                    KilledToKillerDict.Remove(deadLiving);
                 }
             }
             Diagnostics.StopPerfCounter(ServiceName+"-RemoveKills");
         }
-        
-        
 
         Diagnostics.StopPerfCounter(ServiceName);
     }
