@@ -26,7 +26,6 @@ namespace DOL.GS.Commands
 
                 if (args[1] == "set")
                 {
-                    return;
                     if (args.Length >= 3)
                     {
                         int.TryParse(args[2], out int count);
