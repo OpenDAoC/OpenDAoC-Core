@@ -147,13 +147,6 @@ namespace DOL.GS.Scripts
                 TempProperties.removeProperty("legion_throw");
             }
 
-            var spawnadds = TempProperties.getProperty<ECSGameTimer>("legion_spawnadds");//cancel spawn adds
-            if (spawnadds != null)
-            {
-                spawnadds.Stop();
-                TempProperties.removeProperty("legion_spawnadds");
-            }
-
             var castaoe = TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
             if (castaoe != null)
             {
@@ -318,6 +311,27 @@ namespace DOL.AI.Brain
         public static bool IsCreatingSouls = false;
         public static bool CanThrow = false;
         public static bool CanPbaoe = false;
+        #region Health check bools
+        public static bool adds1 = false;
+        public static bool adds2 = false;
+        public static bool adds3 = false;
+        public static bool adds4 = false;
+        public static bool adds5 = false;
+        public static bool adds6 = false;
+        public static bool adds7 = false;
+        public static bool adds8 = false;
+        public static bool adds9 = false;
+        public static bool adds10 = false;
+        public static bool adds11 = false;
+        public static bool adds12 = false;
+        public static bool adds13 = false;
+        public static bool adds14 = false;
+        public static bool adds15 = false;
+        public static bool adds16 = false;
+        public static bool adds17 = false;
+        public static bool adds18 = false;
+        public static bool adds19 = false;
+        #endregion
 
         public override void Think()
         {
@@ -325,6 +339,27 @@ namespace DOL.AI.Brain
             {
                 IsCreatingSouls = false;
                 CanThrow = false;
+                #region Health check bools
+                adds1 = false;
+                adds2 = false;
+                adds3 = false;
+                adds4 = false;
+                adds5 = false;
+                adds6 = false;
+                adds7 = false;
+                adds8 = false;
+                adds9 = false;
+                adds10 = false;
+                adds11 = false;
+                adds12 = false;
+                adds13 = false;
+                adds14 = false;
+                adds15 = false;
+                adds16 = false;
+                adds17 = false;
+                adds18 = false;
+                adds19 = false;
+                #endregion
 
                 if (Port_Enemys.Count > 0)//clear port players
                     Port_Enemys.Clear();
@@ -336,13 +371,6 @@ namespace DOL.AI.Brain
                 {
                     throwPlayer.Stop();
                     Body.TempProperties.removeProperty("legion_throw");
-                }
-
-                var spawnadds = Body.TempProperties.getProperty<ECSGameTimer>("legion_spawnadds");//cancel spawn adds
-                if (spawnadds != null)
-                {
-                    spawnadds.Stop();
-                    Body.TempProperties.removeProperty("legion_spawnadds");
                 }
                 var castaoe = Body.TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
                 if (castaoe != null)
@@ -375,13 +403,142 @@ namespace DOL.AI.Brain
                     Body.TempProperties.setProperty("legion_castaoe", castAoe);
                     CanPbaoe = true;
                 }
-                if(!IsCreatingSouls)
+                #region Legion health checks
+                if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && !adds1)
                 {
-                    ECSGameTimer spawnadds = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(15000, 25000));//every 15-25s it will spawn tortured souls
-                    Body.TempProperties.setProperty("legion_spawnadds", spawnadds);
-                    IsCreatingSouls = true;
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds1 = true;
                 }
-                if(!CanThrow)
+                if (Body.HealthPercent <= 90 && Body.HealthPercent > 85 && !adds2)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds2 = true;
+                }
+                if (Body.HealthPercent <= 85 && Body.HealthPercent > 80 && !adds3)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds3 = true;
+                }
+                if (Body.HealthPercent <= 80 && Body.HealthPercent > 75 && !adds4)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds4 = true;
+                }
+                if (Body.HealthPercent <= 75 && Body.HealthPercent > 70 && !adds5)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds5 = true;
+                }
+                if (Body.HealthPercent <= 70 && Body.HealthPercent > 65 && !adds6)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds6 = true;
+                }
+                if (Body.HealthPercent <= 65 && Body.HealthPercent > 60 && !adds7)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds7 = true;
+                }
+                if (Body.HealthPercent <= 60 && Body.HealthPercent > 55 && !adds8)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds8 = true;
+                }
+                if (Body.HealthPercent <= 55 && Body.HealthPercent > 50 && !adds9)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds9 = true;
+                }
+                if (Body.HealthPercent <= 50 && Body.HealthPercent > 45 && !adds10)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds10 = true;
+                }
+                if (Body.HealthPercent <= 45 && Body.HealthPercent > 40 && !adds11)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds11 = true;
+                }
+                if (Body.HealthPercent <= 40 && Body.HealthPercent > 35 && !adds12)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds12 = true;
+                }
+                if (Body.HealthPercent <= 35 && Body.HealthPercent > 30 && !adds13)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds13 = true;
+                }
+                if (Body.HealthPercent <= 30 && Body.HealthPercent > 25 && !adds14)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds14 = true;
+                }
+                if (Body.HealthPercent <= 25 && Body.HealthPercent > 20 && !adds15)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds15 = true;
+                }
+                if (Body.HealthPercent <= 20 && Body.HealthPercent > 15 && !adds16)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds16 = true;
+                }
+                if (Body.HealthPercent <= 15 && Body.HealthPercent > 10 && !adds17)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds17 = true;
+                }
+                if (Body.HealthPercent <= 10 && Body.HealthPercent > 5 && !adds18)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds18 = true;
+                }
+                if (Body.HealthPercent <= 5 && Body.HealthPercent > 0 && !adds19)
+                {
+                    SpawnAdds();
+                    spawnAmount = 0;
+                    PlayerCountInLegionLair = 0;
+                    adds19 = true;
+                }
+                #endregion
+                if (!CanThrow)
                 {
                     ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 35000));//throw players
                     Body.TempProperties.setProperty("legion_throw", throwPlayer);
@@ -404,12 +561,12 @@ namespace DOL.AI.Brain
                         var effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
                         if (effect != null)
                         {
-                            EffectService.RequestImmediateCancelEffect(effect);//remove snare immunity here
+                            EffectService.RequestImmediateCancelEffect(effect);//remove bladeturn effect here
                             bladeturnConsumed++;
                             if(target is GamePlayer player)
                             {
                                 if (player != null && player.IsAlive)
-                                    player.Out.SendMessage("Legion consume you bladeturn effect!", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                                    player.Out.SendMessage("Legion consume your bladeturn effect!", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
                             }
                         }
                     }
@@ -433,50 +590,48 @@ namespace DOL.AI.Brain
             CanPbaoe = false;
             return 0;
         }
-        public int DoSpawn(ECSGameTimer timer)
+        public static int PlayerCountInLegionLair = 0;
+        public static int spawnAmount = 0;
+        private void SpawnAdds()
         {
-
             if (Body.InCombat && Body.IsAlive && HasAggro)
             {
                 foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
                 {
-                    int spawnAmount = 0;
-                    if (Util.Chance(50))
-                        spawnAmount++;
-
-                    if (Util.Chance(5))
-                        spawnAmount++;
-                    
-                    //var spawnAmount = Util.Random(10, 15);
-                    SpawnAdds(playerNearby, spawnAmount);
+                    if (playerNearby != null && playerNearby.Client.Account.PrivLevel == 1)
+                    {
+                        PlayerCountInLegionLair++;
+                    }
+                    if (PlayerCountInLegionLair < 4)
+                        spawnAmount = 1;
+                    if (PlayerCountInLegionLair > 4)
+                        spawnAmount = PlayerCountInLegionLair / 4;
                 }
             }
-            IsCreatingSouls = false;
-            return 0;
-        }
-        
-        private void SpawnAdds(GamePlayer target, int amount = 1)
-        {
-            for (int i = 0; i < amount; i++)
+            if (PlayerCountInLegionLair > 0 && spawnAmount > 0)
             {
-                //var distanceDelta = Util.Random(0, 300);
-                var level = Util.Random(52, 58);
+                //log.Warn("PlayerCountInLegionLair = " + PlayerCountInLegionLair + " and spawnAmount = "+ spawnAmount);
+                for (int i = 0; i < spawnAmount; i++)
+                {
+                    //var distanceDelta = Util.Random(0, 300);
+                    var level = Util.Random(52, 58);
 
-                LegionAdd add = new LegionAdd();
-                /*
-                 add.X = target.X + distanceDelta;
-                add.Y = target.Y + distanceDelta;
-                add.Z = target.Z;
-                add.CurrentRegionID = target.CurrentRegionID;
-                */
-                add.X = Body.X +Util.Random(-150,150);
-                add.Y = Body.Y + Util.Random(-150, 150);
-                add.Z = Body.Z;
-                add.CurrentRegionID = 249;
-                add.IsWorthReward = false;
-                add.Level = (byte) level;
-                add.AddToWorld();
-                //add.StartAttack(target);
+                    LegionAdd add = new LegionAdd();
+                    /*
+                     add.X = target.X + distanceDelta;
+                    add.Y = target.Y + distanceDelta;
+                    add.Z = target.Z;
+                    add.CurrentRegionID = target.CurrentRegionID;
+                    */
+                    add.X = Body.X + Util.Random(-150, 150);
+                    add.Y = Body.Y + Util.Random(-150, 150);
+                    add.Z = Body.Z;
+                    add.CurrentRegionID = 249;
+                    add.IsWorthReward = false;
+                    add.Level = (byte)level;
+                    add.AddToWorld();
+                    //add.StartAttack(target);
+                }
             }
         }
         #region Legion Port
@@ -577,13 +732,9 @@ namespace DOL.GS
             : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
         public override int MaxHealth
         {
-            get { return 1500; }
+            get { return 1200; }
         }
 
         public override int AttackRange
@@ -597,13 +748,13 @@ namespace DOL.GS
         public override long ExperienceValue => 0;
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 250;
+            return 150;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.50;
+            return 0.10;
         }
 
         public override bool AddToWorld()
@@ -651,7 +802,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.RemoveFromWorld();
             }
