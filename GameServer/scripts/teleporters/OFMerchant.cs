@@ -87,17 +87,32 @@ namespace DOL.GS.Scripts
                 case eRealm.Albion:
                     Name = "Sall Fadri";
                     Model = 61;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Alb_Home");
+                    if(CurrentRegionID == 200)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Alb_HomeHib");
+                    else if(CurrentRegionID == 100)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Alb_HomeMid");
+                    else 
+                        TradeItems = new MerchantTradeItems("OFMerchant_Alb_Home");
                     break;
                 case eRealm.Midgard:
                     Name = "Gwulla";
                     Model = 215;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Mid_Home");
+                    if(CurrentRegionID == 200)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Mid_HomeHib");
+                    else if(CurrentRegionID == 1)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Mid_HomeAlb");
+                    else 
+                        TradeItems = new MerchantTradeItems("OFMerchant_Mid_Home");
                     break;
                 case eRealm.Hibernia:
                     Name = "Araisa";
                     Model = 342;
-                    TradeItems = new MerchantTradeItems("OFMerchant_Hib_Home");
+                    if(CurrentRegionID == 100)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Hib_HomeMid");
+                    else if(CurrentRegionID == 1)
+                        TradeItems = new MerchantTradeItems("OFMerchant_Hib_HomeAlb");
+                    else 
+                        TradeItems = new MerchantTradeItems("OFMerchant_Hib_Home");
                     break;
             }
          
