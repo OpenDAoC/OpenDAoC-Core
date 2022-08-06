@@ -1953,7 +1953,7 @@ namespace DOL.GS
                         ad.Target.GetName(0, false));
                     break;
                 case eAttackResult.Missed:
-                    message = string.Format("{0} attacks {1} and misses! (" + ad.MissRate + ")", ad.Attacker.GetName(0, true),
+                    message = string.Format("{0} attacks {1} and misses! (" + ad.MissRate + "%)", ad.Attacker.GetName(0, true),
                         ad.Target.GetName(0, false));
                     break;
 
