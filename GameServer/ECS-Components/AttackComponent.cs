@@ -2790,7 +2790,7 @@ namespace DOL.GS
             }
 
             // Missrate
-            int missrate = ad.Attacker is GamePlayer ? 18 : 25; 
+            int missrate = ad.Attacker is GamePlayer or GamePet ? 18 : 25; 
             missrate -= ad.Attacker.GetModified(eProperty.ToHitBonus);
             //Console.WriteLine($"ToHitBonus { ad.Attacker.GetModified(eProperty.ToHitBonus)} ");
             // PVE group missrate
