@@ -1953,7 +1953,7 @@ namespace DOL.GS
                         ad.Target.GetName(0, false));
                     break;
                 case eAttackResult.Missed:
-                    message = string.Format("{0} attacks {1} and misses!", ad.Attacker.GetName(0, true),
+                    message = string.Format("{0} attacks {1} and misses! (" + ad.MissRate + ")", ad.Attacker.GetName(0, true),
                         ad.Target.GetName(0, false));
                     break;
 
@@ -2790,7 +2790,7 @@ namespace DOL.GS
             }
 
             // Missrate
-            int missrate = (ad.Attacker is GamePlayer) ? 18 : 25; 
+            int missrate = ad.Attacker is GamePlayer ? 18 : 25; 
             missrate -= ad.Attacker.GetModified(eProperty.ToHitBonus);
             //Console.WriteLine($"ToHitBonus { ad.Attacker.GetModified(eProperty.ToHitBonus)} ");
             // PVE group missrate
@@ -2804,8 +2804,10 @@ namespace DOL.GS
             }
             else if (owner is GameNPC || ad.Attacker is GameNPC) // if target is not player use level mod
             {
-                missrate += (int) (5 * ad.Attacker.GetConLevel(owner));
-                //Console.WriteLine($"NPC missrate {(int) (5 * ad.Attacker.GetConLevel(owner))} owner {owner.Name} lvl {owner.Level} attacker {ad.Attacker.Name} lvl {ad.Attacker.Level} condiff {ad.Attacker.GetConLevel(owner)}");
+                var misscheck = ad.Attacker;
+                if (ad.Attacker is GamePet gpet && gpet.Level < gpet.Owner.Level) misscheck = gpet.Owner; 
+                missrate += (int) (5 * misscheck.GetConLevel(owner));
+                //Console.WriteLine($"NPC missrate {(int) (5 * misscheck.GetConLevel(owner))} missrate {missrate} owner {owner.Name} lvl {owner.Level} attacker {misscheck.Name} lvl {misscheck.Level} condiff {misscheck.GetConLevel(owner)}");
             }
 
             // experimental missrate adjustment for number of attackers
