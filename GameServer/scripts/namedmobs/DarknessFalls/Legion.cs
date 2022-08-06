@@ -732,13 +732,9 @@ namespace DOL.GS
             : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
         public override int MaxHealth
         {
-            get { return 1500; }
+            get { return 1200; }
         }
 
         public override int AttackRange
@@ -752,13 +748,13 @@ namespace DOL.GS
         public override long ExperienceValue => 0;
         public override double GetArmorAF(eArmorSlot slot)
         {
-            return 250;
+            return 150;
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
-            return 0.50;
+            return 0.10;
         }
 
         public override bool AddToWorld()
@@ -806,7 +802,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body.InCombatInLast(30 * 1000) == false && Body.InCombatInLast(35 * 1000))
+            if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.RemoveFromWorld();
             }
