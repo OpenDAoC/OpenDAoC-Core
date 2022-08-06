@@ -890,6 +890,7 @@ public class AchievementReskinVendor : GameNPC
 
             VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Magma Axe 1h", 2216, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, toageneric));
 
             VendorItemList.Add(new SkinVendorItem("Traitor's Dagger 1h", 1668, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, artifact));
@@ -920,14 +921,17 @@ public class AchievementReskinVendor : GameNPC
 
             VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Croc Tooth Axe 1h", 3451, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
 
             VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Traitor's Axe 1h", 3452, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
 
             VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Malice Axe 1h", 2109, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.SlashingWeapon, (int)eDamageType.Slash, artifact));
 
             VendorItemList.Add(new SkinVendorItem("Battler Sword 1h", 2112, Slot.RIGHTHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, artifact));

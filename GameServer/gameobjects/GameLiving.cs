@@ -4807,6 +4807,9 @@ namespace DOL.GS
 
 		public virtual void ProcessDeath(GameObject killer)
 		{
+            try
+            {
+
 			if (this is GameNPC == false && this is GamePlayer == false)
 			{
 				// deal out exp and realm points based on server rules
@@ -4917,9 +4920,18 @@ namespace DOL.GS
 			LastAttackedByEnemyTickPvE = 0;
 			LastAttackedByEnemyTickPvP = 0;
 			
-			isDeadOrDying = false;
 			//Let's send the notification at the end
 			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+			finally
+			{
+				//isDying flag is ALWAYS set to false even if exception happens so it can get remove from the list
+				isDeadOrDying = false;
+			}
 		}
 
 		/// <summary>

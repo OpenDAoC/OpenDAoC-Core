@@ -70,7 +70,7 @@ public class ReaperService
             lock (KillerDictLock)
             {
                 //remove everything we killed
-                foreach (var deadLiving in KilledToKillerDict.Keys.Where(x=> x.isDeadOrDying == false))
+                foreach (var deadLiving in KilledToKillerDict.Keys.ToList().Where(x=> x.isDeadOrDying == false))
                 {
                     KilledToKillerDict.Remove(deadLiving);
                 }
