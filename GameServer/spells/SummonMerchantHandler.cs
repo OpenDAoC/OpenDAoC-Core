@@ -74,19 +74,22 @@ namespace DOL.GS.Spells
             switch (Npc.Realm)
             {
                 case eRealm.Albion:
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant");
                     Npc.Model = 10;
                     break;
                 case eRealm.Hibernia: 
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant3");
                     Npc.Model = 307;
                     break;
                 case eRealm.Midgard:
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant2");
                     Npc.Model = 158;
                     break;
                 case eRealm.None: 
+                    Npc.TradeItems = new MerchantTradeItems("portable_merchant");
                     Npc.Model = 10;
                     break;
             }
-            Npc.TradeItems = new MerchantTradeItems("portable_merchant");
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
            // SummonedTick = GameLoop.GameLoopTime;
