@@ -5340,7 +5340,7 @@ namespace DOL.GS {
 
             //based off of eProperty
             //1-8 == stats = *.6667
-            //9 == power cap = *2
+            //9 == power cap = *1
             //10 == maxHP =  *.25
             //11-19 == resists = *2
             //20-115 == skill = *5
