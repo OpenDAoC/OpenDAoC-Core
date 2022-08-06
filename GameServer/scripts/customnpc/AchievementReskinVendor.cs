@@ -170,12 +170,6 @@ public class AchievementReskinVendor : GameNPC
             return VendorItemList.FindAll(x => (x.ItemType == item.Item_Type || x.ItemType == Slot.RIGHTHAND)
                          && (x.Realm == playerRealm || x.Realm == noneRealm)
                          && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown)
-                         && x.PlayerRealmRank <= playerRealmRank
-                         && x.AccountRealmRank <= accountRealmRank
-                         && x.Orbs <= playerOrbs
-                         && x.Drake <= playerDragonKills
-                         && x.EpicBossKills <= epicBossPlayerKills
-                         && x.MasteredCrafts <= masteredCrafts
                          && x.DamageType == damageType
                          && x.ObjectType == item.Object_Type
                          && x.Price != 2500).OrderBy(o => o.Price).ToList();
@@ -539,7 +533,16 @@ public class AchievementReskinVendor : GameNPC
         {
             case "confirm model":
 
-                foundItem = FindConfirmedItem(item, cachedModelID, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
+
+                if (item.Item_Type == Slot.RIGHTHAND || item.Item_Type == Slot.LEFTHAND)
+                {
+                    foundItem = FindConfirmedOneHanded(item, cachedModelID, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
+                }
+                else
+                {
+                    foundItem = FindConfirmedOtherItems(item, cachedModelID, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
+                }
+
 
                 //Console.WriteLine($"Cached: {cachedModelID}");
                 if (cachedModelID > 0 && cachedModelPrice > 0 && foundItem != null)
@@ -653,7 +656,37 @@ public class AchievementReskinVendor : GameNPC
 
     }
 
-    private SkinVendorItem FindConfirmedItem(InventoryItem item, int cachedModelID, int playerRealm, int noneRealm, int damageType, int characterClassUnknown, int playerClass, int playerRealmRank, int accountRealmRank, int playerDragonKills, int playerOrbs, int epicBossPlayerKills, int masteredCrafts,bool isGm)
+    private SkinVendorItem FindConfirmedOneHanded(InventoryItem item, int cachedModelID, int playerRealm, int noneRealm, int damageType, int characterClassUnknown, int playerClass, int playerRealmRank, int accountRealmRank, int playerDragonKills, int playerOrbs, int epicBossPlayerKills, int masteredCrafts,bool isGm)
+    {
+
+        if (isGm)
+        {
+            return VendorItemList.Find(x => x.ModelID == cachedModelID
+       && (x.ItemType == item.Item_Type || x.ItemType == Slot.RIGHTHAND)
+       && x.ObjectType == item.Object_Type
+       && x.DamageType == damageType
+       && (x.Realm == playerRealm || x.Realm == noneRealm)
+       && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown));
+        }
+        else
+        {
+            return VendorItemList.Find(x => x.ModelID == cachedModelID
+       && (x.ItemType == item.Item_Type || x.ItemType == Slot.RIGHTHAND)
+       && x.PlayerRealmRank <= playerRealmRank
+       && x.AccountRealmRank <= accountRealmRank
+       && x.Orbs <= playerOrbs
+       && x.Drake <= playerDragonKills
+       && x.EpicBossKills <= epicBossPlayerKills
+       && x.MasteredCrafts <= masteredCrafts
+       && x.ObjectType == item.Object_Type
+       && x.DamageType == damageType
+       && (x.Realm == playerRealm || x.Realm == noneRealm)
+       && (x.CharacterClass == playerClass || x.CharacterClass == characterClassUnknown));
+        }
+
+    }
+
+    private SkinVendorItem FindConfirmedOtherItems(InventoryItem item, int cachedModelID, int playerRealm, int noneRealm, int damageType, int characterClassUnknown, int playerClass, int playerRealmRank, int accountRealmRank, int playerDragonKills, int playerOrbs, int epicBossPlayerKills, int masteredCrafts, bool isGm)
     {
 
         if (isGm)
@@ -1008,6 +1041,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Norse Short Sword 1h", 311, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Norse Broadsword 1h", 310, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Norse Spiked Axe 1h", 315, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Norse Spiked Axe 1h", 315, Slot.RIGHTHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, freebie));
             //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
             //rr2 
@@ -1021,9 +1055,12 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Pick Hammer 1h", 323, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
             VendorItemList.Add(new SkinVendorItem("Spiked Hammer 1h", 656, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, lowbie));
             VendorItemList.Add(new SkinVendorItem("Dwarven Short Sword 1h", 655, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 654, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Sword, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 654, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
             VendorItemList.Add(new SkinVendorItem("Double Axe 1h", 573, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
             VendorItemList.Add(new SkinVendorItem("Norse Bearded Axe 1h", 316, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Norse Cleaver 1h", 654, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Double Axe 1h", 573, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Norse Bearded Axe 1h", 316, Slot.RIGHTHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, lowbie));
 
             //rr4
             VendorItemList.Add(new SkinVendorItem("Troll Hammer 1h", 950, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Hammer, (int)eDamageType.Crush, toageneric));
@@ -1040,6 +1077,10 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Troll War Axe 1h", 1025, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Kobold Hand Axe 1h", 1014, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Kobold War Axe 1h", 1018, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Troll Hand Axe 1h", 1023, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Troll War Axe 1h", 1025, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Kobold Hand Axe 1h", 1014, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Kobold War Axe 1h", 1018, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
 
 
             //rr6
