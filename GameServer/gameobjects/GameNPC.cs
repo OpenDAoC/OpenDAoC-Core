@@ -4401,10 +4401,10 @@ namespace DOL.GS
 				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
 				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
-
-				base.ProcessDeath(killer);
 			}
-			
+
+			base.ProcessDeath(killer);
+
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
 			
