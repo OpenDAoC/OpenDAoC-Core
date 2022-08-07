@@ -68,13 +68,7 @@ namespace DOL.GS
 
                 if (killerBG != null)
                 {
-                    List<GamePlayer> bgPlayers = null;
-                    lock (killerBG.Members)
-                    {
-                        bgPlayers = killerBG.Members.Keys as List<GamePlayer>;
-                    }
-
-                    if (bgPlayers != null)
+                    if (killerBG.Members.Keys != null)
                     {
                         foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
                         {
