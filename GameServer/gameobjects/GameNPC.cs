@@ -60,7 +60,7 @@ namespace DOL.GS
 		/// This helps to reduce the turning of an npc while fighting or returning to a spawn
 		/// Tested - min distance for mob sticking within combat range to player is 25
 		/// </remarks>
-		public const int CONST_WALKTOTOLERANCE = 25;
+		public const int CONST_WALKTOTOLERANCE = 10;
 
 		private int m_databaseLevel;
 		
@@ -4401,10 +4401,10 @@ namespace DOL.GS
 				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
 				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
-
-				base.ProcessDeath(killer);
 			}
-			
+
+			base.ProcessDeath(killer);
+
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
 			
