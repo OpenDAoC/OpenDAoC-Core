@@ -551,11 +551,16 @@ namespace DOL.GS
 
 		public override void Die(GameObject killer)
 		{
-			StripBuffs();
-		
-			GameEventMgr.Notify(GameLivingEvent.PetReleased, this);
-			base.Die(killer);
-			CurrentRegion = null;
+            try
+            {
+				StripBuffs();
+				GameEventMgr.Notify(GameLivingEvent.PetReleased, this);
+			}
+            finally
+            {
+				base.Die(killer);
+				CurrentRegion = null;
+			}
 		}
 
 		/// <summary>

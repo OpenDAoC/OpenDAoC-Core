@@ -4345,6 +4345,9 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
+            try
+            {
+
 			Brain?.KillFSM();
 
 			FireAmbientSentence(eAmbientTrigger.dying, killer);
@@ -4417,6 +4420,14 @@ namespace DOL.GS
 
 			if (!(this is GamePet))
 				StartRespawn();
+			}
+			finally
+			{
+				if(isDeadOrDying == true)
+                {
+					base.ProcessDeath(killer);
+                }
+			}
 		}
 
 		/// <summary>

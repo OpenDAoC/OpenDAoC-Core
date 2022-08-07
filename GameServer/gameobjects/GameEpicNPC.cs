@@ -33,9 +33,8 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            if (this.isDeadOrDying == false)
+            try
             {
-                this.isDeadOrDying = true;
                 // debug
                 log.Debug($"{Name} killed by {killer.Name}");
 
@@ -136,7 +135,10 @@ namespace DOL.GS
                     }
                 }
             }
-            base.Die(killer);
+            finally
+            {
+                base.Die(killer);
+            }
         }
     }
 }

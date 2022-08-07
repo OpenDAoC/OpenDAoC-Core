@@ -22,10 +22,8 @@ namespace DOL.GS {
         }
         public override void Die(GameObject killer)//current orb reward for epic boss is 1500
         {
-            if(this.isDeadOrDying == false)
+            try
             {
-                this.isDeadOrDying = true;
-
                 if (MaxHealth <= 40000 && MaxHealth > 30000)// 750 orbs for normal nameds
                     OrbsReward = Properties.EPICBOSS_ORBS / 2;
 
@@ -81,10 +79,11 @@ namespace DOL.GS {
                         playerKiller.Achieve($"{achievementMob}-Credit");;
                     }
                 }
-
             }
-
-            base.Die(killer);
+            finally
+            {
+                base.Die(killer);
+            }
         }
     }
 }
