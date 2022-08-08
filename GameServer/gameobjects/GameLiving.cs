@@ -4179,8 +4179,12 @@ namespace DOL.GS
 
 			if (!IsAlive)
 			{
-				if (wasAlive)
+				if (wasAlive && isDeadOrDying == false)
+				{
+					Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
+					isDeadOrDying = true;
 					Die(source);
+			    }
 			}
 			else
 			{

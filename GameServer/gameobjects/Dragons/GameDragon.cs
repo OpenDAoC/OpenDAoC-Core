@@ -205,9 +205,8 @@ namespace DOL.GS
         /// <param name="killer">The living that got the killing blow.</param>
         public override void Die(GameObject killer)
         {
-            if (this.isDeadOrDying == false)
+            try
             {
-                this.isDeadOrDying = true;
                 // debug
                 log.Debug($"{Name} killed by {killer.Name}");
 
@@ -282,9 +281,10 @@ namespace DOL.GS
                     ReportNews(killer);
                 }
             }
-
-            base.Die(killer);
-
+            finally
+            {
+                base.Die(killer);
+            }
         }
 
         #region Damage & Heal Events

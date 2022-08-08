@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
 using DOL.GS.Scripts;
 
@@ -23,10 +23,8 @@ namespace DOL.GS {
         }
         public override void Die(GameObject killer)//current orb reward for epic boss is 1500
         {
-            if(this.isDeadOrDying == false)
+            try
             {
-                this.isDeadOrDying = true;
-
                 if (this is Legion)//Legion
                     OrbsReward = 5000;
 
@@ -103,10 +101,11 @@ namespace DOL.GS {
                         playerKiller.Achieve($"{achievementMob}-Credit");;
                     }
                 }
-
             }
-
-            base.Die(killer);
+            finally
+            {
+                base.Die(killer);
+            }
         }
     }
 }
