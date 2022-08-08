@@ -207,7 +207,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
 }
 namespace DOL.GS
 {
-    public class GSCAdds : GameEpicBoss
+    public class GSCAdds : GameEpicNPC
     {
         public GSCAdds() : base()
         {
