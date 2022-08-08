@@ -58,9 +58,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <remarks>
 		/// This helps to reduce the turning of an npc while fighting or returning to a spawn
-		/// Tested - min distance for mob sticking within combat range to player is 25
+		/// Tested - min distance for mob sticking within combat range to player is 25 (Edit Navelator, 25 stops them too early, 20 keeps them in range)
 		/// </remarks>
-		public const int CONST_WALKTOTOLERANCE = 25;
+		public const int CONST_WALKTOTOLERANCE = 20;
 
 		private int m_databaseLevel;
 		

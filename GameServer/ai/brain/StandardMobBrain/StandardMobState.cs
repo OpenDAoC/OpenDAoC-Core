@@ -309,6 +309,13 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
 
     public override void Think()
     {
+        // If the mob is not near his spawn, doesnt have aggro, is not enganged and is just standing around and  interested in going home, send him home.
+        if(!_brain.Body.IsNearSpawn() && (this._brain.AggroTable.Count == 0 || !this._brain.Body.IsEngaging) && (_brain.Body.IsReturningHome == false || _brain.Body.IsReturningToSpawnPoint == false) && this._brain.Body.CurrentSpeed == 0)
+        {
+            _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            _brain.Body.ResetHeading();
+            return;
+        }
         if (_brain.Body.IsNearSpawn())
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);

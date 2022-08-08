@@ -366,9 +366,6 @@ namespace DOL.GS.Quests.Hibernia
 			var args = (DyingEventArgs) arguments;
         
 			var player = args.Killer as GamePlayer;
-        
-			if (player == null)
-				return;
 
 			if (args.Killer is GamePet pet)
 			{
@@ -391,6 +388,14 @@ namespace DOL.GS.Quests.Hibernia
 					}
 				}
 			}
+
+			if (player == null)
+            {
+				AncestralKeeper.Delete();
+				GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+				return;
+			}
+
 			if (player.Group != null)
 			{
 				foreach (var gpl in player.Group.GetPlayersInTheGroup())
