@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace DOL.GS
 {
@@ -66,11 +68,18 @@ namespace DOL.GS
 
                 var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
+
                 if (killerBG != null)
                 {
-                    if (killerBG.Members.Keys != null)
+                    ICollection bgPlayers;
+                    lock (killerBG.Members.Keys)
                     {
-                        foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
+                         bgPlayers = killerBG.Members.Keys;
+                    }
+
+                    if (bgPlayers != null)
+                    {
+                        foreach (GamePlayer bgPlayer in bgPlayers)
                         {
                             if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             {
@@ -90,6 +99,8 @@ namespace DOL.GS
                             }
                         }
                     }
+
+
                 }
                 else if (playerKiller?.Group != null)
                 {
