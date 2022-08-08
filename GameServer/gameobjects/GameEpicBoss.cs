@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
+using DOL.GS.Scripts;
 
 namespace DOL.GS {
     public class GameEpicBoss : GameNPC {
@@ -25,6 +26,27 @@ namespace DOL.GS {
             if(this.isDeadOrDying == false)
             {
                 this.isDeadOrDying = true;
+
+                if (this is Legion)//Legion
+                    OrbsReward = 5000;
+
+                if (this is HibCuuldurach)//Hib dragon
+                    OrbsReward = 5000;
+
+                if (this is MidGjalpinulva)//Mid dragon
+                    OrbsReward = 5000;
+
+                if (this is AlbGolestandt)//Alb dragon
+                    OrbsReward = 5000;
+
+                if (this is Xanxicar)//Alb dragon SI, he is weaker than realm dragons
+                    OrbsReward = 3000;
+
+                if (this is Nosdoden)//Mid mutated dragon SI, he is weaker than realm dragons
+                    OrbsReward = 3000;
+
+                if (this is Myrddraxis)//Hib dragon SI, he is weaker than realm dragons
+                    OrbsReward = 3000;
 
                 if (MaxHealth <= 40000 && MaxHealth > 30000)// 750 orbs for normal nameds
                     OrbsReward = Properties.EPICBOSS_ORBS / 2;

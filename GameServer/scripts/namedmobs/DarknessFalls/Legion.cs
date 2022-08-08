@@ -28,7 +28,7 @@ namespace DOL.GS.Scripts
             log.Debug("Legion's Lair created with radius " + radius + " at 45000 51700 15468");
             legionArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
 
-            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
+            //GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
 
             if (log.IsInfoEnabled)
                 log.Info("Legion initialized..");
@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
             legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
             WorldMgr.GetRegion(249).RemoveArea(legionArea);
 
-            GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
+            //GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
         }
 
         public Legion()
@@ -161,9 +161,20 @@ namespace DOL.GS.Scripts
                 ReportNews(killer);
             }
         }
+        public void BroadcastMessage(String message)
+        {
+            foreach (GamePlayer player in GetPlayersInRadius(3000))
+            {
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            }
+        }
         public override void EnemyKilled(GameLiving enemy)
         {
-            Health += MaxHealth / 20; //heals if boss kill enemy 5% of health
+            if (enemy != null && enemy is GamePlayer)
+            {
+                BroadcastMessage("Legion says, \"Your soul give me new strength.\"");
+                Health += MaxHealth / 20; //heals if boss kill enemy player for 5% of his max health
+            }
             base.EnemyKilled(enemy);
         }
         private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
@@ -208,7 +219,7 @@ namespace DOL.GS.Scripts
                // player.BroadcastUpdate();
             }
         }
-        private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
+       /* private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
 
@@ -227,12 +238,12 @@ namespace DOL.GS.Scripts
                 mob.UpdateHealthManaEndu();
             }
 
-           /* foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
+            foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
             {
                 playerNearby.MoveTo(249, 48200, 49566, 20833, 1028);
                 playerNearby.BroadcastUpdate();
-            }*/
-        }
+            }
+        }*/
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             //possible AttackRange
@@ -289,7 +300,7 @@ namespace DOL.GS.Scripts
         public override void DealDamage(AttackData ad)
         {
             if (ad != null && ad.DamageType == eDamageType.Body)
-                Health += ad.Damage / 2;
+                Health += ad.Damage / 4;
             base.DealDamage(ad);
         }
     }
