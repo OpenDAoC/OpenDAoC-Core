@@ -1291,7 +1291,7 @@ namespace DOL.GS {
                 }
                 else if (BonusType == 9)
                 {
-                    totalUti += Bonus * 2;
+                    totalUti += Bonus;
                 }
                 else if (BonusType == 10)
                 {

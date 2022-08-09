@@ -19,6 +19,7 @@
 
 using System.Linq;
 using DOL.Database;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
 
@@ -124,7 +125,7 @@ namespace DOL.GS.Commands
 
 			if (client.Player is GamePlayer player && player.Inventory != null && args.Length >= 2)
             {
-				if (player.TargetObject is GameMerchant merchant)
+	            if (player.TargetObject is GameMerchant merchant)
                 {
 					firstItem += (int)eInventorySlot.FirstBackpack - 1;
 					lastItem += (int)eInventorySlot.FirstBackpack - 1;
@@ -137,12 +138,50 @@ namespace DOL.GS.Commands
 
 						if (item != null)
 						{
-							if (item is {PackageID: "AtlasXPItem"} or {PackageID: "atlas_orbs_item"}) continue;
+							if (item is {PackageID: "AtlasXPItem"} or {PackageID: "atlas_orbs_item"} or {PackageID: "atlas_potion"}) continue;
 							if (skipPotions && item.Object_Type == 41) continue;
 						}
 						merchant.OnPlayerSell(player, item);
                     }
 				}
+	            else if (player.TargetObject is GameGuardMerchant guardMerchant)
+	            {
+		            firstItem += (int)eInventorySlot.FirstBackpack - 1;
+		            lastItem += (int)eInventorySlot.FirstBackpack - 1;
+
+		            var skipPotions = args.Contains("nopot");
+
+		            for (int i = firstItem; i <= lastItem; i++)
+		            {
+			            var item = player.Inventory.GetItem((eInventorySlot)i);
+
+			            if (item != null)
+			            {
+				            if (item is {PackageID: "AtlasXPItem"} or {PackageID: "atlas_orbs_item"} or {PackageID: "atlas_potion"}) continue;
+				            if (skipPotions && item.Object_Type == 41) continue;
+			            }
+			            guardMerchant.OnPlayerSell(player, item);
+		            }
+	            }
+	            else if (player.TargetObject is GuardCurrencyMerchant guardCurrencyMerchant)
+	            {
+		            firstItem += (int)eInventorySlot.FirstBackpack - 1;
+		            lastItem += (int)eInventorySlot.FirstBackpack - 1;
+
+		            var skipPotions = args.Contains("nopot");
+
+		            for (int i = firstItem; i <= lastItem; i++)
+		            {
+			            var item = player.Inventory.GetItem((eInventorySlot)i);
+
+			            if (item != null)
+			            {
+				            if (item is {PackageID: "AtlasXPItem"} or {PackageID: "atlas_orbs_item"} or {PackageID: "atlas_potion"}) continue;
+				            if (skipPotions && item.Object_Type == 41) continue;
+			            }
+			            guardCurrencyMerchant.OnPlayerSell(player, item);
+		            }
+	            }
 				else
 					client.Out.SendMessage("You must target a merchant.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}

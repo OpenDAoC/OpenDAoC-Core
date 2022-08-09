@@ -23,7 +23,7 @@ public class MonthlyQuestService
 
         foreach (var interval in loadQuestsProp)
         {
-            if (interval.RolloverInterval.Equals(lastMonthlyRollover))
+            if (interval.RolloverInterval.Equals(MonthlyIntervalKey))
                 lastMonthlyRollover = interval.LastRollover;
         }
         

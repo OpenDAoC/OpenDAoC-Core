@@ -58,9 +58,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <remarks>
 		/// This helps to reduce the turning of an npc while fighting or returning to a spawn
-		/// Tested - min distance for mob sticking within combat range to player is 25
+		/// Tested - min distance for mob sticking within combat range to player is 25 (Edit Navelator, 25 stops them too early, 20 keeps them in range)
 		/// </remarks>
-		public const int CONST_WALKTOTOLERANCE = 25;
+		public const int CONST_WALKTOTOLERANCE = 20;
 
 		private int m_databaseLevel;
 		
@@ -4345,6 +4345,9 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
+            try
+            {
+
 			Brain?.KillFSM();
 
 			FireAmbientSentence(eAmbientTrigger.dying, killer);
@@ -4401,10 +4404,10 @@ namespace DOL.GS
 				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
 				GameServer.ServerRules.OnNPCKilled(this, killer);
 				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
-
-				base.ProcessDeath(killer);
 			}
-			
+
+			base.ProcessDeath(killer);
+
 			lock (this.XPGainers.SyncRoot)
 				this.XPGainers.Clear();
 			
@@ -4417,6 +4420,14 @@ namespace DOL.GS
 
 			if (!(this is GamePet))
 				StartRespawn();
+			}
+			finally
+			{
+				if(isDeadOrDying == true)
+                {
+					base.ProcessDeath(killer);
+                }
+			}
 		}
 
 		/// <summary>

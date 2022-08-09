@@ -277,7 +277,7 @@ namespace DOL.GS.PacketHandler
 
 					pak.WriteByte((byte)c.Class);
 					pak.WriteByte((byte)c.Realm); // ok?
-					pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 4)));
+					pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 7)));
 					if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
 					{
 						pak.WriteByte(0x02);

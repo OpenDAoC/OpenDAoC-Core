@@ -12,9 +12,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.WeeklyQuest.Hibernia
 {
-    public class GalladoriaBossQuestHib : WeeklyQuest
+    public class GalladoriaBossQuestHib : Quests.WeeklyQuest
     {
         /// <summary>
         /// Defines a logger for this class.

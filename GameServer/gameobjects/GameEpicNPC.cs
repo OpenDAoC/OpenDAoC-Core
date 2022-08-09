@@ -1,10 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
-namespace DOL.GS {
-    public class GameEpicNPC : GameNPC {
+namespace DOL.GS
+{
+    public class GameEpicNPC : GameNPC
+    {
         public GameEpicNPC() : base()
         {
             ScalingFactor = 60;
@@ -12,7 +16,7 @@ namespace DOL.GS {
         public override bool HasAbility(string keyName)
         {
             //if (IsAlive && keyName == GS.Abilities.CCImmunity) //incase we decide to make them immune to any cc
-                //return true;
+            //return true;
             if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
                 return true;
             if (IsAlive && keyName == GS.Abilities.NSImmunity)
@@ -31,110 +35,115 @@ namespace DOL.GS {
         }
         public override void Die(GameObject killer)
         {
-            // debug
-            log.Debug($"{Name} killed by {killer.Name}");
-            
-            if (killer is GamePet pet) killer = pet.Owner; 
-            
-            var playerKiller = killer as GamePlayer;
-            
-            var amount = Util.Random(Level / 10, Level * 2 / 10);
-            var baseChance = 80;
-            var carapaceChance = Properties.CARAPACE_DROPCHANCE;
-            var realmLoyalty = 0;
-            
-            var achievementMob = Regex.Replace(Name, @"\s+", "");
-            
-            var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-            
-            if (killerBG != null)
+            try
             {
-                List<GamePlayer> bgPlayers = null;
-                lock (killerBG.Members)
+                // debug
+                log.Debug($"{Name} killed by {killer.Name}");
+
+                if (killer is GamePet pet) killer = pet.Owner;
+
+                var playerKiller = killer as GamePlayer;
+
+                var amount = Util.Random(Level / 10, Level * 2 / 10);
+                var baseChance = 80;
+                var carapaceChance = Properties.CARAPACE_DROPCHANCE;
+                var realmLoyalty = 0;
+
+                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null
+                           ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days
+                           : 0;
+
+                if (numCurrentLoyalDays > 30)
                 {
-                    bgPlayers = killerBG.Members.Keys as List<GamePlayer>;
+                    numCurrentLoyalDays = 30;
                 }
 
-                if (bgPlayers != null)
+                if (numCurrentLoyalDays >= 1)
                 {
-                    foreach (GamePlayer bgPlayer in killerBG.Members.Keys)
-                    {
-                        if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                        {
-                            if (bgPlayer.Level < 45) continue;
-                            var numCurrentLoyalDays = bgPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                            if (numCurrentLoyalDays >= 1)
-                            {
-                                realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
-                            }
-                            if(Util.Chance(baseChance+realmLoyalty))
-                            {
-                                AtlasROGManager.GenerateOrbAmount(bgPlayer,amount);
-                            }
+                    realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
+                }
 
+                var achievementMob = Regex.Replace(Name, @"\s+", "");
+
+                var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
+
+                if (killerBG != null)
+                {
+                    ICollection bgPlayers;
+                    lock (killerBG.Members.Keys)
+                    {
+                         bgPlayers = killerBG.Members.Keys;
+                    }
+
+                    if (bgPlayers != null)
+                    {
+                        foreach (GamePlayer bgPlayer in bgPlayers)
+                        {
+                            if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                            {
+                                if (bgPlayer.Level < 45) continue;
+
+                                if (Util.Chance(baseChance + realmLoyalty))
+                                {
+                                    AtlasROGManager.GenerateOrbAmount(bgPlayer, amount);
+                                }
+
+                                if (Util.ChanceDouble(carapaceChance))
+                                {
+                                    AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                                }
+
+                                bgPlayer.Achieve($"{achievementMob}-Credit");
+                            }
+                        }
+                    }
+
+
+                }
+                else if (playerKiller?.Group != null)
+                {
+                    foreach (var groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                    {
+                        if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                        {
+                            if (groupPlayer.Level < 45) continue;
+
+                            if (Util.Chance(baseChance + realmLoyalty))
+                            {
+                                AtlasROGManager.GenerateOrbAmount(groupPlayer, amount);
+                            }
                             if (Util.ChanceDouble(carapaceChance))
                             {
-                                AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                                AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
                             }
-                    
-                            bgPlayer.Achieve($"{achievementMob}-Credit");
+                            groupPlayer.Achieve($"{achievementMob}-Credit");
+
                         }
                     }
                 }
-            }
-            else if (playerKiller?.Group != null)
-            {
-                foreach (var groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
+                else if (playerKiller != null)
                 {
-                    if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                    if (playerKiller.Level >= 45)
                     {
-                        if (groupPlayer.Level < 45) continue;
+                        if (Util.Chance(baseChance + realmLoyalty))
+                        {
+                            AtlasROGManager.GenerateOrbAmount(playerKiller, amount);
+                        }
 
-                        var numCurrentLoyalDays = groupPlayer.TempProperties.getProperty<int>("current_loyalty_days");
-                        if (numCurrentLoyalDays >= 1)
-                        {
-                            realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0) );
-                        }
-                        if(Util.Chance(baseChance+realmLoyalty))
-                        {
-                            AtlasROGManager.GenerateOrbAmount(groupPlayer,amount);
-                        }
                         if (Util.ChanceDouble(carapaceChance))
                         {
-                            AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
+                            AtlasROGManager.GenerateBeetleCarapace(playerKiller);
                         }
-                        groupPlayer.Achieve($"{achievementMob}-Credit");
-            
+
+                        playerKiller.Achieve($"{achievementMob}-Credit");
                     }
                 }
             }
-            else if (playerKiller != null)
+            finally
             {
-                if (playerKiller.Level >= 45)
-                {
-                    var numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller) != null
-                        ? LoyaltyManager.GetPlayerRealmLoyalty(playerKiller).Days
-                        : 0;
-                    if (numCurrentLoyalDays >= 1)
-                    {
-                        realmLoyalty = (int) Math.Round(20 * (numCurrentLoyalDays / 30.0));
-                    }
-
-                    if (Util.Chance(baseChance + realmLoyalty))
-                    {
-                        AtlasROGManager.GenerateOrbAmount(playerKiller, amount);
-                    }
-
-                    if (Util.ChanceDouble(carapaceChance))
-                    {
-                        AtlasROGManager.GenerateBeetleCarapace(playerKiller);
-                    }
-
-                    playerKiller.Achieve($"{achievementMob}-Credit");
-                }
+                base.Die(killer);
             }
-            
-            base.Die(killer);
         }
     }
 }

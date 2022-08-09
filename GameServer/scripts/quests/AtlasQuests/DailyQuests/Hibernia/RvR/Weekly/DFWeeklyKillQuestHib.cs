@@ -11,7 +11,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.WeeklyQuest.Hibernia
 {
 	public class DFWeeklyKillQuestHib : Quests.WeeklyQuest
 	{
@@ -95,6 +95,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Stefano.Y = 39681;
 				Stefano.Z = 21357;
 				Stefano.Heading = 3066;
+				Stefano.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
 				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 734,0,0,3);
 				templateHib.AddNPCEquipment(eInventorySlot.LegsArmor, 735);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DOL.Database;
+using DOL.GS.Keeps;
 
 namespace DOL.GS.Commands
 {
@@ -26,7 +27,6 @@ namespace DOL.GS.Commands
 
                 if (args[1] == "set")
                 {
-                    return;
                     if (args.Length >= 3)
                     {
                         int.TryParse(args[2], out int count);
@@ -128,7 +128,60 @@ namespace DOL.GS.Commands
 
                             return;
                         }
+                        else if (client.Player.TargetObject is GameGuardMerchant guardMerchant)
+                        {
+                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                                .IsEqualTo(guardMerchant.TradeItems.ItemsListID));
+                            
+                            IList<Ingredient> recipeIngredients;
 
+                            lock (recipe)
+                            {
+                                recipeIngredients = recipe.Ingredients;
+                            }
+                            
+                            foreach (var ingredient in recipeIngredients)
+                            {
+                                foreach (var items in merchantitems)
+                                {
+                                    var item =
+                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                    if (item.Id_nb == "beetle_carapace") continue;
+                                    if (item != ingredient.Material) continue;
+                                    guardMerchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
+                                        ingredient.Count * amount);
+                                }
+                            }
+
+                            return;
+                        }
+                        else if (client.Player.TargetObject is GuardCurrencyMerchant guardCurrencyMerchant)
+                        {
+                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                                .IsEqualTo(guardCurrencyMerchant.TradeItems.ItemsListID));
+                            
+                            IList<Ingredient> recipeIngredients;
+
+                            lock (recipe)
+                            {
+                                recipeIngredients = recipe.Ingredients;
+                            }
+                            
+                            foreach (var ingredient in recipeIngredients)
+                            {
+                                foreach (var items in merchantitems)
+                                {
+                                    var item =
+                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                    if (item.Id_nb == "beetle_carapace") continue;
+                                    if (item != ingredient.Material) continue;
+                                    guardCurrencyMerchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
+                                        ingredient.Count * amount);
+                                }
+                            }
+
+                            return;
+                        }
                         DisplayMessage(client, "You must target a merchant");
                         return;
                     }

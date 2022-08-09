@@ -34,6 +34,7 @@ using DOL.Config;
 using DOL.GS.Housing;
 
 using log4net;
+using DOLDatabase.Tables;
 
 namespace DOL.GS
 {
@@ -530,7 +531,7 @@ namespace DOL.GS
 				                                	Region reg;
 				                                	if (m_regions.TryGetValue(data.Id, out reg))
 				                                		reg.LoadFromDatabase(data.Mobs, ref mobs, ref merchants, ref items, ref bindpoints);
-				                                });
+				});
 
 				if (log.IsInfoEnabled)
 				{

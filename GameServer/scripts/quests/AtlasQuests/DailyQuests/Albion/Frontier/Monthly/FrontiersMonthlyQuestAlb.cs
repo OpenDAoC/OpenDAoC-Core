@@ -361,14 +361,14 @@ namespace DOL.GS.MonthlyQuest.Albion
 		
 		public override void LoadQuestParameters()
 		{
-			PlayersKilled = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
-			CapturedKeeps = GetCustomProperty(QuestPropertyKey) != null ? int.Parse(GetCustomProperty(QuestPropertyKey)) : 0;
+			PlayersKilled = GetCustomProperty("FrontiersMonthlyAlbKill") != null ? int.Parse(GetCustomProperty("FrontiersMonthlyAlbKill")) : 0;
+			CapturedKeeps = GetCustomProperty("FrontiersMonthlyAlbKeep") != null ? int.Parse(GetCustomProperty("FrontiersMonthlyAlbKeep")) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(QuestPropertyKey, PlayersKilled.ToString());
-			SetCustomProperty(QuestPropertyKey, CapturedKeeps.ToString());
+			SetCustomProperty("FrontiersMonthlyAlbKill", PlayersKilled.ToString());
+			SetCustomProperty("FrontiersMonthlyAlbKeep", CapturedKeeps.ToString());
 		}
 
 		public override void FinishQuest()

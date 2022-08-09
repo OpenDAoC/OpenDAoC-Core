@@ -153,7 +153,7 @@ namespace DOL.GS
 						//Let's remove the old item!
 						m_items.Remove(slot);
 					}
-					string itemID = string.Format("{0}:{1},{2},{3}", slot, model, color, effect, extension);
+					string itemID = string.Format("{0}:{1},{2},{3},{4}", slot, model, color, effect, extension);
 					InventoryItem item = null;
 
 					if (!m_usedInventoryItems.ContainsKey(itemID))

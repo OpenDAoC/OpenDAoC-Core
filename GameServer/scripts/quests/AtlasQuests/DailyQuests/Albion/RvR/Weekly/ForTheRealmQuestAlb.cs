@@ -12,9 +12,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.WeeklyQuest.Albion
 {
-	public class ForTheRealmQuestAlb : WeeklyQuest
+	public class ForTheRealmQuestAlb : Quests.WeeklyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.

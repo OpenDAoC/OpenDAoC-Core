@@ -11,7 +11,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Hibernia
+namespace DOL.GS.WeeklyQuest.Hibernia
 {
 	public class EpicRvRMobsWeeklyQuestHib : Quests.WeeklyQuest
 	{

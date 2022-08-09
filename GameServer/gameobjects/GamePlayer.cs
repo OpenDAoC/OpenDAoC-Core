@@ -4650,9 +4650,9 @@ namespace DOL.GS
                 }
             }
 
-            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) < Math.Ceiling((RealmLevel+10) / 10d))
+            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) <= (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0))
             {
-                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int)Math.Ceiling((RealmLevel + 10) / 10d));
+                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0));
             }
             
             Out.SendUpdatePoints();
@@ -14003,8 +14003,11 @@ namespace DOL.GS
                     if(quest is Quests.DailyQuest dq)
                         dq.SaveQuestParameters();
 
-                    if (quest is WeeklyQuest wq)
+                    if (quest is Quests.WeeklyQuest wq)
                         wq.SaveQuestParameters();
+                    
+                    if (quest is Quests.MonthlyQuest mq)
+                        mq.SaveQuestParameters();
 
                     if (quest is LaunchQuestAlb lqa)
                         lqa.SaveQuestParameters();
@@ -14636,8 +14639,11 @@ namespace DOL.GS
                     if (quest is Quests.DailyQuest dq)
                         dq.LoadQuestParameters();
                     
-                    if (quest is WeeklyQuest wq)
+                    if (quest is Quests.WeeklyQuest wq)
                         wq.LoadQuestParameters();
+                    
+                    if (quest is Quests.MonthlyQuest mq)
+                        mq.LoadQuestParameters();
                     
                     if (quest is LaunchQuestAlb lqa)
                         lqa.LoadQuestParameters();

@@ -4414,10 +4414,21 @@ namespace DOL.GS.Spells
 
 					if (pet is NecromancerPet nPet)
 					{
+						/*
 						int ownerIntMod = 125;
 						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence;
 						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + ownerIntMod) / 275.0);
 						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
+*/
+						
+						if (pet.Owner is GamePlayer own)
+						{
+							//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
+							int manaStatValue = own.GetModified((eProperty)own.CharacterClass.ManaStat);
+							//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
+							spellDamage *= ((manaStatValue - own.Level) * 0.005) + 1;
+						}
+						
 					}
 					else
 					{
@@ -4446,7 +4457,6 @@ namespace DOL.GS.Spells
 				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
 				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
-					var baseDmg = spellDamage;
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
@@ -4635,12 +4645,14 @@ namespace DOL.GS.Spells
 			CalculateDamageVariance(target, out minVariance, out maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 
-			if (m_caster is GamePlayer)
+			if (m_caster is GamePlayer or GamePet)
 			{
-				effectiveness += m_caster.GetModified(eProperty.SpellDamage) * 0.01;
+				var caster = m_caster;
+				if (m_caster is GamePet p) caster = p.Owner;
+				effectiveness += caster.GetModified(eProperty.SpellDamage) * 0.01;
 
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
-				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(m_caster.Realm, eRelicType.Magic));
+				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(caster.Realm, eRelicType.Magic));
 
 				/*
 				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);

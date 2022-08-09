@@ -185,7 +185,7 @@ namespace DOL.GS
 			if (house == null)
 				return null;
 
-			return MarketCache.Items.Where(item => item.OwnerID == house.OwnerID).ToList();
+			return MarketCache.Items.Where(item => item?.OwnerID == house?.OwnerID).ToList();
         }
 
         /// <summary>

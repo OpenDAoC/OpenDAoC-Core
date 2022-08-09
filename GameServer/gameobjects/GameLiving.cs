@@ -59,6 +59,8 @@ namespace DOL.GS
         /// Holds the AttackData object of last attack
         /// </summary>
         public const string LAST_ATTACK_DATA = "LastAttackData";
+        
+        public bool isDeadOrDying = false;
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -4177,8 +4179,12 @@ namespace DOL.GS
 
 			if (!IsAlive)
 			{
-				if (wasAlive)
+				if (wasAlive && isDeadOrDying == false)
+				{
+					Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
+					isDeadOrDying = true;
 					Die(source);
+			    }
 			}
 			else
 			{
@@ -4798,11 +4804,16 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void Die(GameObject killer)
 		{
+			isDeadOrDying = true;
+			Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
 			ReaperService.KillLiving(this, killer);
 		}
 
 		public virtual void ProcessDeath(GameObject killer)
 		{
+            try
+            {
+
 			if (this is GameNPC == false && this is GamePlayer == false)
 			{
 				// deal out exp and realm points based on server rules
@@ -4912,8 +4923,19 @@ namespace DOL.GS
 			
 			LastAttackedByEnemyTickPvE = 0;
 			LastAttackedByEnemyTickPvP = 0;
+			
 			//Let's send the notification at the end
 			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+			finally
+			{
+				//isDying flag is ALWAYS set to false even if exception happens so it can get remove from the list
+				isDeadOrDying = false;
+			}
 		}
 
 		/// <summary>
