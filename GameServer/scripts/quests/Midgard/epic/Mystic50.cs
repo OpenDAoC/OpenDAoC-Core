@@ -1538,13 +1538,16 @@ namespace DOL.GS.Quests.Midgard
 			if (player==null || player.IsDoingQuest(typeof (Mystic_50)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (gArgs.Target.Name == Kelic.Name)
 				{
 					Step = 2;
-					GiveItem(m_questPlayer, kelics_totem);
+					GiveItem(player, kelics_totem);
 					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 			}
