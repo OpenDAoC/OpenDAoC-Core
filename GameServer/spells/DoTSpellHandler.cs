@@ -340,7 +340,7 @@ namespace DOL.GS.Spells
 			if (m_caster is GamePlayer)
 				player = m_caster as GamePlayer;
 
-			if (m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons)
+			if (m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons && m_spellLine.KeyName != GlobalSpellsLines.Item_Effects && m_spellLine.KeyName != GlobalSpellsLines.Item_Spells)
 			{
 				if (player != null && player.CharacterClass.ManaStat != eStat.UNDEFINED)
 				{
