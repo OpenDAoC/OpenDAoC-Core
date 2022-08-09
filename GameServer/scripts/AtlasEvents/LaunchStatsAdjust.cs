@@ -48,7 +48,13 @@ namespace DOL.GS.GameEvents
             
             var secondLaunchDate = new DateTime(2022, 7,4,15,0,0);
             
-            if (player.CreationDate > secondLaunchDate) return;
+            //Male chars created after 2nd launch day dont need to be reset.
+            if (player.CreationDate > secondLaunchDate && player.Gender == eGender.Male) return;
+
+            var femaleFixDate = new DateTime(2022, 8,9,7,0,0);
+
+            //Characters created after Female Stat Fix Date dont need stats reset.
+            if (player.CreationDate > femaleFixDate) return;
             
             var needsAdjustment = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
                 .IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo("StatsAdjust")));
