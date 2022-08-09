@@ -378,7 +378,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 					"You receive {0} as a reward.");
 				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 3000);
 				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
-				AtlasROGManager.GenerateJewel(m_questPlayer, 50);
+				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
 				PlayersKilled = 0;
 				CapturedKeeps = 0;
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
