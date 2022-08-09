@@ -260,7 +260,7 @@ namespace DOL.AI.Brain
         }
         private int Announce(ECSGameTimer timer)
         {
-            BroadcastMessage("an otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompained by word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier");
+            BroadcastMessage("An otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompanied by a word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier.");
             return 0;
         }
         private Spell m_IcelordHjalmar_aoe;
@@ -547,7 +547,7 @@ namespace DOL.AI.Brain
         }
         private int Announce(ECSGameTimer timer)
         {
-            BroadcastMessage("an otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompained by word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier");
+            BroadcastMessage("An otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompanied by a word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier.");
             return 0;
         }
     }
