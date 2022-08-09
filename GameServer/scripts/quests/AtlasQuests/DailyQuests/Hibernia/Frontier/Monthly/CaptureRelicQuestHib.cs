@@ -12,16 +12,16 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.MonthlyQuest.Midgard
+namespace DOL.GS.MonthlyQuest.Hibernia
 {
-	public class CaptureRelicQuestMid : Quests.MonthlyQuest
+	public class CaptureRelicQuestHib : Quests.MonthlyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const string questTitle = "[Monthly] Aspiring Relic Soldier";
+		private const string questTitle = "[Monthly] Aspiring Relic Guardian";
 		private const int minimumLevel = 50;
 		private const int maximumLevel = 50;
 
@@ -33,19 +33,19 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		private int _isCaptured = 0;
 
 		// Constructors
-		public CaptureRelicQuestMid() : base()
+		public CaptureRelicQuestHib() : base()
 		{
 		}
 
-		public CaptureRelicQuestMid(GamePlayer questingPlayer) : base(questingPlayer, 1)
+		public CaptureRelicQuestHib(GamePlayer questingPlayer) : base(questingPlayer, 1)
 		{
 		}
 
-		public CaptureRelicQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public CaptureRelicQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public CaptureRelicQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaptureRelicQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		
@@ -67,12 +67,12 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
 				{
-					if (npc.CurrentRegionID == 100 && npc.X == 765463 && npc.Y == 670000)
+					if (npc.CurrentRegionID == 200 && npc.X == 334215 && npc.Y == 421276)
 					{
 						Kelteen = npc;
 						break;
@@ -82,29 +82,29 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (Kelteen == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find KelteenMid, creating it ...");
+					log.Warn("Could not find KelteenHib, creating it ...");
 				Kelteen = new GameNPC();
-				Kelteen.Model = 164;
+				Kelteen.Model = 315;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
-				Kelteen.Realm = eRealm.Midgard;
-				//Svasud Faste Location
-				Kelteen.CurrentRegionID = 100;
+				Kelteen.Realm = eRealm.Hibernia;
+				//Druim Ligen Location
+				Kelteen.CurrentRegionID = 200;
 				Kelteen.Size = 60;
 				Kelteen.Level = 59;
-				Kelteen.X = 765463;
-				Kelteen.Y = 670000;
-				Kelteen.Z = 5736;
-				Kelteen.Heading = 2245;
+				Kelteen.X = 334215;
+				Kelteen.Y = 421276;
+				Kelteen.Z = 5180;
+				Kelteen.Heading = 1566;
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
-				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 1722);
-				templateMid.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
-				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
-				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
-				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
-				templateMid.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
-				Kelteen.Inventory = templateMid.CloseTemplate();
+				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 1722);
+				templateHib.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
+				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
+				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
+				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
+				templateHib.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
+				Kelteen.Inventory = templateHib.CloseTemplate();
 				Kelteen.VisibleActiveWeaponSlots = (byte) eInventorySlot.DistanceWeapon;
 				Kelteen.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -128,7 +128,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			GameEventMgr.AddHandler(Kelteen, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToKelteen));
 
 			/* Now we bring to Kelteen the possibility to give this quest to players */
-			Kelteen.AddQuestToGive(typeof (CaptureRelicQuestMid));
+			Kelteen.AddQuestToGive(typeof (CaptureRelicQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -148,7 +148,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			GameEventMgr.RemoveHandler(Kelteen, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToKelteen));
 
 			/* Now we remove to Kelteen the possibility to give this quest to players */
-			Kelteen.RemoveQuestToGive(typeof (CaptureRelicQuestMid));
+			Kelteen.RemoveQuestToGive(typeof (CaptureRelicQuestHib));
 		}
 
 		private static void TalkToKelteen(DOLEvent e, object sender, EventArgs args)
@@ -158,11 +158,11 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (player == null)
 				return;
 
-			if(Kelteen.CanGiveQuest(typeof (CaptureRelicQuestMid), player)  <= 0)
+			if(Kelteen.CanGiveQuest(typeof (CaptureRelicQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			CaptureRelicQuestMid quest = player.IsDoingQuest(typeof (CaptureRelicQuestMid)) as CaptureRelicQuestMid;
+			CaptureRelicQuestHib quest = player.IsDoingQuest(typeof (CaptureRelicQuestHib)) as CaptureRelicQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -171,7 +171,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Kelteen.SayTo(player, "Encourage allies to conquer a relic keep in Albion or Hibernia and return the relic to your realm.");
+							Kelteen.SayTo(player, "Encourage allies to conquer a relic keep in Albion or Midgard and return the relic to your realm.");
 							break;
 						case 2:
 							Kelteen.SayTo(player, "Hello " + player.Name + ", did you [capture] a relic?");
@@ -194,7 +194,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "securing a foothold":
-							player.Out.SendQuestSubscribeCommand(Kelteen, QuestMgr.GetIDForQuestType(typeof(CaptureRelicQuestMid)), "Will you help Kelteen "+questTitle+"");
+							player.Out.SendQuestSubscribeCommand(Kelteen, QuestMgr.GetIDForQuestType(typeof(CaptureRelicQuestHib)), "Will you help Kelteen "+questTitle+"");
 							break;
 					}
 				}
@@ -220,7 +220,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (CaptureRelicQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (CaptureRelicQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -238,7 +238,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			CaptureRelicQuestMid quest = player.IsDoingQuest(typeof (CaptureRelicQuestMid)) as CaptureRelicQuestMid;
+			CaptureRelicQuestHib quest = player.IsDoingQuest(typeof (CaptureRelicQuestHib)) as CaptureRelicQuestHib;
 
 			if (quest == null)
 				return;
@@ -260,7 +260,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(CaptureRelicQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(CaptureRelicQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -271,23 +271,23 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Kelteen.CanGiveQuest(typeof (CaptureRelicQuestMid), player)  <= 0)
+			if(Kelteen.CanGiveQuest(typeof (CaptureRelicQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (CaptureRelicQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (CaptureRelicQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Midgard.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Hibernia.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			}
 			else
 			{
 				//Check if we can add the quest!
-				if (!Kelteen.GiveQuest(typeof (CaptureRelicQuestMid), player, 1))
+				if (!Kelteen.GiveQuest(typeof (CaptureRelicQuestHib), player, 1))
 					return;
 
-				Kelteen.SayTo(player, "Thank you "+player.Name+", you are a true soldier of Midgard!");
+				Kelteen.SayTo(player, "Thank you "+player.Name+", you are a true guardian of Hibernia!");
 
 			}
 		}
@@ -306,7 +306,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Encourage allies to conquer a relic keep in Albion or Hibernia and return the relic to your realm. \nCaptured: Relic ("+ _isCaptured +" | "+MAX_CAPTURED+")";
+						return "Encourage allies to conquer a relic keep in Albion or Midgard and return the relic to your realm. \nCaptured: Relic ("+ _isCaptured +" | "+MAX_CAPTURED+")";
 					case 2:
 						return "Return to Kelteen for your Reward.";
 				}
@@ -318,7 +318,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(CaptureRelicQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(CaptureRelicQuestHib)) == null)
 				return;
 			
 			if (sender != m_questPlayer)
@@ -339,7 +339,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		
 		public override string QuestPropertyKey
 		{
-			get => "CaptureRelicQuestMid";
+			get => "CaptureRelicQuestHib";
 			set { ; }
 		}
 		
