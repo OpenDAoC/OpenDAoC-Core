@@ -11,9 +11,9 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.MonthlyQuest.Midgard
+namespace DOL.GS.MonthlyQuest.Hibernia
 {
-	public class MonthlyEpicPvEQuestMid : Quests.MonthlyQuest
+	public class MonthlyEpicPvEQuestHib : Quests.MonthlyQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -27,29 +27,29 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		// Kill Goal
 		private const int MAX_KILLED = 1;
 		// Quest Counter
-		private int _iarnvidiurKilled = 0;
-		private int _nosdodenKilled = 0;
+		private int _balorKilled = 0;
+		private int _myrddraxisKilled = 0;
 
-		private static GameNPC Jarek = null; // Start NPC
+		private static GameNPC Anthony = null; // Start NPC
 
-		private const string Iarnvidiur_NAME = "Iarnvidiur";
-		private const string Nosdoden_NAME = "Nosdoden";
+		private const string Balor_NAME = "Balor";
+		private const string Myrddraxis_NAME = "Myrddraxis";
 		
 		
 		// Constructors
-		public MonthlyEpicPvEQuestMid() : base()
+		public MonthlyEpicPvEQuestHib() : base()
 		{
 		}
 
-		public MonthlyEpicPvEQuestMid(GamePlayer questingPlayer) : base(questingPlayer)
+		public MonthlyEpicPvEQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public MonthlyEpicPvEQuestMid(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public MonthlyEpicPvEQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public MonthlyEpicPvEQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public MonthlyEpicPvEQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -71,44 +71,42 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
+					if (npc.CurrentRegionID == 181 && npc.X == 422864 && npc.Y == 444362)
 					{
-						Jarek = npc;
+						Anthony = npc;
 						break;
 					}
 
-			if (Jarek == null)
+			if (Anthony == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Jarek , creating it ...");
-				Jarek = new GameNPC();
-				Jarek.Model = 774;
-				Jarek.Name = "Jarek";
-				Jarek.GuildName = "Advisor to the King";
-				Jarek.Realm = eRealm.Midgard;
-				Jarek.CurrentRegionID = 151;
-				Jarek.Size = 50;
-				Jarek.Level = 59;
-				//Aegirhamn Location
-				Jarek.X = 292291;
-				Jarek.Y = 354975;
-				Jarek.Z = 3867;
-				Jarek.Heading = 1239;
-				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
-				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
-				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985);
-				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
-				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
-				Jarek.Inventory = templateMid.CloseTemplate();
-				Jarek.AddToWorld();
+					log.Warn("Could not find Anthony , creating it ...");
+				Anthony = new GameNPC();
+				Anthony.Model = 289;
+				Anthony.Name = "Anthony";
+				Anthony.GuildName = "Advisor to the King";
+				Anthony.Realm = eRealm.Hibernia;
+				//Domnann Location
+				Anthony.CurrentRegionID = 181;
+				Anthony.Size = 50;
+				Anthony.Level = 59;
+				Anthony.X = 422864;
+				Anthony.Y = 444362;
+				Anthony.Z = 5952;
+				Anthony.Heading = 1234;
+				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
+				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361);
+				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362);
+				Anthony.Inventory = templateHib.CloseTemplate();
+				Anthony.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Jarek.SaveIntoDatabase();
+					Anthony.SaveIntoDatabase();
 				}
 			}
 
@@ -123,10 +121,10 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
-			GameEventMgr.AddHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.AddHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+			GameEventMgr.AddHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 			
-			Jarek.AddQuestToGive(typeof (MonthlyEpicPvEQuestMid));
+			Anthony.AddQuestToGive(typeof (MonthlyEpicPvEQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -136,30 +134,30 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Jarek == null)
+			if (Anthony == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
-			GameEventMgr.RemoveHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.RemoveHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
+			GameEventMgr.RemoveHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
 
-			Jarek.RemoveQuestToGive(typeof (MonthlyEpicPvEQuestMid));
+			Anthony.RemoveQuestToGive(typeof (MonthlyEpicPvEQuestHib));
 		}
 
-		private static void TalkToJarek(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToAnthony(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Jarek.CanGiveQuest(typeof (MonthlyEpicPvEQuestMid), player)  <= 0)
+			if(Anthony.CanGiveQuest(typeof (MonthlyEpicPvEQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			MonthlyEpicPvEQuestMid quest = player.IsDoingQuest(typeof (MonthlyEpicPvEQuestMid)) as MonthlyEpicPvEQuestMid;
+			MonthlyEpicPvEQuestHib quest = player.IsDoingQuest(typeof (MonthlyEpicPvEQuestHib)) as MonthlyEpicPvEQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -168,18 +166,18 @@ namespace DOL.GS.MonthlyQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Jarek.SayTo(player, player.Name + ", please find allies and kill the epic creatures in Trollheim and Iarnvidiur's Lair!");
+							Anthony.SayTo(player, player.Name + ", please find allies and kill the epic creatures in Tur Suil and Fomor!");
 							break;
 						case 2:
-							Jarek.SayTo(player, "Hello " + player.Name + ", did you [slay the creatures] and return for your reward?");
+							Anthony.SayTo(player, "Hello " + player.Name + ", did you [slay the creatures] and return for your reward?");
 							break;
 					}
 				}
 				else
 				{
-					Jarek.SayTo(player, "Hello "+ player.Name +", I am Jarek. For several months the situation in Trollheim and Iarnvidur's Lair has changed. " +
+					Anthony.SayTo(player, "Hello "+ player.Name +", I am Anthony. For several months the situation in Tur Suil and Fomor has changed. " +
 					                    "A place of mineral wealth and natural resources is now a place of violence and poisoning. \n\n"+
-					                    "Can you support Midgard and [kill Nosdoden and Iarnvidiur] in Trollheim and Iarnvidur's Lair?");
+					                    "Can you support Hibernia and [kill Balor and Myrddraxis] in Tur Suil and Fomor?");
 				}
 			}
 				// The player whispered to the NPC
@@ -190,8 +188,8 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				{
 					switch (wArgs.Text)
 					{
-						case "kill Nosdoden and Iarnvidiur":
-							player.Out.SendQuestSubscribeCommand(Jarek, QuestMgr.GetIDForQuestType(typeof(MonthlyEpicPvEQuestMid)), "Will you help Jarek "+questTitle+"?");
+						case "kill Balor and Myrddraxis":
+							player.Out.SendQuestSubscribeCommand(Anthony, QuestMgr.GetIDForQuestType(typeof(MonthlyEpicPvEQuestHib)), "Will you help Anthony "+questTitle+"?");
 							break;
 					}
 				}
@@ -217,7 +215,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (MonthlyEpicPvEQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (MonthlyEpicPvEQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -235,7 +233,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			MonthlyEpicPvEQuestMid quest = player.IsDoingQuest(typeof (MonthlyEpicPvEQuestMid)) as MonthlyEpicPvEQuestMid;
+			MonthlyEpicPvEQuestHib quest = player.IsDoingQuest(typeof (MonthlyEpicPvEQuestHib)) as MonthlyEpicPvEQuestHib;
 
 			if (quest == null)
 				return;
@@ -257,7 +255,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(MonthlyEpicPvEQuestMid)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(MonthlyEpicPvEQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -268,10 +266,10 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Jarek.CanGiveQuest(typeof (MonthlyEpicPvEQuestMid), player)  <= 0)
+			if(Anthony.CanGiveQuest(typeof (MonthlyEpicPvEQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (MonthlyEpicPvEQuestMid)) != null)
+			if (player.IsDoingQuest(typeof (MonthlyEpicPvEQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -281,10 +279,10 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Jarek.GiveQuest(typeof (MonthlyEpicPvEQuestMid), player, 1))
+				if (!Anthony.GiveQuest(typeof (MonthlyEpicPvEQuestHib), player, 1))
 					return;
 
-				Jarek.SayTo(player, "Please, find the epic monsters in Trollheim and Iarnvidiur's Lair and return for your reward.");
+				Anthony.SayTo(player, "Please, find the epic monsters in Tur Suil and Fomor and return for your reward.");
 
 			}
 		}
@@ -303,11 +301,11 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Make your way and defeat the epic creatures in Trollheim as well as in Iarnvidiur's Lair! \n" +
-						       "Killed: " + Iarnvidiur_NAME + " ("+ _iarnvidiurKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + Nosdoden_NAME + " ("+ _nosdodenKilled +" | " + MAX_KILLED + ")\n";
+						return "Make your way and defeat the epic creatures in Tur Suil as well as in Fomor! \n" +
+						       "Killed: " + Balor_NAME + " ("+ _balorKilled +" | " + MAX_KILLED + ") in Tur Suil\n" +
+						       "Killed: " + Myrddraxis_NAME + " ("+ _myrddraxisKilled +" | " + MAX_KILLED + ") in Fomor\n";
 					case 2:
-						return "Return to Jarek for your Reward.";
+						return "Return to Anthony for your Reward.";
 				}
 				return base.Description;
 			}
@@ -317,7 +315,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(MonthlyEpicPvEQuestMid)) == null)
+			if (player?.IsDoingQuest(typeof(MonthlyEpicPvEQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -326,20 +324,20 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == Iarnvidiur_NAME.ToLower() && gArgs.Target is GameNPC && _iarnvidiurKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == Balor_NAME.ToLower() && gArgs.Target is GameNPC && _balorKilled < MAX_KILLED)
 			{
-				_iarnvidiurKilled = 1;
-				player.Out.SendMessage("[Monthly] You killed " + Iarnvidiur_NAME + ": (" + _iarnvidiurKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				_balorKilled = 1;
+				player.Out.SendMessage("[Monthly] You killed " + Balor_NAME + ": (" + _balorKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == Nosdoden_NAME.ToLower() && gArgs.Target is GameNPC && _nosdodenKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == Myrddraxis_NAME.ToLower() && gArgs.Target is GameNPC && _myrddraxisKilled < MAX_KILLED)
 			{
-				_nosdodenKilled = 1;
-				player.Out.SendMessage("[Weekly] You killed " + Nosdoden_NAME + ": (" + _nosdodenKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				_myrddraxisKilled = 1;
+				player.Out.SendMessage("[Monthly] You killed " + Myrddraxis_NAME + ": (" + _myrddraxisKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 
-			if (_iarnvidiurKilled >= MAX_KILLED && _nosdodenKilled >= MAX_KILLED)
+			if (_balorKilled >= MAX_KILLED && _myrddraxisKilled >= MAX_KILLED)
 			{
 				Step = 2;
 			}
@@ -347,20 +345,20 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		
 		public override string QuestPropertyKey
 		{
-			get => "MonthlyEpicPvEQuestMid";
+			get => "MonthlyEpicPvEQuestHib";
 			set { ; }
 		}
 		
 		public override void LoadQuestParameters()
 		{
-			_iarnvidiurKilled = GetCustomProperty(Iarnvidiur_NAME) != null ? int.Parse(GetCustomProperty(Iarnvidiur_NAME)) : 0;
-			_nosdodenKilled = GetCustomProperty(Nosdoden_NAME) != null ? int.Parse(GetCustomProperty(Nosdoden_NAME)) : 0;
+			_balorKilled = GetCustomProperty(Balor_NAME) != null ? int.Parse(GetCustomProperty(Balor_NAME)) : 0;
+			_myrddraxisKilled = GetCustomProperty(Myrddraxis_NAME) != null ? int.Parse(GetCustomProperty(Myrddraxis_NAME)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(Iarnvidiur_NAME, _iarnvidiurKilled.ToString());
-			SetCustomProperty(Nosdoden_NAME, _nosdodenKilled.ToString());
+			SetCustomProperty(Balor_NAME, _balorKilled.ToString());
+			SetCustomProperty(Myrddraxis_NAME, _myrddraxisKilled.ToString());
 		}
 
 		public override void FinishQuest()
@@ -374,8 +372,8 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 3000);
 				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
 				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
-				_iarnvidiurKilled = 0;
-				_nosdodenKilled = 0;
+				_balorKilled = 0;
+				_myrddraxisKilled = 0;
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}
 			else
