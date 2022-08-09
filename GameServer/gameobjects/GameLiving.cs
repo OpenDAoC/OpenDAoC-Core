@@ -35,6 +35,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using DOL.GS.RealmAbilities;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -4152,7 +4153,6 @@ namespace DOL.GS
 				AddXPGainer(source, (float)damageAmount + criticalAmount);
 			}
 
-			bool wasAlive = IsAlive;
 
 			/*
 			//[Freya] Nidel: Use2's Flask
@@ -4175,16 +4175,28 @@ namespace DOL.GS
 				}
 			}*/
 
+			bool wasAlive = IsAlive;
+
 			Health -= damageAmount + criticalAmount;
 
-			if (!IsAlive)
-			{
-				if (wasAlive && isDeadOrDying == false)
-				{
-					Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
-					isDeadOrDying = true;
-					Die(source);
-			    }
+			if (!IsAlive && wasAlive && isDeadOrDying == false)
+            {
+					if (Monitor.TryEnter(deadLock))
+					{
+						try
+						{
+						isDeadOrDying = true;
+						Die(source);
+						}
+						finally
+						{
+							Monitor.Exit(deadLock);
+						}
+					}
+					else
+					{
+					return;
+					}
 			}
 			else
 			{
@@ -4192,11 +4204,11 @@ namespace DOL.GS
 					Notify(GameLivingEvent.LowHealth, this, null);
 			}
 		}
-
-        /// <summary>
-        /// Called on the attacker when attacking an enemy.
-        /// </summary>
-        public virtual void OnAttackEnemy(AttackData ad)
+		object deadLock = new object();
+		/// <summary>
+		/// Called on the attacker when attacking an enemy.
+		/// </summary>
+		public virtual void OnAttackEnemy(AttackData ad)
         {
 			//Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
 
