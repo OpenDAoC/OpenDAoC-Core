@@ -2024,10 +2024,10 @@ namespace DOL.GS
 			//modify interrupt chance by mob con
 			double mod = GetConLevel(attacker);
 			double chance = BaseInterruptChance;
-			chance += mod * 10;
+			chance += mod * 33;
 			chance = Math.Max(1, chance);
 			chance = Math.Min(99, chance);
-			if (attacker is GamePlayer) chance = 99;
+			//if (attacker is GamePlayer) chance = 99;
 			
 			if (Util.Chance((int)chance))
             {
@@ -2110,10 +2110,10 @@ namespace DOL.GS
 		{
 			double mod = GetConLevel(attacker);
 			double chance = BaseInterruptChance;
-			chance += mod * 10;
+			chance += mod * 33;
 			chance = Math.Max(1, chance);
 			chance = Math.Min(99, chance);
-			if (attacker is GamePlayer) chance = 99;
+			//if (attacker is GamePlayer) chance = 99;
 			return Util.Chance((int)chance);
 		}
 
@@ -2146,7 +2146,7 @@ namespace DOL.GS
 
 				double mod = GetConLevel(attacker);
 				double interruptChance = BaseInterruptChance;
-				interruptChance += mod * 10;
+				interruptChance += mod * 33;
 				interruptChance = Math.Max(1, interruptChance);
 				interruptChance = Math.Min(99, interruptChance);
 				if (Util.Chance((int)interruptChance))
