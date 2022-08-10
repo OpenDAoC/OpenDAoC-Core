@@ -304,8 +304,8 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				{
 					case 1:
 						return "Make your way and defeat the epic creatures in Trollheim as well as in Iarnvidiur's Lair! \n" +
-						       "Killed: " + Iarnvidiur_NAME + " ("+ _iarnvidiurKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + Nosdoden_NAME + " ("+ _nosdodenKilled +" | " + MAX_KILLED + ")\n";
+						       "Killed: " + Nosdoden_NAME + " ("+ _nosdodenKilled +" | " + MAX_KILLED + ") in Trollheim\n" +
+						       "Killed: " + Iarnvidiur_NAME + " ("+ _iarnvidiurKilled +" | " + MAX_KILLED + ") in Iarnvidiur's Lair\n";
 					case 2:
 						return "Return to Jarek for your Reward.";
 				}
