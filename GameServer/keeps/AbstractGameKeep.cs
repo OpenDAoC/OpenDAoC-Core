@@ -672,7 +672,8 @@ namespace DOL.GS.Keeps
 				int count = 0;
 				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 				{
-					if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, 1000) == this)
+					// if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, 1000) == this)
+					if (p.CurrentAreas.Contains(this.Area)) //Check if player is in keep area
 						count++;
 				}
 
