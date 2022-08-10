@@ -26,7 +26,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 
 		private static GameNPC ReyMid = null; // Start NPC
 
-		private static int PlayersKilled = 0;
+		private int PlayersKilled = 0;
 		
 		// Kill Goal
 		private int MAX_KILLING_GOAL = 100;
@@ -277,7 +277,6 @@ namespace DOL.GS.WeeklyQuests.Midgard
 				//Check if we can add the quest!
 				if (!ReyMid.GiveQuest(typeof (PlayerKillWeeklyQuestMid), player, 1))
 					return;
-				PlayersKilled = 0;
 
 				ReyMid.SayTo(player, "You will find suitable players in the frontiers or in battlegrounds.");
 

@@ -117,6 +117,12 @@ namespace DOL.GS
                 if(player != null)
                     BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.CharacterClass.Name+ "!"));
             }
+            var prepareMezz = TempProperties.getProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+            if (prepareMezz != null)
+            {
+                prepareMezz.Stop();
+                TempProperties.removeProperty("kvasir_prepareMezz");
+            }
             base.Die(killer);
         }
         private void SpawnAnnouncer()
@@ -202,6 +208,12 @@ namespace DOL.AI.Brain
                 IsPulled = false;
                 StartMezz = false;
                 AggroText = false;
+                var prepareMezz = Body.TempProperties.getProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+                if (prepareMezz != null)
+                {
+                    prepareMezz.Stop();
+                    Body.TempProperties.removeProperty("kvasir_prepareMezz");
+                }
             }
             if (Body.IsOutOfTetherRange)
             {
@@ -217,7 +229,8 @@ namespace DOL.AI.Brain
             {
                 if (!StartMezz)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareMezz), Util.Random(45000, 60000));
+                   ECSGameTimer prepareMezz = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareMezz), Util.Random(45000, 60000));
+                    Body.TempProperties.setProperty("kvasir_prepareMezz", prepareMezz);
                     StartMezz = true;
                 }
                 if(!Body.IsCasting && Util.Chance(5))
@@ -379,8 +392,8 @@ namespace DOL.AI.Brain
         }
         private int Announce(ECSGameTimer timer)
         {
-            BroadcastMessage("A low rumble echoes throughout the Tuscarian Glacier! Icicles reasonating with the sound break off from the ceiling and shatter on the floors!" +
-                            "The rumble groes louder causing small cracks to form in the walls! It sounds as though there is a sawrm of giants on the move somewhere in the glacier!");
+            BroadcastMessage("A low rumble echoes throughout the Tuscarian Glacier! Icicles resonating with the sound break off from the ceiling and shatter on the floors!" +
+                            "The rumble grows louder causing small cracks to form in the walls! It sounds as though there is a swarm of giants on the move somewhere in the glacier!");
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMob), 300);
             return 0;
         }

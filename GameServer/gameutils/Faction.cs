@@ -219,7 +219,6 @@ namespace DOL.GS
 		/// <param name="killer"></param>
 		public void KillMember(GamePlayer killer)
 		{
-			this.ChangeAggroLevel(killer, INCREASE_AGGRO_AMOUNT);
 			foreach (Faction faction in m_friendFactions)
 			{
 				faction.ChangeAggroLevel(killer, INCREASE_AGGRO_AMOUNT);

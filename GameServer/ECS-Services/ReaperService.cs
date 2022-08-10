@@ -61,7 +61,7 @@ public class ReaperService
             Parallel.ForEach(KilledToKillerDict, killed =>
             {
                 killed.Key.ProcessDeath(killed.Value);
-                Console.WriteLine($"Dead or Dying set to {killed.Key.isDeadOrDying} for {killed.Key.Name} in reaper");
+                //Console.WriteLine($"Dead or Dying set to {killed.Key.isDeadOrDying} for {killed.Key.Name} in reaper");
             });
 
             Diagnostics.StopPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
