@@ -101,7 +101,7 @@ namespace DOL.AI.Brain
 
 				if (living is GameNPC)
 				{
-					if (Body.GetConLevel(living) <= -3)
+					if (Body.GetConLevel(living) < -2)
 						continue;
 
 					if(EffectListService.GetEffectOnTarget(living, eEffect.SpeedOfSound) != null)
@@ -153,6 +153,9 @@ namespace DOL.AI.Brain
 					continue;
 
 				if (living.IsMezzed || living.IsStealthed)
+					continue;
+				
+				if (Body.GetConLevel(living) < -2)
 					continue;
 
 				if (LivingHasEffect(living, turretBody.TurretSpell))

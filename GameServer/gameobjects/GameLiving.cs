@@ -4181,7 +4181,7 @@ namespace DOL.GS
 			{
 				if (wasAlive && isDeadOrDying == false)
 				{
-					Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
+					//Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
 					isDeadOrDying = true;
 					Die(source);
 			    }
