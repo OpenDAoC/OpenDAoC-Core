@@ -418,6 +418,10 @@ namespace DOL.GS.Styles
 					double talySpec = living.GetModifiedSpecLevel(attackData.Style.Spec);
 					double talySpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 					double talyCap = living.attackComponent.UnstyledDamageCap(weapon);
+					
+					//Console.WriteLine($"Growth {talyGrowth} | Spec {talySpec} | Speed {talySpeed} | UnstyleCap {talyCap}");
+					//Console.WriteLine($"Numerator: {talyGrowth * talySpec * talySpeed} | Denominator {talyCap} | Base Damage {attackData.Damage} | StyleMod * Base {attackData.Damage * (talyGrowth * talySpec * talySpeed / talyCap)}");
+					//Console.WriteLine($"TalyVal {(talyGrowth * talySpec * talySpeed / talyCap)} DamMod {attackData.DamageMod}");
 
 					if (staticGrowth)
 					{

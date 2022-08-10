@@ -3564,6 +3564,25 @@ namespace DOL.GS
                     {
                         result *= 1 + p.GetModified(eProperty.MeleeDamage) * 0.01;
                     }
+                    
+                    if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    {
+                        if (p.GetModifiedSpecLevel(Specs.Left_Axe) > 0)
+                        {
+                            int LASpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                            if (LASpec > 0)
+                            {
+                                var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
+                                
+                                if (p.GetModified(eProperty.OffhandDamageAndChance) > 0)
+                                {
+                                    leftAxeEffectiveness += .01 * p.GetModified(eProperty.OffhandDamageAndChance);
+                                }
+
+                                result *= leftAxeEffectiveness;
+                            }
+                        }
+                    }
 
                     if (result <= 0) //Checking if 0 or negative
                         result = 1;
