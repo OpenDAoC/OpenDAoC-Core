@@ -2025,10 +2025,10 @@ namespace DOL.GS
 			//modify interrupt chance by mob con
 			double mod = GetConLevel(attacker);
 			double chance = BaseInterruptChance;
-			chance += mod * 10;
+			chance += mod * 33;
 			chance = Math.Max(1, chance);
 			chance = Math.Min(99, chance);
-			if (attacker is GamePlayer) chance = 99;
+			//if (attacker is GamePlayer) chance = 99;
 			
 			if (Util.Chance((int)chance))
             {
@@ -4153,6 +4153,7 @@ namespace DOL.GS
 				AddXPGainer(source, (float)damageAmount + criticalAmount);
 			}
 
+			bool wasAlive = IsAlive;
 
 			/*
 			//[Freya] Nidel: Use2's Flask
@@ -4817,7 +4818,7 @@ namespace DOL.GS
 		public virtual void Die(GameObject killer)
 		{
 			isDeadOrDying = true;
-			Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
+			//Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
 			ReaperService.KillLiving(this, killer);
 		}
 

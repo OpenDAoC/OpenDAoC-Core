@@ -30,9 +30,7 @@ namespace DOL.GS.PropertyCalc
 			else if (living is NecromancerPet petNecro)
 			{
 				chance += 10;
-				if (petNecro.Brain is IControlledBrain brainNecro && brainNecro.GetPlayerOwner() is GamePlayer necro
-					&& necro.GetAbility<RealmAbilities.WildPowerAbility>() is RealmAbilities.WildPowerAbility raWP)
-					chance += raWP.Amount;
+				chance += petNecro.Owner.AbilityBonus[(int)property];
 			}
             // Summoned or Charmed pet.
             else if (living is GameNPC npc && ServerProperties.Properties.EXPAND_WILD_MINION)
@@ -41,7 +39,7 @@ namespace DOL.GS.PropertyCalc
                     && playerOwner.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>() is RealmAbilities.AtlasOF_WildMinionAbility raWM)
                     chance += raWM.Amount;
             }
-			
+
 			return Math.Min(chance, 50);
 		}
 	}
