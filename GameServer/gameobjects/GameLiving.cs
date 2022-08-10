@@ -4805,7 +4805,7 @@ namespace DOL.GS
 		public virtual void Die(GameObject killer)
 		{
 			isDeadOrDying = true;
-			Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
+			//Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
 			ReaperService.KillLiving(this, killer);
 		}
 
