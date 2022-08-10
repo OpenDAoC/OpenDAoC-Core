@@ -414,6 +414,11 @@ namespace DOL.GS.Styles
 					double styleGrowth = Math.Max(0,attackData.Style.GrowthOffset + attackData.Style.GrowthRate * living.GetModifiedSpecLevel(attackData.Style.Spec));
 					double styleDamageBonus = living.GetModified(eProperty.StyleDamage) * 0.01 - 1;
 
+					double talyGrowth = attackData.Style.GrowthRate;
+					double talySpec = living.GetModifiedSpecLevel(attackData.Style.Spec);
+					double talySpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
+					double talyCap = living.attackComponent.UnstyledDamageCap(weapon);
+
 					if (staticGrowth)
 					{
 						//if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
@@ -464,9 +469,9 @@ namespace DOL.GS.Styles
 						attackData.Modifier -= (int)(initialDamage - attackData.StyleDamage);
 					}
 					else
-						attackData.StyleDamage = (int)(absorbRatio * styleGrowth * effectiveWeaponSpeed);
-
-					attackData.StyleDamage += (int)(attackData.Damage * styleDamageBonus);
+					{
+						attackData.StyleDamage = (int)((talyGrowth * talySpec * talySpeed / talyCap) * attackData.Damage);
+					}
 
 					//Eden - style absorb bonus
 					int absorb=0;
