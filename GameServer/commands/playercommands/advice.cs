@@ -113,10 +113,10 @@ namespace DOL.GS.Commands
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
 				if (playerClient.Player == null) continue;
+				if (playerClient.Player.IsIgnoring(client.Player)) continue;
 				if (playerClient.Player.Realm == client.Player.Realm ||
-				     playerClient.Account.PrivLevel > 1)
+				    playerClient.Account.PrivLevel > 1)
 				{
-					if (playerClient.Player.SerializedIgnoreList.Contains(client.Player.Name)) continue;
 					// Message: [ADVICE {0}] {1}: {2}
 					ChatUtil.SendAdviceMessage(playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), client.Player.Name, msg);
 				}

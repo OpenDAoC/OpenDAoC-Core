@@ -404,7 +404,7 @@ namespace DOL.GS.ServerRules
 			if (defender.IsStealthed && attacker is GameNPC)
 				if (((attacker as GameNPC).Brain is IControlledBrain) &&
 					defender is GamePlayer &&
-					playerAttacker.TargetObject != defender)
+					attacker.TargetObject != defender)
 					return false;
 
 			// GMs can't be attacked
