@@ -64,7 +64,7 @@ namespace DOL.AI.Brain
 					if (turretBody.TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
 						continue;
 
-					if (turretBody.TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && living.HasAbility(Abilities.RootImmunity))
+					if (turretBody.TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || EffectListService.GetEffectOnTarget(living, eEffect.SpeedOfSound) != null))
 						continue;
 
 					if(!newTargets.Contains(living))
@@ -102,6 +102,9 @@ namespace DOL.AI.Brain
 				if (living is GameNPC)
 				{
 					if (Body.GetConLevel(living) <= -3)
+						continue;
+
+					if(EffectListService.GetEffectOnTarget(living, eEffect.SpeedOfSound) != null)
 						continue;
 
 					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
