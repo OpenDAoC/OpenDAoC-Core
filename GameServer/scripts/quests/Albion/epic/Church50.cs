@@ -980,6 +980,9 @@ namespace DOL.GS.Quests.Albion
 			if (player==null || player.IsDoingQuest(typeof (Church_50)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
@@ -988,7 +991,7 @@ namespace DOL.GS.Quests.Albion
 					if (gArgs.Target.Name == Blythe.Name)
 					{
 						m_questPlayer.Out.SendMessage("As you search the dead body of sister Blythe, you find a sacred " + statue_of_arawn.Name + ", bring it to " + Roben.Name + " has proof of your success.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						GiveItem(m_questPlayer, statue_of_arawn);
+						GiveItem(player, statue_of_arawn);
 						Step = 2;
 					}
 				}
