@@ -4153,8 +4153,6 @@ namespace DOL.GS
 				AddXPGainer(source, (float)damageAmount + criticalAmount);
 			}
 
-			bool wasAlive = IsAlive;
-
 			/*
 			//[Freya] Nidel: Use2's Flask
 			if(this is GamePlayer)
