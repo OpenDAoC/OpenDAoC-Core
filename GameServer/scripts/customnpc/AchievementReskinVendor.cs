@@ -77,7 +77,7 @@ public class AchievementReskinVendor : GameNPC
         int damageType = (int)(eDamageType)item.Type_Damage;
         int characterClassUnknown = (int)eCharacterClass.Unknown;
         int playerClass = (int)(eCharacterClass)t.CharacterClass.ID;
-        int playerRealmRank = t.RealmLevel;
+        int playerRealmRank = (int)Math.Floor((double)(t.RealmLevel + 10.0) / 10.0);
         int accountRealmRank = t.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
         int playerDragonKills = t.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
         int playerOrbs = t.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned);
@@ -498,7 +498,7 @@ public class AchievementReskinVendor : GameNPC
         int damageType = (int)(eDamageType)item.Type_Damage;
         int characterClassUnknown = (int)eCharacterClass.Unknown;
         int playerClass = (int)(eCharacterClass)player.CharacterClass.ID;
-        int playerRealmRank = player.RealmLevel;
+        int playerRealmRank = (int)Math.Floor((double)(player.RealmLevel + 10.0) / 10.0);
         int accountRealmRank = player.GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank);
         int playerDragonKills = player.GetAchievementProgress(AchievementUtils.AchievementNames.Dragon_Kills);
         int playerOrbs = player.GetAchievementProgress(AchievementUtils.AchievementNames.Orbs_Earned);
@@ -794,14 +794,14 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Claw Hand Staff", 828, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, lowbie));
 
             //Drake
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Mage Staff", 3827, Slot.LEFTHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Quarter Staff", 3826, Slot.LEFTHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3963, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3927, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3886, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3964, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3928, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3887, Slot.LEFTHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Mage Staff", 3827, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Quarter Staff", 3826, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3963, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3927, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Quarter Staff", 3886, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3964, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3928, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Mage Staff", 3887, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
 
 
             //alb

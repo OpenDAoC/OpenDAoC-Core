@@ -4380,23 +4380,42 @@ namespace DOL.GS
 				//Handle faction alignement changes // TODO Review
 				if ((Faction != null) && (killer is GamePlayer))
 				{
-					lock (this.XPGainers.SyncRoot)
-					{ 
+					lock (this.attackComponent.Attackers)
+					{
+						List <GamePlayer> additionalPlayerList = new List<GamePlayer>();
 						// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
-						foreach (DictionaryEntry de in this.XPGainers)
+						foreach (GameObject de in this.attackComponent.Attackers)
 						{
-							GameLiving living = de.Key as GameLiving;
+							GameLiving living = de as GameLiving;
 							GamePlayer player = living as GamePlayer;
 							if (player != null && player.IsObjectGreyCon(this)) continue;
 							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
 							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-								player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+                                {
+									player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+									if (!this.attackComponent.Attackers.Contains(player) && !additionalPlayerList.Contains(player))
+                                    {
+										// Petmaster never attacked the mob but still needs to get the increase / decrease only once
+										// we have to keep a second list because a Pet master could have more than 1 pet in the attackers list (Bds)
+										additionalPlayerList.Add(player);
+									}
+									continue;
+								}
 
 							if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 							{
 								Faction.KillMember(player);
 							}
 						}
+
+							//masters of pets who didnt attack the mob themselfs and let pet do all the work
+                            foreach (GamePlayer additionalPlayer in additionalPlayerList)
+                            {
+								if (additionalPlayer != null && additionalPlayer.ObjectState == GameObject.eObjectState.Active && additionalPlayer.IsAlive && additionalPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+								{
+									Faction.KillMember(additionalPlayer);
+								}
+							}
 					}
 				}
 
