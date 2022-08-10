@@ -302,8 +302,8 @@ namespace DOL.GS.MonthlyQuest.Albion
 				{
 					case 1:
 						return "Make your way and defeat the epic creatures in Krondon as well as in the Crystal Cave of Avalon City! \n" +
-						       "Killed: " + Orylle_NAME + " ("+ _orylleKilled +" | " + MAX_KILLED + ") in Tur Suil\n" +
-						       "Killed: " + Xanxicar_NAME + " ("+ _xanxicarKilled +" | " + MAX_KILLED + ") in Fomor\n";
+						       "Killed: " + Orylle_NAME + " ("+ _orylleKilled +" | " + MAX_KILLED + ") in Krondon\n" +
+						       "Killed: " + Xanxicar_NAME + " ("+ _xanxicarKilled +" | " + MAX_KILLED + ") in Crystal Cave\n";
 					case 2:
 						return "Return to James for your Reward.";
 				}
