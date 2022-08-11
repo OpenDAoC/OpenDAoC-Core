@@ -35,6 +35,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using DOL.GS.RealmAbilities;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -2024,10 +2025,10 @@ namespace DOL.GS
 			//modify interrupt chance by mob con
 			double mod = GetConLevel(attacker);
 			double chance = BaseInterruptChance;
-			chance += mod * 10;
+			chance += mod * 33;
 			chance = Math.Max(1, chance);
 			chance = Math.Min(99, chance);
-			if (attacker is GamePlayer) chance = 99;
+			//if (attacker is GamePlayer) chance = 99;
 			
 			if (Util.Chance((int)chance))
             {
@@ -4152,8 +4153,6 @@ namespace DOL.GS
 				AddXPGainer(source, (float)damageAmount + criticalAmount);
 			}
 
-			bool wasAlive = IsAlive;
-
 			/*
 			//[Freya] Nidel: Use2's Flask
 			if(this is GamePlayer)
@@ -4175,16 +4174,28 @@ namespace DOL.GS
 				}
 			}*/
 
+			bool wasAlive = IsAlive;
+
 			Health -= damageAmount + criticalAmount;
 
-			if (!IsAlive)
-			{
-				if (wasAlive && isDeadOrDying == false)
-				{
-					Console.WriteLine("Setting isDeadOrDying to true on Attack function ");
-					isDeadOrDying = true;
-					Die(source);
-			    }
+			if (!IsAlive && wasAlive && isDeadOrDying == false)
+            {
+					if (Monitor.TryEnter(deadLock))
+					{
+						try
+						{
+						isDeadOrDying = true;
+						Die(source);
+						}
+						finally
+						{
+							Monitor.Exit(deadLock);
+						}
+					}
+					else
+					{
+					return;
+					}
 			}
 			else
 			{
@@ -4192,11 +4203,11 @@ namespace DOL.GS
 					Notify(GameLivingEvent.LowHealth, this, null);
 			}
 		}
-
-        /// <summary>
-        /// Called on the attacker when attacking an enemy.
-        /// </summary>
-        public virtual void OnAttackEnemy(AttackData ad)
+		object deadLock = new object();
+		/// <summary>
+		/// Called on the attacker when attacking an enemy.
+		/// </summary>
+		public virtual void OnAttackEnemy(AttackData ad)
         {
 			//Console.WriteLine(string.Format("OnAttack called on {0}", this.Name));
 
@@ -4805,7 +4816,7 @@ namespace DOL.GS
 		public virtual void Die(GameObject killer)
 		{
 			isDeadOrDying = true;
-			Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
+			//Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
 			ReaperService.KillLiving(this, killer);
 		}
 

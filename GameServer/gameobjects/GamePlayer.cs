@@ -3525,7 +3525,7 @@ namespace DOL.GS
             return specPoints;
         }
 
-        public virtual bool RespecRealm()
+        public virtual bool RespecRealm(bool useRespecPoint = true)
         {
             bool any = m_realmAbilities.Count > 0;
 			
@@ -3533,7 +3533,7 @@ namespace DOL.GS
                 RemoveAbility(ab.KeyName);
 			
             m_realmAbilities.Clear();
-            if (!ServerProperties.Properties.FREE_RESPEC)
+            if (!ServerProperties.Properties.FREE_RESPEC && useRespecPoint)
                 RespecAmountRealmSkill--;
             return any;
         }
@@ -7446,6 +7446,14 @@ namespace DOL.GS
                 Out.SendCloseTimerWindow();
             }
 
+            if (IsSalvagingOrRepairing)
+            {
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                CraftTimer.Stop();
+                CraftTimer = null;
+                Out.SendCloseTimerWindow();
+            }
+
 
 
         }
@@ -8921,6 +8929,14 @@ namespace DOL.GS
                 Out.SendCloseTimerWindow();
             }
 
+            if (IsSalvagingOrRepairing)
+            {
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                CraftTimer.Stop();
+                CraftTimer = null;
+                Out.SendCloseTimerWindow();
+            }
+
             if (spell.SpellType == (byte)eSpellType.StyleHandler || spell.SpellType == (byte)eSpellType.MLStyleHandler)
             {
                 //Style style = SkillBase.GetStyleByID((int)spell.Value, CharacterClass.ID);
@@ -9223,6 +9239,14 @@ namespace DOL.GS
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 //CraftTimer.Stop();
                 craftComponent.StopCraft();
+                CraftTimer = null;
+                Out.SendCloseTimerWindow();
+            }
+
+            if (IsSalvagingOrRepairing)
+            {
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                CraftTimer.Stop();
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
@@ -11992,6 +12016,15 @@ namespace DOL.GS
                 this.craftComponent.StopCraft();
                 Out.SendCloseTimerWindow();
             }
+
+            if (IsSalvagingOrRepairing)
+            {
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnPlayerMove.InterruptCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                CraftTimer.Stop();
+                CraftTimer = null;
+                Out.SendCloseTimerWindow();
+            }
+
             if (IsSummoningMount)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnPlayerMove.CannotCallMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -15133,6 +15166,14 @@ namespace DOL.GS
         /// Does the player is crafting
         /// </summary>
         public bool IsCrafting => (craftComponent != null && craftComponent.CraftState);
+
+        /// <summary>
+        /// Checks if a player is salvaging 
+        /// </summary>
+        public bool IsSalvagingOrRepairing
+		{
+			get { return (m_crafttimer != null && m_crafttimer.IsAlive); }
+		}
 
         protected bool m_isDead = false;
         /// <summary>

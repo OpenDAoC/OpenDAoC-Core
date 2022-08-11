@@ -1406,7 +1406,7 @@ namespace DOL.GS.Quests.Albion
 						Morgana.Yell("You may have stopped me here, but I'll come back! Albion will be mine!");
 						//DeleteMorgana();
 						player.Out.SendMessage("A sense of calm settles about you!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-						GiveItem(m_questPlayer, sealed_pouch);
+						GiveItem(player, sealed_pouch);
 						m_questPlayer.Out.SendMessage("Take the pouch to " + Ferowl.GetName(0, true), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						Step = 2;
 					}

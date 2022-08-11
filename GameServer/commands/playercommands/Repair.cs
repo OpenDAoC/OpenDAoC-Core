@@ -121,7 +121,7 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			if (player.IsCrafting)
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				DisplayMessage(player, "You must end your current action before you repair anything!");
 				return false;

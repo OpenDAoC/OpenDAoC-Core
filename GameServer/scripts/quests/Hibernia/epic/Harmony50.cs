@@ -2291,6 +2291,9 @@ namespace DOL.GS.Quests.Hibernia
 			if (player == null || player.IsDoingQuest(typeof(Harmony_50)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs)args;
@@ -2298,7 +2301,7 @@ namespace DOL.GS.Quests.Hibernia
 				if (gArgs.Target.Name == Cailean.Name && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
 					m_questPlayer.Out.SendMessage("You collect the Horn from Cailean", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					GiveItem(m_questPlayer, Horn);
+					GiveItem(player, Horn);
 					Step = 2;
 				}
 			}

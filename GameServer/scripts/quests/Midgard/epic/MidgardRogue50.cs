@@ -1081,13 +1081,16 @@ namespace DOL.GS.Quests.Midgard
 			if (player==null || player.IsDoingQuest(typeof (Rogue_50)) == null)
 				return;
 
+			if (sender != m_questPlayer)
+				return;
+			
 			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
 			{
 				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 				if (gArgs.Target.Name == Oona.Name)
 				{
 					m_questPlayer.Out.SendMessage("You collect Oona's Head", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					GiveItem(m_questPlayer, oona_head);
+					GiveItem(player, oona_head);
 					Step = 2;
 				}
 			}
