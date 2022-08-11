@@ -359,11 +359,11 @@ namespace DOL.GS.BaseQuest.Midgard
 			MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
 			MobEffect.Flags ^= GameNPC.eFlags.PEACE;
 			
-			Beetle.CurrentRegionID = 101;
-			Beetle.X = 31445;
-			Beetle.Y = 27618;
-			Beetle.Z = 8776;
-			Beetle.Heading = 3288;
+			MobEffect.CurrentRegionID = 101;
+			MobEffect.X = 31445;
+			MobEffect.Y = 27618;
+			MobEffect.Z = 8776;
+			MobEffect.Heading = 3288;
 			
 			MobEffect.AddToWorld();
 			
