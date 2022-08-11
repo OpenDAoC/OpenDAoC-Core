@@ -61,7 +61,6 @@
     <Content Include="API\docs\swagger-ui.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Albion\PvE Quest" />
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Albion\RvR Quest" />
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Hibernia\PvE Quest" />
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Hibernia\RvR Quest" />
