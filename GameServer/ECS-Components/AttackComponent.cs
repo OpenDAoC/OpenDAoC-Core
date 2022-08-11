@@ -1219,6 +1219,14 @@ namespace DOL.GS
                     p.Out.SendCloseTimerWindow();
                 }
 
+                if (p.IsSalvagingOrRepairing)
+                {
+                    p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    p.CraftTimer.Stop();
+                    p.CraftTimer = null;
+                    p.Out.SendCloseTimerWindow();
+                }
+
                 AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness,
                     interruptDuration, dualWield);
 
