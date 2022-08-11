@@ -771,6 +771,10 @@ namespace DOL.AI.Brain
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
 					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
 
+					if (Body.Name.Contains("empyrean"))
+					{
+						healThreshold = this.Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+					}
 
 					if (spellTarget == "SELF")
 					{
