@@ -288,7 +288,7 @@ namespace DOL.GS
 				return 1;
             }
 
-            if (player.IsCrafting)
+            if (player.IsCrafting || player.IsSalvagingOrRepairing)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return 0;
@@ -493,7 +493,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (player.IsCrafting)
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				if (!mute)
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -544,7 +544,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (player.IsCrafting)
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;

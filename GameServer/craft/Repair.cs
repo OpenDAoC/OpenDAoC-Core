@@ -164,7 +164,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (player.IsCrafting)
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
@@ -299,7 +299,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (player.IsCrafting)
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;

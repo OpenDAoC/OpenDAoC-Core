@@ -182,6 +182,14 @@ namespace DOL.GS
                 p.Out.SendCloseTimerWindow();
             }
 
+            if (p != null && p.IsSalvagingOrRepairing)
+            {
+                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                p.CraftTimer.Stop();
+                p.CraftTimer = null;
+                p.Out.SendCloseTimerWindow();
+            }
+
             if (living != null)
             {
                 if (living.IsStunned)
