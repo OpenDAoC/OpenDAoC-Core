@@ -287,8 +287,6 @@ namespace DOL.GS.BaseQuest.Midgard
 							if (quest.Step == 2)
 							{
 								Jarek.SayTo(player, "Jeremy is a [friendly beetle] which will be here soon!");
-
-								Jarek.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							}
 							break;
 						case "friendly beetle":
