@@ -12,9 +12,9 @@ using DOL.GS.Quests;
 using DOL.GS.Scripts;
 using log4net;
 
-namespace DOL.GS.BaseQuest.Midgard
+namespace DOL.GS.AtlasQuest.Midgard
 {
-	public abstract class BeetlePvEQuestMid : Quests.BaseQuest
+	public abstract class BeetlePvEQuestMid : Quests.AtlasQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -584,20 +584,20 @@ namespace DOL.GS.BaseQuest.Midgard
 				Step = 2;
 			}
 		}
-		public string QuestPropertyKey
+		public override string QuestPropertyKey
 		{
 			get => "BeetlePvEQuestMid";
 			set { ; }
 		}
 		
-		public void LoadQuestParameters()
+		public override void LoadQuestParameters()
 		{
 			_dragonKilled = GetCustomProperty(middragon.Name) != null ? int.Parse(GetCustomProperty(middragon.Name)) : 0;
 			_legionKilled = GetCustomProperty(legion.Name) != null ? int.Parse(GetCustomProperty(legion.Name)) : 0;
 			_grandSummonerKilled = GetCustomProperty(grandsummoner.Name) != null ? int.Parse(GetCustomProperty(grandsummoner.Name)) : 0;
 		}
 
-		public void SaveQuestParameters()
+		public override void SaveQuestParameters()
 		{
 			SetCustomProperty(middragon.Name, _dragonKilled.ToString());
 			SetCustomProperty(legion.Name, _legionKilled.ToString());

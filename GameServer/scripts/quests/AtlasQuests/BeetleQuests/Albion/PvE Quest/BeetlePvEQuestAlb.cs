@@ -12,9 +12,9 @@ using DOL.GS.Quests;
 using DOL.GS.Scripts;
 using log4net;
 
-namespace DOL.GS.BaseQuest.Albion
+namespace DOL.GS.AtlasQuest.Albion
 {
-	public abstract class BeetlePvEQuestAlb : Quests.BaseQuest
+	public abstract class BeetlePvEQuestAlb : Quests.AtlasQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -582,20 +582,20 @@ namespace DOL.GS.BaseQuest.Albion
 				Step = 2;
 			}
 		}
-		public string QuestPropertyKey
+		public override string QuestPropertyKey
 		{
 			get => "BeetlePvEQuestAlb";
 			set { ; }
 		}
 		
-		public void LoadQuestParameters()
+		public override void LoadQuestParameters()
 		{
 			_dragonKilled = GetCustomProperty(albdragon.Name) != null ? int.Parse(GetCustomProperty(albdragon.Name)) : 0;
 			_legionKilled = GetCustomProperty(legion.Name) != null ? int.Parse(GetCustomProperty(legion.Name)) : 0;
 			_grandSummonerKilled = GetCustomProperty(grandsummoner.Name) != null ? int.Parse(GetCustomProperty(grandsummoner.Name)) : 0;
 		}
 
-		public void SaveQuestParameters()
+		public override void SaveQuestParameters()
 		{
 			SetCustomProperty(albdragon.Name, _dragonKilled.ToString());
 			SetCustomProperty(legion.Name, _legionKilled.ToString());
