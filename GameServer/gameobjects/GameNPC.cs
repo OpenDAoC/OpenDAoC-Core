@@ -4437,7 +4437,7 @@ namespace DOL.GS
 			// remove temp properties
 			TempProperties.removeAllProperties();
 
-			if (!(this is GamePet))
+			if (!(this is GamePet) && !(this is SINeckBoss))
 				StartRespawn();
 			}
 			finally
