@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Albion\RvR Quest" />
-    <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Hibernia\PvE Quest" />
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Hibernia\RvR Quest" />
     <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Midgard\RvR Quest" />
   </ItemGroup>
