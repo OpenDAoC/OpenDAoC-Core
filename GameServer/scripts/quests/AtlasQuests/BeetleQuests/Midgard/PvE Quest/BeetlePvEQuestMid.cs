@@ -32,7 +32,7 @@ namespace DOL.GS.BaseQuest.Midgard
 		private int _legionKilled = 0;
 		private int _grandSummonerKilled = 0;
 
-		private static GameNPC Jarek = null; // Start NPC
+		private static GameNPC Rengahr = null; // Start NPC
 		private static GameNPC Beetle = null;
 		private static GameNPC MobEffect = null;
 		private static Gjalpinulva middragon = null;
@@ -76,44 +76,45 @@ namespace DOL.GS.BaseQuest.Midgard
 			
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rengahr", eRealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
+					if (npc.CurrentRegionID == 101 && npc.X == 31458 && npc.Y == 27707)
 					{
-						Jarek = npc;
+						Rengahr = npc;
 						break;
 					}
 
-			if (Jarek == null)
+			if (Rengahr == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Jarek , creating it ...");
-				Jarek = new GameNPC();
-				Jarek.Model = 774;
-				Jarek.Name = "Jarek";
-				Jarek.GuildName = "Advisor to the King";
-				Jarek.Realm = eRealm.Midgard;
-				Jarek.CurrentRegionID = 151;
-				Jarek.Size = 50;
-				Jarek.Level = 59;
-				//Aegirhamn Location
-				Jarek.X = 292291;
-				Jarek.Y = 354975;
-				Jarek.Z = 3867;
-				Jarek.Heading = 1239;
+					log.Warn("Could not find Rengahr , creating it ...");
+				Rengahr = new GameNPC();
+				Rengahr.Model = 512;
+				Rengahr.Name = "Rengahr";
+				Rengahr.GuildName = "Protector of Beetles";
+				Rengahr.Realm = eRealm.Midgard;
+				Rengahr.CurrentRegionID = 101;
+				Rengahr.Size = 50;
+				Rengahr.Level = 59;
+				//Jordheim Location
+				Rengahr.X = 31458;
+				Rengahr.Y = 27707;
+				Rengahr.Z = 8776;
+				Rengahr.Heading = 3053;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
+				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 559, 43);
 				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
-				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
-				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985);
+				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984, 43);
+				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985, 43);
 				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
 				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
-				Jarek.Inventory = templateMid.CloseTemplate();
-				Jarek.AddToWorld();
+				Rengahr.Inventory = templateMid.CloseTemplate();
+				Rengahr.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Jarek.SaveIntoDatabase();
+					Rengahr.SaveIntoDatabase();
 				}
 			}
 
@@ -204,10 +205,10 @@ namespace DOL.GS.BaseQuest.Midgard
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
-			GameEventMgr.AddHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.AddHandler(Rengahr, GameObjectEvent.Interact, new DOLEventHandler(TalkToRengahr));
+			GameEventMgr.AddHandler(Rengahr, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRengahr));
 			
-			Jarek.AddQuestToGive(typeof (BeetlePvEQuestMid));
+			Rengahr.AddQuestToGive(typeof (BeetlePvEQuestMid));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -217,26 +218,26 @@ namespace DOL.GS.BaseQuest.Midgard
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Jarek == null)
+			if (Rengahr == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Jarek, GameObjectEvent.Interact, new DOLEventHandler(TalkToJarek));
-			GameEventMgr.RemoveHandler(Jarek, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJarek));
+			GameEventMgr.RemoveHandler(Rengahr, GameObjectEvent.Interact, new DOLEventHandler(TalkToRengahr));
+			GameEventMgr.RemoveHandler(Rengahr, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRengahr));
 
-			Jarek.RemoveQuestToGive(typeof (BeetlePvEQuestMid));
+			Rengahr.RemoveQuestToGive(typeof (BeetlePvEQuestMid));
 		}
 
-		private static void TalkToJarek(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToRengahr(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Jarek.CanGiveQuest(typeof (BeetlePvEQuestMid), player)  <= 0)
+			if(Rengahr.CanGiveQuest(typeof (BeetlePvEQuestMid), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
@@ -249,19 +250,19 @@ namespace DOL.GS.BaseQuest.Midgard
 					switch (quest.Step)
 					{
 						case 1:
-							Jarek.SayTo(player, player.Name + ", please find the monstrous creatures in Malmohus, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
+							Rengahr.SayTo(player, player.Name + ", please find the monstrous creatures in Malmohus, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
 							break;
 						case 2:
-							Jarek.SayTo(player, "Hello " + player.Name + ", I am glad that you are back, the [beetles] will be very happy about this news!");
+							Rengahr.SayTo(player, "Hello " + player.Name + ", I am glad that you are back, the [beetles] will be very happy about this news!");
 							break;
 						case 3:
-							Jarek.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
+							Rengahr.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							break;
 					}
 				}
 				else
 				{
-					Jarek.SayTo(player, "Hello "+ player.Name +", I am Jarek. The mission is very dangerous and i'm not as strong as i used to be. " +
+					Rengahr.SayTo(player, "Hello "+ player.Name +", I am Rengahr. The mission is very dangerous and i'm not as strong as i used to be. " +
 					                    "Creatures reign in Darkness Falls, Malmohus and Summoner's Hall, " +
 					                    "which have scared and exterminated the beetles that once lived there. Can you [help the beetles]?");
 				}
@@ -275,7 +276,7 @@ namespace DOL.GS.BaseQuest.Midgard
 					switch (wArgs.Text)
 					{
 						case "help the beetles":
-							player.Out.SendQuestSubscribeCommand(Jarek, QuestMgr.GetIDForQuestType(typeof(BeetlePvEQuestMid)), "Will you help Jarek "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Rengahr, QuestMgr.GetIDForQuestType(typeof(BeetlePvEQuestMid)), "Will you help Rengahr "+questTitle+"?");
 							break;
 					}
 				}
@@ -286,21 +287,21 @@ namespace DOL.GS.BaseQuest.Midgard
 						case "beetles":
 							if (quest.Step == 2)
 							{
-								Jarek.SayTo(player, "Jeremy is a [friendly beetle] which will be here soon!");
+								Rengahr.SayTo(player, "Jeremy is a [friendly beetle] which will be here soon!");
 							}
 							break;
 						case "friendly beetle":
 							if (quest.Step == 2)
 							{
-								new ECSGameTimer(Jarek, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
+								new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
 								quest.Step = 3;
-								Jarek.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
+								Rengahr.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							}
 							break;
 						case "choose":
 							if (quest.Step == 3)
 							{
-								Jarek.SayTo(player,
+								Rengahr.SayTo(player,
 									"You can choose your reward:\n\n" +
 									"[Beetle Egg] - An item with 50% Power Heal and 10 Charges.\n" +
 									"[Beetle Bone] - An item with 20% Life Heal and 10 Charges.\n\n" +
@@ -333,11 +334,11 @@ namespace DOL.GS.BaseQuest.Midgard
             Beetle.Size = 40;
             Beetle.Level = 55;
             Beetle.Flags ^= GameNPC.eFlags.PEACE;
-            Beetle.CurrentRegionID = 151;
-            Beetle.X = 292257;
-            Beetle.Y = 355046;
-            Beetle.Z = 3867;
-            Beetle.Heading = 1311;
+            Beetle.CurrentRegionID = 101;
+            Beetle.X = 31445;
+            Beetle.Y = 27618;
+            Beetle.Z = 8776;
+            Beetle.Heading = 3288;
             
             Beetle.AddToWorld();
             return 0;
@@ -358,23 +359,23 @@ namespace DOL.GS.BaseQuest.Midgard
 			MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
 			MobEffect.Flags ^= GameNPC.eFlags.PEACE;
 			
-			MobEffect.CurrentRegionID = 151;
-			MobEffect.X = 292257;
-			MobEffect.Y = 355046;
-			MobEffect.Z = 3867;
-			MobEffect.Heading = 1311;
+			Beetle.CurrentRegionID = 101;
+			Beetle.X = 31445;
+			Beetle.Y = 27618;
+			Beetle.Z = 8776;
+			Beetle.Heading = 3288;
 			
 			MobEffect.AddToWorld();
 			
-			new ECSGameTimer(Jarek, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
-			new ECSGameTimer(Jarek, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
-			new ECSGameTimer(Jarek, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
+			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
+			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
+			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
 			return 0;
 		}
 		
 		private static int RemoveEffectMob(ECSGameTimer timer)
 		{
-			foreach (GameNPC effect in Jarek.GetNPCsInRadius(600))
+			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "power of the beetle")
 					effect.RemoveFromWorld();
@@ -385,7 +386,7 @@ namespace DOL.GS.BaseQuest.Midgard
 		
 		private static int RemoveBeetle(ECSGameTimer timer)
 		{
-			foreach (GameNPC effect in Jarek.GetNPCsInRadius(600))
+			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "jeremy")
 					effect.RemoveFromWorld();
@@ -499,7 +500,7 @@ namespace DOL.GS.BaseQuest.Midgard
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Jarek.CanGiveQuest(typeof (BeetlePvEQuestMid), player)  <= 0)
+			if(Rengahr.CanGiveQuest(typeof (BeetlePvEQuestMid), player)  <= 0)
 				return;
 
 			if (player.IsDoingQuest(typeof (BeetlePvEQuestMid)) != null)
@@ -512,10 +513,10 @@ namespace DOL.GS.BaseQuest.Midgard
 			else
 			{
 				//Check if we can add the quest!
-				if (!Jarek.GiveQuest(typeof (BeetlePvEQuestMid), player, 1))
+				if (!Rengahr.GiveQuest(typeof (BeetlePvEQuestMid), player, 1))
 					return;
 
-				Jarek.SayTo(player, "Please, find the monstrous creatures in Malmohus, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
+				Rengahr.SayTo(player, "Please, find the monstrous creatures in Malmohus, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
 
 			}
 		}
@@ -534,14 +535,14 @@ namespace DOL.GS.BaseQuest.Midgard
 				switch (Step)
 				{
 					case 1:
-						return "Kill the monstrous creatures and return to Jarek in Aegirhamn.\n" +
+						return "Kill the monstrous creatures and return to Rengahr in Aegirhamn.\n" +
 						       "Killed: " + middragon.Name + " ("+ _dragonKilled +" | " + MAX_KILLED + ")\n" +
 						       "Killed: " + legion.Name + " ("+ _legionKilled +" | " + MAX_KILLED + ")\n" +
 						       "Killed: " + grandsummoner.Name + " ("+ _grandSummonerKilled +" | " + MAX_KILLED + ")\n";
 					case 2:
-						return "Return to Jarek in Aegirhamn and speak with him about the beetle issue.";
+						return "Return to Rengahr in Aegirhamn and speak with him about the beetle issue.";
 					case 3:
-						return "Choose your reward at Jarek.";
+						return "Choose your reward at Rengahr.";
 				}
 				return base.Description;
 			}
