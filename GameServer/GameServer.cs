@@ -724,10 +724,7 @@ namespace DOL.GS
 				if (!InitComponent(WorldMgr.StartRegionMgrs(), "Region Managers"))
 					return false;
 
-				//---------------------------------------------------------------
-				//Load the area manager
-				if (!InitComponent(AreaMgr.LoadAllAreas(), "Areas"))
-					return false;
+				
 
 				//---------------------------------------------------------------
 				//Enable Worldsave timer now
@@ -760,6 +757,11 @@ namespace DOL.GS
 				if (!InitComponent(DoorMgr.Init(), "Door Manager"))
 					return false;
 
+				//---------------------------------------------------------------
+				//Load the area manager
+				if (!InitComponent(AreaMgr.LoadAllAreas(), "Areas"))
+					return false;
+					
 				//---------------------------------------------------------------
 				//Try to initialize the WorldMgr
 				if (!InitComponent(WorldMgr.Init(regionsData), "World Manager Initialization"))
