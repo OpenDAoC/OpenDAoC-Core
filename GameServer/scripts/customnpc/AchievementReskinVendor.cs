@@ -822,7 +822,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, artifact));
-            VendorItemList.Add(new SkinVendorItem("Spear of King", 3450, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Spear of Kings", 3450, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, artifact));
             VendorItemList.Add(new SkinVendorItem("Lute", 227, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Drum", 228, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Flute", 325, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
