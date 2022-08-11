@@ -3525,7 +3525,7 @@ namespace DOL.GS
             return specPoints;
         }
 
-        public virtual bool RespecRealm()
+        public virtual bool RespecRealm(bool useRespecPoint = true)
         {
             bool any = m_realmAbilities.Count > 0;
 			
@@ -3533,7 +3533,7 @@ namespace DOL.GS
                 RemoveAbility(ab.KeyName);
 			
             m_realmAbilities.Clear();
-            if (!ServerProperties.Properties.FREE_RESPEC)
+            if (!ServerProperties.Properties.FREE_RESPEC && useRespecPoint)
                 RespecAmountRealmSkill--;
             return any;
         }
