@@ -93,6 +93,7 @@ public class SubObjective
         FlagObject.Realm = CapturingRealm;
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
+        ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());
         Console.WriteLine($"Flag captured for realm {OwningRealm}");
     }
     
@@ -121,5 +122,20 @@ public class SubObjective
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
         }
+    }
+
+    public String GetOwnerRealmName()
+    {
+        switch (OwningRealm)
+        {
+            case eRealm.Albion:
+                return "Albion";
+            case eRealm.Hibernia:
+                return "Hibernia";
+            case eRealm.Midgard:
+                return "Midgard";
+        }
+
+        return null;
     }
 }

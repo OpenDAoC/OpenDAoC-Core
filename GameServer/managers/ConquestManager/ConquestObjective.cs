@@ -13,9 +13,6 @@ public class ConquestObjective
     public int AlbionContribution;
     public int MidgardContribution;
     public int HiberniaContribution;
-    
-    
-
     public long LastRolloverTick = 0;
     public long StartTick;
 
@@ -27,6 +24,8 @@ public class ConquestObjective
     public SubObjective ObjectiveTwo;
     public SubObjective ObjectiveThree;
     public SubObjective ObjectiveFour;
+
+    public bool ActiveFlags => ObjectiveOne != null && ObjectiveTwo != null && ObjectiveThree != null && ObjectiveFour != null;
 
     public ConquestObjective(AbstractGameKeep keep)
     {
@@ -103,7 +102,7 @@ public class ConquestObjective
                 flagLocs.Add(new Point3D(394135, 386115, 4574)); //western hill
                 break;
             case "dun ailinne":
-                flagLocs.Add(new Point3D(374760, 401175, 3336)); //basin near ailinne
+                flagLocs.Add(new Point3D(368445, 401162, 3976)); //basin near ailinne
                 flagLocs.Add(new Point3D(341886, 407986, 4124)); //hill near Ligen
                 flagLocs.Add(new Point3D(337035, 372939, 3131)); //west of lamfhota
                 flagLocs.Add(new Point3D(366955, 364754, 3501)); //NE of Lamfhota
@@ -148,6 +147,113 @@ public class ConquestObjective
                 flagLocs.Add(new Point3D(0, 0, 0)); //near mmg
                 flagLocs.Add(new Point3D(0, 0, 0)); //near the keep
                 flagLocs.Add(new Point3D(0, 0, 0)); //southern crossroads
+                break;
+                
+        }
+        
+        return flagLocs;
+    }
+
+    public List<String> GetPlayerCoordsForKeep(AbstractGameKeep keep)
+    {
+        List<String> flagLocs = new List<String>();
+
+        switch (keep.Name.ToLower())
+        {
+            /*
+            //mid
+            case "bledmeer faste":
+                flagLocs.Add(); //near hmg
+                flagLocs.Add(); //near amg
+                flagLocs.Add(); //near the keep
+                flagLocs.Add(); //crossroads
+                break;
+            case "hlidskialf faste":
+            case "nottmoor faste":
+            case "blendrake faste":
+            case "glenlock faste":
+                flagLocs.Add(); //near hlidskialf
+                flagLocs.Add(); //west of nottmoor
+                flagLocs.Add( ); //N of blendrake
+                flagLocs.Add(); //between lakes near glenlock
+                break;
+            case "fensalir faste":
+                flagLocs.Add(); //near fensalir
+                flagLocs.Add(); //near jamtland
+                flagLocs.Add(); //between svasud and fensalir
+                flagLocs.Add(); //near mjolnir
+                break;
+            case "arvakr faste":
+                flagLocs.Add(); //near arvakr
+                flagLocs.Add(); //near vindsaul
+                flagLocs.Add(); //near grallarhorn lake
+                flagLocs.Add(); //NW basin
+                break;
+            //hib
+            case "dun crauchon":
+                flagLocs.Add(); //near amg
+                flagLocs.Add(); //near mmg
+                flagLocs.Add(); //near the keep
+                flagLocs.Add(); //near briefine
+                break;
+            case "dun bolg":
+            case "dun nged":
+            case "dun da behnn":
+            case "dun crimthain":
+                flagLocs.Add(); //bolg crossroads
+                flagLocs.Add(); //near Evern
+                flagLocs.Add(); //between Behn and nGed
+                flagLocs.Add(); //western hill
+                break;
+            */
+            case "dun ailinne":
+                flagLocs.Add("X: 48957  Y: 48906"); //basin near ailinne
+                flagLocs.Add("X: 22397  Y: 55729"); //hill near Ligen
+                flagLocs.Add("X: 17549 Y: 20683"); //west of lamfhota
+                flagLocs.Add("X: 47466 Y: 12502"); //NE of Lamfhota
+                break;
+            /*
+            case "dun scathaig":
+                flagLocs.Add(); //front of Scathaig
+                flagLocs.Add(); //SE corner
+                flagLocs.Add(); //between scath and dagda
+                flagLocs.Add(); //NE of scath
+                break;
+            
+            //albion
+            case "caer benowyc":
+                flagLocs.Add("X: 10108 Y:33927"); //near hmg
+                flagLocs.Add("X: 55408 Y:36250"); //near mmg
+                flagLocs.Add("X: 47227 Y:57780"); //near the keep
+                flagLocs.Add("X: 26591 Y:58548"); //southern crossroads
+                break;
+            case "caer sursbrooke":
+            case "caer erasleigh":
+            case "caer berkstead":
+            case "caer boldiam":
+                flagLocs.Add(); //near boldiam
+                flagLocs.Add(); //near forest sauvage
+                flagLocs.Add(); //near caer surs
+                flagLocs.Add(); //near hadrian's
+                break;
+            case "caer renaris":
+                flagLocs.Add(); //SE forest
+                flagLocs.Add(); //NE river-side
+                flagLocs.Add(); //hill near Renaris
+                flagLocs.Add(); //SW near lake
+                break;
+            case "caer hurbury":
+                flagLocs.Add(); //pennine border
+                flagLocs.Add(); //near hurbury
+                flagLocs.Add(); //near snowdonia keep
+                flagLocs.Add(); //myrddin approach
+                break;
+                */
+            default:
+                flagLocs.Add(""); 
+                flagLocs.Add(""); 
+                flagLocs.Add("");
+                flagLocs.Add(""); 
                 break;
                 
         }
@@ -218,10 +324,10 @@ public class ConquestObjective
 
     public void CheckNearbyPlayers()
     {
-        ObjectiveOne.CheckNearbyPlayers();
-        ObjectiveTwo.CheckNearbyPlayers();
-        ObjectiveThree.CheckNearbyPlayers();
-        ObjectiveFour.CheckNearbyPlayers();
+        ObjectiveOne?.CheckNearbyPlayers();
+        ObjectiveTwo?.CheckNearbyPlayers();
+        ObjectiveThree?.CheckNearbyPlayers();
+        ObjectiveFour?.CheckNearbyPlayers();
     }
 
     public List<GamePlayer> GetContributingPlayers()
