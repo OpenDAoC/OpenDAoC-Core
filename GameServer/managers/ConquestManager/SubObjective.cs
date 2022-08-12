@@ -21,21 +21,8 @@ public class SubObjective
 
     public SubObjective(int x, int y, int z, AbstractGameKeep keep)
     {
-        ushort modelID = 0;
-        switch (keep.Realm)
-        {
-            case eRealm.Hibernia:
-                modelID = 466;
-                break;
-            case eRealm.Albion:
-                modelID = 464;
-                break;
-            case eRealm.Midgard:
-                modelID = 465;
-                break;
-        }
         FlagObject = new GameStaticItemTimed(45 * 60 * 1000);
-        FlagObject.Model = modelID;
+        FlagObject.Model = GetModelIDForRealm(keep.Realm);
         FlagObject.X = x;
         FlagObject.Y = y;
         FlagObject.Z = z;
@@ -91,10 +78,30 @@ public class SubObjective
     {
         OwningRealm = CapturingRealm;
         FlagObject.Realm = CapturingRealm;
+        FlagObject.Model = GetModelIDForRealm(FlagObject.Realm);
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
         ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());
         Console.WriteLine($"Flag captured for realm {OwningRealm}");
+    }
+
+    private ushort GetModelIDForRealm(eRealm realm)
+    {
+        ushort modelID = 0;
+        switch (realm)
+        {
+            case eRealm.Hibernia:
+                modelID = 466;
+                break;
+            case eRealm.Albion:
+                modelID = 464;
+                break;
+            case eRealm.Midgard:
+                modelID = 465;
+                break;
+        }
+
+        return modelID;
     }
     
     public void CheckNearbyPlayers()
