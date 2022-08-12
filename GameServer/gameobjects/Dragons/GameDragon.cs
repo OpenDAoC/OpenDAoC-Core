@@ -16,9 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Linq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using DOL.GS.PacketHandler;
 using DOL.Database;
@@ -257,6 +256,8 @@ namespace DOL.GS
                     }
                 }
 
+                AwardDragonKillPoint();
+
                 bool canReportNews = true;
                 // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
                 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -393,7 +394,7 @@ namespace DOL.GS
         /// <param name="killer">The living that got the killing blow.</param>
         protected void ReportNews(GameObject killer)
         {
-            int numPlayers = AwardDragonKillPoint();
+            int numPlayers = GetPlayersInRadiusCount(WorldMgr.VISIBILITY_DISTANCE);
             String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
             NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
