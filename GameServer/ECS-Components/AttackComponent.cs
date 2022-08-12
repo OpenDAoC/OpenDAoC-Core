@@ -3573,7 +3573,7 @@ namespace DOL.GS
                         result *= 1 + p.GetModified(eProperty.MeleeDamage) * 0.01;
                     }
                     
-                    if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    if (p.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null && weapon.Item_Type != Slot.TWOHAND)
                     {
                         if (p.GetModifiedSpecLevel(Specs.Left_Axe) > 0)
                         {
