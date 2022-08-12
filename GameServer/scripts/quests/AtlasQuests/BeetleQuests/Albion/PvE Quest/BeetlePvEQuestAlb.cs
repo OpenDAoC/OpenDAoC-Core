@@ -14,7 +14,7 @@ using log4net;
 
 namespace DOL.GS.AtlasQuest.Albion
 {
-	public abstract class BeetlePvEQuestAlb : Quests.AtlasQuest
+	public class BeetlePvEQuestAlb : Quests.AtlasQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -35,9 +35,9 @@ namespace DOL.GS.AtlasQuest.Albion
 		private static GameNPC Laura = null; // Start NPC
 		private static GameNPC Beetle = null;
 		private static GameNPC MobEffect = null;
-		private static Golestandt albdragon = null;
-		private static Legion legion = null;
-		private static GrandSummonerGovannon grandsummoner = null;
+		private static String ALB_DRAGON_NAME = "Golestandt";
+		private static String LEGION_NAME = "Legion";
+		private static String GRAND_SUMMONER_NAME = "Grand Summoner Govannon";
 		
 		private static ItemTemplate beetle_egg = null;
 		private static ItemTemplate beetle_bone = null;
@@ -534,9 +534,9 @@ namespace DOL.GS.AtlasQuest.Albion
 				{
 					case 1:
 						return "Kill the monstrous creatures and return to Laura in Camelot.\n" +
-						       "Killed: " + albdragon.Name + " ("+ _dragonKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + legion.Name + " ("+ _legionKilled +" | " + MAX_KILLED + ")\n" +
-						       "Killed: " + grandsummoner.Name + " ("+ _grandSummonerKilled +" | " + MAX_KILLED + ")\n";
+						       "Killed: " + ALB_DRAGON_NAME + " ("+ _dragonKilled +" | " + MAX_KILLED + ")\n" +
+						       "Killed: " + LEGION_NAME + " ("+ _legionKilled +" | " + MAX_KILLED + ")\n" +
+						       "Killed: " + GRAND_SUMMONER_NAME + " ("+ _grandSummonerKilled +" | " + MAX_KILLED + ")\n";
 					case 2:
 						return "Return to Laura in Camelot and speak with her about the beetle issue.";
 					case 3:
@@ -559,22 +559,22 @@ namespace DOL.GS.AtlasQuest.Albion
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == albdragon.Name.ToLower() && gArgs.Target is GameNPC && _dragonKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == ALB_DRAGON_NAME.ToLower() && gArgs.Target is GameNPC && _dragonKilled < MAX_KILLED)
 			{
 				_dragonKilled = 1;
-				player.Out.SendMessage("[Beetle] You killed " + albdragon.Name + ": (" + _dragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Beetle] You killed " + ALB_DRAGON_NAME + ": (" + _dragonKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == legion.Name.ToLower() && gArgs.Target is GameNPC && _legionKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == LEGION_NAME.ToLower() && gArgs.Target is GameNPC && _legionKilled < MAX_KILLED)
 			{
 				_legionKilled = 1;
-				player.Out.SendMessage("[Beetle] You killed " + legion.Name + ": (" + _legionKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Beetle] You killed " + LEGION_NAME + ": (" + _legionKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == grandsummoner.Name.ToLower() && gArgs.Target is GameNPC && _grandSummonerKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == GRAND_SUMMONER_NAME.ToLower() && gArgs.Target is GameNPC && _grandSummonerKilled < MAX_KILLED)
 			{
 				_grandSummonerKilled = 1;
-				player.Out.SendMessage("[Beetle] You killed " + grandsummoner.Name + ": (" + _grandSummonerKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Beetle] You killed " + GRAND_SUMMONER_NAME + ": (" + _grandSummonerKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 			if (_dragonKilled >= MAX_KILLED && _legionKilled >= MAX_KILLED && _grandSummonerKilled >= MAX_KILLED)
@@ -590,16 +590,16 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		public override void LoadQuestParameters()
 		{
-			_dragonKilled = GetCustomProperty(albdragon.Name) != null ? int.Parse(GetCustomProperty(albdragon.Name)) : 0;
-			_legionKilled = GetCustomProperty(legion.Name) != null ? int.Parse(GetCustomProperty(legion.Name)) : 0;
-			_grandSummonerKilled = GetCustomProperty(grandsummoner.Name) != null ? int.Parse(GetCustomProperty(grandsummoner.Name)) : 0;
+			_dragonKilled = GetCustomProperty(ALB_DRAGON_NAME) != null ? int.Parse(GetCustomProperty(ALB_DRAGON_NAME)) : 0;
+			_legionKilled = GetCustomProperty(LEGION_NAME) != null ? int.Parse(GetCustomProperty(LEGION_NAME)) : 0;
+			_grandSummonerKilled = GetCustomProperty(GRAND_SUMMONER_NAME) != null ? int.Parse(GetCustomProperty(GRAND_SUMMONER_NAME)) : 0;
 		}
 
 		public override void SaveQuestParameters()
 		{
-			SetCustomProperty(albdragon.Name, _dragonKilled.ToString());
-			SetCustomProperty(legion.Name, _legionKilled.ToString());
-			SetCustomProperty(grandsummoner.Name, _grandSummonerKilled.ToString());
+			SetCustomProperty(ALB_DRAGON_NAME, _dragonKilled.ToString());
+			SetCustomProperty(LEGION_NAME, _legionKilled.ToString());
+			SetCustomProperty(GRAND_SUMMONER_NAME, _grandSummonerKilled.ToString());
 		}
 		
 		public override void FinishQuest()
