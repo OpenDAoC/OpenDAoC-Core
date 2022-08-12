@@ -34,7 +34,7 @@ public class ConquestManager
 
     public eRealm ActiveConquestRealm = (eRealm)Util.Random(1, 3);
 
-    private List<GamePlayer> ContributedPlayers = new List<GamePlayer>();
+    private HashSet<GamePlayer> ContributedPlayers = new HashSet<GamePlayer>();
 
     public int SumOfContributions
     {
@@ -186,6 +186,15 @@ public class ConquestManager
         ActiveMidgardObjective = null;
     }
 
+    public void AddContributors(List<GamePlayer> contributors)
+    {
+        ContributedPlayers ??= new HashSet<GamePlayer>();
+        foreach (var player in contributors)
+        {
+            ContributedPlayers.Add(player);
+            Console.WriteLine($"Player {player.Name} contributed!");
+        }
+    }
 
     private void AwardContributorsForRealm(eRealm realmToAward)
     {
@@ -246,7 +255,7 @@ public class ConquestManager
     {
         
         ActiveObjective.ConquestCapture();
-
+        SetKeepForCapturedRealm(capturedKeep);
         //find next offensive target for capturing realm
     }
 
@@ -484,14 +493,17 @@ public class ConquestManager
             $"Mid: {Math.Round((ActiveObjective.MidgardContribution * 100) / (double) (ActiveObjective.TotalContribution  > 0 ? ActiveObjective.TotalContribution : 1), 2)}%");
         temp.Add($"Players Nearby: {playerCount.Count}");
         temp.Add("");
-        
-        //TODO: Add flag details here
-        temp.Add($"Flags: {ActiveObjective.ObjectiveOne.FlagObject} | {ActiveObjective.ObjectiveTwo.FlagObject} | {ActiveObjective.ObjectiveThree.FlagObject} | {ActiveObjective.ObjectiveFour.FlagObject}");
 
-        temp.Add($"Objective Capture Reward: {SumOfContributions}");
-        temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-        temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-        temp.Add($"Midgard: {Math.Round(MidgardContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
+        if (ActiveObjective.ActiveFlags)
+        {
+            //TODO: Add flag details here
+            var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
+            temp.Add($"{ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveOne.FlagObject.X} Y:{ActiveObjective.ObjectiveOne.FlagObject.Y} ");
+            temp.Add($"{ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveTwo.FlagObject.X} Y:{ActiveObjective.ObjectiveTwo.FlagObject.Y}");
+            temp.Add($"{ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveThree.FlagObject.X} Y:{ActiveObjective.ObjectiveThree.FlagObject.Y}");
+            temp.Add($"{ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveFour.FlagObject.X} Y:{ActiveObjective.ObjectiveFour.FlagObject.Y}");
+        }
+       
 
         temp.Add($"");
     
