@@ -1603,6 +1603,9 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("pvp", "pvp_realm_timer_minutes", "# of minutes an account must wait to change realms after PvP combat. 0 disables the timer", 0)]
 		public static int PVP_REALM_TIMER_MINUTES; 
+		
+		[ServerProperty("conquest", "flag_capture_radius", "How far away can players capture an objective?", 750)]
+		public static int FLAG_CAPTURE_RADIUS;
 
 		#endregion
 
