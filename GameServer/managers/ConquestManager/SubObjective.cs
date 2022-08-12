@@ -78,7 +78,7 @@ public class SubObjective
     {
         OwningRealm = CapturingRealm;
         FlagObject.Realm = CapturingRealm;
-        FlagObject.Model = GetModelIDForRealm(FlagObject.Realm);
+        FlagObject.Model = GetModelIDForRealm(CapturingRealm);
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
         ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());

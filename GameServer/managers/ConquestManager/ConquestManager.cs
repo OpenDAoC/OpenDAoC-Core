@@ -256,6 +256,7 @@ public class ConquestManager
         
         ActiveObjective.ConquestCapture();
         SetKeepForCapturedRealm(capturedKeep);
+        ActiveObjective.StartConquest();
         //find next offensive target for capturing realm
     }
 
@@ -498,10 +499,10 @@ public class ConquestManager
         {
             //TODO: Add flag details here
             var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
-            temp.Add($"{ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveOne.FlagObject.X} Y:{ActiveObjective.ObjectiveOne.FlagObject.Y} ");
-            temp.Add($"{ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveTwo.FlagObject.X} Y:{ActiveObjective.ObjectiveTwo.FlagObject.Y}");
-            temp.Add($"{ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveThree.FlagObject.X} Y:{ActiveObjective.ObjectiveThree.FlagObject.Y}");
-            temp.Add($"{ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | X: {ActiveObjective.ObjectiveFour.FlagObject.X} Y:{ActiveObjective.ObjectiveFour.FlagObject.Y}");
+            temp.Add($"{ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {locs[0]}");
+            temp.Add($"{ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {locs[1]}");
+            temp.Add($"{ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {locs[2]}");
+            temp.Add($"{ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | {locs[3]}");
         }
        
 
