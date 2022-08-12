@@ -160,95 +160,91 @@ public class ConquestObjective
 
         switch (keep.Name.ToLower())
         {
-            /*
+            
             //mid
             case "bledmeer faste":
-                flagLocs.Add(); //near hmg
-                flagLocs.Add(); //near amg
-                flagLocs.Add(); //near the keep
-                flagLocs.Add(); //crossroads
+                flagLocs.Add("X:42361 Y:11658 | Hibernia Milegate"); //near hmg
+                flagLocs.Add("X:39243 Y:57577 | Albion Milegate"); //near amg
+                flagLocs.Add("X:59073 Y:23499 | Near Bledmeer"); //near the keep
+                flagLocs.Add("X:46228 Y:27925 | Crossroads"); //crossroads
                 break;
             case "hlidskialf faste":
             case "nottmoor faste":
             case "blendrake faste":
             case "glenlock faste":
-                flagLocs.Add(); //near hlidskialf
-                flagLocs.Add(); //west of nottmoor
-                flagLocs.Add( ); //N of blendrake
-                flagLocs.Add(); //between lakes near glenlock
+                flagLocs.Add("X:19218 Y:53725 | Near Hlidkialf"); //near hlidskialf
+                flagLocs.Add("X:10075 Y:23669 | West of Nottmoor"); //west of nottmoor
+                flagLocs.Add("X:46273 Y:15888 | North of Blendrake"); //N of blendrake
+                flagLocs.Add("X:41965 Y:49167 | Glenlock Lakes"); //between lakes near glenlock
                 break;
             case "fensalir faste":
-                flagLocs.Add(); //near fensalir
-                flagLocs.Add(); //near jamtland
-                flagLocs.Add(); //between svasud and fensalir
-                flagLocs.Add(); //near mjolnir
+                flagLocs.Add("X:15195 Y:47258 | Near Fensalir"); //near fensalir
+                flagLocs.Add("X: 8446 Y:31242 | Jamtland Border"); //near jamtland
+                flagLocs.Add("X:37643 Y:51396 | Between Svasud and Fensalir"); //between svasud and fensalir
+                flagLocs.Add("X:50790 Y:30089 | Near Mjolnir"); //near mjolnir
                 break;
             case "arvakr faste":
-                flagLocs.Add(); //near arvakr
-                flagLocs.Add(); //near vindsaul
-                flagLocs.Add(); //near grallarhorn lake
-                flagLocs.Add(); //NW basin
+                flagLocs.Add("X:38664 Y:14934 | Near Arvakr"); //near arvakr
+                flagLocs.Add("X:49506 Y:55386 | Near Vindsaul"); //near vindsaul
+                flagLocs.Add("X:24723 Y:45230 | Grallarhorn Lake"); //near grallarhorn lake
+                flagLocs.Add("X:14642 Y:11090 | Northwestern Basin"); //NW basin
                 break;
             //hib
             case "dun crauchon":
-                flagLocs.Add(); //near amg
-                flagLocs.Add(); //near mmg
-                flagLocs.Add(); //near the keep
-                flagLocs.Add(); //near briefine
+                flagLocs.Add("X:30020 Y:55108 | Albion Milegate"); //near amg
+                flagLocs.Add("X:29409 Y:10408 | Midgard Milegate"); //near mmg
+                flagLocs.Add("X:16413 Y:30882 | Near Crauchon"); //near the keep
+                flagLocs.Add("X:14415 Y:58827 | Near Briefine"); //near briefine
                 break;
             case "dun bolg":
             case "dun nged":
             case "dun da behnn":
             case "dun crimthain":
-                flagLocs.Add(); //bolg crossroads
-                flagLocs.Add(); //near Evern
-                flagLocs.Add(); //between Behn and nGed
-                flagLocs.Add(); //western hill
+                flagLocs.Add("X:30416 Y:16716 | Crossroads Near Bolg"); //bolg crossroads
+                flagLocs.Add("X:43975 Y:25618 | Near Evern"); //near Evern
+                flagLocs.Add("X:35124 Y:47180 | Between Behn and nGed"); //between Behn and nGed
+                flagLocs.Add("X: 9106 Y:33850 | Western Hill"); //western hill
                 break;
-            */
             case "dun ailinne":
-                flagLocs.Add("X: 48957  Y: 48906"); //basin near ailinne
-                flagLocs.Add("X: 22397  Y: 55729"); //hill near Ligen
-                flagLocs.Add("X: 17549 Y: 20683"); //west of lamfhota
-                flagLocs.Add("X: 47466 Y: 12502"); //NE of Lamfhota
+                flagLocs.Add("X:48957 Y:48906 | Basin Near Ailinne"); //basin near ailinne
+                flagLocs.Add("X:22397 Y:55729 | Hill near Ligen"); //hill near Ligen
+                flagLocs.Add("X:17549 Y:20683 | West of Lamfhota"); //west of lamfhota
+                flagLocs.Add("X:47466 Y:12502 | Northeast of Lamfhota"); //NE of Lamfhota
                 break;
-            /*
             case "dun scathaig":
-                flagLocs.Add(); //front of Scathaig
-                flagLocs.Add(); //SE corner
-                flagLocs.Add(); //between scath and dagda
-                flagLocs.Add(); //NE of scath
+                flagLocs.Add("X:30065 Y:18191 | Near Scathaig"); //front of Scathaig
+                flagLocs.Add("X:53847 Y:45606 | Southeast Corner"); //SE corner
+                flagLocs.Add("X:19318 Y:34835 | Between Scathaig and Dagda"); //between scath and dagda
+                flagLocs.Add("X:45924 Y:14953 | Northeast of Scathaig"); //NE of scath
                 break;
-            
             //albion
             case "caer benowyc":
-                flagLocs.Add("X: 10108 Y:33927"); //near hmg
-                flagLocs.Add("X: 55408 Y:36250"); //near mmg
-                flagLocs.Add("X: 47227 Y:57780"); //near the keep
-                flagLocs.Add("X: 26591 Y:58548"); //southern crossroads
-                break;
+                flagLocs.Add("X:10108 Y:33927 | Hibernia Milegate"); //near hmg
+                flagLocs.Add("X:55408 Y:36250 | Midgard Milegate"); //near mmg
+                flagLocs.Add("X:47227 Y:57780 | Near Benowyc"); //near the keep
+                flagLocs.Add("X:26591 Y:58548 | Southern Crossroads"); //southern crossroads
+                break;            
             case "caer sursbrooke":
             case "caer erasleigh":
             case "caer berkstead":
             case "caer boldiam":
-                flagLocs.Add(); //near boldiam
-                flagLocs.Add(); //near forest sauvage
-                flagLocs.Add(); //near caer surs
-                flagLocs.Add(); //near hadrian's
+                flagLocs.Add("X:48094 Y:50807 | Near Boldiam"); //near boldiam
+                flagLocs.Add("X:21724 Y:60307 | Sauvage Border"); //near forest sauvage
+                flagLocs.Add("X:14868 Y:21627 | Near Sursbrooke"); //near caer surs
+                flagLocs.Add("X:38120 Y:12023 | Hadrian's Wall Border"); //near hadrian's
                 break;
             case "caer renaris":
-                flagLocs.Add(); //SE forest
-                flagLocs.Add(); //NE river-side
-                flagLocs.Add(); //hill near Renaris
-                flagLocs.Add(); //SW near lake
+                flagLocs.Add("X:50670 Y:52700 | Southeast Forest"); //SE forest
+                flagLocs.Add("X:51207 Y:21373 | Northeast Riverside"); //NE river-side
+                flagLocs.Add("X:16361 Y:22258 | Near Renaris"); //hill near Renaris
+                flagLocs.Add("X:14320 Y:43064 | Southwestern Lake"); //SW near lake
                 break;
             case "caer hurbury":
-                flagLocs.Add(); //pennine border
-                flagLocs.Add(); //near hurbury
-                flagLocs.Add(); //near snowdonia keep
-                flagLocs.Add(); //myrddin approach
+                flagLocs.Add("X:61721 Y:58185 | Pennine Border"); //pennine border
+                flagLocs.Add("X:49636 Y:41704 | Near Hurbury"); //near hurbury
+                flagLocs.Add("X:19267 Y:49672 | Near Snowdonia Keep"); //near snowdonia keep
+                flagLocs.Add("X:13502 Y:16876 | Myrddin Approach"); //myrddin approach
                 break;
-                */
             default:
                 flagLocs.Add(""); 
                 flagLocs.Add(""); 

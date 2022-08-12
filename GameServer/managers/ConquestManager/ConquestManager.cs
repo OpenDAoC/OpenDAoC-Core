@@ -499,6 +499,7 @@ public class ConquestManager
         {
             //TODO: Add flag details here
             var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
+            temp.Add($"Capture Objectives:");
             temp.Add($"{ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {locs[0]}");
             temp.Add($"{ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {locs[1]}");
             temp.Add($"{ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {locs[2]}");
