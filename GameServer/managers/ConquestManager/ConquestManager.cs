@@ -67,7 +67,7 @@ public class ConquestManager
     public ConquestManager()
     {
         ResetKeeps();
-        ResetObjectives();
+        PickNewObjective();
         StartConquest();
     }
 
@@ -90,7 +90,7 @@ public class ConquestManager
         }
     }
 
-    private void ResetObjectives()
+    private void PickNewObjective()
     {
         if (_albionObjectives == null) _albionObjectives = new Dictionary<ConquestObjective, int>();
         if (_hiberniaObjectives == null) _hiberniaObjectives = new Dictionary<ConquestObjective, int>();
@@ -271,6 +271,7 @@ public class ConquestManager
         if(ActiveAlbionObjective == null) SetDefensiveKeepForRealm(eRealm.Albion);
         if(ActiveHiberniaObjective == null) SetDefensiveKeepForRealm(eRealm.Hibernia);
         if(ActiveMidgardObjective == null) SetDefensiveKeepForRealm(eRealm.Midgard);
+        ActiveObjective.StartConquest();
         ResetContribution();
         LastConquestStartTime = GameLoop.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
@@ -485,7 +486,7 @@ public class ConquestManager
         temp.Add("");
         
         //TODO: Add flag details here
-        temp.Add($"Flags: {ActiveObjective.FlagOne} | {ActiveObjective.FlagTwo} | {ActiveObjective.FlagThree} | {ActiveObjective.FlagFour}");
+        temp.Add($"Flags: {ActiveObjective.ObjectiveOne.FlagObject} | {ActiveObjective.ObjectiveTwo.FlagObject} | {ActiveObjective.ObjectiveThree.FlagObject} | {ActiveObjective.ObjectiveFour.FlagObject}");
 
         temp.Add($"Objective Capture Reward: {SumOfContributions}");
         temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
@@ -507,7 +508,7 @@ public class ConquestManager
 
         temp.Add("");
         temp.Add("Conquest Details");
-        temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.");
+        temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");
         temp.Add(
             "Capture the keep objective to gain a large immediate realm point reward, or defend the keep to earn a 10% bonus to RP gains as well as increased periodic rewards.");
         /*

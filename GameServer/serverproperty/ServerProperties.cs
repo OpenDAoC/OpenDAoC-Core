@@ -1605,7 +1605,7 @@ namespace DOL.GS.ServerProperties
 		public static int PVP_REALM_TIMER_MINUTES; 
 		
 		[ServerProperty("conquest", "flag_capture_radius", "How far away can players capture an objective?", 750)]
-		public static int FLAG_CAPTURE_RADIUS;
+		public static ushort FLAG_CAPTURE_RADIUS;
 
 		#endregion
 
