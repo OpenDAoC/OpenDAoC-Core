@@ -822,6 +822,22 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, artifact));
+            VendorItemList.Add(new SkinVendorItem("Spear of Kings", 3450, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, artifact));
+            VendorItemList.Add(new SkinVendorItem("Lute", 227, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
+            VendorItemList.Add(new SkinVendorItem("Drum", 228, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
+            VendorItemList.Add(new SkinVendorItem("Flute", 325, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("TOA Flute", 2115, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Lute", 2117, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Drum", 2114, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Harp", 2116, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Base Lute", 2970, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
+            VendorItemList.Add(new SkinVendorItem("Base Drum", 2971, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
+            VendorItemList.Add(new SkinVendorItem("Base Flute", 2972, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Old Lute", 2973, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Old Drum", 2974, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Old Flute", 2975, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, lowbie));
+
+
 
             //Drake
             VendorItemList.Add(new SkinVendorItem("Dragonsworn Mage Staff", 3827, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, dragonCost * 2));
@@ -846,20 +862,26 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Spear", 3880, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Spear", 3920, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Spear, (int)eDamageType.Thrust, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Spear", 3921, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Spear, (int)eDamageType.Slash, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Crossbow", 3816, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Crossbow", 3876, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3960, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3961, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3924, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3925, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3883, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Crush, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3884, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Crush, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Crossbow", 3816, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Crossbow", 3876, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Longbow", 3823, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Shortbow", 3824, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3960, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3961, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3924, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3925, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Longbow", 3883, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3884, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Scythe", 3825, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Scythe", 3885, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Mandolin", 3848, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3985, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3908, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3949, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
 
 
 
@@ -884,7 +906,9 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Briton Shortbow", 569, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Briton Greatbow", 570, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Longbow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Assault Crossbow", 890, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, freebie));
-            VendorItemList.Add(new SkinVendorItem("Brawlers Crossbow", 891, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, freebie));  
+            VendorItemList.Add(new SkinVendorItem("Brawlers Crossbow", 891, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, freebie));
+
+
 
             //rr2
             VendorItemList.Add(new SkinVendorItem("Briton Arch Mace 2h", 640, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.TwoHandedWeapon, (int)eDamageType.Crush, lowbie));
@@ -955,6 +979,9 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Earth", 1962, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Fire", 1963, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Water", 1964, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Lute", 2976, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Drum", 2977, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Flute", 2975, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
 
 
             //mid
@@ -1049,6 +1076,10 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Cutters Bow", 920, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Elven Long Bow", 921, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Elven Short Bow", 922, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, freebie));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Great Scythe", 926, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe", 927, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Greatwar Scythe", 928, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Harvest Scythe", 929, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
 
             //rr2
             VendorItemList.Add(new SkinVendorItem("Celtic Falcata 2h", 639, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, lowbie));
@@ -1070,7 +1101,10 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Firebolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, lowbie));
             VendorItemList.Add(new SkinVendorItem("Firebolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, lowbie));
             VendorItemList.Add(new SkinVendorItem("Lurikeen Thorn Bow", 923, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Recurve Long Bow", 925, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, lowbie)); 
+            VendorItemList.Add(new SkinVendorItem("Recurve Long Bow", 925, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, lowbie));
+            VendorItemList.Add(new SkinVendorItem("War Scythe", 932, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Martial Scythe", 930, Slot.TWOHAND, 2, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Small Scythe", 931, Slot.TWOHAND, 2, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
 
             //rr4
             VendorItemList.Add(new SkinVendorItem("Celtic Hammer 2h", 904, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, toageneric));
@@ -1103,7 +1137,15 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Elven Short Bow Earth", 1998, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Elven Short Bow Fire", 1999, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Elven Short Bow Water", 2000, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
-
+            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe Air", 2001, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe Earth", 2002, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe Fire", 2003, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe Water", 2004, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Serpent Scythe", 2111, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Magma Scythe", 2213, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Lute", 2979, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Drum", 2980, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Flute", 2981, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
 
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
