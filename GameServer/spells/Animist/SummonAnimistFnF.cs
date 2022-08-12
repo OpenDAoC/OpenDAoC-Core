@@ -24,6 +24,7 @@ using DOL.GS.Effects;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using System.Linq;
+using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
 {
@@ -46,6 +47,22 @@ namespace DOL.GS.Spells
                 if (Caster is GamePlayer)
                     MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
                 return false;
+			}
+			
+
+			//Limit the height of FnF Shrooms if in a keep area
+			foreach (AbstractArea area in rgn.GetAreasOfSpot(Caster.GroundTarget))
+			{
+				if (area is KeepArea)
+				{
+					if(Caster.GroundTarget.Z - Caster.Z > 200)
+					{
+						if (Caster is GamePlayer)
+                    		MessageToCaster("Cannot summon a turret this high near a keep!", eChatType.CT_SpellResisted);
+						return false;
+					}
+					
+				}
 			}
 
 			foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Properties.TURRET_AREA_CAP_RADIUS, false, true))
