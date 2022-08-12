@@ -1,12 +1,12 @@
-﻿using System;
+﻿using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DOL.GS
 {
@@ -85,7 +85,7 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			int numPlayers = AwardDragonKillPoint();
+			int numPlayers = GetPlayersInRadiusCount(WorldMgr.VISIBILITY_DISTANCE);
 			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
@@ -140,6 +140,8 @@ namespace DOL.GS
 					spawnMessengers.Stop();
 					TempProperties.removeProperty("cuuldurach_messengers");
 				}
+
+				AwardDragonKillPoint();
 
 				base.Die(killer);
 
@@ -326,7 +328,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
-		public static List<GameNPC> DragonAdds = new List<GameNPC>();
+		public static System.Collections.Generic.List<GameNPC> DragonAdds = new System.Collections.Generic.List<GameNPC>();
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
