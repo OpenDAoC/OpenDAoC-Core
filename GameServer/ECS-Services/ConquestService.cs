@@ -47,6 +47,8 @@ public class ConquestService
         {
             ConquestManager.ActiveObjective.DoPeriodicReward();
         }
+        
+        ConquestManager.ActiveObjective.CheckNearbyPlayers();
         /*       
         if (ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
         {

@@ -41,6 +41,7 @@ public class SubObjective
         FlagObject.Z = z;
         FlagObject.CurrentRegion = WorldMgr.GetRegion(keep.Region);
         FlagObject.SpawnTick = GameLoop.GameLoopTime;
+        FlagObject.Realm = keep.Realm;
         FlagObject.AddToWorld();
 
         OwningRealm = keep.Realm;
@@ -59,12 +60,15 @@ public class SubObjective
             CapturingRealm = capturingRealm;
             CaptureTimer = new ECSGameTimer(FlagObject, CaptureCallback);
             CaptureTimer.Start(1000);
+            Console.WriteLine($"Start timer");
         }
     }
 
     private void StopCaptureTimer()
     {
         CaptureTimer?.Stop();
+        CaptureTimer = null;
+        Console.WriteLine($"Stop timer");
     }
     
     private int CaptureCallback(ECSGameTimer timer)
@@ -72,6 +76,7 @@ public class SubObjective
         if (CaptureSeconds > 0)
         {
             CaptureSeconds -= 1;
+            Console.WriteLine($"Decrement to {CaptureSeconds}");
         }
         else
         {
@@ -85,14 +90,19 @@ public class SubObjective
     private void Capture()
     {
         OwningRealm = CapturingRealm;
+        FlagObject.Realm = CapturingRealm;
+        FlagObject.BroadcastUpdate();
+        CaptureTimer = null;
+        Console.WriteLine($"Flag captured for realm {OwningRealm}");
     }
     
     public void CheckNearbyPlayers()
     {
-        var playersNearFlag = FlagObject.GetPlayersInRadius(FlagCaptureRadius);
         Dictionary<eRealm, int> playersOfRealmDict = new Dictionary<eRealm, int>();
-        foreach (GamePlayer player in playersNearFlag)
+       // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, true))
         {
+           //Console.WriteLine($"Player near flag: {player.Name}");
             if (playersOfRealmDict.ContainsKey(player.Realm))
             {
                 playersOfRealmDict[player.Realm]++;
@@ -103,11 +113,11 @@ public class SubObjective
             }
         }
 
-        if (playersOfRealmDict.Keys.Count > 1)
+        if (playersOfRealmDict.Keys.Count is > 1 or 0 && CaptureTimer != null)
         {
             StopCaptureTimer();
         }
-        else if (playersOfRealmDict.Keys.Count > 0)
+        else if (playersOfRealmDict.Keys.Count > 0 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
         }
