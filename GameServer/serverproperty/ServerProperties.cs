@@ -1495,6 +1495,12 @@ namespace DOL.GS.ServerProperties
 		public static int NPC_HEAL_THRESHOLD;
 		
 		/// <summary>
+		/// Charmed NPC heal when a target is below what percentage of their health?
+		/// </summary>
+		[ServerProperty("npc", "charmed_npc_heal_threshold", "Charmed NPC, heal targets whose health falls below this percentage.", 50)]
+		public static int CHARMED_NPC_HEAL_THRESHOLD;
+		
+		/// <summary>
 		/// Expand the Wild Minion RA to also improve crit chance for ranged and spell attacks?
 		/// </summary>
 		[ServerProperty("npc", "expand_wild_minion", "Expand the Wild Minion RA to also improve crit chance for ranged and spell attacks?", false)]
