@@ -518,7 +518,7 @@ namespace DOL.GS.AtlasQuest.Albion
 				if (!Laura.GiveQuest(typeof (BeetleRvRQuestAlb), player, 1))
 					return;
 
-				Laura.SayTo(player, "Please, find the monstrous creatures in Dartmoor, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
+				Laura.SayTo(player, player.Name + ", please find enemies in their, aswell in our lands and kill them. Come back when you also captured keeps and a relic for your reward.");
 
 			}
 		}
