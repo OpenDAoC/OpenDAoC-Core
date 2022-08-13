@@ -317,11 +317,10 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
 			Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
-			Feairna_Athar.X = player.X;
-			Feairna_Athar.Y = player.Y;
-			Feairna_Athar.Z = player.Z;
+			Feairna_Athar.X = 288348;
+			Feairna_Athar.Y = 319950;
+			Feairna_Athar.Z = 2328;
 			Feairna_Athar.MaxSpeedBase = 250;
-			Feairna_Athar.AddToWorld();
 
 			var brain = new SINeckBossBrain();
 			brain.AggroLevel = 200;
