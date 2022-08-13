@@ -12,9 +12,9 @@ using DOL.GS.Quests;
 using DOL.GS.Scripts;
 using log4net;
 
-namespace DOL.GS.AtlasQuest.Albion
+namespace DOL.GS.AtlasQuest.Hibernia
 {
-	public class BeetleRvRQuestAlb : Quests.AtlasQuest
+	public class BeetleRvRQuestHib : Quests.AtlasQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -36,7 +36,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		private int _relicsCaptured = 0;
 
 		// Quest NPC
-		private static GameNPC Laura = null; // Start NPC
+		private static GameNPC Harris = null; // Start NPC
 		private static GameNPC Beetle = null;
 		private static GameNPC MobEffect = null;
 
@@ -47,19 +47,19 @@ namespace DOL.GS.AtlasQuest.Albion
 		private static ItemTemplate beetle_bone = null;
 		
 		// Constructors
-		public BeetleRvRQuestAlb() : base()
+		public BeetleRvRQuestHib() : base()
 		{
 		}
 
-		public BeetleRvRQuestAlb(GamePlayer questingPlayer) : base(questingPlayer)
+		public BeetleRvRQuestHib(GamePlayer questingPlayer) : base(questingPlayer)
 		{
 		}
 
-		public BeetleRvRQuestAlb(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		public BeetleRvRQuestHib(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
 		{
 		}
 
-		public BeetleRvRQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public BeetleRvRQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -80,43 +80,43 @@ namespace DOL.GS.AtlasQuest.Albion
 			
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Laura", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Harris", eRealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
-					if (npc.CurrentRegionID == 10 && npc.X == 36450 && npc.Y == 30958)
+					if (npc.CurrentRegionID == 201 && npc.X == 34765 && npc.Y == 32235)
 					{
-						Laura = npc;
+						Harris = npc;
 						break;
 					}
 
-			if (Laura == null)
+			if (Harris == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("Could not find Laura , creating it ...");
-				Laura = new GameNPC();
-				Laura.Model = 261;
-				Laura.Name = "Laura";
-				Laura.GuildName = "Protector of Beetles";
-				Laura.Realm = eRealm.Albion;
-				Laura.CurrentRegionID = 10;
-				Laura.Size = 50;
-				Laura.Level = 59;
-				//Camelot Location
-				Laura.X = 36450;
-				Laura.Y = 30958;
-				Laura.Z = 8010;
-				Laura.Heading = 1012;
-				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-				templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 559, 43);
-				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 23);
-				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 43);
-				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 43);
-				Laura.Inventory = templateAlb.CloseTemplate();
-				Laura.AddToWorld();
+					log.Warn("Could not find Harris , creating it ...");
+				Harris = new GameNPC();
+				Harris.Model = 309;
+				Harris.Name = "Harris";
+				Harris.GuildName = "Protector of Beetles";
+				Harris.Realm = eRealm.Hibernia;
+				Harris.CurrentRegionID = 201;
+				Harris.Size = 50;
+				Harris.Level = 59;
+				//Tir na Nog Location
+				Harris.X = 34765;
+				Harris.Y = 32235;
+				Harris.Z = 7994;
+				Harris.Heading = 1600;
+				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
+				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 559, 43);
+				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008, 24);
+				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361, 43);
+				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362, 43);
+				Harris.Inventory = templateHib.CloseTemplate();
+				Harris.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
-					Laura.SaveIntoDatabase();
+					Harris.SaveIntoDatabase();
 				}
 			}
 
@@ -207,10 +207,10 @@ namespace DOL.GS.AtlasQuest.Albion
 			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Laura, GameObjectEvent.Interact, new DOLEventHandler(TalkToLaura));
-			GameEventMgr.AddHandler(Laura, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLaura));
+			GameEventMgr.AddHandler(Harris, GameObjectEvent.Interact, new DOLEventHandler(TalkToHarris));
+			GameEventMgr.AddHandler(Harris, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHarris));
 			
-			Laura.AddQuestToGive(typeof (BeetleRvRQuestAlb));
+			Harris.AddQuestToGive(typeof (BeetleRvRQuestHib));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -220,30 +220,30 @@ namespace DOL.GS.AtlasQuest.Albion
 		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
-			if (Laura == null)
+			if (Harris == null)
 				return;
 			// remove handlers
 			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Laura, GameObjectEvent.Interact, new DOLEventHandler(TalkToLaura));
-			GameEventMgr.RemoveHandler(Laura, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLaura));
+			GameEventMgr.RemoveHandler(Harris, GameObjectEvent.Interact, new DOLEventHandler(TalkToHarris));
+			GameEventMgr.RemoveHandler(Harris, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHarris));
 
-			Laura.RemoveQuestToGive(typeof (BeetleRvRQuestAlb));
+			Harris.RemoveQuestToGive(typeof (BeetleRvRQuestHib));
 		}
 
-		private static void TalkToLaura(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHarris(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
 			if (player == null)
 				return;
 
-			if(Laura.CanGiveQuest(typeof (BeetleRvRQuestAlb), player)  <= 0)
+			if(Harris.CanGiveQuest(typeof (BeetleRvRQuestHib), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
+			BeetleRvRQuestHib quest = player.IsDoingQuest(typeof (BeetleRvRQuestHib)) as BeetleRvRQuestHib;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -252,21 +252,21 @@ namespace DOL.GS.AtlasQuest.Albion
 					switch (quest.Step)
 					{
 						case 1:
-							Laura.SayTo(player, player.Name + ", please find enemies in their, aswell in our lands and kill them. Come back when you also captured keeps and a relic for your reward.");
+							Harris.SayTo(player, player.Name + ", please find enemies in their, aswell in our lands and kill them. Come back when you also captured keeps and a relic for your reward.");
 							break;
 						case 2:
-							Laura.SayTo(player, "Hello " + player.Name + ", I am glad that you are back, the [beetles] will be very happy about this news!");
+							Harris.SayTo(player, "Hello " + player.Name + ", I am glad that you are back, the [beetles] will be very happy about this news!");
 							break;
 						case 3:
-							Laura.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
+							Harris.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							break;
 					}
 				}
 				else
 				{
-					Laura.SayTo(player, "Hello "+ player.Name +", I am Laura. The mission is very dangerous and I hope you can help me and Albion. " +
+					Harris.SayTo(player, "Hello "+ player.Name +", I am Harris. The mission is very dangerous and I hope you can help me and Hibernia. " +
 					                    "Enemies in Hadrian's Wall, Emain Macha, Odin's Gate, pretty much everywhere, are terrorizing our forces. " +
-					                    "Albion needs brave warriors to help us and the beetles that were expelled from monstrous creatures in Darkness Falls and are trying to live in the frontiers. Can you [help Albion and the beetles]?");
+					                    "Hibernia needs brave warriors to help us and the beetles that were expelled from monstrous creatures in Darkness Falls and are trying to live in the frontiers. Can you [help Hibernia and the beetles]?");
 				}
 			}
 				// The player whispered to the NPC
@@ -277,8 +277,8 @@ namespace DOL.GS.AtlasQuest.Albion
 				{
 					switch (wArgs.Text)
 					{
-						case "help Albion and the beetles":
-							player.Out.SendQuestSubscribeCommand(Laura, QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestAlb)), "Will you help Laura "+questTitle+"?");
+						case "help Hibernia and the beetles":
+							player.Out.SendQuestSubscribeCommand(Harris, QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestHib)), "Will you help Harris "+questTitle+"?");
 							break;
 					}
 				}
@@ -289,21 +289,21 @@ namespace DOL.GS.AtlasQuest.Albion
 						case "beetles":
 							if (quest.Step == 2)
 							{
-								Laura.SayTo(player, "Francis is a [friendly beetle] which will be here soon!");
+								Harris.SayTo(player, "Kevin is a [friendly beetle] which will be here soon!");
 							}
 							break;
 						case "friendly beetle":
 							if (quest.Step == 2)
 							{
-								new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
+								new ECSGameTimer(Harris, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
 								quest.Step = 3;
-								Laura.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
+								Harris.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							}
 							break;
 						case "choose":
 							if (quest.Step == 3)
 							{
-								Laura.SayTo(player,
+								Harris.SayTo(player,
 									"You can choose your reward:\n\n" +
 									"[Beetle Egg] - An item with 50% Power Heal and 10 Charges.\n" +
 									"[Beetle Bone] - An item with 20% Life Heal and 10 Charges.\n\n" +
@@ -327,20 +327,20 @@ namespace DOL.GS.AtlasQuest.Albion
 		private static int CreateBeetle(ECSGameTimer timer)
         {
 	        Beetle = new GameNPC();
-            Beetle.Model = 669;
-            Beetle.Name = "Francis";
+            Beetle.Model = 668;
+            Beetle.Name = "Kevin";
             Beetle.GuildName = "";
-            Beetle.Realm = eRealm.Albion;
+            Beetle.Realm = eRealm.Hibernia;
             Beetle.Race = 2007;
             Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
             Beetle.Size = 40;
             Beetle.Level = 55;
             Beetle.Flags ^= GameNPC.eFlags.PEACE;
-            Beetle.CurrentRegionID = 10;
-            Beetle.X = 36434;
-            Beetle.Y = 31031;
-            Beetle.Z = 8010;
-            Beetle.Heading = 1428;
+            Beetle.CurrentRegionID = 201;
+            Beetle.X = 34824;
+            Beetle.Y = 32162;
+            Beetle.Z = 7998;
+            Beetle.Heading = 1240;
             
             Beetle.AddToWorld();
             return 0;
@@ -352,7 +352,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
-			MobEffect.Realm = eRealm.Albion;
+			MobEffect.Realm = eRealm.Hibernia;
 			MobEffect.Race = 2007;
 			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
 			MobEffect.Size = 25;
@@ -361,23 +361,23 @@ namespace DOL.GS.AtlasQuest.Albion
 			MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
 			MobEffect.Flags ^= GameNPC.eFlags.PEACE;
 			
-			MobEffect.CurrentRegionID = 10;
-			MobEffect.X = 36434;
-			MobEffect.Y = 31031;
-			MobEffect.Z = 8010;
-			MobEffect.Heading = 1428;
+			MobEffect.CurrentRegionID = 201;
+			MobEffect.X = 34824;
+			MobEffect.Y = 32162;
+			MobEffect.Z = 7998;
+			MobEffect.Heading = 1240;
 			
 			MobEffect.AddToWorld();
 			
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
+			new ECSGameTimer(Harris, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
+			new ECSGameTimer(Harris, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
+			new ECSGameTimer(Harris, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
 			return 0;
 		}
 		
 		private static int RemoveEffectMob(ECSGameTimer timer)
 		{
-			foreach (GameNPC effect in Laura.GetNPCsInRadius(600))
+			foreach (GameNPC effect in Harris.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "power of the beetle")
 					effect.RemoveFromWorld();
@@ -388,9 +388,9 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		private static int RemoveBeetle(ECSGameTimer timer)
 		{
-			foreach (GameNPC effect in Laura.GetNPCsInRadius(600))
+			foreach (GameNPC effect in Harris.GetNPCsInRadius(600))
 			{
-				if (effect.Name.ToLower() == "francis")
+				if (effect.Name.ToLower() == "kevin")
 					effect.RemoveFromWorld();
 			}
 			return 0;
@@ -399,7 +399,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		public override bool CheckQuestQualification(GamePlayer player)
 		{
 			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (BeetleRvRQuestHib)) != null)
 				return true;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -417,7 +417,7 @@ namespace DOL.GS.AtlasQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
+			BeetleRvRQuestHib quest = player.IsDoingQuest(typeof (BeetleRvRQuestHib)) as BeetleRvRQuestHib;
 
 			if (quest == null)
 				return;
@@ -435,7 +435,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		private static void QuestRewardEgg(GamePlayer player, byte response)
 		{
-			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
+			BeetleRvRQuestHib quest = player.IsDoingQuest(typeof (BeetleRvRQuestHib)) as BeetleRvRQuestHib;
 
 			if (quest == null)
 				return;
@@ -448,7 +448,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			{
 				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
-					SendSystemMessage(player, "Thank you for helping Francis and his beetle family.");
+					SendSystemMessage(player, "Thank you for helping Kevin and his beetle family.");
 					GiveItem(player, beetle_egg);
 					quest.FinishQuest();
 				}
@@ -461,7 +461,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		private static void QuestRewardBone(GamePlayer player, byte response)
 		{
-			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
+			BeetleRvRQuestHib quest = player.IsDoingQuest(typeof (BeetleRvRQuestHib)) as BeetleRvRQuestHib;
 
 			if (quest == null)
 				return;
@@ -474,7 +474,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			{
 				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
-					SendSystemMessage(player, "Thank you for helping Francis and his beetle family.");
+					SendSystemMessage(player, "Thank you for helping Kevin and his beetle family.");
 					GiveItem(player, beetle_bone);
 					quest.FinishQuest();
 				}
@@ -491,7 +491,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestHib)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -502,10 +502,10 @@ namespace DOL.GS.AtlasQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Laura.CanGiveQuest(typeof (BeetleRvRQuestAlb), player)  <= 0)
+			if(Harris.CanGiveQuest(typeof (BeetleRvRQuestHib), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (BeetleRvRQuestHib)) != null)
 				return;
 
 			if (response == 0x00)
@@ -515,10 +515,10 @@ namespace DOL.GS.AtlasQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Laura.GiveQuest(typeof (BeetleRvRQuestAlb), player, 1))
+				if (!Harris.GiveQuest(typeof (BeetleRvRQuestHib), player, 1))
 					return;
 
-				Laura.SayTo(player, "Please, find the monstrous creatures in Dartmoor, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
+				Harris.SayTo(player, player.Name + ", please find enemies in their, aswell in our lands and kill them. Come back when you also captured keeps and a relic for your reward.");
 
 			}
 		}
@@ -542,9 +542,9 @@ namespace DOL.GS.AtlasQuest.Albion
 						       "\nCaptured Keeps: ("+ _captured + " | "+ MAX_CAPTURED +")" +
 						       "\nCaptured Relics: ("+ _relicsCaptured +" | "+ MAX_RELICS_CAPTURED +")";
 					case 2:
-						return "Return to Laura in Camelot and speak with her about the beetle issue.";
+						return "Return to Harris in Camelot and speak with her about the beetle issue.";
 					case 3:
-						return "Choose your reward at Laura.";
+						return "Choose your reward at Harris.";
 				}
 				return base.Description;
 			}
@@ -554,7 +554,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(BeetleRvRQuestAlb)) == null)
+			if (player?.IsDoingQuest(typeof(BeetleRvRQuestHib)) == null)
 				return;
 
 			if (sender != m_questPlayer)
@@ -590,7 +590,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		}
 		public override string QuestPropertyKey
 		{
-			get => "BeetleRvRQuestAlb";
+			get => "BeetleRvRQuestHib";
 			set { ; }
 		}
 		
