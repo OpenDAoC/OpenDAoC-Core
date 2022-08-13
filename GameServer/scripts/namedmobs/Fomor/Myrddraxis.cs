@@ -32,7 +32,7 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			int numPlayers = AwardDragonKillPoint();
+			int numPlayers = GetPlayersInRadiusCount(WorldMgr.VISIBILITY_DISTANCE);
 			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
@@ -87,6 +87,9 @@ namespace DOL.GS
 						canReportNews = false;
 				}
 			}
+
+			AwardDragonKillPoint();
+
 			base.Die(killer);
 			foreach (String message in m_deathAnnounce)
 			{

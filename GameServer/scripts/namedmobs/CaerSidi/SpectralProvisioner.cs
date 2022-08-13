@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 2000;
 		}
 		private bool CanAddJunk = false;
-        public override void OnAttackedByEnemy(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if (Util.Chance(30) && ad != null && !CanAddJunk && ad.Attacker is GamePlayer)
 			{
@@ -146,7 +146,9 @@ namespace DOL.AI.Brain
 				{
 					if (!player.IsAlive) continue;
 					item.OwnerID = player.ObjectId;
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+					item.IsDropable = true;			//Make sure it's droppable
+					item.IsIndestructible = false;	//make sure it's destructible
+					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);				
 				}
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDecayingJunk), Util.Random(25000,35000));
 				CanAddJunk = true;
