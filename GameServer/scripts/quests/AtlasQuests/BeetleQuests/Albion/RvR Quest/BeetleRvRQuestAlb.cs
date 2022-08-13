@@ -537,7 +537,7 @@ namespace DOL.GS.AtlasQuest.Albion
 				switch (Step)
 				{
 					case 1:
-						return "Invade the enemy realm for capturing a relic or slay enemies in the frontiers for Albion." +
+						return "Invade the enemy realm for capturing a relic and slay enemies in the frontiers for Albion." +
 						       "\nEnemies Killed: ("+ _enemiesKilled +" | "+ MAX_KILLED +")" +
 						       "\nCaptured Keeps: ("+ _captured + " | "+ MAX_CAPTURED +")" +
 						       "\nCaptured Relics: ("+ _relicsCaptured +" | "+ MAX_RELICS_CAPTURED +")";

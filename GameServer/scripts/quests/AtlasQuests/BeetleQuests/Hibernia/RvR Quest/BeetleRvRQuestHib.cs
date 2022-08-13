@@ -537,12 +537,12 @@ namespace DOL.GS.AtlasQuest.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return "Invade the enemy realm for capturing a relic or slay enemies in the frontiers for Albion." +
+						return "Invade the enemy realm for capturing a relic and slay enemies in the frontiers for Hibernia." +
 						       "\nEnemies Killed: ("+ _enemiesKilled +" | "+ MAX_KILLED +")" +
 						       "\nCaptured Keeps: ("+ _captured + " | "+ MAX_CAPTURED +")" +
 						       "\nCaptured Relics: ("+ _relicsCaptured +" | "+ MAX_RELICS_CAPTURED +")";
 					case 2:
-						return "Return to Harris in Camelot and speak with her about the beetle issue.";
+						return "Return to Harris in Tir na Nog and speak with him about the beetle issue.";
 					case 3:
 						return "Choose your reward at Harris.";
 				}

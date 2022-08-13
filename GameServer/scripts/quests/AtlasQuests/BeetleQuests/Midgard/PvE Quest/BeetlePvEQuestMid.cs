@@ -349,7 +349,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
-			MobEffect.Realm = eRealm.Hibernia;
+			MobEffect.Realm = eRealm.Midgard;
 			MobEffect.Race = 2007;
 			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
 			MobEffect.Size = 25;
