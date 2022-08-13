@@ -210,7 +210,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			GameEventMgr.AddHandler(Laura, GameObjectEvent.Interact, new DOLEventHandler(TalkToLaura));
 			GameEventMgr.AddHandler(Laura, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLaura));
 			
-			Laura.AddQuestToGive(typeof (BeetlePvEQuestAlb));
+			Laura.AddQuestToGive(typeof (BeetleRvRQuestAlb));
 
 			if (log.IsInfoEnabled)
 				log.Info("Quest \"" + questTitle + "\" initialized");
@@ -229,7 +229,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			GameEventMgr.RemoveHandler(Laura, GameObjectEvent.Interact, new DOLEventHandler(TalkToLaura));
 			GameEventMgr.RemoveHandler(Laura, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLaura));
 
-			Laura.RemoveQuestToGive(typeof (BeetlePvEQuestAlb));
+			Laura.RemoveQuestToGive(typeof (BeetleRvRQuestAlb));
 		}
 
 		private static void TalkToLaura(DOLEvent e, object sender, EventArgs args)
@@ -239,11 +239,11 @@ namespace DOL.GS.AtlasQuest.Albion
 			if (player == null)
 				return;
 
-			if(Laura.CanGiveQuest(typeof (BeetlePvEQuestAlb), player)  <= 0)
+			if(Laura.CanGiveQuest(typeof (BeetleRvRQuestAlb), player)  <= 0)
 				return;
 
 			//We also check if the player is already doing the quest
-			BeetlePvEQuestAlb quest = player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) as BeetlePvEQuestAlb;
+			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
 
 			if (e == GameObjectEvent.Interact)
 			{
@@ -278,7 +278,7 @@ namespace DOL.GS.AtlasQuest.Albion
 					switch (wArgs.Text)
 					{
 						case "help Albion and the beetles":
-							player.Out.SendQuestSubscribeCommand(Laura, QuestMgr.GetIDForQuestType(typeof(BeetlePvEQuestAlb)), "Will you help Laura "+questTitle+"?");
+							player.Out.SendQuestSubscribeCommand(Laura, QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestAlb)), "Will you help Laura "+questTitle+"?");
 							break;
 					}
 				}
@@ -417,7 +417,7 @@ namespace DOL.GS.AtlasQuest.Albion
 
 		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
 		{
-			BeetlePvEQuestAlb quest = player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) as BeetlePvEQuestAlb;
+			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
 
 			if (quest == null)
 				return;
@@ -435,7 +435,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		private static void QuestRewardEgg(GamePlayer player, byte response)
 		{
-			BeetlePvEQuestAlb quest = player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) as BeetlePvEQuestAlb;
+			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
 
 			if (quest == null)
 				return;
@@ -461,7 +461,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		
 		private static void QuestRewardBone(GamePlayer player, byte response)
 		{
-			BeetlePvEQuestAlb quest = player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) as BeetlePvEQuestAlb;
+			BeetleRvRQuestAlb quest = player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) as BeetleRvRQuestAlb;
 
 			if (quest == null)
 				return;
@@ -491,7 +491,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			if (qargs == null)
 				return;
 
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(BeetlePvEQuestAlb)))
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(BeetleRvRQuestAlb)))
 				return;
 
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -502,10 +502,10 @@ namespace DOL.GS.AtlasQuest.Albion
 
 		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
 		{
-			if(Laura.CanGiveQuest(typeof (BeetlePvEQuestAlb), player)  <= 0)
+			if(Laura.CanGiveQuest(typeof (BeetleRvRQuestAlb), player)  <= 0)
 				return;
 
-			if (player.IsDoingQuest(typeof (BeetlePvEQuestAlb)) != null)
+			if (player.IsDoingQuest(typeof (BeetleRvRQuestAlb)) != null)
 				return;
 
 			if (response == 0x00)
@@ -515,7 +515,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			else
 			{
 				//Check if we can add the quest!
-				if (!Laura.GiveQuest(typeof (BeetlePvEQuestAlb), player, 1))
+				if (!Laura.GiveQuest(typeof (BeetleRvRQuestAlb), player, 1))
 					return;
 
 				Laura.SayTo(player, "Please, find the monstrous creatures in Dartmoor, Darkness Falls and Summoner's Hall, erase them and return for your reward.");
@@ -554,7 +554,7 @@ namespace DOL.GS.AtlasQuest.Albion
 		{
 			GamePlayer player = sender as GamePlayer;
 
-			if (player?.IsDoingQuest(typeof(BeetlePvEQuestAlb)) == null)
+			if (player?.IsDoingQuest(typeof(BeetleRvRQuestAlb)) == null)
 				return;
 
 			if (sender != m_questPlayer)
