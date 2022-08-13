@@ -60,9 +60,6 @@
     <Content Include="API\docs\swagger-ui.css" />
     <Content Include="API\docs\swagger-ui.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="scripts\quests\AtlasQuests\BeetleQuests\Midgard\RvR Quest" />
-  </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(APIDocs)" DestinationFiles="@(APIDocs->'$(MSBuildProjectDirectory)\..\$(Configuration)\wwwroot\docs\%(RecursiveDir)%(Filename)%(Extension)')" />
