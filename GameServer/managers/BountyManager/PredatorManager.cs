@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DOL.Events;
+using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
@@ -47,6 +49,7 @@ public class PredatorManager
     public static List<GamePlayer> QueuedPlayers;
     public static Dictionary<GamePlayer, long> DisqualifiedPlayers;
     public static List<GamePlayer> FreshKillers;
+    public static Dictionary<GamePlayer, int> PlayerKillTallyDict;
 
     private static int minPredatorReward;
     private static int maxPredatorReward;
@@ -77,6 +80,7 @@ public class PredatorManager
         QueuedPlayers = new List<GamePlayer>();
         DisqualifiedPlayers = new Dictionary<GamePlayer, long>();
         FreshKillers = new List<GamePlayer>();
+        PlayerKillTallyDict = new Dictionary<GamePlayer, int>();
     }
 
     public static void FullReset()
@@ -121,6 +125,12 @@ public class PredatorManager
             }
             DisqualifiedPlayers.Remove(player);
         }
+
+        if (!ConquestService.ConquestManager.IsPlayerInConquestZone(player))
+        {
+            player.Out.SendMessage($"You must hunt within the active conquest zone. Use the command again when within 25k units of the conquest target.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            return;
+        }
         
         player.Out.SendMessage($"You tune your senses to the pulse of nature. New prey is sure to arrive soon.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
         QueuedPlayers.Add(player);
@@ -138,13 +148,15 @@ public class PredatorManager
             DisqualifiedPlayers.Add(player, GameLoop.GameLoopTime);
         }
 
+        if (PlayerKillTallyDict.ContainsKey(player))
+            PlayerKillTallyDict.Remove(player);
+
         player.Out.SendMessage($"The call of the wild leaves you. You have been removed from the hunt.",
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
     }
 
     public static void StartTimeoutCountdownFor(GamePlayer player)
     {
-        Console.WriteLine($"Start timeout countdown for {player}");
         if (player.PredatorTimeoutTimer.IsAlive) return;
         player.PredatorTimeoutTimer = new ECSGameTimer(player);
         player.PredatorTimeoutTimer.Properties.setProperty(TimeoutTickKey, GameLoop.GameLoopTime);
@@ -156,7 +168,6 @@ public class PredatorManager
     
     public static void StopTimeoutCountdownFor(GamePlayer player)
     {
-        Console.WriteLine($"STOP timeout countdown for {player}");
         player.PredatorTimeoutTimer.Stop();
         player.Out.SendMessage($"You are once again inside a valid hunting zone.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
     }
@@ -534,11 +545,33 @@ public class PredatorManager
 
         ActiveBounties.Remove(predatorBounty);
         predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        BroadcastKill(predatorBounty.Prey);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         FreshKillers.Add(predatorBounty.Predator);
+        
+        if(PlayerKillTallyDict.ContainsKey(predatorBounty.Predator))
+            PlayerKillTallyDict[predatorBounty.Predator]++;
+        else
+            PlayerKillTallyDict.Add(predatorBounty.Predator, 1);
+
         //QueuePlayer(predatorBounty.Predator);
         //InsertQueuedPlayers();
         //TryFillEmptyPrey();
+    }
+
+    public static List<GamePlayer> GetTopKillers()
+    {
+        return (from entry in PlayerKillTallyDict orderby entry.Value select entry.Key) as List<GamePlayer>;
+        
+    }
+
+    public static void BroadcastKill(GamePlayer deadGuy)
+    {
+        Parallel.ForEach(deadGuy.GetPlayersInRadius(10000).OfType<GamePlayer>().ToList(), player =>
+        {
+            player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.",
+                eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        });
     }
 
     private static void JoinedGroup(DOLEvent dolEvent, object sender, EventArgs arguments)
