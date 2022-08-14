@@ -69,7 +69,6 @@ public class ConquestManager
     {
         ResetKeeps();
         PickNewObjective();
-        StartConquest();
     }
 
     private void ResetKeeps()
@@ -115,13 +114,6 @@ public class ConquestManager
         {
             _midgardObjectives.Add(new ConquestObjective(keep), GetConquestValue(keep));
         }
-    }
-
-    private void ResetContribution()
-    {
-        HiberniaContribution = 0;
-        AlbionContribution = 0;
-        MidgardContribution = 0;
     }
 
     private int GetConquestValue(AbstractGameKeep keep)
@@ -170,7 +162,6 @@ public class ConquestManager
 
         AwardContributorsForRealm(CapturedKeep.Realm);
         RotateKeepsOnCapture(CapturedKeep);
-        ResetContribution();
     }
 
     public void ConquestTimeout()
@@ -307,7 +298,6 @@ public class ConquestManager
         SetDefensiveKeepForRealm(ActiveConquestRealm);
         
         ActiveObjective.StartConquest();
-        ResetContribution();
         LastConquestStartTime = GameLoop.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
     }

@@ -27,7 +27,7 @@ public class ConquestService
     public static void Tick(long tick)
     {
         Diagnostics.StartPerfCounter(ServiceName);
-        
+
         long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
         long tallyCycle = ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
         long subCycle = fullCycle / 3;
