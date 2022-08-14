@@ -282,6 +282,25 @@ public class ConquestManager
         return nearby;
     }
     
+    public bool IsPlayerNearFlag(GamePlayer player)
+    {
+        bool nearby = false;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
+    
     public bool IsPlayerInConquestZone(GamePlayer player)
     {
         bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 25000;
@@ -541,7 +560,7 @@ public class ConquestManager
             ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, 10000, playerCount, true);
 
         temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()}");
-        temp.Add($"{ActiveObjective.Keep.Name}");
+        temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");
         temp.Add($"Players Nearby: {playerCount.Count}");
         temp.Add("");
 

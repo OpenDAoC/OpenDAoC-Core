@@ -14542,6 +14542,11 @@ namespace DOL.GS
                 range = levelDiff * 20 + 125; 
             }
 
+            if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
+            {
+                range += 500;
+            }
+
             // Mastery of Stealth Bonus
             /*
              //removed, this is NF MoStealth. OF Version does not add range, only movespeed
