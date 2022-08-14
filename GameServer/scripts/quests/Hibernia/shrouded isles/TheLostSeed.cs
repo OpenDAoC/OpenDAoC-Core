@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -382,21 +383,34 @@ namespace DOL.GS.Quests.Hibernia
 
 			if (quest is not {Step: 5}) return;
 
-			if (player.Group != null)
-				if (player.Group.Leader != player)
-					return;
-
 			var existingCopy = WorldMgr.GetNPCsByName("Feairna-Athar", eRealm.None);
 
 			if (existingCopy.Length > 0) return;
 
-			// player near treant           
-			SendSystemMessage(player,
-				"You feel a quiet rustling in the leaves overhead.");
-			player.Out.SendMessage("Feairna-Athar ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-			quest.CreateFeairnaAthar(player);
+			//only try to spawn him once per trigger even if multiple people enter at the same time
+			if (Monitor.TryEnter(spawnLock))
+			{
+				try
+				{
+					// player near demon           
+					SendSystemMessage(player,
+					"You feel a quiet rustling in the leaves overhead.");
+					player.Out.SendMessage("Feairna-Athar ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					quest.CreateFeairnaAthar(player);
+				}
+				finally
+				{
+					Monitor.Exit(spawnLock);
+				}
+			}
+			else
+			{
+				return;
+			}
 		}
-		
+
+		static object spawnLock = new object();
+
 		protected static void TalkToTerod(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
