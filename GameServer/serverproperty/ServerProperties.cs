@@ -2741,7 +2741,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Max duration of a Conquest Task in minutes
 		/// </summary>
-		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)]
+		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 90)]
 		public static int MAX_CONQUEST_TASK_DURATION;
 		
 		/// <summary>
