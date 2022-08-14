@@ -1606,6 +1606,38 @@ namespace DOL.GS.ServerProperties
 
 		#endregion
 
+		#region Daily / Weekly / Monthly / Beetle Quest
+		/// <summary>
+		/// The value of Daily Quest realmpoints reward
+		/// </summary>
+		[ServerProperty("quest", "daily_rvr_reward", "Daily Quest realmpoints reward", 0)]
+		public static int DAILY_RVR_REWARD;
+		
+		/// <summary>
+		/// The value of Weekly Quest realmpoints reward
+		/// </summary>
+		[ServerProperty("quest", "weekly_rvr_reward", "Weekly Quest realmpoints reward", 0)]
+		public static int WEEKLY_RVR_REWARD;
+		
+		/// <summary>
+		/// The value of Monthly Quest realmpoints reward
+		/// </summary>
+		[ServerProperty("quest", "monthly_rvr_reward", "Monthly Quest realmpoints reward", 0)]
+		public static int MONTHLY_RVR_REWARD;
+		
+		/// <summary>
+		/// The value of Hardcore RvR Quest realmpoints reward
+		/// </summary>
+		[ServerProperty("quest", "hardcore_rvr_reward", "Hardcore Quest realmpoints reward", 0)]
+		public static int HARDCORE_RVR_REWARD;
+		
+		/// <summary>
+		/// The value of Beetle RvR Quest realmpoints reward
+		/// </summary>
+		[ServerProperty("quest", "beetle_rvr_reward", "Beetle Quest realmpoints reward", 0)]
+		public static int Beetle_RVR_REWARD;
+		#endregion
+		
 		#region KEEPS
 		/// <summary>
 		/// Number of seconds between allowed LOS checks for keep guards
