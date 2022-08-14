@@ -11,7 +11,7 @@ public class PredatorService
     private const string ServiceName = "Predator Service";
 
      private static long _updateInterval = 3000; // 3secs
-     private static long _messageBroadcastInterval = 10000; // 10secs
+     private static long _messageBroadcastInterval = 15000; // 15secs
     private static long _insertInterval = ServerProperties.Properties.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
 
     private static long _lastUpdate;
@@ -50,24 +50,28 @@ public class PredatorService
                 {
                     PredatorManager.StopTimeoutCountdownFor(activePlayer);
                 }
-                
-                if (tick - _lastMessage > _messageBroadcastInterval)
+            }
+        }
+        
+        if (tick - _lastMessage > _messageBroadcastInterval)
+        {
+            _lastMessage = tick;
+            foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
+            {
+                if (activePreds.Predator != null && activePreds.Prey != null &&
+                    activePreds.Predator.GetDistance(activePreds.Prey) <= WorldMgr.VISIBILITY_DISTANCE)
                 {
-                    _lastMessage = tick;
-                    if (activePreds.Predator != null && activePreds.Prey != null && activePreds.Predator.GetDistance(activePreds.Prey) <= WorldMgr.VISIBILITY_DISTANCE)
-                    {
-                        if(!activePreds.Predator.InCombat)
-                            activePreds.Predator.Out.SendMessage($"Your prey is within sight.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-                        if(!activePreds.Prey.InCombat)
-                            activePreds.Prey.Out.SendMessage($"Your senses tingle. A hunter is near.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-                    }
-                    else
-                    {
-                        //activePreds.Predator.Out.SendMessage($"Your prey is within sight.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-                        //TODO: figure out compass coordinate readouts here
-                    }
-                    
-                    
+                    if (!activePreds.Predator.InCombat)
+                        activePreds.Predator.Out.SendMessage($"Your prey is within sight.",
+                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                    if (!activePreds.Prey.InCombat)
+                        activePreds.Prey.Out.SendMessage($"Your senses tingle. A hunter is near.",
+                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                }
+                else
+                {
+                    //activePreds.Predator.Out.SendMessage($"Your prey is within sight.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                    //TODO: figure out compass coordinate readouts here
                 }
             }
         }
