@@ -38,6 +38,7 @@ public class ConquestManager
     public eRealm ActiveConquestRealm = (eRealm)Util.Random(1, 3);
 
     private HashSet<GamePlayer> ContributedPlayers = new HashSet<GamePlayer>();
+    private HashSet<GamePlayer> ActiveDefenders = new HashSet<GamePlayer>();
 
     public int SumOfContributions
     {
@@ -177,31 +178,63 @@ public class ConquestManager
         ActiveHiberniaObjective = null;
         ActiveMidgardObjective = null;
     }
-
-    public void AddContributors(List<GamePlayer> contributors)
-    {
-        ContributedPlayers ??= new HashSet<GamePlayer>();
-        foreach (var player in contributors)
-        {
-            ContributedPlayers.Add(player);
-            Console.WriteLine($"Player {player.Name} contributed!");
-        }
-    }
-
+    
     public void ResetConquestWindow()
     {
         LastConquestWindowStart = GameLoop.GameLoopTime;
         ResetContributors();
     }
 
+    public void AddContributor(GamePlayer player)
+    {
+        ContributedPlayers.Add(player);
+        Console.WriteLine($"Player {player.Name} contributed!");
+    }
+
+    public void AddContributors(List<GamePlayer> contributors)
+    {
+        ContributedPlayers ??= new HashSet<GamePlayer>();
+        foreach (var player in contributors)
+        {
+           AddContributor(player);
+        }
+    }
+
     private void ResetContributors()
     {
         ContributedPlayers?.Clear();
+        ActiveDefenders?.Clear();
     }
 
     public List<GamePlayer> GetContributors()
     {
         return ContributedPlayers.ToList();
+    }
+    
+    public void AddDefenders(List<GamePlayer> contributors)
+    {
+        ActiveDefenders ??= new HashSet<GamePlayer>();
+        foreach (var player in contributors)
+        {
+           AddDefender(player);
+        }
+    }
+
+    public void AddDefender(GamePlayer player)
+    {
+        ActiveDefenders.Add(player);
+        AddContributor(player);
+        Console.WriteLine($"Player {player.Name} defending!");
+    }
+
+    private void ResetDefenders()
+    {
+        ActiveDefenders?.Clear();
+    }
+
+    public List<GamePlayer> GetDefenders()
+    {
+        return ActiveDefenders.ToList();
     }
 
     private void AwardContributorsForRealm(eRealm realmToAward)
@@ -212,6 +245,48 @@ public class ConquestManager
             double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(RPBase * flagMod), false);
         }
+    }
+    
+    //defenders gain 1%-5% of the RPs from all kills made by other defenders
+    public void AwardDefenders(int playerRpValue, GamePlayer source)
+    {
+        foreach (var player in ActiveDefenders.ToList())
+        {
+            if (player == source) continue; //don't double award the killer
+            
+            var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
+            if (loyalDays > 30) loyalDays = 30;
+            
+            double RPFraction = 0.05 * (loyalDays / 30.0);
+            if (RPFraction < 0.01) RPFraction = 0.01;
+            
+            player.Out.SendMessage($"You have been awarded for helping to defend your keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.GainRealmPoints((long)(playerRpValue * RPFraction), false);
+        }
+    }
+
+    public bool IsPlayerNearConquest(GamePlayer player)
+    {
+        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 7500;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
+
+    public bool IsValidDefender(GamePlayer player)
+    {
+        return player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 2000 && player.Realm == ActiveObjective.Keep.Realm;
     }
 
     private string GetStringFromRealm(eRealm realm)

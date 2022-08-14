@@ -1828,6 +1828,22 @@ namespace DOL.GS.ServerRules
 				playerBPValue = killedPlayer.BountyPointsValue;
 			long playerMoneyValue = killedPlayer.MoneyValue;
 
+			
+			//check for conquest activity
+			if (killer is GamePlayer kp)
+			{
+				if (ConquestService.ConquestManager.IsValidDefender(kp))
+				{
+					ConquestService.ConquestManager.AddDefender(kp); //add to list of active keep defenders
+					playerRPValue = (int)(playerRPValue * 1.10); //10% more RPs while defending the keep
+					ConquestService.ConquestManager.AwardDefenders(playerRPValue, kp);
+				}
+				
+				if(ConquestService.ConquestManager.IsPlayerNearConquest(kp))
+					ConquestService.ConquestManager.AddContributor(kp);
+
+			}
+
 			List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
             List<Group> groupsToAward = new List<Group>();
 			List<GamePlayer> playersToAward = new List<GamePlayer>();
