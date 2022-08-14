@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS;
 
@@ -62,7 +63,7 @@ public class SubObjective
     {
         if (CaptureSeconds > 0)
         {
-            CaptureSeconds -= 1;
+            BroadcastTimeUntilCapture(CaptureSeconds--);
             Console.WriteLine($"Decrement to {CaptureSeconds}");
         }
         else
@@ -81,8 +82,27 @@ public class SubObjective
         FlagObject.Model = GetModelIDForRealm(CapturingRealm);
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
+        BroadcastCapture();
         ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());
         Console.WriteLine($"Flag captured for realm {OwningRealm}");
+    }
+
+    private void BroadcastTimeUntilCapture(int secondsLeft)
+    {
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, false))
+        {
+            if(secondsLeft%5 == 0)
+                player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        }
+    }
+    
+    private void BroadcastCapture()
+    {
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, false))
+        {
+            player.Out.SendMessage($"Flag captured!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+        }
     }
 
     private ushort GetModelIDForRealm(eRealm realm)
