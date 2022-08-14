@@ -4,6 +4,7 @@ using System.Linq;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS;
 
@@ -17,8 +18,8 @@ public class ConquestObjective
     public long StartTick;
 
     public int TotalContribution => AlbionContribution + HiberniaContribution + MidgardContribution;
-
-    private Dictionary<GamePlayer, int> PlayerToContributionDict;
+    
+    private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
 
     public SubObjective ObjectiveOne;
     public SubObjective ObjectiveTwo;
@@ -30,7 +31,6 @@ public class ConquestObjective
     public ConquestObjective(AbstractGameKeep keep)
     {
         Keep = keep;
-        PlayerToContributionDict = new Dictionary<GamePlayer, int>();
         ResetContribution();
     }
 
@@ -267,7 +267,6 @@ public class ConquestObjective
 
     public void ConquestCapture()
     {
-        
         //TODO: make a capture reward here
         ResetObjective();
     }
@@ -289,33 +288,24 @@ public class ConquestObjective
 
     private void AwardContributors()
     {
-        //TODO: Redo the award algo
-        /*
-        ConquestManager conqMan = ConquestService.ConquestManager;
-        foreach (var player in PlayerToContributionDict.Keys.Where(x => PlayerToContributionDict[x] > 0))
+        foreach (GamePlayer player in ConquestService.ConquestManager.GetContributors())
         {
-            switch (player.Realm)
-            {
-                case eRealm.Albion:
-                    int albaward = (int)Math.Round(AlbionContribution * (PlayerToContributionDict[player] / (double) AlbionContribution));
-                    if (albaward > SubTickMaxReward) albaward = SubTickMaxReward;
-                    if (conqMan.AlbStreak > 0) albaward *= conqMan.AlbStreak;
-                    player.GainRealmPoints(albaward, false, true);
-                    break;
-                case eRealm.Hibernia:
-                    int hibaward = (int)Math.Round(HiberniaContribution * (PlayerToContributionDict[player] / (double) HiberniaContribution));
-                    if (hibaward > SubTickMaxReward) hibaward = SubTickMaxReward;
-                    if (conqMan.HibStreak > 0) hibaward *= conqMan.HibStreak;
-                    player.GainRealmPoints(hibaward, false, true);
-                    break;
-                case eRealm.Midgard:
-                    int midaward = (int)Math.Round(MidgardContribution * (PlayerToContributionDict[player] / (double) MidgardContribution));
-                    if (midaward > SubTickMaxReward) midaward = SubTickMaxReward;
-                    if (conqMan.MidStreak > 0) midaward *= conqMan.MidStreak;
-                    player.GainRealmPoints(midaward, false, true);
-                    break;
-            }
-        }*/
+            Console.WriteLine($"Awarding {_realmPointTickAward} rps to player {player.Name}");
+            player.Out.SendMessage($"The realm thanks you for your efforts in the conquest.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            int RPBase = _realmPointTickAward;
+            double flagMod = 1 + 0.25 * GetNumFlagsOwnedByRealm(player.Realm);
+            player.GainRealmPoints((long)(_realmPointTickAward * flagMod), false);
+        }
+    }
+
+    private int GetNumFlagsOwnedByRealm(eRealm realm)
+    {
+        int output = 0;
+        if (ObjectiveOne.OwningRealm == realm) output++;
+        if (ObjectiveTwo.OwningRealm == realm) output++;
+        if (ObjectiveThree.OwningRealm == realm) output++;
+        if (ObjectiveFour.OwningRealm == realm) output++;
+        return output;
     }
 
     public void CheckNearbyPlayers()
@@ -326,22 +316,8 @@ public class ConquestObjective
         ObjectiveFour?.CheckNearbyPlayers();
     }
 
-    public List<GamePlayer> GetContributingPlayers()
-    {
-        return PlayerToContributionDict.Keys.ToList();
-    }
-
-    public int GetPlayerContributionValue(GamePlayer player)
-    {
-        if (!PlayerToContributionDict.ContainsKey(player))
-            return 0;
-        
-        return PlayerToContributionDict[player];
-    }
-
     private void ResetContribution()
     {
-        PlayerToContributionDict.Clear();
         AlbionContribution = 0;
         HiberniaContribution = 0;
         MidgardContribution = 0;
