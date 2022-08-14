@@ -373,6 +373,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 			{
 				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Weekly Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				m_questPlayer.GainRealmPoints(reward, false);
+				m_questPlayer.Out.SendUpdatePlayer();
 			}
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
