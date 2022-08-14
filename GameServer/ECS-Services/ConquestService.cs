@@ -48,7 +48,7 @@ public class ConquestService
             ConquestManager.ActiveObjective.DoPeriodicReward(); //award anyone who has participated so far
 
         if (ConquestManager.LastConquestWindowStart + subCycle < GameLoop.GameLoopTime)
-            ConquestManager.ResetConquestWindow(); //clear users in case of 
+            ConquestManager.ResetConquestWindow(); //clear participants of conquest + predator
         
         ConquestManager.ActiveObjective.CheckNearbyPlayers();
         
