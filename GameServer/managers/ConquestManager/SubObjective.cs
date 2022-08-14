@@ -49,7 +49,6 @@ public class SubObjective
             CapturingRealm = capturingRealm;
             CaptureTimer = new ECSGameTimer(FlagObject, CaptureCallback);
             CaptureTimer.Start(1000);
-            Console.WriteLine($"Start timer");
         }
     }
 
@@ -57,7 +56,6 @@ public class SubObjective
     {
         CaptureTimer?.Stop();
         CaptureTimer = null;
-        Console.WriteLine($"Stop timer");
     }
     
     private int CaptureCallback(ECSGameTimer timer)
@@ -65,7 +63,6 @@ public class SubObjective
         if (CaptureSeconds > 0)
         {
             BroadcastTimeUntilCapture(CaptureSeconds--);
-            Console.WriteLine($"Decrement to {CaptureSeconds}");
         }
         else
         {
@@ -85,7 +82,6 @@ public class SubObjective
         CaptureTimer = null;
         BroadcastCapture();
         ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());
-        Console.WriteLine($"Flag captured for realm {OwningRealm}");
     }
 
     private void BroadcastTimeUntilCapture(int secondsLeft)

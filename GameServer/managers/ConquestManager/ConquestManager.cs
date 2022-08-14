@@ -188,7 +188,6 @@ public class ConquestManager
     public void AddContributor(GamePlayer player)
     {
         ContributedPlayers.Add(player);
-        Console.WriteLine($"Player {player.Name} contributed!");
     }
 
     public void AddContributors(List<GamePlayer> contributors)
@@ -224,7 +223,6 @@ public class ConquestManager
     {
         ActiveDefenders.Add(player);
         AddContributor(player);
-        Console.WriteLine($"Player {player.Name} defending!");
     }
 
     private void ResetDefenders()
@@ -353,6 +351,8 @@ public class ConquestManager
 
         if ((int) ActiveConquestRealm < 1 || (int) ActiveConquestRealm > 3)
             ActiveConquestRealm = (eRealm)Util.Random(1, 3);
+        
+        PredatorManager.PlayerKillTallyDict.Clear();
         
         StartConquest();
     }
@@ -582,7 +582,6 @@ public class ConquestManager
                  //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
 
                  var killers = PredatorManager.GetTopKillers();
-                 Console.WriteLine($"killers: {killers}");
                  var topNum = killers.Count;
                  if (topNum > 5) topNum = 5;
                  if (topNum > 0)
