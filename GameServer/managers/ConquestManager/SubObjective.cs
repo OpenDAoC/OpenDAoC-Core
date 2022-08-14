@@ -105,7 +105,6 @@ public class SubObjective
     {
         Parallel.ForEach(FlagObject.GetPlayersInRadius(750, false).OfType<GamePlayer>(), player =>
         {
-            player.Out.SendMessage($"Flag captured!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
             switch (player.Realm)
             {
                 case eRealm.Albion:
@@ -118,6 +117,11 @@ public class SubObjective
                     player.Out.SendSoundEffect(2595, 0, 0, 0, 0, 0);
                     break;
             }
+        });
+        
+        Parallel.ForEach(FlagObject.GetPlayersInRadius(25000, false).OfType<GamePlayer>(), player =>
+        {
+            player.Out.SendMessage($"A flag has been captured!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
         });
     }
     

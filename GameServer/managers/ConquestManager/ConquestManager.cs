@@ -584,7 +584,7 @@ public class ConquestManager
                  var killers = PredatorManager.GetTopKillers();
                  var topNum = killers.Count;
                  if (topNum > 5) topNum = 5;
-                 temp.Add("Predator Leaderboard:\n");
+                 temp.Add("Predator Leaderboard:");
                  if (topNum > 0)
                  {
                      var topKills = killers.OrderByDescending(x => x.Value);
@@ -601,7 +601,7 @@ public class ConquestManager
                  {
                      temp.Add($"--- No prey has yet been killed ---");
                  }
-                 temp.Add($"--- Join the hunt with /predator join ---");
+                 temp.Add($"--- Join the hunt with /predator ---");
         
         temp.Add("");
 
