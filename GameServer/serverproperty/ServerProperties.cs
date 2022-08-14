@@ -1635,7 +1635,7 @@ namespace DOL.GS.ServerProperties
 		/// The value of Beetle RvR Quest realmpoints reward
 		/// </summary>
 		[ServerProperty("quest", "beetle_rvr_reward", "Beetle Quest realmpoints reward", 0)]
-		public static int Beetle_RVR_REWARD;
+		public static int BEETLE_RVR_REWARD;
 		#endregion
 		
 		#region KEEPS
