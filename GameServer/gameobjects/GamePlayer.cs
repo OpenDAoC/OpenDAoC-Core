@@ -14544,7 +14544,7 @@ namespace DOL.GS
 
             if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
             {
-                range += 350;
+                range += 275;
             }
 
             // Mastery of Stealth Bonus
