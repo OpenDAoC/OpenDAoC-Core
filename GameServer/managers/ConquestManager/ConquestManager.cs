@@ -582,14 +582,19 @@ public class ConquestManager
                  //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
 
                  var killers = PredatorManager.GetTopKillers();
-                 var topNum = killers?.Count;
+                 Console.WriteLine($"killers: {killers}");
+                 var topNum = killers.Count;
                  if (topNum > 5) topNum = 5;
                  if (topNum > 0)
                  {
+                     var topKills = killers.OrderByDescending(x => x.Value);
+                     var enumer = topKills.GetEnumerator();
+                     int output = 0;
                      temp.Add("Top Predators:\n");
-                     for (int i = 0; i < topNum; i++)
+                     while(enumer.MoveNext() && output < topNum)
                      {
-                         temp.Add($"{i+1} | {killers[i]}");
+                         output++; 
+                         temp.Add($"{output} | {enumer.Current.Key.Name} | {enumer.Current.Value} kills");
                      }
                  }
         
