@@ -143,6 +143,7 @@ public class SubObjective
        // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
         foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, true))
         {
+            if (!player.IsAlive) continue;
            //Console.WriteLine($"Player near flag: {player.Name}");
             if (playersOfRealmDict.ContainsKey(player.Realm))
             {
@@ -158,7 +159,7 @@ public class SubObjective
         {
             StopCaptureTimer();
         }
-        else if (playersOfRealmDict.Keys.Count > 0 && playersOfRealmDict.First().Key != OwningRealm)
+        else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
         }
