@@ -163,6 +163,11 @@ public class SubObjective
             StartCaptureTimer(playersOfRealmDict.First().Key);
         }
     }
+    
+    public int GetNearbyPlayerCount()
+    {
+        return FlagObject.GetPlayersInRadiusCount(750);
+    }
 
     public String GetOwnerRealmName()
     {
