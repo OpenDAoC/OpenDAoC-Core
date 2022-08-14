@@ -81,7 +81,14 @@ public class SubObjective
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
         BroadcastCapture();
-        ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(player => player.Realm == CapturingRealm).ToList());
+        var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>()
+            .Where(player => player.Realm == CapturingRealm).ToList();
+        ConquestService.ConquestManager.AddContributors(nearbyPlayers);
+
+        foreach (var player in nearbyPlayers)
+        {
+            player.GainRealmPoints(50, false);
+        }
     }
 
     private void BroadcastTimeUntilCapture(int secondsLeft)
