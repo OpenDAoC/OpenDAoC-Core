@@ -559,9 +559,9 @@ public class PredatorManager
         //TryFillEmptyPrey();
     }
 
-    public static List<GamePlayer> GetTopKillers()
+    public static Dictionary<GamePlayer, int> GetTopKillers()
     {
-        return (from entry in PlayerKillTallyDict orderby entry.Value select entry.Key) as List<GamePlayer>;
+        return PlayerKillTallyDict;
         
     }
 

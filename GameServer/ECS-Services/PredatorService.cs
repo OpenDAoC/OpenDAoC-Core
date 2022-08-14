@@ -54,7 +54,7 @@ public class PredatorService
                 if (tick - _lastMessage > _messageBroadcastInterval)
                 {
                     _lastMessage = tick;
-                    if (activePreds.Predator?.GetDistance(activePreds?.Prey) <= WorldMgr.VISIBILITY_DISTANCE)
+                    if (activePreds.Predator != null && activePreds.Prey != null && activePreds.Predator.GetDistance(activePreds.Prey) <= WorldMgr.VISIBILITY_DISTANCE)
                     {
                         if(!activePreds.Predator.InCombat)
                             activePreds.Predator.Out.SendMessage($"Your prey is within sight.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
