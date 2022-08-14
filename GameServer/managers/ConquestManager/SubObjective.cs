@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.Keeps;
@@ -99,12 +100,24 @@ public class SubObjective
     
     private void BroadcastCapture()
     {
-        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, false))
+        Parallel.ForEach(FlagObject.GetPlayersInRadius(750, false).OfType<GamePlayer>(), player =>
         {
             player.Out.SendMessage($"Flag captured!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-        }
+            switch (player.Realm)
+            {
+                case eRealm.Albion:
+                    player.Out.SendSoundEffect(2594, 0, 0, 0, 0, 0);
+                    break;
+                case eRealm.Midgard:
+                    player.Out.SendSoundEffect(2596, 0, 0, 0, 0, 0);
+                    break;
+                case eRealm.Hibernia:
+                    player.Out.SendSoundEffect(2595, 0, 0, 0, 0, 0);
+                    break;
+            }
+        });
     }
-
+    
     private ushort GetModelIDForRealm(eRealm realm)
     {
         ushort modelID = 0;
