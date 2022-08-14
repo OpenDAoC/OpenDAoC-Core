@@ -283,6 +283,25 @@ public class ConquestManager
 
         return nearby;
     }
+    
+    public bool IsPlayerInConquestZone(GamePlayer player)
+    {
+        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 25000;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
 
     public bool IsValidDefender(GamePlayer player)
     {
@@ -549,9 +568,6 @@ public class ConquestManager
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
         temp.Add("");
-        
-
-        temp.Add("");
         temp.Add("Conquest Details\n");
         temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");
         temp.Add(
@@ -564,6 +580,20 @@ public class ConquestManager
         temp.Add("");
         //temp.Add($"Time Until Subtask Rollover: {TimeSpan.FromMilliseconds(tasktime).Minutes}m " +
                  //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
+
+                 var killers = PredatorManager.GetTopKillers();
+                 var topNum = killers?.Count;
+                 if (topNum > 5) topNum = 5;
+                 if (topNum > 0)
+                 {
+                     temp.Add("Top Predators:\n");
+                     for (int i = 0; i < topNum; i++)
+                     {
+                         temp.Add($"{i+1} | {killers[i]}");
+                     }
+                 }
+        
+        temp.Add("");
 
         return temp;
     }
