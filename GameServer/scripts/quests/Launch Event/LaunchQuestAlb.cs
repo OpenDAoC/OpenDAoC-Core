@@ -11,7 +11,7 @@ using log4net;
 
 namespace DOL.GS
 {
-	public class LaunchQuestAlb : BaseQuest
+	public class LaunchQuestAlb : Quests.BaseQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
