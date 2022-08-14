@@ -290,7 +290,7 @@ public class ConquestObjective
     {
         foreach (GamePlayer player in ConquestService.ConquestManager.GetContributors())
         {
-            Console.WriteLine($"Awarding {_realmPointTickAward} rps to player {player.Name}");
+            if (player.CurrentRegion != Keep.CurrentRegion) continue;
             player.Out.SendMessage($"The realm thanks you for your efforts in the conquest.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             int RPBase = _realmPointTickAward;
             double flagMod = 1 + 0.25 * GetNumFlagsOwnedByRealm(player.Realm);
