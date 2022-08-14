@@ -294,11 +294,11 @@ public class ConquestObjective
             player.Out.SendMessage($"The realm thanks you for your efforts in the conquest.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             int RPBase = _realmPointTickAward;
             double flagMod = 1 + 0.25 * GetNumFlagsOwnedByRealm(player.Realm);
-            player.GainRealmPoints((long)(_realmPointTickAward * flagMod), false);
+            player.GainRealmPoints((long)(RPBase * flagMod), false);
         }
     }
 
-    private int GetNumFlagsOwnedByRealm(eRealm realm)
+    public int GetNumFlagsOwnedByRealm(eRealm realm)
     {
         int output = 0;
         if (ObjectiveOne.OwningRealm == realm) output++;

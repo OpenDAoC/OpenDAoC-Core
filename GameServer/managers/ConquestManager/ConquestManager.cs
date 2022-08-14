@@ -32,6 +32,8 @@ public class ConquestManager
     public long LastConquestStartTime;
     public long LastConquestStopTime;
     public long LastConquestWindowStart;
+    
+    private int _captureAward = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
 
     public eRealm ActiveConquestRealm = (eRealm)Util.Random(1, 3);
 
@@ -204,44 +206,12 @@ public class ConquestManager
 
     private void AwardContributorsForRealm(eRealm realmToAward)
     {
-        
-        
-        //TODO: rework the reward algorithm
-        /*
-        foreach (var conquestObjective in GetActiveObjectives)
+        foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            var contributingPlayers = conquestObjective.GetContributingPlayers().Where(x => x.Realm == realmToAward);
-            foreach (var contributingPlayer in contributingPlayers)
-            {
-                //if player is of the correct realm, award them their realm's portion of the overall reward
-                if (contributingPlayer.Realm == realmToAward)
-                {
-                    int realmContribution = 0;
-                    if (realmToAward == eRealm.Hibernia)
-                        realmContribution = HiberniaContribution;
-                    if (realmToAward == eRealm.Albion)
-                        realmContribution = AlbionContribution;
-                    if (realmToAward == eRealm.Midgard)
-                        realmContribution = MidgardContribution;
-
-                    int totalContributions = SumOfContributions > 0 ? SumOfContributions : 1;
-                    int calculatedReward = (int) Math.Round((double)totalContributions * (realmContribution / ((double)totalContributions)), 2);
-                    calculatedReward = (int) Math.Round((double) calculatedReward/contributingPlayers.Count()); //divide reward by number of contributors
-
-                    if (calculatedReward > ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD)
-                        calculatedReward = ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD;
-
-                    if (contributingPlayer.Realm == eRealm.Hibernia && HibStreak > 0)
-                        calculatedReward += calculatedReward * (HibStreak * 10) / 100;
-                    if (contributingPlayer.Realm == eRealm.Albion && AlbStreak > 0)
-                        calculatedReward += calculatedReward * (AlbStreak * 10) / 100;
-                    if (contributingPlayer.Realm == eRealm.Midgard && MidStreak > 0)
-                        calculatedReward += calculatedReward * (MidStreak * 10) / 100;
-
-                    contributingPlayer.GainRealmPoints(calculatedReward, false, true);
-                }
-            }
-        }*/
+            int RPBase = _captureAward;
+            double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
+            player.GainRealmPoints((long)(RPBase * flagMod), false);
+        }
     }
 
     private string GetStringFromRealm(eRealm realm)
