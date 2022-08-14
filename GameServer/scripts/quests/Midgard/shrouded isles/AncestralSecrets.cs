@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -432,22 +433,36 @@ namespace DOL.GS.Quests.Hibernia
 			var quest = player.IsDoingQuest(typeof(AncestralSecrets)) as AncestralSecrets;
 
 			if (quest is not {Step: 4}) return;
-
-			if (player.Group != null)
-				if (player.Group.Leader != player)
-					return;
 			
 			var existingCopy = WorldMgr.GetNPCsByName("Ancestral Keeper", eRealm.None);
 
 			if (existingCopy.Length > 0) return;
 
-			// player near ancestral keeper           
-			SendSystemMessage(player,
-				"The Crystal Breaks and The Ancestral Keeper comes alive!");
-			player.Out.SendMessage("Ancestral Keeper ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-			quest.CreateAncestralKeeper(player);
+
+			//only try to spawn him once per trigger even if multiple people enter at the same time
+			if (Monitor.TryEnter(spawnLock))
+			{
+				try
+				{
+					// player near ancestral keeper           
+					SendSystemMessage(player,
+						"The Crystal Breaks and The Ancestral Keeper comes alive!");
+					player.Out.SendMessage("Ancestral Keeper ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					quest.CreateAncestralKeeper(player);
+				}
+				finally
+				{
+					Monitor.Exit(spawnLock);
+				}
+			}
+			else
+			{
+				return;
+			}
 		}
-		
+
+		static object spawnLock = new object();
+
 		protected static void TalkToOtaYrling(DOLEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		

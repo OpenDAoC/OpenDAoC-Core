@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -385,21 +386,33 @@ public class LostStoneofArawn : BaseQuest
 
         if (quest is not {Step: 4}) return;
 
-        if (player.Group != null)
-            if (player.Group.Leader != player)
-                return;
-
         var existingCopy = WorldMgr.GetNPCsByName("Nyaegha", eRealm.None);
 
         if (existingCopy.Length > 0) return;
 
-        // player near demon           
-        SendSystemMessage(player,
-            "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
-        player.Out.SendMessage("Nyaegha ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-        quest.CreateNyaegha(player);
+        //only try to spawn him once per trigger even if multiple people enter at the same time
+        if (Monitor.TryEnter(spawnLock))
+        {
+            try
+            {
+                // player near demon           
+                SendSystemMessage(player,
+                    "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
+                player.Out.SendMessage("Nyaegha ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                quest.CreateNyaegha(player);
+            }
+            finally
+            {
+                Monitor.Exit(spawnLock);
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 
+    static object spawnLock = new object();
     private static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
     {
         //We get the player from the event arguments and check if he qualifies		
