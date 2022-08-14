@@ -584,18 +584,24 @@ public class ConquestManager
                  var killers = PredatorManager.GetTopKillers();
                  var topNum = killers.Count;
                  if (topNum > 5) topNum = 5;
+                 temp.Add("Predator Leaderboard:\n");
                  if (topNum > 0)
                  {
                      var topKills = killers.OrderByDescending(x => x.Value);
                      var enumer = topKills.GetEnumerator();
                      int output = 0;
-                     temp.Add("Top Predators:\n");
+                     
                      while(enumer.MoveNext() && output < topNum)
                      {
                          output++; 
                          temp.Add($"{output} | {enumer.Current.Key.Name} | {enumer.Current.Value} kills");
                      }
                  }
+                 else
+                 {
+                     temp.Add($"--- No prey has yet been killed ---");
+                 }
+                 temp.Add($"--- Join the hunt with /predator join ---");
         
         temp.Add("");
 
