@@ -1214,6 +1214,16 @@ namespace DOL.GS
 			return GetPlayersInRadius(false, radiusToCheck, false, false);
 		}
 
+		public int GetPlayersInRadiusCount(ushort radiusToCheck)
+		{
+		var enumerable = GetPlayersInRadius(false, radiusToCheck, false, false);
+			var count = 0;
+            foreach (var item in enumerable)
+            {
+				count++;
+            }
+			return count;
+		}
 
 		public IEnumerable GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ)
 		{

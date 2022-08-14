@@ -1057,7 +1057,6 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Celtic Spiked Mace 2h", 463, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Firbolg Scythe", 927, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Harvest Scythe", 929, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("War Scythe", 932, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff 1", 1173, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff 2", 1174, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, freebie));
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff 3", 1175, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, freebie));
@@ -1077,9 +1076,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Elven Long Bow", 921, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Elven Short Bow", 922, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, freebie));
             VendorItemList.Add(new SkinVendorItem("Firbolg Great Scythe", 926, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("Firbolg Scythe", 927, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
             VendorItemList.Add(new SkinVendorItem("Greatwar Scythe", 928, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("Harvest Scythe", 929, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, freebie));
 
             //rr2
             VendorItemList.Add(new SkinVendorItem("Celtic Falcata 2h", 639, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.LargeWeapons, (int)eDamageType.Slash, lowbie));
@@ -1098,8 +1095,8 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Celtic Hooked Spear", 642, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, lowbie));
             VendorItemList.Add(new SkinVendorItem("Elven Spear", 935, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, lowbie));
             VendorItemList.Add(new SkinVendorItem("Elven Spear", 935, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear", 936, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, lowbie));
             VendorItemList.Add(new SkinVendorItem("Lurikeen Thorn Bow", 923, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, lowbie));
             VendorItemList.Add(new SkinVendorItem("Recurve Long Bow", 925, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, lowbie));
             VendorItemList.Add(new SkinVendorItem("War Scythe", 932, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, lowbie));
@@ -1121,14 +1118,14 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff Earth", 2018, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, toageneric));
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff Fire", 2019, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, toageneric));
             VendorItemList.Add(new SkinVendorItem("Hibernian Staff Water", 2020, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Staff, (int)eDamageType.Crush, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Air", 2005, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Air", 2005, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Earth", 2006, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Earth", 2006, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Fire", 2007, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Fire", 2007, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Water", 2008, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Firebolg Spear Water", 2008, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Air", 2005, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Air", 2005, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Earth", 2006, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Earth", 2006, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Fire", 2007, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Fire", 2007, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Water", 2008, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Spear Water", 2008, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.CelticSpear, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Elven Long Bow Air", 1993, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Elven Long Bow Earth", 1994, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Elven Long Bow Fire", 1995, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, toageneric));
@@ -1316,6 +1313,14 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Firbolg Longsword 1h", 899, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Leaf Short Sword 1h", 903, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Leaf Longsword 1h", 901, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Blades, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Adze Air 1h", 2009, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Adze Earth 1h", 2010, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Adze Fire 1h", 2011, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Firbolg Adze Water 1h", 2012, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("War Adze Air 1h", 2013, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("War Adze Earth 1h", 2014, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("War Adze Fire 1h", 2015, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("War Adze Water 1h", 2016, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Piercing, (int)eDamageType.Thrust, toageneric));
 
             // mid
             //handtohand unsure of dmgtype
@@ -1371,6 +1376,15 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Troll War Axe 1h", 1025, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Kobold Hand Axe 1h", 1014, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Kobold War Axe 1h", 1018, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Air", 2029, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Air", 2029, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Earth", 2030, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Earth", 2030, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Fire", 2031, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Fire", 2031, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Water", 2032, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Axe, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Dwarven War Axe 1h Water", 2032, Slot.RIGHTHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.LeftAxe, (int)eDamageType.Slash, toageneric));
 
 
             //rr6
@@ -1663,6 +1677,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, artifact));
             VendorItemList.Add(new SkinVendorItem("Winged Helm", 2223, Slot.HELM, 0, 6, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, artifact));
 
+
             // hib
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 826, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, freebie));
             VendorItemList.Add(new SkinVendorItem("Crafted Helm 1", 438, Slot.HELM, 0, 0, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, freebie));
@@ -1889,7 +1904,7 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Breastplate", 4010, Slot.TORSO, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Breastplate", 3995, Slot.TORSO, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Breastplate", 4000, Slot.TORSO, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Breastplate", 2728, Slot.TORSO, 0, 0, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Breastplate", 2728, Slot.TORSO, 0, 0, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
             VendorItemList.Add(new SkinVendorItem("Possessed Realm Breastplate", 2735, Slot.TORSO, 0, 0, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
             VendorItemList.Add(new SkinVendorItem("Possessed Realm Breastplate", 2741, Slot.TORSO, 0, 0, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
             VendorItemList.Add(new SkinVendorItem("Possessed Realm Breastplate", 2741, Slot.TORSO, 0, 0, 0, 0, 10, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
@@ -2822,30 +2837,30 @@ public class AchievementReskinVendor : GameNPC
             //Generic
 
             //drake
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3786, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3761, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3782, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3782, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3766, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3776, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3771, Slot.HANDS, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3786, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3761, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3782, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3782, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3766, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3776, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Gloves", 3771, Slot.HANDS, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
 
             //epic boss kill
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2734, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2740, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2746, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2746, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2752, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2752, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2758, Slot.HANDS, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2734, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2740, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2746, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2746, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2752, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2752, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Gloves", 2758, Slot.HANDS, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
             // craft
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2796, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2802, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2808, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2808, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2814, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2814, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2820, Slot.HANDS, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2796, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2802, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2808, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2808, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2814, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2814, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Gloves", 2820, Slot.HANDS, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
             //orbs
             VendorItemList.Add(new SkinVendorItem("Good Shar Gloves", 3022, Slot.HANDS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
             VendorItemList.Add(new SkinVendorItem("Good Shar Gloves", 2993, Slot.HANDS, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
@@ -3062,30 +3077,30 @@ public class AchievementReskinVendor : GameNPC
             //Generic
 
             //drake
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3787, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3762, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3781, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3781, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3767, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3777, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3772, Slot.FEET, 0, 0, 5, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3787, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3762, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3781, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3781, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3767, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3777, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Boots", 3772, Slot.FEET, 0, 0, 1, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, dragonCost * 2));
 
             //epic boss kill
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2733, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2739, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2745, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2745, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2751, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2751, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2757, Slot.FEET, 0, 0, 0, 0, 5, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2733, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2739, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2745, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2745, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2751, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2751, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Possessed Realm Boots", 2757, Slot.FEET, 0, 0, 0, 0, 1, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
             // craft
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2795, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2801, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2807, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2807, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2813, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2813, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
-            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2819, Slot.FEET, 0, 0, 0, 0, 0, 2, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2795, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2801, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2807, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2807, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2813, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2813, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, festive));
+            VendorItemList.Add(new SkinVendorItem("Good Realm Boots", 2819, Slot.FEET, 0, 0, 0, 0, 0, 1, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, festive));
             //orbs
             VendorItemList.Add(new SkinVendorItem("Good Shar Boots", 3021, Slot.FEET, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, festive));
             VendorItemList.Add(new SkinVendorItem("Good Shar Boots", 2992, Slot.FEET, 0, 0, 0, 100000, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, festive));
