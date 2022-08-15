@@ -239,9 +239,10 @@ public class ConquestManager
     {
         foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            int RPBase = _captureAward;
+            int awardBase = _captureAward;
             double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
-            player.GainRealmPoints((long)(RPBase * flagMod), false);
+            player.GainRealmPoints((long)(awardBase/2 * flagMod), false);
+            AtlasROGManager.GenerateOrbAmount(player, (int)(awardBase * flagMod));
         }
     }
     
