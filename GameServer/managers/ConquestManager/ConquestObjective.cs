@@ -322,4 +322,21 @@ public class ConquestObjective
         HiberniaContribution = 0;
         MidgardContribution = 0;
     }
+    
+    public SubObjective GetObjective(int objectiveNumber)
+    {
+        switch (objectiveNumber)
+        {
+            case 1:
+                return ObjectiveOne;
+            case 2:
+                return ObjectiveTwo;
+            case 3:
+                return ObjectiveThree;
+            case 4:
+                return ObjectiveFour;
+        }
+
+        return null;
+    }
 }
