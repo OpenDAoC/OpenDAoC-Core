@@ -1608,7 +1608,7 @@ namespace DOL.GS.ServerProperties
 		public static ushort FLAG_CAPTURE_RADIUS;
 		
 		[ServerProperty("conquest", "flag_capture_time", "How long does it take to capture a flag?", 20)]
-		public static ushort FLAG_CAPTURE_TIME;
+		public static int FLAG_CAPTURE_TIME;
 		
 		[ServerProperty("conquest", "subtick_rp_award", "How many RPs awarded for a participation tick?", 200)]
 		public static int SUBTICK_RP_AWARD;

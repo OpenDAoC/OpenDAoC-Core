@@ -13,11 +13,11 @@ namespace DOL.GS;
 public class SubObjective
 {
     private ushort FlagCaptureRadius = ServerProperties.Properties.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
-    private ushort FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
+    private static int FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
     
     public GameStaticItemTimed FlagObject;
     private ECSGameTimer CaptureTimer = null;
-    private int CaptureSeconds = 0;
+    private int CaptureSeconds = FlagCaptureTime;
 
     private eRealm CapturingRealm;
     public eRealm OwningRealm;
@@ -47,6 +47,7 @@ public class SubObjective
         if (CaptureTimer == null)
         {
             CaptureSeconds = FlagCaptureTime;
+            Console.WriteLine($"Flag Cap Time: {FlagCaptureTime} Seconds {CaptureSeconds}");
             CapturingRealm = capturingRealm;
             CaptureTimer = new ECSGameTimer(FlagObject, CaptureCallback);
             CaptureTimer.Start(1000);
