@@ -165,8 +165,8 @@ public class ConquestObjective
             case "bledmeer faste":
                 flagLocs.Add("X:42361 Y:11658 | Hibernia Milegate"); 
                 flagLocs.Add("X:39243 Y:57577 | Albion Milegate"); 
-                flagLocs.Add("X:59073 Y:23499 | Near Bledmeer"); 
-                flagLocs.Add("X:46228 Y:27925 | Crossroads"); 
+                flagLocs.Add("X:59073 Y:23499 | Giant Overlook"); 
+                flagLocs.Add("X:46228 Y:27925 | Hilltop Watch"); 
                 break;
             case "hlidskialf faste":
             case "nottmoor faste":
@@ -242,7 +242,7 @@ public class ConquestObjective
             case "caer hurbury":
                 flagLocs.Add("X:61721 Y:58185 | Pennine Border"); 
                 flagLocs.Add("X:58722 Y:17379 | Cyclops City"); 
-                flagLocs.Add("X:31601 Y:32124 | Mid-Zone Keep"); 
+                flagLocs.Add("X:31601 Y:32124 | Mid-Zone Tower"); 
                 flagLocs.Add("X:25124 Y:17961 | Myrddin Approach"); 
                 break;
             default:

@@ -568,7 +568,7 @@ public class ConquestManager
         if (ActiveObjective.ActiveFlags)
         {
             var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
-            temp.Add($"Capture Points | /faceflag [ 1 | 2 | 3 | 4 ]");
+            temp.Add($"Capture Points | /faceflag [1 | 2 | 3 | 4]");
             temp.Add($"Owner | Nearby |   /loc   | Description");
             temp.Add($"1 | {ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {ActiveObjective.ObjectiveOne.GetNearbyPlayerCount()} | {locs[0]}");
             temp.Add($"2 | {ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {ActiveObjective.ObjectiveTwo.GetNearbyPlayerCount()} | {locs[1]}");
