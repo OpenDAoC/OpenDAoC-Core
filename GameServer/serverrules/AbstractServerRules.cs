@@ -1824,7 +1824,6 @@ namespace DOL.GS.ServerRules
 			if (!BG)
 				playerBPValue = killedPlayer.BountyPointsValue;
 			long playerMoneyValue = killedPlayer.MoneyValue;
-
 			
 			//check for conquest activity
 			if (killer is GamePlayer kp)
@@ -1835,10 +1834,6 @@ namespace DOL.GS.ServerRules
 					playerRPValue = (int)(playerRPValue * 1.10); //10% more RPs while defending the keep
 					ConquestService.ConquestManager.AwardDefenders(playerRPValue, kp);
 				}
-				
-				if(ConquestService.ConquestManager.IsPlayerNearConquest(kp))
-					ConquestService.ConquestManager.AddContributor(kp);
-
 			}
 
 			List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
@@ -1861,6 +1856,13 @@ namespace DOL.GS.ServerRules
 				 */
 				//if (!living.Alive) continue;
 				if (!living.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
+				
+				//check for conquest activity
+				if (living is GamePlayer lp)
+				{
+					if(ConquestService.ConquestManager.IsPlayerNearConquest(lp))
+						ConquestService.ConquestManager.AddContributor(lp);
+				}
 
 
 				double damagePercent = (float)de.Value / totalDamage;
