@@ -30,7 +30,7 @@ public class ConquestService
 
         long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
         long tallyCycle = ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
-        long subCycle = fullCycle / 3;
+        long subCycle = fullCycle / 6;
 
         var ActiveObjective = ConquestManager.ActiveObjective;
 
