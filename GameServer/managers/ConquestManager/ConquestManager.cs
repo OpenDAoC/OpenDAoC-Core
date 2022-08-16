@@ -581,10 +581,10 @@ public class ConquestManager
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
         temp.Add("");
-        temp.Add("Conquest Details\n");
+        temp.Add("Conquest Details:");
         temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");
         temp.Add(
-            "Capture the keep objective to gain a large immediate realm point reward, or defend the keep to earn a 10% bonus to RP gains as well as increased periodic rewards.");
+            "Capture the keep objective to gain an immediate orb and RP reward, or defend the keep to earn a 10% bonus to RP gains as well as increased periodic rewards.");
         /*
         temp.Add("Killing players within the area of any conquest target will contribute towards the objective. Every 5 minutes, the global contribution will be tallied and updated.\n");
         temp.Add("The conquest target will change if any of the objectives are captured, or if the conquest time expires. " +
