@@ -116,31 +116,31 @@ public class ConquestObjective
             
             //albion
             case "caer benowyc":
-                flagLocs.Add(new Point3D(608127, 320648, 3864)); //near hmg
-                flagLocs.Add(new Point3D(653422, 322966, 4335)); //near mmg
-                flagLocs.Add(new Point3D(645242, 344503, 4325)); //near the keep
-                flagLocs.Add(new Point3D(624610, 345270, 4290)); //southern crossroads
+                flagLocs.Add(new Point3D(604900, 332807, 4200)); //near hmg
+                flagLocs.Add(new Point3D(658249, 334508, 4312)); //near mmg
+                flagLocs.Add(new Point3D(635787, 330176, 5194)); //hilltop tower
+                flagLocs.Add(new Point3D(623330, 338609, 4127)); //behind taco bell
                 break;
             case "caer sursbrooke":
             case "caer erasleigh":
             case "caer berkstead":
             case "caer boldiam":
-                flagLocs.Add(new Point3D(613343, 403062, 6376)); //near boldiam
-                flagLocs.Add(new Point3D(586969, 412557, 909)); //near forest sauvage
-                flagLocs.Add(new Point3D(580120, 373885, 5800)); //near caer surs
-                flagLocs.Add(new Point3D(603369, 364277, 6568)); //near hadrian's
+                flagLocs.Add(new Point3D(571890, 372990, 4648)); //northwestern hill
+                flagLocs.Add(new Point3D(603833, 364123, 6568)); //boar plateau
+                flagLocs.Add(new Point3D(614293, 397396, 4312)); //boldiam underlook
+                flagLocs.Add(new Point3D(593066, 410307, 4984)); //southern border
                 break;
             case "caer renaris":
-                flagLocs.Add(new Point3D(615913, 470492, 2974)); //SE forest
-                flagLocs.Add(new Point3D(616462, 439163, 2799)); //NE river-side
-                flagLocs.Add(new Point3D(581617, 440066, 4887)); //hill near Renaris
-                flagLocs.Add(new Point3D(579472, 460846, 2885)); //SW near lake
+                flagLocs.Add(new Point3D(616897, 469399, 3066)); //SE forest
+                flagLocs.Add(new Point3D(615302, 432450, 2970)); //NE river-side
+                flagLocs.Add(new Point3D(574704, 443837, 3004)); //south of ren
+                flagLocs.Add(new Point3D(573076, 463390, 2970)); //SW near lake
                 break;
             case "caer hurbury":
                 flagLocs.Add(new Point3D(561438, 361288, 2896)); //pennine border
-                flagLocs.Add(new Point3D(549344, 344804, 4336)); //near hurbury
-                flagLocs.Add(new Point3D(518983, 352767, 4623)); //near snowdonia keep
-                flagLocs.Add(new Point3D(513218, 319972, 6928)); //myrddin approach
+                flagLocs.Add(new Point3D(558434, 320483, 2810)); //cyclops city
+                flagLocs.Add(new Point3D(531313, 335228, 7095)); //mid-zone tower
+                flagLocs.Add(new Point3D(524836, 321065, 6928)); //myrddin approach
                 break;
             default:
                 flagLocs.Add(new Point3D(0, 0, 0)); //near hmg
@@ -219,31 +219,31 @@ public class ConquestObjective
                 break;
             //albion
             case "caer benowyc":
-                flagLocs.Add("X:10108 Y:33927 | Hibernia Milegate"); //near hmg
-                flagLocs.Add("X:55408 Y:36250 | Midgard Milegate"); //near mmg
-                flagLocs.Add("X:47227 Y:57780 | Near Benowyc"); //near the keep
-                flagLocs.Add("X:26591 Y:58548 | Southern Crossroads"); //southern crossroads
+                flagLocs.Add("X: 6884 Y:46087 | Hibernia Milegate");
+                flagLocs.Add("X:60233 Y:47788 | Midgard Milegate"); 
+                flagLocs.Add("X:37771 Y:43456 | Hilltop Tower");
+                flagLocs.Add("X:25313 Y:51889 | Legionnaire Fortress"); 
                 break;            
             case "caer sursbrooke":
             case "caer erasleigh":
             case "caer berkstead":
             case "caer boldiam":
-                flagLocs.Add("X:48094 Y:50807 | Near Boldiam"); //near boldiam
-                flagLocs.Add("X:21724 Y:60307 | Sauvage Border"); //near forest sauvage
-                flagLocs.Add("X:14868 Y:21627 | Near Sursbrooke"); //near caer surs
-                flagLocs.Add("X:38120 Y:12023 | Hadrian's Wall Border"); //near hadrian's
+                flagLocs.Add("X: 6642 Y:20734 | Western Hill"); 
+                flagLocs.Add("X:38585 Y:11867 | Boar Plateau"); 
+                flagLocs.Add("X:49045 Y:45140 | Boldiam Underlook"); 
+                flagLocs.Add("X:27818 Y:58051 | Southern Border"); 
                 break;
             case "caer renaris":
-                flagLocs.Add("X:50670 Y:52700 | Southeast Forest"); //SE forest
-                flagLocs.Add("X:51207 Y:21373 | Northeast Riverside"); //NE river-side
-                flagLocs.Add("X:16361 Y:22258 | Near Renaris"); //hill near Renaris
-                flagLocs.Add("X:14320 Y:43064 | Southwestern Lake"); //SW near lake
+                flagLocs.Add("X:51649 Y:51607 | Southeast Forest"); 
+                flagLocs.Add("X:50054 Y:14658 | Northeast Riverside"); 
+                flagLocs.Add("X: 9456 Y:26045 | South of Renaris"); 
+                flagLocs.Add("X: 7828 Y:45598 | Southwestern Lake"); 
                 break;
             case "caer hurbury":
-                flagLocs.Add("X:61721 Y:58185 | Pennine Border"); //pennine border
-                flagLocs.Add("X:49636 Y:41704 | Near Hurbury"); //near hurbury
-                flagLocs.Add("X:19267 Y:49672 | Near Snowdonia Keep"); //near snowdonia keep
-                flagLocs.Add("X:13502 Y:16876 | Myrddin Approach"); //myrddin approach
+                flagLocs.Add("X:61721 Y:58185 | Pennine Border"); 
+                flagLocs.Add("X:58722 Y:17379 | Cyclops City"); 
+                flagLocs.Add("X:31601 Y:32124 | Mid-Zone Keep"); 
+                flagLocs.Add("X:25124 Y:17961 | Myrddin Approach"); 
                 break;
             default:
                 flagLocs.Add(""); 
