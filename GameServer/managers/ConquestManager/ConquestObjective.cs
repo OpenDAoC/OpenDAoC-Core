@@ -59,31 +59,31 @@ public class ConquestObjective
         {
             //mid
             case "bledmeer faste":
-                flagLocs.Add(new Point3D(632183, 585097, 5400)); //near hmg
-                flagLocs.Add(new Point3D(629067, 631012, 5355)); //near amg
-                flagLocs.Add(new Point3D(648889, 596948, 5511)); //near the keep
-                flagLocs.Add(new Point3D(636055, 601363, 5448)); //crossroads
+                flagLocs.Add(new Point3D(638715, 586232, 5775)); //near hmg *
+                flagLocs.Add(new Point3D(629230, 633131, 5352)); //near amg *
+                flagLocs.Add(new Point3D(653793, 622482, 7714)); //near jamtland*
+                flagLocs.Add(new Point3D(651145, 603241, 7985)); //small fort *
                 break;
             case "hlidskialf faste":
             case "nottmoor faste":
             case "blendrake faste":
             case "glenlock faste":
-                flagLocs.Add(new Point3D(674589, 659938, 4096)); //near hlidskialf
-                flagLocs.Add(new Point3D(665436, 629879, 4230)); //west of nottmoor
-                flagLocs.Add(new Point3D(701633, 622093, 3328)); //N of blendrake
-                flagLocs.Add(new Point3D(697332, 655377, 3992)); //between lakes near glenlock
-                break;
-            case "fensalir faste":
-                flagLocs.Add(new Point3D(736092, 653463, 5692)); //near fensalir
-                flagLocs.Add(new Point3D(729352, 637453, 5966)); //near jamtland
-                flagLocs.Add(new Point3D(758533, 657601, 6663)); //between svasud and fensalir
-                flagLocs.Add(new Point3D(771678, 636304, 5917)); //near mjolnir
+                flagLocs.Add(new Point3D(718166, 653303, 6374)); //near dodens 
+                flagLocs.Add(new Point3D(694299, 616589, 4897)); //northern alcove
+                flagLocs.Add(new Point3D(668904, 645171, 6930)); //western tree hill
+                flagLocs.Add(new Point3D(693936, 661756, 4050)); //south of lakes
                 break;
             case "arvakr faste":
-                flagLocs.Add(new Point3D(694026, 686674, 5704)); //near arvakr
-                flagLocs.Add(new Point3D(704865, 727127, 5704)); //near vindsaul
-                flagLocs.Add(new Point3D(680079, 716974, 5704)); //near grallarhorn lake
-                flagLocs.Add(new Point3D(669995, 682832, 5730)); //NW basin
+                flagLocs.Add(new Point3D(670138, 682754, 5728)); //northwestern valley
+                flagLocs.Add(new Point3D(708251, 690899, 8381)); //northeastern glen
+                flagLocs.Add(new Point3D(713566, 714754, 9744)); //hilltop camp
+                flagLocs.Add(new Point3D(679291, 718035, 5708)); //northern lakeside
+                break;
+            case "fensalir faste":
+                flagLocs.Add(new Point3D(727721, 657606, 5938)); //West of Fensalir
+                flagLocs.Add(new Point3D(740088, 625366, 12385)); //Northwestern Hill
+                flagLocs.Add(new Point3D(756846, 636505, 5073)); //Forest Glen
+                flagLocs.Add(new Point3D(759143, 654099, 5960)); //Inner Valley
                 break;
             //hib
             case "dun crauchon":
@@ -163,31 +163,31 @@ public class ConquestObjective
             
             //mid
             case "bledmeer faste":
-                flagLocs.Add("X:42361 Y:11658 | Hibernia Milegate"); //near hmg
-                flagLocs.Add("X:39243 Y:57577 | Albion Milegate"); //near amg
-                flagLocs.Add("X:59073 Y:23499 | Near Bledmeer"); //near the keep
-                flagLocs.Add("X:46228 Y:27925 | Crossroads"); //crossroads
+                flagLocs.Add("X:42361 Y:11658 | Hibernia Milegate"); 
+                flagLocs.Add("X:39243 Y:57577 | Albion Milegate"); 
+                flagLocs.Add("X:59073 Y:23499 | Near Bledmeer"); 
+                flagLocs.Add("X:46228 Y:27925 | Crossroads"); 
                 break;
             case "hlidskialf faste":
             case "nottmoor faste":
             case "blendrake faste":
             case "glenlock faste":
-                flagLocs.Add("X:19218 Y:53725 | Near Hlidkialf"); //near hlidskialf
-                flagLocs.Add("X:10075 Y:23669 | West of Nottmoor"); //west of nottmoor
-                flagLocs.Add("X:46273 Y:15888 | North of Blendrake"); //N of blendrake
-                flagLocs.Add("X:41965 Y:49167 | Glenlock Lakes"); //between lakes near glenlock
-                break;
-            case "fensalir faste":
-                flagLocs.Add("X:15195 Y:47258 | Near Fensalir"); //near fensalir
-                flagLocs.Add("X: 8446 Y:31242 | Jamtland Border"); //near jamtland
-                flagLocs.Add("X:37643 Y:51396 | Between Svasud and Fensalir"); //between svasud and fensalir
-                flagLocs.Add("X:50790 Y:30089 | Near Mjolnir"); //near mjolnir
+                flagLocs.Add("X:61300 Y:41900 | Near Dodens"); 
+                flagLocs.Add("X:38946 Y:10371 | Northern Alcove"); 
+                flagLocs.Add("X:11565 Y:39432 | Western Hill"); 
+                flagLocs.Add("X:38908 Y:55551 | Glenlock Lakes"); 
                 break;
             case "arvakr faste":
-                flagLocs.Add("X:38664 Y:14934 | Near Arvakr"); //near arvakr
-                flagLocs.Add("X:49506 Y:55386 | Near Vindsaul"); //near vindsaul
-                flagLocs.Add("X:24723 Y:45230 | Grallarhorn Lake"); //near grallarhorn lake
-                flagLocs.Add("X:14642 Y:11090 | Northwestern Basin"); //NW basin
+                flagLocs.Add("X:14778 Y:11000 | Northwestern Valley"); 
+                flagLocs.Add("X:52891 Y:19155 | Northeastern Glen"); 
+                flagLocs.Add("X:58206 Y:43010 | Hilltop Camp"); 
+                flagLocs.Add("X:23931 Y:46291 | Northern Lakeshore"); 
+                break;
+            case "fensalir faste":
+                flagLocs.Add("X: 6825 Y:51398 | West of Fensalir"); //near fensalir
+                flagLocs.Add("X:19192 Y:19158 | Northwestern Hill"); //northwestern hill
+                flagLocs.Add("X:35950 Y:30297 | Forest Glen"); //forest glen
+                flagLocs.Add("X:38247 Y:47891 | "); //inner valley
                 break;
             //hib
             case "dun crauchon":
