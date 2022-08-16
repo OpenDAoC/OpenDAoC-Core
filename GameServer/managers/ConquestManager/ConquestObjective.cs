@@ -87,31 +87,31 @@ public class ConquestObjective
                 break;
             //hib
             case "dun crauchon":
-                flagLocs.Add(new Point3D(447813, 341818, 3457)); //near amg
-                flagLocs.Add(new Point3D(447201, 297120, 4254)); //near mmg
-                flagLocs.Add(new Point3D(434208, 317595, 3033)); //near the keep
-                flagLocs.Add(new Point3D(432212, 345540, 2841)); //near briefine
+                flagLocs.Add(new Point3D(439958, 290374, 7457)); //clifftop overlook
+                flagLocs.Add(new Point3D(432504, 309447, 4968)); //clifftop valley
+                flagLocs.Add(new Point3D(440610, 337069, 3960)); //crossroad tower
+                flagLocs.Add(new Point3D(424956, 337286, 5808)); //hilltop fortress
                 break;
             case "dun bolg":
             case "dun nged":
             case "dun da behnn":
             case "dun crimthain":
-                flagLocs.Add(new Point3D(415444, 368974, 1686)); //bolg crossroads
-                flagLocs.Add(new Point3D(428997, 377892, 2170)); //near Evern
-                flagLocs.Add(new Point3D(420162, 399425, 4467)); //between Behn and nGed
-                flagLocs.Add(new Point3D(394135, 386115, 4574)); //western hill
+                flagLocs.Add(new Point3D(420626, 407617, 4248)); //between nged and behn
+                flagLocs.Add(new Point3D(434289, 383867, 3080)); //evern overlook
+                flagLocs.Add(new Point3D(418960, 382760, 1946)); //stone gates
+                flagLocs.Add(new Point3D(386754, 377633, 3616)); //western tower
                 break;
             case "dun ailinne":
-                flagLocs.Add(new Point3D(368445, 401162, 3976)); //basin near ailinne
-                flagLocs.Add(new Point3D(341886, 407986, 4124)); //hill near Ligen
-                flagLocs.Add(new Point3D(337035, 372939, 3131)); //west of lamfhota
-                flagLocs.Add(new Point3D(366955, 364754, 3501)); //NE of Lamfhota
+                flagLocs.Add(new Point3D(336874, 392157, 3263)); //near ligen
+                flagLocs.Add(new Point3D(336031, 372887, 3126)); //claurican fields
+                flagLocs.Add(new Point3D(377827, 406480, 6854)); //ailinne plateau
+                flagLocs.Add(new Point3D(372816, 370323, 3535)); //roadside pillar
                 break;
             case "dun scathaig":
-                flagLocs.Add(new Point3D(415093, 435971, 3608)); //front of Scathaig
-                flagLocs.Add(new Point3D(438871, 463389, 2964)); //SE corner
-                flagLocs.Add(new Point3D(404350, 452628, 2036)); //between scath and dagda
-                flagLocs.Add(new Point3D(430946, 432740, 2024)); //NE of scath
+                flagLocs.Add(new Point3D(424947, 425528, 1687)); //three huts
+                flagLocs.Add(new Point3D(444481, 461523, 3896)); //betwixt dead trees
+                flagLocs.Add(new Point3D(390131, 455845, 3727)); //western valley
+                flagLocs.Add(new Point3D(397177, 437251, 1792)); //faeghoul alley
                 break;
             
             //albion
@@ -184,38 +184,38 @@ public class ConquestObjective
                 flagLocs.Add("X:23931 Y:46291 | Northern Lakeshore"); 
                 break;
             case "fensalir faste":
-                flagLocs.Add("X: 6825 Y:51398 | West of Fensalir"); //near fensalir
-                flagLocs.Add("X:19192 Y:19158 | Northwestern Hill"); //northwestern hill
-                flagLocs.Add("X:35950 Y:30297 | Forest Glen"); //forest glen
-                flagLocs.Add("X:38247 Y:47891 | "); //inner valley
+                flagLocs.Add("X: 6825 Y:51398 | West of Fensalir"); 
+                flagLocs.Add("X:19192 Y:19158 | Northwestern Hill"); 
+                flagLocs.Add("X:35950 Y:30297 | Forest Glen"); 
+                flagLocs.Add("X:38247 Y:47891 | Inner Valley"); 
                 break;
             //hib
             case "dun crauchon":
-                flagLocs.Add("X:30020 Y:55108 | Albion Milegate"); //near amg
-                flagLocs.Add("X:29409 Y:10408 | Midgard Milegate"); //near mmg
-                flagLocs.Add("X:16413 Y:30882 | Near Crauchon"); //near the keep
-                flagLocs.Add("X:14415 Y:58827 | Near Briefine"); //near briefine
+                flagLocs.Add("X:22166 Y: 3645 | Clifftop Overlook"); 
+                flagLocs.Add("X:14712 Y:22727 | Clifftop Valley"); 
+                flagLocs.Add("X:22818 Y:50349 | Crossroad Tower"); 
+                flagLocs.Add("X: 7164 Y:50566 | Hilltop Fortress"); 
                 break;
             case "dun bolg":
             case "dun nged":
             case "dun da behnn":
             case "dun crimthain":
-                flagLocs.Add("X:30416 Y:16716 | Crossroads Near Bolg"); //bolg crossroads
-                flagLocs.Add("X:43975 Y:25618 | Near Evern"); //near Evern
-                flagLocs.Add("X:35124 Y:47180 | Between Behn and nGed"); //between Behn and nGed
-                flagLocs.Add("X: 9106 Y:33850 | Western Hill"); //western hill
+                flagLocs.Add("X:35602 Y:55361 | Between nGed and Behn"); 
+                flagLocs.Add("X:49265 Y:31611 | Evern Overlook"); 
+                flagLocs.Add("X:33936 Y:30504 | Stone Gates"); 
+                flagLocs.Add("X: 1730 Y:25377 | Western Tower"); 
                 break;
             case "dun ailinne":
-                flagLocs.Add("X:48957 Y:48906 | Basin Near Ailinne"); //basin near ailinne
-                flagLocs.Add("X:22397 Y:55729 | Hill near Ligen"); //hill near Ligen
-                flagLocs.Add("X:17549 Y:20683 | West of Lamfhota"); //west of lamfhota
-                flagLocs.Add("X:47466 Y:12502 | Northeast of Lamfhota"); //NE of Lamfhota
+                flagLocs.Add("X:16543 Y:20631 | Claurican Fields"); 
+                flagLocs.Add("X:17386 Y:39901 | Field near Ligen"); 
+                flagLocs.Add("X:58339 Y:54224 | Ailinne Plateau"); 
+                flagLocs.Add("X:53328 Y:18067 | Roadside Pillar"); 
                 break;
             case "dun scathaig":
-                flagLocs.Add("X:30065 Y:18191 | Near Scathaig"); //front of Scathaig
-                flagLocs.Add("X:53847 Y:45606 | Southeast Corner"); //SE corner
-                flagLocs.Add("X:19318 Y:34835 | Between Scathaig and Dagda"); //between scath and dagda
-                flagLocs.Add("X:45924 Y:14953 | Northeast of Scathaig"); //NE of scath
+                flagLocs.Add("X:39923 Y: 7736 | Three Huts"); 
+                flagLocs.Add("X:59457 Y:43731 | Betwixt Dead Trees"); 
+                flagLocs.Add("X: 5600 Y:24225 | Western Valley"); 
+                flagLocs.Add("X:12153 Y:19459 | Faeghoul Alley"); 
                 break;
             //albion
             case "caer benowyc":
