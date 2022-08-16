@@ -568,12 +568,12 @@ public class ConquestManager
         if (ActiveObjective.ActiveFlags)
         {
             var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
-            temp.Add($"Capture Points | /faceflag [1|2|3|4]");
+            temp.Add($"Capture Points | /faceflag [ 1 | 2 | 3 | 4 ]");
             temp.Add($"Owner | Nearby |   /loc   | Description");
-            temp.Add($"{ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {ActiveObjective.ObjectiveOne.GetNearbyPlayerCount()} | {locs[0]}");
-            temp.Add($"{ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {ActiveObjective.ObjectiveTwo.GetNearbyPlayerCount()} | {locs[1]}");
-            temp.Add($"{ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {ActiveObjective.ObjectiveThree.GetNearbyPlayerCount()} | {locs[2]}");
-            temp.Add($"{ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | {ActiveObjective.ObjectiveFour.GetNearbyPlayerCount()} | {locs[3]}");
+            temp.Add($"1 | {ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {ActiveObjective.ObjectiveOne.GetNearbyPlayerCount()} | {locs[0]}");
+            temp.Add($"2 | {ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {ActiveObjective.ObjectiveTwo.GetNearbyPlayerCount()} | {locs[1]}");
+            temp.Add($"3 | {ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {ActiveObjective.ObjectiveThree.GetNearbyPlayerCount()} | {locs[2]}");
+            temp.Add($"4 | {ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | {ActiveObjective.ObjectiveFour.GetNearbyPlayerCount()} | {locs[3]}");
         }
        
 
