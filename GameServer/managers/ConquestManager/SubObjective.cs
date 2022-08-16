@@ -14,6 +14,7 @@ public class SubObjective
 {
     private ushort FlagCaptureRadius = ServerProperties.Properties.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
     private static int FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
+    uint fullCycleTime = (uint) ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION; 
     
     public GameStaticItemTimed FlagObject;
     private ECSGameTimer CaptureTimer = null;
@@ -24,7 +25,7 @@ public class SubObjective
 
     public SubObjective(int x, int y, int z, AbstractGameKeep keep)
     {
-        FlagObject = new GameStaticItemTimed(45 * 60 * 1000);
+        FlagObject = new GameStaticItemTimed(fullCycleTime * 60 * 1000);
         FlagObject.Model = GetModelIDForRealm(keep.Realm);
         FlagObject.X = x;
         FlagObject.Y = y;
@@ -101,6 +102,9 @@ public class SubObjective
                 player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
             player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
+        
+        if(secondsLeft%5 == 0)
+            FlagObject.BroadcastUpdate();
     }
     
     private void BroadcastCapture()

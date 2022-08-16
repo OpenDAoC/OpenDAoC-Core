@@ -547,9 +547,7 @@ public class ConquestManager
         
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
-        
-        temp.Add("Objective Details:");
-        
+
         ArrayList playerCount = new ArrayList();
         playerCount = ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
             ActiveObjective.Keep.X,
