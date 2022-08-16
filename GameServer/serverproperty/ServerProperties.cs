@@ -1613,7 +1613,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("conquest", "subtick_rp_award", "How many RPs awarded for a participation tick?", 200)]
 		public static int SUBTICK_RP_AWARD;
 		
-		[ServerProperty("conquest", "conquest_capture_award", "How many RPs awarded for capturing the conquest target?", 1000)]
+		[ServerProperty("conquest", "conquest_capture_award", "How many RPs/orbs awarded for capturing the conquest target?", 1000)]
 		public static int CONQUEST_CAPTURE_AWARD;
 
 		#endregion

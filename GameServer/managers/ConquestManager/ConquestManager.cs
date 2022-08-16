@@ -40,11 +40,6 @@ public class ConquestManager
     private HashSet<GamePlayer> ContributedPlayers = new HashSet<GamePlayer>();
     private HashSet<GamePlayer> ActiveDefenders = new HashSet<GamePlayer>();
 
-    public int SumOfContributions
-    {
-        get { return AlbionContribution + HiberniaContribution + MidgardContribution; }
-    }
-
     int HiberniaContribution = 0;
     int AlbionContribution = 0;
     int MidgardContribution = 0;

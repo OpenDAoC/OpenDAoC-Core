@@ -11,14 +11,9 @@ namespace DOL.GS;
 public class ConquestObjective
 {
     public AbstractGameKeep Keep;
-    public int AlbionContribution;
-    public int MidgardContribution;
-    public int HiberniaContribution;
     public long LastRolloverTick = 0;
     public long StartTick;
 
-    public int TotalContribution => AlbionContribution + HiberniaContribution + MidgardContribution;
-    
     private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
 
     public SubObjective ObjectiveOne;
@@ -31,7 +26,6 @@ public class ConquestObjective
     public ConquestObjective(AbstractGameKeep keep)
     {
         Keep = keep;
-        ResetContribution();
     }
 
     public void StartConquest()
@@ -39,7 +33,6 @@ public class ConquestObjective
         InitializeFlags(Keep);
         StartTick = GameLoop.GameLoopTime;
         LastRolloverTick = StartTick;
-        ResetContribution();
     }
 
     private void InitializeFlags(AbstractGameKeep keep)
@@ -260,14 +253,12 @@ public class ConquestObjective
     public void DoPeriodicReward()
     {
         AwardContributors();
-        ResetContribution();
         LastRolloverTick = GameLoop.GameLoopTime;
         Console.WriteLine($"Periodic Reward for objective: {this}");
     }
 
     public void ConquestCapture()
     {
-        //TODO: make a capture reward here
         ResetObjective();
     }
 
@@ -282,8 +273,6 @@ public class ConquestObjective
         ObjectiveTwo = null;
         ObjectiveThree = null;
         ObjectiveFour = null;
-        
-        ResetContribution();
     }
 
     private void AwardContributors()
@@ -316,13 +305,6 @@ public class ConquestObjective
         ObjectiveFour?.CheckNearbyPlayers();
     }
 
-    private void ResetContribution()
-    {
-        AlbionContribution = 0;
-        HiberniaContribution = 0;
-        MidgardContribution = 0;
-    }
-    
     public SubObjective GetObjective(int objectiveNumber)
     {
         switch (objectiveNumber)
