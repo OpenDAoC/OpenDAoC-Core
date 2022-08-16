@@ -399,7 +399,7 @@ public class ConquestManager
 
     private void SetKeepForCapturedRealm(AbstractGameKeep keep)
     {
-        if (keep.Realm != keep.OriginalRealm)
+        if (keep.Realm != keep.OriginalRealm && ConquestService.IsOverHalfwayDone())
         {
             Dictionary<ConquestObjective, int> keepDict = new Dictionary<ConquestObjective, int>();
             switch (keep.OriginalRealm)

@@ -57,4 +57,10 @@ public class ConquestService
         
         Diagnostics.StopPerfCounter(ServiceName);
     }
+
+    public static bool IsOverHalfwayDone()
+    {
+        long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
+        return (ConquestManager.LastConquestStartTime + (fullCycle / 2)) < GameLoop.GameLoopTime;
+    }
 }
