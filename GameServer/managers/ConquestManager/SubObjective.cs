@@ -14,7 +14,9 @@ public class SubObjective
 {
     private ushort FlagCaptureRadius = ServerProperties.Properties.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
     private static int FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
-    uint fullCycleTime = (uint) ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION; 
+    uint fullCycleTime = (uint) ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION;
+
+    private int ObjectiveNumber = 0;
     
     public GameStaticItemTimed FlagObject;
     private ECSGameTimer CaptureTimer = null;
@@ -25,7 +27,7 @@ public class SubObjective
     private eRealm CapturingRealm;
     public eRealm OwningRealm;
 
-    public SubObjective(int x, int y, int z, AbstractGameKeep keep)
+    public SubObjective(int x, int y, int z, AbstractGameKeep keep, int objectiveNumber)
     {
         FlagObject = new GameStaticItemTimed(fullCycleTime * 60 * 1000);
         FlagObject.Model = GetModelIDForRealm(keep.Realm);
@@ -38,6 +40,8 @@ public class SubObjective
         FlagObject.AddToWorld();
 
         OwningRealm = keep.Realm;
+
+        ObjectiveNumber = objectiveNumber;
     }
 
     public void Cleanup()
@@ -52,7 +56,6 @@ public class SubObjective
         if (CaptureTimer == null)
         {
             CaptureSeconds = FlagCaptureTime;
-            Console.WriteLine($"Flag Cap Time: {FlagCaptureTime} Seconds {CaptureSeconds}");
             CapturingRealm = capturingRealm;
             CaptureTimer = new ECSGameTimer(FlagObject, CaptureCallback);
             CaptureTimer.Start(1000);
@@ -141,7 +144,14 @@ public class SubObjective
         
         Parallel.ForEach(FlagObject.GetPlayersInRadius(25000, false).OfType<GamePlayer>(), player =>
         {
-            player.Out.SendMessage($"A flag has been captured!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            if (player.Realm == CapturingRealm)
+            {
+                player.Out.SendMessage($"An ally has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);    
+            }
+            else
+            {
+                player.Out.SendMessage($"An enemy has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            }
         });
     }
     

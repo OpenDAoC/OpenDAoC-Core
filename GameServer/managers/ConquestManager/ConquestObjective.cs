@@ -38,10 +38,10 @@ public class ConquestObjective
     private void InitializeFlags(AbstractGameKeep keep)
     {
         var locs = GetFlagLocsForKeep(keep);
-        ObjectiveOne = new SubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep);
-        ObjectiveTwo = new SubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep);
-        ObjectiveThree = new SubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep);
-        ObjectiveFour = new SubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep);
+        ObjectiveOne = new SubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
+        ObjectiveTwo = new SubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep, 2);
+        ObjectiveThree = new SubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep, 3);
+        ObjectiveFour = new SubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
     }
 
     private List<Point3D> GetFlagLocsForKeep(AbstractGameKeep keep)
