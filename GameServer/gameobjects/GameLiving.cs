@@ -4220,6 +4220,24 @@ namespace DOL.GS
 			if (this is GamePlayer player)
 				player.Stealth(false);
 
+			//Cancel SpeedOfTheRealm (Hastener Speed) 
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+			{
+				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
+
+				for (int i = 0; i < effects.Count; i++)
+				{
+					if (effects[i] is null)
+						continue;
+
+					var spellEffect = effects[i] as ECSGameSpellEffect;
+					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
+					{
+						EffectService.RequestImmediateCancelEffect(effects[i]);
+					}
+				}
+            }
+
 			if(ad != null && ad.Damage > 0)
 				TryCancelMovementSpeedBuffs(true);
 
@@ -4526,6 +4544,25 @@ namespace DOL.GS
                 return false;
 
 			bool effectRemoved = false;
+
+			//Cancel SpeedOfTheRealm (Hastener Speed) 
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+			{
+				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
+
+				for (int i = 0; i < effects.Count; i++)
+				{
+					if (effects[i] is null)
+						continue;
+
+					var spellEffect = effects[i] as ECSGameSpellEffect;
+					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
+					{
+						EffectService.RequestImmediateCancelEffect(effects[i]);
+					}
+				}
+            }
+
             // Cancel movement speed buffs when attacked only if damaged
 			if(ad != null & ad.Damage > 0)
 				effectRemoved = TryCancelMovementSpeedBuffs(false);
