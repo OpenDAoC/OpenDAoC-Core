@@ -128,7 +128,7 @@ public class PredatorManager
 
         if (!ConquestService.ConquestManager.IsPlayerInConquestZone(player))
         {
-            player.Out.SendMessage($"You must hunt within the active conquest zone. Use the command again when within 30k units of the conquest target.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"You must hunt within the active conquest zone. Use the command again when within 50,000 units of the conquest target.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
             return;
         }
         

@@ -300,7 +300,7 @@ public class ConquestManager
     
     public bool IsPlayerInConquestZone(GamePlayer player)
     {
-        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 30000;
+        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 50000;
 
         if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
             nearby = true;
