@@ -603,7 +603,7 @@ public class PredatorManager
             long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
             if (secondsleft > 0)
             {
-                if (secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)
+                if (secondsleft == 120 || secondsleft == 90 || secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)
                 {
                     pl.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {secondsleft} seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
