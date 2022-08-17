@@ -579,7 +579,8 @@ public class ConquestManager
         
         long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
         temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
-        temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
+        temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
         temp.Add("");
         temp.Add("Conquest Details:");
