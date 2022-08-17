@@ -554,7 +554,7 @@ public class ConquestManager
             ActiveObjective.Keep.X,
             ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, 10000, playerCount, true);
 
-        temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()}");
+        temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()} - {ActiveObjective.Keep.CurrentZone.Description}");
         temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");
         temp.Add($"Players Nearby: {playerCount.Count}");
         temp.Add("");
