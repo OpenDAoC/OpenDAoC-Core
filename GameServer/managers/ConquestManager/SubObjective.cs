@@ -180,7 +180,7 @@ public class SubObjective
        // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
         foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, true))
         {
-            if (!player.IsAlive) continue;
+            if (!player.IsAlive || player.IsStealthed) continue;
            //Console.WriteLine($"Player near flag: {player.Name}");
             if (playersOfRealmDict.ContainsKey(player.Realm))
             {
