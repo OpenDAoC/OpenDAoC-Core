@@ -1603,6 +1603,18 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("pvp", "pvp_realm_timer_minutes", "# of minutes an account must wait to change realms after PvP combat. 0 disables the timer", 0)]
 		public static int PVP_REALM_TIMER_MINUTES; 
+		
+		[ServerProperty("conquest", "flag_capture_radius", "How far away can players capture an objective?", 750)]
+		public static ushort FLAG_CAPTURE_RADIUS;
+		
+		[ServerProperty("conquest", "flag_capture_time", "How long does it take to capture a flag?", 20)]
+		public static int FLAG_CAPTURE_TIME;
+		
+		[ServerProperty("conquest", "subtick_rp_award", "How many RPs awarded for a participation tick?", 200)]
+		public static int SUBTICK_RP_AWARD;
+		
+		[ServerProperty("conquest", "conquest_capture_award", "How many RPs/orbs awarded for capturing the conquest target?", 1000)]
+		public static int CONQUEST_CAPTURE_AWARD;
 
 		#endregion
 
@@ -2732,7 +2744,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Max duration of a Conquest Task in minutes
 		/// </summary>
-		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 45)]
+		[ServerProperty("conquest", "max_conquest_task_duration", "Max duration of a Conquest Task in minutes", 90)]
 		public static int MAX_CONQUEST_TASK_DURATION;
 		
 		/// <summary>

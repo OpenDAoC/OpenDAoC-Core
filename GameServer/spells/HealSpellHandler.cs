@@ -358,6 +358,13 @@ namespace DOL.GS.Spells
                 if (heal > 0 && criticalvalue > 0)
                     MessageToCaster("Your heal criticals for an extra " + criticalvalue + " hit points!", eChatType.CT_Spell);
             }
+            
+            //check for conquest activity
+            if (target is GamePlayer tp)
+            {
+                if(ConquestService.ConquestManager.IsPlayerNearConquest(tp))
+                    ConquestService.ConquestManager.AddContributor(tp);
+            }
 
             var attackers = target.attackComponent.Attackers;
 

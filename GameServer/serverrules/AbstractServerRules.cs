@@ -1196,10 +1196,7 @@ namespace DOL.GS.ServerRules
 						BattleGroup clientBattleGroup = player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 						if (clientBattleGroup != null)
 						{
-							if (killedNPC is GuardLord or GameKeepGuard or GameEpicBoss)
-								livingsToAward.Add(living);
-							else
-								player.Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							livingsToAward.Add(living);
 						} 
 						else
 						{
@@ -1827,6 +1824,17 @@ namespace DOL.GS.ServerRules
 			if (!BG)
 				playerBPValue = killedPlayer.BountyPointsValue;
 			long playerMoneyValue = killedPlayer.MoneyValue;
+			
+			//check for conquest activity
+			if (killer is GamePlayer kp)
+			{
+				if (ConquestService.ConquestManager.IsValidDefender(kp))
+				{
+					ConquestService.ConquestManager.AddDefender(kp); //add to list of active keep defenders
+					playerRPValue = (int)(playerRPValue * 1.10); //10% more RPs while defending the keep
+					ConquestService.ConquestManager.AwardDefenders(playerRPValue, kp);
+				}
+			}
 
 			List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
             List<Group> groupsToAward = new List<Group>();
@@ -1848,6 +1856,13 @@ namespace DOL.GS.ServerRules
 				 */
 				//if (!living.Alive) continue;
 				if (!living.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
+				
+				//check for conquest activity
+				if (living is GamePlayer lp)
+				{
+					if(ConquestService.ConquestManager.IsPlayerNearConquest(lp))
+						ConquestService.ConquestManager.AddContributor(lp);
+				}
 
 
 				double damagePercent = (float)de.Value / totalDamage;

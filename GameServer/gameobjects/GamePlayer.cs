@@ -5342,7 +5342,13 @@ namespace DOL.GS
                 if(expTotal == 0)
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
-            
+
+            if (this.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+            {
+                Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
             int numCurrentLoyalDays = this.TempProperties.getProperty<int>(CURRENT_LOYALTY_KEY);
             //check for cached loyalty days, and grab value if needed
             if (numCurrentLoyalDays == null || numCurrentLoyalDays == 0)
@@ -8662,25 +8668,25 @@ namespace DOL.GS
 
             if (CurrentZone.IsRvR)
             {
-                var activeConquests = ConquestService.ConquestManager.GetActiveObjectives;
+                var activeConquest = ConquestService.ConquestManager.ActiveObjective;
                 int baseContribution = enemy.RealmPointsValue / 2; //todo turn it into a server prop?
-                foreach (var conquestObjective in activeConquests)
+                
+                if (activeConquest != null && this.GetDistance(new Point2D(activeConquest.Keep.X, activeConquest.Keep.Y)) <=
+                    ServerProperties.Properties.MAX_CONQUEST_RANGE)
                 {
-                    if (conquestObjective != null && this.GetDistance(new Point2D(conquestObjective.Keep.X, conquestObjective.Keep.Y)) <=
-                        ServerProperties.Properties.MAX_CONQUEST_RANGE)
+                    //TODO: add something here
+                    if (Group != null)
                     {
-                        if (Group != null)
-                        {
-                            conquestObjective.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
-                        }
-                        else
-                        {
-                            conquestObjective.Contribute(this, baseContribution); 
-                        }
+                        //activeConquest.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
                     }
+                    else
+                    {
+                        //activeConquest.Contribute(this, baseContribution); 
+                    }
+                }
                         
                     
-                }
+                
             }
 
             base.EnemyKilled(enemy);
@@ -14534,6 +14540,11 @@ namespace DOL.GS
             {
                 //range = levelDiff * 20 + 125; // Normal detection range
                 range = levelDiff * 20 + 125; 
+            }
+
+            if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
+            {
+                range += 50;
             }
 
             // Mastery of Stealth Bonus

@@ -29,44 +29,44 @@ public class ConquestManager
     public ConquestObjective ActiveHiberniaObjective;
     public ConquestObjective ActiveMidgardObjective;
 
-    public int HibStreak;
-    public int AlbStreak;
-    public int MidStreak;
-
     public long LastConquestStartTime;
     public long LastConquestStopTime;
+    public long LastConquestWindowStart;
+    
+    private int _captureAward = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
 
-    private List<GamePlayer> ContributedPlayers = new List<GamePlayer>();
+    public eRealm ActiveConquestRealm = (eRealm)Util.Random(1, 3);
 
-    public int SumOfContributions
-    {
-        get { return AlbionContribution + HiberniaContribution + MidgardContribution; }
-    }
+    private HashSet<GamePlayer> ContributedPlayers = new HashSet<GamePlayer>();
+    private HashSet<GamePlayer> ActiveDefenders = new HashSet<GamePlayer>();
 
     int HiberniaContribution = 0;
     int AlbionContribution = 0;
     int MidgardContribution = 0;
 
-    public List<ConquestObjective> GetActiveObjectives
+    public ConquestObjective ActiveObjective
     {
         get
         {
-            var list = new List<ConquestObjective>();
-            list.Add(ActiveAlbionObjective);
-            list.Add(ActiveHiberniaObjective);
-            list.Add(ActiveMidgardObjective);
-            return list;
+            switch (ActiveConquestRealm)
+            {
+                case eRealm.Hibernia:
+                    return ActiveHiberniaObjective;
+                case eRealm.Albion:
+                    return ActiveAlbionObjective;
+                case eRealm.Midgard:
+                    return ActiveMidgardObjective;
+            }
+
+            return null;
         }
         set { }
     }
 
-    public bool ConquestIsActive = false;
-
     public ConquestManager()
     {
         ResetKeeps();
-        ResetObjectives();
-        StartConquest();
+        PickNewObjective();
     }
 
     private void ResetKeeps()
@@ -88,7 +88,7 @@ public class ConquestManager
         }
     }
 
-    private void ResetObjectives()
+    private void PickNewObjective()
     {
         if (_albionObjectives == null) _albionObjectives = new Dictionary<ConquestObjective, int>();
         if (_hiberniaObjectives == null) _hiberniaObjectives = new Dictionary<ConquestObjective, int>();
@@ -112,13 +112,6 @@ public class ConquestManager
         {
             _midgardObjectives.Add(new ConquestObjective(keep), GetConquestValue(keep));
         }
-    }
-
-    private void ResetContribution()
-    {
-        HiberniaContribution = 0;
-        AlbionContribution = 0;
-        MidgardContribution = 0;
     }
 
     private int GetConquestValue(AbstractGameKeep keep)
@@ -165,15 +158,8 @@ public class ConquestManager
         BroadcastConquestMessageToRvRPlayers(
             $"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!");
 
-        foreach (var activeObjective in GetActiveObjectives)
-        {
-            AddSubtotalToOverallFrom(activeObjective);
-        }
-
-        CheckStreak(CapturedKeep);
         AwardContributorsForRealm(CapturedKeep.Realm);
         RotateKeepsOnCapture(CapturedKeep);
-        ResetContribution();
     }
 
     public void ConquestTimeout()
@@ -182,79 +168,158 @@ public class ConquestManager
             $"The Conquest has ended.");
 
         StopConquest();
-        
-        ResetStreak();
 
         ActiveAlbionObjective = null;
         ActiveHiberniaObjective = null;
         ActiveMidgardObjective = null;
     }
-
-    private void CheckStreak(AbstractGameKeep capturedKeep)
+    
+    public void ResetConquestWindow()
     {
-        switch (capturedKeep.Realm)
+        LastConquestWindowStart = GameLoop.GameLoopTime;
+        ResetContributors();
+        ActiveObjective.ResetConquestWindow();
+    }
+
+    public void AddContributor(GamePlayer player)
+    {
+        ContributedPlayers.Add(player);
+    }
+
+    public void AddContributors(List<GamePlayer> contributors)
+    {
+        ContributedPlayers ??= new HashSet<GamePlayer>();
+        foreach (var player in contributors)
         {
-            case eRealm.Albion:
-                AlbStreak++;
-                HibStreak = 0;
-                MidStreak = 0;
-                break;
-            case eRealm.Hibernia:
-                HibStreak++;
-                AlbStreak = 0;
-                MidStreak = 0;
-                break;
-            case eRealm.Midgard:
-                MidStreak++;
-                HibStreak = 0;
-                AlbStreak = 0;
-                break;
+           AddContributor(player);
         }
     }
 
-    private void ResetStreak()
+    private void ResetContributors()
     {
-        AlbStreak = 0;
-        HibStreak = 0;
-        MidStreak = 0;
+        ContributedPlayers?.Clear();
+        ActiveDefenders?.Clear();
+    }
+
+    public List<GamePlayer> GetContributors()
+    {
+        return ContributedPlayers.ToList();
+    }
+    
+    public void AddDefenders(List<GamePlayer> contributors)
+    {
+        ActiveDefenders ??= new HashSet<GamePlayer>();
+        foreach (var player in contributors)
+        {
+           AddDefender(player);
+        }
+    }
+
+    public void AddDefender(GamePlayer player)
+    {
+        ActiveDefenders.Add(player);
+        AddContributor(player);
+    }
+
+    private void ResetDefenders()
+    {
+        ActiveDefenders?.Clear();
+    }
+
+    public List<GamePlayer> GetDefenders()
+    {
+        return ActiveDefenders.ToList();
     }
 
     private void AwardContributorsForRealm(eRealm realmToAward)
     {
-        foreach (var conquestObjective in GetActiveObjectives)
+        foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            var contributingPlayers = conquestObjective.GetContributingPlayers().Where(x => x.Realm == realmToAward);
-            foreach (var contributingPlayer in contributingPlayers)
-            {
-                //if player is of the correct realm, award them their realm's portion of the overall reward
-                if (contributingPlayer.Realm == realmToAward)
-                {
-                    int realmContribution = 0;
-                    if (realmToAward == eRealm.Hibernia)
-                        realmContribution = HiberniaContribution;
-                    if (realmToAward == eRealm.Albion)
-                        realmContribution = AlbionContribution;
-                    if (realmToAward == eRealm.Midgard)
-                        realmContribution = MidgardContribution;
-
-                    int totalContributions = SumOfContributions > 0 ? SumOfContributions : 1;
-                    int calculatedReward = (int) Math.Round((double)totalContributions * (realmContribution / ((double)totalContributions)), 2);
-                    calculatedReward = (int) Math.Round((double) calculatedReward/contributingPlayers.Count()); //divide reward by number of contributors
-
-                    if (calculatedReward > ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD)
-                        calculatedReward = ServerProperties.Properties.MAX_KEEP_CONQUEST_RP_REWARD;
-
-                    if (contributingPlayer.Realm == eRealm.Hibernia && HibStreak > 0)
-                        calculatedReward += calculatedReward * (HibStreak * 10) / 100;
-                    if (contributingPlayer.Realm == eRealm.Albion && AlbStreak > 0)
-                        calculatedReward += calculatedReward * (AlbStreak * 10) / 100;
-                    if (contributingPlayer.Realm == eRealm.Midgard && MidStreak > 0)
-                        calculatedReward += calculatedReward * (MidStreak * 10) / 100;
-
-                    contributingPlayer.GainRealmPoints(calculatedReward, false, true);
-                }
-            }
+            int awardBase = _captureAward;
+            double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
+            player.GainRealmPoints((long)(awardBase/2 * flagMod), false);
+            AtlasROGManager.GenerateOrbAmount(player, (int)(awardBase * flagMod));
         }
+    }
+    
+    //defenders gain 1%-5% of the RPs from all kills made by other defenders
+    public void AwardDefenders(int playerRpValue, GamePlayer source)
+    {
+        foreach (var player in ActiveDefenders.ToList())
+        {
+            if (player == source) continue; //don't double award the killer
+            
+            var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
+            if (loyalDays > 30) loyalDays = 30;
+            
+            double RPFraction = 0.05 * (loyalDays / 30.0);
+            if (RPFraction < 0.01) RPFraction = 0.01;
+            
+            player.Out.SendMessage($"You have been awarded for helping to defend your keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.GainRealmPoints((long)(playerRpValue * RPFraction), false);
+        }
+    }
+
+    public bool IsPlayerNearConquest(GamePlayer player)
+    {
+        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 7500;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
+    
+    public bool IsPlayerNearFlag(GamePlayer player)
+    {
+        bool nearby = false;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
+    
+    public bool IsPlayerInConquestZone(GamePlayer player)
+    {
+        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 50000;
+
+        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+        
+        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+            nearby = true;
+
+        return nearby;
+    }
+
+    public bool IsValidDefender(GamePlayer player)
+    {
+        return player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 2000 && player.Realm == ActiveObjective.Keep.Realm;
     }
 
     private string GetStringFromRealm(eRealm realm)
@@ -274,46 +339,52 @@ public class ConquestManager
 
     private void RotateKeepsOnCapture(AbstractGameKeep capturedKeep)
     {
-        foreach (var activeObjective in GetActiveObjectives)
-        {
-            activeObjective.ConquestCapture();
-        }
         
-        for (int i = 1; i < 4; i++)
+        ActiveObjective.ConquestCapture();
+        SetKeepForCapturedRealm(capturedKeep);
+        ActiveObjective.StartConquest();
+        //find next offensive target for capturing realm
+    }
+
+    public void BeginNextConquest()
+    {
+        ActiveAlbionObjective = null;
+        ActiveHiberniaObjective = null;
+        ActiveMidgardObjective = null;
+        //find next realm, set active objective to that realm
+        if (ActiveConquestRealm == eRealm.Albion)
         {
-            if ((eRealm) i == capturedKeep.OriginalRealm)
-            {
-                SetKeepForCapturedRealm(capturedKeep);
-            }
-            else
-            {
-                SetDefensiveKeepForRealm((eRealm) i);
-            }
+            ActiveConquestRealm = eRealm.Hibernia;
         }
+        else if (ActiveConquestRealm == eRealm.Hibernia)
+        {
+            ActiveConquestRealm = eRealm.Midgard;
+        }
+        else if (ActiveConquestRealm == eRealm.Midgard)
+        {
+            ActiveConquestRealm = eRealm.Albion;
+        }
+
+        if ((int) ActiveConquestRealm < 1 || (int) ActiveConquestRealm > 3)
+            ActiveConquestRealm = (eRealm)Util.Random(1, 3);
+        
+        PredatorManager.PlayerKillTallyDict.Clear();
+        
+        StartConquest();
     }
 
     public void StartConquest()
     {
-        if(ActiveAlbionObjective == null) SetDefensiveKeepForRealm(eRealm.Albion);
-        if(ActiveHiberniaObjective == null) SetDefensiveKeepForRealm(eRealm.Hibernia);
-        if(ActiveMidgardObjective == null) SetDefensiveKeepForRealm(eRealm.Midgard);
-        ResetContribution();
+        SetDefensiveKeepForRealm(ActiveConquestRealm);
+        
+        ActiveObjective.StartConquest();
         LastConquestStartTime = GameLoop.GameLoopTime;
-        ConquestIsActive = true;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
     }
 
     public void StopConquest()
     {
         LastConquestStopTime = GameLoop.GameLoopTime;
-        ConquestIsActive = false;
-    }
-
-    public void AddSubtotalToOverallFrom(ConquestObjective objective)
-    {
-        HiberniaContribution += objective.HiberniaContribution;
-        AlbionContribution += objective.AlbionContribution;
-        MidgardContribution += objective.MidgardContribution;
     }
 
     private void BroadcastConquestMessageToRvRPlayers(String message)
@@ -329,7 +400,7 @@ public class ConquestManager
 
     private void SetKeepForCapturedRealm(AbstractGameKeep keep)
     {
-        if (keep.Realm != keep.OriginalRealm)
+        if (keep.Realm != keep.OriginalRealm && ConquestService.IsOverHalfwayDone())
         {
             Dictionary<ConquestObjective, int> keepDict = new Dictionary<ConquestObjective, int>();
             switch (keep.OriginalRealm)
@@ -474,110 +545,80 @@ public class ConquestManager
     public IList<string> GetTextList()
     {
         List<string> temp = new List<string>();
-
-        /*
-        ConquestObjective hibObj = ActiveHiberniaObjective;
-        ConquestObjective albObj = ActiveAlbionObjective;
-        ConquestObjective midObj = ActiveMidgardObjective;
-        ArrayList hibList = new ArrayList();
-        ArrayList midList = new ArrayList();
-        ArrayList albList = new ArrayList();
-        hibList = hibObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, hibObj.Keep.X,
-            hibObj.Keep.Y, hibObj.Keep.Z, 15000, hibList, true);
-        albList = albObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, albObj.Keep.X,
-            albObj.Keep.Y, albObj.Keep.Z, 15000, albList, true);
-        midList = midObj.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, midObj.Keep.X,
-            midObj.Keep.Y, midObj.Keep.Z, 15000, midList, true);
-            */
-
-
-        long tasktime = 300000 - ((GameLoop.GameLoopTime - LastConquestStartTime) % 300000);
+        
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
-        
-        if (ConquestIsActive)
-        {
-            temp.Add("Objective Details:");
-            foreach (var activeObjective in GetActiveObjectives)
-            {
-                ArrayList playerCount = new ArrayList();
-                playerCount = activeObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
-                    activeObjective.Keep.X,
-                    activeObjective.Keep.Y, activeObjective.Keep.Z, 15000, playerCount, true);
 
-                temp.Add($"{GetStringFromRealm(activeObjective.Keep.OriginalRealm).ToUpper()}");
-                temp.Add($"{activeObjective.Keep.Name}");
-                temp.Add($"Total Contribution: {activeObjective.TotalContribution}");
-                temp.Add(
-                    $"Hib {Math.Round((activeObjective.HiberniaContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}% | " +
-                    $"Alb: {Math.Round((activeObjective.AlbionContribution  * 100)/ (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2) }% | " +
-                    $"Mid: {Math.Round((activeObjective.MidgardContribution * 100) / (double) (activeObjective.TotalContribution  > 0 ? activeObjective.TotalContribution : 1), 2)}%");
-                temp.Add($"Players Nearby: {playerCount.Count}");
-                temp.Add("");
-            }
-            
-            temp.Add($"Objective Capture Reward: {SumOfContributions}");
-            temp.Add($"Hibernia: {Math.Round(HiberniaContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-            temp.Add($"Albion: {Math.Round(AlbionContribution * 100/ (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
-            temp.Add($"Midgard: {Math.Round(MidgardContribution * 100 / (double) (SumOfContributions > 0 ? SumOfContributions : 1), 2) }%");
+        ArrayList playerCount = new ArrayList();
+        playerCount = ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER,
+            ActiveObjective.Keep.X,
+            ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, 10000, playerCount, true);
 
-            temp.Add($"");
-        
-            long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
-            temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
-            temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
-                     TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
-            temp.Add("");
-        }
-        else
-        {
-            temp.Add("No Conquest currently active.");
-            long nextStartTime = (LastConquestStartTime + (ServerProperties.Properties.CONQUEST_CYCLE_TIMER * 60000 )) - GameLoop.GameLoopTime;
-            temp.Add("Next Conquest will start in " + TimeSpan.FromMilliseconds(nextStartTime).Hours + "h " 
-                     + TimeSpan.FromMilliseconds(nextStartTime).Minutes + "m " +
-                     TimeSpan.FromMilliseconds(nextStartTime).Seconds + "s");
-            temp.Add("");
-        }
-        
-
-        
-
-        //capture streak info
-        int streak = 0;
-        String streakingRealm = "";
-
-        if (AlbStreak > 0)
-        {
-            streak = AlbStreak;
-            streakingRealm = GetStringFromRealm(eRealm.Albion);
-        }
-        else if (HibStreak > 0)
-        {
-            streak = HibStreak;
-            streakingRealm = GetStringFromRealm(eRealm.Hibernia);
-        }
-        else if (MidStreak > 0)
-        {
-            streak = MidStreak;
-            streakingRealm = GetStringFromRealm(eRealm.Midgard);
-        }
-
-        double tmpStreak = (double) (streak * 10);
-
-        temp.Add($"Current Capture Streak: {streak} Realm: {(streakingRealm.Equals("") ? "None" : streakingRealm)}");
-        temp.Add(
-            $"{(tmpStreak >= 0 ? tmpStreak : 0)}% reward from task contributions. Capture a task objective to claim the streak for your own realm, or build your realm's current streak if active.");
-        
+        temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()} - {ActiveObjective.Keep.CurrentZone.Description}");
+        temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");
+        temp.Add($"Players Nearby: {playerCount.Count}");
         temp.Add("");
-        temp.Add("Conquest Details");
+
+        if (ActiveObjective.ActiveFlags)
+        {
+            var locs = ActiveObjective.GetPlayerCoordsForKeep(ActiveObjective.Keep);
+            temp.Add($"Capture Points | /faceflag [1 | 2 | 3 | 4]");
+            temp.Add($"Owner | Nearby |   /loc   | Description");
+            temp.Add($"1 | {ActiveObjective.ObjectiveOne.GetOwnerRealmName()} | {ActiveObjective.ObjectiveOne.GetNearbyPlayerCount()} | {locs[0]}");
+            temp.Add($"2 | {ActiveObjective.ObjectiveTwo.GetOwnerRealmName()} | {ActiveObjective.ObjectiveTwo.GetNearbyPlayerCount()} | {locs[1]}");
+            temp.Add($"3 | {ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {ActiveObjective.ObjectiveThree.GetNearbyPlayerCount()} | {locs[2]}");
+            temp.Add($"4 | {ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | {ActiveObjective.ObjectiveFour.GetNearbyPlayerCount()} | {locs[3]}");
+        }
+       
+
+        temp.Add($"");
+    
+        //TODO: Add time until next tick here
+        //45 minute window, three 15-minute sub-windows with a tick in between each
+        
+        
+        long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
+        temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
+        temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
+        temp.Add("");
+        temp.Add("Conquest Details:");
+        temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");
         temp.Add(
-            "Killing players within the area of any conquest target will contribute towards the objective. Every 5 minutes, the global contribution will be tallied and updated.\n");
+            "Capture the keep objective to gain an immediate orb and RP reward, or defend the keep to earn a 10% bonus to RP gains as well as increased periodic rewards.");
+        /*
+        temp.Add("Killing players within the area of any conquest target will contribute towards the objective. Every 5 minutes, the global contribution will be tallied and updated.\n");
         temp.Add("The conquest target will change if any of the objectives are captured, or if the conquest time expires. " +
                  "If any of the objectives are captured, the attacking realm is immediately awarded an RP bonus based off of the total accumulated contribution.");
-        
+        */
         temp.Add("");
         //temp.Add($"Time Until Subtask Rollover: {TimeSpan.FromMilliseconds(tasktime).Minutes}m " +
                  //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
+
+                 var killers = PredatorManager.GetTopKillers();
+                 var topNum = killers.Count;
+                 if (topNum > 5) topNum = 5;
+                 temp.Add("Predator Leaderboard:");
+                 if (topNum > 0)
+                 {
+                     var topKills = killers.OrderByDescending(x => x.Value);
+                     var enumer = topKills.GetEnumerator();
+                     int output = 0;
+                     
+                     while(enumer.MoveNext() && output < topNum)
+                     {
+                         output++; 
+                         temp.Add($"{output} | {enumer.Current.Key.Name} | {enumer.Current.Value} kills");
+                     }
+                 }
+                 else
+                 {
+                     temp.Add($"--- No prey has yet been killed ---");
+                 }
+                 temp.Add($"--- Join the hunt with /predator ---");
+        
+        temp.Add("");
 
         return temp;
     }

@@ -10,7 +10,7 @@ using log4net;
 
 namespace DOL.GS
 {
-	public class LaunchQuestHib : BaseQuest
+	public class LaunchQuestHib : Quests.BaseQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
