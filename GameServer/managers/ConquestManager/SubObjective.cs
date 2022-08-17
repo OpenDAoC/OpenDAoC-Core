@@ -97,7 +97,7 @@ public class SubObjective
 
         foreach (var player in nearbyPlayers)
         {
-            if(!RecentCaps.Contains(player))
+            if(!RecentCaps.Contains(player) && player.Realm == CapturingRealm)
                 player.GainRealmPoints(50, false);
             else
                 player.Out.SendMessage($"You've recently captured this flag and are awarded no realm points.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
