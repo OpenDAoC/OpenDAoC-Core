@@ -321,4 +321,12 @@ public class ConquestObjective
 
         return null;
     }
+
+    public void ResetConquestWindow()
+    {
+        ObjectiveOne.ResetContributors();
+        ObjectiveTwo.ResetContributors();
+        ObjectiveThree.ResetContributors();
+        ObjectiveFour.ResetContributors();
+    }
 }

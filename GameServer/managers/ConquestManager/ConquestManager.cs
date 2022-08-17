@@ -178,6 +178,7 @@ public class ConquestManager
     {
         LastConquestWindowStart = GameLoop.GameLoopTime;
         ResetContributors();
+        ActiveObjective.ResetConquestWindow();
     }
 
     public void AddContributor(GamePlayer player)

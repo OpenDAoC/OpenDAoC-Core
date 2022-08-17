@@ -20,6 +20,8 @@ public class SubObjective
     private ECSGameTimer CaptureTimer = null;
     private int CaptureSeconds = FlagCaptureTime;
 
+    private HashSet<GamePlayer> RecentCaps = new HashSet<GamePlayer>();
+
     private eRealm CapturingRealm;
     public eRealm OwningRealm;
 
@@ -40,7 +42,9 @@ public class SubObjective
 
     public void Cleanup()
     {
+        FlagObject.RemoveFromWorld();
         FlagObject.Delete();
+        RecentCaps.Clear();
     }
 
     private void StartCaptureTimer(eRealm capturingRealm)
@@ -90,8 +94,18 @@ public class SubObjective
 
         foreach (var player in nearbyPlayers)
         {
-            player.GainRealmPoints(50, false);
+            if(!RecentCaps.Contains(player))
+                player.GainRealmPoints(50, false);
+            else
+                player.Out.SendMessage($"You've recently captured this flag and are awarded no realm points.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+            RecentCaps.Add(player);
         }
+    }
+
+    public void ResetContributors()
+    {
+        RecentCaps.Clear();
     }
 
     private void BroadcastTimeUntilCapture(int secondsLeft)
