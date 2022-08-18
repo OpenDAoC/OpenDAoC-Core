@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 			{
 				if (Body.TargetObject != null)
 				{
-					if(Util.Chance(20))
+					if(Util.Chance(20) && Body.HealthPercent > 15)//dont port players if it's low on health
 						TeleportPlayer();
 				}
 			}
