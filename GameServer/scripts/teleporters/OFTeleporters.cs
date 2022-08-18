@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Spells;
 using DOL.GS.Effects;
@@ -224,7 +225,7 @@ namespace DOL.GS.Scripts
 
             InventoryItem medallion = null;
 
-            foreach (GamePlayer player in GetPlayersInRadius(300))
+            foreach (GamePlayer player in GetPlayersInRadius(500).OfType<GamePlayer>().ToList())
             {
                 GameLocation PortLocation = null;
                 medallion = player.Inventory.GetItem(eInventorySlot.Mythical);
