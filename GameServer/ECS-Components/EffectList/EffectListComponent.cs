@@ -150,17 +150,18 @@ namespace DOL.GS
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
+                                //Check if existingEffect is overwritable by new effect
                                 if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) || spellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
                                     foundIsOverwriteableEffect = true;
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
-                                        if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
-                                        {
-                                            addEffect = true;
-                                        }
+                                        // if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
+                                        // {
+                                        //     addEffect = true;
+                                        // }
                                         //New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
-                                        else if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
+                                        if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
                                             spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage) &&
                                             !existingEffects[i].IsDisabled)
                                         {
