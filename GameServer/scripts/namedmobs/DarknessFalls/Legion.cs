@@ -26,7 +26,7 @@ namespace DOL.GS.Scripts
             Region region = WorldMgr.GetRegion(249);
             legionArea = region.AddArea(new Area.Circle("Legion's Lair", 45000, 51700, 15468, radius));
             log.Debug("Legion's Lair created with radius " + radius + " at 45000 51700 15468");
-            legionArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
+            //legionArea.RegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
 
             //GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
 
@@ -37,7 +37,7 @@ namespace DOL.GS.Scripts
         [ScriptUnloadedEvent]
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
-            legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
+            //legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
             WorldMgr.GetRegion(249).RemoveArea(legionArea);
 
             //GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByLegion));
@@ -173,11 +173,11 @@ namespace DOL.GS.Scripts
             if (enemy != null && enemy is GamePlayer)
             {
                 BroadcastMessage("Legion says, \"Your soul give me new strength.\"");
-                Health += MaxHealth / 20; //heals if boss kill enemy player for 5% of his max health
+                Health += MaxHealth / 40; //heals if boss kill enemy player for 2.5% of his max health
             }
             base.EnemyKilled(enemy);
         }
-        private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
+      /*  private static void PlayerEnterLegionArea(DOLEvent e, object sender, EventArgs args)
         {
             AreaEventArgs aargs = args as AreaEventArgs;
             GamePlayer player = aargs?.GameObject as GamePlayer;
@@ -205,7 +205,7 @@ namespace DOL.GS.Scripts
 
                     //player.Die(mob);
                 }
-               /* else
+               / else
                 {
                     foreach (GamePlayer playerNearby in player.GetPlayersInRadius(350))
                     {
@@ -214,11 +214,11 @@ namespace DOL.GS.Scripts
                     }
 
                     player.MoveTo(249, 48200, 49566, 20833, 1028);
-                }*/
+                }
 
                // player.BroadcastUpdate();
             }
-        }
+        }*/
        /* private static void PlayerKilledByLegion(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
@@ -247,11 +247,11 @@ namespace DOL.GS.Scripts
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             //possible AttackRange
-            int distance = 400;
+            int distance = 1000;
             
             if (source is GamePlayer || source is GamePet)
             {
-                if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 400
+                if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 1000
                 {
                     GamePlayer truc;
                     if (source is GamePlayer)
@@ -714,11 +714,11 @@ namespace DOL.AI.Brain
                     spell.RecastDelay = 5;
                     spell.ClientEffect = 9191;
                     spell.Icon = 9191;
-                    spell.Damage = 1200;
+                    spell.Damage = 1000;
                     spell.DamageType = (int)eDamageType.Body;
                     spell.Name = "Lifetap";
                     spell.Range = 0;
-                    spell.Radius = 1500;
+                    spell.Radius = 1200;
                     spell.SpellID = 12013;
                     spell.Target = "Enemy";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
