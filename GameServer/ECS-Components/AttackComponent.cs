@@ -2828,7 +2828,7 @@ namespace DOL.GS
 
             // weapon/armor bonus
             int armorBonus = 0;
-            if (ad.Target is GamePlayer)
+            if (ad.Target is GamePlayer p)
             {
                 ad.ArmorHitLocation = ((GamePlayer) ad.Target).CalculateArmorHitLocation(ad);
                 InventoryItem armor = null;
@@ -2836,13 +2836,21 @@ namespace DOL.GS
                     armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
                 if (armor != null)
                     armorBonus = armor.Bonus;
+                
+                int bonusCap = GetBonusCapForLevel(p.Level);
+                //Console.WriteLine($"Armor Bonus Start {armorBonus} cap {bonusCap}");
+                if (armorBonus > bonusCap) armorBonus = bonusCap;
             }
             //Console.WriteLine($"Armor Bonus Start {armorBonus}");
 
             if (weapon != null)
             {
-                armorBonus -= weapon.Bonus;
-                //Console.WriteLine($"weapon bonus reduction of {weapon.Bonus}");
+                int bonusCap = GetBonusCapForLevel(ad.Attacker.Level);
+                int weaponBonus = weapon.Bonus;
+                //Console.WriteLine($"weap Start {weaponBonus} cap {bonusCap}");
+                if (weaponBonus > bonusCap) weaponBonus = bonusCap;
+                armorBonus -= weaponBonus;
+                //Console.WriteLine($"weapon bonus reduction of {weaponBonus}");
             }
 
             if (ad.Target is GamePlayer && ad.Attacker is GamePlayer)
@@ -3022,6 +3030,21 @@ namespace DOL.GS
                 ((GamePlayer) owner).IsOnHorse = false;
 
             return eAttackResult.HitUnstyled;
+        }
+
+        private int GetBonusCapForLevel(int level)
+        {
+            int bonusCap = 0;
+            if (level < 15) bonusCap = 0;
+            else if (level < 20) bonusCap = 5;
+            else if (level < 25) bonusCap = 10;
+            else if (level < 30) bonusCap = 15;
+            else if (level < 35) bonusCap = 20;
+            else if (level < 40) bonusCap = 25;
+            else if (level < 45) bonusCap = 30;
+            else bonusCap = 35;
+
+            return bonusCap;
         }
 
         /// <summary>
