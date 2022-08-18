@@ -110,6 +110,7 @@ namespace DOL.GS.Scripts
         private Spell m_portSpell;
 
         private ECSGameTimer castTimer;
+        private ECSGameTimer followupTimer;
 
         private Spell PortSpell
         {
@@ -193,6 +194,10 @@ namespace DOL.GS.Scripts
                 castTimer.Interval = PortSpell.CastTime;
                 castTimer.Callback += new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
                 castTimer.Start(PortSpell.CastTime);
+                followupTimer = new ECSGameTimer(this, CastTimerCallback);
+                followupTimer.Interval = m_portSpell.CastTime + 10000; //10s after
+                followupTimer.Callback = CastTimerCallback;
+                followupTimer.Start(followupTimer.Interval);
                 foreach (OFAssistant assi in Assistants)
                 {
                     assi.CastEffect();
@@ -202,14 +207,19 @@ namespace DOL.GS.Scripts
 
         private int CastTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
-            castTimer.Callback -= new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
+            if (selfRegenerationTimer == castTimer)
+            {
+                foreach (OFAssistant assi in Assistants)
+                {
+                    assi.CastEffect();
+                }
+            }
             OnAfterSpellCastSequence(null);
-            return 10;
+            return 0;
         }
 
         public override void OnAfterSpellCastSequence(ISpellHandler handler)
         {
-            castTimer.Stop();
             //base.OnAfterSpellCastSequence(handler);
 
             InventoryItem medallion = null;
