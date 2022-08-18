@@ -542,7 +542,7 @@ public class ConquestManager
         SetDefensiveKeepForRealm(realm, 1);
     }
 
-    public IList<string> GetTextList()
+    public IList<string> GetTextList(GamePlayer player)
     {
         List<string> temp = new List<string>();
         
@@ -575,13 +575,19 @@ public class ConquestManager
     
         //TODO: Add time until next tick here
         //45 minute window, three 15-minute sub-windows with a tick in between each
-        
-        
+        long timeUntilReset = ConquestService.GetTicksUntilContributionReset();
+        long timeUntilAward = ConquestService.GetTicksUntilNextAward();
+
         long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
-        temp.Add("" + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max Time Limit");
+        temp.Add("" );
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
-                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s Since Conquest Start");
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s elapsed | " + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max");
+        temp.Add("" + TimeSpan.FromMilliseconds(timeUntilReset).Minutes + "m " +
+                   TimeSpan.FromMilliseconds(timeUntilReset).Seconds + "s contribution reset");
+        temp.Add("" + TimeSpan.FromMilliseconds(timeUntilAward).Minutes + "m " +
+                 TimeSpan.FromMilliseconds(timeUntilAward).Seconds + "s next award");
+        temp.Add(ContributedPlayers.Contains(player) ? "Contribution: Qualified" : "Contribution: Not Yet Qualified");
         temp.Add("");
         temp.Add("Conquest Details:");
         temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");

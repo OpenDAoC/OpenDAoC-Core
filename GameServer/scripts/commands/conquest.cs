@@ -13,7 +13,7 @@ namespace DOL.GS.Scripts
         {
             if (!IsSpammingCommand(client.Player, "task"))
             {
-                client.Out.SendCustomTextWindow("Conquest Information", ConquestService.ConquestManager.GetTextList());
+                client.Out.SendCustomTextWindow("Conquest Information", ConquestService.ConquestManager.GetTextList(client.Player));
             }
         }
     }
