@@ -310,7 +310,15 @@ public class ConquestManager
     
     public bool IsPlayerInConquestZone(GamePlayer player)
     {
+        if (ActiveAlbionObjective == null || ActiveHiberniaObjective == null || ActiveMidgardObjective == null) return false;
+        
         bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 50000;
+
+        foreach (var secondaryObjective in GetSecondaryObjectives())
+        {
+            if (player.GetDistance(new Point2D(secondaryObjective.Keep.X, secondaryObjective.Keep.Y)) <= 10000)
+                nearby = true;
+        }
 
         if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
             nearby = true;
@@ -452,19 +460,28 @@ public class ConquestManager
                 case eRealm.Albion:
                     List<ConquestObjective> albKeepsSort =
                         new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                            keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
+                            keepDict[x] == objectiveWeight && x.Keep.Realm != keep.Realm)); //get a list of all keeps with the current weight
+                    if (albKeepsSort.Count < 1)
+                        albKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); 
+                    
                     ActiveAlbionObjective =
                         albKeepsSort[Util.Random(albKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Hibernia:
                     List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                        keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
+                        keepDict[x] == objectiveWeight && x.Keep.Realm != keep.Realm)); //get a list of all keeps with the current weight
+                    if (hibKeepsSort.Count < 1)
+                        hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); 
+                    
                     ActiveHiberniaObjective =
                         hibKeepsSort[Util.Random(hibKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Midgard:
                     List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                        keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
+                        keepDict[x] == objectiveWeight && x.Keep.Realm != keep.Realm)); //get a list of all keeps with the current weight
+                    if (midKeepsSort.Count < 1)
+                        midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x => keepDict[x] == objectiveWeight)); 
+                    
                     ActiveMidgardObjective =
                         midKeepsSort[Util.Random(midKeepsSort.Count() - 1)]; //pick one at random
                     break;
@@ -608,11 +625,7 @@ public class ConquestManager
             temp.Add($"3 | {ActiveObjective.ObjectiveThree.GetOwnerRealmName()} | {ActiveObjective.ObjectiveThree.GetNearbyPlayerCount()} | {locs[2]}");
             temp.Add($"4 | {ActiveObjective.ObjectiveFour.GetOwnerRealmName()} | {ActiveObjective.ObjectiveFour.GetNearbyPlayerCount()} | {locs[3]}");
         }
-       
-
-        temp.Add($"");
-    
-        //TODO: Add time until next tick here
+        
         //45 minute window, three 15-minute sub-windows with a tick in between each
         long timeUntilReset = ConquestService.GetTicksUntilContributionReset();
         long timeUntilAward = ConquestService.GetTicksUntilNextAward();
@@ -628,6 +641,31 @@ public class ConquestManager
                  TimeSpan.FromMilliseconds(timeUntilAward).Seconds + "s next award");
         temp.Add(ContributedPlayers.Contains(player) ? "Contribution: Qualified" : "Contribution: Not Yet Qualified");
         temp.Add("");
+        //temp.Add($"Time Until Subtask Rollover: {TimeSpan.FromMilliseconds(tasktime).Minutes}m " +
+        //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
+
+        var killers = PredatorManager.GetTopKillers();
+        var topNum = killers.Count;
+        if (topNum > 5) topNum = 5;
+        temp.Add("Predator Leaderboard:");
+        if (topNum > 0)
+        {
+            var topKills = killers.OrderByDescending(x => x.Value);
+            var enumer = topKills.GetEnumerator();
+            int output = 0;
+                     
+            while(enumer.MoveNext() && output < topNum)
+            {
+                output++; 
+                temp.Add($"{output} | {enumer.Current.Key.Name} | {enumer.Current.Value} kills");
+            }
+        }
+        else
+        {
+            temp.Add($"--- No prey has yet been killed ---");
+        }
+        temp.Add($"--- Join the hunt with /predator ---");
+        temp.Add("");
         temp.Add("Conquest Details:");
         temp.Add("Capture and hold field objectives around the keep to gain periodic realm point rewards and kill players near the keep or field objectives to contribute to the conquest.\n");
         temp.Add(
@@ -637,32 +675,7 @@ public class ConquestManager
         temp.Add("The conquest target will change if any of the objectives are captured, or if the conquest time expires. " +
                  "If any of the objectives are captured, the attacking realm is immediately awarded an RP bonus based off of the total accumulated contribution.");
         */
-        temp.Add("");
-        //temp.Add($"Time Until Subtask Rollover: {TimeSpan.FromMilliseconds(tasktime).Minutes}m " +
-                 //TimeSpan.FromMilliseconds(tasktime).Seconds + "s");
 
-                 var killers = PredatorManager.GetTopKillers();
-                 var topNum = killers.Count;
-                 if (topNum > 5) topNum = 5;
-                 temp.Add("Predator Leaderboard:");
-                 if (topNum > 0)
-                 {
-                     var topKills = killers.OrderByDescending(x => x.Value);
-                     var enumer = topKills.GetEnumerator();
-                     int output = 0;
-                     
-                     while(enumer.MoveNext() && output < topNum)
-                     {
-                         output++; 
-                         temp.Add($"{output} | {enumer.Current.Key.Name} | {enumer.Current.Value} kills");
-                     }
-                 }
-                 else
-                 {
-                     temp.Add($"--- No prey has yet been killed ---");
-                 }
-                 temp.Add($"--- Join the hunt with /predator ---");
-        
         temp.Add("");
 
         return temp;

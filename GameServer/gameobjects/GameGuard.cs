@@ -1,6 +1,8 @@
+using System;
 using DOL.AI.Brain;
 using DOL.Language;
 using System.Collections;
+using System.Linq;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -26,6 +28,17 @@ namespace DOL.GS
             {
                 return (Flags & eFlags.STEALTH) != 0;
             }
+        }
+
+        public override void ProcessDeath(GameObject killer)
+        {
+            Console.WriteLine($"killer near zone? {ConquestService.ConquestManager.IsPlayerInConquestZone(killer as GamePlayer)}");
+            if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerInConquestZone(p))
+            {
+                ConquestService.ConquestManager.AddContributors(this.XPGainers.Keys.OfType<GamePlayer>().ToList());
+            }
+
+            base.ProcessDeath(killer);
         }
 
         public override void DropLoot(GameObject killer)

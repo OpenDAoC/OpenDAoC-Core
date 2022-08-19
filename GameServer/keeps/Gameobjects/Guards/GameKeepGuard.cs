@@ -25,6 +25,7 @@ using DOL.GS.PacketHandler;
 using DOL.Language;
 using DOL.GS.ServerProperties;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS.Realm;
 using DOL.GS.PlayerClass;
 
@@ -77,6 +78,16 @@ namespace DOL.GS.Keeps
 		{
 			get { return m_modelRealm; }
 			set { m_modelRealm = value; }
+		}
+
+		public override void ProcessDeath(GameObject killer)
+		{
+			if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerInConquestZone(p))
+			{
+				ConquestService.ConquestManager.AddContributors(this.XPGainers.Keys.OfType<GamePlayer>().ToList());
+			}
+
+			base.ProcessDeath(killer);
 		}
 
 		public bool IsTowerGuard
