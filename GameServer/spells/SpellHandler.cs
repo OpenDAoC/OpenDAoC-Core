@@ -771,8 +771,11 @@ namespace DOL.GS.Spells
 			
 			GamePlayer playercheck = Caster as GamePlayer;
 			playercheck?.Out.SendCheckLOS(playercheck, selectedTarget, LosResponseHandler);
+			
+			GamePet petcheck = m_caster as GamePet;
+			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, selectedTarget, PetLosResponseHandler);
 
-            if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
+			if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
             {
                 if (Spell.IsPulsing && Caster.LastPulseCast != null && Caster.LastPulseCast.Equals(Spell))
                 {
@@ -990,7 +993,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell && m_caster.IsObjectInFront(selectedTarget, 180) == false)
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !Caster.TargetInView)
 						{
 							if (!quiet) MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1027,7 +1030,7 @@ namespace DOL.GS.Spells
 				}
 
 				//heals/buffs/rez need LOS only to start casting, TargetInView only works if selectedTarget == TargetObject
-				if ((selectedTarget.IsStealthed || playercheck is {TargetInView: false}) && m_spell.Target.ToLower() != "pet")
+				if ((selectedTarget.IsStealthed || !Caster.TargetInView) && m_spell.Target.ToLower() != "pet")
 				{
 					if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1090,13 +1093,13 @@ namespace DOL.GS.Spells
 			player.TargetInView = (response & 0x100) == 0x100;
 		}
 		
-		private void PetLosResponseHandler(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID)
+		private void PetLosResponseHandler(GameLiving living, ushort response, ushort sourceOID, ushort targetOID)
 		{
-			if(player == null || sourceOID == 0 || targetOID == 0)
+			if(living == null || sourceOID == 0 || targetOID == 0)
 				return;
 			
 			// Check result
-			player.TargetInView = (response & 0x100) == 0x100;
+			m_caster.TargetInView = (response & 0x100) == 0x100;
 		}
 
 		/// <summary>
@@ -1197,6 +1200,10 @@ namespace DOL.GS.Spells
 		{
 			GamePlayer playercheck = Caster as GamePlayer;
 			playercheck?.Out.SendCheckLOS(playercheck, target, LosResponseHandler);
+			
+			GamePet petcheck = Caster as GamePet;
+			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
+			
 			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
 			{
 				// Message: You can't summon here!
@@ -1268,7 +1275,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
 						//enemys have to be in front and in view for targeted spells
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell && (target.IsStealthed || playercheck is {TargetInView: false})) //!m_caster.TargetInView)
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && (target.IsStealthed || !Caster.TargetInView)) //!m_caster.TargetInView)
 						{
 							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1392,6 +1399,9 @@ namespace DOL.GS.Spells
 			
 			GamePlayer playerCheck = Caster as GamePlayer;
 			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
+			
+			GamePet petcheck = Caster as GamePet;
+			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
 
 			if (m_spell.InstrumentRequirement != 0)
 			{
@@ -1588,6 +1598,9 @@ namespace DOL.GS.Spells
 			
 			GamePlayer playerCheck = Caster as GamePlayer;
 			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
+			
+			GamePet petcheck = Caster as GamePet;
+			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
@@ -1669,7 +1682,7 @@ namespace DOL.GS.Spells
 					case "Enemy":
 						//enemys have to be in front and in view for targeted spells
 						//!(owner.IsObjectInFront(ad.Target, 120, true) &&
-						if (Caster is GamePlayer && m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 50))
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 50))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;

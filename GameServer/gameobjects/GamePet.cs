@@ -32,6 +32,15 @@ namespace DOL.GS
 	public class GamePet : GameNPC
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		
+		public override bool TargetInView
+		{
+			get
+			{
+				return m_targetInView;
+			}
+			set { m_targetInView = value; }
+		}
 
 		public GamePet(INpcTemplate template) : base(template)
 		{
@@ -568,6 +577,7 @@ namespace DOL.GS
 		/// </summary>
 		private List<GameLiving> m_buffedTargets = null;
 		private object _buffedTargetsLock = new object();
+		private bool m_targetInView = true;
 
 		/// <summary>
 		/// Add a target to the pet's list of buffed targets

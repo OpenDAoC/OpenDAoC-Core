@@ -148,7 +148,8 @@ namespace DOL.AI.Brain
 					CheckNPCAggro();
 					target = CalculateNextAttackTarget();
 				}
-                if ( target != null && Body.IsWithinRadius( target, spell.Range ) )
+
+				if ( target != null && Body.IsWithinRadius( target, spell.Range ) )
 				{
 					if(!Body.IsAttacking || target != Body.TargetObject)
 					{
@@ -191,7 +192,7 @@ namespace DOL.AI.Brain
 		/// <returns></returns>
 		public GameLiving GetDefensiveTarget(Spell spell)
 		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)spell.Range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
 			{
 				if(GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
 					continue;
@@ -213,7 +214,7 @@ namespace DOL.AI.Brain
 
 				ListDefensiveTarget.Add(player);
 			}
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)spell.Range, Body.CurrentRegion.IsDungeon ? false : true))
+			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
 			{
 				if(GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
 					continue;
