@@ -2484,6 +2484,14 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1693, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, toageneric));
             VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1711, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, toageneric));
             VendorItemList.Add(new SkinVendorItem("Volcanus Sleeves", 1702, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, toageneric));
+
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 2237, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 2143, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 1797, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Studded, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 1797, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Reinforced, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 1735, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Chain, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 1747, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Scale, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Aerus Sleeves", 1684, Slot.ARMS, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Plate, (int)eDamageType._FirstResist, toageneric));
             //rr 6
             VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Cloth, (int)eDamageType._FirstResist, artifact));
             VendorItemList.Add(new SkinVendorItem("Foppish Sleeves", 1732, Slot.ARMS, 0, 6, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Leather, (int)eDamageType._FirstResist, artifact));
