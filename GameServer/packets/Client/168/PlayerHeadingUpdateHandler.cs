@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			client.Player.Heading = (ushort)(head & 0xFFF);
 			// client.Player.PetInView = ((flags & 0x04) != 0); // TODO
 			client.Player.GroundTargetInView = ((flags & 0x08) != 0);
-			client.Player.TargetInView = ((flags & 0x10) != 0);
+			if(!client.Player.IsCasting)client.Player.TargetInView = ((flags & 0x10) != 0);
 
 			byte state = 0;
 			if (!client.Player.IsAlive)

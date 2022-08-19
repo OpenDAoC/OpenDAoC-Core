@@ -96,7 +96,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.CurrentSpeed = (short)(flagSpeedData & 0x1ff); // forward movement
 			}
 			player.IsStrafing = (flagSpeedData & 0x4000) != 0;
-			player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
+			if(!player.IsCasting) player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
 			player.GroundTargetInView = ((flagSpeedData & 0x1000) != 0);
 
 			List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();
@@ -214,7 +214,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.CurrentSpeed = (short)(m_flagSpeedData & 0x1ff); // forward movement
 				}
 				player.IsStrafing = (m_flagSpeedData & 0x4000) != 0;
-				player.TargetInView = (m_flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
+				if(!player.IsCasting)player.TargetInView = (m_flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
 				player.GroundTargetInView = ((m_flagSpeedData & 0x1000) != 0);
 
 				List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();

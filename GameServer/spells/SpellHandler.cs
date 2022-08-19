@@ -768,6 +768,9 @@ namespace DOL.GS.Spells
 			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
 			if (quickCast != null)
 				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
+			
+			GamePlayer playercheck = Caster as GamePlayer;
+			playercheck?.Out.SendCheckLOS(playercheck, selectedTarget, LosResponseHandler);
 
             if (m_spell.Pulse != 0 && m_spell.Frequency > 0)
             {
@@ -994,7 +997,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (m_caster.TargetInView == false)
+						if (!(m_caster.IsObjectInFront(selectedTarget, 180, true)))
 						{
 							if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1024,9 +1027,9 @@ namespace DOL.GS.Spells
 				}
 
 				//heals/buffs/rez need LOS only to start casting, TargetInView only works if selectedTarget == TargetObject
-				if (selectedTarget == Caster.TargetObject && !m_caster.TargetInView && m_spell.Target.ToLower() != "pet")
+				if ((selectedTarget.IsStealthed || playercheck is {TargetInView: false}) && m_spell.Target.ToLower() != "pet")
 				{
-					if (!quiet) MessageToCaster("Your target is not in visible!", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
 					return false;
 				}
@@ -1076,6 +1079,24 @@ namespace DOL.GS.Spells
 			}
 
 			return true;
+		}
+
+		private void LosResponseHandler(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID)
+		{
+			if(player == null || sourceOID == 0 || targetOID == 0)
+				return;
+			
+			// Check result
+			player.TargetInView = (response & 0x100) == 0x100;
+		}
+		
+		private void PetLosResponseHandler(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID)
+		{
+			if(player == null || sourceOID == 0 || targetOID == 0)
+				return;
+			
+			// Check result
+			player.TargetInView = (response & 0x100) == 0x100;
 		}
 
 		/// <summary>
@@ -1174,6 +1195,8 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
+			GamePlayer playercheck = Caster as GamePlayer;
+			playercheck?.Out.SendCheckLOS(playercheck, target, LosResponseHandler);
 			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
 			{
 				// Message: You can't summon here!
@@ -1245,7 +1268,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
 						//enemys have to be in front and in view for targeted spells
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180))
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell && (target.IsStealthed || playercheck is {TargetInView: false})) //!m_caster.TargetInView)
 						{
 							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1366,6 +1389,9 @@ namespace DOL.GS.Spells
 				if(!quiet) MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
 				return false;
 			}
+			
+			GamePlayer playerCheck = Caster as GamePlayer;
+			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
 
 			if (m_spell.InstrumentRequirement != 0)
 			{
@@ -1415,12 +1441,14 @@ namespace DOL.GS.Spells
 				{
 					case "enemy":
 						//enemys have to be in front and in view for targeted spells
+						//Fen - removed 08/18/2022. players only check LoS at start and end of cast, not mid-cast
+						/*
 						if (Caster is GamePlayer && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 64) &&
 							m_spell.SpellType != (byte)eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
-						}
+						}*/
 
 						if (ServerProperties.Properties.CHECK_LOS_DURING_CAST)
 						{
@@ -1557,6 +1585,9 @@ namespace DOL.GS.Spells
 			{
 				return false;
 			}
+			
+			GamePlayer playerCheck = Caster as GamePlayer;
+			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
@@ -1621,7 +1652,7 @@ namespace DOL.GS.Spells
 					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
 					{
 						if (Caster is GamePlayer && !quiet)
-							MessageToCaster("FYou must select a target for this spell!", eChatType.CT_SpellResisted);
+							MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
 						return false;
 					}
 
@@ -1637,7 +1668,8 @@ namespace DOL.GS.Spells
 				{
 					case "Enemy":
 						//enemys have to be in front and in view for targeted spells
-						if (Caster is GamePlayer && m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(target, 180) && !Caster.IsWithinRadius(target, 50))
+						//!(owner.IsObjectInFront(ad.Target, 120, true) &&
+						if (Caster is GamePlayer && m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 50))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;

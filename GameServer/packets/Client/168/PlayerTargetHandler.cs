@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				myTarget = null;
 			}
 			player.TargetObject = myTarget;
-			player.TargetInView = m_targetInView;
+			if(!player.IsCasting) player.TargetInView = m_targetInView;
 
 			if (myTarget != null)
 			{
