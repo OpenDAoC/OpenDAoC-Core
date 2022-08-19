@@ -158,8 +158,17 @@ public class ConquestManager
         BroadcastConquestMessageToRvRPlayers(
             $"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!");
 
-        AwardContributorsForRealm(CapturedKeep.Realm);
+        AwardContributorsForRealm(CapturedKeep.Realm, true);
         RotateKeepsOnCapture(CapturedKeep);
+    }
+    
+    public void ConquestSubCapture(AbstractGameKeep CapturedKeep)
+    {
+        BroadcastConquestMessageToRvRPlayers(
+            $"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest sub-objective!");
+
+        AwardContributorsForRealm(CapturedKeep.Realm, false);
+        SetKeepForCapturedRealm(CapturedKeep);
     }
 
     public void ConquestTimeout()
@@ -231,11 +240,12 @@ public class ConquestManager
         return ActiveDefenders.ToList();
     }
 
-    private void AwardContributorsForRealm(eRealm realmToAward)
+    private void AwardContributorsForRealm(eRealm realmToAward, bool primaryObjective)
     {
         foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
             int awardBase = _captureAward;
+            if (!primaryObjective) awardBase /= 2;
             double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(awardBase/2 * flagMod), false);
             AtlasROGManager.GenerateOrbAmount(player, (int)(awardBase * flagMod));
@@ -375,8 +385,10 @@ public class ConquestManager
 
     public void StartConquest()
     {
-        SetDefensiveKeepForRealm(ActiveConquestRealm);
-        
+        SetDefensiveKeepForRealm(eRealm.Albion);
+        SetDefensiveKeepForRealm(eRealm.Hibernia);
+        SetDefensiveKeepForRealm(eRealm.Midgard);
+
         ActiveObjective.StartConquest();
         LastConquestStartTime = GameLoop.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
@@ -400,7 +412,7 @@ public class ConquestManager
 
     private void SetKeepForCapturedRealm(AbstractGameKeep keep)
     {
-        if (keep.Realm != keep.OriginalRealm && ConquestService.IsOverHalfwayDone())
+        if (keep.Realm != keep.OriginalRealm && ((ConquestService.IsOverHalfwayDone() && keep.CurrentRegion.ID == ActiveObjective.Keep.CurrentRegion.ID) || keep.CurrentRegion.ID != ActiveObjective.Keep.CurrentRegion.ID))
         {
             Dictionary<ConquestObjective, int> keepDict = new Dictionary<ConquestObjective, int>();
             switch (keep.OriginalRealm)
@@ -440,19 +452,19 @@ public class ConquestManager
                 case eRealm.Albion:
                     List<ConquestObjective> albKeepsSort =
                         new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                            keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
+                            keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
                     ActiveAlbionObjective =
                         albKeepsSort[Util.Random(albKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Hibernia:
                     List<ConquestObjective> hibKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                        keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
+                        keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
                     ActiveHiberniaObjective =
                         hibKeepsSort[Util.Random(hibKeepsSort.Count() - 1)]; //pick one at random
                     break;
                 case eRealm.Midgard:
                     List<ConquestObjective> midKeepsSort = new List<ConquestObjective>(keepDict.Keys.Where(x =>
-                        keepDict[x] == objectiveWeight)); //get a list of all keeps with the current weight
+                        keepDict[x] == objectiveWeight && x.Keep.Realm != x.Keep.OriginalRealm)); //get a list of all keeps with the current weight
                     ActiveMidgardObjective =
                         midKeepsSort[Util.Random(midKeepsSort.Count() - 1)]; //pick one at random
                     break;
@@ -542,6 +554,28 @@ public class ConquestManager
         SetDefensiveKeepForRealm(realm, 1);
     }
 
+    public List<ConquestObjective> GetSecondaryObjectives()
+    {
+        var secondaries = new List<ConquestObjective>();
+        switch (ActiveConquestRealm)
+        {
+            case eRealm.Albion:
+                secondaries.Add(ActiveHiberniaObjective);
+                secondaries.Add(ActiveMidgardObjective);
+                break;
+            case eRealm.Hibernia:
+                secondaries.Add(ActiveAlbionObjective);
+                secondaries.Add(ActiveMidgardObjective);
+                break;
+            case eRealm.Midgard:
+                secondaries.Add(ActiveAlbionObjective);
+                secondaries.Add(ActiveHiberniaObjective);
+                break;
+        }
+
+        return secondaries;
+    }
+
     public IList<string> GetTextList(GamePlayer player)
     {
         List<string> temp = new List<string>();
@@ -557,6 +591,11 @@ public class ConquestManager
         temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()} - {ActiveObjective.Keep.CurrentZone.Description}");
         temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");
         temp.Add($"Players Nearby: {playerCount.Count}");
+        temp.Add("");
+        var secondaries = GetSecondaryObjectives();
+        temp.Add("Secondary Objectives:");
+        temp.Add($"{GetStringFromRealm(secondaries[0].Keep.OriginalRealm)} - {secondaries[0].Keep.Name}");
+        temp.Add($"{GetStringFromRealm(secondaries[1].Keep.OriginalRealm)} - {secondaries[1].Keep.Name}");
         temp.Add("");
 
         if (ActiveObjective.ActiveFlags)

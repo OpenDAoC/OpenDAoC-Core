@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -435,6 +436,11 @@ namespace DOL.GS.ServerRules
 			if (ConquestService.ConquestManager.ActiveObjective != null && ConquestService.ConquestManager.ActiveObjective.Keep == lord.Component.Keep)
 			{
 				ConquestService.ConquestManager.ConquestCapture(ConquestService.ConquestManager.ActiveObjective.Keep);
+			}
+			
+			if (ConquestService.ConquestManager.GetSecondaryObjectives().FirstOrDefault(conq => conq.Keep == lord.Component.Keep) != null)
+			{
+				ConquestService.ConquestManager.ConquestSubCapture(lord.Component.Keep);
 			}
 		}
 	}
