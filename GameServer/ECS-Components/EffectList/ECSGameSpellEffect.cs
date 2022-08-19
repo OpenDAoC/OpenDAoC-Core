@@ -28,6 +28,7 @@ namespace DOL.GS
             //SpellHandler = SpellHandler; // this is the base ECSGameEffect handler , temp during conversion into different classes
             EffectType = MapSpellEffect();
             PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
+            Caster = initParams.SpellHandler.Caster;
 
             if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease || SpellHandler.Spell.SpellType == (byte)eSpellType.UnbreakableSpeedDecrease)
             {
