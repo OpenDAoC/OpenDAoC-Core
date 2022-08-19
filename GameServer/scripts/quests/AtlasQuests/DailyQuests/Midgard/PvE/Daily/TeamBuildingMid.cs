@@ -13,7 +13,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace DOL.GS.DailyQuest.Midgard
 {
 	public class TeamBuildingMid : Quests.DailyQuest
 	{

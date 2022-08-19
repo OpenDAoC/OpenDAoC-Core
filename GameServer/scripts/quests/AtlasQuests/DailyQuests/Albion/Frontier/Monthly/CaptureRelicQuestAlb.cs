@@ -355,14 +355,23 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 		public override void FinishQuest()
 		{
+			int reward = ServerProperties.Properties.MONTHLY_RVR_REWARD;
+			
 			if (m_questPlayer.Inventory.IsSlotsFree(3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), false);
 				m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*8,0,Util.Random(50)), "You receive {0} as a reward.");
-				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 3000);
+				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
 				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
 				_isCaptured = 0;
+				
+				if (reward > 0)
+				{
+					m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Monthly Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_questPlayer.GainRealmPoints(reward, false);
+					m_questPlayer.Out.SendUpdatePlayer();
+				}
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}
 			else
