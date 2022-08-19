@@ -916,19 +916,19 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.CompositeBow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Braggarts Bow", 1667, Slot.RANGED, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, artifact));
             VendorItemList.Add(new SkinVendorItem("Spear of Kings", 3450, Slot.TWOHAND, 0, 6, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, artifact));
-            VendorItemList.Add(new SkinVendorItem("Lute", 227, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
-            VendorItemList.Add(new SkinVendorItem("Drum", 228, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
-            VendorItemList.Add(new SkinVendorItem("Flute", 325, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("TOA Flute", 2115, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
-            VendorItemList.Add(new SkinVendorItem("TOA Lute", 2117, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("TOA Drum", 2114, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
-            VendorItemList.Add(new SkinVendorItem("TOA Harp", 2116, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Base Lute", 2970, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
-            VendorItemList.Add(new SkinVendorItem("Base Drum", 2971, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
-            VendorItemList.Add(new SkinVendorItem("Base Flute", 2972, Slot.RANGED, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
-            VendorItemList.Add(new SkinVendorItem("Old Lute", 2973, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Old Drum", 2974, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, lowbie));
-            VendorItemList.Add(new SkinVendorItem("Old Flute", 2975, Slot.RANGED, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Lute", 227, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
+            VendorItemList.Add(new SkinVendorItem("Drum", 228, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
+            VendorItemList.Add(new SkinVendorItem("Flute", 325, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("TOA Flute", 2115, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Lute", 2117, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Drum", 2114, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("TOA Harp", 2116, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Base Lute", 2970, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, freebie));
+            VendorItemList.Add(new SkinVendorItem("Base Drum", 2971, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, freebie));
+            VendorItemList.Add(new SkinVendorItem("Base Flute", 2972, Slot.TWOHAND, 0, 0, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, freebie));
+            VendorItemList.Add(new SkinVendorItem("Old Lute", 2973, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Old Drum", 2974, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, lowbie));
+            VendorItemList.Add(new SkinVendorItem("Old Flute", 2975, Slot.TWOHAND, 0, 2, 0, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, lowbie));
 
 
 
@@ -971,10 +971,10 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Shortbow", 3884, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.RecurvedBow, (int)eDamageType.Thrust, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonsworn Scythe", 3825, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, dragonCost * 2));
             VendorItemList.Add(new SkinVendorItem("Dragonslayer Scythe", 3885, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonsworn Mandolin", 3848, Slot.RANGED, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3985, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3908, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
-            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3949, Slot.RANGED, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonsworn Mandolin", 3848, Slot.TWOHAND, 0, 0, 10, 0, 0, 0, (int)eRealm.None, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3985, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3908, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
+            VendorItemList.Add(new SkinVendorItem("Dragonslayer Harp", 3949, Slot.TWOHAND, 0, 0, 25, 0, 0, 0, (int)eRealm.Midgard, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType._FirstResist, dragonCost * 2));
 
 
 
@@ -1072,9 +1072,9 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Earth", 1962, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Fire", 1963, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
             VendorItemList.Add(new SkinVendorItem("Expert Crossbow Water", 1964, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Crossbow, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Albion Lute", 2976, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Albion Drum", 2977, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Albion Flute", 2975, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Lute", 2976, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Drum", 2977, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Albion Flute", 2975, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Albion, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
 
 
             //mid
@@ -1233,9 +1233,9 @@ public class AchievementReskinVendor : GameNPC
             VendorItemList.Add(new SkinVendorItem("Firbolg Scythe Water", 2004, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Serpent Scythe", 2111, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
             VendorItemList.Add(new SkinVendorItem("Magma Scythe", 2213, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Scythe, (int)eDamageType.Slash, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Hibernia Lute", 2979, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Hibernia Drum", 2980, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
-            VendorItemList.Add(new SkinVendorItem("Hibernia Flute", 2981, Slot.RANGED, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Lute", 2979, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Thrust, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Drum", 2980, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Crush, toageneric));
+            VendorItemList.Add(new SkinVendorItem("Hibernia Flute", 2981, Slot.TWOHAND, 0, 4, 0, 0, 0, 0, (int)eRealm.Hibernia, (int)eCharacterClass.Unknown, (int)eObjectType.Instrument, (int)eDamageType.Slash, toageneric));
 
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
