@@ -178,7 +178,8 @@ public class SubObjective
     {
         Dictionary<eRealm, int> playersOfRealmDict = new Dictionary<eRealm, int>();
        // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
-        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, true))
+       var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true);
+        foreach (GamePlayer player in nearbyPlayers)
         {
             if (!player.IsAlive || player.IsStealthed) continue;
            //Console.WriteLine($"Player near flag: {player.Name}");
@@ -199,6 +200,7 @@ public class SubObjective
         else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
+            ConquestService.ConquestManager.AddContributors(nearbyPlayers.OfType<GamePlayer>().Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
         }
     }
     
