@@ -7,6 +7,7 @@ using DOL.GS.PropertyCalc;
 using System.Collections.Generic;
 using DOL.GS.API;
 using System.Linq;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS
 {
@@ -37,6 +38,8 @@ namespace DOL.GS
 
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {
+                if (Caster is GamePlayer {CharacterClass: ClassChampion})
+                    Effectiveness = 2;
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Debuffing {prop.ToString()}");
@@ -80,6 +83,8 @@ namespace DOL.GS
                 else
                 {
                     bool interruptSent = false;
+                    if (Caster is GamePlayer {CharacterClass: ClassChampion})
+                        Effectiveness = 2;
                     foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                     {
                         //Console.WriteLine($"Debuffing {prop.ToString()}");
@@ -104,6 +109,8 @@ namespace DOL.GS
         {
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {
+                if (Caster is GamePlayer {CharacterClass: ClassChampion})
+                    Effectiveness = 2;
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
@@ -133,6 +140,8 @@ namespace DOL.GS
                 }
                 else
                 {
+                    if (Caster is GamePlayer {CharacterClass: ClassChampion})
+                        Effectiveness = 2;
                     foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                     {
                         //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
@@ -174,7 +183,7 @@ namespace DOL.GS
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
 
-                //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
+                //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]} effectiveness {Effectiveness}");
                 if (IsSubstracted)
                 {
                     tblBonusCat[(int) Property] -= effectiveValue;
