@@ -612,12 +612,21 @@ namespace DOL.GS.AtlasQuest.Midgard
 		
 		public override void FinishQuest()
 		{
+			int reward = ServerProperties.Properties.BEETLE_RVR_REWARD;
+			
 			m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 				"You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
 			_enemiesKilled = 0;
 			_captured = 0;
 			_relicsCaptured = 0;
+			
+			if (reward > 0)
+			{
+				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Beetle Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_questPlayer.GainRealmPoints(reward, false);
+				m_questPlayer.Out.SendUpdatePlayer();
+			}
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}

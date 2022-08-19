@@ -29,7 +29,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 		private int _playersKilledMid = 0;
 		private int _playersKilledHib = 0;
-		private const int MAX_KILLGOAL = 25;
+		private const int MAX_KILLGOAL = 50;
 		
 		// prevent grey killing
 		private const int MIN_PLAYER_CON = -3;
@@ -324,13 +324,13 @@ namespace DOL.GS.WeeklyQuest.Albion
 			if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
 			{
 				_playersKilledMid++;
-				player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Weekly] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 			else if (gArgs.Target.Realm == eRealm.Hibernia && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledHib < MAX_KILLGOAL) 
 			{
 				_playersKilledHib++;
-				player.Out.SendMessage("[Daily] Hibernia Enemy Killed: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Weekly] Hibernia Enemy Killed: (" + _playersKilledHib + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 				
@@ -361,11 +361,20 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 		public override void FinishQuest()
 		{
+			int reward = ServerProperties.Properties.WEEKLY_RVR_REWARD;
+			
 			m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel), false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
 			_playersKilledHib = 0;
 			_playersKilledMid = 0;
+			
+			if (reward > 0)
+			{
+				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Weekly Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_questPlayer.GainRealmPoints(reward, false);
+				m_questPlayer.Out.SendUpdatePlayer();
+			}
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			
 		}
