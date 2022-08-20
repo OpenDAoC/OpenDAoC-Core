@@ -101,7 +101,7 @@ namespace DOL.GS
         /// <summary>
         /// Holds all the Zones inside this Region
         /// </summary>
-        protected readonly ReaderWriterList<Zone> m_zones;
+        protected readonly List<Zone> m_zones;
 
         protected object m_lockAreas = new object();
 
@@ -233,7 +233,7 @@ namespace DOL.GS
 
             m_graveStones = new Hashtable();
 
-            m_zones = new ReaderWriterList<Zone>(1);
+            m_zones = new List<Zone>();
             m_ZoneAreas = new ushort[64][];
             m_ZoneAreasCount = new ushort[64];
             for (int i = 0; i < 64; i++)
