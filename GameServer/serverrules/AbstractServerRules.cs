@@ -1864,6 +1864,15 @@ namespace DOL.GS.ServerRules
 						ConquestService.ConquestManager.AddContributor(lp);
 				}
 
+				if (PredatorManager.PlayerIsActive(killedPlayer))
+				{
+					var reward = PredatorManager.CheckForPredatorEffort(killedPlayer, expGainPlayer);
+					if (reward > 0)
+					{
+						killedPlayer.Out.SendMessage($"Your hunt fails, but your prey did not escape unharmed.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						killedPlayer.GainRealmPoints(reward);
+					}
+				}
 
 				double damagePercent = (float)de.Value / totalDamage;
 

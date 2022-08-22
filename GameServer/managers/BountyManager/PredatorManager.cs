@@ -155,6 +155,16 @@ public class PredatorManager
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
     }
 
+    public static int CheckForPredatorEffort(GamePlayer killedPlayer, GamePlayer killerPlayer)
+    {
+        var bountyCheck = ActiveBounties.FirstOrDefault(bounty => bounty.Predator == killedPlayer);
+        if (bountyCheck == null || bountyCheck.Prey != killerPlayer) return 0;
+
+        double reward = killerPlayer.RealmPointsValue;
+        reward = reward * (1.0 - killerPlayer.Health / (double)killerPlayer.MaxHealth);
+        return (int)reward;
+    }
+
     public static void StartTimeoutCountdownFor(GamePlayer player)
     {
         if (player.PredatorTimeoutTimer.IsAlive) return;
@@ -182,7 +192,7 @@ public class PredatorManager
             if (PreyBounty != null)
             {
                 PreyBounty.Predator.Out.SendMessage(
-                    $"Your prey has abandoned the hunt. A new target will be chosen soon.",
+                    $"Your prey has been claimed. A new target will be chosen soon.",
                     eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
                 ActiveBounties.Remove(PreyBounty);
                 QueuedPlayers.Add(PreyBounty.Predator);
