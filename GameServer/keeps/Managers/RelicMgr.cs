@@ -24,7 +24,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using System.Collections.Generic;
-
+using DOL.GS.PacketHandler.Client.v168;
 using log4net;
 
 namespace DOL.GS
@@ -323,10 +323,25 @@ namespace DOL.GS
 				}
 				else
 				{
-					bonus += ServerProperties.Properties.RELIC_OWNING_BONUS*0.01;
+					var cache = bonus;
+					switch (GetDaysSinceCapture(rel))
+					{
+						case <1:
+							bonus += ServerProperties.Properties.RELIC_OWNING_BONUS*0.01 * 2;
+							break;
+						case <3:
+							bonus += ServerProperties.Properties.RELIC_OWNING_BONUS*0.01 * 1.5;
+							break;
+						case < 7:
+							bonus += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
+							break;
+						default:
+							bonus += ServerProperties.Properties.RELIC_OWNING_BONUS*0.01 * 0.5;
+							break;
+					}
 				}
 			}
-			
+
 			// Bonus apply only if owning original relic
 			if (owningSelf)
 				return bonus;

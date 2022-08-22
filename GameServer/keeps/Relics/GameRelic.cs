@@ -28,7 +28,7 @@ namespace DOL.GS
 		GamePlayer m_currentCarrier = null;
 		GameRelicPad m_currentRelicPad = null;
 		GameRelicPad m_returnRelicPad = null;
-		DateTime m_lastCapturedDate = DateTime.UnixEpoch;
+		DateTime m_lastCapturedDate = DateTime.Now;
 		ECSGameTimer m_currentCarrierTimer;
 		DBRelic m_dbRelic;
 		eRelicType m_relicType;
