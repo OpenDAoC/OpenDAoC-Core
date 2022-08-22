@@ -285,6 +285,19 @@ public class ConquestManager
         return nearby;
     }
     
+    public bool IsPlayerInSafeZone(GamePlayer player)
+    {
+        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AbstractArea;
+
+        if (area?.Description is "Druim Ligen" or "Druim Cain" or "Svasud Faste" or "Vindsaul Faste" or "Castle Sauvage" or "Snowdonia Fortress" || !player.CurrentZone.IsOF)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     public bool IsPlayerNearFlag(GamePlayer player)
     {
         bool nearby = false;

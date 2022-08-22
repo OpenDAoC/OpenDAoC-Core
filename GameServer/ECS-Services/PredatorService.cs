@@ -41,7 +41,7 @@ public class PredatorService
                     .FirstOrDefault() as AbstractArea;
                 
                 //if user is not in an RvR zone, or is in DF
-                if (activePlayer.CurrentZone is {IsRvR: false})
+                if (ConquestService.ConquestManager.IsPlayerInSafeZone(activePlayer))
                 {
                     if(!activePlayer.PredatorTimeoutTimer.IsAlive)
                         PredatorManager.StartTimeoutCountdownFor(activePlayer);

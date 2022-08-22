@@ -8635,6 +8635,11 @@ namespace DOL.GS
 			//effectListComponent.CancelAll();
 
             IsSwimming = false;
+            
+            if (PredatorManager.PlayerIsActive(this))
+            {
+                PredatorManager.RemoveActivePlayer(this);
+            }
 
             if (HCFlag)
             {
