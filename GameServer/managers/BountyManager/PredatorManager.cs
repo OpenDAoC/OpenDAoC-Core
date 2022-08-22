@@ -126,9 +126,9 @@ public class PredatorManager
             DisqualifiedPlayers.Remove(player);
         }
 
-        if (!ConquestService.ConquestManager.IsPlayerNearConquest(player))
+        if (!ConquestService.ConquestManager.IsPlayerInConquestArea(player))
         {
-            player.Out.SendMessage($"You must hunt within the active conquest zone. Use the command again when within 50,000 units of the conquest target.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"You must hunt within the active conquest zone. Try again after entering the active frontier.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
             return;
         }
         

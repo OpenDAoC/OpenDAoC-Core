@@ -8399,7 +8399,7 @@ namespace DOL.GS
                         publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
                     }
 
-                    if(ConquestService.ConquestManager.IsPlayerNearConquest(this))
+                    if(ConquestService.ConquestManager.IsPlayerInConquestArea(this))
                         ConquestService.ConquestManager.AddContributor(this);
                 }
             }

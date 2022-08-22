@@ -451,6 +451,8 @@ public class ConquestManager
             //pick an assault target in next tier if all are captured
             if (allKeepsOfTierAreCaptured && objectiveWeight < 3) objectiveWeight++;
 
+            if (GetFrontierPlayerCount() > 40 && objectiveWeight == 1) objectiveWeight++;
+
             switch (keep.OriginalRealm)
             {
                 case eRealm.Albion:
@@ -487,6 +489,22 @@ public class ConquestManager
         {
             SetDefensiveKeepForRealm(keep.Realm);
         }
+    }
+
+    private int GetFrontierPlayerCount()
+    {
+        int frontiers = 0;
+        IList<GameClient> clients = WorldMgr.GetAllClients();
+        foreach (GameClient c in clients)
+        {
+            if (c == null)
+                continue;
+            
+            if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)ePrivLevel.Player)
+                frontiers++;
+        }
+
+        return frontiers;
     }
 
     private void SetDefensiveKeepForRealm(eRealm realm, int minimumValue)
