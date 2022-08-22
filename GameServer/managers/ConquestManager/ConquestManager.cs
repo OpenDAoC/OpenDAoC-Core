@@ -272,19 +272,15 @@ public class ConquestManager
 
     public bool IsPlayerNearConquest(GamePlayer player)
     {
-        bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 7500;
+        bool nearby = player.CurrentRegion.ID == ActiveObjective.Keep.CurrentRegion.ID;
 
-        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
-            nearby = true;
+        if (!nearby) return nearby; //bail early to skip the GetAreas call if unneeded
         
-        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
-            nearby = true;
-        
-        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
-            nearby = true;
-        
-        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
-            nearby = true;
+        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AbstractArea;
+
+        if (((!player.CurrentZone.IsRvR && area is not {Description: "Druim Ligen"}) || player.CurrentZone.ID == 249))
+            nearby = false;
 
         return nearby;
     }
