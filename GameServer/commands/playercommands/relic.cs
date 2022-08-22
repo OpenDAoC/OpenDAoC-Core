@@ -16,6 +16,8 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 */
+
+using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using System.Collections;
@@ -73,27 +75,33 @@ namespace DOL.GS.Commands
                     case eRealm.Albion:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             if (relic.RelicType == eRelicType.Magic)
-								albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             break;
                         }
 
                     case eRealm.Midgard:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             if (relic.RelicType == eRelicType.Magic)
-								midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             break;
                         }
 
                     case eRealm.Hibernia:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             if (relic.RelicType == eRelicType.Magic)
-								hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc;
+								hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " " +
+                                         "\nLast Capture " + RelicMgr.GetDaysSinceCapture(relic) + " days ago";
                             break;
                         }
                 }

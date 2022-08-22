@@ -156,6 +156,12 @@ namespace DOL.GS
 			log.Debug(m_relics.Count + " relic" + ((m_relics.Count > 1) ? "s were" : " was") + " loaded.");
 			return true;
 		}
+		
+		public static int GetDaysSinceCapture(GameRelic relic)
+		{
+			TimeSpan daysPassed = DateTime.Now.Subtract(relic.LastCaptureDate);
+			return daysPassed.Days;
+		}
 
 
 		/// <summary>

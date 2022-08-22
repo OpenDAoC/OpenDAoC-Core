@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System;
 using DOL.Database.Attributes;
 
 namespace DOL.Database
@@ -36,7 +38,7 @@ namespace DOL.Database
 		private int m_originalRealm;
 		private int m_lastRealm;
 		private int m_type;
-
+		private DateTime m_lastCaptureDate;
 
 
 		/// <summary>
@@ -213,6 +215,20 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_type = value;
+			}
+		}
+		
+		[DataElement(AllowDbNull=true)]
+		public DateTime LastCaptureDate
+		{
+			get
+			{
+				return m_lastCaptureDate;
+			}
+			set
+			{
+				Dirty = true;
+				m_lastCaptureDate = value;
 			}
 		}
 	}

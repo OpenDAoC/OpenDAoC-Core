@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -234,6 +235,8 @@ namespace DOL.GS
 					target.RaiseRealmLoyaltyFloor(2);
 					target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
 				}
+
+				relic.LastCaptureDate = DateTime.Now;
 
 				Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
 			}

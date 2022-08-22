@@ -28,6 +28,7 @@ namespace DOL.GS
 		GamePlayer m_currentCarrier = null;
 		GameRelicPad m_currentRelicPad = null;
 		GameRelicPad m_returnRelicPad = null;
+		DateTime m_lastCapturedDate = DateTime.UnixEpoch;
 		ECSGameTimer m_currentCarrierTimer;
 		DBRelic m_dbRelic;
 		eRelicType m_relicType;
@@ -88,6 +89,12 @@ namespace DOL.GS
 			{
 				m_lastRealm = value;
 			}
+		}
+
+		public DateTime LastCaptureDate
+		{
+			get { return m_lastCapturedDate; }
+			set { m_lastCapturedDate = value; }
 		}
 
 		/// <summary>
@@ -504,6 +511,7 @@ namespace DOL.GS
 			Realm = (eRealm)m_dbRelic.Realm;
 			m_originalRealm = (eRealm)m_dbRelic.OriginalRealm;
 			m_lastRealm = (eRealm)m_dbRelic.LastRealm;
+			m_lastCapturedDate = m_dbRelic.LastCaptureDate;
 
 
 			//get constant values
@@ -549,6 +557,7 @@ namespace DOL.GS
 			m_dbRelic.X = X;
 			m_dbRelic.Y = Y;
 			m_dbRelic.Z = Z;
+			m_dbRelic.LastCaptureDate = m_lastCapturedDate;
 
 			if (InternalID == null)
 			{
