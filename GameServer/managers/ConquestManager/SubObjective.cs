@@ -142,7 +142,7 @@ public class SubObjective
             }
         });
         
-        Parallel.ForEach(FlagObject.GetPlayersInRadius(25000, false).OfType<GamePlayer>(), player =>
+        Parallel.ForEach(FlagObject.GetPlayersInRadius(50000, false).OfType<GamePlayer>(), player =>
         {
             if (player.Realm == CapturingRealm)
             {
@@ -200,7 +200,7 @@ public class SubObjective
         else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
-            ConquestService.ConquestManager.AddContributors(nearbyPlayers.OfType<GamePlayer>().Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
+            ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
         }
     }
     

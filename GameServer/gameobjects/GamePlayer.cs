@@ -8398,6 +8398,9 @@ namespace DOL.GS
                         playerMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
                         publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
                     }
+
+                    if(ConquestService.ConquestManager.IsPlayerNearConquest(this))
+                        ConquestService.ConquestManager.AddContributor(this);
                 }
             }
 
