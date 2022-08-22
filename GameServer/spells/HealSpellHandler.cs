@@ -362,7 +362,7 @@ namespace DOL.GS.Spells
             //check for conquest activity
             if (target is GamePlayer tp)
             {
-                if(ConquestService.ConquestManager.IsPlayerNearConquest(tp))
+                if(ConquestService.ConquestManager.IsPlayerInConquestArea(tp))
                     ConquestService.ConquestManager.AddContributor(tp);
             }
 

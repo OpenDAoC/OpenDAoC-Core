@@ -82,7 +82,7 @@ namespace DOL.GS.Keeps
 
 		public override void ProcessDeath(GameObject killer)
 		{
-			if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerInConquestZone(p))
+			if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerNearConquestObjective(p))
 			{
 				ConquestService.ConquestManager.AddContributors(this.XPGainers.Keys.OfType<GamePlayer>().ToList());
 			}

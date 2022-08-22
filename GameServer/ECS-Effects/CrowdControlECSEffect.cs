@@ -24,7 +24,7 @@ namespace DOL.GS
             //check for conquest activity
             if (Caster is GamePlayer caster)
             {
-                if(ConquestService.ConquestManager.IsPlayerNearConquest(caster))
+                if(ConquestService.ConquestManager.IsPlayerInConquestArea(caster))
                     ConquestService.ConquestManager.AddContributor(caster);
             }
         }

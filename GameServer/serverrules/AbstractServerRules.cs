@@ -1860,7 +1860,7 @@ namespace DOL.GS.ServerRules
 				//check for conquest activity
 				if (living is GamePlayer lp)
 				{
-					if(ConquestService.ConquestManager.IsPlayerNearConquest(lp))
+					if(ConquestService.ConquestManager.IsPlayerInConquestArea(lp))
 						ConquestService.ConquestManager.AddContributor(lp);
 				}
 

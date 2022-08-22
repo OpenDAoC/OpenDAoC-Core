@@ -270,7 +270,7 @@ public class ConquestManager
         }
     }
 
-    public bool IsPlayerNearConquest(GamePlayer player)
+    public bool IsPlayerInConquestArea(GamePlayer player)
     {
         bool nearby = player.CurrentRegion.ID == ActiveObjective.Keep.CurrentRegion.ID;
 
@@ -304,7 +304,7 @@ public class ConquestManager
         return nearby;
     }
     
-    public bool IsPlayerInConquestZone(GamePlayer player)
+    public bool IsPlayerNearConquestObjective(GamePlayer player)
     {
         if (ActiveAlbionObjective == null || ActiveHiberniaObjective == null || ActiveMidgardObjective == null) return false;
         
