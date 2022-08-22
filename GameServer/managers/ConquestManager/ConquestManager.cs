@@ -32,8 +32,6 @@ public class ConquestManager
     public long LastConquestStartTime;
     public long LastConquestStopTime;
     public long LastConquestWindowStart;
-    
-    private int _captureAward = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
 
     public eRealm ActiveConquestRealm = (eRealm)Util.Random(1, 3);
 
@@ -244,11 +242,11 @@ public class ConquestManager
     {
         foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            int awardBase = _captureAward;
-            if (!primaryObjective) awardBase /= 2;
-            double flagMod = 1 + 0.25 * ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
-            player.GainRealmPoints((long)(awardBase/2 * flagMod), false);
-            AtlasROGManager.GenerateOrbAmount(player, (int)(awardBase * flagMod));
+            int awardBase = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
+            if (!primaryObjective) awardBase = (int)(awardBase * 0.75);
+            int numFlags = ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
+            player.GainRealmPoints((long)(awardBase + (numFlags * 200)), false);
+            AtlasROGManager.GenerateOrbAmount(player, (int)(awardBase * numFlags));
         }
     }
     
