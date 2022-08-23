@@ -158,7 +158,7 @@ public class PredatorManager
     public static int CheckForPredatorEffort(GamePlayer killedPlayer, GamePlayer killerPlayer)
     {
         var bountyCheck = ActiveBounties.FirstOrDefault(bounty => bounty.Predator == killedPlayer);
-        if (bountyCheck == null || bountyCheck.Prey != killerPlayer) return 0;
+        if (bountyCheck == null || killerPlayer == null || bountyCheck.Prey != killerPlayer) return 0;
 
         double reward = killerPlayer.RealmPointsValue;
         reward = reward * (1.0 - killerPlayer.Health / (double)killerPlayer.MaxHealth);
