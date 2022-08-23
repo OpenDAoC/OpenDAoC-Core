@@ -2025,7 +2025,7 @@ namespace DOL.GS
 			//modify interrupt chance by mob con
 			double mod = GetConLevel(attacker);
 			double chance = BaseInterruptChance;
-			chance += mod * 33;
+			chance += mod * 15;
 			chance = Math.Max(1, chance);
 			chance = Math.Min(99, chance);
 			//if (attacker is GamePlayer) chance = 99;
