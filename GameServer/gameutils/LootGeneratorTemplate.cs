@@ -408,6 +408,9 @@ namespace DOL.GS
                                                     1000; //reduce cooldown by 1s per loyalty day up to 30s cap
                                             }
 
+                                            var numRelics = RelicMgr.GetRelicCount(player.Realm);
+                                            if (numRelics > 0) nextDropTime -= 10000 * numRelics;
+
                                             loot.AddFixed(drop, lootTemplate.Count);
                                             player.TempProperties.setProperty(XPItemKey, nextDropTime);
 
@@ -554,6 +557,9 @@ namespace DOL.GS
                                                     tmpLoyal *
                                                     1000; //reduce cooldown by 1s per loyalty day up to 30s cap
                                             }
+                                            
+                                            var numRelics = RelicMgr.GetRelicCount(player.Realm);
+                                            if (numRelics > 0) nextDropTime -= 10000 * numRelics;
 
                                             loot.AddFixed(drop, lootTemplate.Count);
                                             player.TempProperties.setProperty(XPItemKey, nextDropTime);
