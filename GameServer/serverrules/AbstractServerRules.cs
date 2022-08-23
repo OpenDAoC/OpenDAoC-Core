@@ -1554,6 +1554,8 @@ namespace DOL.GS.ServerRules
 						double levelPercent =
 							((double) (player.Experience + xpReward - player.ExperienceForCurrentLevel) /
 							 (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel)) * 100;
+						double relicXp =  (baseXP * (0.05 * RelicMgr.GetRelicCount(player.Realm)));
+						double relicPercent = ((double) relicXp / (baseXP)) * 100.0;
 
 						player.Out.SendMessage(
 							$"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent.ToString("0.##")}% done with current level",
@@ -1580,6 +1582,11 @@ namespace DOL.GS.ServerRules
 						if (outpostXP > 0)
 							player.Out.SendMessage(
 								$"Outpost: {outpostXP.ToString("N0", format)} | {outpostPercent.ToString("0.##")}% bonus",
+								eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						
+						if (relicXp > 0)
+							player.Out.SendMessage(
+								$"Relic: {relicXp.ToString("N0", format)} | {relicPercent.ToString("0.##")}% bonus",
 								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);

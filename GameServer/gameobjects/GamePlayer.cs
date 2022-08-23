@@ -5520,6 +5520,9 @@ namespace DOL.GS
             {
                 expTotal = ExperienceForCurrentLevel - Experience;
             }
+            
+            int relicBonus = (int)(baseXp * (0.05 * RelicMgr.GetRelicCount(this.Realm)));
+            if (relicBonus > 0) expTotal += relicBonus;
 
             if (sendMessage && expTotal > 0)
             {
@@ -5531,6 +5534,7 @@ namespace DOL.GS
                 string expSoloBonusStr = "";
                 string expRealmLoyaltyStr = "";
                 string expGuildBonusStr = "";
+                string expRelicBonusStr = "";
 
                 if (expCampBonus > 0)
                 {
@@ -5549,6 +5553,9 @@ namespace DOL.GS
                 {
                     expRealmLoyaltyStr = "("+ RealmLoyaltyBonus.ToString("N0", format) + " realm loyalty bonus)";
                 }
+
+                if (relicBonus > 0)
+                    expRelicBonusStr = "("+ relicBonus.ToString("N0", format) + " relic bonus)";
                     
                 if(atlasBonus > 0)
                 {
@@ -5560,7 +5567,7 @@ namespace DOL.GS
                     expGuildBonusStr = "("+ guildBonus.ToString("N0", format) + " Guild bonus)";
                 }
 
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr + expGuildBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr + expGuildBonusStr + expRelicBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             Experience += expTotal;
