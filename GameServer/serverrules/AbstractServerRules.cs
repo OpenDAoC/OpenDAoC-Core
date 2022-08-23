@@ -1867,7 +1867,7 @@ namespace DOL.GS.ServerRules
 				//check for conquest activity
 				if (living is GamePlayer lp)
 				{
-					if(ConquestService.ConquestManager.IsPlayerInConquestArea(lp))
+					if(ConquestService.ConquestManager.IsPlayerInConquestArea(lp) && lp.Realm != killedPlayer.Realm)
 						ConquestService.ConquestManager.AddContributor(lp);
 				}
 
