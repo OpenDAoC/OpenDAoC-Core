@@ -6,7 +6,7 @@ using System;
 
 namespace DOL.GS
 {
-	public class Oona : GameEpicBoss
+	public class Oona : GameEpicNPC
 	{
 		public Oona() : base() { }
 		public override int GetResist(eDamageType damageType)
@@ -74,7 +74,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
