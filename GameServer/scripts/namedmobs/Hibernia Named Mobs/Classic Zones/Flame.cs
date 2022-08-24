@@ -7,7 +7,7 @@ using DOL.GS;
 #region Epic Flame Mob
 namespace DOL.GS
 {
-	public class Flame : GameEpicBoss
+	public class Flame : GameEpicNPC
 	{
 		public Flame() : base() { }
 
@@ -54,7 +54,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 10000; }
+			get { return 7000; }
 		}
 		public override bool AddToWorld()
 		{

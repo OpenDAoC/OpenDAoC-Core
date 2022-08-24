@@ -6,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-	public class Caithor : GameEpicBoss
+	public class Caithor : GameEpicNPC
 	{
 		public Caithor() : base() { }
 
@@ -53,7 +53,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 10000; }
 		}
 		public static bool RealCaithorUp = false;
 		public override bool AddToWorld()
@@ -188,7 +188,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 10000; }
+			get { return 7000; }
 		}
 		#region Stats
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }

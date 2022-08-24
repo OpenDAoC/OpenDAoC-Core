@@ -7,7 +7,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class CailleachUragaig : GameEpicBoss
+	public class CailleachUragaig : GameEpicNPC
 	{
 		public CailleachUragaig() : base() { }
 
@@ -83,7 +83,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{

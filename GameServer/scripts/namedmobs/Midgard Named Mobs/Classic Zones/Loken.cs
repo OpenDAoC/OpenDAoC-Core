@@ -5,7 +5,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class Loken : GameEpicBoss
+	public class Loken : GameEpicNPC
 	{
 		public Loken() : base() { }
 		public override int GetResist(eDamageType damageType)
@@ -73,7 +73,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 15000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{

@@ -152,8 +152,8 @@ namespace DOL.AI.Brain
 				//}				
 				//new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDecayingJunk), Util.Random(25000,35000));
 				//CanAddJunk = true;
-
-				Body.CastSpell(SpectralDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				if(ad.Attacker is not GamePet)
+					Body.CastSpell(SpectralDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			}
 			base.OnAttackedByEnemy(ad);
 		}
@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;
-					spell.RecastDelay = 1;
+					spell.RecastDelay = 2;
 					spell.ClientEffect = 9191;
 					spell.Icon = 9191;
 					spell.TooltipId = 9191;
