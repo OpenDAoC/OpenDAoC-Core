@@ -226,7 +226,7 @@ namespace DOL.AI.Brain
 #region Bechard
 namespace DOL.GS
 {
-	public class Bechard : GameEpicBoss
+	public class Bechard : GameEpicNPC
 	{
 		public Bechard() : base() { }
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -295,7 +295,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 10000; }
+			get { return 7000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -391,7 +391,7 @@ namespace DOL.AI.Brain
 #region Silcharde
 namespace DOL.GS
 {
-	public class Silcharde : GameEpicBoss
+	public class Silcharde : GameEpicNPC
 	{
 		public Silcharde() : base() { }
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -460,7 +460,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 10000; }
+			get { return 7000; }
 		}
 		public override bool AddToWorld()
 		{
