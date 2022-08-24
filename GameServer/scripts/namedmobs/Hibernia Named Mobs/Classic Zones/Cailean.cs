@@ -7,7 +7,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class Cailean : GameEpicBoss
+	public class Cailean : GameEpicNPC
 	{
 		public Cailean() : base() { }
 
@@ -84,7 +84,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
