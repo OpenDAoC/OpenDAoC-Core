@@ -6,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-	public class GreenMaw : GameEpicBoss
+	public class GreenMaw : GameEpicNPC
 	{
 		public GreenMaw() : base() { }
 
@@ -53,7 +53,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 20000; }
+			get { return 10000; }
 		}
 		public override bool AddToWorld()
 		{
@@ -178,7 +178,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 6000; }
+			get { return 5000; }
 		}
 		#region Stats
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
@@ -279,7 +279,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 4000; }
+			get { return 3000; }
 		}
 		#region Stats
 		public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
