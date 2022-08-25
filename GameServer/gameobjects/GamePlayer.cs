@@ -5290,6 +5290,55 @@ namespace DOL.GS
             }
         }
 
+        public void ForceGainExperience(long expTotal)
+        {
+            if (IsLevelSecondStage)
+            {
+                if (Experience + expTotal < ExperienceForCurrentLevelSecondStage)
+                {
+                    expTotal = ExperienceForCurrentLevelSecondStage - Experience;
+                }
+            }
+            else if (Experience + expTotal < ExperienceForCurrentLevel)
+            {
+                expTotal = ExperienceForCurrentLevel - Experience;
+            }
+            
+            
+            Experience += expTotal;
+            
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", expTotal.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+            if (expTotal >= 0)
+            {
+                //Level up
+                if (Level >= 5 && !CharacterClass.HasAdvancedFromBaseClass())
+                {
+                    if (expTotal > 0)
+                    {
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.CannotRaise"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.TalkToTrainer"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    }
+                }
+                else if (Level >= 40 && Level < MaxLevel && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
+                {
+                    OnLevelSecondStage();
+                    Notify(GamePlayerEvent.LevelSecondStage, this);
+                }
+                else if (Level < MaxLevel && Experience >= ExperienceForNextLevel)
+                {
+                    Level++;
+                }
+
+                if(Level >= 50)
+                {
+
+                }
+            }
+            Out.SendUpdatePoints();
+        }
+        
+
         /// <summary>
         /// Called whenever this player gains experience
         /// </summary>

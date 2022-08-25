@@ -1697,7 +1697,7 @@ namespace DOL.GS.Quests
 					{
 						if (RewardXP > 0)
 						{
-							m_questPlayer.GainExperience(eXPSource.Quest, RewardXP);
+							m_questPlayer.ForceGainExperience(RewardXP);
 						}
 	
 						if (RewardRP > 0)
@@ -2032,7 +2032,7 @@ namespace DOL.GS.Quests
 
 							if (m_rewardXPs.Count > 0 && m_rewardXPs[0] > 0)
 							{
-								player.GainExperience(eXPSource.Quest, m_rewardXPs[0]);
+								player.ForceGainExperience(m_rewardXPs[0]);
 							}
 							
 							if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
@@ -2254,7 +2254,7 @@ namespace DOL.GS.Quests
 								rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
 							else if (lvlXP > rewardXP)
 								rewardXP = lvlXP;
-							player.GainExperience(eXPSource.Quest, rewardXP);
+							player.ForceGainExperience(rewardXP);
 						}
 						if (m_sourceTexts.Count > 0)
 						{
@@ -2281,7 +2281,7 @@ namespace DOL.GS.Quests
 										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
 									else if (lvlXP > rewardXP)
 										rewardXP = lvlXP;
-									player.GainExperience(eXPSource.Quest, rewardXP);
+									player.ForceGainExperience(rewardXP);
 								}
 								//remove only the remaining turn-ins
 								item.Count -= 1;
@@ -2300,7 +2300,7 @@ namespace DOL.GS.Quests
 										rewardXP = player.GetExperienceNeededForLevel(player.Level) / 50;
 									else if (lvlXP > rewardXP)
 										rewardXP = lvlXP;
-									player.GainExperience(eXPSource.Quest, rewardXP);
+									player.ForceGainExperience(rewardXP);
 								}
 								//remove only the remaining turn-ins
 								item.Count -= 1;
@@ -2696,7 +2696,7 @@ namespace DOL.GS.Quests
 
 								if (m_rewardXPs.Count > 0 && m_rewardXPs[0] > 0)
 								{
-									player.GainExperience(eXPSource.Quest, m_rewardXPs[0]);
+									player.ForceGainExperience(m_rewardXPs[0]);
 								}
 								
 								if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
@@ -2930,7 +2930,7 @@ namespace DOL.GS.Quests
 								return false;
 							}
 	
-							m_questPlayer.GainExperience(eXPSource.Quest, rewardXP);
+							m_questPlayer.ForceGainExperience(rewardXP);
 						}
 	
 						if (rewardRP > 0)
@@ -3014,7 +3014,7 @@ namespace DOL.GS.Quests
 								return false;
 							}
 	
-							m_questPlayer.GainExperience(eXPSource.Quest, rewardXP);
+							m_questPlayer.ForceGainExperience(rewardXP);
 						}
 	
 						if (rewardRP > 0)

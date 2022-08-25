@@ -352,8 +352,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				m_questPlayer.GainExperience(eXPSource.Quest,
-					(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2);
 				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 2, 0, Util.Random(50)),
 					"You receive {0} as a reward.");
 				AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);

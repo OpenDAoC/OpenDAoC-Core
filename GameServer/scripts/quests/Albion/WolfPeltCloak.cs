@@ -339,7 +339,7 @@ namespace DOL.GS.Quests.Albion
                     RemoveItem(_don, m_questPlayer, _wolfPeltCloak);
                     _don.SayTo(player, "Well done! You've helped the children get over the harsh winter.");
 
-                    player.GainExperience(eXPSource.Quest, 200, true);
+                    player.ForceGainExperience(200);
 
                     return;
                 }

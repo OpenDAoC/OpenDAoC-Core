@@ -405,7 +405,7 @@ namespace DOL.GS.Quests.Hibernia
 
         public override void FinishQuest()
         {
-            m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
+            m_questPlayer.ForceGainExperience( 20);
             m_questPlayer.AddMoney(Money.GetMoney(0, 0, 0, 6, 0), "You receive {0} as a reward.");
 
             base.FinishQuest();
