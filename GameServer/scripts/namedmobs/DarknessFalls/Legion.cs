@@ -9,6 +9,7 @@ using DOL.GS.ServerProperties;
 using log4net;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace DOL.GS.Scripts
 {
@@ -659,24 +660,30 @@ namespace DOL.AI.Brain
         {
             return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
         }
+        private static int topPlayersToIngore = 2;//we determine here how many players from top aggro table will be ignored in teleporting
+        private static Random random = new Random();
         private int ThrowPlayer(ECSGameTimer timer)
         {
+            //int teleportedPlayers = 0;
             if (Body.IsAlive && HasAggro)
             {
-                foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
+                IDictionary<GameLiving, long> aggroList = (Body.Brain as LegionBrain).AggroTable;
+                //IList enemies = new ArrayList(AggroTable.Keys);
+                IOrderedEnumerable<KeyValuePair<GameLiving, long>> tempAggroTable = aggroList.OrderByDescending(x => x.Value).Skip(topPlayersToIngore).OrderBy(x => random.Next());
+                foreach(KeyValuePair<GameLiving,long> items in tempAggroTable)
                 {
-                    if (player != null)
+                    //if(items.Key != null && items.Key.IsAlive && items.Key is GamePlayer)
+                       // log.Debug($"IDictionary player: Name = {items.Key.Name} ,AggroValue = {items.Value}");
+                    if (items.Key != null && items.Key.IsAlive && items.Key is GamePlayer player)
                     {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        if (!Port_Enemys.Contains(player))
                         {
-                            if (!Port_Enemys.Contains(player))
-                            {
-                                if (player != Body.TargetObject)//dont throw main target
-                                    Port_Enemys.Add(player);
-                            }
+                            Port_Enemys.Add(player);
+                            //log.Debug($"Adding player: Name = {player.Name}");
                         }
                     }
                 }
+
                 if (Port_Enemys.Count > 0)
                 {
                     randomlyPickedPlayers = GetRandomElements(Port_Enemys, Util.Random(8, 16));//pick 5-8players from list to new list
@@ -694,7 +701,9 @@ namespace DOL.AI.Brain
                         randomlyPickedPlayers.Clear();//clear list after port
                     }
                 }
+                //}
                 CanThrow = false;// set to false, so can throw again
+                Port_Enemys.Clear();
             }
             return 0;
         }
