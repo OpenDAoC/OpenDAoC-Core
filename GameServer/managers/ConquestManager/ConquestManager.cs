@@ -300,16 +300,16 @@ public class ConquestManager
     {
         bool nearby = false;
 
-        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective?.ObjectiveOne?.FlagObject.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective?.ObjectiveTwo?.FlagObject.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective?.ObjectiveThree?.FlagObject.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective?.ObjectiveFour?.FlagObject.GetDistance(player) <= 750)
             nearby = true;
 
         return nearby;
@@ -317,7 +317,7 @@ public class ConquestManager
     
     public bool IsPlayerNearConquestObjective(GamePlayer player)
     {
-        if (ActiveAlbionObjective == null || ActiveHiberniaObjective == null || ActiveMidgardObjective == null) return false;
+        if (ActiveAlbionObjective == null || ActiveHiberniaObjective == null || ActiveMidgardObjective == null || ActiveObjective == null || ActiveObjective.Keep == null) return false;
         
         bool nearby = player.GetDistance(new Point2D(ActiveObjective.Keep.X, ActiveObjective.Keep.Y)) <= 50000;
 
@@ -327,16 +327,16 @@ public class ConquestManager
                 nearby = true;
         }
 
-        if (ActiveObjective.ObjectiveOne.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective.ObjectiveOne != null && ActiveObjective.ObjectiveOne.FlagObject?.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveTwo.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective.ObjectiveTwo != null && ActiveObjective.ObjectiveTwo.FlagObject?.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveThree.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective.ObjectiveThree != null &&ActiveObjective.ObjectiveThree.FlagObject?.GetDistance(player) <= 750)
             nearby = true;
         
-        if (ActiveObjective.ObjectiveFour.FlagObject.GetDistance(player) <= 750)
+        if (ActiveObjective.ObjectiveFour != null &&ActiveObjective.ObjectiveFour.FlagObject?.GetDistance(player) <= 750)
             nearby = true;
 
         return nearby;
@@ -508,7 +508,7 @@ public class ConquestManager
         IList<GameClient> clients = WorldMgr.GetAllClients();
         foreach (GameClient c in clients)
         {
-            if (c == null)
+            if (c == null || c.Player == null || c.Player.CurrentZone == null)
                 continue;
             
             if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)ePrivLevel.Player)
