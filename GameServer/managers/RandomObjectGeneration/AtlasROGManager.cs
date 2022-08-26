@@ -69,8 +69,29 @@ namespace DOL.GS {
             }
         }
 
+        public static void GenerateMinimumUtilityROG(GameLiving living, byte minimumUtility)
+        {
+            if (living != null && living is GamePlayer)
+            {
+                GamePlayer player = living as GamePlayer;
+                eRealm realm = player.Realm;
+                eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
 
-        public static void GenerateJewel(GameLiving living, byte itemLevel)
+                GeneratedUniqueItem item = null;
+                item = new GeneratedUniqueItem(realm, charclass, (byte)(living.Level+1), minimumUtility);
+                item.AllowAdd = true;
+                item.IsTradable = true;
+
+                GameServer.Database.AddObject(item);
+                InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+                invitem.IsROG = true;
+                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
+        }
+
+
+        public static void GenerateJewel(GameLiving living, byte itemLevel, int minimumUtility = 0)
         {
             if (living != null && living is GamePlayer)
             {
@@ -79,7 +100,12 @@ namespace DOL.GS {
                 eCharacterClass charclass = (eCharacterClass) player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
-                item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical);
+                
+                if(minimumUtility > 0)
+                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical, minimumUtility);
+                else
+                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical);
+                
                 item.AllowAdd = true;
                 item.IsTradable = true;
 
