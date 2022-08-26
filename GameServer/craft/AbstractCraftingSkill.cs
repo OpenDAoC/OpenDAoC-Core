@@ -652,8 +652,10 @@ namespace DOL.GS
 			return chance;
 		}
 		public virtual int GetCraftingTime(GamePlayer player, Recipe recipe)
-        {
-			double baseMultiplier = (recipe.Level / 100) + 1;
+		{
+			int craftLevel = recipe.Level;
+			craftLevel -= RelicMgr.GetRelicCount(player.Realm) * 2;
+			double baseMultiplier = (craftLevel / 100) + 1;
 
 			ushort materialsCount = 0;
 			foreach (var ingredient in recipe.Ingredients)
