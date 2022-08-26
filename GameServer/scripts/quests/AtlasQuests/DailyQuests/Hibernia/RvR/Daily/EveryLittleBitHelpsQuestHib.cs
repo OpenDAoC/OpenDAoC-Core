@@ -367,7 +367,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level,32,Util.Random(50)), "You receive {0} as a reward.");
 			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 250);
-			AtlasROGManager.GenerateJewel(m_questPlayer, 65);
+			AtlasROGManager.GenerateJewel(m_questPlayer, (byte)(m_questPlayer.Level + 1), m_questPlayer.Level + Util.Random(5, 15));
 			_playersKilledAlb = 0;
 			_playersKilledMid = 0;
 			
