@@ -653,9 +653,8 @@ namespace DOL.GS
 		}
 		public virtual int GetCraftingTime(GamePlayer player, Recipe recipe)
 		{
-			int craftLevel = recipe.Level;
-			craftLevel -= RelicMgr.GetRelicCount(player.Realm) * 2;
-			double baseMultiplier = (craftLevel / 100) + 1;
+			double baseMultiplier = (recipe.Level / 100) + 1;
+			if (baseMultiplier < 1) baseMultiplier = 1;
 
 			ushort materialsCount = 0;
 			foreach (var ingredient in recipe.Ingredients)
@@ -663,10 +662,17 @@ namespace DOL.GS
 				materialsCount += (ushort)ingredient.Count;
 			}
 
-			int craftingTime = (int)(baseMultiplier * materialsCount / 4);
+			var divisorMod = 4;
+			var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
+			if ( loyalDays > 30) divisorMod++;
+			if ( loyalDays > 20) divisorMod++;
+			if ( loyalDays > 10) divisorMod++;
+			int craftingTime = (int)(baseMultiplier * materialsCount / divisorMod);
 
 			// Player does check for capital city bonus as well
 			craftingTime = (int)(craftingTime / player.CraftingSpeed);
+
+			craftingTime = (int)(craftingTime * (1 - (.05 * RelicMgr.GetRelicCount(player.Realm))));
 
 			//keep bonuses reduction in crafting time
 			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_5, (eRealm)player.Realm))
