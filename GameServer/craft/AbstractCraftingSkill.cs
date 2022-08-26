@@ -659,7 +659,9 @@ namespace DOL.GS
 			ushort materialsCount = 0;
 			foreach (var ingredient in recipe.Ingredients)
 			{
-				materialsCount += (ushort)ingredient.Count;
+				var countMod = ingredient.Count;
+				if (countMod > 100) countMod /= 10;
+				materialsCount += (ushort)countMod;
 			}
 
 			var divisorMod = 4;
