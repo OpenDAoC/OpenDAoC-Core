@@ -4752,6 +4752,7 @@ namespace DOL.GS {
         private void CapUtility(int mobLevel, int utilityMinimum)
         {
             int cap = 0;
+            if (utilityMinimum < 1) utilityMinimum = 1;
 
             cap = mobLevel - 5;
             
@@ -4770,8 +4771,8 @@ namespace DOL.GS {
             double random = (80 + Util.Random(25)) / 100.0;
             cap = (int)Math.Floor(cap * random);
 
-            if (cap < utilityMinimum)
-                cap = utilityMinimum; //all items can gen with up to 15 uti
+            if (cap < 15)
+                cap = 15; //all items can gen with up to 15 uti
 
             if (this.ProcSpellID != 0 || this.ProcSpellID1 != 0)
                 cap = (int)Math.Floor(cap * .7); //proc items generate with lower utility
