@@ -160,7 +160,7 @@ namespace DOL.GS {
 
                     if (Util.Chance(chance))
                     {
-                        GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1));
+                        GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1), player.CurrentZone?.IsOF ?? false);
                         item = tmp;
                         item.MaxCount = 1;
                         loot.AddFixed(item, 1);
@@ -207,7 +207,7 @@ namespace DOL.GS {
             ItemTemplate item = null;
                 
                 
-            GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel);
+            GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel, player.CurrentZone?.IsOF ?? false);
             tmp.GenerateItemQuality(killedcon);
             //tmp.CapUtility(mob.Level + 1);
             item = tmp;

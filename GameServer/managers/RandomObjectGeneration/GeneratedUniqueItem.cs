@@ -180,7 +180,6 @@ namespace DOL.GS {
             this.IsDropable = true;
             this.IsPickable = true;
             this.IsTradable = true;
-            
             this.CapUtility(this.Level, utilityMinimum);
 
             if (this.Level > 51)
