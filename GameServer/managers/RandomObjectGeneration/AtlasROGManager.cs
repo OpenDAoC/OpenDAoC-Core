@@ -225,10 +225,15 @@ namespace DOL.GS {
             }
         }
 
-        public static GeneratedUniqueItem GenerateMonsterLootROG(eRealm realm, eCharacterClass charClass, byte level)
+        public static GeneratedUniqueItem GenerateMonsterLootROG(eRealm realm, eCharacterClass charClass, byte level, bool isFrontierKill)
         {
             GeneratedUniqueItem item = null;
-            item = new GeneratedUniqueItem(realm, charClass, level);
+            
+            if(isFrontierKill)
+                item = new GeneratedUniqueItem(realm, charClass, level, level - Util.Random(-5,10));
+            else
+                item = new GeneratedUniqueItem(realm, charClass, level, level - Util.Random(15,20));
+            
             item.AllowAdd = true;
             item.IsTradable = true;
             //item.CapUtility(level);
