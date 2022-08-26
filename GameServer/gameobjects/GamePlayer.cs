@@ -10100,6 +10100,11 @@ namespace DOL.GS
                                 {
                                     Out.SendMessage("In your state you can't discharge any object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
+                                else if ((type == 1 && SelfBuffChargeIDs.Contains(useItem.SpellID)) || 
+                                         (type == 2 && SelfBuffChargeIDs.Contains(useItem.SpellID1)))
+                                {
+                                    UseItemCharge(useItem, type);
+                                }
                                 else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
                                 {
                                     if ((CurrentRegion.Time - itemdelay) < itemreuse)
