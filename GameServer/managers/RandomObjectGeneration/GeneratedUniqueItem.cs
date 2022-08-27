@@ -4782,11 +4782,14 @@ namespace DOL.GS {
             if (GetTotalUtility() < utilityMinimum)
             {
                 int worstline = 1;
-                while (GetTotalUtility() < utilityMinimum)
+                int numAttempts = 0;
+                int utiScaleAttempts = 100;
+                while (GetTotalUtility() < utilityMinimum && numAttempts < utiScaleAttempts)
                 {
                     //find highest utility line on the item
                     worstline = GetLowestUtilitySingleLine();
                     //Console.WriteLine($"TotalUti: {GetTotalUtility()} worstline {worstline} ");
+                    numAttempts++;
 
                     //lower the value of it by
                     //1-5% for resist
