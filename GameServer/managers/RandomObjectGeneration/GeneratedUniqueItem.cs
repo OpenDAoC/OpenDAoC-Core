@@ -4783,7 +4783,7 @@ namespace DOL.GS {
             {
                 int worstline = 1;
                 int numAttempts = 0;
-                int utiScaleAttempts = 100;
+                int utiScaleAttempts = 25;
                 while (GetTotalUtility() < utilityMinimum && numAttempts < utiScaleAttempts)
                 {
                     //find highest utility line on the item
