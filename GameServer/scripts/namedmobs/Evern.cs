@@ -95,7 +95,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             EvernBrain.spawnfairy = false;
-            Idle = false;
+            //Idle = false;
             MaxSpeedBase = 300;
 
             Faction = FactionMgr.GetFactionByID(81);
@@ -168,23 +168,11 @@ namespace DOL.GS
             }
             base.Die(killer);
         }
-        public static bool Idle = false;
-        public override void WalkToSpawn(short speed)
-        {
-            speed = 300;
-            base.WalkToSpawn(speed);
-        }
-        public override void StartAttack(GameObject target)
-        {
-            if (Idle)
-                return;
-            base.StartAttack(target);
-        }
     }
 }
 namespace DOL.AI.Brain
 {
-    public class EvernBrain : StandardMobBrain
+    public class EvernBrain : EpicBossBrain
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -195,30 +183,11 @@ namespace DOL.AI.Brain
             ThinkInterval = 1500;
         }
         public static bool spawnfairy = false;
-        public static bool nearspawn = false;
         private bool RemoveAdds = false;
-        public int ReturnSpawn(ECSGameTimer timer)
-        {
-            ClearAggroList();
-            Evern.Idle = false;
-            return 0;
-        }
-        public int StartReturnSpawn(ECSGameTimer timer)
-        {
-            ClearAggroList();
-            Evern.Idle = true;
-            return 0;
-        }
         public override void Think()
         {
-            if(Body.IsNearSpawn() && nearspawn)
-            {
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ReturnSpawn), 1000);
-                nearspawn = false;
-            }
             if (!HasAggressionTable())
             {
-                //set state to RETURN TO SPAWN
                 Body.Health = Body.MaxHealth;
                 spawnfairy = false;
                 if (!RemoveAdds)
@@ -235,7 +204,7 @@ namespace DOL.AI.Brain
                     RemoveAdds = true;
                 }
             }
-            if (Body.InCombat && Body.IsAlive && HasAggro)
+            if (Body.IsAlive && HasAggro)
             {
                 RemoveAdds = false;
                 if (Body.TargetObject != null)
@@ -250,16 +219,9 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            if(Body.IsOutOfTetherRange && nearspawn==false)
-            {
-                Body.WalkToSpawn();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartReturnSpawn), 500);
-                nearspawn = true;
-            }
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000) && !HasAggro)
             {
                 Body.Health = Body.MaxHealth;
-                Evern.Idle = false;
 
                 foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
                 {

@@ -1,14 +1,19 @@
 using System.Text.RegularExpressions;
 using DOL.GS.ServerProperties;
 using DOL.GS.Scripts;
+using DOL.GS;
 
 namespace DOL.GS {
     public class GameEpicBoss : GameNPC {
         public GameEpicBoss() : base()
         {
             ScalingFactor = 80;
-            OrbsReward = Properties.EPICBOSS_ORBS;
-            
+            OrbsReward = Properties.EPICBOSS_ORBS;         
+        }
+        public override void WalkToSpawn(short speed)
+        {
+            speed = 350;
+            base.WalkToSpawn(speed);
         }
         public override bool HasAbility(string keyName)
         {
@@ -107,5 +112,55 @@ namespace DOL.GS {
                 base.Die(killer);
             }
         }
+    }
+}
+namespace DOL.AI.Brain
+{
+    public class EpicBossBrain : StandardMobBrain
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public EpicBossBrain()
+            : base() {}
+        public override void Think()
+        {
+            MoveToSpawnPoint();
+            base.Think();
+        }
+        #region MoveToSpawnPoint()
+        private bool Port_To_Spawn = false;
+        private void MoveToSpawnPoint()
+        {
+            if (HasAggro && Body.IsAlive && Body.IsOutOfTetherRange && !Port_To_Spawn)
+            {
+                //heal to max HP 
+                Body.Health = Body.MaxHealth; 
+                //move to spawm point
+                Body.X = Body.SpawnPoint.X;
+                Body.Y = Body.SpawnPoint.Y;
+                Body.Z = Body.SpawnPoint.Z;
+                Body.Heading = Body.SpawnHeading;
+                //remove effects: dots and bleeds
+                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime) && Body.IsAlive)
+                {
+                    var effect = EffectListService.GetEffectOnTarget(Body, eEffect.DamageOverTime);
+                    if (effect != null)
+                        EffectService.RequestImmediateCancelEffect(effect);//remove dot effect
+                }
+                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed) && Body.IsAlive)
+                {
+                    var effect2 = EffectListService.GetEffectOnTarget(Body, eEffect.Bleed);
+                    if (effect2 != null)
+                        EffectService.RequestImmediateCancelEffect(effect2);//remove dot effect
+                }
+                ClearAggroList();// clear aggro list
+                Port_To_Spawn = true;
+            }
+            if (HasAggro && Body.TargetObject != null)
+            {
+                Port_To_Spawn = false; //enable this flag again so boss can port again if is too far.
+            }
+        }
+        #endregion
     }
 }

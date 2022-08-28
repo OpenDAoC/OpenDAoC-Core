@@ -52,10 +52,10 @@ namespace DOL.GS.Scripts
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
-                default: return 70; // dmg reduction for rest resists
+                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                default: return 40; // dmg reduction for rest resists
             }
         }
         public override double GetArmorAF(eArmorSlot slot)
@@ -91,7 +91,6 @@ namespace DOL.GS.Scripts
 
             // demon
             BodyType = 2;
-            Race = 2001;
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(191);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
@@ -248,7 +247,7 @@ namespace DOL.GS.Scripts
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             //possible AttackRange
-            int distance = 1000;
+            int distance = 1400;
             
             if (source is GamePlayer || source is GamePet)
             {
@@ -309,7 +308,7 @@ namespace DOL.GS.Scripts
 
 namespace DOL.AI.Brain
 {
-    public class LegionBrain : StandardMobBrain
+    public class LegionBrain : EpicBossBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -552,7 +551,7 @@ namespace DOL.AI.Brain
                 #endregion
                 if (!CanThrow)
                 {
-                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 35000));//throw players
+                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
                     Body.TempProperties.setProperty("legion_throw", throwPlayer);
                     CanThrow = true;
                 }
@@ -625,16 +624,9 @@ namespace DOL.AI.Brain
                 //log.Warn("PlayerCountInLegionLair = " + PlayerCountInLegionLair + " and spawnAmount = "+ spawnAmount);
                 for (int i = 0; i < spawnAmount; i++)
                 {
-                    //var distanceDelta = Util.Random(0, 300);
                     var level = Util.Random(52, 58);
 
                     LegionAdd add = new LegionAdd();
-                    /*
-                     add.X = target.X + distanceDelta;
-                    add.Y = target.Y + distanceDelta;
-                    add.Z = target.Z;
-                    add.CurrentRegionID = target.CurrentRegionID;
-                    */
                     add.X = Body.X + Util.Random(-150, 150);
                     add.Y = Body.Y + Util.Random(-150, 150);
                     add.Z = Body.Z;
@@ -642,7 +634,6 @@ namespace DOL.AI.Brain
                     add.IsWorthReward = false;
                     add.Level = (byte)level;
                     add.AddToWorld();
-                    //add.StartAttack(target);
                 }
             }
         }
@@ -660,20 +651,16 @@ namespace DOL.AI.Brain
         {
             return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
         }
-        private static int topPlayersToIngore = 2;//we determine here how many players from top aggro table will be ignored in teleporting
+        private static int topPlayersToIngore = 5;//we determine here how many players from top aggro table will be ignored in teleporting
         private static Random random = new Random();
         private int ThrowPlayer(ECSGameTimer timer)
         {
-            //int teleportedPlayers = 0;
             if (Body.IsAlive && HasAggro)
             {
                 IDictionary<GameLiving, long> aggroList = (Body.Brain as LegionBrain).AggroTable;
-                //IList enemies = new ArrayList(AggroTable.Keys);
                 IOrderedEnumerable<KeyValuePair<GameLiving, long>> tempAggroTable = aggroList.OrderByDescending(x => x.Value).Skip(topPlayersToIngore).OrderBy(x => random.Next());
                 foreach(KeyValuePair<GameLiving,long> items in tempAggroTable)
                 {
-                    //if(items.Key != null && items.Key.IsAlive && items.Key is GamePlayer)
-                       // log.Debug($"IDictionary player: Name = {items.Key.Name} ,AggroValue = {items.Value}");
                     if (items.Key != null && items.Key.IsAlive && items.Key is GamePlayer player)
                     {
                         if (!Port_Enemys.Contains(player))
@@ -701,7 +688,6 @@ namespace DOL.AI.Brain
                         randomlyPickedPlayers.Clear();//clear list after port
                     }
                 }
-                //}
                 CanThrow = false;// set to false, so can throw again
                 Port_Enemys.Clear();
             }
@@ -727,7 +713,7 @@ namespace DOL.AI.Brain
                     spell.DamageType = (int)eDamageType.Body;
                     spell.Name = "Lifetap";
                     spell.Range = 0;
-                    spell.Radius = 1200;
+                    spell.Radius = 1000;
                     spell.SpellID = 12013;
                     spell.Target = "Enemy";
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();

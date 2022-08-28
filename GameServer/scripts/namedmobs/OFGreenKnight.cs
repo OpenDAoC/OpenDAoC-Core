@@ -80,8 +80,6 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(236); // fellwoods
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            MaxDistance = 0;
-            TetherRange = 0;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 0); //Slot,model,color,effect,extension
@@ -253,9 +251,7 @@ namespace DOL.GS
             target.Out.SendMessage(msg,eChatType.CT_System, eChatLoc.CL_PopupWindow);
         }
         #region Heat DD Spell
-
         private Spell m_HeatDDSpell;
-
         /// <summary>
         /// Casts Heat dd
         /// </summary>
@@ -285,17 +281,15 @@ namespace DOL.GS
                     m_HeatDDSpell = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatDDSpell);
                 }
-
                 return m_HeatDDSpell;
             }
         }
-
         #endregion
     }
 }
 namespace DOL.AI.Brain
 {
-    public class OFGreenKnightBrain : StandardMobBrain
+    public class OFGreenKnightBrain : EpicBossBrain
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public OFGreenKnightBrain() : base()
