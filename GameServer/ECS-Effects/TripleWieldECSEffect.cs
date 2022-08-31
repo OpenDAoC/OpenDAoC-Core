@@ -58,7 +58,7 @@ namespace DOL.GS
 			if (attacker == null) return;
 			if (attacker.ObjectState != GameObject.eObjectState.Active) return;
 			if (attacker.IsAlive == false) return;
-			if (attackData.IsOffHand) return; // only react to main hand
+			//if (attackData.IsOffHand) return; // only react to main hand
 			if (attackData.Weapon == null) return; // no weapon attack
 
 			int modifier = 100;
