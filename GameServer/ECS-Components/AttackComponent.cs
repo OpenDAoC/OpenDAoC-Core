@@ -511,22 +511,39 @@ namespace DOL.GS
             else
             {
                 double speed = 3000 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
-
-                if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                if (owner is GamePet pet)
                 {
-                    speed *= 1.5; // mob archer speed too fast
-
-                    // Old archery uses archery speed, but new archery uses casting speed
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-                        speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
-                    else
-                        speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
+                    if (pet != null)
+                    {
+                        switch(pet.Name)
+                        {
+                            case "amber simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 1.45; break;
+                            case "emerald simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 1.45; break;
+                            case "ruby simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
+                            case "sapphire simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
+                            case "jade simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
+                            default: speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01; break;
+                        }
+                        //return (int)speed;
+                    }
                 }
                 else
                 {
-                    speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01;
-                }
+                    if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                    {
+                        speed *= 1.5; // mob archer speed too fast
 
+                        // Old archery uses archery speed, but new archery uses casting speed
+                        if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+                            speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
+                        else
+                            speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
+                    }
+                    else
+                    {
+                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01;
+                    }
+                }
                 return (int) Math.Max(500.0, speed);
             }
         }
