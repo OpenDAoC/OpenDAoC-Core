@@ -120,6 +120,8 @@ namespace DOL.GS {
         }
         public static void GenerateOrbAmount(GameLiving living, int amount)
         {
+            if (amount == 0) return; 
+
             if (living != null && living is GamePlayer)
             {
                 var player = living as GamePlayer;
