@@ -167,6 +167,7 @@ namespace DOL.GS {
             }
         }
 
+        
         public static void GenerateBattlegroundToken(GameLiving living, int amount)
         {
             if (living != null && living is GamePlayer)
