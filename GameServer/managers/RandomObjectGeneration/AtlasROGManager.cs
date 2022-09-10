@@ -166,7 +166,6 @@ namespace DOL.GS {
                 player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, totOrbs);
             }
         }
-
         
         public static void GenerateBattlegroundToken(GameLiving living, int amount)
         {

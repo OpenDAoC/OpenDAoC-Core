@@ -893,8 +893,8 @@ namespace DOL.GS
 
 				if (!hasCredit)
 				{
-					player.Out.SendMessage($"You need to defeat {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
-					return;
+					player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+					totalValue *= 2;
 				}
 			}
 			
