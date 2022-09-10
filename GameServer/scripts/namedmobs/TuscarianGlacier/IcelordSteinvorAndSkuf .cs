@@ -54,7 +54,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {
@@ -390,7 +390,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {

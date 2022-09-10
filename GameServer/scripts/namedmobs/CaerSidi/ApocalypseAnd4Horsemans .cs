@@ -410,7 +410,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public void BroadcastMessage(String message)
         {
@@ -602,7 +602,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public static bool BellumUP = true;
         public void BroadcastMessage(String message)
@@ -1401,7 +1401,7 @@ namespace DOL.GS
         }
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public static bool MorbusUP = true;
         private bool prepareFunus = false;

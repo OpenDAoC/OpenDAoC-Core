@@ -250,9 +250,9 @@ namespace DOL.GS.PropertyCalc
 				}
 
 				if(living is GameEpicBoss)
-					hp = (int)(hp * 3); //epic bosses get 100% extra hp
+					hp = (int)(hp * 1.5); //epic bosses get 50% extra hp
 				else if (living is GameEpicNPC)
-					hp = (int)( hp * 2); //epic NPCs get 50% extra hp
+					hp = (int)( hp * 1.25); //epic NPCs get 25% extra hp
 
 				return hp;
 				//return conhp;

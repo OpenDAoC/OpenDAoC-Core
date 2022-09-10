@@ -41,7 +41,7 @@ namespace DOL.GS.Scripts
             get => (short) (191 + (Level * 2));
             set => m_maxSpeedBase = value;
         }
-        public override int MaxHealth => 200000;
+        public override int MaxHealth => 100000;
         public override int AttackRange
         {
             get => 180;

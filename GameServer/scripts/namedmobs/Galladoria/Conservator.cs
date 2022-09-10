@@ -90,7 +90,7 @@ namespace DOL.GS
         {
             get
             {
-                return 200000;
+                return 100000;
             }
         }
         public override int AttackRange

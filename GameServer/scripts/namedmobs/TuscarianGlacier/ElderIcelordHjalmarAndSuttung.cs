@@ -60,7 +60,7 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
 
         public override bool AddToWorld()
@@ -357,7 +357,7 @@ namespace DOL.GS
 
         public override int MaxHealth
         {
-            get { return 200000; }
+            get { return 100000; }
         }
         public static int HjalmarCount = 0;
         public override void Die(GameObject killer) //on kill generate orbs

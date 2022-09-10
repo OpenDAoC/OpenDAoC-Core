@@ -131,7 +131,7 @@ namespace DOL.GS
 		}
 		public override int MaxHealth
 		{
-			get { return 200000; }
+			get { return 100000; }
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
