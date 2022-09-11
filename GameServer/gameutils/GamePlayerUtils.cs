@@ -287,6 +287,8 @@ namespace DOL.GS
 								powercap = 50;
 							}
 							int powerpool = player.ItemBonus[(int)eProperty.PowerPool];
+							if (powerpool > 26)
+								powerpool = 26;
 							if (powerpool > powercap + 25)
 							{
 								int tempbonus = powercap + 25;
