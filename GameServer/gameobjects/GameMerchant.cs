@@ -990,13 +990,22 @@ namespace DOL.GS
 
 			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
 			{
-				var hasCredit = AchievementUtils.CheckAccountCredit(mobRequirement, player);
+				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
 
 				if (!hasCredit)
 				{
-					player.Out.SendMessage($"You need to defeat {mobRequirement} at least once to purchase {template.Name}", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
-					return;
+					player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+					totalValue *= 2;
 				}
+			}
+
+			var loyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+			if (loyalty.Days > 0)
+			{
+				var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
+				player.Out.SendMessage($"Your loyalty to your realm grants you a {discountAmount * 100}% discount on item purchases.", eChatType.CT_Merchant,eChatLoc.CL_SystemWindow);
+				Console.WriteLine($"Total Val {totalValue} discount {(1 - discountAmount)} after {(int)(totalValue * (1 - discountAmount))}");
+				totalValue = (int)(totalValue * (1 - discountAmount));
 			}
 			
 			lock (player.Inventory)
