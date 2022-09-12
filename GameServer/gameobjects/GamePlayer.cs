@@ -29,6 +29,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.API;
+using DOL.GS.AtlasQuest.Albion;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -14123,7 +14124,8 @@ namespace DOL.GS
                         lqh.SaveQuestParameters();
                     if (quest is LaunchQuestMid lqm)
                         lqm.SaveQuestParameters();
-                        
+                    if(quest is Quests.AtlasQuest aq)
+                        aq.SaveQuestParameters();
                 }
 
 
@@ -14764,6 +14766,8 @@ namespace DOL.GS
                         lqh.LoadQuestParameters();
                     if (quest is LaunchQuestMid lqm)
                         lqm.LoadQuestParameters();
+                    if(quest is Quests.AtlasQuest aq)
+                        aq.LoadQuestParameters();
                 }
             }
 
