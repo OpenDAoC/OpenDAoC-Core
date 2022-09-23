@@ -1,5 +1,6 @@
 ﻿using System;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 
@@ -20,6 +21,11 @@ namespace DOL.GS.Scripts
         public override int MaxHealth
         {
             get { return 100000; }
+        }
+        
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override bool HasAbility(string keyName)
         {         

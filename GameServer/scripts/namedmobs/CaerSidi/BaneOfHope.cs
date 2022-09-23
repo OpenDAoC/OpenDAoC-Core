@@ -27,7 +27,7 @@ namespace DOL.GS.Scripts
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * 30;
+            return base.AttackDamage(weapon) * 30 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override bool HasAbility(string keyName)
         {
