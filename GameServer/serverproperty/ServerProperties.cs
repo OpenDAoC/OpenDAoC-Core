@@ -2892,6 +2892,9 @@ namespace DOL.GS.ServerProperties
 		
 		[ServerProperty("atlas", "of_teleport_interval", "The seconds between OF porting ceremonies", 120)]
 		public static int OF_REPORT_INTERVAL;
+		
+		[ServerProperty("atlas", "epics_dmg_multiplier", "Use this to scale up/down the damage of epic mobs", 1)]
+        public static int EPICS_DMG_MULTIPLIER;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
