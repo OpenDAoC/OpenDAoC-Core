@@ -1220,7 +1220,7 @@ namespace DOL.GS.ServerRules
 			{
 				var de = new DictionaryEntry(living, XPGainerList[living]);
 				AwardExperience(de, killedNPC, killer, totalDamage, plrGrpExp, isGroupInRange);
-				if (killedNPC.CurrentZone is {IsOF: true} && living.Level > 36)
+				if (living.Level > 36)
 				{
 					int min = (int) Math.Round(killedNPC.Level / 10d) - 3;
 					if (min < 1) min = 1;
@@ -1230,7 +1230,13 @@ namespace DOL.GS.ServerRules
 						min++;
 						max++;
 					}
-					Console.WriteLine($"min {min} max {max}");
+
+					if (killedNPC.CurrentZone is {IsOF: true})
+					{
+						min *= 10;
+						max *= 10;
+					}
+					//Console.WriteLine($"min {min} max {max}");
 					AtlasROGManager.GenerateOrbAmount(living as GameLiving, Util.Random(min, max));
 				}
 					
