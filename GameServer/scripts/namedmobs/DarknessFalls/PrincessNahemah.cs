@@ -38,6 +38,11 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.20;
         }
+        
+        public override double AttackDamage(InventoryItem weapon)
+        {
+            return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        }
         public override int MaxHealth
         {
             get { return 100000; }
