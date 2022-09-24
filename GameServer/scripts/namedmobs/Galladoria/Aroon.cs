@@ -279,7 +279,7 @@ namespace DOL.GS
 
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
         public override int MaxHealth
@@ -635,7 +635,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
         public override int AttackRange
@@ -813,7 +813,7 @@ namespace DOL.GS
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
         public override int AttackRange
@@ -1007,7 +1007,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1208,7 +1208,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1409,7 +1409,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1612,7 +1612,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1815,7 +1815,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -2018,7 +2018,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -2222,7 +2222,7 @@ namespace DOL.GS
         }
         public override double AttackDamage(InventoryItem weapon)
         {
-            return base.AttackDamage(weapon) * Strength / 100;
+            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
