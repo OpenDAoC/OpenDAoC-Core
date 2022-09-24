@@ -1233,8 +1233,8 @@ namespace DOL.GS.ServerRules
 
 					if (killedNPC.CurrentZone is {IsOF: true})
 					{
-						min *= 10;
-						max *= 10;
+						min *= 5;
+						max *= 5;
 					}
 					//Console.WriteLine($"min {min} max {max}");
 					AtlasROGManager.GenerateOrbAmount(living as GameLiving, Util.Random(min, max));
