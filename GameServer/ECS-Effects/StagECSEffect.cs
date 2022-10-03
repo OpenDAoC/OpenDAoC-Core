@@ -64,12 +64,10 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
 			Owner.Model = m_originalModel;
-
-			double m_amountPercent = m_amount / Owner.GetModified(eProperty.MaxHealth);
-			int playerHealthPercent = Owner.HealthPercent;
+			
 			Owner.BaseBuffBonusCategory[(int)eProperty.MaxHealth] -= m_amount;
-			if (Owner.IsAlive)
-				Owner.Health = (int)Math.Max(1, 0.01 * Owner.MaxHealth * playerHealthPercent);
+			if (Owner.IsAlive && Owner.Health > Owner.MaxHealth)
+				Owner.Health = Owner.MaxHealth;
 
 			if (OwnerPlayer != null)
 			{
