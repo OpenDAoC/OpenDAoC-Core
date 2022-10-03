@@ -254,7 +254,6 @@ public class ConquestObjective
     {
         AwardContributors();
         LastRolloverTick = GameLoop.GameLoopTime;
-        Console.WriteLine($"Periodic Reward for objective: {this}");
     }
 
     public void ConquestCapture()

@@ -25,6 +25,11 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
+            foreach (GamePlayer plyr in Owner.GetPlayersInRadius(500))
+            {
+                plyr.Out.SendSoundEffect(163, 0, 0, 0, 0, 0);    
+            }
+            
 
         }
         public override void OnStopEffect()
