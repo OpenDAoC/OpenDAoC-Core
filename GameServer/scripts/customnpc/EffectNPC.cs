@@ -45,33 +45,6 @@ namespace DOL.GS {
             base.AddToWorld();
             return true;
         }
-
-        /*
-        public override bool Interact(GamePlayer player)
-        {
-            SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
-            return true;
-            
-            if (base.Interact(player))
-            {
-                TurnTo(player, 250);
-                foreach (GamePlayer emoteplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    emoteplayer.Out.SendEmoteAnimation(this, Emotes);
-                }
-                SendReply(player, "Greetings " + player.Name + "!\n\n" +
-                                    "I can either change the effect or the color of your weapons, armors...\n" +
-                                    "Simply give me the item and i will start my work.\n\n" +
-                                    "In exchange for my services, I will gladly take some of your Atlas Orbs.");
-                //"On my countless journeys, i have mastered the art of"+ Didnt like the amount of talking
-                //"focusing the etheral flows to a certain weapon.\n"+  so i slimmed it a  bit o.O
-                //"Using this technique, i can make your weapon glow in"+
-                //"every kind and color you can imagine.\n"+
-                //"Just hand me the weapon and pay a small donation of "+PriceString+".");
-                return true;
-            }
-            return false;
-        }*/
         
         public override bool Interact(GamePlayer player)
         {
@@ -104,12 +77,8 @@ namespace DOL.GS {
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             if (source == null || item == null || item.Id_nb == "token_many") return false;
-            Console.Write("Item Type is" + item.Item_Type + "objectType is " + item.Object_Type);
             if (source is GamePlayer p)
             {
-                //SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
-                //return true;
-                
                 SendReply(p, "What service do you want to use ?\n" +
                              "I can add an [effect] to it or change its color with a [dye].\n\n" +
                              "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
@@ -128,11 +97,6 @@ namespace DOL.GS {
 
         public override bool WhisperReceive(GameLiving source, string str)
         {
-            //if(source is GamePlayer p)
-            //    SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
-            
-            //return true;
-            
             if (!base.WhisperReceive(source, str)) return false;
 
             if (!(source is GamePlayer)) return false;
@@ -1122,7 +1086,7 @@ namespace DOL.GS {
 
             if (item.Object_Type < 1 || item.Object_Type > 26)
             {
-                SendReply(player, "I cannot work on anything other than weapons.");
+                SendReply(player, "I cannot work on anything other than weapons and shields.");
                 return;
             }
 
