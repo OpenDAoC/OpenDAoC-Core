@@ -256,6 +256,20 @@ namespace DOL.GS {
                                         "[axe - hot purple glow] (" + effectPrice + " " + currencyName + ")\n" +
                                         "[axe - blue->purple->orange glow] (" + effectPrice + " " + currencyName + ")\n");
                             break;
+                        case (int) eObjectType.Shield:
+                            SendReply(player,"[crush - arcing halo] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - center arcing] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - smaller arcing halo] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - hot orange core glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - orange aura] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - subtle aura with sparks] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - yellow flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - mana flame] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - hot green glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - hot red glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - hot purple glow] (" + effectPrice + " " + currencyName + ")\n" +
+                                             "[crush - cold vapor] (" + effectPrice + " " + currencyName + ")\n");
+                            break;
                         case (int)eObjectType.Spear:
                         case (int)eObjectType.CelticSpear:
                         case (int)eObjectType.PolearmWeapon:
