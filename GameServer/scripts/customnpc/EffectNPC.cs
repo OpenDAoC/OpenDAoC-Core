@@ -35,7 +35,7 @@ namespace DOL.GS {
         public string TempProperty = "ItemEffect";
         public string DisplayedItem = "EffectDisplay";
         public string TempEffectId = "TempEffectID";
-        public string TempEffectPrice = "TempEffectPrice";
+        public string TempColorId = "TempColorID";
 
 
         public override bool AddToWorld()
@@ -141,6 +141,7 @@ namespace DOL.GS {
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
             
             int cachedEffectID = player.TempProperties.getProperty<int>(TempEffectId);
+            int cachedColorID = player.TempProperties.getProperty<int>(TempColorId);
 
             if (item == null) return false;
 
@@ -567,409 +568,412 @@ namespace DOL.GS {
                     break;
 
                 case "remove dye":
-                    SetColor(player, 0, removePrice);
+                    SetColor(player,0, removePrice);
                     break;
                 case "White":
-                    SetColor(player, 0, dyePrice);
+                    PreviewColor(player,0);
                     break;
                 case "Old Red":
-                    SetColor(player, 1, dyePrice);
+                    PreviewColor(player,1);
                     break;
                 case "Old Green":
-                    SetColor(player, 2, dyePrice);
+                    PreviewColor(player,2);
                     break;
                 case "Old Blue":
-                    SetColor(player, 3, dyePrice);
+                    PreviewColor(player,3);
                     break;
                 case "Old Yellow":
-                    SetColor(player, 4, dyePrice);
+                    PreviewColor(player,4);
                     break;
                 case "Old Purple":
-                    SetColor(player, 5, dyePrice);
+                    PreviewColor(player,5);
                     break;
                 case "Gray":
-                    SetColor(player, 6, dyePrice);
+                    PreviewColor(player,6);
                     break;
                 case "Old Turquoise":
-                    SetColor(player, 7, dyePrice);
+                    PreviewColor(player,7);
                     break;
                 case "Leather Yellow":
-                    SetColor(player, 8, dyePrice);
+                    PreviewColor(player,8);
                     break;
                 case "Leather Red":
-                    SetColor(player, 9, dyePrice);
+                    PreviewColor(player,9);
                     break;
                 case "Leather Green":
-                    SetColor(player, 10, dyePrice);
+                    PreviewColor(player,10);
                     break;
                 case "Leather Orange":
-                    SetColor(player, 11, dyePrice);
+                    PreviewColor(player,11);
                     break;
                 case "Leather Violet":
-                    SetColor(player, 12, dyePrice);
+                    PreviewColor(player,12);
                     break;
                 case "Leather Forest Green":
-                    SetColor(player, 13, dyePrice);
+                    PreviewColor(player,13);
                     break;
                 case "Leather Blue":
-                    SetColor(player, 14, dyePrice);
+                    PreviewColor(player,14);
                     break;
                 case "Leather Purple":
-                    SetColor(player, 15, dyePrice);
+                    PreviewColor(player,15);
                     break;
                 case "Bronze":
-                    SetColor(player, 16, dyePrice);
+                    PreviewColor(player,16);
                     break;
                 case "Iron":
-                    SetColor(player, 17, dyePrice);
+                    PreviewColor(player,17);
                     break;
                 case "Steel":
-                    SetColor(player, 18, dyePrice);
+                    PreviewColor(player,18);
                     break;
                 case "Alloy":
-                    SetColor(player, 19, dyePrice);
+                    PreviewColor(player,19);
                     break;
                 case "Fine Alloy":
-                    SetColor(player, 20, dyePrice);
+                    PreviewColor(player,20);
                     break;
                 case "Mithril":
-                    SetColor(player, 21, dyePrice);
+                    PreviewColor(player,21);
                     break;
                 case "Asterite":
-                    SetColor(player, 22, dyePrice);
+                    PreviewColor(player,22);
                     break;
                 case "Eog":
-                    SetColor(player, 23, dyePrice);
+                    PreviewColor(player,23);
                     break;
                 case "Xenium":
-                    SetColor(player, 24, dyePrice);
+                    PreviewColor(player,24);
                     break;
                 case "Vaanum":
-                    SetColor(player, 25, dyePrice);
+                    PreviewColor(player,25);
                     break;
                 case "Adamantium":
-                    SetColor(player, 26, dyePrice);
+                    PreviewColor(player,26);
                     break;
                 case "Red Cloth":
-                    SetColor(player, 27, dyePrice);
+                    PreviewColor(player,27);
                     break;
                 case "Orange Cloth":
-                    SetColor(player, 28, dyePrice);
+                    PreviewColor(player,28);
                     break;
                 case "Yellow-Orange Cloth":
-                    SetColor(player, 29, dyePrice);
+                    PreviewColor(player,29);
                     break;
                 case "Yellow Cloth":
-                    SetColor(player, 30, dyePrice);
+                    PreviewColor(player,30);
                     break;
                 case "Yellow-Green Cloth":
-                    SetColor(player, 31, dyePrice);
+                    PreviewColor(player,31);
                     break;
                 case "Green Cloth":
-                    SetColor(player, 32, dyePrice);
+                    PreviewColor(player,32);
                     break;
                 case "Blue-Green Cloth":
-                    SetColor(player, 33, dyePrice);
+                    PreviewColor(player,33);
                     break;
                 case "Turquoise Cloth":
-                    SetColor(player, 34, dyePrice);
+                    PreviewColor(player,34);
                     break;
                 case "Light Blue Cloth":
-                    SetColor(player, 35, dyePrice);
+                    PreviewColor(player,35);
                     break;
                 case "Blue Cloth":
-                    SetColor(player, 36, dyePrice);
+                    PreviewColor(player,36);
                     break;
                 case "Blue-Violet Cloth":
-                    SetColor(player, 37, dyePrice);
+                    PreviewColor(player,37);
                     break;
                 case "Violet Cloth":
-                    SetColor(player, 38, dyePrice);
+                    PreviewColor(player,38);
                     break;
                 case "Bright Violet Cloth":
-                    SetColor(player, 39, dyePrice);
+                    PreviewColor(player,39);
                     break;
                 case "Purple Cloth":
-                    SetColor(player, 40, dyePrice);
+                    PreviewColor(player,40);
                     break;
                 case "Bright Purple Cloth":
-                    SetColor(player, 41, dyePrice);
+                    PreviewColor(player,41);
                     break;
                 case "Purple-Red Cloth":
-                    SetColor(player, 42, dyePrice);
+                    PreviewColor(player,42);
                     break;
                 case "Black Cloth":
-                    SetColor(player, 43, dyePrice);
+                    PreviewColor(player,43);
                     break;
                 case "Brown Cloth":
-                    SetColor(player, 44, dyePrice);
+                    PreviewColor(player,44);
                     break;
                 case "Blue Metal":
-                    SetColor(player, 45, dyePrice);
+                    PreviewColor(player,45);
                     break;
                 case "Green Metal":
-                    SetColor(player, 46, dyePrice);
+                    PreviewColor(player,46);
                     break;
                 case "Yellow Metal":
-                    SetColor(player, 47, dyePrice);
+                    PreviewColor(player,47);
                     break;
                 case "Gold Metal":
-                    SetColor(player, 48, dyePrice);
+                    PreviewColor(player,48);
                     break;
                 case "Red Metal":
-                    SetColor(player, 49, dyePrice);
+                    PreviewColor(player,49);
                     break;
                 case "Purple Metal":
-                    SetColor(player, 50, dyePrice);
+                    PreviewColor(player,50);
                     break;
                 case "Blue 1":
-                    SetColor(player, 51, dyePrice);
+                    PreviewColor(player,51);
                     break;
                 case "Blue 2":
-                    SetColor(player, 52, dyePrice);
+                    PreviewColor(player,52);
                     break;
                 case "Blue 3":
-                    SetColor(player, 53, dyePrice);
+                    PreviewColor(player,53);
                     break;
                 case "Blue 4":
-                    SetColor(player, 54, dyePrice);
+                    PreviewColor(player,54);
                     break;
                 case "Turquoise 1":
-                    SetColor(player, 55, dyePrice);
+                    PreviewColor(player,55);
                     break;
                 case "Turquoise 2":
-                    SetColor(player, 56, dyePrice);
+                    PreviewColor(player,56);
                     break;
                 case "Turquoise 3":
-                    SetColor(player, 57, dyePrice);
+                    PreviewColor(player,57);
                     break;
                 case "Teal 1":
-                    SetColor(player, 58, dyePrice);
+                    PreviewColor(player,58);
                     break;
                 case "Teal 2":
-                    SetColor(player, 59, dyePrice);
+                    PreviewColor(player,59);
                     break;
                 case "Teal 3":
-                    SetColor(player, 60, dyePrice);
+                    PreviewColor(player,60);
                     break;
                 case "Brown 1":
-                    SetColor(player, 61, dyePrice);
+                    PreviewColor(player,61);
                     break;
                 case "Brown 2":
-                    SetColor(player, 62, dyePrice);
+                    PreviewColor(player,62);
                     break;
                 case "Brown 3":
-                    SetColor(player, 63, dyePrice);
+                    PreviewColor(player,63);
                     break;
                 case "Red 1":
-                    SetColor(player, 64, dyePrice);
+                    PreviewColor(player,64);
                     break;
                 case "Red 2":
-                    SetColor(player, 65, dyePrice);
+                    PreviewColor(player,65);
                     break;
                 case "Red 3":
-                    SetColor(player, 66, dyePrice);
+                    PreviewColor(player,66);
                     break;
                 case "Red 4":
-                    SetColor(player, 67, dyePrice);
+                    PreviewColor(player,67);
                     break;
                 case "Green 1":
-                    SetColor(player, 68, dyePrice);
+                    PreviewColor(player,68);
                     break;
                 case "Green 2":
-                    SetColor(player, 69, dyePrice);
+                    PreviewColor(player,69);
                     break;
                 case "Green 3":
-                    SetColor(player, 70, dyePrice);
+                    PreviewColor(player,70);
                     break;
                 case "Green 4":
-                    SetColor(player, 71, dyePrice);
+                    PreviewColor(player,71);
                     break;
                 case "Gray 1":
-                    SetColor(player, 72, dyePrice);
+                    PreviewColor(player,72);
                     break;
                 case "Gray 2":
-                    SetColor(player, 73, dyePrice);
+                    PreviewColor(player,73);
                     break;
                 case "Gray 3":
-                    SetColor(player, 74, dyePrice);
+                    PreviewColor(player,74);
                     break;
                 case "Orange 1":
-                    SetColor(player, 75, dyePrice);
+                    PreviewColor(player,75);
                     break;
                 case "Orange 2":
-                    SetColor(player, 76, dyePrice);
+                    PreviewColor(player,76);
                     break;
                 case "Orange 3":
-                    SetColor(player, 77, dyePrice);
+                    PreviewColor(player,77);
                     break;
                 case "Purple 1":
-                    SetColor(player, 78, dyePrice);
+                    PreviewColor(player,78);
                     break;
                 case "Purple 2":
-                    SetColor(player, 79, dyePrice);
+                    PreviewColor(player,79);
                     break;
                 case "Purple 3":
-                    SetColor(player, 80, dyePrice);
+                    PreviewColor(player,80);
                     break;
                 case "Yellow 1":
-                    SetColor(player, 81, dyePrice);
+                    PreviewColor(player,81);
                     break;
                 case "Yellow 2":
-                    SetColor(player, 82, dyePrice);
+                    PreviewColor(player,82);
                     break;
                 case "Yellow 3":
-                    SetColor(player, 83, dyePrice);
+                    PreviewColor(player,83);
                     break;
                 case "violet":
-                    SetColor(player, 84, dyePrice);
+                    PreviewColor(player,84);
                     break;
                 case "Mauve":
-                    SetColor(player, 85, dyePrice);
+                    PreviewColor(player,85);
                     break;
                 case "Blue 5":
-                    SetColor(player, 86, dyePrice);
+                    PreviewColor(player,86);
                     break;
                 case "Purple 4":
-                    SetColor(player, 87, dyePrice);
+                    PreviewColor(player,87);
                     break;
                 case "Ship Red":
-                    SetColor(player, 100, dyePrice);
+                    PreviewColor(player,100);
                     break;
                 case "Ship Red 2":
-                    SetColor(player, 101, dyePrice);
+                    PreviewColor(player,101);
                     break;
                 case "Ship Orange":
-                    SetColor(player, 102, dyePrice);
+                    PreviewColor(player,102);
                     break;
                 case "Ship Orange 2":
-                    SetColor(player, 103, dyePrice);
+                    PreviewColor(player,103);
                     break;
                 case "Orange 4":
-                    SetColor(player, 104, dyePrice);
+                    PreviewColor(player,104);
                     break;
                 case "Ship Yellow":
-                    SetColor(player, 105, dyePrice);
+                    PreviewColor(player,105);
                     break;
                 case "Ship Lime Green":
-                    SetColor(player, 106, dyePrice);
+                    PreviewColor(player,106);
                     break;
                 case "Ship Green":
-                    SetColor(player, 107, dyePrice);
+                    PreviewColor(player,107);
                     break;
                 case "Ship Green 2":
-                    SetColor(player, 108, dyePrice);
+                    PreviewColor(player,108);
                     break;
                 case "Ship Turquoise":
-                    SetColor(player, 109, dyePrice);
+                    PreviewColor(player,109);
                     break;
                 case "Ship Turquoise 2":
-                    SetColor(player, 110, dyePrice);
+                    PreviewColor(player,110);
                     break;
                 case "Ship Blue":
-                    SetColor(player, 111, dyePrice);
+                    PreviewColor(player,111);
                     break;
                 case "Ship Blue 2":
-                    SetColor(player, 112, dyePrice);
+                    PreviewColor(player,112);
                     break;
                 case "Ship Blue 3":
-                    SetColor(player, 113, dyePrice);
+                    PreviewColor(player,113);
                     break;
                 case "Ship Purple":
-                    SetColor(player, 114, dyePrice);
+                    PreviewColor(player,114);
                     break;
                 case "Ship Purple 2":
-                    SetColor(player, 115, dyePrice);
+                    PreviewColor(player,115);
                     break;
                 case "Ship Purple 3":
-                    SetColor(player, 116, dyePrice);
+                    PreviewColor(player,116);
                     break;
                 case "Ship Pink":
-                    SetColor(player, 117, dyePrice);
+                    PreviewColor(player,117);
                     break;
                 case "Ship Charcoal":
-                    SetColor(player, 118, dyePrice);
+                    PreviewColor(player,118);
                     break;
                 case "Ship Charcoal 2":
-                    SetColor(player, 119, dyePrice);
+                    PreviewColor(player,119);
                     break;
                 case "Red - crafter only":
-                    SetColor(player, 120, dyePrice);
+                    PreviewColor(player,120);
                     break;
                 case "Plum - crafter only":
-                    SetColor(player, 121, dyePrice);
+                    PreviewColor(player,121);
                     break;
                 case "Purple - crafter only":
-                    SetColor(player, 122, dyePrice);
+                    PreviewColor(player,122);
                     break;
                 case "Dark Purple - crafter only":
-                    SetColor(player, 123, dyePrice);
+                    PreviewColor(player,123);
                     break;
                 case "Dusky Purple - crafter only":
-                    SetColor(player, 124, dyePrice);
+                    PreviewColor(player,124);
                     break;
                 case "Light Gold - crafter only":
-                    SetColor(player, 125, dyePrice);
+                    PreviewColor(player,125);
                     break;
                 case "Dark Gold - crafter only":
-                    SetColor(player, 126, dyePrice);
+                    PreviewColor(player,126);
                     break;
                 case "Dirty Orange - crafter only":
-                    SetColor(player, 127, dyePrice);
+                    PreviewColor(player,127);
                     break;
                 case "Dark Tan - crafter only":
-                    SetColor(player, 128, dyePrice);
+                    PreviewColor(player,128);
                     break;
                 case "Brown - crafter only":
-                    SetColor(player, 129, dyePrice);
+                    PreviewColor(player,129);
                     break;
                 case "Light Green - crafter only":
-                    SetColor(player, 130, dyePrice);
+                    PreviewColor(player,130);
                     break;
                 case "Olive Green - crafter only":
-                    SetColor(player, 131, dyePrice);
+                    PreviewColor(player,131);
                     break;
                 case "Cornflower Blue - crafter only":
-                    SetColor(player, 132, dyePrice);
+                    PreviewColor(player,132);
                     break;
                 case "Light Gray - crafter only":
-                    SetColor(player, 133, dyePrice);
+                    PreviewColor(player,133);
                     break;
                 case "Hot Pink - crafter only":
-                    SetColor(player, 134, dyePrice);
+                    PreviewColor(player,134);
                     break;
                 case "Dusky Rose - crafter only":
-                    SetColor(player, 135, dyePrice);
+                    PreviewColor(player,135);
                     break;
                 case "Sage Green - crafter only":
-                    SetColor(player, 136, dyePrice);
+                    PreviewColor(player,136);
                     break;
                 case "Lime Green - crafter only":
-                    SetColor(player, 137, dyePrice);
+                    PreviewColor(player,137);
                     break;
                 case "Gray Teal - crafter only":
-                    SetColor(player, 138, dyePrice);
+                    PreviewColor(player,138);
                     break;
                 case "Gray Blue - crafter only":
-                    SetColor(player, 139, dyePrice);
+                    PreviewColor(player,139);
                     break;
                 case "Olive Gray - crafter only":
-                    SetColor(player, 140, dyePrice);
+                    PreviewColor(player,140);
                     break;
                 case "Navy Blue - crafter only":
-                    SetColor(player, 141, dyePrice);
+                    PreviewColor(player,141);
                     break;
                 case "Forest Green - crafter only":
-                    SetColor(player, 142, dyePrice);
+                    PreviewColor(player,142);
                     break;
                 case "Burgundy - crafter only":
-                    SetColor(player, 143, dyePrice);
+                    PreviewColor(player,143);
                     break;
 
                     #endregion
                 
                 case "confirm effect":
                     SetEffect(player, cachedEffectID, effectPrice);
+                    break;
+                case "confirm color":
+                    SetColor(player, cachedColorID, dyePrice);
                     break;
             }
 
@@ -1041,6 +1045,11 @@ namespace DOL.GS {
             //SetRealmLevel(player, (int)player.RealmPoints);
             player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
+            player.TempProperties.removeProperty(TempProperty);
+            player.TempProperties.removeProperty(DisplayedItem);
+            player.TempProperties.removeProperty(TempEffectId);
+            player.TempProperties.removeProperty(TempColorId);
+            
             SendReply(player, "Thanks for your donation. The color has come out beautifully, wear it with pride.");
 
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -1059,6 +1068,17 @@ namespace DOL.GS {
             player.TempProperties.setProperty(TempEffectId, effect);
             DisplayReskinPreviewTo(player, item);
             SendReply(player, "When you are finished browsing, let me know and I will [confirm effect]."
+            );
+        }
+        
+        private void PreviewColor(GamePlayer player, int color)
+        {
+            InventoryItem item = (InventoryItem)player.TempProperties.getProperty<InventoryItem>(TempProperty).Clone();
+            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            item.Color = color;
+            player.TempProperties.setProperty(TempColorId, color);
+            DisplayReskinPreviewTo(player, item);
+            SendReply(player, "When you are finished browsing, let me know and I will [confirm color]."
             );
         }
 
@@ -1131,6 +1151,7 @@ namespace DOL.GS {
             player.TempProperties.removeProperty(TempProperty);
             player.TempProperties.removeProperty(DisplayedItem);
             player.TempProperties.removeProperty(TempEffectId);
+            player.TempProperties.removeProperty(TempColorId);
             
             SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
