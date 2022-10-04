@@ -85,6 +85,8 @@ namespace DOL.GS.Commands
                 {
                     type = eChatType.CT_BattleGroup;
                 }
+
+                if (ply.IgnoreList.Contains(client.Player)) continue;
                 
                 ply.Out.SendMessage(message,type, eChatLoc.CL_ChatWindow);
             }
