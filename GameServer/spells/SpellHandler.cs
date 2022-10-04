@@ -1000,7 +1000,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (!(m_caster.IsObjectInFront(selectedTarget, 180, true)))
+						if (!(m_caster.IsObjectInFront(selectedTarget, 180, true)) || !Caster.TargetInView)
 						{
 							if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1030,7 +1030,7 @@ namespace DOL.GS.Spells
 				}
 
 				//heals/buffs/rez need LOS only to start casting, TargetInView only works if selectedTarget == TargetObject
-				if ((selectedTarget.IsStealthed || !Caster.TargetInView) && m_spell.Target.ToLower() != "pet")
+				if (!Caster.TargetInView && m_spell.Target.ToLower() != "pet")
 				{
 					if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
