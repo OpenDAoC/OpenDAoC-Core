@@ -29,9 +29,13 @@ namespace DOL.GS {
         private Queue m_timer = new Queue();//Gametimer for casting some spell at the end of the process
         private Queue castplayer = new Queue();//Used to hold the player who the spell gets cast on
         public string currencyName = "Orbs";
-        private int effectPrice = 1800; //effects price
-        private int dyePrice = 500; //effects price
+        private int effectPrice = 5000; //effects price
+        private int dyePrice = 2000; //effects price
         private int removePrice = 0; //removal is free
+        public string TempProperty = "ItemEffect";
+        public string DisplayedItem = "EffectDisplay";
+        public string TempEffectId = "TempEffectID";
+        public string TempEffectPrice = "TempEffectPrice";
 
 
         public override bool AddToWorld()
@@ -42,6 +46,7 @@ namespace DOL.GS {
             return true;
         }
 
+        /*
         public override bool Interact(GamePlayer player)
         {
             SendReply(player, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
@@ -66,36 +71,67 @@ namespace DOL.GS {
                 return true;
             }
             return false;
+        }*/
+        
+        public override bool Interact(GamePlayer player)
+        {
+            if (base.Interact(player))
+            {
+                TurnTo(player, 500);
+                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+
+                if (item == null)
+                {
+                    SendReply(player, "Hello there! \n" +
+                                      "I can offer a variety of aesthetics... for those willing to pay for it.\n" +
+                                      "Hand me the item and then we can talk prices.");
+                }
+                else
+                {
+                    ReceiveItem(player, item);
+                }
+
+                if (displayItem != null)
+                    DisplayReskinPreviewTo(player, (InventoryItem)displayItem.Clone());
+
+                return true;
+            }
+
+            return false;
         }
 
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
-            if(source is GamePlayer p)
-                SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
-            return true;
-            
-            GamePlayer t = source as GamePlayer;
-            if (t == null || item == null || item.Id_nb == "token_many") return false;
-            if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
+            if (source == null || item == null || item.Id_nb == "token_many") return false;
+            Console.Write("Item Type is" + item.Item_Type + "objectType is " + item.Object_Type);
+            if (source is GamePlayer p)
             {
-                t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
+                //SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+                //return true;
+                
+                SendReply(p, "What service do you want to use ?\n" +
+                             "I can add an [effect] to it or change its color with a [dye].\n\n" +
+                             "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
+                );
+                p.TempProperties.setProperty(EFFECTNPC_ITEM_WEAK, item);
+
+                SendReply(p, "When you are finished browsing, let me know and I will [confirm effect]."
+                );
+                var tmp = (InventoryItem) item.Clone();
+                p.TempProperties.setProperty(TempProperty, item);
+                p.TempProperties.setProperty(DisplayedItem, tmp);
             }
 
-            SendReply(t, "What service do you want to use ?\n" +
-                         "I can add an [effect] to it or change its color with a [dye].\n\n" +
-                         "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
-                         );
-            t.TempProperties.setProperty(EFFECTNPC_ITEM_WEAK, item);
             return false;
         }
 
         public override bool WhisperReceive(GameLiving source, string str)
         {
-            if(source is GamePlayer p)
-                SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
+            //if(source is GamePlayer p)
+            //    SendReply(p, "I am currently undergoing some reconstruction. Check back soon, adventurer!");
             
-            return true;
+            //return true;
             
             if (!base.WhisperReceive(source, str)) return false;
 
@@ -103,6 +139,8 @@ namespace DOL.GS {
 
             GamePlayer player = source as GamePlayer;
             InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            
+            int cachedEffectID = player.TempProperties.getProperty<int>(TempEffectId);
 
             if (item == null) return false;
 
@@ -260,111 +298,111 @@ namespace DOL.GS {
                     break;
 
                 //remove all effect
-                case "remove all effects": SetEffect(player, 0, removePrice); break;
+                case "remove all effects": PreviewEffect(player, 0); break;
                 //Longsword
-                case "longsword - propane-style flame": SetEffect(player, 1, effectPrice); break;
-                case "longsword - regular flame": SetEffect(player, 2, effectPrice); break;
-                case "longsword - orange flame": SetEffect(player, 3, effectPrice); break;
-                case "longsword - rising flame": SetEffect(player, 4, effectPrice); break;
-                case "longsword - flame with smoke": SetEffect(player, 5, effectPrice); break;
-                case "longsword - flame with sparks": SetEffect(player, 6, effectPrice); break;
-                case "longsword - hot glow": SetEffect(player, 7, effectPrice); break;
-                case "longsword - hot aura": SetEffect(player, 8, effectPrice); break;
-                case "longsword - blue aura": SetEffect(player, 9, effectPrice); break;
-                case "longsword - hot gold glow": SetEffect(player, 10, effectPrice); break;
-                case "longsword - hot blue glow": SetEffect(player, 11, effectPrice); break;
-                case "longsword - hot red glow": SetEffect(player, 12, effectPrice); break;
-                case "longsword - red aura": SetEffect(player, 13, effectPrice); break;
-                case "longsword - cold aura with sparkles": SetEffect(player, 14, effectPrice); break;
-                case "longsword - cold aura with vapor": SetEffect(player, 15, effectPrice); break;
-                case "longsword - hilt wavering blue beam": SetEffect(player, 16, effectPrice); break;
-                case "longsword - hilt wavering green beam": SetEffect(player, 17, effectPrice); break;
-                case "longsword - hilt wavering red beam": SetEffect(player, 18, effectPrice); break;
-                case "longsword - hilt red/blue beam": SetEffect(player, 19, effectPrice); break;
-                case "longsword - hilt purple beam": SetEffect(player, 20, effectPrice); break;
+                case "longsword - propane-style flame": PreviewEffect(player, 1); break;
+                case "longsword - regular flame": PreviewEffect(player, 2); break;
+                case "longsword - orange flame": PreviewEffect(player, 3); break;
+                case "longsword - rising flame": PreviewEffect(player, 4); break;
+                case "longsword - flame with smoke": PreviewEffect(player, 5); break;
+                case "longsword - flame with sparks": PreviewEffect(player, 6); break;
+                case "longsword - hot glow": PreviewEffect(player, 7); break;
+                case "longsword - hot aura": PreviewEffect(player, 8); break;
+                case "longsword - blue aura": PreviewEffect(player, 9); break;
+                case "longsword - hot gold glow": PreviewEffect(player, 10); break;
+                case "longsword - hot blue glow": PreviewEffect(player, 11); break;
+                case "longsword - hot red glow": PreviewEffect(player, 12); break;
+                case "longsword - red aura": PreviewEffect(player, 13); break;
+                case "longsword - cold aura with sparkles": PreviewEffect(player, 14); break;
+                case "longsword - cold aura with vapor": PreviewEffect(player, 15); break;
+                case "longsword - hilt wavering blue beam": PreviewEffect(player, 16); break;
+                case "longsword - hilt wavering green beam": PreviewEffect(player, 17); break;
+                case "longsword - hilt wavering red beam": PreviewEffect(player, 18); break;
+                case "longsword - hilt red/blue beam": PreviewEffect(player, 19); break;
+                case "longsword - hilt purple beam": PreviewEffect(player,20); break;
                 //2hand sword
-                case "gr sword - yellow flames": SetEffect(player, 21, effectPrice); break;
-                case "gr sword - orange flames": SetEffect(player, 22, effectPrice); break;
-                case "gr sword - fire with smoke": SetEffect(player, 23, effectPrice); break;
-                case "gr sword - fire with sparks": SetEffect(player, 24, effectPrice); break;
+                case "gr sword - yellow flames": PreviewEffect(player,21); break;
+                case "gr sword - orange flames": PreviewEffect(player,22); break;
+                case "gr sword - fire with smoke": PreviewEffect(player,23); break;
+                case "gr sword - fire with sparks": PreviewEffect(player,24); break;
                 //2hand hammer
-                case "gr - blue glow with sparkles": SetEffect(player, 25, effectPrice); break;
-                case "gr - blue aura with cold vapor": SetEffect(player, 26, effectPrice); break;
-                case "gr - icy blue glow": SetEffect(player, 27, effectPrice); break;
-                case "gr - red aura": SetEffect(player, 28, effectPrice); break;
-                case "gr - strong crimson glow": SetEffect(player, 29, effectPrice); break;
-                case "gr - white core red glow": SetEffect(player, 30, effectPrice); break;
-                case "gr - silvery/white glow": SetEffect(player, 31, effectPrice); break;
-                case "gr - gold/yellow glow": SetEffect(player, 31, effectPrice); break;
-                case "gr - hot green glow": SetEffect(player, 33, effectPrice); break;
+                case "gr - blue glow with sparkles": PreviewEffect(player,25); break;
+                case "gr - blue aura with cold vapor": PreviewEffect(player,26); break;
+                case "gr - icy blue glow": PreviewEffect(player,27); break;
+                case "gr - red aura": PreviewEffect(player,28); break;
+                case "gr - strong crimson glow": PreviewEffect(player,29); break;
+                case "gr - white core red glow": PreviewEffect(player,30); break;
+                case "gr - silvery/white glow": PreviewEffect(player,31); break;
+                case "gr - gold/yellow glow": PreviewEffect(player,31); break;
+                case "gr - hot green glow": PreviewEffect(player,33); break;
                 //hammer/blunt/crush
-                case "hammer - red aura": SetEffect(player, 34, effectPrice); break;
-                case "hammer - fiery glow": SetEffect(player, 35, effectPrice); break;
-                case "hammer - more intense fiery glow": SetEffect(player, 36, effectPrice); break;
-                case "hammer - flaming": SetEffect(player, 37, effectPrice); break;
-                case "hammer - torchlike flaming": SetEffect(player, 38, effectPrice); break;
-                case "hammer - silvery glow": SetEffect(player, 39, effectPrice); break;
-                case "hammer - purple glow": SetEffect(player, 40, effectPrice); break;
-                case "hammer - blue aura": SetEffect(player, 41, effectPrice); break;
-                case "hammer - blue glow": SetEffect(player, 42, effectPrice); break;
-                case "hammer - arcs from head to handle": SetEffect(player, 43, effectPrice); break;
-                case "crush - arcing halo": SetEffect(player, 44, effectPrice); break;
-                case "crush - center arcing": SetEffect(player, 45, effectPrice); break;
-                case "crush - smaller arcing halo": SetEffect(player, 46, effectPrice); break;
-                case "crush - hot orange core glow": SetEffect(player, 47, effectPrice); break;
-                case "crush - orange aura": SetEffect(player, 48, effectPrice); break;
-                case "crush - subtle aura with sparks": SetEffect(player, 49, effectPrice); break;
-                case "crush - yellow flame": SetEffect(player, 50, effectPrice); break;
-                case "crush - mana flame": SetEffect(player, 51, effectPrice); break;
-                case "crush - hot green glow": SetEffect(player, 52, effectPrice); break;
-                case "crush - hot red glow": SetEffect(player, 53, effectPrice); break;
-                case "crush - hot purple glow": SetEffect(player, 54, effectPrice); break;
-                case "crush - cold vapor": SetEffect(player, 55, effectPrice); break;
+                case "hammer - red aura": PreviewEffect(player,34); break;
+                case "hammer - fiery glow": PreviewEffect(player,35); break;
+                case "hammer - more intense fiery glow": PreviewEffect(player,36); break;
+                case "hammer - flaming": PreviewEffect(player,37); break;
+                case "hammer - torchlike flaming": PreviewEffect(player,38); break;
+                case "hammer - silvery glow": PreviewEffect(player,39); break;
+                case "hammer - purple glow": PreviewEffect(player,40); break;
+                case "hammer - blue aura": PreviewEffect(player,41); break;
+                case "hammer - blue glow": PreviewEffect(player,42); break;
+                case "hammer - arcs from head to handle": PreviewEffect(player,43); break;
+                case "crush - arcing halo": PreviewEffect(player,44); break;
+                case "crush - center arcing": PreviewEffect(player,45); break;
+                case "crush - smaller arcing halo": PreviewEffect(player,46); break;
+                case "crush - hot orange core glow": PreviewEffect(player,47); break;
+                case "crush - orange aura": PreviewEffect(player,48); break;
+                case "crush - subtle aura with sparks": PreviewEffect(player,49); break;
+                case "crush - yellow flame": PreviewEffect(player,50); break;
+                case "crush - mana flame": PreviewEffect(player,51); break;
+                case "crush - hot green glow": PreviewEffect(player,52); break;
+                case "crush - hot red glow": PreviewEffect(player,53); break;
+                case "crush - hot purple glow": PreviewEffect(player,54); break;
+                case "crush - cold vapor": PreviewEffect(player,55); break;
                 //Axe
-                case "axe - basic flame": SetEffect(player, 56, effectPrice); break;
-                case "axe - orange flame": SetEffect(player, 57, effectPrice); break;
-                case "axe - slow orange flame with sparks": SetEffect(player, 58, effectPrice); break;
-                case "axe - fiery/trailing flame": SetEffect(player, 59, effectPrice); break;
-                case "axe - cold vapor": SetEffect(player, 60, effectPrice); break;
-                case "axe - blue aura with twinkles": SetEffect(player, 61, effectPrice); break;
-                case "axe - hot green glow": SetEffect(player, 62, effectPrice); break;
-                case "axe - hot blue glow": SetEffect(player, 63, effectPrice); break;
-                case "axe - hot cyan glow": SetEffect(player, 64, effectPrice); break;
-                case "axe - hot purple glow": SetEffect(player, 65, effectPrice); break;
-                case "axe - blue->purple->orange glow": SetEffect(player, 66, effectPrice); break;
+                case "axe - basic flame": PreviewEffect(player,56); break;
+                case "axe - orange flame": PreviewEffect(player,57); break;
+                case "axe - slow orange flame with sparks": PreviewEffect(player,58); break;
+                case "axe - fiery/trailing flame": PreviewEffect(player,59); break;
+                case "axe - cold vapor": PreviewEffect(player,60); break;
+                case "axe - blue aura with twinkles": PreviewEffect(player,61); break;
+                case "axe - hot green glow": PreviewEffect(player,62); break;
+                case "axe - hot blue glow": PreviewEffect(player,63); break;
+                case "axe - hot cyan glow": PreviewEffect(player,64); break;
+                case "axe - hot purple glow": PreviewEffect(player,65); break;
+                case "axe - blue->purple->orange glow": PreviewEffect(player,66); break;
                 //shortsword
-                case "shortsword - propane flame": SetEffect(player, 67, effectPrice); break;
-                case "shortsword - orange flame with sparks": SetEffect(player, 68, effectPrice); break;
-                case "shortsword - blue aura with twinkles": SetEffect(player, 69, effectPrice); break;
-                case "shortsword - green cloud with bubbles": SetEffect(player, 70, effectPrice); break;
-                case "shortsword - red aura with blood bubbles": SetEffect(player, 71, effectPrice); break;
-                case "shortsword - evil green glow": SetEffect(player, 72, effectPrice); break;
-                case "shortsword - black glow": SetEffect(player, 73, effectPrice); break;
+                case "shortsword - propane flame": PreviewEffect(player,67); break;
+                case "shortsword - orange flame with sparks": PreviewEffect(player,68); break;
+                case "shortsword - blue aura with twinkles": PreviewEffect(player,69); break;
+                case "shortsword - green cloud with bubbles": PreviewEffect(player,70); break;
+                case "shortsword - red aura with blood bubbles": PreviewEffect(player,71); break;
+                case "shortsword - evil green glow": PreviewEffect(player,72); break;
+                case "shortsword - black glow": PreviewEffect(player,73); break;
                 //BattleSpear SetEffect
-                case "battlespear - cold with twinkles": SetEffect(player, 74, effectPrice); break;
-                case "battlespear - evil green aura": SetEffect(player, 75, effectPrice); break;
-                case "battlespear - evil red aura": SetEffect(player, 76, effectPrice); break;
-                case "battlespear - flaming": SetEffect(player, 77, effectPrice); break;
-                case "battlespear - hot gold glow": SetEffect(player, 78, effectPrice); break;
-                case "battlespear - hot fire glow": SetEffect(player, 79, effectPrice); break;
-                case "battlespear - red aura": SetEffect(player, 80, effectPrice); break;
+                case "battlespear - cold with twinkles": PreviewEffect(player,74); break;
+                case "battlespear - evil green aura": PreviewEffect(player,75); break;
+                case "battlespear - evil red aura": PreviewEffect(player,76); break;
+                case "battlespear - flaming": PreviewEffect(player,77); break;
+                case "battlespear - hot gold glow": PreviewEffect(player,78); break;
+                case "battlespear - hot fire glow": PreviewEffect(player,79); break;
+                case "battlespear - red aura": PreviewEffect(player,80); break;
                 //Spear SetEffect
-                case "lugged spear - blue glow": SetEffect(player, 81, effectPrice); break;
-                case "lugged spear - hot blue glow": SetEffect(player, 82, effectPrice); break;
-                case "lugged spear - cold with twinkles": SetEffect(player, 83, effectPrice); break;
-                case "lugged spear - flaming": SetEffect(player, 84, effectPrice); break;
-                case "lugged spear - electric arcing": SetEffect(player, 85, effectPrice); break;
-                case "lugged spear - hot yellow flame": SetEffect(player, 86, effectPrice); break;
-                case "lugged spear - orange flame with sparks": SetEffect(player, 87, effectPrice); break;
-                case "lugged spear - orange to purple flame": SetEffect(player, 88, effectPrice); break;
-                case "lugged spear - hot purple flame": SetEffect(player, 89, effectPrice); break;
-                case "lugged spear - silvery glow": SetEffect(player, 90, effectPrice); break;
+                case "lugged spear - blue glow": PreviewEffect(player,81); break;
+                case "lugged spear - hot blue glow": PreviewEffect(player,82); break;
+                case "lugged spear - cold with twinkles": PreviewEffect(player,83); break;
+                case "lugged spear - flaming": PreviewEffect(player,84); break;
+                case "lugged spear - electric arcing": PreviewEffect(player,85); break;
+                case "lugged spear - hot yellow flame": PreviewEffect(player,86); break;
+                case "lugged spear - orange flame with sparks": PreviewEffect(player,87); break;
+                case "lugged spear - orange to purple flame": PreviewEffect(player,88); break;
+                case "lugged spear - hot purple flame": PreviewEffect(player,89); break;
+                case "lugged spear - silvery glow": PreviewEffect(player,90); break;
                 //Staff SetEffect
-                case "staff - blue glow": SetEffect(player, 90, effectPrice); break;
-                case "staff - blue glow with twinkles": SetEffect(player, 91, effectPrice); break;
-                case "staff - gold glow": SetEffect(player, 92, effectPrice); break;
-                case "staff - gold glow with twinkles": SetEffect(player, 93, effectPrice); break;
-                case "staff - faint red glow": SetEffect(player, 94, effectPrice); break;
+                case "staff - blue glow": PreviewEffect(player,90); break;
+                case "staff - blue glow with twinkles": PreviewEffect(player,91); break;
+                case "staff - gold glow": PreviewEffect(player,92); break;
+                case "staff - gold glow with twinkles": PreviewEffect(player,93); break;
+                case "staff - faint red glow": PreviewEffect(player,94); break;
                 #endregion
                 #region dye
 
@@ -929,6 +967,10 @@ namespace DOL.GS {
                     break;
 
                     #endregion
+                
+                case "confirm effect":
+                    SetEffect(player, cachedEffectID, effectPrice);
+                    break;
             }
 
             return true;
@@ -1009,6 +1051,17 @@ namespace DOL.GS {
         #endregion setcolor
 
 
+        private void PreviewEffect(GamePlayer player, int effect)
+        {
+            InventoryItem item = (InventoryItem)player.TempProperties.getProperty<InventoryItem>(TempProperty).Clone();
+            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            item.Effect = effect;
+            player.TempProperties.setProperty(TempEffectId, effect);
+            DisplayReskinPreviewTo(player, item);
+            SendReply(player, "When you are finished browsing, let me know and I will [confirm effect]."
+            );
+        }
+
         #region seteffect
         public void SetEffect(GamePlayer player, int effect, int price)
         {
@@ -1023,7 +1076,7 @@ namespace DOL.GS {
 
             if (item.Object_Type < 1 || item.Object_Type > 26)
             {
-                SendReply(player, "I cannot work on anything else than weapons.");
+                SendReply(player, "I cannot work on anything other than weapons.");
                 return;
             }
 
@@ -1075,7 +1128,10 @@ namespace DOL.GS {
             //SetRealmLevel(player, (int)player.RealmPoints);
             player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
-
+            player.TempProperties.removeProperty(TempProperty);
+            player.TempProperties.removeProperty(DisplayedItem);
+            player.TempProperties.removeProperty(TempEffectId);
+            
             SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -1093,6 +1149,65 @@ namespace DOL.GS {
                 visplayer.Out.SendSpellEffectAnimation(this, player, spell, 0, false, 1);
             }
             return 0;
+        }
+        
+        private void DisplayReskinPreviewTo(GamePlayer player, InventoryItem item)
+        {
+            GameNPC display = CreateDisplayNPC(player, item);
+            display.AddToWorld();
+
+            var tempAd = new AttackData();
+            tempAd.Attacker = display;
+            tempAd.Target = display;
+            if (item.Hand == 1)
+            {
+                tempAd.AttackType = AttackData.eAttackType.MeleeTwoHand;
+                display.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            }
+            else
+            {
+                tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+                display.SwitchWeapon(eActiveWeaponSlot.Standard);
+            }
+
+            tempAd.AttackResult = eAttackResult.HitUnstyled;
+            display.AttackState = true;
+            display.TargetObject = display;
+            display.ObjectState = eObjectState.Active;
+            display.attackComponent.AttackState = true;
+            display.BroadcastLivingEquipmentUpdate();
+            player.Out.SendObjectUpdate(display);
+
+            //Uncomment this if you want animations
+            // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
+            // animationThread.IsBackground = true;
+            // animationThread.Start();
+        }
+        
+        private GameNPC CreateDisplayNPC(GamePlayer player, InventoryItem item)
+        {
+            var mob = new DisplayModel(player, item);
+
+            //player model contains 5 bits of extra data that causes issues if used
+            //for an NPC model. we do this to drop the first 5 bits and fill w/ 0s
+            ushort tmpModel = (ushort)(player.Model << 5);
+            tmpModel = (ushort)(tmpModel >> 5);
+
+            //Fill the object variables
+            mob.X = this.X + 50;
+            mob.Y = this.Y;
+            mob.Z = this.Z;
+            mob.CurrentRegion = this.CurrentRegion;
+
+            return mob;
+
+            /*
+            mob.Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            //Console.WriteLine($"item: {item} slot: {item.Item_Type}");
+            //mob.Inventory.AddItem((eInventorySlot) item.Item_Type, item);
+            //Console.WriteLine($"mob inventory: {mob.Inventory.ToString()}");
+            player.Out.SendNPCCreate(mob);
+            //mob.AddToWorld();*/
         }
     }
 }
