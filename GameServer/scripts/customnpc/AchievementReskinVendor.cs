@@ -86,7 +86,7 @@ public class AchievementReskinVendor : GameNPC
         int itemSlot = item.Item_Type;
         bool isGM = t.Client.Account.PrivLevel != 1;
 
-        Console.Write("Item Type is" + item.Item_Type + "damagetype is" + damageType + "objectType is " + item.Object_Type);
+        //Console.Write("Item Type is" + item.Item_Type + "damagetype is" + damageType + "objectType is " + item.Object_Type);
 
         List<SkinVendorItem> foundItems = null;
 
@@ -250,7 +250,7 @@ public class AchievementReskinVendor : GameNPC
 
             if (slot == eInventorySlot.Invalid)
             {
-                SendReply(player, "I'm sorry, but you currently have no available inventoryspace for this Item.");
+                SendReply(player, "I'm sorry, but you currently have no available inventory space for this Item.");
                 return false;
             }
 
@@ -380,6 +380,7 @@ public class AchievementReskinVendor : GameNPC
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+            player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
             // player.RemoveBountyPoints(300);
             //player.RealmPoints -= price;
