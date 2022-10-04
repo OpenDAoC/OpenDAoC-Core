@@ -1084,7 +1084,7 @@ namespace DOL.GS {
             if (item == null)
                 return;
 
-            if (item.Object_Type < 1 || item.Object_Type > 26)
+            if ((item.Object_Type < 1 || item.Object_Type > 26) || item.Object_Type == 42)
             {
                 SendReply(player, "I cannot work on anything other than weapons and shields.");
                 return;
