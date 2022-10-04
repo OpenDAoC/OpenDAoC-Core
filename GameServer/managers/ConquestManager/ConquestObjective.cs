@@ -88,7 +88,7 @@ public class ConquestObjective
             case "dun bolg":
             case "dun nged":
             case "dun da behnn":
-            case "dun crimthain":
+            case "dun crimthain": //fixed typo in database: "Dun Crimthainm" -> "Dun Crimthain"
                 flagLocs.Add(new Point3D(420626, 407617, 4248)); //between nged and behn
                 flagLocs.Add(new Point3D(434289, 383867, 3080)); //evern overlook
                 flagLocs.Add(new Point3D(418960, 382760, 1946)); //stone gates
