@@ -1061,7 +1061,16 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+				var maxConc = MAX_CONC_SPELLS;
+
+				//self buff charge IDs should not count against conc cap
+				if (m_caster is GamePlayer p)
+				{
+					maxConc += p.effectListComponent.ConcentrationEffects.Count(concentrationEffect => concentrationEffect.SpellHandler?.Spell?.ID != null 
+																				&& p.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID));
+				}
+
+				if (m_caster.effectListComponent.ConcentrationEffects.Count >= maxConc)
 				{
 					if (!quiet) MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
 					return false;
