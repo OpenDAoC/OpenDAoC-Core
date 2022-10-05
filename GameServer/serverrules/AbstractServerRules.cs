@@ -2083,51 +2083,50 @@ namespace DOL.GS.ServerRules
 				{
 					if (expGainPlayer.GetConLevel(killedPlayer) > -3)
 					{
+						var killerCheck = killer;
+						//if main pet killed target, check using owner
+						if (killer is GamePet pet && pet.Owner == expGainPlayer)
+						{
+							killerCheck = expGainPlayer;
+						}
+						//same check for subpets
+						if(killer is GamePet {Owner: GamePet mainpet} && mainpet.Owner == expGainPlayer)
+						{
+							killerCheck = expGainPlayer;
+						}
+						
 						switch ((eRealm)killedPlayer.Realm)
 						{
 							case eRealm.Albion:
 								expGainPlayer.KillsAlbionPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
-								if (expGainPlayer == killer)
+								if (expGainPlayer == killerCheck )
 								{
 									expGainPlayer.KillsAlbionDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
-									if ((float) de.Value == totalDamage)
-									{
-										expGainPlayer.KillsAlbionSolo++;
-										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
-									}
-									
+									CheckSoloKills(eRealm.Albion, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
 							case eRealm.Hibernia:
 								expGainPlayer.KillsHiberniaPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
-								if (expGainPlayer == killer)
+								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsHiberniaDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
-									if ((float) de.Value == totalDamage)
-									{
-										expGainPlayer.KillsHiberniaSolo++;
-										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
-									}
+									CheckSoloKills(eRealm.Hibernia, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
 							case eRealm.Midgard:
 								expGainPlayer.KillsMidgardPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
-								if (expGainPlayer == killer)
+								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsMidgardDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
-									if ((float) de.Value == totalDamage)
-									{
-										expGainPlayer.KillsMidgardSolo++;
-										expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
-									}
+									CheckSoloKills(eRealm.Midgard, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 						}
@@ -2214,6 +2213,54 @@ namespace DOL.GS.ServerRules
 				catch (System.Exception ex)
 				{
 					log.Error(ex);
+				}
+			}
+		}
+
+		private void CheckSoloKills(eRealm realm, HybridDictionary XPGainerList, GamePlayer playerToCheck, float totalDamage)
+		{
+			float calcDamage = 0f;
+			
+			//turns out all the pet damage is stored under the owner's key, so this only ever checks playerToCheck's value
+			//but whatever I'm keeping it in case we need it later
+			foreach (DictionaryEntry gainer in XPGainerList)
+			{
+				//check for pets
+				if (gainer.Key is GamePet pet && pet.Owner == playerToCheck && gainer.Value is float)
+				{
+					calcDamage += (float)gainer.Value;
+				}
+				
+				//check for subpets (bonedancer and animist)
+				if (gainer.Key is GamePet subpet && subpet.Owner is GamePet masterpet &&
+				    masterpet.Owner == playerToCheck && gainer.Value is float)
+				{
+					calcDamage += (float)gainer.Value;
+				}
+
+
+				if (gainer.Key == playerToCheck && gainer.Value is float value)
+				{
+					calcDamage += value;
+				}
+			}
+			
+			if (Math.Abs(calcDamage - totalDamage) < 1) //since we compare floats we have to account for weird floating points and do comparison within a tolerance instead
+			{
+				switch (realm)
+				{
+					case eRealm.Albion:
+						playerToCheck.KillsAlbionSolo++;
+						playerToCheck.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+						break;
+					case eRealm.Midgard:
+						playerToCheck.KillsMidgardSolo++;
+						playerToCheck.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+						break;
+					case eRealm.Hibernia:
+						playerToCheck.KillsHiberniaSolo++;
+						playerToCheck.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
+						break;
 				}
 			}
 		}
