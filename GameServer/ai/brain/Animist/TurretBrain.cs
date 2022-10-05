@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
 						{
 							Body.TurnTo(Body.TargetObject);
 						}
-						Body.CastSpell(spell, m_mobSpellLine);
+						Body.CastSpell(spell, m_mobSpellLine, false);
 					}
 				}
 				else

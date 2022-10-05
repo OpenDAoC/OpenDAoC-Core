@@ -993,6 +993,8 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
+						if (Caster is TurretPet) return true;
+
 						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !Caster.TargetInView)
 						{
 							if (!quiet) MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
