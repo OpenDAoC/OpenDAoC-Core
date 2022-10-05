@@ -1157,7 +1157,7 @@ namespace DOL.AI.Brain
 
 			//AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			//if (args == null) return;
-			if (ad.Target is GamePlayer && (ad.Target as GamePlayer).ControlledBrain != this)
+			if (ad.Target is GamePlayer && ((ad.Target as GamePlayer).ControlledBrain != this || (ad.Target as GamePlayer).ControlledBrain.Body == Owner))
 				return;
 			// react only on these attack results
 			switch (ad.AttackResult)

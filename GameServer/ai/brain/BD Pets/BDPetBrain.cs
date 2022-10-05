@@ -56,6 +56,26 @@ namespace DOL.AI.Brain
 			get { return Owner is CommanderPet commander && commander.MinionsAssisting; } 
 		}
 
+		public override void OnOwnerAttacked(AttackData ad)
+		{
+			// react only on these attack results
+			switch (ad.AttackResult)
+			{
+				case eAttackResult.Blocked:
+				case eAttackResult.Evaded:
+				case eAttackResult.Fumbled:
+				case eAttackResult.HitStyle:
+				case eAttackResult.HitUnstyled:
+				case eAttackResult.Missed:
+				case eAttackResult.Parried:
+					AddToAggroList(ad.Attacker, ad.Attacker.EffectiveLevel + ad.Damage + ad.CriticalDamage);
+					break;
+			}
+
+			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
+			AttackMostWanted();
+		}
+
 		public override void SetAggressionState(eAggressionState state)
 		{
 			if (MinionsAssisting)
