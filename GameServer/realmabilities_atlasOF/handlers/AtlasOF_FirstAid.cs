@@ -20,7 +20,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override int CostForUpgrade(int level)
         {
-			switch (level)
+			switch (level+1)
             {
 				case 1:
 					return 3;
