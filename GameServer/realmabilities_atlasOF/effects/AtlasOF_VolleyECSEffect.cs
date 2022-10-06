@@ -535,11 +535,12 @@ namespace DOL.GS.Effects
                // }                   
             }
 
-            double TargetABS = 0.10;
+            double TargetABS;
             double AcherWeaponSkill = archer.GetWeaponSkill(attackWeapon);
-            //double AcherWeaponSkill = archer.DisplayedWeaponSkill;
             double baseDamage = WeaponDPS * (AcherWeaponSkill / TargetAF) * meleeRelicBonus  * SlowWeaponBonus * WeaponBonus2H * weaponspeed;//calculate dmg
-            Console.WriteLine($"base dmg {baseDamage} dps {WeaponDPS} ws {AcherWeaponSkill} af {TargetAF} divvy {AcherWeaponSkill/TargetAF} slowwep {SlowWeaponBonus} 2hbon {WeaponBonus2H} speed {weaponspeed}");
+            
+            // DEBUG
+            // Console.WriteLine($"base dmg {baseDamage} dps {WeaponDPS} ws {AcherWeaponSkill} af {TargetAF} divvy {AcherWeaponSkill/TargetAF} slowwep {SlowWeaponBonus} 2hbon {WeaponBonus2H} speed {weaponspeed}");
 
             switch ((archer?.rangeAttackComponent?.RangeAttackAmmo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
             {
@@ -756,18 +757,19 @@ namespace DOL.GS.Effects
             if (ad.Damage < 50)
                 ad.Damage = 50;//minimum volley damage;
 
-             archer.Out.SendMessage("weaponspeed = " + weaponspeed + //For testing purpose only, we dont want show this to player
-                 "WeaponDPS = " + WeaponDPS +
-                 " ad.Modifier = " + ((int)(baseDamage * (target.GetResist(damagetype) + SkillBase.GetArmorResist(armor, damagetype)) * -0.007)) +
-                 " TargetABS = " + TargetABS +
-                 " ArcherSpec = "+ archer.WeaponSpecLevel(attackWeapon) +
-                 " TargetAF = " + TargetAF +
-                 " DisplayedWeaponSkill = " + AcherWeaponSkill +
-                 " meleeRelicBonus = " + meleeRelicBonus +
-                 " WeaponBonus2H = " + WeaponBonus2H +
-                 " SlowWeaponBonus = "+ SlowWeaponBonus+
-                 " ArmorHitLocation = " + ad.ArmorHitLocation +
-                 " DamageResistReduct = "+ (baseDamage * target.GetResist(damagetype) * 0.01), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            // DEBUG
+            //archer.Out.SendMessage("weaponspeed = " + weaponspeed +
+            //     "WeaponDPS = " + WeaponDPS +
+            //     " ad.Modifier = " + ((int)(baseDamage * (target.GetResist(damagetype) + SkillBase.GetArmorResist(armor, damagetype)) * -0.007)) +
+            //     " TargetABS = " + TargetABS +
+            //     " ArcherSpec = "+ archer.WeaponSpecLevel(attackWeapon) +
+            //     " TargetAF = " + TargetAF +
+            //     " DisplayedWeaponSkill = " + AcherWeaponSkill +
+            //     " meleeRelicBonus = " + meleeRelicBonus +
+            //     " WeaponBonus2H = " + WeaponBonus2H +
+            //     " SlowWeaponBonus = "+ SlowWeaponBonus+
+            //     " ArmorHitLocation = " + ad.ArmorHitLocation +
+            //     " DamageResistReduct = "+ (baseDamage * target.GetResist(damagetype) * 0.01), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
