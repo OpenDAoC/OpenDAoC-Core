@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 
         public override int MaxLevel { get { return 3; } }
         public override int CostForUpgrade(int level) {
-            switch (level)
+            switch (level+1)
             {
                 case 1: return 6;
                 case 2: return 10;
