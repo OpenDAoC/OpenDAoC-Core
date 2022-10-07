@@ -393,8 +393,8 @@ namespace DOL.GS
 
                     if (RangedAttackType == eRangedAttackType.Critical)
                         owner.Endurance -= CRITICAL_SHOT_ENDURANCE;
-                    else if (RangedAttackType == eRangedAttackType.RapidFire && owner.GetAbilityLevel(Abilities.RapidFire) == 1)
-                        owner.Endurance -= 2 * RANGE_ATTACK_ENDURANCE;
+                    else if (RangedAttackType == eRangedAttackType.RapidFire && owner.GetAbilityLevel(Abilities.RapidFire) == 2)
+                        owner.Endurance -= (int)Math.Ceiling(RANGE_ATTACK_ENDURANCE / 2.0);
                     else owner.Endurance -= RANGE_ATTACK_ENDURANCE;
                     break;
             }
