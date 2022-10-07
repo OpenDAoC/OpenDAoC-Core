@@ -211,7 +211,7 @@ namespace DOL.GS.Friends
 
 			var success = false;
 			if (!PlayersFriendsListsCache.TryUpdate(Player, list => {
-				var result = list.Except(new[] { Friend }).ToArray();
+				var result = list.Except(new[] { Friend }, StringComparer.OrdinalIgnoreCase).ToArray();
 				if (result.Length < list.Length)
 				{
 					success = true;
