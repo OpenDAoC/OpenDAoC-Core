@@ -922,28 +922,13 @@ namespace DOL.GS.Effects
                 eDamageType damagetype = player.attackComponent.AttackDamageType(attackWeapon);
                 int speed = player.AttackSpeed(attackWeapon);
                 byte attackSpeed = (byte)(speed / 1000);
+
                 player.Out.SendMessage("Your shot arcs into the sky!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                AtlasOF_ArrowSalvaging abArrowSalv = player.GetAbility<AtlasOF_ArrowSalvaging>();
-                Boolean remove = true;
-                if (abArrowSalv != null)
-                {
-                    int rnd;
-                    Random r = new Random();
-                    rnd = r.Next(0, 100);
-                    if ((rnd >= 0) && (rnd <= abArrowSalv.Amount))
-                    {
-                        remove = false;
-                    }
-                }
-                if (remove)
-                {
+                int arrowRecoveryChance = player.GetModified(eProperty.ArrowRecovery);
+                if (arrowRecoveryChance == 0 || Util.Chance(100 - arrowRecoveryChance))
                     player.Inventory.RemoveCountFromStack(ammo, 1);
-                }
-                else
-                {
-                    player.Out.SendMessage("Your ability " + abArrowSalv.Name + " save you an arrow", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                }
+
                 player.Endurance -= VOLLEY_SHOT_ENDURANCE;
 
                 if (player.IsStealthed)
