@@ -254,7 +254,7 @@ namespace DOL.GS
 		{
 			//return chancePercent >= Random(1, 100);
 			//return chancePercent >= soleInstance.RandomImpl(1, 100);
-			return chancePercent >= Util.CryptoNextInt(1, 100);
+			return chancePercent > CryptoNextInt(0, 100);
 		}
 
 		/// <summary>
@@ -266,7 +266,7 @@ namespace DOL.GS
 		{
 			//return chancePercent > RandomDouble();
 			//return chancePercent > soleInstance.RandomDoubleImpl();
-			return chancePercent > Util.CryptoNextDouble();
+			return chancePercent > CryptoNextDouble();
 		}
 
 		#endregion
