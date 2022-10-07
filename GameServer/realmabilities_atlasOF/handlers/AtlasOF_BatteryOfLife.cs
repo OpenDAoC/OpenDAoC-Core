@@ -20,12 +20,7 @@ namespace DOL.GS.RealmAbilities
         {
             GamePlayer player = living as GamePlayer;
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            
-            foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                SendCasterSpellEffectAndCastMessage(player, 7009, true);
-            }
-
+            SendCasterSpellEffectAndCastMessage(player, 7009, true);
             DisableSkill(living);
 
             new AtlasOF_BatteryOfLifeECSEffect(new ECSGameEffectInitParams(player, m_duration, 1, CreateSpell(living)));
