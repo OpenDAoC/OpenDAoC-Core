@@ -46,43 +46,38 @@ namespace DOL.GS.RealmAbilities
                 return;
             if(m_player.CurrentRegion.IsDungeon)
             {
-                m_player.Out.SendMessage("You can't use this ability in dungeons!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You can't use Volley in dungeons!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance || m_player.AttackWeapon == null)
             {
-                m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            if (m_player.AttackWeapon == null)
-            {
-                m_player.Out.SendMessage("You need weapon to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You need to be equipped with a bow to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             if (ammo == null)
             {
-                m_player.Out.SendMessage("You need to be equipped with a bow for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             if (rgn == null || rgn.GetZone(m_player.GroundTarget.X, m_player.GroundTarget.Y) == null)
             {
-                m_player.Out.SendMessage("You need a ground target for use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);     
+                m_player.Out.SendMessage("You must have a ground target to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);     
                 return;
             }
             if (m_player.IsWithinRadius(m_player.GroundTarget, (int)attackrangeMin))
             {
-                m_player.Out.SendMessage("You ground target is too close to use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You ground target is too close to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             if (!m_player.IsWithinRadius(m_player.GroundTarget, (int)attackrangeMax))
             {
-                m_player.Out.SendMessage("You ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You ground target is too far away to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
             if (volley != null)
             {
-                m_player.Out.SendMessage("You already have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You are already using Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
             AtlasOF_VolleyECSEffect Volley = (AtlasOF_VolleyECSEffect)m_player.EffectList.GetOfType(typeof(AtlasOF_VolleyECSEffect));
