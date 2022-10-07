@@ -18,7 +18,7 @@ namespace DOL.GS.RealmAbilities
 
         public AtlasOF_ToughnessAbility(DBAbility dba, int level) : base(dba, level, eProperty.MaxHealth) { }
 
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
 
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
 
