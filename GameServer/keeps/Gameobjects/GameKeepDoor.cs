@@ -18,19 +18,14 @@
  */
 using System;
 using System.Collections;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
 
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
-
 using log4net;
-
 
 namespace DOL.GS.Keeps
 {
@@ -39,7 +34,7 @@ namespace DOL.GS.Keeps
 	/// </summary>
 	public class GameKeepDoor : GameLiving, IDoor, IKeepItem
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		#region properties
 
@@ -172,16 +167,12 @@ namespace DOL.GS.Keeps
 			if (MaxHealth != m_oldMaxHealth)
 			{
 				if (m_oldMaxHealth > 0)
-				{
-					Health = (int)Math.Ceiling(((double)Health) * ((double)MaxHealth) / ((double)m_oldMaxHealth));
-				}
-				else
-				{
-					Health = MaxHealth;
-				}
+					Health = (int)Math.Ceiling(Health * MaxHealth / (double)m_oldMaxHealth);
 
 				m_oldMaxHealth = MaxHealth;
 			}
+
+			SaveIntoDatabase();
 		}
 
 		public override bool IsAttackableDoor
@@ -621,7 +612,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartPowerRegeneration()
 		{
-			//No regeneration for doors
+			// No regeneration for doors
 			return;
 		}
 		/// <summary>
@@ -629,18 +620,23 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartEnduranceRegeneration()
 		{
-			//No regeneration for doors
+			// No regeneration for doors
 			return;
 		}
 
 		public override void StartHealthRegeneration()
 		{
-			if (!IsAttackableDoor) return; //Doors don't regen health if they are not attackable
-			if (m_repairTimer != null && m_repairTimer.IsAlive) return; 
+			// Doors don't regen health if they are not attackable
+			if (!IsAttackableDoor)
+				return;
+			if (m_repairTimer != null && m_repairTimer.IsAlive)
+				return; 
 			m_repairTimer = new ECSGameTimer(this);
 			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
-			m_repairTimer.Interval = repairInterval;
 			m_repairTimer.Start(repairInterval);
+			// Skip the first tick to avoid repairing on server start.
+			// Can't rely on GameLoop.GameLoopTime since it's 0. Is there a better way?
+			m_repairTimer.StartTick = GameTimer.GetTickCount() + repairInterval;
 		}
 
 		public void DeleteObject()
@@ -681,7 +677,16 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void SaveIntoDatabase()
 		{
+			if (InternalID == null)
+				return;
 
+			DBDoor dbDoor = GameServer.Database.FindObjectByKey<DBDoor>(InternalID);
+
+			if (dbDoor == null)
+				return;
+
+			dbDoor.Health = Health;
+			GameServer.Database.SaveObject(dbDoor);
 		}
 
 		/// <summary>
@@ -699,6 +704,7 @@ namespace DOL.GS.Keeps
 			if (curZone == null) return;
 			this.CurrentRegion = curZone.ZoneRegion;
 			m_name = door.Name;
+			m_health = door.Health;
 			m_Heading = (ushort)door.Heading;
 			m_x = door.X;
 			m_y = door.Y;
@@ -706,7 +712,7 @@ namespace DOL.GS.Keeps
 			m_level = 0;
 			m_model = 0xFFFF;
 			m_doorID = door.InternalID;
-			m_state = eDoorState.Closed;
+			m_state = door.IsPostern || m_health > 0 ? eDoorState.Closed : eDoorState.Open; // State should be saved on the DB
 			this.AddToWorld();
 
 			foreach (AbstractArea area in this.CurrentAreas)
@@ -724,7 +730,6 @@ namespace DOL.GS.Keeps
 				}
 			}
 
-			m_health = MaxHealth;
 			StartHealthRegeneration();
 			DoorMgr.RegisterDoor(this);
 		}
@@ -828,6 +833,7 @@ namespace DOL.GS.Keeps
 
 			m_state = eDoorState.Open;
 			BroadcastDoorStatus();
+			SaveIntoDatabase();
 		}
 
 		/// <summary>
@@ -836,7 +842,6 @@ namespace DOL.GS.Keeps
 		public virtual void CloseDoor()
 		{
 			m_state = eDoorState.Closed;
-
 			BroadcastDoorStatus();
 		}
 
@@ -864,10 +869,9 @@ namespace DOL.GS.Keeps
 			if (Component == null || Component.Keep == null)
 				return 0;
 
-			if (HealthPercent == 100 || Component.Keep.InCombat)
-				return repairInterval;
+			if (HealthPercent != 100 && !Component.Keep.InCombat)
+				Repair(MaxHealth / 100 * 5);
 
-			Repair((MaxHealth / 100) * 5);
 			return repairInterval;
 		}
 
@@ -887,6 +891,7 @@ namespace DOL.GS.Keeps
 				m_RelicMessage75 = false;
 
 			BroadcastDoorStatus();
+			SaveIntoDatabase();
 		}
 		/// <summary>
 		/// This Function is called when keep is taken to repair door
@@ -901,6 +906,7 @@ namespace DOL.GS.Keeps
 			m_RelicMessage50 = false;
 			m_RelicMessage75 = false;
 			CloseDoor();
+			SaveIntoDatabase();
 		}
 
 		/*

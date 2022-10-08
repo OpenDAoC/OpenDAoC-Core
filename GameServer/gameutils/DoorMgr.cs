@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
@@ -56,6 +55,31 @@ namespace DOL.GS
 				}
 			}
 			return true;
+		}
+
+		public static void SaveKeepDoors()
+		{
+			if (log.IsDebugEnabled)
+				log.Debug("Saving keep doors...");
+			try
+			{
+				lock (Lock)
+				{
+					foreach (List<IDoor> doorList in m_doors.Values)
+					{
+						foreach (IDoor door in doorList)
+						{
+							if (door is GameKeepDoor keepDoor && keepDoor.IsAttackableDoor)
+								keepDoor.SaveIntoDatabase();
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error("Error saving keep doors.", e);
+			}
 		}
 
 		public static bool LoadDoor(DBDoor door)
