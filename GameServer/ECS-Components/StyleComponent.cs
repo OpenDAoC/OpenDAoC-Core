@@ -46,13 +46,17 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Holds the Style that this living should use next
+		/// Holds the style that this living should use next
 		/// </summary>
 		protected Style m_nextCombatStyle;
         /// <summary>
         /// Holds the backup style for the style that the living should use next
         /// </summary>
         protected Style m_nextCombatBackupStyle;
+        /// <summary>
+        /// Holds the time at which the style was set
+        /// </summary>
+        protected long m_nextCombatStyleTime;
 
         /// <summary>
         /// Gets or Sets the next combat style to use
@@ -69,6 +73,14 @@ namespace DOL.GS
         {
             get { return m_nextCombatBackupStyle; }
             set { m_nextCombatBackupStyle = value; }
+        }
+        /// <summary>
+        /// Gets or Sets the time at which the style was set
+        /// </summary>
+        public long NextCombatStyleTime
+        {
+            get { return m_nextCombatStyleTime; }
+            set { m_nextCombatStyleTime = value; }
         }
 
         /// <summary>
@@ -112,7 +124,7 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Picks a style, prioritizing reactives an	d chains over positionals and anytimes
+		/// Picks a style, prioritizing reactives and chains over positionals and anytimes
 		/// </summary>
 		/// <returns>Selected style</returns>
 		public Style NPCGetStyleToUse()

@@ -276,6 +276,7 @@ namespace DOL.GS.Styles
 
 						player.styleComponent.NextCombatStyle = style;
 						player.styleComponent.NextCombatBackupStyle = null;
+						player.styleComponent.NextCombatStyleTime = GameLoop.GameLoopTime;
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						if (living.IsEngaging)
