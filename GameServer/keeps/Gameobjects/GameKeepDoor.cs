@@ -38,9 +38,9 @@ namespace DOL.GS.Keeps
 
 		#region properties
 
-		protected int m_oldMaxHealth;
-
-		protected byte m_oldHealthPercent;
+		private int m_oldMaxHealth;
+		private byte m_oldHealthPercent;
+		private bool m_isPostern;
 		
 		private bool m_RelicMessage75 = false;
 		private bool m_RelicMessage50 = false;
@@ -187,30 +187,10 @@ namespace DOL.GS.Keeps
 					if (DoorIndex == 1)
 						return true;
 				}
-				else if (Component.Keep is GameKeep)
+				else if (Component.Keep is GameKeep or RelicGameKeep)
 				{
-					// if (Component.Skin == 10 || Component.Skin == 30) //old and new inner keep
-					// {
-					// 	if (DoorIndex == 1)
-					// 		return true;
-					// }
-					// if (Component.Skin == 0 || Component.Skin == 24)//old and new main gate
-					// {
-					// 	if (DoorIndex == 1 ||
-					// 		DoorIndex == 2)
-					// 		return true;
-					// }
-					
-					var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
-					if (door == null) return false;
-					return !door.IsPostern;
-					
-				} 
-                else if (Component.Keep is RelicGameKeep)
-                {
-	                var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(m_doorID));
-	                return !door.IsPostern;
-                }
+					return !m_isPostern;
+				}
                 return false;
 			}
 		}
@@ -712,7 +692,8 @@ namespace DOL.GS.Keeps
 			m_level = 0;
 			m_model = 0xFFFF;
 			m_doorID = door.InternalID;
-			m_state = door.IsPostern || m_health > 0 ? eDoorState.Closed : eDoorState.Open; // State should be saved on the DB
+			m_isPostern = door.IsPostern;
+			m_state = m_isPostern || m_health > 0 ? eDoorState.Closed : eDoorState.Open; // State should be saved on the DB
 			this.AddToWorld();
 
 			foreach (AbstractArea area in this.CurrentAreas)
@@ -747,7 +728,7 @@ namespace DOL.GS.Keeps
 			m_name = "Keep Door";
 			m_oldHealthPercent = HealthPercent;
 			m_doorID = GenerateDoorID();
-			this.m_model = 0xFFFF;
+			m_model = 0xFFFF;
 			m_state = eDoorState.Closed;
 
 			if (AddToWorld())
@@ -759,11 +740,9 @@ namespace DOL.GS.Keeps
 			{
 				log.Error("Failed to load keep door from keepposition_id =" + pos.ObjectId + ". Component SkinID=" + component.Skin + ". KeepID=" + component.Keep.KeepID);
 			}
-
 		}
 
-		public void MoveToPosition(DBKeepPosition position)
-		{ }
+		public void MoveToPosition(DBKeepPosition position) { }
 
 		public int GenerateDoorID()
 		{
@@ -943,7 +922,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public void NPCManipulateDoorRequest(GameNPC npc, bool open)
-		{ }
+		public void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
 	}
 }
