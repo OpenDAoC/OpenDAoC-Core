@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using DOL.Database.Attributes;
 
 namespace DOL.Database
@@ -38,24 +37,11 @@ namespace DOL.Database
 		private byte m_realm;
 		private string m_guild;
 		private uint m_flags;
-		// private int m_constitution;
 		private int m_locked;
 		private int m_health;
-		private int m_maxHealth;
+		private int m_maxHealth; // Unused
 		private bool m_isPostern;
-		
-		/// <summary>
-		/// Create a door row
-		/// </summary>
-		public DBDoor()
-		{
-			m_zpos = 0;
-			m_ypos = 0;
-			m_xpos = 0;
-			m_heading = 0;
-			m_name = string.Empty;
-			m_internalID = 0;
-		}
+		private int m_state; // DOL.GS.eDoorState
 
 		/// <summary>
 		/// Name of door
@@ -187,20 +173,6 @@ namespace DOL.Database
 			}
 		}
 
-		/* 	[DataElement(AllowDbNull = false)]
-			public int Constitution
-			{
-				get
-				{
-					return m_constitution;
-				}
-				set
-				{
-					Dirty = true;
-					m_constitution = value;
-				}
-			}
-		 */
 		[DataElement(AllowDbNull = false)]
 		public byte Level
 		{
@@ -256,6 +228,7 @@ namespace DOL.Database
 				m_locked = value;
 			}
 		}
+
 		[DataElement(AllowDbNull = false)]
 		public int Health
 		{
@@ -269,6 +242,7 @@ namespace DOL.Database
 				m_health = value;
 			}
 		}
+
 		[DataElement(AllowDbNull = false)]
 		public int MaxHealth
 		{
@@ -284,7 +258,6 @@ namespace DOL.Database
 		}
 		
 		[DataElement(AllowDbNull = false)]
-
 		public bool IsPostern
 		{
 			get
@@ -295,6 +268,20 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_isPostern = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = false)]
+		public int State
+		{
+			get
+			{
+				return m_state;
+			}
+			set
+			{
+				Dirty = true;
+				m_state = value;
 			}
 		}
 	}
