@@ -28,8 +28,6 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.API;
-using DOL.GS.AtlasQuest.Albion;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -48,7 +46,6 @@ using DOL.GS.Utils;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
-using Newtonsoft.Json;
 
 namespace DOL.GS
 {
@@ -58,7 +55,9 @@ namespace DOL.GS
     /// </summary>
     public class GamePlayer : GameLiving
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly object m_LockObject = new object();
         public int Regen { get; set; }
@@ -70,7 +69,6 @@ namespace DOL.GS
         public double RegenAfterTireless { get; set; }
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
-        
         public double SpecLock { get; set; }
         
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
@@ -85,7 +83,6 @@ namespace DOL.GS
         }
         
         protected ECSGameTimer m_predatortimer;
-
         private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
@@ -905,15 +902,27 @@ namespace DOL.GS
 
         #region Player Linking Dead
         /// <summary>
-        /// Callback method, called when the player went linkdead and now he is
-        /// allowed to be disconnected
+        /// Callback method, called when the player went linkdead
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>0</returns>
         protected int LinkdeathTimerCallback(AuxECSGameTimer callingTimer)
         {
-            log.Debug("call back");
-            //If we died during our callback time we release
+            // Other clients will forget about us if we don't keep sending them packets
+            // Doesn't work well with dead characters
+            if (IsAlive)
+            {
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Client.Out.SendPlayerForgedPosition(this);
+                }
+            }
+
+            // Keep the callback alive until SECONDS_TO_QUIT_ON_LINKDEATH has passed
+            if (Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoop.GameLoopTime && IsAlive)
+                return callingTimer.Interval;
+
+            // If we died during our callback time we release
             try
             {
                 if (!IsAlive)
@@ -955,8 +964,9 @@ namespace DOL.GS
                 return;
             }
 
-            //Stop player if he's running....
+            // Stop player if he's running...
             CurrentSpeed = 0;
+
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (player.ObjectState != eObjectState.Active || player == null || player == this) 
@@ -967,7 +977,6 @@ namespace DOL.GS
             }
 
             UpdateEquipmentAppearance();
-
             LeaveHouse();
 			
             if (m_quitTimer != null)
@@ -976,22 +985,16 @@ namespace DOL.GS
                 m_quitTimer = null;
             }
 
-            // int secondsToQuit = QuitTime;
-            int secondsToQuit = 60;
-
             if (log.IsInfoEnabled)
-                log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, secondsToQuit);
-            log.Debug("starting timer");
-            AuxECSGameTimer timer = new AuxECSGameTimer(this, LinkdeathTimerCallback, secondsToQuit * 1000); // make sure it is not stopped!
-            
-            // timer.Callback = new ECSGameTimer.ECSTimerCallback(LinkdeathTimerCallback);
-            // timer.StartTick = 1 + secondsToQuit * 1000;
-            timer.Start();
+                log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
+
+            // Keep linkdead characters in game
+            new AuxECSGameTimer(this, LinkdeathTimerCallback, 1750);
 
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
 
-            //Notify players in close proximity!
+            // Notify players in close proximity
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
                 if (player == null) continue;
@@ -999,13 +1002,13 @@ namespace DOL.GS
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
-            //Notify other group members of this linkdead
+            // Notify other group members of this linkdead
             if (Group != null)
                 Group.UpdateMember(this, false, false);
 
             CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary();
 
-            //Notify our event handlers (if any)
+            // Notify our event handlers (if any)
             Notify(GamePlayerEvent.Linkdeath, this);
         }
 

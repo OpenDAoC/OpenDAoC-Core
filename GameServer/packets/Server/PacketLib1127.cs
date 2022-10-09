@@ -61,7 +61,6 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 		
-
 		public override void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{
 			if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
@@ -94,7 +93,7 @@ namespace DOL.GS.PacketHandler
 			//		m_lastPacketSendTick = GameLoop.GameLoopTime;
 			//	}				
 			//} else
-   //         {
+			//{
 				pak.WriteString(str + msg);
 				SendTCP(pak);
 			//}
@@ -125,6 +124,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
 		{
 			if (m_gameClient.Player == null)
@@ -151,6 +151,64 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
+		}
+
+		/// <summary>
+		/// This is used to build a server side "Position Object"
+		/// Usually Position Packet Should only be relayed
+		/// This method can be used to refresh postion when there is lag or during a linkdeath to prevent models from disappearing
+		/// </summary>
+		/// <param name="player"></param>
+		public override void SendPlayerForgedPosition(GamePlayer player)
+		{
+			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.PlayerPosition)))
+			{
+				ushort newHeading = player.Heading;
+				ushort steedSeatPosition = 0;
+				
+				if (player.Steed != null && player.Steed.ObjectState == GameObject.eObjectState.Active)
+				{
+					newHeading = (ushort)player.Steed.ObjectID;
+					steedSeatPosition = (ushort)player.Steed.RiderSlot(player);
+				}
+
+				byte playerOutAction = 0x00;
+				if (player.IsDiving)
+					playerOutAction |= 0x04;
+				if (player.TargetInView)
+					playerOutAction |= 0x30;
+				if (player.GroundTargetInView)
+					playerOutAction |= 0x08;
+				if (player.IsTorchLighted)
+					playerOutAction |= 0x80;
+				if (player.IsStealthed)
+					playerOutAction |= 0x02;
+
+				pak.WriteFloatLowEndian(player.X);
+				pak.WriteFloatLowEndian(player.Y);
+				pak.WriteFloatLowEndian(player.Z);
+				pak.WriteFloatLowEndian(player.CurrentSpeed);
+				pak.WriteFloatLowEndian(0); // z speed
+				pak.WriteShort((ushort)player.Client.SessionID);
+				pak.WriteShort((ushort)player.ObjectID);
+				pak.WriteShort(player.CurrentZone.ZoneSkinID);
+				pak.WriteShort(0); // player state
+				pak.WriteShort(steedSeatPosition);
+				pak.WriteShort(newHeading);
+				pak.WriteByte(playerOutAction);
+				pak.WriteByte((byte)(player.RPFlag ? 1 : 0));
+				pak.WriteByte(0);
+				pak.WriteByte((byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0)));
+				pak.WriteByte(player.ManaPercent);
+				pak.WriteByte(player.EndurancePercent);
+				pak.WriteByte(0);
+				pak.WritePacketLength();
+
+				SendUDP(pak);
+			}
+
+			// Update Cache
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(player.CurrentRegionID, (ushort)player.ObjectID)] = GameTimer.GetTickCount();
 		}
 	}
 }

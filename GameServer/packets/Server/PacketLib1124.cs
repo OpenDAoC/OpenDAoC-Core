@@ -2557,7 +2557,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// This is used to build a server side "Position Object"
 		/// Usually Position Packet Should only be relayed
-		/// The only purpose of this method is refreshing postion when there is Lag
+		/// This method can be used to refresh postion when there is lag or during a linkdeath to prevent models from disappearing
 		/// </summary>
 		/// <param name="player"></param>
 		public virtual void SendPlayerForgedPosition(GamePlayer player)
