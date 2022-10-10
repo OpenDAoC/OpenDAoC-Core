@@ -129,7 +129,8 @@ namespace DOL.GS
 		{
 			// Update Player Player's
 			if (ServerProperties.Properties.WORLD_PLAYERTOPLAYER_UPDATE_INTERVAL > 0)
-				UpdatePlayerOtherPlayers(player, nowTicks);
+				// This calls SendPlayerForgedPosition. Position packets are normally relayed when received from players
+				// UpdatePlayerOtherPlayers(player, nowTicks);
 
 			// Update Player Mob's
 			if (ServerProperties.Properties.WORLD_NPC_UPDATE_INTERVAL > 0)

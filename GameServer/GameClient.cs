@@ -340,6 +340,11 @@ namespace DOL.GS
 		}
 
         /// <summary>
+        /// When the linkdeath occured. 0 if there wasn't any
+        /// </summary>
+		public long LinkDeathTime { get; set; }
+
+        /// <summary>
         /// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
         /// </summary>
         public bool IsConnected = true;
@@ -788,6 +793,7 @@ namespace DOL.GS
 			else
 			{
 				ClientState = eClientState.Linkdead;
+				LinkDeathTime = GameLoop.GameLoopTime;
 				// If we have a good sessionid, we won't remove the client yet!
 				// OnLinkdeath() can start a timer to remove the client "a bit later"
 				curPlayer.OnLinkdeath();
