@@ -18,13 +18,14 @@ namespace DOL.GS
     {
         // Check Delay in ms for when to check for NPCs in area to attack when not in range of main target. Used as upper bound of checks 
         private const int NPC_VICINITY_CHECK_DELAY = 1000;
+        private const int TICK_INTERVAL_FOR_NON_ATTACK = 100;
 
         private GameLiving m_owner;
         private int m_interval;
         private long m_startTime;
         private long m_rangeInterruptTime;
         private long m_NPCNextNPCVicinityCheck = 0; // Next check for NPCs in the attack range to hit while on the way to main target
-        private long m_firstTimeRoundWithNoAttack; // Set to current time when a round doesn't result in an attack. Kept until reset in ShouldRoundShowMessage()
+        private long m_roundWithNoAttackTime; // Set to current time when a round doesn't result in an attack. Kept until reset in ShouldRoundShowMessage()
 
         public long StartTime { get { return m_startTime; } set { m_startTime = value + GameLoop.GameLoopTime; } }
         public long RangeInterruptTime { get { return m_rangeInterruptTime; } set { m_rangeInterruptTime = value + GameLoop.GameLoopTime; } }
@@ -48,13 +49,13 @@ namespace DOL.GS
             {
                 if (m_owner.IsMezzed || m_owner.IsStunned)
                 {
-                    m_interval = 100;
+                    m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
                     return;
                 }
 
                 if (m_owner.IsCasting && !m_owner.CurrentSpellHandler.Spell.Uninterruptible)
                 {
-                    m_interval = 100;
+                    m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
                     return;
                 }
 
@@ -93,7 +94,7 @@ namespace DOL.GS
                     eCheckRangeAttackStateResult rangeCheckresult = m_owner.rangeAttackComponent.CheckRangeAttackState(attackTarget);
                     if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
                     {
-                        m_interval = 100;
+                        m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
                         return; //Hold the shot another second
                     }
                     else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
@@ -190,12 +191,11 @@ namespace DOL.GS
                 else
                 {
                     attackTarget = m_owner.TargetObject;
-                    attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
 
                     if (attackData != null && attackData.AttackResult is eAttackResult.Fumbled)
                     {
                         // Don't start the attack if the last one fumbled
-                        m_interval = attackComponent.AttackSpeed(attackWeapon);
+                        m_interval = attackComponent.AttackSpeed(attackWeapon) * 2;
                         attackData.AttackResult = eAttackResult.Missed;
                         StartTime = m_interval;
                         return;
@@ -216,7 +216,7 @@ namespace DOL.GS
                         attackWeapon = leftWeapon;
                     }
 
-                    GetIntervalBetweenAttacks(attackWeapon, leftWeapon, attackComponent);
+                    m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
 
                     if (GameLoop.GameLoopTime > styleComponent.NextCombatStyleTime + m_interval)
                     {
@@ -287,7 +287,7 @@ namespace DOL.GS
 
                         if (Possibly_target == null)
                         {
-                            m_interval = 100;
+                            m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
                             return;
                         }
                         else
@@ -322,9 +322,9 @@ namespace DOL.GS
                     and not eAttackResult.Blocked
                     and not eAttackResult.Parried)
                 {
-                    m_interval = 100;
-                    if (m_firstTimeRoundWithNoAttack == 0)
-                        m_firstTimeRoundWithNoAttack = GameLoop.GameLoopTime;
+                    m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                    if (m_roundWithNoAttackTime == 0)
+                        m_roundWithNoAttackTime = GameLoop.GameLoopTime;
                 }
                 else
                 {
@@ -461,19 +461,11 @@ namespace DOL.GS
                 and not eAttackResult.Blocked
                 and not eAttackResult.Parried)
             {
-                shouldRoundShowMessage = GameLoop.GameLoopTime - m_firstTimeRoundWithNoAttack > m_interval;
+                shouldRoundShowMessage = GameLoop.GameLoopTime - m_roundWithNoAttackTime > 1500;
             }
             if (shouldRoundShowMessage)
-                m_firstTimeRoundWithNoAttack = 0;
+                m_roundWithNoAttackTime = 0;
             return shouldRoundShowMessage;
-        }
-
-        private void GetIntervalBetweenAttacks(InventoryItem attackWeapon, InventoryItem leftWeapon, AttackComponent attackComponent)
-        {
-            if (attackWeapon != null && leftWeapon != null && attackComponent.LastAttackWasDualWield && leftWeapon.Object_Type != (int)eObjectType.Shield)
-                m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
-            else
-                m_interval = attackComponent.AttackSpeed(attackWeapon);
         }
     }
 }
