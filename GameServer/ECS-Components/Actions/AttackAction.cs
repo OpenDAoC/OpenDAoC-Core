@@ -16,8 +16,9 @@ namespace DOL.GS
     /// </summary>
     public class AttackAction
     {
-        // Check Delay in ms for when to check for NPCs in area to attack when not in range of main target. Used as upper bound of checks 
+        // Check delay in ms for when to check for NPCs in area to attack when not in range of main target. Used as upper bound of checks 
         private const int NPC_VICINITY_CHECK_DELAY = 1000;
+        // Next tick interval for when the current tick doesn't result in an attack
         private const int TICK_INTERVAL_FOR_NON_ATTACK = 100;
 
         private GameLiving m_owner;
@@ -59,6 +60,12 @@ namespace DOL.GS
                     return;
                 }
 
+                if (m_owner.IsEngaging || m_owner.TargetObject == null)
+                {
+                    m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                    return;
+                }
+
                 AttackComponent attackComponent = m_owner.attackComponent;
                 AttackData attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
 
@@ -68,13 +75,6 @@ namespace DOL.GS
                     if (attackData != null && attackData.Target != null)
                         attackData.Target.attackComponent.RemoveAttacker(m_owner);
                     attackComponent.attackAction?.CleanupAttackAction();
-                    return;
-                }
-
-                // Don't attack if gameliving is engaging
-                if (m_owner.IsEngaging)
-                {
-                    m_interval = attackComponent.AttackSpeed(attackComponent.AttackWeapon); // while gameliving is engageing it doesn't attack.
                     return;
                 }
 
