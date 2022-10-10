@@ -216,16 +216,16 @@ namespace DOL.GS
                         attackWeapon = leftWeapon;
                     }
 
-                    m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
+                    int mainHandAttackSpeed = attackComponent.AttackSpeed(attackWeapon);
 
-                    if (GameLoop.GameLoopTime > styleComponent.NextCombatStyleTime + m_interval)
+                    if (GameLoop.GameLoopTime > styleComponent.NextCombatStyleTime + mainHandAttackSpeed)
                     {
                         // The styles are too old, cancel them
                         styleComponent.NextCombatStyle = null;
                         styleComponent.NextCombatBackupStyle = null;
                     }
 
-                    interruptDuration = attackComponent.AttackSpeed(attackWeapon); // Shouldn't Interval be used instead?
+                    interruptDuration = mainHandAttackSpeed;
 
                     // Damage is doubled on sitting players
                     // but only with melee weapons; arrows and magic does normal damage.
@@ -297,6 +297,7 @@ namespace DOL.GS
                     }
                 }
 
+                // This makes the attack
                 attackComponent.weaponAction = new WeaponAction(m_owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle);
                 
                 // Are we inactive?
@@ -312,7 +313,9 @@ namespace DOL.GS
                     m_owner.SwitchWeapon(eActiveWeaponSlot.Standard);
                 }
 
+                // Retrieve the newest data after from the last WeaponAction
                 attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+                m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
 
                 if (attackData == null || attackData.AttackResult 
                     is not eAttackResult.Missed
