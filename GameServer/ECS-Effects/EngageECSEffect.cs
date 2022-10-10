@@ -68,14 +68,11 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             Owner.IsEngaging = false;
+            Owner.attackComponent.StartAttack(Owner.TargetObject);
         }
 
         public void Cancel(bool playerCancel)
         {
-            Owner.attackComponent.AttackState = false;
-            if (Owner is GamePlayer)
-                (Owner as GamePlayer).Out.SendAttackMode(false);
-
             EffectService.RequestImmediateCancelEffect(this, playerCancel);
             if (OwnerPlayer != null)
             {

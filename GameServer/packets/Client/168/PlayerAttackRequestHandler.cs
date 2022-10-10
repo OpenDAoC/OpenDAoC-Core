@@ -73,7 +73,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					return 0;
 				}
 
-				if (m_start || EffectListService.GetEffectOnTarget(player, eEffect.Engage) != null)
+				if (m_start)
 				{
 					player.attackComponent.StartAttack(player.TargetObject);
 					// unstealth right after entering combat mode if anything is targeted
