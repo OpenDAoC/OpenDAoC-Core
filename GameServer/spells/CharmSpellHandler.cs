@@ -524,7 +524,6 @@ namespace DOL.GS.Spells
         /// <param name="arguments"></param>
         public void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
-            Console.Write("Charm ReleaseEventHandler Called!");
             IControlledBrain npc = null;
             
             if (e == GameLivingEvent.PetReleased)

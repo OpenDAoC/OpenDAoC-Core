@@ -157,7 +157,7 @@ namespace DOL.GS
                 }
             }
             ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer);
-            if (charmMob != null && song != null && song.SpellHandler.Spell.InstrumentRequirement == 0 && !charmMob.IsWithinRadius(casterPlayer, SpellHandler.Spell.Range))
+            if (charmMob != null && song != null)
             {
                 EffectService.RequestImmediateCancelConcEffect(song);
             }
