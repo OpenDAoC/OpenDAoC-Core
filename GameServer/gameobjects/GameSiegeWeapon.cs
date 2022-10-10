@@ -477,7 +477,7 @@ namespace DOL.GS
 			if (!repairCommand.PreFireChecks(Owner, this)) return;
 			repairCommand.StartRepair(Owner, this);
 		}
-		public bool Repair()
+		public bool Repair(int amount)
 		{
 			if (TimesRepaired <= 3)
 			{
@@ -486,8 +486,8 @@ namespace DOL.GS
 				// 	Owner.Out.SendMessage("You must have woodworking skill to repair a siege weapon.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				// 	return false;
 				// }
-				TimesRepaired = TimesRepaired + 1;
-				Health += (int)(this.MaxHealth * 0.15);
+				TimesRepaired += 1;
+				Health += amount;
 				return true;
 			}
 			else

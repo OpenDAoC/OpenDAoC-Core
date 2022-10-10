@@ -1573,9 +1573,9 @@ namespace DOL.GS
 					//is tested for savability. A real waste of time, so it is commented out
 					//WorldMgr.SaveToDatabase();
 
+					DoorMgr.SaveKeepDoors();
 					GuildMgr.SaveAllGuilds();
 					BoatMgr.SaveAllBoats();
-
 					FactionMgr.SaveAllAggroToFaction();
 					craftingSaveCount = CraftingProgressMgr.Save();
 

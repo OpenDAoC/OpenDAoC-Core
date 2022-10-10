@@ -31,6 +31,8 @@ namespace DOL.GS.Commands
 	public class RepairCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly string[] woodNames = { "rowan", "elm", "oak", "oaken", "ironwood", "heartwood", "runewood", "stonewood", "ebonwood", "dyrwood", "duskwood" };
+		private const int repairDuration = 20;
 
 		public void OnCommand(GameClient client, string[] args)
 		{
@@ -43,22 +45,28 @@ namespace DOL.GS.Commands
 				client.Player.RepairItem(item.Item);
 				return;
 			}
+
 			GameKeepDoor door = client.Player.TargetObject as GameKeepDoor;
 			if (door != null)
 			{
-				if (!PreFireChecks(client.Player, door)) return;
+				if (!PreFireChecks(client.Player, door))
+					return;
 				StartRepair(client.Player, door);
 			}
+
 			GameKeepComponent component = client.Player.TargetObject as GameKeepComponent;
 			if (component != null)
 			{
-				if (!PreFireChecks(client.Player, component)) return;
+				if (!PreFireChecks(client.Player, component))
+					return;
 				StartRepair(client.Player, component);
 			}
+
 			GameSiegeWeapon weapon = client.Player.TargetObject as GameSiegeWeapon;
 			if (weapon != null)
 			{
-				if (!PreFireChecks(client.Player, weapon)) return;
+				if (!PreFireChecks(client.Player, weapon))
+					return;
 				StartRepair(client.Player, weapon);
 			}
 		}
@@ -67,6 +75,7 @@ namespace DOL.GS.Commands
 		{
 			if (obj == null)
 				return false;
+
 			if (player.Realm != obj.Realm)
 				return false;
 
@@ -76,17 +85,17 @@ namespace DOL.GS.Commands
 			// if ((obj as GameLiving).InCombat)
 			// {
 			// 	DisplayMessage(player, "You can't repair object while it is under attack!");
-			// 	return false;
+			//	return false;
 			// }
-   //          if (obj is GameKeepDoor)
-   //          {
-   //              GameKeepDoor doorcomponent = obj as GameKeepDoor;
-   //              if (doorcomponent.Component.Keep.InCombat)
-   //              {
-   //                  DisplayMessage(player, "You can't repair the keep door while keep is under attack!");
-   //                  return false;
-   //              }
-   //          }
+			// if (obj is GameKeepDoor)
+			// {
+			//	GameKeepDoor doorcomponent = obj as GameKeepDoor;
+			//	if (doorcomponent.Component.Keep.InCombat)
+			//	{
+			//		DisplayMessage(player, "You can't repair the keep door while keep is under attack!");
+			//		return false;
+			//	}
+			// }
 			// if (obj is IKeepItem)
 			// {
 			// 	if (obj.CurrentRegion.Time - obj.LastAttackedByEnemyTick <= 60 * 1000)
@@ -96,11 +105,12 @@ namespace DOL.GS.Commands
 			// 	}
 			// }
 
-			if ((obj as GameLiving).HealthPercent == 100)
+			if (obj.HealthPercent == 100)
 			{
 				DisplayMessage(player, "The component is already at full health!");
 				return false;
 			}
+
 			if (obj is GameKeepComponent)
 			{
 				GameKeepComponent component = obj as GameKeepComponent;
@@ -126,6 +136,7 @@ namespace DOL.GS.Commands
 				DisplayMessage(player, "You must end your current action before you repair anything!");
 				return false;
 			}
+
 			if (player.IsMoving)
 			{
 				DisplayMessage(player, "You can't repair while moving");
@@ -162,12 +173,13 @@ namespace DOL.GS.Commands
 				return false;
 			}
 
-			int repairamount = (GetTotalWoodForLevel(obj.Level) / 100) * 5;
-			int playerswood = CalculatePlayersWood(player, 0);
+			int repairamount = GetNeededWoodForOneTick(obj.Level);
+			int playerswood = CalculatePlayersWood(player);
+			int woodDifference = repairamount - playerswood;
 
-			if (playerswood < repairamount)
+			if (woodDifference > 0)
 			{
-				DisplayMessage(player, "You need another " + (repairamount - playerswood) + " units of wood!");
+				DisplayMessage(player, "You need another " + woodDifference + " unit" + (woodDifference > 1 ? "s" : "") + " of wood!");
 				return false;
 			}
 
@@ -178,22 +190,20 @@ namespace DOL.GS.Commands
 			}
 
 			player.Stealth(false);
-
 			return true;
 		}
 
-		static int workDuration = 20;
 		public void StartRepair(GamePlayer player, GameLiving obj)
 		{
-			player.Out.SendTimerWindow("Repairing: " + obj.Name, workDuration);
+			player.Out.SendTimerWindow("Repairing: " + obj.Name, repairDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
 			player.CraftTimer.Properties.setProperty("repair_player", player);
 			player.CraftTimer.Properties.setProperty("repair_target", obj);
-			player.CraftTimer.Start(workDuration * 1000);
+			player.CraftTimer.Start(repairDuration * 1000);
 		}
 
-		protected int Proceed(ECSGameTimer timer)
+		private int Proceed(ECSGameTimer timer)
 		{
 			GamePlayer player = (GamePlayer)timer.Properties.getProperty<object>("repair_player", null);
 			GameLiving obj = (GameLiving)timer.Properties.getProperty<object>("repair_target", null);
@@ -214,32 +224,30 @@ namespace DOL.GS.Commands
 
 			if (Util.ChanceDouble(CalculateRepairChance(player,obj)))
 			{
-				int start = obj.HealthPercent;
 				if (obj is GameKeepDoor)
 				{
 					GameKeepDoor door = obj as GameKeepDoor;
 					door.Repair((int)(door.MaxHealth * 0.05));
 				}
-				if (obj is GameKeepComponent)
+				else if (obj is GameKeepComponent)
 				{
 					GameKeepComponent component = obj as GameKeepComponent;
 					component.Repair((int)(component.MaxHealth * 0.05));
 				}
-				if (obj is GameSiegeWeapon)
+				else if (obj is GameSiegeWeapon)
 				{
 					GameSiegeWeapon weapon = obj as GameSiegeWeapon;
-					if(weapon.Repair())
+					if (weapon.Repair((int)(weapon.MaxHealth * 0.15)))
 					{
-						RemoveWU(player,(GetTotalWoodForLevel(obj.Level) / 100) * 5);
+						RemoveWU(player, GetNeededWoodForOneTick(obj.Level));
 						DisplayMessage(player, "You successfully repair the siege weapon by 15%!");
 					}
 					return 0;
 				}
-				int finish = obj.HealthPercent;
-				
-				RemoveWU(player,(GetTotalWoodForLevel(obj.Level) / 100) * 5);
-				// CalculatePlayersWood(player, (());
+
+				RemoveWU(player, GetNeededWoodForOneTick(obj.Level));
 				DisplayMessage(player, "You successfully repair the component by 5%!");
+
 				/*
 				 * - Realm points will now be awarded for successfully repairing a door or outpost piece.
 				 * Players will receive approximately 10% of the amount repaired in realm points.
@@ -256,7 +264,8 @@ namespace DOL.GS.Commands
 
 			return 0;
 		}
-		public static double CalculateRepairChance(GamePlayer player, GameObject obj)
+
+		private static double CalculateRepairChance(GamePlayer player, GameObject obj)
 		{
 			if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
 				return 100;
@@ -267,63 +276,70 @@ namespace DOL.GS.Commands
 			return chance;
 		}
 
-		public static int GetTotalWoodForLevel(int level)
+		private static int GetNeededWoodForOneTick(int level)
 		{
 			switch (level)
 			{
-					case 0: return 2;
-					case 1: return 2;
-					case 2: return 44;
-					case 3: return 192;
-					case 4: return 840;
-					case 5: return 3576;
-					case 6: return 8640;
-					case 7: return 14400;
-					case 8: return 27200;
-					case 9: return 42432;
-					case 10: return 68100;
-					default: return 0;
+				case 0: return 2;
+				case 1: return 2;
+				case 2: return 44;
+				case 3: return 192;
+				case 4: return 840; // Might be 832 instead
+				case 5: return 3576;
+				case 6: return 8640;
+				case 7: return 14400;
+				case 8: return 27200;
+				case 9: return 42432;
+				case 10: return 68100;
+				default: return 0;
 			}
 		}
-		static string[] WoodNames = { "rowan", "elm", "oak", "oaken", "ironwood", "heartwood", "runewood", "stonewood", "ebonwood", "dyrwood", "duskwood" };
-		public static int CalculatePlayersWood(GamePlayer player, int removeamount)
+		
+		private static int CalculatePlayersWood(GamePlayer player)
 		{
 			int amount = 0;
+
 			foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				foreach (string name in WoodNames)
+				foreach (string name in woodNames)
 				{
-					if (item.Name.Replace(" wooden boards", "").ToLower() != name) continue;
+					if (item.Name.Replace(" wooden boards", "").ToLower() != name)
+						continue;
+
 					int woodvalue = GetWoodValue(item.Name.ToLower());
 					amount += item.Count * woodvalue;
 					break;
 				}
 			}
+
 			return amount;
 		}
 
-		private static void RemoveWU(GamePlayer player, int woodunits)
+		private static void RemoveWU(GamePlayer player, int woodUnits)
 		{
 			foreach (var item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				if (!WoodNames.Contains(item.Name.Replace(" wooden boards", "").ToLower())) continue;
-				if (woodunits == 0) break;
-				var woodvalue = GetWoodValue(item.Name.ToLower()) * item.Count;
-				if (woodvalue < woodunits)
+				if (!woodNames.Contains(item.Name.Replace(" wooden boards", "").ToLower()))
+					continue;
+
+				if (woodUnits == 0)
+					break;
+
+				var woodValue = GetWoodValue(item.Name.ToLower()) * item.Count;
+				if (woodValue < woodUnits)
 				{
 					player.Inventory.RemoveItem(item);
 					InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
-					woodunits -= woodvalue;
+					woodUnits -= woodValue;
 				}
 				else
 				{
-					var removeCount = woodunits / GetWoodValue(item.Name.ToLower());
+					var removeCount = (int)Math.Ceiling(woodUnits / (double)GetWoodValue(item.Name.ToLower()));
 					player.Inventory.RemoveCountFromStack(item, removeCount);
 					InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, removeCount);
-					woodunits = 0;
+					woodUnits = 0;
 				}
 			}
-			
 			
 			// if (item.Count * woodvalue < removeamount)
 			// {
@@ -338,25 +354,24 @@ namespace DOL.GS.Commands
 			// 	player.Inventory.RemoveItem(item);
 			// 	InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
 			// }
-		
 		}
 		
 		public static int GetWoodValue(string name)
 		{
 			switch (name.Replace(" wooden boards", ""))
 			{
-					case "rowan": return 1;
-					case "elm": return 4;
-					case "oaken":
-					case "oak": return 8;
-					case "ironwood": return 16;
-					case "heartwood": return 32;
-					case "runewood": return 48;
-					case "stonewood": return 60;
-					case "ebonwood": return 80;
-					case "dyrwood": return 104;
-					case "duskwood": return 136;
-					default: return 0;
+				case "rowan": return 1;
+				case "elm": return 4;
+				case "oaken":
+				case "oak": return 8;
+				case "ironwood": return 16;
+				case "heartwood": return 32;
+				case "runewood": return 48;
+				case "stonewood": return 60;
+				case "ebonwood": return 80;
+				case "dyrwood": return 104;
+				case "duskwood": return 136;
+				default: return 0;
 			}
 		}
 	}
