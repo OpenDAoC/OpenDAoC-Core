@@ -134,6 +134,7 @@ namespace DOL.Tests.Unit.Gameserver
         public eAggressionState AggressionState { get; set; }
         public bool IsMainPet { get; set; }
         public void Attack(GameObject target) { }
+        public void Disengage() { }
         public void ComeHere() { }
         public void Follow(GameObject target) { }
         public void FollowOwner() { }

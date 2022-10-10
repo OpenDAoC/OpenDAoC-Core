@@ -240,21 +240,12 @@ namespace DOL.AI.Brain
 			set
 			{
 				m_aggressionState = value;
-				m_orderAttackTarget = null;
-				if (m_aggressionState == eAggressionState.Passive)
-				{
-					ClearAggroList();
-					Body.StopAttack();
-					Body.TargetObject = null;
+				Disengage();
 
-					FSM.SetCurrentState(eFSMStateType.PASSIVE);
-
-					if (WalkState == eWalkState.Follow)
-						FollowOwner();
-					else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-						Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
-				}
-				//AttackMostWanted();
+				if (WalkState == eWalkState.Follow)
+					FollowOwner();
+				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
+					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
 			}
 		}
 
@@ -273,19 +264,24 @@ namespace DOL.AI.Brain
 			previousIsStealthed = false;
 			if (target is GamePlayer) 
 				previousIsStealthed = (target as GamePlayer).IsStealthed;
-
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()){	FSM.SetCurrentState(eFSMStateType.AGGRO);}
+			FSM.SetCurrentState(eFSMStateType.AGGRO);
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
 
-    //        if (Body.CanCastHarmfulSpells)
-    //        {
-				//CheckSpells(eCheckSpellType.Offensive);
-    //        } else
-    //        {
-				AttackMostWanted();
-			//}
-			
+			AttackMostWanted();
+		}
+
+		public virtual void Disengage()
+		{
+			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
+			{
+				AggressionState = eAggressionState.Defensive;
+				UpdatePetWindow();
+			}
+			m_orderAttackTarget = null;
+			ClearAggroList();
+			Body.StopAttack();
+			Body.TargetObject = null;
 		}
 
 		/// <summary>

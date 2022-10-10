@@ -400,12 +400,6 @@ namespace DOL.GS.ServerRules
 					return false;
 				}
 			}
-			// Your pet can only attack stealthed players you have selected
-			if (defender.IsStealthed && attacker is GameNPC)
-				if (((attacker as GameNPC).Brain is IControlledBrain) &&
-					defender is GamePlayer &&
-					attacker.TargetObject != defender)
-					return false;
 
 			// GMs can't be attacked
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)

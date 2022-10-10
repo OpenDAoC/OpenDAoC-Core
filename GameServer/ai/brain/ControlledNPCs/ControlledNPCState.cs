@@ -119,12 +119,6 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
             return;
         }
-
-        if (brain.WalkState == eWalkState.ComeHere)
-        {
-            brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-            return;
-        }
         
         brain.CheckSpells(eCheckSpellType.Offensive);
 
