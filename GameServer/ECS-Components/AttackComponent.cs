@@ -1247,10 +1247,6 @@ namespace DOL.GS
                 AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness,
                     interruptDuration, dualWield);
 
-                //Clear the styles for the next round!
-                owner.styleComponent.NextCombatStyle = null;
-                owner.styleComponent.NextCombatBackupStyle = null;
-
                 switch (ad.AttackResult)
                 {
                     case eAttackResult.HitStyle:
@@ -3190,6 +3186,9 @@ namespace DOL.GS
         /// <param name="ad"></param>
         public void SendAttackingCombatMessages(AttackData ad)
         {
+            if (!attackAction.ShouldRoundShowMessage(ad.AttackResult))
+                return;
+
             //base.SendAttackingCombatMessages(ad);
             if (owner is GamePlayer)
             {

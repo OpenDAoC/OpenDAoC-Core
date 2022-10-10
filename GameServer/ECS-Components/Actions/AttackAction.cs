@@ -1,14 +1,11 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
@@ -19,18 +16,19 @@ namespace DOL.GS
     /// </summary>
     public class AttackAction
     {
-        private GameLiving owner;
-        private int Interval;
-        private long startTime;
-        private long rangeInterruptTime;
-        public long StartTime { get { return startTime; } set { startTime = value + GameLoop.GameLoopTime; } }
-        public long RangeInterruptTime { get { return rangeInterruptTime; } set { rangeInterruptTime = value + GameLoop.GameLoopTime; } }
-        public long TimeUntilStart { get { return StartTime - GameLoop.GameLoopTime; } }
+        // Check Delay in ms for when to check for NPCs in area to attack when not in range of main target. Used as upper bound of checks 
+        private const int NPC_VICINITY_CHECK_DELAY = 1000;
 
-        //Next check for NPCs in the attack range to hit while on the way to main target
-        private long NPCNextNPCVicinityCheck = 0;
-        //Check Delay in ms for when to check for NPCs in area to attack when not in range of main target. Used as upper bound of checks 
-        private int NPC_VICINITY_CHECK_DELAY => 1000;
+        private GameLiving m_owner;
+        private int m_interval;
+        private long m_startTime;
+        private long m_rangeInterruptTime;
+        private long m_NPCNextNPCVicinityCheck = 0; // Next check for NPCs in the attack range to hit while on the way to main target
+        private long m_firstTimeRoundWithNoAttack; // Set to current time when a round doesn't result in an attack. Kept until reset in ShouldRoundShowMessage()
+
+        public long StartTime { get { return m_startTime; } set { m_startTime = value + GameLoop.GameLoopTime; } }
+        public long RangeInterruptTime { get { return m_rangeInterruptTime; } set { m_rangeInterruptTime = value + GameLoop.GameLoopTime; } }
+        public long TimeUntilStart { get { return StartTime - GameLoop.GameLoopTime; } }
 
         /// <summary>
         /// Constructs a new attack action
@@ -38,7 +36,7 @@ namespace DOL.GS
         /// <param name="owner">The action source</param>
         public AttackAction(GameLiving owner)
         {
-            this.owner = owner;
+            m_owner = owner;
         }
 
         /// <summary>
@@ -46,84 +44,81 @@ namespace DOL.GS
         /// </summary>
         public void Tick(long time)
         {
-
             if (time > StartTime)
             {
-                //GameLiving owner = (GameLiving)m_actionSource;
-
-                if (owner.IsMezzed || owner.IsStunned)
+                if (m_owner.IsMezzed || m_owner.IsStunned)
                 {
-                    Interval = 100;
+                    m_interval = 100;
                     return;
                 }
 
-                if (owner.IsCasting && !owner.CurrentSpellHandler.Spell.Uninterruptible)
+                if (m_owner.IsCasting && !m_owner.CurrentSpellHandler.Spell.Uninterruptible)
                 {
-                    Interval = 100;
+                    m_interval = 100;
                     return;
                 }
 
-                if (!owner.attackComponent.AttackState)
+                AttackComponent attackComponent = m_owner.attackComponent;
+                AttackData attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+
+                if (!attackComponent.AttackState)
                 {
-                    AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
-                    owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
-                    if (ad != null && ad.Target != null)
-                        ad.Target.attackComponent.RemoveAttacker(owner);
-                    //Stop();
-                    owner.attackComponent.attackAction?.CleanupAttackAction();
+                    m_owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
+                    if (attackData != null && attackData.Target != null)
+                        attackData.Target.attackComponent.RemoveAttacker(m_owner);
+                    attackComponent.attackAction?.CleanupAttackAction();
                     return;
                 }
 
                 // Don't attack if gameliving is engaging
-                if (owner.IsEngaging)
+                if (m_owner.IsEngaging)
                 {
-                    Interval = owner.attackComponent.AttackSpeed(owner.attackComponent.AttackWeapon); // while gameliving is engageing it doesn't attack.
+                    m_interval = attackComponent.AttackSpeed(attackComponent.AttackWeapon); // while gameliving is engageing it doesn't attack.
                     return;
                 }
 
                 // Store all datas which must not change during the attack
-                // double effectiveness = 1.0;
-                double effectiveness = owner.Effectiveness;
+                double effectiveness = m_owner.Effectiveness;
                 int ticksToTarget = 1;
                 int interruptDuration = 0;
-                int leftHandSwingCount = 0;
                 Style combatStyle = null;
-                InventoryItem attackWeapon = owner.attackComponent.AttackWeapon;
-                InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                InventoryItem attackWeapon = attackComponent.AttackWeapon;
+                InventoryItem leftWeapon = m_owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
                 GameObject attackTarget = null;
+                StyleComponent styleComponent = m_owner.styleComponent;
 
-                if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                if (m_owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
-                    attackTarget = owner.rangeAttackComponent.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
-                    eCheckRangeAttackStateResult rangeCheckresult = owner.rangeAttackComponent.CheckRangeAttackState(attackTarget);
+                    attackTarget = m_owner.rangeAttackComponent.RangeAttackTarget; // must be do here because RangeAttackTarget is changed in CheckRangeAttackState
+                    eCheckRangeAttackStateResult rangeCheckresult = m_owner.rangeAttackComponent.CheckRangeAttackState(attackTarget);
                     if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
                     {
-                        Interval = 100;
+                        m_interval = 100;
                         return; //Hold the shot another second
                     }
                     else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
                     {
-                        owner.attackComponent.LivingStopAttack(); //Stop the attack
+                        attackComponent.LivingStopAttack(); //Stop the attack
                                             //Stop();
-                        owner.attackComponent.attackAction?.CleanupAttackAction();
+                        attackComponent.attackAction?.CleanupAttackAction();
                         return;
                     }
 
                     int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-                    Parallel.ForEach((owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
+                    Parallel.ForEach((m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
                     {
                         if (player == null)
                             return;
-                        player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
+                        player.Out.SendCombatAnimation(m_owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
                     });
 
-                    interruptDuration = owner.attackComponent.AttackSpeed(attackWeapon);
+                    interruptDuration = attackComponent.AttackSpeed(attackWeapon);
 
-                    switch (owner.rangeAttackComponent.RangedAttackType)
+                    switch (m_owner.rangeAttackComponent.RangedAttackType)
                     {
                         case eRangedAttackType.Critical:
                             {
-                                var tmpEffectiveness = 2 - 0.3 * owner.GetConLevel(attackTarget);
+                                var tmpEffectiveness = 2 - 0.3 * m_owner.GetConLevel(attackTarget);
                                 if (tmpEffectiveness > 2)
                                     effectiveness *= 2;
                                 else if (tmpEffectiveness < 1.1)
@@ -151,8 +146,8 @@ namespace DOL.GS
                                 // stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
                                 // and the resulting interrupt will last 1.5 seconds."
 
-                                long rapidFireMaxDuration = owner.attackComponent.AttackSpeed(attackWeapon);
-                                long elapsedTime = GameLoop.GameLoopTime - owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
+                                long rapidFireMaxDuration = attackComponent.AttackSpeed(attackWeapon);
+                                long elapsedTime = GameLoop.GameLoopTime - m_owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
                                 if (elapsedTime < rapidFireMaxDuration)
                                 {
                                     effectiveness *= 0.25 + (double)elapsedTime * 0.5 / (double)rapidFireMaxDuration;
@@ -165,8 +160,8 @@ namespace DOL.GS
                     // calculate Penetrating Arrow damage reduction
                     if (attackTarget is GameLiving)
                     {
-                        int PALevel = owner.GetAbilityLevel(Abilities.PenetratingArrow);
-                        if ((PALevel > 0) && (owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
+                        int PALevel = m_owner.GetAbilityLevel(Abilities.PenetratingArrow);
+                        if ((PALevel > 0) && (m_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
                         {
                             ECSGameSpellEffect bladeturn = ((GameLiving)attackTarget).effectListComponent.GetSpellEffects(eEffect.Bladeturn)?.FirstOrDefault();
                             //GameSpellEffect bladeturn = null;
@@ -190,36 +185,47 @@ namespace DOL.GS
                         }
                     }
 
-                    ticksToTarget = 1 + owner.GetDistanceTo(attackTarget) * 100 / 150; // 150 units per 1/10s
+                    ticksToTarget = 1 + m_owner.GetDistanceTo(attackTarget) * 100 / 150; // 150 units per 1/10s
                 }
                 else
                 {
-                    attackTarget = owner.TargetObject;
+                    attackTarget = m_owner.TargetObject;
+                    attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
 
-                    // wait until target is selected
-                    if (attackTarget == null || attackTarget == owner)
+                    if (attackData != null && attackData.AttackResult is eAttackResult.Fumbled)
                     {
-                        Interval = 100;
-                        //return;
-                    }
-
-                    AttackData ad = owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
-                    if (ad != null && ad.AttackResult == eAttackResult.Fumbled)
-                    {
-                        Interval = owner.attackComponent.AttackSpeed(attackWeapon);
-                        ad.AttackResult = eAttackResult.Missed;
-                        StartTime = Interval;
-                        return; //Don't start the attack if the last one fumbled
+                        // Don't start the attack if the last one fumbled
+                        m_interval = attackComponent.AttackSpeed(attackWeapon);
+                        attackData.AttackResult = eAttackResult.Missed;
+                        StartTime = m_interval;
+                        return;
                     }
 
                     // Figure out which combat style may be (GamePlayer) or is being (GameNPC) used
-                    combatStyle = owner is GamePlayer ? owner.styleComponent.GetStyleToUse() : owner.styleComponent.NPCGetStyleToUse();
+                    if (m_owner is GamePlayer)
+                    {
+                        combatStyle = styleComponent.GetStyleToUse();
+                    }
+                    else
+                    {
+                        combatStyle = styleComponent.NPCGetStyleToUse();
+                    }
                     
                     if (combatStyle != null && combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
                     {
                         attackWeapon = leftWeapon;
                     }
-                    interruptDuration = owner.attackComponent.AttackSpeed(attackWeapon);
+
+                    GetIntervalBetweenAttacks(attackWeapon, leftWeapon, attackComponent);
+
+                    if (GameLoop.GameLoopTime > styleComponent.NextCombatStyleTime + m_interval)
+                    {
+                        // The styles are too old, cancel them
+                        styleComponent.NextCombatStyle = null;
+                        styleComponent.NextCombatBackupStyle = null;
+                    }
+
+                    interruptDuration = attackComponent.AttackSpeed(attackWeapon); // Shouldn't Interval be used instead?
 
                     // Damage is doubled on sitting players
                     // but only with melee weapons; arrows and magic does normal damage.
@@ -231,22 +237,20 @@ namespace DOL.GS
                     ticksToTarget = 1;
                 }
 
-                int addRange = combatStyle?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)combatStyle?.Procs?.FirstOrDefault()?.Item1.Value - owner.attackComponent.AttackRange : 0;
+                int addRange = combatStyle?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)combatStyle?.Procs?.FirstOrDefault()?.Item1.Value - attackComponent.AttackRange : 0;
 
-                //Target not in range yet
-                if (attackTarget != null && !owner.IsWithinRadius(attackTarget, owner.attackComponent.AttackRange + addRange) && owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                // Target not in range yet
+                if (attackTarget != null && !m_owner.IsWithinRadius(attackTarget, attackComponent.AttackRange + addRange) && m_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
-                    //This is a NPC and target not in range. Check if another target is in range to attack on the way to main target
-                    if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain && ((owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (owner as GameNPC).Brain is IControlledBrain == false)
+                    // This is a NPC and target not in range. Check if another target is in range to attack on the way to main target
+                    if (m_owner is GameNPC && (m_owner as GameNPC).Brain is StandardMobBrain && ((m_owner as GameNPC).Brain as StandardMobBrain).AggroTable.Count > 0 && (m_owner as GameNPC).Brain is IControlledBrain == false)
                     {
-                        #region Attack another target in range
-
-                        GameNPC npc = owner as GameNPC;
+                        GameNPC npc = m_owner as GameNPC;
                         StandardMobBrain npc_brain = npc.Brain as StandardMobBrain;
                         GameLiving Possibly_target = null;
                         long maxaggro = 0, aggro = 0;
 
-                        foreach (GamePlayer player_test in owner.GetPlayersInRadius((ushort)owner.attackComponent.AttackRange))
+                        foreach (GamePlayer player_test in m_owner.GetPlayersInRadius((ushort)attackComponent.AttackRange))
                         {
                             if (npc_brain.AggroTable.ContainsKey(player_test))
                             {
@@ -259,13 +263,14 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        //Check for NPCs in attack range. Only check if the NPCNextNPCVicinityCheck is less than the current GameLoop Time
-                        if (NPCNextNPCVicinityCheck < GameLoop.GameLoopTime)
-                        {
-                            //Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY
-                            NPCNextNPCVicinityCheck = GameLoop.GameLoopTime + Util.Random(100,NPC_VICINITY_CHECK_DELAY);
 
-                            foreach (GameNPC target_possibility in owner.GetNPCsInRadius((ushort)owner.attackComponent.AttackRange))
+                        // Check for NPCs in attack range. Only check if the NPCNextNPCVicinityCheck is less than the current GameLoop Time
+                        if (m_NPCNextNPCVicinityCheck < GameLoop.GameLoopTime)
+                        {
+                            // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY
+                            m_NPCNextNPCVicinityCheck = GameLoop.GameLoopTime + Util.Random(100,NPC_VICINITY_CHECK_DELAY);
+
+                            foreach (GameNPC target_possibility in m_owner.GetNPCsInRadius((ushort)attackComponent.AttackRange))
                             {
                                 if (npc_brain.AggroTable.ContainsKey(target_possibility))
                                 {
@@ -282,143 +287,148 @@ namespace DOL.GS
 
                         if (Possibly_target == null)
                         {
-                            Interval = 100;
+                            m_interval = 100;
                             return;
                         }
                         else
                         {
                             attackTarget = Possibly_target;
                         }
-
-                        #endregion
-
-                    }
-                    else
-                    {
-                        owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
-                        Interval = 100;
-                        //return;
                     }
                 }
 
-                //new WeaponOnTargetAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle).Start(ticksToTarget);  // really start the attack
-                //if (GameServer.ServerRules.IsAllowedToAttack(owner, attackTarget as GameLiving, false))
-
-                owner.attackComponent.weaponAction = new WeaponAction(owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle);
-                //Are we inactive?
-                if (owner.ObjectState != eObjectState.Active)
+                attackComponent.weaponAction = new WeaponAction(m_owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle);
+                
+                // Are we inactive?
+                if (m_owner.ObjectState != eObjectState.Active)
                 {
-                    //Stop();
-                    owner.attackComponent.attackAction?.CleanupAttackAction();
+                    attackComponent.attackAction?.CleanupAttackAction();
                     return;
                 }
 
-                //switch to melee if range to target is less than 200
-                if (owner is GameNPC && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance && owner.TargetObject != null && owner.IsWithinRadius(owner.TargetObject, 200))
+                // Switch to melee if range to target is less than 200
+                if (m_owner is GameNPC && m_owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance && m_owner.TargetObject != null && m_owner.IsWithinRadius(m_owner.TargetObject, 200))
                 {
-                    owner.SwitchWeapon(eActiveWeaponSlot.Standard);
+                    m_owner.SwitchWeapon(eActiveWeaponSlot.Standard);
                 }
 
-                if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+
+                if (attackData == null || attackData.AttackResult 
+                    is not eAttackResult.Missed
+                    and not eAttackResult.HitUnstyled
+                    and not eAttackResult.HitStyle
+                    and not eAttackResult.Evaded
+                    and not eAttackResult.Blocked
+                    and not eAttackResult.Parried)
                 {
-                    //Mobs always shot and reload
-                    if (owner is GameNPC)
-                    {
-                        owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFireReload;
-                    }
-
-                    if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
-                    {
-                        owner.attackComponent.LivingStopAttack();
-                        //Stop();
-                        owner.attackComponent.attackAction?.CleanupAttackAction();
-                        return;
-                    }
-                    else
-                    {
-                        if (!(owner is GamePlayer) || (owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
-                        {
-                            owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-
-                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.SureShot) != null)
-                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.RapidFire) != null)
-                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.TrueShot) != null)
-                                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;                            
-                        }
-
-                        owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
-
-                        if (owner is GamePlayer)
-                        {
-                            owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
-                        }
-
-                        int speed = owner.attackComponent.AttackSpeed(attackWeapon);
-                        byte attackSpeed = (byte)(speed / 100);
-                        int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-                        if (owner is GamePlayer && owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
-                        { }
-                        else
-                        {
-                            Parallel.ForEach((owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
-                            {
-                                if (player == null)
-                                    return;
-                                player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
-                            });
-                        }
-                        if (owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
-                        {
-                            speed /= 2; // can start fire at the middle of the normal time
-                            speed = Math.Max(1500, speed);
-                        }
-
-                        Interval = speed;
-                    }
+                    m_interval = 100;
+                    if (m_firstTimeRoundWithNoAttack == 0)
+                        m_firstTimeRoundWithNoAttack = GameLoop.GameLoopTime;
                 }
                 else
                 {
-                    //Console.WriteLine($"ad result {ad.AttackResult} weapon {ad.Weapon}");
-                    if (attackWeapon != null && leftWeapon != null && owner.attackComponent.LastAttackWasDualWield && leftWeapon.Object_Type != (int)eObjectType.Shield/*  leftHandSwingCount > 0*/)
+                    // Clear styles for the next round
+                    styleComponent.NextCombatStyle = null;
+                    styleComponent.NextCombatBackupStyle = null;
+
+                    if (m_owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        Interval = owner.attackComponent.AttackSpeed(attackWeapon, leftWeapon);
+                        //Mobs always shot and reload
+                        if (m_owner is GameNPC)
+                        {
+                            m_owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFireReload;
+                        }
+
+                        if (m_owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
+                        {
+                            attackComponent.LivingStopAttack();
+                            //Stop();
+                            attackComponent.attackAction?.CleanupAttackAction();
+                            return;
+                        }
+                        else
+                        {
+                            if (!(m_owner is GamePlayer) || (m_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
+                            {
+                                m_owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+
+                                if (EffectListService.GetAbilityEffectOnTarget(m_owner, eEffect.SureShot) != null)
+                                    m_owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                                if (EffectListService.GetAbilityEffectOnTarget(m_owner, eEffect.RapidFire) != null)
+                                    m_owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                                if (EffectListService.GetAbilityEffectOnTarget(m_owner, eEffect.TrueShot) != null)
+                                    m_owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;                            
+                            }
+
+                            m_owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
+
+                            if (m_owner is GamePlayer)
+                            {
+                                m_owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
+                            }
+
+                            int speed = attackComponent.AttackSpeed(attackWeapon);
+                            byte attackSpeed = (byte)(speed / 100);
+                            int model = (attackWeapon == null ? 0 : attackWeapon.Model);
+                            if (m_owner is GamePlayer && m_owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                            { }
+                            else
+                            {
+                                Parallel.ForEach((m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)).OfType<GamePlayer>(), player =>
+                                {
+                                    if (player == null)
+                                        return;
+                                    player.Out.SendCombatAnimation(m_owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
+                                });
+                            }
+                            if (m_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                            {
+                                speed /= 2; // can start fire at the middle of the normal time
+                                speed = Math.Max(1500, speed);
+                            }
+
+                            m_interval = speed;
+                        }
                     }
                     else
                     {
-                        Interval = owner.attackComponent.AttackSpeed(attackWeapon);
-                    }
-                    if (owner is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
-                    {
-                        weaponskiller.Out.SendMessage(
-                                $"Attack Speed: {Interval / 1000.0}s",
-                                eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        if (m_owner is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                        {
+                            weaponskiller.Out.SendMessage(
+                                    $"Attack Speed: {m_interval / 1000.0}s",
+                                    eChatType.CT_DamageAdd,eChatLoc.CL_SystemWindow);
+                        }
                     }
                 }
-                StartTime = Interval;// owner.AttackSpeed(attackWeapon);
-                //owner.attackComponent.attackAction.CleanupAttackAction();
-            }
 
+                StartTime = m_interval;
+            }
 
             if (RangeInterruptTime > time)
             {
-                if (owner.rangeAttackComponent?.RangedAttackState is eRangedAttackState.Aim or eRangedAttackState.AimFire or eRangedAttackState.AimFireReload)
+                if (m_owner.rangeAttackComponent?.RangedAttackState is eRangedAttackState.Aim or eRangedAttackState.AimFire or eRangedAttackState.AimFireReload)
                 {
-                    var p = owner as GamePlayer;
+                    var p = m_owner as GamePlayer;
                     if (p != null && p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        if (p != null && p.InterruptTime > GameLoop.GameLoopTime && p.attackComponent.Attackers.Count > 0 )
+                        if (p.InterruptTime > GameLoop.GameLoopTime && p.attackComponent.Attackers.Count > 0 )
                         {
                             var attacker = p.attackComponent.Attackers.Last();
-                            double mod = p.GetConLevel(attacker);
                             double chance = 90;
-                            chance += mod != null ? mod * 10 : 0;
-                            chance = Math.Max(1, chance);
-                            chance = Math.Min(99, chance);
-                            if (attacker is GamePlayer) chance = 100;
 
-                            if (!Util.Chance((int) chance)) return;
+                            if (attacker is GamePlayer)
+                                chance = 100;
+                            else
+                            {
+                                double mod = p.GetConLevel(attacker);
+                                chance += mod * 10;
+                                chance = Math.Max(1, chance);
+                                chance = Math.Min(99, chance);
+                            }
+
+                            if (!Util.Chance((int) chance))
+                                return;
                             
                             string attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Type.Shot");
                             if (p.attackComponent.AttackWeapon != null && p.attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown)
@@ -437,7 +447,33 @@ namespace DOL.GS
 
         public void CleanupAttackAction()
         {
-            owner.attackComponent.attackAction = null;
+            m_owner.attackComponent.attackAction = null;
+        }
+
+        public bool ShouldRoundShowMessage(eAttackResult attackResult)
+        {
+            bool shouldRoundShowMessage = true;
+            if (attackResult
+                is not eAttackResult.Missed
+                and not eAttackResult.HitUnstyled
+                and not eAttackResult.HitStyle
+                and not eAttackResult.Evaded
+                and not eAttackResult.Blocked
+                and not eAttackResult.Parried)
+            {
+                shouldRoundShowMessage = GameLoop.GameLoopTime - m_firstTimeRoundWithNoAttack > m_interval;
+            }
+            if (shouldRoundShowMessage)
+                m_firstTimeRoundWithNoAttack = 0;
+            return shouldRoundShowMessage;
+        }
+
+        private void GetIntervalBetweenAttacks(InventoryItem attackWeapon, InventoryItem leftWeapon, AttackComponent attackComponent)
+        {
+            if (attackWeapon != null && leftWeapon != null && attackComponent.LastAttackWasDualWield && leftWeapon.Object_Type != (int)eObjectType.Shield)
+                m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
+            else
+                m_interval = attackComponent.AttackSpeed(attackWeapon);
         }
     }
 }
