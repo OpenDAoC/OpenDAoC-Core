@@ -277,7 +277,11 @@ namespace DOL.GS
         /// </summary>
         public virtual bool AttackState { get; set; }
 
-        public bool LastAttackWasDualWield = false;
+        /// <summary>
+        /// Gets which weapon was used for the last dual wield attack
+        /// 0: right (or non dual wield user), 1: left, 2: both
+        /// </summary>
+        public int UsedHandOnLastDualWieldAttack { get; set; }
 
         /// <summary>
         /// Returns the AttackRange of this living
@@ -395,75 +399,51 @@ namespace DOL.GS
         /// <summary>
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>
-        /// <param name="weapons">attack weapons</param>
         /// <returns>effective speed of the attack. average if more than one weapon.</returns>
-        public int AttackSpeed(params InventoryItem[] weapons)
+        public int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
         {
-            if (owner is GamePlayer)
+            if (owner is GamePlayer player)
             {
-                var p = owner as GamePlayer;
-
-                if (weapons == null || weapons.Length < 1)
+                if (mainWeapon == null)
                     return 0;
 
-                int count = 0;
                 double speed = 0;
                 bool bowWeapon = false;
 
-                if (LastAttackWasDualWield)
+                // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead
+                switch (UsedHandOnLastDualWieldAttack)
                 {
-                    for (int i = 0; i < weapons.Length; i++)
-                    {
-                        if (weapons[i] != null)
+                    case 2:
+                        speed = mainWeapon.SPD_ABS;
+                        if (leftWeapon != null)
                         {
-                            speed += weapons[i].SPD_ABS;
-                            count++;
-
-                            switch (weapons[i].Object_Type)
-                            {
-                                case (int) eObjectType.Fired:
-                                case (int) eObjectType.Longbow:
-                                case (int) eObjectType.Crossbow:
-                                case (int) eObjectType.RecurvedBow:
-                                case (int) eObjectType.CompositeBow:
-                                    bowWeapon = true;
-                                    break;
-                                default:
-                                    bowWeapon = false;
-                                    break;
-                            }
+                            speed += leftWeapon.SPD_ABS;
+                            speed /= 2;
                         }
-                    }
+                        break;
+                    case 1:
+                        speed = leftWeapon != null ? leftWeapon.SPD_ABS : mainWeapon.SPD_ABS;
+                        break;
+                    case 0:
+                        speed = mainWeapon.SPD_ABS;
+                        break;
                 }
-                else
-                {
-                    if (weapons[0] == null) { }
-                    else
-                    {
-                        switch (weapons[0].Object_Type)
-                        {
-                            case (int) eObjectType.Fired:
-                            case (int) eObjectType.Longbow:
-                            case (int) eObjectType.Crossbow:
-                            case (int) eObjectType.RecurvedBow:
-                            case (int) eObjectType.CompositeBow:
-                                bowWeapon = true;
-                                break;
-                        }
-                        speed += weapons[0].SPD_ABS;
-                        count++;
-                    }
-                    
-                }
-               
-                //Console.WriteLine($"DW? {LastAttackWasDualWield} speed {speed} count {count} bow {bowWeapon}");
 
-                if (count < 1)
+                if (speed == 0)
                     return 0;
 
-                speed /= count;
+                switch (mainWeapon.Object_Type)
+                {
+                    case (int) eObjectType.Fired:
+                    case (int) eObjectType.Longbow:
+                    case (int) eObjectType.Crossbow:
+                    case (int) eObjectType.RecurvedBow:
+                    case (int) eObjectType.CompositeBow:
+                        bowWeapon = true;
+                        break;
+                }
 
-                int qui = Math.Min(250, p.Quickness); //250 soft cap on quickness
+                int qui = Math.Min(250, player.Quickness); //250 soft cap on quickness
 
                 if (bowWeapon)
                 {
@@ -479,12 +459,12 @@ namespace DOL.GS
                         speed *= (1.0 - (qui - 60) * 0.002);
                         double percent = 0;
                         // Calcul ArcherySpeed bonus to substract
-                        percent = speed * 0.01 * p.GetModified(eProperty.ArcherySpeed);
+                        percent = speed * 0.01 * player.GetModified(eProperty.ArcherySpeed);
                         // Apply RA difference
                         speed -= percent;
                         //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
-                        if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
-                            speed = speed * 2 - (p.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                        if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+                            speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
                     }
                     else
                     {
@@ -496,7 +476,7 @@ namespace DOL.GS
                 {
                     // TODO use haste
                     //Weapon Speed*(1-(Quickness-60)/500]*(1-Haste)
-                    speed *= ((1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed));
+                    speed *= ((1.0 - (qui - 60) * 0.002) * 0.01 * player.GetModified(eProperty.MeleeSpeed));
                     //Console.WriteLine($"Speed after {speed} quiMod {(1.0 - (qui - 60) * 0.002)} melee speed {0.01 * p.GetModified(eProperty.MeleeSpeed)} together {(1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed)}");
                 }
 

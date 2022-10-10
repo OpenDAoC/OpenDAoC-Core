@@ -470,7 +470,7 @@ namespace DOL.GS
 
         private void GetIntervalBetweenAttacks(InventoryItem attackWeapon, InventoryItem leftWeapon, AttackComponent attackComponent)
         {
-            if (attackWeapon != null && leftWeapon != null && attackComponent.LastAttackWasDualWield && leftWeapon.Object_Type != (int)eObjectType.Shield)
+            if (attackWeapon != null && leftWeapon != null && attackComponent.UsedHandOnLastDualWieldAttack == 2 && leftWeapon.Object_Type != (int)eObjectType.Shield)
                 m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
             else
                 m_interval = attackComponent.AttackSpeed(attackWeapon);
