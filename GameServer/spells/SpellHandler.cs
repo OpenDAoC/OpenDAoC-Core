@@ -1024,7 +1024,7 @@ namespace DOL.GS.Spells
 						break;
 
 					case "realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, selectedTarget, true))
+						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, selectedTarget, true))
 						{
 							return false;
 						}
