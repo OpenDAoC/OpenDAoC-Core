@@ -90,7 +90,7 @@ namespace DOL.GS.PropertyCalc
 				}
 				if (player.IsStealthed)
 				{
-					MasteryOfStealthAbility mos = player.GetAbility<MasteryOfStealthAbility>();
+					AtlasOF_MasteryOfStealth mos = player.GetAbility<AtlasOF_MasteryOfStealth>();
 					//GameSpellEffect bloodrage = SpellHandler.FindEffectOnTarget(player, "BloodRage");
 					//VanishEffect vanish = player.EffectList.GetOfType<VanishEffect>();
 
@@ -101,7 +101,7 @@ namespace DOL.GS.PropertyCalc
 					//if (vanish != null)
 						//speed *= vanish.SpeedBonus;
 					if (mos != null)
-						speed *= 1 + MasteryOfStealthAbility.GetSpeedBonusForLevel(mos.Level);
+						speed *= 1 + mos.GetAmountForLevel(mos.Level) / 100.0;
 					//if (bloodrage != null)
 						//speed *= 1 + (bloodrage.Spell.Value * 0.01); // 25 * 0.01 = 0.25 (a.k 25%) value should be 25.5
 					if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ShadowRun)) //double stealthed movement with ShadowRun

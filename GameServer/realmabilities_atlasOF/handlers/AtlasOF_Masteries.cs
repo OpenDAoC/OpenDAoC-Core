@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 
         // MoP is 5% per level unlike most other Mastery RAs.
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); } 
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_MasteryOfParrying(DBAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_MasteryOfBlocking(DBAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_MasteryOfHealing(DBAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ namespace DOL.GS.RealmAbilities
         }
 
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 3); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 3); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -127,11 +127,11 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_MasteryOfWater(DBAbility dba, int level) : base(dba, level, eProperty.WaterSpeed) { }
         protected override string ValueUnit { get { return "%"; } }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
-    /// Dodger.
+    /// Dodger ability
     /// </summary>
     public class AtlasOF_Dodger : RAPropertyEnhancer
     {
@@ -139,33 +139,42 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugQuiLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
+    }
+
+    /// <summary>
+    /// Mastery of Stealth ability
+    /// </summary>
+    public class AtlasOF_MasteryOfStealth : MasteryOfStealthAbility
+	{
+        public AtlasOF_MasteryOfStealth(DBAbility dba, int level) : base(dba, level) { }
+        protected override string ValueUnit { get { return "%"; } }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugQuiLevel(player, 2); }
+        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(level); }
     }
     
+    /// <summary>
+    /// Dualist's Reflexes ability
+    /// </summary>
     public class AtlasOF_DualistsReflexes : RAPropertyEnhancer
     {
-        public AtlasOF_DualistsReflexes(DBAbility dba, int level) : base(dba, level, eProperty.OffhandDamageAndChance)
-        {
-            
-        }
+        public AtlasOF_DualistsReflexes(DBAbility dba, int level) : base(dba, level, eProperty.OffhandDamageAndChance) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
-
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
     
+    /// <summary>
+    /// Arrow Salvaging ability
+    /// </summary>
     public class AtlasOF_ArrowSalvaging : RAPropertyEnhancer
     {
-        public AtlasOF_ArrowSalvaging(DBAbility dba, int level) : base(dba, level, eProperty.ArrowRecovery)
-        {
-            
-        }
+        public AtlasOF_ArrowSalvaging(DBAbility dba, int level) : base(dba, level, eProperty.ArrowRecovery) { }
         protected override string ValueUnit { get { return "%"; } }
-
         public override bool CheckRequirement(GamePlayer player) { return true; }
         public override int GetAmountForLevel(int level) { return level * 10; }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
-
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 }

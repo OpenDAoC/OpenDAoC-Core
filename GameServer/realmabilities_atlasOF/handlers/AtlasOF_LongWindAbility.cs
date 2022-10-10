@@ -18,18 +18,7 @@ namespace DOL.GS.RealmAbilities
 
         protected override string ValueUnit { get { return "%"; } }
 
-        public override int CostForUpgrade(int level)
-        {
-            switch (level)
-				{
-					case 0: return 1;
-					case 1: return 3;
-					case 2: return 6;
-					case 3: return 10;
-					case 4: return 14;
-					default: return 14;
-				}
-        }
+        public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(currentLevel); }
 
         public override int GetAmountForLevel(int level)
         {

@@ -17,21 +17,7 @@ namespace DOL.GS.RealmAbilities
 		public AtlasOF_FirstAid(DBAbility dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 3; } }
-
-		public override int CostForUpgrade(int level)
-        {
-			switch (level+1)
-            {
-				case 1:
-					return 3;
-				case 2:
-					return 6;
-				case 3:
-					return 10;
-                default:	// default must return value for lvl 1
-					return 3;
-            }
-        }
+        public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
 		
         /// <summary>
         /// Action

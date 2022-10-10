@@ -1,10 +1,10 @@
-using DOL.Database;
-
 namespace DOL.GS.RealmAbilities
 {
     public static class AtlasRAHelpers
     {
-        // 6 stat points per level (Augmented Str, Dex, etc).
+        /// <summary>
+        /// 6 stat points per level (Augmented Str, Dex, etc).
+        /// </summary>
         public static int GetStatEnhancerAmountForLevel(int level)
         {
             if (level < 1) return 0;
@@ -20,7 +20,9 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        // 3% per level.
+        /// <summary>
+        /// 3% per level.
+        /// </summary>
         public static int GetPropertyEnhancer3AmountForLevel(int level)
         {
             if (level < 1) return 0;
@@ -36,7 +38,9 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        // 5% per level.
+        /// <summary>
+        /// 5% per level.
+        /// </summary>
         public static int GetPropertyEnhancer5AmountForLevel(int level)
         {
             if (level < 1) return 0;
@@ -53,16 +57,32 @@ namespace DOL.GS.RealmAbilities
         }
 
         
-        // Shared by almost all passive OF Realm Abilities.
-        public static int GetCommonPassivesCostForUpgrade(int level)
+        /// <summary>
+        /// Shared by almost all passive OF Realm Abilities.
+        /// </summary>
+        public static int GetCommonUpgradeCostFor5LevelsRA(int currentLevel)
         {
-            switch (level)
+            switch (currentLevel)
             {
                 case 0: return 1;
                 case 1: return 3;
                 case 2: return 6;
                 case 3: return 10;
                 case 4: return 14;
+                default: return 1000;
+            }
+        }
+
+        /// <summary>
+        /// Shared by almost all active OF Realm Abilities (that have more than one level).
+        /// </summary>
+        public static int GetCommonUpgradeCostFor3LevelsRA(int currentLevel)
+        {
+            switch (currentLevel)
+            {
+                case 0: return 3;
+                case 1: return 6;
+                case 2: return 10;
                 default: return 1000;
             }
         }
@@ -129,6 +149,7 @@ namespace DOL.GS.RealmAbilities
 
             return player.CalculateSkillLevel(raFirstAid) >= level;
         }
+
         public static bool HasLongshotLevel(GamePlayer player, int level)
         {
             AtlasOF_Longshot raLongshot = player.GetAbility<AtlasOF_Longshot>();

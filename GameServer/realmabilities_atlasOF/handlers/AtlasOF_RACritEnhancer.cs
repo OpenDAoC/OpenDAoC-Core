@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_WildPowerAbility(DBAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_WildHealingAbility(DBAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ namespace DOL.GS.RealmAbilities
              public AtlasOF_WildArcanaAbility(DBAbility dba, int level) : base(dba, level, eProperty.CriticalDotHitChance) { }
              public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
              public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-             public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+             public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
          }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_WildMinionAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugAcuityLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 
     /// <summary>
@@ -73,6 +73,6 @@ namespace DOL.GS.RealmAbilities
         public AtlasOF_FalconsEye(DBAbility dba, int level) : base(dba, level, eProperty.CriticalArcheryHitChance) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 2); }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonPassivesCostForUpgrade(level); }
+        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
     }
 }

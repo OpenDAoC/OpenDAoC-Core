@@ -20,15 +20,7 @@ namespace DOL.GS.RealmAbilities
 
         public override int GetReUseDelay(int level) { return 900; } // 15 mins
 
-        public override int CostForUpgrade(int level) {
-            return level switch
-            {
-                0 => 3,
-                1 => 6,
-                2 => 10,
-                _ => 3,
-            };
-        }
+        public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
 
         public override void AddEffectsInfo(IList<string> list)
         {

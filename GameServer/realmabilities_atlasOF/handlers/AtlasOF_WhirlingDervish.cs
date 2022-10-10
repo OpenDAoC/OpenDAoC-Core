@@ -18,16 +18,7 @@ namespace DOL.GS.RealmAbilities
         public override int MaxLevel { get { return 3; } }
         public override int GetReUseDelay(int level) { return 900; } // 15 mins
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasAugDexLevel(player, 3); }
-        
-        public override int CostForUpgrade(int level) {
-            switch (level)
-            {
-                case 1: return 3;
-                case 2: return 6;
-                case 3: return 10;
-                default: return 3;
-            }
-        }
+        public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
         
         private DBSpell m_dbspell;
         private Spell m_spell = null;

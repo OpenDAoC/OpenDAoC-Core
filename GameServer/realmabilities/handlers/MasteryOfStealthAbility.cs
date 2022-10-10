@@ -8,25 +8,20 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class MasteryOfStealthAbility : RAPropertyEnhancer
 	{
-		public MasteryOfStealthAbility(DBAbility dba, int level)
-			: base(dba, level, eProperty.Undefined)
-		{
-		}
-		public static double GetSpeedBonusForLevel(int level)
+		public MasteryOfStealthAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+
+		public override int GetAmountForLevel(int level)
 		{
 			return level switch
 			{
-				1 => 0.05,
-				2 => 0.10,
-				3 => 0.15,
+				1 => 5,
+				2 => 10,
+				3 => 15,
 				_ => 0
 			};
 		}
 
-		public override int MaxLevel
-		{
-			get { return 3; }
-		}
+		public override int MaxLevel => 3;
 
 		public override int CostForUpgrade(int level)
 		{
@@ -47,7 +42,7 @@ namespace DOL.GS.RealmAbilities
 				list.Add("");
 				for (int i = 1; i <= MaxLevel; i++)
 				{
-					list.Add("Level " + i + ": Amount: " + GetSpeedBonusForLevel(i) * 100 + "%");
+					list.Add("Level " + i + ": Amount: " + GetAmountForLevel(i) + "%");
 				}
 				return list;
 			}
