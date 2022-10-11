@@ -133,7 +133,8 @@ namespace DOL.GS
             }*/
 
             bool usingOH = false;
-            owner.attackComponent.LastAttackWasDualWield = false;
+            owner.attackComponent.UsedHandOnLastDualWieldAttack = 0;
+
             if (leftHandSwingCount > 0)
             {
                 if (mainWeapon.Object_Type == (int)eObjectType.HandToHand || 
@@ -149,7 +150,7 @@ namespace DOL.GS
                     usingOH = false;
 
                 if (usingOH)
-                    owner.attackComponent.LastAttackWasDualWield = true;
+                    owner.attackComponent.UsedHandOnLastDualWieldAttack = 2;
                 
                 // both hands are used for attack
                 mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
@@ -171,15 +172,10 @@ namespace DOL.GS
                 if (mainWeapon.Item_Type == (int)Slot.TWOHAND || mainWeapon.SlotPosition == (int)Slot.RANGED)
                     usingOH = false;
 
-                // no left hand used, all is simple here
-                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
-                leftHandSwingCount = 0;
-            }
-            else
-            {
                 // one of two hands is used for attack if no style, treated as a main hand attack
-                if (style == null && Util.Chance(50))
+                if (usingOH && style == null && Util.Chance(50))
                 {
+                    owner.attackComponent.UsedHandOnLastDualWieldAttack = 1;
                     mainWeapon = leftWeapon;
                     mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                     mainHandAD.AnimationId = -1; // virtual code for left weapons swing animation
