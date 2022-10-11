@@ -59,18 +59,18 @@ namespace DOL.GS.SkillHandler
 					log.Warn("Could not retrieve player in EngageAbilityHandler.");
 				return;
 			}
-			/*
+
 			//Cancel old engage effects on player
 			if (player.IsEngaging)
 			{
-				EngageEffect engage = (EngageEffect)player.EffectList.GetOfType(typeof(EngageEffect));
+				EngageECSGameEffect engage = EffectListService.GetEffectOnTarget(player, eEffect.Engage) as EngageECSGameEffect;
 				if (engage != null)
 				{
-					engage.Cancel(false);
+					engage.Cancel(true);
 					return;
 				}
 			}
-			 */
+
 			if (!player.IsAlive)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.CannotUseDead"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -108,16 +108,7 @@ namespace DOL.GS.SkillHandler
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.NotAllowedToEngageTarget", target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
-			//Cancel old engage effects on player
 
-			foreach (EngageECSGameEffect engage in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Engage))
-			{ 
-				if (engage != null)
-				{
-					engage.Cancel(false);
-					return;
-				}
-			}
 			new EngageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null));
 		}
 	}
