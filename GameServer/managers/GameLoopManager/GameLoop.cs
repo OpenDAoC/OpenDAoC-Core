@@ -43,17 +43,7 @@ namespace DOL.GS
 
         private static void GameLoopThreadStart()
         {
-            bool running = true;
             _timerRef = new Timer(Tick, null, 0, Timeout.Infinite);
-
-            while (running)
-            {
-                try { }
-                catch (ThreadInterruptedException)
-                {
-                    running = false;
-                }
-            }
         }
 
         private static void Tick(object obj)
