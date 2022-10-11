@@ -1523,7 +1523,7 @@ namespace DOL.GS
             //Check if the target is in front of attacker
             if (!ignoreLOS && ad.AttackType != AttackData.eAttackType.Ranged && owner is GamePlayer &&
                 !(ad.Target is GameKeepComponent) &&
-                !(owner.IsObjectInFront(ad.Target, 120, true) && owner.TargetInView))
+                !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
             {
                 ad.AttackResult = eAttackResult.TargetNotVisible;
                 SendAttackingCombatMessages(ad);

@@ -157,10 +157,10 @@ namespace DOL.GS.Keeps
 			{
                 Point2D point;
 				//calculate x y
-                if ( IsObjectInFront( player, 180, false ) )
-                    point = this.GetPointFromHeading( this.Heading, -500 );
+                if (IsObjectInFront(player, 180) )
+                    point = this.GetPointFromHeading(this.Heading, -500);
                 else
-                    point = this.GetPointFromHeading( this.Heading, 500 );
+                    point = this.GetPointFromHeading(this.Heading, 500);
 
 				//move player
 				player.MoveTo(CurrentRegionID, point.X, point.Y, player.Z, player.Heading);

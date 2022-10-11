@@ -1002,7 +1002,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (!(m_caster.IsObjectInFront(selectedTarget, 180, true)) || !Caster.TargetInView)
+						if (!(m_caster.IsObjectInFront(selectedTarget, 180)) || !Caster.TargetInView)
 						{
 							if (!quiet) MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
@@ -1024,7 +1024,7 @@ namespace DOL.GS.Spells
 						break;
 
 					case "realm":
-						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, selectedTarget, true))
+						if (!GameServer.ServerRules.IsSameRealm(Caster, selectedTarget, true))
 						{
 							return false;
 						}
@@ -1285,11 +1285,17 @@ namespace DOL.GS.Spells
 					case "Enemy":
 						if (m_spell.SpellType == (byte)eSpellType.Charm)
 							break;
-						//enemys have to be in front and in view for targeted spells
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell && (target.IsStealthed || !Caster.TargetInView)) //!m_caster.TargetInView)
+
+						if (m_spell.SpellType != (byte)eSpellType.PetSpell)
 						{
-							MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
-							return false;
+							// The target must be visible and in front of the caster
+							// Thankfully TargetInView seems to return false if the target hides behind a wall, even if the caster selects a new target during the animation
+							// We don't give a radius to IsObjectInFront. A check is already done in TargetInView
+							if (target.IsStealthed || !Caster.TargetInView || !Caster.IsObjectInFront(target, 180, 0))
+							{
+								MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+								return false;
+							}
 						}
 
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, false))
@@ -1303,13 +1309,6 @@ namespace DOL.GS.Spells
 						{
 							MessageToCaster("This spell only works on dead members of your realm!",
 							                eChatType.CT_SpellResisted);
-							return false;
-						}
-						break;
-
-					case "Realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
 							return false;
 						}
 						break;
@@ -1524,13 +1523,6 @@ namespace DOL.GS.Spells
 						}
 						break;
 
-					case "realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
-							return false;
-						}
-						break;
-
 					case "pet":
 						/*
 						 * Can cast pet spell on all Pet/Turret/Minion (our pet)
@@ -1567,6 +1559,7 @@ namespace DOL.GS.Spells
 				if (!quiet) MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
+
 			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != (byte)eSpellType.Archery)
 			{
 				if (!quiet) MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
@@ -1598,7 +1591,6 @@ namespace DOL.GS.Spells
 		{
 			return CheckAfterCast(target, false);
 		}
-
 
 		public virtual bool CheckAfterCast(GameLiving target, bool quiet)
 		{
@@ -1709,13 +1701,6 @@ namespace DOL.GS.Spells
 						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, quiet))
 						{
 							if (!quiet) MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
-							return false;
-						}
-						break;
-
-					case "Realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
 							return false;
 						}
 						break;
@@ -2988,7 +2973,7 @@ namespace DOL.GS.Spells
 							if (player == Caster)
 								return;
 
-							if (!m_caster.IsObjectInFront(player, (double)(Spell.Radius != 0 ? Spell.Radius : 100), false))
+							if (!m_caster.IsObjectInFront(player, (double)(Spell.Radius != 0 ? Spell.Radius : 100)))
 								return;
 
 							if (!GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
@@ -3004,7 +2989,7 @@ namespace DOL.GS.Spells
 							if (npc == Caster)
 								return;
 
-							if (!m_caster.IsObjectInFront(npc, (double)(Spell.Radius != 0 ? Spell.Radius : 100), false))
+							if (!m_caster.IsObjectInFront(npc, (double)(Spell.Radius != 0 ? Spell.Radius : 100)))
 								return;
 
 							if (!GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
