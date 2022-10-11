@@ -476,7 +476,7 @@ namespace DOL.GS.Keeps
 				{
 					//when entering a tower, we need to raise Z
 					//portal keeps are considered towers too, so we check component count
-					if (IsObjectInFront(player, 180, false))
+					if (IsObjectInFront(player, 180))
 					{
 						if (DoorID == 1)
 						{
@@ -491,7 +491,7 @@ namespace DOL.GS.Keeps
 				else
 				{
 					//when entering a keeps inner door, we need to raise Z
-					if (IsObjectInFront(player, 180, false))
+					if (IsObjectInFront(player, 180))
 					{
 						//To find out if a door is the keeps inner door, we compare the distance between
 						//the component for the keep and the component for the gate
@@ -518,7 +518,7 @@ namespace DOL.GS.Keeps
 
                 Point2D keepPoint;
 				//calculate x y
-				if (IsObjectInFront(player, 180, false))
+				if (IsObjectInFront(player, 180))
 					keepPoint = GetPointFromHeading(Heading, -distance );
 				else
 					keepPoint = GetPointFromHeading(Heading, distance );

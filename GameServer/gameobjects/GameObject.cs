@@ -317,7 +317,7 @@ namespace DOL.GS
 		/// <param name="viewangle"></param>
 		/// <param name="rangeCheck"></param>
 		/// <returns></returns>
-		public virtual bool IsObjectInFront(GameObject target, double viewangle, bool rangeCheck = true)
+		public virtual bool IsObjectInFront(GameObject target, double viewangle, int alwaysTrueRange = 32)
 		{
 			if (target == null)
 				return false;
@@ -326,8 +326,8 @@ namespace DOL.GS
 				return true;
 			// if target is closer than 32 units it is considered always in view
 			// tested and works this way for normal evade, parry, block (in 1.69)
-			if (rangeCheck)
-                return this.IsWithinRadius( target, 32 );
+			if (alwaysTrueRange > 0)
+                return this.IsWithinRadius(target, alwaysTrueRange);
 			else
                 return false;
 		}
