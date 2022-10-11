@@ -1307,13 +1307,6 @@ namespace DOL.GS.Spells
 						}
 						break;
 
-					case "Realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
-							return false;
-						}
-						break;
-
 					case "Pet":
 						/*
 						 * [Ganrod] Nidel: Can cast pet spell on all Pet/Turret/Minion (our pet)
@@ -1524,13 +1517,6 @@ namespace DOL.GS.Spells
 						}
 						break;
 
-					case "realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
-							return false;
-						}
-						break;
-
 					case "pet":
 						/*
 						 * Can cast pet spell on all Pet/Turret/Minion (our pet)
@@ -1598,7 +1584,6 @@ namespace DOL.GS.Spells
 		{
 			return CheckAfterCast(target, false);
 		}
-
 
 		public virtual bool CheckAfterCast(GameLiving target, bool quiet)
 		{
@@ -1709,13 +1694,6 @@ namespace DOL.GS.Spells
 						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, quiet))
 						{
 							if (!quiet) MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
-							return false;
-						}
-						break;
-
-					case "Realm":
-						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-						{
 							return false;
 						}
 						break;
