@@ -175,6 +175,7 @@ public class LoyaltyManager
 
     public static void HandlePVPKill(GamePlayer player)
     {
+        return; //disabled due to low pop
         List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
         
         foreach (var loyalty in rloyal)
