@@ -185,6 +185,10 @@ namespace DOL.GS
                     mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                 }
             }
+            else
+            {
+                mainHandAD = owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+            }
 
             owner.TempProperties.setProperty(LAST_ATTACK_DATA, mainHandAD);
 
