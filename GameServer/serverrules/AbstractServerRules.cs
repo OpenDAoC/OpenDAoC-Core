@@ -1897,6 +1897,13 @@ namespace DOL.GS.ServerRules
 
 				double damagePercent = (float)de.Value / totalDamage;
 
+				if (expGainPlayer.GetConLevel(killedPlayer) > -3)
+				{
+							
+					expGainPlayer.KillStreak++;
+					expGainPlayer.Out.SendMessage($"Kill Streak: {expGainPlayer.KillStreak}", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+				}
+
 				// realm points
 				int rpCap = living.RealmPointsValue * 2;
 				int realmPoints = (int)(playerRPValue * damagePercent);
@@ -2068,9 +2075,23 @@ namespace DOL.GS.ServerRules
 					{
 						money += 20 * money / 100;
 					}
-					//long money = (long)(Money.GetMoney(0, 0, 17, 85, 0) * damagePercent * killedPlayer.Level / 50);
-					player.AddMoney(money, "You receive {0}");
-					InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
+					
+					int killBonus = (int)((0.05 * (player.KillStreak > 10 ? 10 : player.KillStreak)) * money);
+
+					if (killBonus > 0)
+					{
+						money += killBonus;
+						//long money = (long)(Money.GetMoney(0, 0, 17, 85, 0) * damagePercent * killedPlayer.Level / 50);
+						player.AddMoney(money, "You receive {0} ("+ Money.GetShortString(killBonus) +" streak bonus)");
+						InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
+					}
+					else
+					{
+						player.AddMoney(money, "You receive {0}");
+						InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
+					}
+					
+					
 				}
 
 				if (killedPlayer.ReleaseType != eReleaseType.Duel && expGainPlayer != null)
@@ -2088,7 +2109,7 @@ namespace DOL.GS.ServerRules
 						{
 							killerCheck = expGainPlayer;
 						}
-						
+
 						switch ((eRealm)killedPlayer.Realm)
 						{
 							case eRealm.Albion:

@@ -795,6 +795,14 @@ namespace DOL.GS
             set { if (DBCharacter != null) DBCharacter.DeathCount = value; }
         }
 
+        private int m_killstreak = 0;
+
+        public int KillStreak
+        {
+            get { return m_killstreak; }
+            set { m_killstreak = value; }
+        }
+
         //public long PlayedTimeSinceLevel
         //{
         //    get { return DBCharacter != null ? DBCharacter.PlayedTimeSinceLevel : 0; }
@@ -4613,6 +4621,15 @@ namespace DOL.GS
                 {
                     amount += (amount * rpBonus) / 100;
                 }
+                
+                 
+                #region Kill Streak
+
+                int killBonus = (int)((0.05 * (KillStreak > 10 ? 10 : KillStreak)) * amount);
+                this.Out.SendMessage($"{KillStreak} kill streak! ({killBonus} RPs)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                amount += killBonus;
+
+                #endregion
             }
 
             if (notify)
@@ -8478,7 +8495,8 @@ namespace DOL.GS
                     BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
                 }
             }
-                
+
+            KillStreak = 0;
 
             DuelStop();
 
