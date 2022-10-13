@@ -1897,9 +1897,8 @@ namespace DOL.GS.ServerRules
 
 				double damagePercent = (float)de.Value / totalDamage;
 
-				if (expGainPlayer.GetConLevel(killedPlayer) > -3)
+				if (expGainPlayer?.GetConLevel(killedPlayer) > -3)
 				{
-							
 					expGainPlayer.KillStreak++;
 					expGainPlayer.Out.SendMessage($"Kill Streak: {expGainPlayer.KillStreak}", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 				}
