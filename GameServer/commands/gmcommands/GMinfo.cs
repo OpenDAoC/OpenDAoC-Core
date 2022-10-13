@@ -431,13 +431,16 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 					info.Add("--CUSTOM PARAMS-- ");
 					var customParams = target.Client.Account.CustomParams;
-					foreach (CustomParam param in customParams)
+					if (customParams != null)
 					{
-						info.Add(param.KeyName + " " + param.Value);
+						foreach (CustomParam param in customParams)
+						{
+							info.Add(param.KeyName + " " + param.Value);
+						}
 					}
 
-					String sCurrent = "";
-					String sTitle = "";
+					string sCurrent;
+					string sTitle;
 					int cnt = 0;
 								
 					info.Add(" ");
