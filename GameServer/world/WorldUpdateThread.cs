@@ -127,10 +127,13 @@ namespace DOL.GS
 		/// <param name="nowTicks">The actual time of the refresh.</param>
 		private static void UpdatePlayerWorld(GamePlayer player, long nowTicks)
 		{
+			/* This calls SendPlayerForgedPosition, which used to return immediately without doing anything,
+			   until I rewrote it to make players who went linkdead persist client-side. Its original purpose was apparently to alievate lag.
+			   Position packets are normally sent to other clients when they're received.
+			   I'm not sure it's a great idea to send extra packets for no reason, so I'm commenting this out. */
 			// Update Player Player's
-			if (ServerProperties.Properties.WORLD_PLAYERTOPLAYER_UPDATE_INTERVAL > 0)
-				// This calls SendPlayerForgedPosition. Position packets are normally relayed when received from players
-				// UpdatePlayerOtherPlayers(player, nowTicks);
+			//if (ServerProperties.Properties.WORLD_PLAYERTOPLAYER_UPDATE_INTERVAL > 0)
+			//	UpdatePlayerOtherPlayers(player, nowTicks);
 
 			// Update Player Mob's
 			if (ServerProperties.Properties.WORLD_NPC_UPDATE_INTERVAL > 0)
@@ -149,70 +152,70 @@ namespace DOL.GS
 				UpdatePlayerHousing(player, nowTicks);
 		}
 
-		private static void UpdatePlayerOtherPlayers(GamePlayer player, long nowTicks)
-		{
-			// Get All Player in Range
-			var players = player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>().Where(p => p != null && p.IsVisibleTo(player) && (!p.IsStealthed || player.CanDetect(p))).ToArray();
+		//private static void UpdatePlayerOtherPlayers(GamePlayer player, long nowTicks)
+		//{
+		//	// Get All Player in Range
+		//	var players = player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>().Where(p => p != null && p.IsVisibleTo(player) && (!p.IsStealthed || player.CanDetect(p))).ToArray();
 
-			try
-			{
-				// Clean Cache
-				foreach (var objEntry in player.Client.GameObjectUpdateArray)
-				{
-					var objKey = objEntry.Key;
-					GameObject obj = WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2);
-					// We have a Player in cache that is not in vincinity
-					// For updating "out of view" we allow a halved refresh time. 
-					if (obj is GamePlayer && !players.Contains((GamePlayer)obj) && (nowTicks - objEntry.Value) >= GetPlayertoPlayerUpdateInterval)
-					{
-						long dummy;
+		//	try
+		//	{
+		//		// Clean Cache
+		//		foreach (var objEntry in player.Client.GameObjectUpdateArray)
+		//		{
+		//			var objKey = objEntry.Key;
+		//			GameObject obj = WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2);
+		//			// We have a Player in cache that is not in vincinity
+		//			// For updating "out of view" we allow a halved refresh time. 
+		//			if (obj is GamePlayer && !players.Contains((GamePlayer) obj) && (nowTicks - objEntry.Value) >= GetPlayertoPlayerUpdateInterval)
+		//			{
+		//				long dummy;
 
-						// Update him out of View and delete from cache
-						if (obj.IsVisibleTo(player) && (((GamePlayer)obj).IsStealthed == false || player.CanDetect((GamePlayer)obj)))
-							player.Client.Out.SendPlayerForgedPosition((GamePlayer)obj);
+		//				// Update him out of View and delete from cache
+		//				if (obj.IsVisibleTo(player) && (((GamePlayer) obj).IsStealthed == false || player.CanDetect((GamePlayer) obj)))
+		//					player.Client.Out.SendPlayerForgedPosition((GamePlayer) obj);
 
-						player.Client.GameObjectUpdateArray.TryRemove(objKey, out dummy);
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.ErrorFormat("Error while Cleaning OtherPlayers cache for Player : {0}, Exception : {1}", player.Name, e);
-			}
+		//				player.Client.GameObjectUpdateArray.TryRemove(objKey, out dummy);
+		//			}
+		//		}
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		if (log.IsErrorEnabled)
+		//			log.ErrorFormat("Error while Cleaning OtherPlayers cache for Player : {0}, Exception : {1}", player.Name, e);
+		//	}
 
-			try
-			{
-				// Now Send Remaining Players.
-				foreach (GamePlayer lplayer in players)
-				{
-					GamePlayer otherply = lplayer;
+		//	try
+		//	{
+		//		// Now Send Remaining Players.
+		//		foreach (GamePlayer lplayer in players)
+		//		{
+		//			GamePlayer otherply = lplayer;
 
-					if (otherply != null)
-					{
-						// Get last update time
-						long lastUpdate;
-						if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(otherply.CurrentRegionID, (ushort)otherply.ObjectID), out lastUpdate))
-						{
-							// This Player Needs Update
-							if ((nowTicks - lastUpdate) >= GetPlayertoPlayerUpdateInterval)
-							{
-								player.Client.Out.SendPlayerForgedPosition(otherply);
-							}
-						}
-						else
-						{
-							player.Client.Out.SendPlayerForgedPosition(otherply);
-						}
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.ErrorFormat("Error while updating OtherPlayers for Player : {0}, Exception : {1}", player.Name, e);
-			}
-		}
+		//			if (otherply != null)
+		//			{
+		//				// Get last update time
+		//				long lastUpdate;
+		//				if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(otherply.CurrentRegionID, (ushort) otherply.ObjectID), out lastUpdate))
+		//				{
+		//					// This Player Needs Update
+		//					if ((nowTicks - lastUpdate) >= GetPlayertoPlayerUpdateInterval)
+		//					{
+		//						player.Client.Out.SendPlayerForgedPosition(otherply);
+		//					}
+		//				}
+		//				else
+		//				{
+		//					player.Client.Out.SendPlayerForgedPosition(otherply);
+		//				}
+		//			}
+		//		}
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		if (log.IsErrorEnabled)
+		//			log.ErrorFormat("Error while updating OtherPlayers for Player : {0}, Exception : {1}", player.Name, e);
+		//	}
+		//}
 
 		/// <summary>
 		/// Send Mobs Update to Player depending on last refresh time.
