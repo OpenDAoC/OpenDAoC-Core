@@ -22,11 +22,10 @@ using System.Collections;
 using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.Spells;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
-using DOL.GS.SkillHandler;
+using DOL.GS.Spells;
 using log4net;
 
 namespace DOL.AI.Brain
@@ -311,9 +310,9 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void ComeHere()
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			m_tempX = Owner.X;
+			m_tempY = Owner.Y;
+			m_tempZ = Owner.Z;
 			WalkState = eWalkState.ComeHere;
 			Body.StopFollowing();
 			Body.WalkTo(Owner, Body.MaxSpeed);
@@ -325,9 +324,9 @@ namespace DOL.AI.Brain
 		/// <param name="target"></param>
 		public virtual void Goto(GameObject target)
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			m_tempX = target.X;
+			m_tempY = target.Y;
+			m_tempZ = target.Z;
 			WalkState = eWalkState.GoTarget;
 			Body.StopFollowing();
 			Body.WalkTo(target, Body.MaxSpeed);
