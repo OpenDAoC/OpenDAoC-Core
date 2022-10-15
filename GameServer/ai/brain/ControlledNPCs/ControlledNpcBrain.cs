@@ -280,6 +280,7 @@ namespace DOL.AI.Brain
 			m_orderAttackTarget = null;
 			ClearAggroList();
 			Body.StopAttack();
+			Body.StopCurrentSpellcast();
 			Body.TargetObject = null;
 		}
 

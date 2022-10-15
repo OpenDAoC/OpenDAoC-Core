@@ -15769,11 +15769,6 @@ namespace DOL.GS
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Passive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.SetAggressionState(eAggressionState.Passive);
-            npc.Body.attackComponent.NPCStopAttack();
-            npc.Body.StopCurrentSpellcast();
-			
-            if(npc.WalkState == eWalkState.Follow)
-                npc.FollowOwner();
         }
 
         /// <summary>
