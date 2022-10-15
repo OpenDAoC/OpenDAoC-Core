@@ -2789,7 +2789,7 @@ namespace DOL.GS.Spells
 						ConcurrentBag<GameLiving> aoePlayers = new ConcurrentBag<GameLiving>();
 						Parallel.ForEach((target.GetPlayersInRadius(modifiedRadius)).OfType<GamePlayer>(), player =>
 						{
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
+							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
 								if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
 								{
@@ -2807,7 +2807,7 @@ namespace DOL.GS.Spells
 						ConcurrentBag<GameNPC> aoeMobs = new ConcurrentBag<GameNPC>();
 						Parallel.ForEach((target.GetNPCsInRadius(modifiedRadius)).OfType<GameNPC>(), npc =>
 						{
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) == false)
+							if (GameServer.ServerRules.IsSameRealm(Caster, npc, true))
 							{
 								aoeMobs.Add(npc);
 							}
@@ -2816,7 +2816,7 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
+						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
 							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
 							{

@@ -58,7 +58,7 @@ namespace DOL.GS.ServerRules
 		bool IsAllowedToMoveToBind(GamePlayer player);
 
 		/// <summary>
-		/// Is attacker allowed to attack defender.  Use this check for all attack / heal / buff decisions
+		/// Is attacker allowed to attack defender
 		/// </summary>
 		/// <param name="attacker">living that makes attack</param>
 		/// <param name="defender">attacker's target</param>
