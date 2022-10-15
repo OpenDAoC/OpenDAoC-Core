@@ -239,12 +239,16 @@ namespace DOL.AI.Brain
 			set
 			{
 				m_aggressionState = value;
-				Disengage();
 
-				if (WalkState == eWalkState.Follow)
-					FollowOwner();
-				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+				if (m_aggressionState == eAggressionState.Passive)
+				{
+					Disengage();
+
+					if (WalkState == eWalkState.Follow)
+						FollowOwner();
+					else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
+						Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+				}
 			}
 		}
 
@@ -272,6 +276,7 @@ namespace DOL.AI.Brain
 
 		public virtual void Disengage()
 		{
+			// We switch to defensive mode if we're in aggressive and have a target, so that we don't immediately aggro back
 			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
 			{
 				AggressionState = eAggressionState.Defensive;
