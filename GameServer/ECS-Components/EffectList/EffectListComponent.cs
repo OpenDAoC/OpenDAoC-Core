@@ -84,6 +84,14 @@ namespace DOL.GS
                                         if (newSpell.IsPulsing)
                                             newSpellEffect.RenewEffect = true;
 
+                                        // Reapply the effect in case the effectiveness changed (which can happen with resurrection illness),
+                                        // so that the target's PropertyIndexers get updated to reflect the difference.
+                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness)
+                                        {
+                                            existingEffect.OnStopEffect();
+                                            newSpellEffect.OnStartEffect();
+                                        }
+
                                         newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
                                         Effects[newSpellEffect.EffectType][i] = newSpellEffect;
                                     }
