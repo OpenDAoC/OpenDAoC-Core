@@ -12765,7 +12765,7 @@ namespace DOL.GS
             }
             
             //cancel any self buffs that are unequipped
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID))
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.FirstOrDefault(x => x.SpellID == item.SpellID) == null)
             {
                 CancelChargeBuff(item.SpellID);
             }
