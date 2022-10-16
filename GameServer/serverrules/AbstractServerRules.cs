@@ -441,32 +441,36 @@ namespace DOL.GS.ServerRules
 			// 	}
 			// }
 
-			//I don't want mobs attacking guards
-			if (defender is GameKeepGuard && attacker is GameNPC && attacker.Realm == 0)
-				return false;
-
-			//dont allow attack npcs that have no faction set by other npcs without or with faction, faction vs faction is only allowed to attack
-			if (defender is GameNPC defendnpc && attacker is GameNPC attacknpc)
+			if (attacker is GameNPC attacknpc && defender is GameNPC defendnpc)
 			{
-				if (defender is GamePet) return true; //check if defender is GamePet
-				if (defendnpc.Brain is ControlledNpcBrain) return true; //check if defender is controlled npc
-				if (attacknpc is GamePet) return true; //check if attacker is GamePet
-				if (attacknpc.Brain is ControlledNpcBrain) return true; //check if attacker is controlled npc
-
-				if (defendnpc.Faction == null)//dont attack npc without faction
+				// Mobs can't attack keep guards
+				if (defender is GameKeepGuard && attacker.Realm == 0)
 					return false;
-				if (attacknpc.Faction == null && defendnpc.Faction != null)//npc without faction can't attack npc with faction
+
+				// Town guards however can attack mobs
+				if (attacknpc is GameGuard)
+					return true;
+
+				// Anything can attack pets
+				if (defender is GamePet || defendnpc.Brain is ControlledNpcBrain)
+					return true;
+
+				// Pets can attack everything else
+				if (attacknpc is GamePet || attacknpc.Brain is ControlledNpcBrain)
+					return true;
+
+				// Mobs can attack mobs only if they both have a faction
+				if (defendnpc.Faction == null || attacknpc.Faction == null)
 					return false;
 			}
 
-			//Checking for shadowed necromancer, can't be attacked.
-			if (defender.ControlledBrain != null)
-				if (defender.ControlledBrain.Body != null)
-					if (defender.ControlledBrain.Body is NecromancerPet)
-					{
-						if (quiet == false) MessageToLiving(attacker, "You can't attack a shadowed necromancer!");
-						return false;
-					}
+			// Checking for shadowed necromancer, can't be attacked.
+			if (defender.ControlledBrain?.Body is NecromancerPet)
+			{
+				if (!quiet)
+					MessageToLiving(attacker, "You can't attack a shadowed necromancer!");
+				return false;
+			}
 
 			return true;
 		}
