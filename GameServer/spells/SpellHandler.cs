@@ -372,7 +372,7 @@ namespace DOL.GS.Spells
 			//	}
 			//}
 
-			lock (living.effectListComponent._effectsLock)
+			lock (living.effectListComponent.EffectsLock)
             {
 				var effects = living.effectListComponent.GetAllPulseEffects();
 
@@ -4252,7 +4252,7 @@ namespace DOL.GS.Spells
 		/// <returns>first occurance of spellhandler in targets' conc list or null</returns>
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(GameLiving living, ISpellHandler handler)
 		{
-			lock (living.effectListComponent._concentrationEffectsLock)
+			lock (living.effectListComponent.ConcentrationEffectsLock)
 			{
 				foreach (IConcentrationEffect concEffect in living.effectListComponent.ConcentrationEffects)
 				{

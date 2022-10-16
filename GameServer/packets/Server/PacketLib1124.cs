@@ -751,7 +751,7 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConcentrationList)))
 			{
-				lock (m_gameClient.Player.effectListComponent._concentrationEffectsLock)
+				lock (m_gameClient.Player.effectListComponent.ConcentrationEffectsLock)
 				{
 					pak.WriteByte((byte)(m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
 					pak.WriteByte(0); // unknown
@@ -2409,7 +2409,7 @@ namespace DOL.GS.PacketHandler
 					//		pak.WriteShort(icon);
 					//	}
 					//}
-                    lock (pet.effectListComponent._effectsLock)
+                    lock (pet.effectListComponent.EffectsLock)
                     {
                         ArrayList icons = new ArrayList();
                         foreach (var effects in pet.effectListComponent.Effects.Values)
@@ -4867,7 +4867,7 @@ namespace DOL.GS.PacketHandler
 				//			pak.WriteShort(effect.Icon);
 				//		}
 				//}
-                lock (living.effectListComponent._effectsLock)
+                lock (living.effectListComponent.EffectsLock)
                 {
                     byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();

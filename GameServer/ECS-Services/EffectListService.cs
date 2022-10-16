@@ -49,7 +49,7 @@ namespace DOL.GS
             {
                 var effects = new List<ECSGameEffect>(10);
                 
-                lock (living.effectListComponent._effectsLock)
+                lock (living.effectListComponent.EffectsLock)
                 {
                     var currentEffects = living.effectListComponent.Effects.Values.ToList();
 
@@ -232,7 +232,7 @@ namespace DOL.GS
         {
             List<ECSGameEffect> effects;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
             
@@ -250,7 +250,7 @@ namespace DOL.GS
             if (target == null) return null;
             List<ECSGameEffect> effects;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
 
@@ -265,7 +265,7 @@ namespace DOL.GS
         {
             List<ECSGameEffect> effects;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
 
@@ -280,7 +280,7 @@ namespace DOL.GS
         {
             List<ECSGameEffect> effects;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
 
@@ -295,7 +295,7 @@ namespace DOL.GS
         {
             List<ECSGameEffect> effects;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out effects);
 
@@ -313,7 +313,7 @@ namespace DOL.GS
 
             ECSGameEffect effectToCancel;
 
-            lock (target.effectListComponent._effectsLock)
+            lock (target.effectListComponent.EffectsLock)
             {
                 if (!target.effectListComponent.ContainsEffectForEffectType(effectType))
                     return false;

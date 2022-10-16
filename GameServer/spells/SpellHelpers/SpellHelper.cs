@@ -284,7 +284,7 @@ namespace DOL.GS.Spells
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(this GameLiving target, Spell spell)
 		{
 			PulsingSpellEffect pulsingSpell = null;
-			lock (target.effectListComponent._concentrationEffectsLock)
+			lock (target.effectListComponent.ConcentrationEffectsLock)
 			{
 				pulsingSpell = target.PulsingSpellsOnTarget(spell).FirstOrDefault();
 			}
@@ -333,7 +333,7 @@ namespace DOL.GS.Spells
 		public static PulsingSpellEffect FindPulsingSpellOnTarget(this GameLiving target, ISpellHandler handler)
 		{
 			PulsingSpellEffect effect = null;
-			lock (target.effectListComponent._concentrationEffectsLock)
+			lock (target.effectListComponent.ConcentrationEffectsLock)
 			{
 				effect = target.PulsingSpellsOnTarget(handler).FirstOrDefault();
 			}
@@ -349,7 +349,7 @@ namespace DOL.GS.Spells
 		public static List<PulsingSpellEffect> FindPulsingSpellsOnTarget(this GameLiving target, ISpellHandler handler)
 		{
 			List<PulsingSpellEffect> effects = null;
-			lock (target.effectListComponent._concentrationEffectsLock)
+			lock (target.effectListComponent.ConcentrationEffectsLock)
 			{
 				effects = target.PulsingSpellsOnTarget(handler).ToList();
 			}

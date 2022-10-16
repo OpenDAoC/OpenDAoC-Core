@@ -1188,7 +1188,7 @@ namespace DOL.AI.Brain
                 }
 				if(!HasAggressionTable())
                 {
-					lock (Body.effectListComponent._effectsLock)
+					lock (Body.effectListComponent.EffectsLock)
 					{
 						var effects = Body.effectListComponent.GetAllPulseEffects();
 						for (int i = 0; i < effects.Count; i++)

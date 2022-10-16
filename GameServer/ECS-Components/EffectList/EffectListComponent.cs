@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI.Brain;
 using DOL.GS.Effects;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -10,213 +10,176 @@ namespace DOL.GS
     
     public class EffectListComponent
     {
-        public long _lastChecked = 0;
-        public GameLiving Owner;
-        
-        public int _lastUpdateEffectsCount = 0;
-        
-        public object _effectsLock = new object(); 
-        public Dictionary<eEffect, List<ECSGameEffect>> Effects = new Dictionary<eEffect, List<ECSGameEffect>>();
-        public Dictionary<int, ECSGameEffect> EffectIdToEffect = new Dictionary<int, ECSGameEffect>();
+        private int _lastUpdateEffectsCount;
 
-        /// <summary>
-        /// Holds the concentration effects list
-        /// </summary>
-        private List<ECSGameSpellEffect> m_concEffects;
+        public GameLiving Owner { get; private set; }
+        public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
+        public object EffectsLock { get; private set; } = new();
+        public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
+        public object ConcentrationEffectsLock { get; private set; } = new();
 
-        public object _concentrationEffectsLock = new object();
+        private readonly Dictionary<int, ECSGameEffect> EffectIdToEffect = new();
 
-        /// <summary>
-        /// Gets the concentration effects list
-        /// </summary>
-        public List<ECSGameSpellEffect> ConcentrationEffects { get { return m_concEffects; } }
-
-        public EffectListComponent(GameLiving p)
+        public EffectListComponent(GameLiving owner)
         {
-            Owner = p;
-            m_concEffects = new List<ECSGameSpellEffect>(20);
+            Owner = owner;
         }
 
         public bool AddEffect(ECSGameEffect effect)
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 try
                 {
-                    // dead owners don't get effects
+                    // Dead owners don't get effects
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
                     if (!EntityManager.GetLivingByComponent(typeof(EffectListComponent)).ToArray().Contains(Owner))
-                    {
                         EntityManager.AddComponent(typeof(EffectListComponent), Owner);
-                    }
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
                     {
                         if (!Effects.ContainsKey(effect.EffectType))
                             Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
-                        else if (effect.EffectType == eEffect.Protect || effect.EffectType == eEffect.Guard)
-                        {
+                        else if (effect.EffectType is eEffect.Protect or eEffect.Guard)
                             Effects[effect.EffectType].Add(effect);
-                        }
                         return true;
                     }
 
-                    ECSGameSpellEffect spellEffect = effect as ECSGameSpellEffect;
-                    
-                    //if (effect.EffectType == eEffect.OffensiveProc || effect.EffectType == eEffect.DefensiveProc)
-                    //{
-                    //    if (!Effects.ContainsKey(effect.EffectType))
-                    //    {
-                    //        Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
-                    //        EffectIdToEffect.Add(effect.Icon, effect);
-                    //    }
-                    //}
-                    if (spellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
+                    if (effect is ECSGameSpellEffect newSpellEffect && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
                     {
+                        ISpellHandler newSpellHandler = newSpellEffect.SpellHandler;
+                        Spell newSpell = newSpellHandler.Spell;
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
                         // Effects contains this effect already so refresh it
-                        if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID 
-                                                                || (spellEffect.SpellHandler.Spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spellEffect.SpellHandler.Spell.EffectGroup && spellEffect.SpellHandler.Spell.IsPoisonEffect)) != null)
+                        if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == newSpell.ID || (newSpell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == newSpell.EffectGroup && newSpell.IsPoisonEffect)) != null)
                         {
-                            if (spellEffect.IsConcentrationEffect() && !spellEffect.RenewEffect) 
+                            if (newSpellEffect.IsConcentrationEffect() && !newSpellEffect.RenewEffect)
                                 return false;
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                //Console.WriteLine($"Effect found: name {existingEffects[i].Name} poison? {existingEffects[i].SpellHandler.Spell.IsPoisonEffect} ID {existingEffects[i].SpellHandler.Spell.ID} EffectGroup {existingEffects[i].SpellHandler.Spell.EffectGroup}");
-                                if ((existingEffects[i].SpellHandler.Spell.IsPulsing && spellEffect.SpellHandler.Caster.LastPulseCast == spellEffect.SpellHandler.Spell
-                                    && existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID)
-                                    || (existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect == existingEffects[i])
-                                    || existingEffects[i].SpellHandler.Spell.ID == spellEffect.SpellHandler.Spell.ID)
-                                   
+                                ECSGameSpellEffect existingEffect = existingEffects[i];
+                                ISpellHandler existingSpellHandler = existingEffects[i].SpellHandler;
+                                Spell existingSpell = existingSpellHandler.Spell;
+
+                                // Console.WriteLine($"Effect found! Name: {existingEffect.Name}, Effectiveness: {existingEffect.Effectiveness}, Poison: {existingSpell.IsPoisonEffect}, ID: {existingSpell.ID}, EffectGroup: {existingSpell.EffectGroup}");
+
+                                if ((existingSpell.IsPulsing && newSpellHandler.Caster.LastPulseCast == newSpell && existingSpell.ID == newSpell.ID)
+                                    || (existingSpell.IsConcentration && existingEffect == newSpellEffect)
+                                    || existingSpell.ID == newSpell.ID)
                                 {
-                                    if (spellEffect.SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime)
+                                    if (newSpell.IsPoisonEffect && newSpellEffect.EffectType == eEffect.DamageOverTime)
                                     {
-                                        existingEffects[i].ExpireTick = spellEffect.ExpireTick;
-                                        spellEffect.IsBuffActive = true;
+                                        existingEffect.ExpireTick = newSpellEffect.ExpireTick;
+                                        newSpellEffect.IsBuffActive = true;
                                     }
-                                    else if (spellEffect.EffectType != eEffect.MovementSpeedDebuff)
+                                    else if (newSpellEffect.EffectType != eEffect.MovementSpeedDebuff)
                                     {
-                                        spellEffect.IsDisabled = existingEffects[i].IsDisabled;
-                                        spellEffect.IsBuffActive = existingEffects[i].IsBuffActive;
+                                        newSpellEffect.IsDisabled = existingEffect.IsDisabled;
+                                        newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
 
-                                        if (spellEffect.SpellHandler.Spell.IsPulsing)
-                                            spellEffect.RenewEffect = true;
+                                        if (newSpell.IsPulsing)
+                                            newSpellEffect.RenewEffect = true;
 
-                                        spellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffects[i]);
-                                        Effects[spellEffect.EffectType][i] = spellEffect;
+                                        newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
+                                        Effects[newSpellEffect.EffectType][i] = newSpellEffect;
                                     }
                                     return true;
                                 }
                             }
                         }
-                        else if (effect.EffectType == eEffect.SavageBuff || effect.EffectType == eEffect.ArmorAbsorptionBuff)
+                        else if (effect.EffectType is eEffect.SavageBuff or eEffect.ArmorAbsorptionBuff)
                         {
-                            if (effect.EffectType == eEffect.ArmorAbsorptionBuff)
+                            if (effect.EffectType is eEffect.ArmorAbsorptionBuff)
                             {
-                                for (var i = 0; i < existingEffects.Count; i++)
+                                for (int i = 0; i < existingEffects.Count; i++)
+                                {
                                     // Better Effect so disable the current Effect
-                                    if (spellEffect.SpellHandler.Spell.Value >
+                                    if (newSpellEffect.SpellHandler.Spell.Value >
                                         existingEffects[i].SpellHandler.Spell.Value)
                                     {
                                         EffectService.RequestDisableEffect(existingEffects[i]);
-                                        Effects[spellEffect.EffectType].Add(spellEffect);
-                                        EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
+                                        Effects[newSpellEffect.EffectType].Add(newSpellEffect);
+                                        EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
                                         return true;
                                     }
                                     else
                                     {
                                         return false;
                                     }
+                                }
                             }
                             // Player doesn't have this buff yet
-                            else if (existingEffects.Where(e => e.SpellHandler.Spell.SpellType == spellEffect.SpellHandler.Spell.SpellType).Count() == 0)
+                            else if (!existingEffects.Where(e => e.SpellHandler.Spell.SpellType == newSpellEffect.SpellHandler.Spell.SpellType).Any())
                             {
-                                Effects[spellEffect.EffectType].Add(spellEffect);
-                                EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
+                                Effects[newSpellEffect.EffectType].Add(newSpellEffect);
+                                EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
                                 return true;
                             }
                             else
                                 return false;
                         }
                         else
-                        {                           
+                        {
                             bool addEffect = false;
-                            //foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
+                            // foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
                             bool foundIsOverwriteableEffect = false;
                             // Check to see if we can add new Effect
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
-                                //Check if existingEffect is overwritable by new effect
-                                if (existingEffects[i].SpellHandler.IsOverwritable(spellEffect) || spellEffect.EffectType == eEffect.MovementSpeedDebuff)
+                                ECSGameSpellEffect existingEffect = existingEffects[i];
+                                ISpellHandler existingSpellHandler = existingEffects[i].SpellHandler;
+                                Spell existingSpell = existingSpellHandler.Spell;
+
+                                // Check if existingEffect is overwritable by new effect
+                                if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
                                     foundIsOverwriteableEffect = true;
                                     if (effect.EffectType != eEffect.Bladeturn)
                                     {
-                                        // if (spellEffect.SpellHandler.Spell.IsPoisonEffect || (existingEffects[i].SpellHandler.Spell.IsPoisonEffect && spellEffect.EffectType == eEffect.DamageOverTime))
-                                        // {
-                                        //     addEffect = true;
-                                        // }
-                                        //New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
-                                        if ((spellEffect.SpellHandler.Spell.Value > existingEffects[i].SpellHandler.Spell.Value ||
-                                            spellEffect.SpellHandler.Spell.Damage > existingEffects[i].SpellHandler.Spell.Damage) &&
-                                            !existingEffects[i].IsDisabled)
+                                        // New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
+                                        if ((newSpell.Value > existingSpell.Value || newSpell.Damage > existingSpell.Damage)
+                                            && !existingEffects[i].IsDisabled)
                                         {
-                                            if (spellEffect.SpellHandler.Spell.IsHelpful && (spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster ||
-                                                spellEffect.SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
-                                                existingEffects[i].SpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
+                                            if (newSpell.IsHelpful && (newSpellHandler.Caster != existingSpellHandler.Caster
+                                                || newSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects
+                                                || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
                                                 EffectService.RequestDisableEffect(existingEffects[i]);
                                             else
                                                 EffectService.RequestCancelEffect(existingEffects[i]);
-
                                             addEffect = true;
                                         }
-                                        //New Effect is not as good as current effect.
-                                        else if (spellEffect.SpellHandler.Spell.Value < existingEffects[i].SpellHandler.Spell.Value ||
-                                            spellEffect.SpellHandler.Spell.Damage < existingEffects[i].SpellHandler.Spell.Damage)
-                                        {
-                                            if ((existingEffects[i].SpellHandler.Spell.IsConcentration && spellEffect.SpellHandler.Caster != existingEffects[i].SpellHandler.Caster)
-                                                || existingEffects[i].SpellHandler.Spell.IsPulsing)
-                                            {
-                                                // EffectService.RequestDisableEffect(spellEffect);
-                                                // addEffect = true;
-                                            }
-                                            else
-                                                addEffect = false;
-                                        }
+                                        // New Effect is not as good as current effect.
+                                        else if (newSpell.Value < existingSpell.Value || newSpell.Damage < existingSpell.Damage)
+                                            addEffect = false;
                                     }
                                     else
                                     {
                                         // PBT should only replace itself
-                                        if (!spellEffect.SpellHandler.Spell.IsPulsing)
+                                        if (!newSpell.IsPulsing)
                                         {
                                             // Self cast Bladeturns should never be overwritten
-                                            if (existingEffects[i].SpellHandler.Spell.Target.ToLower() != "self")
+                                            if (existingSpell.Target.ToLower() != "self")
                                             {
-                                                EffectService.RequestCancelEffect(existingEffects[i]);
+                                                EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;
                                             }
                                         }
                                     }
                                 }
-                                //Commenting the snip below as it was causing issues with some effects stacking incorrectly. using the foundIsOverwriteableEffect bool instead.
-                                // else if (spellEffect.SpellHandler.Spell.EffectGroup != existingEffects[i].SpellHandler.Spell.EffectGroup)
-                                // {
-                                //     addEffect = true;
-                                // }
                             }
-    
-                            //No overwriteable effects found that match new spell effect, so add it!
+
+                            // No overwriteable effects found that match new spell effect, so add it!
                             if (!foundIsOverwriteableEffect)
                                 addEffect = true;
 
                             if (addEffect)
                             {
-                                Effects[spellEffect.EffectType].Add(spellEffect);
-                                EffectIdToEffect.TryAdd(spellEffect.Icon, spellEffect);
+                                Effects[newSpellEffect.EffectType].Add(newSpellEffect);
+                                EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
                                 return true;
                             }
                         }
@@ -228,15 +191,14 @@ namespace DOL.GS
                         Effects[effect.EffectType].Add(effect);
                     }
                     else
-                    {                      
+                    {
                         Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.Add(effect.Icon, effect);
                     }
-
                     return true;
                 }
-                catch (Exception e)
+                catch
                 {
                     //Console.WriteLine($"Error adding an Effect {e}");
                     return false;
@@ -247,7 +209,7 @@ namespace DOL.GS
 
         public List<ECSGameEffect> GetAllEffects()
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 var temp = new List<ECSGameEffect>();
                 foreach (var effects in Effects.Values.ToList())
@@ -264,7 +226,7 @@ namespace DOL.GS
 
         public List<ECSPulseEffect> GetAllPulseEffects()
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 var temp = new List<ECSPulseEffect>();
                 foreach (var effects in Effects.Values.ToList())
@@ -281,7 +243,7 @@ namespace DOL.GS
 
         public List<IConcentrationEffect> GetConcentrationEffects()
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 var temp = new List<IConcentrationEffect>();
                 var allEffects = Effects.Values.ToList();
@@ -303,7 +265,7 @@ namespace DOL.GS
 
         public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType = eEffect.Unknown)
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 return GetSpellEffects(effectType)?.OrderByDescending(e => e.IsDisabled).ThenByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
             }
@@ -311,7 +273,7 @@ namespace DOL.GS
 
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 var temp = new List<ECSGameSpellEffect>();
                 foreach (var effects in Effects.Values.ToList())
@@ -337,7 +299,7 @@ namespace DOL.GS
 
         public List<ECSGameAbilityEffect> GetAbilityEffects()
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 var temp = new List<ECSGameAbilityEffect>();
                 foreach (var effects in Effects.Values.ToList())
@@ -358,9 +320,14 @@ namespace DOL.GS
             return effect;
         }
 
+        public ref int GetLastUpdateEffectsCount()
+        {
+            return ref _lastUpdateEffectsCount;
+        }
+
         public bool RemoveEffect(ECSGameEffect effect)
         {
-            lock (_effectsLock)
+            lock (EffectsLock)
             {
                 try
                 {
@@ -375,7 +342,7 @@ namespace DOL.GS
                         {
                             List<ECSGameEffect> existingEffects = Effects[effect.EffectType];
                             
-                            //Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
+                            // Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
                             ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
                             Effects[effect.EffectType].Remove(effectToRemove);
 
@@ -388,9 +355,7 @@ namespace DOL.GS
                             }
 
                             if (Effects.Count == 0)
-                            {
                                 EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
-                            }
                         }
                         return true;
                     }
@@ -409,15 +374,11 @@ namespace DOL.GS
             try
             {
                 if (Effects.ContainsKey(effectType))
-                {
                     return true;
-                } 
                 else
-                {
                     return false;
-                }
             } 
-            catch (Exception e)
+            catch
             {
                 //Console.WriteLine($"Error attempting to check effect type");
                 return false;

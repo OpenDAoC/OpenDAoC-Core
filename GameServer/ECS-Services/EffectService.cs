@@ -101,7 +101,7 @@ namespace DOL.GS
                 {
                     spellEffect.SpellHandler.Caster.UsedConcentration += spellEffect.SpellHandler.Spell.Concentration;
 
-                    lock (spellEffect.SpellHandler.Caster.effectListComponent._concentrationEffectsLock)
+                    lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
                     {
                         spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects.Add(spellEffect);
                     }
@@ -175,7 +175,7 @@ namespace DOL.GS
                         ecsList.Add(e);
                 }
 
-                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent.GetLastUpdateEffectsCount());
                 SendPlayerUpdates(player);
                 player.Out.SendConcentrationList();
             }
@@ -228,7 +228,7 @@ namespace DOL.GS
                     {
                         spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
 
-                        lock (spellEffect.SpellHandler.Caster.effectListComponent._concentrationEffectsLock)
+                        lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
                         {
                             if (spellEffect is ECSPulseEffect)
                             {                               
@@ -269,7 +269,7 @@ namespace DOL.GS
                 List<ECSGameEffect> playerEffects = e.Owner.effectListComponent.GetAllEffects();
                 ecsList.AddRange(playerEffects.Skip(playerEffects.IndexOf(e)));
 
-                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent._lastUpdateEffectsCount);
+                player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent.GetLastUpdateEffectsCount());
                 player.Out.SendConcentrationList();
             }
             else if (e.Owner is GameNPC)
@@ -961,7 +961,7 @@ namespace DOL.GS
             if (effs != null)
                 GameServer.Database.DeleteObject(effs);
 
-            lock (player.effectListComponent._effectsLock)
+            lock (player.effectListComponent.EffectsLock)
             {
                 foreach (var eff in player.effectListComponent.GetAllEffects())
                 {

@@ -3040,7 +3040,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConcentrationList)))
 			{
-				lock (m_gameClient.Player.effectListComponent._concentrationEffectsLock)
+				lock (m_gameClient.Player.effectListComponent.ConcentrationEffectsLock)
 				{
 					pak.WriteByte((byte) (m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
 					pak.WriteByte(0); // unknown
