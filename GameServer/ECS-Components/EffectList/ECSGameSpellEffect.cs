@@ -135,7 +135,7 @@ namespace DOL.GS
 				((SpellHandler)SpellHandler).MessageToLiving(playerTarget, SpellHandler.Spell.Message1, eChatType.CT_Spell);
 
 			// Sends a third-person message directly to the caster to indicate the spell has ended
-			if (msgSelf && Caster is GamePlayer selfCaster)
+			if (msgSelf && Caster != target && Caster is GamePlayer selfCaster)
 				// "{0} looks more agile!"
 				((SpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, true)), eChatType.CT_Spell);
 
