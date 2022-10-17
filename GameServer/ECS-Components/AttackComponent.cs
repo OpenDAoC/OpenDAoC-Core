@@ -3113,8 +3113,9 @@ namespace DOL.GS
 
                 var visiblePlayers = target?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
-                if (visiblePlayers == null) return;
-                //Parallel.ForEach(visiblePlayers, player =>
+                if (visiblePlayers == null)
+                    return;
+
                 foreach (GamePlayer player in visiblePlayers)
                 {
                     
@@ -3133,8 +3134,11 @@ namespace DOL.GS
                             break;
                     }
 
-                    player.Out.SendCombatAnimation(owner, ad.Target, (ushort) attackersWeapon, (ushort) defendersWeapon,
-                        animationId, 0, resultByte, ad.Target.HealthPercent);
+                    // It only affects the attacker's client, but for some reason, the attack animation doesn't play when the attack's target (who's being hit) is different than the actually selected target.
+                    // It makes fighting Spiritmasters very awkward, so until this get figured out, we'll instead play the "hit" animation on the player's actual target.
+                    player.Out.SendCombatAnimation(owner, player != owner || owner.TargetObject == target ? target : owner.TargetObject,
+                        (ushort) attackersWeapon, (ushort) defendersWeapon,
+                        animationId, 0, resultByte, target.HealthPercent);
                 }
             }
         }
