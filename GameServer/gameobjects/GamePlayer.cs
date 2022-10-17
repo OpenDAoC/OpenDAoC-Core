@@ -12690,7 +12690,12 @@ namespace DOL.GS
                 return;
             }
 
-            if (!item.IsMagical) return;
+            // Cancel any self buffs that are unequipped
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.Where(x => x.SpellID == item.SpellID).Count() <= 1)
+                CancelChargeBuff(item.SpellID);
+
+            if (!item.IsMagical)
+                return;
 
             if (item.Bonus1 != 0)
             {
@@ -12763,10 +12768,6 @@ namespace DOL.GS
             {
                 (item as IGameInventoryItem).OnUnEquipped(this);
             }
-            
-            // Cancel any self buffs that are unequipped
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.Where(x => x.SpellID == item.SpellID).Count() <= 1)
-                CancelChargeBuff(item.SpellID);
 
             if (ObjectState == eObjectState.Active)
             {
