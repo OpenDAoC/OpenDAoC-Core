@@ -12764,11 +12764,9 @@ namespace DOL.GS
                 (item as IGameInventoryItem).OnUnEquipped(this);
             }
             
-            //cancel any self buffs that are unequipped
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.FirstOrDefault(x => x.SpellID == item.SpellID) == null)
-            {
+            // Cancel any self buffs that are unequipped
+            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.Where(x => x.SpellID == item.SpellID).Count() <= 1)
                 CancelChargeBuff(item.SpellID);
-            }
 
             if (ObjectState == eObjectState.Active)
             {
