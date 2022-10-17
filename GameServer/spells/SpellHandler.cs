@@ -17,12 +17,12 @@
  *
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
-using System.Text;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -30,14 +30,10 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
-using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
-using DOL.GS.SpellEffects;
 using DOL.Language;
 
-
 using log4net;
-using System.Collections.Concurrent;
 
 namespace DOL.GS.Spells
 {
@@ -47,14 +43,10 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public class SpellHandler : ISpellHandler
 	{
-		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public object _stateLock = new object();
+		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		//GameLoop Methods
-		public eCastState castState { get; set; }
-		private double _castFinishedTickTime;
-		//todo create this list when loading spell
-		private List<IEffectComponent> _spellEffectComponents = new List<IEffectComponent>();
+		public eCastState CastState { get; set; }
+
 		public GameLiving GetTarget()
         {
 			return m_spellTarget;
@@ -670,7 +662,7 @@ namespace DOL.GS.Spells
 			
             
 			if (Caster is GamePlayer)
-                if (castState != eCastState.Focusing)
+                if (CastState != eCastState.Focusing)
 				    (Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 else
                     Caster.CancelFocusSpell(true);
@@ -1768,7 +1760,7 @@ namespace DOL.GS.Spells
 		//This is called after our pre-cast checks are done (Range, valid target, mana pre-req, and standing still?) and checks for the casting states
 		public void Tick(long currentTick)
 		{
-				switch (castState)
+				switch (CastState)
 				{
 					case eCastState.Precast:
 						if (Spell.Target == "Self")
@@ -1795,75 +1787,75 @@ namespace DOL.GS.Spells
 							if (Spell.IsInstantCast)
 							{
 								if (!CheckEndCast(m_spellTarget))
-									castState = eCastState.Interrupted;
+									CastState = eCastState.Interrupted;
 								else
 								{
 									SendCastAnimation(0);
-									castState = eCastState.Finished;
+									CastState = eCastState.Finished;
 								}
 							}
 							else
 							{
 								SendCastAnimation();
-								castState = eCastState.Casting;
+								CastState = eCastState.Casting;
 							}
 						}
 						else
 						{
 							if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
-								castState = eCastState.Interrupted;
+								CastState = eCastState.Interrupted;
 							else
-								castState = eCastState.Cleanup;
+								CastState = eCastState.Cleanup;
 						}
 						break;
 					case eCastState.Casting:
 						if (!CheckDuringCast(m_spellTarget))
 						{
-							castState = eCastState.Interrupted;
+							CastState = eCastState.Interrupted;
 						}
 						if (_castStartTick + _calculatedCastTime < currentTick)
 						{
 							if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
 							{
 								if (!CheckEndCast(m_spellTarget))
-									castState = eCastState.Interrupted;
+									CastState = eCastState.Interrupted;
 								else
-									castState = eCastState.Finished;
+									CastState = eCastState.Finished;
 							}
 							else
 							{
 								if (CheckEndCast(m_spellTarget))
-									castState = eCastState.Finished;
+									CastState = eCastState.Finished;
 							}
 						}
 						break;
 					case eCastState.Interrupted:
 						InterruptCasting();
 						SendInterruptCastAnimation();
-						castState = eCastState.Cleanup;
+						CastState = eCastState.Cleanup;
 						break;
 					case eCastState.Focusing:
 						if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
 						{
 							CasterMoves();
-							castState = eCastState.Cleanup;
+							CastState = eCastState.Cleanup;
 						}
 						break;
 				}
 
 			//Process cast on same tick if finished.
-			if (castState == eCastState.Finished)
+			if (CastState == eCastState.Finished)
 			{
 				FinishSpellCast(m_spellTarget);
 				if (Spell.IsFocus)
 				{
 					if (Spell.ID != 5998)
 					{
-						castState = eCastState.Focusing;
+						CastState = eCastState.Focusing;
 					}
 					else
 					{
-						castState = eCastState.Cleanup;
+						CastState = eCastState.Cleanup;
 
 						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 						stone.CanUseAgainIn = stone.CanUseEvery;
@@ -1872,9 +1864,9 @@ namespace DOL.GS.Spells
 					}
 				}			
 				else
-					castState = eCastState.Cleanup;
+					CastState = eCastState.Cleanup;
 			}
-			if (castState == eCastState.Cleanup)
+			if (CastState == eCastState.Cleanup)
 			{
 				CleanupSpellCast();
 			}
@@ -2097,7 +2089,7 @@ namespace DOL.GS.Spells
 					((GamePlayer)m_caster).ClearSpellQueue();
 				}
 			}
-			castState = eCastState.Interrupted;
+			CastState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 			OnAfterSpellCastSequence();
 		}
@@ -2348,27 +2340,29 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void FinishSpellCast(GameLiving target)
 		{
-			if (Caster is GamePlayer && ((GamePlayer)Caster).IsOnHorse && !HasPositiveEffect)
-				((GamePlayer)Caster).IsOnHorse = false;
-			
-			//[Stryve]: Do not break stealth if spell never breaks stealth.
-			if ((Caster is GamePlayer) && UnstealthCasterOnFinish )
-				((GamePlayer)Caster).Stealth(false);
+			GamePlayer playerCaster = Caster as GamePlayer;
+			GameInventoryItem playerWeapon = playerCaster?.AttackWeapon as GameInventoryItem;
 
-			if (Caster is GamePlayer && !HasPositiveEffect)
+			if (playerCaster != null)
 			{
-				if (Caster.AttackWeapon != null && Caster.AttackWeapon is GameInventoryItem)
+				if (!HasPositiveEffect)
 				{
-					(Caster.AttackWeapon as GameInventoryItem).OnSpellCast(Caster, target, Spell);
+					playerCaster.IsOnHorse = false;
+
+					if (playerWeapon != null)
+						playerWeapon.OnSpellCast(playerCaster, target, Spell);
 				}
+
+				if (UnstealthCasterOnFinish)
+					playerCaster.Stealth(false);
 			}
 
-			// messages
-			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0) // && Spell.CastTime > 0 - Takii - Commented this out since we do want cast messages even for insta spells...
+			// Messages
+			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0)
 			{
 				if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
 				{
-					if (Caster is GamePlayer playerCaster)
+					if (playerCaster != null)
 						// Message: You cast a {0} spell!
 						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouCastSpell", Spell.Name), eChatType.CT_Spell);
 					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
@@ -2383,19 +2377,9 @@ namespace DOL.GS.Spells
 				}
 			}
 
-            //CancelAllPulsingSpells(Caster);
-            //PulsingSpellEffect pulseeffect = new PulsingSpellEffect(this);
-            //pulseeffect.Start();
-            //// show animation on caster for positive spells, negative shows on every StartSpell
-            //if (m_spell.Target == "Self" || m_spell.Target == "Group")
-            //	SendEffectAnimation(Caster, 0, false, 1);
-            //if (m_spell.Target == "Pet")
-            //	SendEffectAnimation(target, 0, false,1);
-
             if (Spell.IsPulsing)
             {
 				CancelAllPulsingSpells(Caster);
-				//EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(Caster));
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
@@ -2404,10 +2388,10 @@ namespace DOL.GS.Spells
 				}
 			}
 
-            
-
-            //CreateSpellEffects();
-            StartSpell(target); // and action
+          	if (playerWeapon != null)
+				StartSpell(target, playerWeapon);
+			else
+				StartSpell(target);
 
             /*
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
@@ -2438,7 +2422,6 @@ namespace DOL.GS.Spells
 					quickcast.Cancel(false);
 				}
 			}
-
 
 			if (m_ability != null)
 				m_caster.DisableSkill(m_ability.Ability, (m_spell.RecastDelay == 0 ? 3000 : m_spell.RecastDelay));
@@ -2487,10 +2470,8 @@ namespace DOL.GS.Spells
 		{
 			var list = new List<GameLiving>(8);
 			GameLiving target = castTarget as GameLiving;
-			bool targetchanged = false;
 			string modifiedTarget = Spell.Target.ToLower();
 			ushort modifiedRadius = (ushort)Spell.Radius;
-			int newtarget = 0;
 
 			/*
 			GameSpellEffect TargetMod = SpellHandler.FindEffectOnTarget(m_caster, "TargetModifier");
@@ -3175,7 +3156,8 @@ namespace DOL.GS.Spells
 
 				int spellResistChance = CalculateSpellResistChance(t);
 				int randNum = 0;
-				bool UseRNGOverride = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+				bool UseRNGOverride = Properties.OVERRIDE_DECK_RNG;
+
 				if (spellResistChance > 0)
 				{
 					if (Caster is GamePlayer caster && !UseRNGOverride)
@@ -3972,7 +3954,7 @@ namespace DOL.GS.Spells
             //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
             //GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
             //GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-            castState = eCastState.Cleanup;
+            CastState = eCastState.Cleanup;
             Caster.TempProperties.removeProperty(FOCUS_SPELL);
             Caster.LastPulseCast = null;
 			
@@ -4035,7 +4017,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public bool IsCasting
 		{
-			get { return castState == eCastState.Casting; }//return m_castTimer != null && m_castTimer.IsAlive; }
+			get { return CastState == eCastState.Casting; }//return m_castTimer != null && m_castTimer.IsAlive; }
 		}
 
 		/// <summary>
