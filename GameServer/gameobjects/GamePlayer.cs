@@ -10338,7 +10338,9 @@ namespace DOL.GS
             
             if (spell != null)
             {
-                if (ActiveBuffCharges >= Properties.MAX_CHARGE_ITEMS && SelfBuffChargeIDs.Contains(spell.ID))
+                if (ActiveBuffCharges >= Properties.MAX_CHARGE_ITEMS
+                    && SelfBuffChargeIDs.Contains(spell.ID)
+                    && effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spell.ID) == null)
                 {
                     Out.SendMessage("You may only use two buff charge effects.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
