@@ -195,8 +195,10 @@ namespace DOL.GS
                     if (attackData != null && attackData.AttackResult is eAttackResult.Fumbled)
                     {
                         // Don't start the attack if the last one fumbled
-                        m_interval = attackComponent.AttackSpeed(attackWeapon) * 2;
+                        styleComponent.NextCombatStyle = null;
+                        styleComponent.NextCombatBackupStyle = null;
                         attackData.AttackResult = eAttackResult.Missed;
+                        m_interval = attackComponent.AttackSpeed(attackWeapon) * 2;
                         StartTime = m_interval;
                         return;
                     }
