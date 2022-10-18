@@ -5176,29 +5176,6 @@ namespace DOL.GS
 			//DealDamage needs to be called after addxpgainer!
 		}
 
-		public override void EnemyKilled(GameLiving enemy)
-		{
-			base.EnemyKilled(enemy);
-
-			if (Brain is StandardMobBrain mobBrain)
-			{
-				// transfer all controlled target aggro to the owner
-				if (enemy is GameNPC)
-				{
-					var controlled = ((GameNPC)enemy).Brain as IControlledBrain;
-					if (controlled != null)
-					{
-						var contrAggro = mobBrain.GetAggroAmountForLiving(controlled.Body);
-						mobBrain.AddToAggroList(controlled.Owner, (int)contrAggro);
-					}
-				}
-				attackComponent.Attackers.Remove(enemy);
-				TargetObject = null;
-			}
-		}
-		
-		
-
 		#endregion
 
 		#region Spell

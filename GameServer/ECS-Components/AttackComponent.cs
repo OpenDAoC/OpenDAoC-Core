@@ -73,7 +73,7 @@ namespace DOL.GS
             //			log.Error(Environment.StackTrace);
             lock (Attackers)
             {
-                if (m_attackers.Contains(attacker)) m_attackers.Remove(attacker);
+                m_attackers.Remove(attacker);
 
                 //if (m_attackers.Count() == 0)
                 //    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
