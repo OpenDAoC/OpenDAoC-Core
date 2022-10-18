@@ -1641,19 +1641,6 @@ namespace DOL.GS
         {
             return GetInRadius(Zone.eGameObjectType.PLAYER, x, y, z, radius, withDistance, ignoreZ);
         }
-        
-        public IEnumerable GetPetsInRadius(int x, int y, int z, ushort radius, bool withDistance, bool ignoreZ)
-        {
-            var npcList = GetInRadius(Zone.eGameObjectType.NPC, x, y, z, radius, withDistance, ignoreZ);
-            List<GamePet> pets = new List<GamePet>();
-            foreach (var npc in npcList)
-            {
-                if(npc is GamePet)
-                    pets.Add(npc as GamePet);
-            }
-
-            return pets;
-        }
 
         /// <summary>
         /// Gets Doors in a radius around a spot
