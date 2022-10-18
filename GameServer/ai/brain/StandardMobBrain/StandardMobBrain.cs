@@ -435,55 +435,6 @@ namespace DOL.AI.Brain
                     AddToAggroList(player, 1, true);
                 }
             }
-            
-            // CheckPetAggro(useLOS);
-        }
-
-        private void CheckPetAggro(bool useLOS)
-        {
-            var pets = Body?.GetPetsInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon);
-            if (pets == null) return;
-            foreach (var petNPC in pets)
-            {
-                if (petNPC is not GamePet pet) continue;
-                if (pet.Owner is not GamePlayer owner) continue;
-                
-                if (!GameServer.ServerRules.IsAllowedToAttack(Body, pet, true)) continue;
-                // Don't aggro on immune players.
-                
-                if (Body.CurrentZone.IsDungeon)
-                {
-                    useLOS = true;
-                }
-
-                if (useLOS && pet != null && !AggroLOS && pet is GamePet p)
-                {
-                    owner.Out.SendCheckLOS(Body, pet, new CheckLOSResponse(CheckAggroLOS));
-                }
-
-                int aggrolevel = 0;
-
-                if (Body.Faction != null)
-                {
-                    aggrolevel = Body.Faction.GetAggroToFaction(owner);
-                    if (aggrolevel < 75)
-                        return;
-                }
-
-                if (aggrolevel <= 0 && AggroLevel <= 0)
-                    return;
-
-                if (m_aggroTable.ContainsKey(pet))
-                    continue; // add only new players
-                if (!pet.IsAlive || pet.ObjectState != GameObject.eObjectState.Active || pet.IsStealthed)
-                    continue;
-
-                if (CalculateAggroLevelToTarget(pet) > 0)
-                {
-                    if (useLOS && !AggroLOS) return;
-                    AddToAggroList(pet, 1, true);
-                }
-            }
         }
 
         /// <summary>
