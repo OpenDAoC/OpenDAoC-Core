@@ -2032,14 +2032,14 @@ namespace DOL.GS
 
                             if (brain != null)
                             {
-                                GamePlayer owner = brain.GetPlayerOwner();
-                                if (owner != null)
+                                GamePlayer player = brain.GetPlayerOwner();
+                                if (player != null)
                                 {
                                     string damageAmount = (ad.StyleDamage > 0)
                                         ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
                                         : "";
-                                    owner.Out.SendMessage(
-                                        LanguageMgr.GetTranslation(owner.Client.Account.Language,
+                                    player.Out.SendMessage(
+                                        LanguageMgr.GetTranslation(player.Client.Account.Language,
                                             "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
                                             damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                                 }
