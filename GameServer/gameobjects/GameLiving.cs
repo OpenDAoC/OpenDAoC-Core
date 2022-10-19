@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 using DOL.AI.Brain;
 using DOL.Database;
@@ -30,12 +31,11 @@ using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
+using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
-using DOL.GS.Styles;
 using DOL.Language;
-using DOL.GS.RealmAbilities;
-using System.Threading;
+using static DOL.GS.AttackData;
 
 namespace DOL.GS
 {
@@ -4276,12 +4276,6 @@ namespace DOL.GS
 			{
 				var brain = npc.Brain as ControlledNpcBrain;
 
-
-				GamePlayer owner = brain?.GetPlayerOwner();
-
-                //if (owner != null)
-                   // owner.Stealth(false);
-
                 if (ad.Target is GamePlayer)
 				{
 					LastAttackTickPvP = GameLoop.GameLoopTime;
@@ -4296,12 +4290,13 @@ namespace DOL.GS
 				}
 			}
 
-			CancelFocusSpell();
+			// Don't cancel offensive focus spell
+			if (ad.AttackType != eAttackType.Spell)
+				CancelFocusSpell();
         }
 
         public void CancelFocusSpell(bool moving = false)
         {
-
             foreach (var pulseSpell in effectListComponent.GetSpellEffects(eEffect.Pulse))
             {
 				if (pulseSpell.SpellHandler.Spell.IsFocus)
@@ -4316,11 +4311,11 @@ namespace DOL.GS
 							if (petEffect.FirstOrDefault().SpellHandler.Spell.IsFocus)
 								EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 						}
-							
 					}
 				}
             }
         }
+
 		/// <summary>
 		/// This method is called at the end of the attack sequence to
 		/// notify objects if they have been attacked/hit by an attack
