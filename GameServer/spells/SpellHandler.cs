@@ -2347,7 +2347,8 @@ namespace DOL.GS.Spells
 			{
 				if (!HasPositiveEffect)
 				{
-					playerCaster.IsOnHorse = false;
+					if (playerCaster.IsOnHorse)
+						playerCaster.IsOnHorse = false;
 
 					if (playerWeapon != null)
 						playerWeapon.OnSpellCast(playerCaster, target, Spell);
