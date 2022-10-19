@@ -130,48 +130,6 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		//protected override void FocusSpellAction(DOLEvent e, object sender, EventArgs args)
-		//{
-		//	GameLiving living = sender as GameLiving;
-		//	if (living == null) return;
-
-		//	GameSpellEffect currentEffect = (GameSpellEffect)living.TempProperties.getProperty<object>(FOCUS_SPELL, null);
-		//	if (currentEffect == null)
-		//		return;
-
-		//	if (args is AttackedByEnemyEventArgs attackedByEnemy)
-		//	{
-		//		var attacker = attackedByEnemy.AttackData.Attacker;
-		//		if (e == GameLivingEvent.AttackedByEnemy && Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200) 
-		//		{ 
-		//			return; 
-		//		}
-		//	}
-			
-		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackFinished, new DOLEventHandler(FocusSpellAction));
-		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.CastStarting, new DOLEventHandler(FocusSpellAction));
-		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Moving, new DOLEventHandler(FocusSpellAction));
-		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-		//	GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
-		//	GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
-		//	Caster.TempProperties.removeProperty(FOCUS_SPELL);
-		//	foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-		//	{
-		//		player.Out.SendInterruptAnimation(Caster);
-		//	}
-		//	GameSpellEffect effect = FindEffectOnTarget(currentEffect.Owner, this);
-		//	if (effect != null)
-		//		effect.Cancel(false);
-
-		//	CancelPulsingSpell(Caster, Spell.SpellType);
-		//	currentEffect.Cancel(false);
-
-		//	if (e == GameLivingEvent.Moving)
-		//		MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
-
-		//	MessageToCaster(String.Format("You lose your focus on your {0} spell.", currentEffect.Spell.Name), eChatType.CT_SpellExpires);
-		//}
-
 		public override void OnDirectEffect(GameLiving target, double effectiveness)
 		{
 			if (target == null) return;

@@ -43,8 +43,7 @@ namespace DOL.GS
         {
             this.owner = owner;
         }
-        
-        
+          
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
             EntityManager.AddComponent(typeof(CastingComponent), owner);
@@ -79,13 +78,10 @@ namespace DOL.GS
             {
                 if (spellHandler.Spell != null && spellHandler.Spell.IsFocus)
                 {
-                    (spellHandler as SpellHandler)?.FocusSpellAction();
-
                     if (m_newSpellHandler.Spell.IsInstantCast)
                         instantSpellHandler = m_newSpellHandler;
                     else
                         spellHandler = m_newSpellHandler;
-
                 }
                 else if (m_newSpellHandler.Spell.IsInstantCast)
                 {

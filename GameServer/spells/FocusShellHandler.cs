@@ -58,11 +58,11 @@ namespace DOL.GS.Spells
 
 				if (selectedTarget is GamePlayer)
 				{
-					GameSpellEffect currentEffect = (GameSpellEffect)Caster.TempProperties.getProperty<object>(FOCUS_SPELL, null);
+					Spell currentSpell = Caster.LastPulseCast;
 
-					if (currentEffect != null && currentEffect.SpellHandler is FocusShellHandler)
+					if (currentSpell != null && currentSpell == Spell)
 					{
-						(currentEffect.SpellHandler as FocusShellHandler).FocusSpellAction(/*null, Caster, null*/);
+						Caster.CancelFocusSpell();
 					}
 
 					FSTarget = selectedTarget as GamePlayer;
