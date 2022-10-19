@@ -3076,10 +3076,25 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-			if (Caster.IsMezzed || Caster.IsStunned)
-				return false;
+			// Why even take an argument in the first place?
+			if (m_spellTarget == null)
+			{
+				if (target == null)
+					return false;
 
-			if (this.HasPositiveEffect && target is GamePlayer p && Caster is GamePlayer c && target != Caster && p.NoHelp)
+				m_spellTarget = target;
+			}
+
+			if (Caster.IsMezzed
+				|| Caster.IsStunned
+				|| (!m_spellTarget.IsAlive && Spell.Target != "corpse")
+				|| !Caster.IsWithinRadius(m_spellTarget, Spell.Range))
+			{
+				Caster.CancelFocusSpell();
+				return false;
+			}
+
+			if (HasPositiveEffect && target is GamePlayer p && Caster is GamePlayer c && target != Caster && p.NoHelp)
 			{
 				c.Out.SendMessage(target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return false;
@@ -3090,11 +3105,6 @@ namespace DOL.GS.Spells
 			{
 				target = Caster;
 			}
-
-			if (m_spellTarget == null)
-				m_spellTarget = target;
-
-			if (m_spellTarget == null) return false;
 
 			IList<GameLiving> targets;
 			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing && Spell.IsBuff && 
