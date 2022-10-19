@@ -126,29 +126,25 @@ namespace DOL.GS
 			// If the target variable is at the start of the string, capitalize their name or article
 			var upperCase = SpellHandler.Spell.Message2.StartsWith("{0}");
 
-			// Sends no messages
-			if (msgTarget == false && msgSelf == false && msgArea == false) return;
-
 			// Sends a first-person message directly to the caster's target, if they are a player
 			if (msgTarget && target is GamePlayer playerTarget)
 				// "You feel more dexterous!"
 				((SpellHandler)SpellHandler).MessageToLiving(playerTarget, SpellHandler.Spell.Message1, eChatType.CT_Spell);
 
-			// Sends a third-person message directly to the caster to indicate the spell has ended
-			if (msgSelf && Caster != target && Caster is GamePlayer selfCaster)
-				// "{0} looks more agile!"
-				((SpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, true)), eChatType.CT_Spell);
-
 			// Sends a third-person message to all players surrounding the target
 			if (msgArea)
 			{
-				if (Caster is GamePlayer areaTarget && areaTarget == target)
+				if (Caster is GamePlayer caster && caster == target)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
 				else if (Caster is GamePet || target is GamePet or GamePlayer)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
+            // Sends a third-person message directly to the caster to indicate the spell has ended
+            else if (msgSelf && Caster != target && Caster is GamePlayer)
+                // "{0} looks more agile!"
+				((SpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, true)), eChatType.CT_Spell);
 	    }
         #endregion Effect Start Messages
         
