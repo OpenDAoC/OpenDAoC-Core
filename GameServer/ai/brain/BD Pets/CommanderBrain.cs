@@ -71,11 +71,15 @@ namespace DOL.AI.Brain
 
 		public override void OnOwnerAttacked(AttackData ad)
 		{
-			foreach (var controlledBrain in Body.ControlledNpcList)
+			if (Body.ControlledNpcList != null)
 			{
-				if(controlledBrain is BDPetBrain bdPetBrain)
-					bdPetBrain.OnOwnerAttacked(ad);
+				foreach (var controlledBrain in Body.ControlledNpcList)
+				{
+					if (controlledBrain is BDPetBrain bdPetBrain)
+						bdPetBrain.OnOwnerAttacked(ad);
+				}
 			}
+		
 			// react only on these attack results
 			switch (ad.AttackResult)
 			{
@@ -90,7 +94,9 @@ namespace DOL.AI.Brain
 					break;
 			}
 
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
+			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState())
+				FSM.SetCurrentState(eFSMStateType.AGGRO);
+
 			AttackMostWanted();
 		}
 
