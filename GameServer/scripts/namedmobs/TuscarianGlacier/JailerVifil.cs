@@ -147,15 +147,15 @@ namespace DOL.AI.Brain
 
         public void TeleportPlayer()
         {
-            IList enemies = new ArrayList(m_aggroTable.Keys);
+            IList enemies = new ArrayList(AggroTable.Keys);
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
                 if (player != null)
                 {
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
-                        if (!m_aggroTable.ContainsKey(player))
-                            m_aggroTable.Add(player, 1);
+                        if (!AggroTable.ContainsKey(player))
+                            AggroTable.Add(player, 1);
                     }
                 }
             }
@@ -185,7 +185,7 @@ namespace DOL.AI.Brain
                     if (PortTarget.IsVisibleTo(Body) && Body.TargetInView && PortTarget != null && PortTarget.IsAlive)
                     {
                         AggroTable.Remove(PortTarget);
-                        m_aggroTable.Remove(PortTarget);
+                        AggroTable.Remove(PortTarget);
                         PortTarget.MoveTo(Body.CurrentRegionID, 16631, 58683, 10858, 2191);
                         PortTarget = null;
                     }
@@ -207,7 +207,7 @@ namespace DOL.AI.Brain
         public static bool spam_teleport = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

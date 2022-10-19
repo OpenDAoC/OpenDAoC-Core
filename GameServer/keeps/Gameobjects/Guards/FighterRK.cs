@@ -9,10 +9,6 @@ namespace DOL.GS.Keeps
 	/// </summary>
     public class GuardFighterRK : GameKeepGuard
 	{
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		private eRealm m_lastRealm = eRealm.None;
- 
 		/// <summary>
         /// Relic Guard needs more health
 		/// </summary>
@@ -52,7 +48,6 @@ namespace DOL.GS.Keeps
 
         #endregion
 
-
 		public override long MoneyValue
 		{
 			get
@@ -66,26 +61,6 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-
-		public override int AttackRangeDistance
-		{
-			get
-			{
-				return 400;
-			}
-		}
-
-		public override bool AddToWorld()
-		{
-			if (base.AddToWorld())
-			{
-				m_lastRealm = Realm;
-				return true;
-			}
-
-			return false;
-		}
-
 		/// <summary>
         /// From a great distance, damage does not harm Relic Guard
 		/// </summary>
@@ -95,11 +70,7 @@ namespace DOL.GS.Keeps
 		/// <param name="criticalAmount">The critical hit amount of damage</param>
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			int distance = 0;
-			if (this.Component != null && this.Component.Keep != null && this.Component.Keep is GameKeep)
-				distance = 800;
-			else 
-				distance = 800;
+			int distance = 800;
 
 			// check to make sure pets and pet casters are in range
 			GamePlayer attacker = null;
@@ -115,7 +86,7 @@ namespace DOL.GS.Keeps
 			if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
 			{
 				if (attacker != null)
-					attacker.Out.SendMessage(this.Name + " est immunisé(e) aux dégats à cette distance.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					attacker.Out.SendMessage(this.Name + " can't be attacked from this distance.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
 			}
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);

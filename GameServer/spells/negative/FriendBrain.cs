@@ -13,7 +13,7 @@ namespace DOL.AI.Brain
 			m_spellHandler = spellHandler;
 		}
 
-		public override void CheckPlayerAggro()
+		protected override void CheckPlayerAggro()
 		{
 			//Check if we are already attacking, return if yes
 			if (Body.attackComponent.AttackState)
@@ -23,7 +23,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
 				{
-					if (m_aggroTable.ContainsKey(player))
+					if (AggroTable.ContainsKey(player))
 						continue; // add only new players
 					if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
 						continue;
@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		public override void CheckNPCAggro()
+		protected override void CheckNPCAggro()
 		{
 			if(m_spellHandler!=null)
 			{

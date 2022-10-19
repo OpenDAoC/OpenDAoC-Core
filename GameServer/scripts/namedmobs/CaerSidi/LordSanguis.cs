@@ -193,7 +193,7 @@ namespace DOL.AI.Brain
         private bool RemoveAdds = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -358,7 +358,7 @@ namespace DOL.AI.Brain
         public static bool set_flag = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

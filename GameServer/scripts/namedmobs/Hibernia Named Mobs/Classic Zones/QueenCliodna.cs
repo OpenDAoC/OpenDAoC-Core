@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(CliodnaDD))
 					Body.Spells.Add(CliodnaDD);
 			}
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

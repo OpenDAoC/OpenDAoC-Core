@@ -138,8 +138,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         // if pet is in agressive mode then check aggressive spells and attacks first
         if (brain.AggressionState == eAggressionState.Aggressive)
         {
-            brain.CheckPlayerAggro();
-            brain.CheckNPCAggro();
+            brain.CheckProximityAggro();
             brain.AttackMostWanted();
         }
 
@@ -166,7 +165,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         if(brain.Body.CurrentSpellHandler != null) return;
         
         //return to defensive if our target(s) are dead
-        if(!brain.HasAggressionTable() && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
+        if(!brain.CheckProximityAggro() && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
         {
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
         } else

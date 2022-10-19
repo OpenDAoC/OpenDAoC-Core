@@ -1,16 +1,12 @@
-using System;
+using System.Collections;
 using DOL.AI.Brain;
 using DOL.Language;
-using System.Collections;
-using System.Linq;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
     public class GameGuard : GameNPC
     {
-        public GameGuard()
-            : base()
+        public GameGuard() : base()
         {
             m_ownBrain = new GuardBrain();
             m_ownBrain.Body = this;
@@ -22,29 +18,7 @@ namespace DOL.GS
             m_ownBrain.Body = this;
         }
 
-        public override bool IsStealthed
-        {
-            get
-            {
-                return (Flags & eFlags.STEALTH) != 0;
-            }
-        }
-
-        public override void ProcessDeath(GameObject killer)
-        {
-            Console.WriteLine($"killer near zone? {ConquestService.ConquestManager.IsPlayerNearConquestObjective(killer as GamePlayer)}");
-            if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerNearConquestObjective(p))
-            {
-                ConquestService.ConquestManager.AddContributors(this.XPGainers.Keys.OfType<GamePlayer>().ToList());
-            }
-
-            base.ProcessDeath(killer);
-        }
-
-        public override void DropLoot(GameObject killer)
-        {
-            //Guards dont drop loot when they die
-        }
+        public override bool IsStealthed => (Flags & eFlags.STEALTH) != 0;
 
         public override IList GetExamineMessages(GamePlayer player)
         {

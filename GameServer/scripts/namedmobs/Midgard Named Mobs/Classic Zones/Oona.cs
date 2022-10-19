@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(OonaBolt))
 					Body.Spells.Add(OonaBolt);
 			}
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;

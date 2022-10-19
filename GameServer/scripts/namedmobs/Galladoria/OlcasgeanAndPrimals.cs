@@ -636,7 +636,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -1094,7 +1094,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
             }
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -1252,7 +1252,7 @@ namespace DOL.AI.Brain
         List<GamePlayer> inRangeLiving;
         public void PickRandomTarget()
         {
-            IList enemies = new ArrayList(m_aggroTable.Keys);
+            IList enemies = new ArrayList(AggroTable.Keys);
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
@@ -1262,13 +1262,13 @@ namespace DOL.AI.Brain
                     {
                         if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
                         {
-                            if (!m_aggroTable.ContainsKey(player))
-                                m_aggroTable.Add(player, 1);
+                            if (!AggroTable.ContainsKey(player))
+                                AggroTable.Add(player, 1);
                         }
                         else
                         {
-                            if (m_aggroTable.ContainsKey(player))
-                                m_aggroTable.Remove(player);
+                            if (AggroTable.ContainsKey(player))
+                                AggroTable.Remove(player);
                         }
                     }
                 }
@@ -1308,14 +1308,14 @@ namespace DOL.AI.Brain
                             {
                                 Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                                 AggroTable.Remove(RandomTarget);
-                                m_aggroTable.Remove(RandomTarget);
+                                AggroTable.Remove(RandomTarget);
                             }
                         }
                     }
                     else
                     {
                         AggroTable.Remove(RandomTarget);
-                        m_aggroTable.Remove(RandomTarget);
+                        AggroTable.Remove(RandomTarget);
                     }
                 }
             }
@@ -1330,7 +1330,7 @@ namespace DOL.AI.Brain
             {
                 Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 AggroTable.Remove(RandomTarget);
-                m_aggroTable.Remove(RandomTarget);
+                AggroTable.Remove(RandomTarget);
             }
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
@@ -2432,7 +2432,7 @@ namespace DOL.AI.Brain
         public static bool CanSwitchTarget = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 Body.Health = Body.MaxHealth;
                 CanSwitchTarget = false;

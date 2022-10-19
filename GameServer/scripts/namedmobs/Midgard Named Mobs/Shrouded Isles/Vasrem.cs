@@ -109,7 +109,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(VasremSCDebuff))
 					Body.Spells.Add(VasremSCDebuff);
 			}
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

@@ -440,7 +440,7 @@ namespace DOL.AI.Brain
         private bool RemoveAdds = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -731,7 +731,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -739,8 +739,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -930,7 +930,7 @@ namespace DOL.AI.Brain
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -938,8 +938,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
             return 0;
@@ -1128,7 +1128,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -1136,8 +1136,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -1329,7 +1329,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -1337,8 +1337,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -1531,7 +1531,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -1539,8 +1539,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -1734,7 +1734,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -1742,8 +1742,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -1937,7 +1937,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -1945,8 +1945,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -2141,7 +2141,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -2149,8 +2149,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 
@@ -2345,7 +2345,7 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(m_aggroTable.Keys);
+            //IList enemies = new ArrayList(AggroTable.Keys);
             if (PlayersToAttack.Count == 0)
             {
                 //do nothing
@@ -2353,8 +2353,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                m_aggroTable.Clear();
-                m_aggroTable.Add(RandomTarget, 500);
+                AggroTable.Clear();
+                AggroTable.Add(RandomTarget, 500);
                 switch_target = false;
             }
 

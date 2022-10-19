@@ -181,15 +181,15 @@ namespace DOL.AI.Brain
 		{
 			if (Body.IsAlive && HasAggro)
 			{
-				IList enemies = new ArrayList(m_aggroTable.Keys);
+				IList enemies = new ArrayList(AggroTable.Keys);
 				foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
 				{
 					if (player != null)
 					{
 						if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 						{
-							if (!m_aggroTable.ContainsKey(player))
-								m_aggroTable.Add(player, 1);
+							if (!AggroTable.ContainsKey(player))
+								AggroTable.Add(player, 1);
 						}
 					}
 				}
@@ -248,7 +248,7 @@ namespace DOL.AI.Brain
         #endregion
         public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

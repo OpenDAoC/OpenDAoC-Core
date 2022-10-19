@@ -4051,7 +4051,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 BafHost = false;
                 BafMobs = false;

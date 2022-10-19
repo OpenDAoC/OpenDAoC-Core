@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(Boss_Mezz))
 					Body.Spells.Add(Boss_Mezz);
 			}
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

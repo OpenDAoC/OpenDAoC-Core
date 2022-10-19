@@ -84,7 +84,7 @@ namespace DOL.AI.Brain
 		private bool NotInCombat = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
             {
 				if (NotInCombat == false)
 				{

@@ -1356,8 +1356,14 @@ namespace DOL.GS.Keeps
                     brain = new LordBrain();
                 else if (guard is GuardCorpseSummoner)
                     brain = new CorpseSummonerBrain();
+                else
+                    brain = null;
                 guard.AddBrain(brain);
-                brain.guard = guard;
+                brain.Body = guard;
+            }
+            else
+            {
+                int a = 0;
             }
 
             if (guard is MissionMaster)

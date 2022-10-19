@@ -692,7 +692,7 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
             base.Think();

@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(CailleachUragaigDD))
 					Body.Spells.Add(CailleachUragaigDD);
             }
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

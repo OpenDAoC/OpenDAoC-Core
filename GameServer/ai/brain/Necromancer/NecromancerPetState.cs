@@ -38,14 +38,9 @@ public class NecromancerPetState_DEFENSIVE : ControlledNPCState_DEFENSIVE
             // if spells are queued then handle them first
             brain.CheckSpellQueue();
         else if (brain.AggressionState == eAggressionState.Aggressive)
-        {
-            brain.CheckPlayerAggro();
-            brain.CheckNPCAggro();
-        }
+            brain.CheckProximityAggro();
         if (!brain.Body.IsCasting)
-        {
             brain.AttackMostWanted();
-        }
         
         // Do not discover stealthed players
         if (brain.Body.TargetObject != null)
@@ -86,15 +81,10 @@ public class NecromancerPetState_AGGRO : ControlledNPCState_AGGRO
             // if spells are queued then handle them first
             brain.CheckSpellQueue();
         else if (brain.AggressionState == eAggressionState.Aggressive)
-        {
-            brain.CheckPlayerAggro();
-            brain.CheckNPCAggro();
-        }
+            brain.CheckProximityAggro();
 
         if (!brain.Body.IsCasting)
-        {
             brain.AttackMostWanted();
-        }
 
         // Do not discover stealthed players
         if (brain.Body.TargetObject != null)

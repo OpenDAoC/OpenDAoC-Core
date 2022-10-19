@@ -85,7 +85,7 @@ namespace DOL.AI.Brain
 		private bool CanPullAditional = false;
 		public override void Think()
 		{
-			if(!HasAggressionTable())//clear all checks and list
+			if(!CheckProximityAggro())//clear all checks and list
             {
 				npcbaf = null;
 				RandomNpc = null;

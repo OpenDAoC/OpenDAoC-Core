@@ -92,7 +92,7 @@ namespace DOL.AI.Brain
 				}
 
 			}
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				spawnRats = false;
 				if (!RemoveAdds)

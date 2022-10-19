@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
                     message1 = true;
                 }
             }
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -478,7 +478,7 @@ namespace DOL.AI.Brain
                     message1 = true;
                 }
             }
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

@@ -545,7 +545,7 @@ namespace DOL.AI.Brain
 		private bool RemoveAdds = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
@@ -815,7 +815,7 @@ namespace DOL.AI.Brain
 					if (!Body.Styles.Contains(BackBerserker))
 						Body.Styles.Add(BackBerserker);
 				}
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 				{
 					CanWalkBerserker = false;
 				}
@@ -882,7 +882,7 @@ namespace DOL.AI.Brain
 					Body.SwitchWeapon(eActiveWeaponSlot.Standard);
 					Body.VisibleActiveWeaponSlots = 16;
 				}
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 				{
 					CanWalkWarrior = false;
 				}
@@ -1068,7 +1068,7 @@ namespace DOL.AI.Brain
 					Body.SwitchWeapon(eActiveWeaponSlot.Standard);
 					Body.VisibleActiveWeaponSlots = 16;
 				}
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 					CanWalkThane = false;
 
 				if (Body.IsAlive)
@@ -1186,7 +1186,7 @@ namespace DOL.AI.Brain
 					if (!Body.Styles.Contains(AfterParry2h))
 						Body.Styles.Add(AfterParry2h);
                 }
-				if(!HasAggressionTable())
+				if(!CheckProximityAggro())
                 {
 					lock (Body.effectListComponent.EffectsLock)
 					{
@@ -1251,7 +1251,7 @@ namespace DOL.AI.Brain
 					if (!Body.Styles.Contains(Taunt2h))
 						Body.Styles.Add(Taunt2h);
 				}
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 				{
 					Body.SwitchWeapon(eActiveWeaponSlot.Distance);
 					Body.VisibleActiveWeaponSlots = 51;
@@ -1380,7 +1380,7 @@ namespace DOL.AI.Brain
 					if (!Body.Styles.Contains(BackBerserker))
 						Body.Styles.Add(BackBerserker);
 				}
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 				{
 					CanWalkShadowblade = false;
 				}
@@ -1470,7 +1470,7 @@ namespace DOL.AI.Brain
 			{
 				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
-				if(!HasAggressionTable())
+				if(!CheckProximityAggro())
                 {
 				}
 				if (Body.IsAlive)
@@ -1534,7 +1534,7 @@ namespace DOL.AI.Brain
 			{
 				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
-				if (!HasAggressionTable())
+				if (!CheckProximityAggro())
 				{
 				}
 				if (Body.IsAlive)
@@ -1646,7 +1646,7 @@ namespace DOL.AI.Brain
 					if (!Body.Spells.Contains(Healer_Amnesia))
 						Body.Spells.Add(Healer_Amnesia);
 				}
-				if(!HasAggressionTable())
+				if(!CheckProximityAggro())
                 {
 					RandomHealerTarget = null;
 					if (HealerEnemys_To_Mezz.Count > 0)
@@ -2830,7 +2830,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				foreach (GameNPC bone in Body.GetNPCsInRadius(5000))
 				{
@@ -2945,7 +2945,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if(!HasAggressionTable())
+			if(!CheckProximityAggro())
             {
 				CanSummonBonemender=false;
 				foreach(GameNPC bone in Body.GetNPCsInRadius(5000))

@@ -72,7 +72,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				CallforHelp = false;
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12742);

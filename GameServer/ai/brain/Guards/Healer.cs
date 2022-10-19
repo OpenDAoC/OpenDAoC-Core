@@ -22,9 +22,8 @@ namespace DOL.AI.Brain
 		/// </summary>
 		private void CheckAreaForHealing()
 		{
-			if(guard==null) return;
-			if (guard.CanUseRanged)
-				guard.CheckAreaForHeals();
+			if (_keepGuardBody.CanUseRanged)
+				_keepGuardBody.CheckAreaForHeals();
 		}
 
 		/// <summary>

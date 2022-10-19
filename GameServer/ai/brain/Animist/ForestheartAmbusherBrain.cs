@@ -96,9 +96,9 @@ namespace DOL.AI.Brain
 		{
 			List<GameLiving> newTargets = new List<GameLiving>();
 			base.CalculateNextAttackTarget();
-			lock((m_aggroTable as ICollection).SyncRoot)
+			lock((AggroTable as ICollection).SyncRoot)
 			{
-				foreach(GameLiving living in m_aggroTable.Keys)
+				foreach(GameLiving living in AggroTable.Keys)
 				{
 					if(!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
 						continue;
@@ -159,9 +159,9 @@ namespace DOL.AI.Brain
 				return newTargets[Util.Random(newTargets.Count - 1)];
 			}
 
-            lock ((m_aggroTable as ICollection).SyncRoot)
+            lock ((AggroTable as ICollection).SyncRoot)
             {
-	            m_aggroTable.Clear();
+	            AggroTable.Clear();
             }
 
             return null;

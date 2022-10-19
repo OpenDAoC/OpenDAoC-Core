@@ -109,7 +109,7 @@ namespace DOL.GS.Scripts
 			}
 			public override void Think()
 			{
-				if(!HasAggressionTable())
+				if(!CheckProximityAggro())
                 {
 					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					Body.Health = Body.MaxHealth;

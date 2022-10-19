@@ -48,8 +48,7 @@ public class ArosState_IDLE : ArosState
         // someone we can aggro on and attack right away.
         if (!_brain.HasAggro && _brain.AggroLevel > 0)
         {
-            _brain.CheckPlayerAggro();
-            _brain.CheckNPCAggro();
+            _brain.CheckProximityAggro();
 
             if (_brain.HasAggro)
             {
@@ -100,7 +99,7 @@ public class ArosState_AGGRO : ArosState
 
         // If Aros the Spiritmaster has run out of tether range, or has clear aggro list, 
         // let it return to its spawn point.
-        if (_brain.CheckTether() || !_brain.HasAggressionTable())
+        if (_brain.CheckTether() || !_brain.CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

@@ -519,7 +519,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             // Reset boss encounter in the event of a party wipe or people running away
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
