@@ -74,24 +74,22 @@ namespace DOL.GS
                                     if (newSpell.IsPoisonEffect && newSpellEffect.EffectType == eEffect.DamageOverTime)
                                     {
                                         existingEffect.ExpireTick = newSpellEffect.ExpireTick;
-                                        newSpellEffect.IsBuffActive = true;
+                                        newSpellEffect.IsBuffActive = true; // Why?
                                     }
-                                    else if (newSpellEffect.EffectType != eEffect.MovementSpeedDebuff)
+                                    else
                                     {
-                                        newSpellEffect.IsDisabled = existingEffect.IsDisabled;
-                                        newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
-
                                         if (newSpell.IsPulsing)
                                             newSpellEffect.RenewEffect = true;
 
-                                        // Reapply the effect in case the effectiveness changed (which can happen with resurrection illness),
-                                        // so that the target's PropertyIndexers get updated to reflect the difference.
-                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness)
-                                        {
+                                        // Stopping the effect allows the spell to update its effectiveness (i.e. after resurrection illness).
+                                        // Also needed for movement speed debuffs' since their effect decrease over time.
+                                        // OnStartEffect() should be called in EffectService.HandlePropertyModification()
+                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness
+                                            || existingSpell.SpellType is (byte)eSpellType.SpeedDecrease or (byte)eSpellType.UnbreakableSpeedDecrease)
                                             existingEffect.OnStopEffect();
-                                            newSpellEffect.OnStartEffect();
-                                        }
 
+                                        newSpellEffect.IsDisabled = existingEffect.IsDisabled;
+                                        newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
                                         newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
                                         Effects[newSpellEffect.EffectType][i] = newSpellEffect;
                                     }
