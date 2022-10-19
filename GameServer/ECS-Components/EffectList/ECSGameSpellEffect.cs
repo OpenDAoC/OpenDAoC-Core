@@ -13,31 +13,31 @@ namespace DOL.GS
     /// </summary>
     public class ECSGameSpellEffect : ECSGameEffect, IConcentrationEffect
     {
-        public ISpellHandler SpellHandler;
+        public new ISpellHandler SpellHandler;
         string IConcentrationEffect.Name => Name;
         ushort IConcentrationEffect.Icon => Icon;
         byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
 
-        public override ushort Icon { get { return SpellHandler.Spell.Icon; } }
-        public override string Name { get { return SpellHandler.Spell.Name; } }
-        public override bool HasPositiveEffect { get { return SpellHandler == null ? false : SpellHandler.HasPositiveEffect; } }
+        public override ushort Icon => SpellHandler.Spell.Icon;
+        public override string Name => SpellHandler.Spell.Name;
+        public override bool HasPositiveEffect => SpellHandler != null && SpellHandler.HasPositiveEffect;
 
         public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             SpellHandler = initParams.SpellHandler;
-            //SpellHandler = SpellHandler; // this is the base ECSGameEffect handler , temp during conversion into different classes
+            Spell spell = SpellHandler.Spell;
             EffectType = MapSpellEffect();
-            PulseFreq = SpellHandler.Spell != null ? SpellHandler.Spell.Frequency : 0;
-            Caster = initParams.SpellHandler.Caster;
+            PulseFreq = spell.Frequency;
+            Caster = SpellHandler.Caster;
 
-            if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease || SpellHandler.Spell.SpellType == (byte)eSpellType.UnbreakableSpeedDecrease)
+            if (spell.SpellType is ((byte) eSpellType.SpeedDecrease) or ((byte) eSpellType.UnbreakableSpeedDecrease))
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                if(!SpellHandler.Spell.Name.Equals("Prevent Flight"))
+                if (!spell.Name.Equals("Prevent Flight") && !spell.IsFocus)
 					TriggersImmunity = true;
             }
-            else if (SpellHandler.Spell.IsConcentration)
+            else if (spell.IsConcentration)
             {
                 NextTick = StartTick;
                 // 60 seconds taken from PropertyChangingSpell
@@ -45,7 +45,7 @@ namespace DOL.GS
                 PulseFreq = 650;
             }
 
-            if (this is not ECSImmunityEffect && this is not ECSPulseEffect)
+            if (this is not ECSImmunityEffect and not ECSPulseEffect)
                 EffectService.RequestStartEffect(this);
         }
 
