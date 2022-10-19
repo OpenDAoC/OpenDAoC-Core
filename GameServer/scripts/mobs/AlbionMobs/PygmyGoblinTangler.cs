@@ -47,7 +47,7 @@ namespace DOL.AI.Brain
 		private bool BringGoblins = false;
         public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 				BringGoblins = false;
 
 			if(HasAggro && Body.TargetObject != null)

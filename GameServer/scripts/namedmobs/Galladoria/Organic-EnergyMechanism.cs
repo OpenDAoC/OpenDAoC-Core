@@ -215,7 +215,7 @@ namespace DOL.AI.Brain
                 if(AggroTable.Count>0)
                     ClearAggroList();
             }
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 Body.Health = Body.MaxHealth;
                 RandomTarget = null;

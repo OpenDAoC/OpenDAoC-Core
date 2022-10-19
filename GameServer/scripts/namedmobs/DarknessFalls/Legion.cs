@@ -346,7 +346,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if(!HasAggressionTable())
+            if(!CheckProximityAggro())
             {
                 IsCreatingSouls = false;
                 CanThrow = false;
@@ -916,7 +916,7 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;

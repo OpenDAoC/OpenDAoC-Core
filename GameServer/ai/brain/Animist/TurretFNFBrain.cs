@@ -44,9 +44,9 @@ namespace DOL.AI.Brain
 			TurretPet turretBody = Body as TurretPet;
 			if (turretBody == null) return null;
 			
-			lock((m_aggroTable as ICollection).SyncRoot)
+			lock((AggroTable as ICollection).SyncRoot)
 			{
-				foreach(GameLiving living in m_aggroTable.Keys)
+				foreach(GameLiving living in AggroTable.Keys)
 				{
 					if(!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
 						continue;
@@ -180,9 +180,9 @@ namespace DOL.AI.Brain
 				return oldTargets[Util.Random(oldTargets.Count - 1)];
 			}
 
-			lock ((m_aggroTable as ICollection).SyncRoot)
+			lock ((AggroTable as ICollection).SyncRoot)
 			{
-				m_aggroTable.Clear();
+				AggroTable.Clear();
 			}
 			return null;
 		}

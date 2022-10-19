@@ -286,12 +286,12 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             TorstFlyingPath();
-            if (HasAggressionTable() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
+            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
             {
                 Body.Flags = 0; //dont fly
             }
 
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -374,10 +374,10 @@ namespace DOL.AI.Brain
                     if (target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff)) //if target got root
                     {
                         Body.StopAttack();
-                        m_aggroTable.Clear(); //clear aggro list
+                        AggroTable.Clear(); //clear aggro list
                         if (RandomTarget != null && RandomTarget.IsAlive)
                         {
-                            m_aggroTable.Add(RandomTarget, 50); //add to aggro list our new random target
+                            AggroTable.Add(RandomTarget, 50); //add to aggro list our new random target
                             Body.StartAttack(RandomTarget);
                         }
                     }
@@ -638,12 +638,12 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             HurikaFlyingPath();
-            if (HasAggressionTable() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
+            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
             {
                 Body.Flags = 0; //dont fly
             }
 
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

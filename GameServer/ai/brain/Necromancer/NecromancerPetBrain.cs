@@ -65,7 +65,6 @@ namespace DOL.AI.Brain
 		public override int CastInterval
 		{
 			get { return 500; }
-			set { }
 		}
 
 

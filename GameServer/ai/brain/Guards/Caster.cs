@@ -17,9 +17,8 @@ namespace DOL.AI.Brain
 		}
 		private void CheckForNuking()
 		{
-			if(guard==null) return;
-			if (guard.CanUseRanged)
-				guard.CheckForNuke();
+			if (_keepGuardBody.CanUseRanged)
+				_keepGuardBody.CheckForNuke();
 		}
 	}
 }

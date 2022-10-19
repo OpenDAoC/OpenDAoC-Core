@@ -1,10 +1,10 @@
 using System;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
-using log4net;
 using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using log4net;
 
 namespace DOL.GS.Keeps
 {
@@ -119,14 +119,6 @@ namespace DOL.GS.Keeps
                 }
 
                 return base.MoneyValue;
-            }
-        }
-
-        public override int AttackRangeDistance
-        {
-            get
-            {
-                return 1200;
             }
         }
 

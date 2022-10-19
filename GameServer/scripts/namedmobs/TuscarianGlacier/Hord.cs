@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
                     new RegionTimer(Body, new RegionTimerCallback(CastHeal), 1000);
                 }
             }*/
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

@@ -338,7 +338,7 @@ namespace DOL.AI.Brain
 		public override void Think()
 		{
 			Point3D spawn = new Point3D(391326, 755351, 388);
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				Body.Health = Body.MaxHealth;
 				#region !IsRestless

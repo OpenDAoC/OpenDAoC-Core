@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			if(!HasAggressionTable())
+			if(!CheckProximityAggro())
             {
 				if (!RemoveAdds)
 				{

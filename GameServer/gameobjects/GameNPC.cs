@@ -5164,7 +5164,7 @@ namespace DOL.GS
 			if (Brain is StandardMobBrain mobBrain)
 			{
 				// first check to see if the healer is in our aggrolist so we don't go attacking anyone who heals
-				if (mobBrain.m_aggroTable.ContainsKey(healSource as GameLiving))
+				if (mobBrain.AggroTable.ContainsKey(healSource as GameLiving))
 				{
 					if (healSource is GamePlayer || (healSource is GameNPC && (((GameNPC)healSource).Flags & eFlags.PEACE) == 0))
 					{

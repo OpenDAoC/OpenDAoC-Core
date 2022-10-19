@@ -48,10 +48,10 @@ namespace DOL.AI.Brain
 		Dictionary<GameLiving, long> CloneAggroList();
 
 		/// <summary>
-		/// calculate the aggro of this npc against another living
+		/// Check if this npc has a high enough aggro level to aggro
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		int CalculateAggroLevelToTarget(GameLiving target);
+		bool CanAggroTarget(GameLiving target);
 	}
 }

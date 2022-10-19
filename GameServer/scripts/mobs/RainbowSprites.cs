@@ -45,7 +45,7 @@ namespace DOL.AI.Brain
 		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 				CallforHelp = false;
 
 			if (HasAggro && Body.TargetObject != null)
@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 				CallforHelp = false;
 
 			if (HasAggro && Body.TargetObject != null)
@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
 		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 				CallforHelp = false;
 
 			if (HasAggro && Body.TargetObject != null)
@@ -258,7 +258,7 @@ namespace DOL.AI.Brain
 		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 				CallforHelp = false;
 
 			if(Body.HealthPercent <= 50 && !Body.IsCasting && Util.Chance(100))

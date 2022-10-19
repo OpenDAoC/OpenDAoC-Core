@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 				if (!Body.Spells.Contains(LokenBolt))
 					Body.Spells.Add(LokenBolt);
 			}
-			if(!HasAggressionTable())
+			if(!CheckProximityAggro())
             {
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;

@@ -23,67 +23,37 @@ namespace DOL.AI.Brain
 {
 	public class GuardBrain : StandardMobBrain
 	{
-		public GuardBrain()
-			: base()
-		{
-			ThinkInterval = 2000;
-		}
+		public override int ThinkInterval => 2000;
+		public override int AggroLevel => 90;
+		public override int AggroRange => 750;
 
-		public override int AggroLevel
-		{
-			get { return 90; }
-		}
+		public GuardBrain() : base() { }
 
-		public override int AggroRange
+		protected override void CheckPlayerAggro()
 		{
-			get { return 750; }
-		}
-
-		public override void CheckPlayerAggro()
-		{
-			//Check if we are already attacking, return if yes
-			if (Body.attackComponent.AttackState)
-				return;
-
 			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
 			{
-				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(CheckAggroLOS));
-				if (m_aggroTable.ContainsKey(player))
-					continue; // add only new players
-				if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
+				if (!CanAggroTarget(player))
 					continue;
-				if (player.Steed != null)
-					continue; //do not attack players on steed
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
-					continue;
-				if (!Body.IsWithinRadius(player, AggroRange))
-					continue;
-				if (!AggroLOS)
+				if (player.IsStealthed || player.Steed != null)
 					continue;
 
-				AddToAggroList(player, player.EffectiveLevel << 1);
-				return;
+				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}
 
-		public override void CheckNPCAggro()
+		protected override void CheckNPCAggro()
 		{
-			//Check if we are already attacking, return if yes
-			if (Body.attackComponent.AttackState)
-				return;
-
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
-				if (m_aggroTable.ContainsKey(npc))
-					continue; // add only new npcs
-				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
-					continue; // let's not try to attack flying mobs
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
+				if (!CanAggroTarget(npc))
 					continue;
-				if (!npc.IsWithinRadius(Body, AggroRange))
+				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
 					continue;
 
 				AddToAggroList(npc, npc.Level << 1);
+				// No LoS check, we just attack what's in range
 				return;
 			}
 		}
@@ -93,12 +63,9 @@ namespace DOL.AI.Brain
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public override int CalculateAggroLevelToTarget(GameLiving target)
+		public override bool CanAggroTarget(GameLiving target)
 		{
-			if (GameServer.ServerRules.IsAllowedToAttack(Body, target, true) == false)
-				return 0;
-
-			return AggroLevel;
+			return AggroLevel > 0 && GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
 		}
 	}
 }

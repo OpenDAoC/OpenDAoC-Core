@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
         private bool RemoveAdds = false;
         public override void Think()
         {
-            if (!HasAggressionTable())
+            if (!CheckProximityAggro())
             {
                 Body.Health = Body.MaxHealth;
                 CanSpawnAdds = false;

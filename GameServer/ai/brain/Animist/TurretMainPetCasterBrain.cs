@@ -44,9 +44,9 @@ namespace DOL.AI.Brain
 
             List<GameLiving> livingList = new List<GameLiving>();
             
-            lock ((m_aggroTable as ICollection).SyncRoot)
+            lock ((AggroTable as ICollection).SyncRoot)
             {
-                foreach (GameLiving living in m_aggroTable.Keys)
+                foreach (GameLiving living in AggroTable.Keys)
                 {
                     if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
                         continue;
@@ -118,15 +118,15 @@ namespace DOL.AI.Brain
 				return oldTargets[Util.Random(oldTargets.Count - 1)];
 			}
 
-			lock ((m_aggroTable as ICollection).SyncRoot)
+			lock ((AggroTable as ICollection).SyncRoot)
 			{
-				m_aggroTable.Clear();
+				AggroTable.Clear();
 			}
 
 			return null;
         }
 
-		public override void CheckNPCAggro()
+		protected override void CheckNPCAggro()
 		{
 		  if(AggressionState == eAggressionState.Aggressive)
 		  {
@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
 		  }
 		}
 
-		public override void CheckPlayerAggro()
+		protected override void CheckPlayerAggro()
 		{
 		  if (AggressionState == eAggressionState.Aggressive)
 		  {

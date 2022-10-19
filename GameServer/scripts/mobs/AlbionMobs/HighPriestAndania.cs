@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 					changed = true;
 				}
 			}
-			if(!HasAggressionTable())
+			if(!CheckProximityAggro())
 				Message = false;
 
 			if(HasAggro && Body.TargetObject != null)

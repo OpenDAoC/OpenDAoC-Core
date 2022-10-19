@@ -56,25 +56,21 @@ public class DragonState_IDLE : DragonState
 
         // If we aren't already aggroing something, look out for
         // someone we can aggro on and attack right away.
-        if (!_brain.HasAggro && _brain.AggroLevel > 0)
+        _brain.CheckProximityAggro();
+
+        if (_brain.HasAggro)
         {
-            _brain.CheckPlayerAggro();
-            _brain.CheckNPCAggro();
+            //Set state to AGGRO
+            _brain.AttackMostWanted();
+            _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+            return;
+        }
+        else
+        {
+            if (_brain.Body.attackComponent.AttackState)
+                _brain.Body.StopAttack();
 
-            if (_brain.HasAggro)
-            {
-                //Set state to AGGRO
-                _brain.AttackMostWanted();
-                _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-                return;
-            }
-            else
-            {
-                if (_brain.Body.attackComponent.AttackState)
-                    _brain.Body.StopAttack();
-
-                _brain.Body.TargetObject = null;
-            }
+            _brain.Body.TargetObject = null;
         }
 
         // If dragon has run out of tether range, clear aggro list and let it 
@@ -112,7 +108,7 @@ public class DragonState_AGGRO : DragonState
 
         // If dragon has run out of tether range, or has clear aggro list, 
         // let it return to its spawn point.
-        if (_brain.CheckTether() || !_brain.HasAggressionTable())
+        if (_brain.CheckTether() || !_brain.CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
             _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

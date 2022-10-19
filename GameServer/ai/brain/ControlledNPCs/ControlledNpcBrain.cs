@@ -86,11 +86,11 @@ namespace DOL.AI.Brain
             m_walkState = eWalkState.Follow;
             if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain)
             {
-                m_aggroLevel = ((owner as GameNPC).Brain as StandardMobBrain).AggroLevel;
+                AggroLevel = ((owner as GameNPC).Brain as StandardMobBrain).AggroLevel;
             }
             else
-                m_aggroLevel = 99;
-            m_aggroMaxRange = 1500;
+                AggroLevel = 99;
+            AggroRange = 1500;
 
 			FSM.ClearStates();
 
@@ -350,7 +350,7 @@ namespace DOL.AI.Brain
 		public virtual void UpdatePetWindow()
 		{
 			if (m_owner is GamePlayer)
-				((GamePlayer)m_owner).Out.SendPetWindow(m_body, ePetWindowAction.Update, m_aggressionState, m_walkState);
+				((GamePlayer)m_owner).Out.SendPetWindow(Body, ePetWindowAction.Update, m_aggressionState, m_walkState);
 		}
 
 		/// <summary>
@@ -932,36 +932,17 @@ namespace DOL.AI.Brain
 			FollowOwner();
 		}
 
-		/// <summary>
-		/// Add living to the aggrolist
-		/// aggroamount can be negative to lower amount of aggro
-		/// </summary>
-		/// <param name="living"></param>
-		/// <param name="aggroamount"></param>
-		public override void AddToAggroList(GameLiving living, int aggroamount)
+		public override bool CanAggroTarget(GameLiving target)
 		{
-            GameNPC npc_owner = GetNPCOwner();
-            if (npc_owner == null || !(npc_owner.Brain is StandardMobBrain))
-                base.AddToAggroList(living, aggroamount);
-            else
-            {
-                (npc_owner.Brain as StandardMobBrain).AddToAggroList(living, aggroamount);
-            }
+			// Only attack if target (or target's owner) is green+ to our owner
+			if (target is GameNPC npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
+				target = controlledBrain.Owner;
+
+			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || Owner.IsObjectGreyCon(target))
+				return false;
+
+			return AggroLevel > 0;
 		}
-
-		public override int CalculateAggroLevelToTarget(GameLiving target)
-		{
-			// only attack if target is green+ to OWNER; always attack higher levels regardless of CON
-			if (GameServer.ServerRules.IsAllowedToAttack(Body, target, true) == false || Owner.IsObjectGreyCon(target))
-				return 0;
-
-			return AggroLevel > 100 ? 100 : AggroLevel;
-		}
-
-        public override bool HasAggressionTable()
-        {
-			return AggroTable.Count > 0;   
-        }
 
         /// <summary>
         /// Returns the best target to attack
@@ -984,9 +965,9 @@ namespace DOL.AI.Brain
 				m_orderAttackTarget = null;
 			}
 
-			lock ((m_aggroTable as ICollection).SyncRoot)
+			lock ((AggroTable as ICollection).SyncRoot)
 			{
-				IDictionaryEnumerator aggros = m_aggroTable.GetEnumerator();
+				IDictionaryEnumerator aggros = AggroTable.GetEnumerator();
 				List<GameLiving> removable = new List<GameLiving>();
 				while (aggros.MoveNext())
 				{

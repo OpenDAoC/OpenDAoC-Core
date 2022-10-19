@@ -480,7 +480,7 @@ namespace DOL.AI.Brain
 		private bool RemoveAdds = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -948,7 +948,7 @@ namespace DOL.AI.Brain
 		public static bool IsPulled1 = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -1165,7 +1165,7 @@ namespace DOL.AI.Brain
 		public static bool IsPulled2 = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -1382,7 +1382,7 @@ namespace DOL.AI.Brain
 		public static bool IsPulled3 = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -1598,7 +1598,7 @@ namespace DOL.AI.Brain
 		public static bool IsPulled4 = false;
 		public override void Think()
 		{
-			if (!HasAggressionTable())
+			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);

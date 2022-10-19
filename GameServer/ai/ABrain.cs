@@ -17,13 +17,10 @@
  *
  */
 using System;
-using System.Collections;
-using System.Reflection;
 using System.Text;
 using DOL.Events;
 using DOL.GS;
 using FiniteStateMachine;
-using log4net;
 
 namespace DOL.AI
 {
@@ -34,43 +31,12 @@ namespace DOL.AI
 	{
 		private readonly object m_LockObject = new object(); // dummy object for locking - Mannen. // use this object for locking, instead of locking on 'this'
 
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		// /// <summary>
-		// /// Action queue
-		// /// </summary>
-		// protected Stack m_actions = new Stack();
-
-		/// <summary>
-		/// The body of this brain
-		/// </summary>
-		protected GameNPC m_body;
-
-		//The state machine for this brain
-		public FSM m_fsm;
-
-		public FSM FSM {
-			get { return m_fsm; }
-			set { m_fsm = value; }
-		}
-
-		/// <summary>
-		/// The timer used to check for player proximity
-		/// </summary>
-		//private RegionTimer m_brainTimer;
-
-		//holds the last tick that this entity processed Think()
-		private long m_lastThinkTick;
-
-		/// <summary>
-		/// Constructs a new brain for a body
-		/// </summary>
-		public ABrain()
-		{
-		}
+		public FSM FSM { get; set; }
+		public virtual GameNPC Body { get; set; }
+		public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
+		public virtual int ThinkInterval { get; set; } = 2500;
+		public virtual int CastInterval { get; set; } = 2500;
+		public virtual long LastThinkTick { get; set; }
 
 		/// <summary>
 		/// Returns the string representation of the ABrain
@@ -87,62 +53,19 @@ namespace DOL.AI
 		}
 
 		/// <summary>
-		/// Gets/sets the body of this brain
-		/// </summary>
-		public GameNPC Body
-		{
-			get { return m_body; }
-			set { m_body = value; }
-		}
-
-		/// <summary>
-		/// Returns weather this brain is active or not
-		/// </summary>
-		public virtual bool IsActive
-		{
-			get { return m_body != null && m_body.IsAlive && m_body.ObjectState == GameObject.eObjectState.Active && m_body.IsVisibleToPlayers; }
-		}
-
-		/// <summary>
-		/// The interval at which the brain will fire, in milliseconds
-		/// </summary>
-		public virtual int ThinkInterval
-		{
-			get { return 2500; }
-			set {}
-		}
-
-		public virtual long LastThinkTick {
-			get { return m_lastThinkTick; }
-			set { m_lastThinkTick = value; }
-        }
-
-		/// <summary>
-		/// How fast can this brain cast, in milliseconds
-		/// </summary>
-		public virtual int CastInterval
-		{
-			get { return ThinkInterval; }
-			set { }
-		}
-
-		/// <summary>
 		/// Starts the brain thinking
 		/// </summary>
 		/// <returns>true if started</returns>
 		public virtual bool Start()
 		{
 			//Do not start brain if we are dead or inactive
-			if (!m_body.IsAlive || m_body.ObjectState != GameObject.eObjectState.Active)
+			if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
 				return false;
 			
 			lock (m_LockObject)
 			{
-				if (IsActive) return false;
-
-				//m_brainTimer = new RegionTimer(m_body);
-				//m_brainTimer.Callback = new RegionTimerCallback(BrainTimerCallback);
-				//m_brainTimer.Start(ThinkInterval);
+				if (IsActive)
+					return false;
 			}
 			return true;
 		}
@@ -155,42 +78,19 @@ namespace DOL.AI
 		{
 			lock (m_LockObject)
 			{
-				if(!IsActive) return false;
-				//m_brainTimer.Stop();
-				//m_brainTimer = null;
+				if (!IsActive)
+					return false;
 			}
 			return true;
 		}
 
-		/*
-		/// <summary>
-		/// The callback timer for the brain ticks
-		/// </summary>
-		/// <param name="callingTimer">the calling timer</param>
-		/// <returns>the new tick intervall</returns>
-		protected virtual int BrainTimerCallback(RegionTimer callingTimer)
-		{
-			if(!m_body.IsAlive || m_body.ObjectState!=GameObject.eObjectState.Active)
-			{
-				//Stop the brain for dead or inactive bodies
-				Stop();
-				return 0;
-			}
-
-			Think();
-			GameEventMgr.Notify(GameNPCEvent.OnAICallback, m_body);
-			return ThinkInterval;
-		}
-		*/
 		/// <summary>
 		/// Receives all messages of the body
 		/// </summary>
 		/// <param name="e">The event received</param>
 		/// <param name="sender">The event sender</param>
 		/// <param name="args">The event arguments</param>
-		public virtual void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-		}
+		public virtual void Notify(DOLEvent e, object sender, EventArgs args) { }
 
 		/// <summary>
 		/// This method is called whenever the brain does some thinking

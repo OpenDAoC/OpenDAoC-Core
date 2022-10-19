@@ -141,7 +141,7 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[(int)eProperty.StyleAbsorb] = 10;
             }
         }
-        public override void CheckNPCAggro()
+        protected override void CheckNPCAggro()
         {
             if (Body.attackComponent.AttackState)
                 return;
@@ -154,12 +154,12 @@ namespace DOL.AI.Brain
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
                     continue;
 
-                if (m_aggroTable.ContainsKey(npc))
+                if (AggroTable.ContainsKey(npc))
                     continue; // add only new NPCs
 
                 if (npc.Brain != null && npc.Brain is IControlledBrain)
                 {
-                    if (CalculateAggroLevelToTarget(npc) > 0)
+                    if (CanAggroTarget(npc))
                     {
                         AddToAggroList(npc, (npc.Level + 1) << 1);
                     }
@@ -216,9 +216,9 @@ namespace DOL.AI.Brain
 
             ArrayList inRangeLiving = new ArrayList();
 
-            lock ((m_aggroTable as ICollection).SyncRoot)
+            lock ((AggroTable as ICollection).SyncRoot)
             {
-                Dictionary<GameLiving, long>.Enumerator enumerator = m_aggroTable.GetEnumerator();
+                Dictionary<GameLiving, long>.Enumerator enumerator = AggroTable.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
                     GameLiving living = enumerator.Current.Key;
