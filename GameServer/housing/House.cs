@@ -825,18 +825,18 @@ namespace DOL.GS.Housing
 				return false;
 			}
 
-			var obj = DOLDB<Mob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
-			if (obj != null)
-			{
-				log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0}.", HouseNumber);
-				return false;
-			}
-
 			var houseCM = DOLDB<HouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				log.DebugFormat("Add CM: Found active consignment merchant in HousingConsignmentMerchant table for house {0}.", HouseNumber);
 				return false;
+			}
+
+			var obj = DOLDB<Mob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			if (obj != null)
+			{
+				log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0} but none in HousingConsignmentMerchant!  Creating a new merchant.", HouseNumber);
+				GameServer.Database.DeleteObject(obj);
 			}
 
 			if (DatabaseItem.HasConsignment == true)
