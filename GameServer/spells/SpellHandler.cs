@@ -3006,13 +3006,11 @@ namespace DOL.GS.Spells
 
 		public virtual List<GameLiving> GetGroupAndPets(Spell spell)
         {
-			List<GameLiving> groupMembers = new();
 			List<GameLiving> livingsInRange = new();
+			ICollection<GameLiving> groupMembers = Caster.Group?.GetMembersInTheGroup() ?? (Caster as NecromancerPet)?.Owner.Group?.GetMembersInTheGroup();
 
-			if (Caster.Group != null)
-				groupMembers.AddRange(Caster.Group.GetMembersInTheGroup());
-			else
-				groupMembers.Add(Caster);
+			if (groupMembers == null)
+				groupMembers = new List<GameLiving>(){ Caster };
 
 			foreach (GameLiving living in groupMembers)
 			{
@@ -3083,8 +3081,12 @@ namespace DOL.GS.Spells
 			}
 
 			IList<GameLiving> targets;
-			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && m_spellTarget == Caster && !Spell.IsHealing && Spell.IsBuff && 
-				Spell.SpellType != (byte)eSpellType.Bladeturn)
+			if (Spell.Target.ToLower() == "realm"
+				&& (m_spellTarget == Caster || Caster is NecromancerPet nPet && m_spellTarget == nPet.Owner)
+				&& !Spell.IsConcentration
+				&& !Spell.IsHealing
+				&& Spell.IsBuff
+				&& Spell.SpellType != (byte)eSpellType.Bladeturn)
 				targets = GetGroupAndPets(Spell);
 			else
 				targets = SelectTargets(m_spellTarget);
