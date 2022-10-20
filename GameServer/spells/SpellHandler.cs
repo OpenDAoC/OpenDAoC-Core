@@ -3066,14 +3066,14 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-			// Why even take an argument in the first place?
-			if (m_spellTarget == null)
-			{
-				if (target == null)
-					return false;
+			// For PBAOE spells always set the m_spellTarget to the caster
+			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (m_spellTarget == null || (Spell.Radius > 0 && Spell.Range == 0)))
+				m_spellTarget = Caster;
 
-				m_spellTarget = target;
-			}
+			m_spellTarget ??= target;
+
+			if (m_spellTarget == null)
+				return false;
 
 			if (Caster.IsMezzed
 				|| Caster.IsStunned
@@ -3084,20 +3084,14 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (HasPositiveEffect && target is GamePlayer p && Caster is GamePlayer c && target != Caster && p.NoHelp)
+			if (HasPositiveEffect && m_spellTarget is GamePlayer p && Caster is GamePlayer c && m_spellTarget != Caster && p.NoHelp)
 			{
-				c.Out.SendMessage(target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				c.Out.SendMessage(m_spellTarget.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
-            // For PBAOE spells always set the target to the caster
-			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
-			{
-				target = Caster;
-			}
-
 			IList<GameLiving> targets;
-			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && target == Caster && !Spell.IsHealing && Spell.IsBuff && 
+			if (Spell.Target.ToLower() == "realm" && !Spell.IsConcentration && m_spellTarget == Caster && !Spell.IsHealing && Spell.IsBuff && 
 				Spell.SpellType != (byte)eSpellType.Bladeturn)
 				targets = GetGroupAndPets(Spell);
 			else
@@ -3177,7 +3171,7 @@ namespace DOL.GS.Spells
 							eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 					}
 
-					if (target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+					if (m_spellTarget is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
 					{
 						spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}",
 							eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -3208,13 +3202,13 @@ namespace DOL.GS.Spells
 				}
 				else
 				{
-					int dist = t.GetDistanceTo(target);
+					int dist = t.GetDistanceTo(m_spellTarget);
 					if (dist >= 0)
 						ApplyEffectOnTarget(t, (effectiveness - CalculateAreaVariance(t, dist, Spell.Radius)));
 				}
 
 				if (Caster is GamePet pet && Spell.IsBuff)
-					pet.AddBuffedTarget(target);
+					pet.AddBuffedTarget(m_spellTarget);
 			});
 
 			if (Spell.Target.ToLower() == "ground")
@@ -3222,7 +3216,7 @@ namespace DOL.GS.Spells
 				ApplyEffectOnTarget(null, 1);
 			}
 
-			CastSubSpells(target);
+			CastSubSpells(m_spellTarget);
 			return true;
 		}
 		
