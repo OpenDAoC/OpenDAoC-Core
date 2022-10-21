@@ -17,13 +17,11 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-using DOL.Language;
-using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Language;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
@@ -470,8 +468,6 @@ namespace DOL.GS.Styles
 						attackData.StyleDamage = (int)(attackData.StyleDamage * (1.0 - Math.Min(0.85, attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation))));
 						attackData.StyleDamage -= (int)(attackData.StyleDamage * (attackData.Target.GetResist(attackData.DamageType) + SkillBase.GetArmorResist(armor, attackData.DamageType)) * 0.01);
 						attackData.StyleDamage -= (int)(attackData.StyleDamage * attackData.Target.GetDamageResist(attackData.Target.GetResistTypeForDamage(attackData.DamageType)) * 0.01);
-
-						attackData.Modifier -= (int)(initialDamage - attackData.StyleDamage);
 					}
 					else
 					{
@@ -486,10 +482,10 @@ namespace DOL.GS.Styles
 						attackData.StyleDamage -= absorb;
 					}					
 
-					//Increase regular damage by styledamage ... like on live servers
-
+					// Increase regular damage by styledamage ... like on live server
 					attackData.Damage += attackData.StyleDamage;
-
+					// Update the modifier as well, otherwise we will show the player the damage resisted of the unstyled hit only (wouldn't it be better to calculate it just once?)
+					attackData.Modifier = (int)(attackData.Damage * attackData.Modifier / (double)(attackData.Damage - attackData.StyleDamage + attackData.Modifier));
 
 					if (player != null)
 					{
