@@ -3056,8 +3056,9 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-			// For PBAOE spells always set the m_spellTarget to the caster
-			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
+			// We'll assume that spells with no range have to be casted on the caster.
+			// This applies to PBAE spells (except animist's) and positive weapon effects (reminder that weapon effects give the attack's target, not the spell's).
+			if (Spell.Range == 0)
 				m_spellTarget = Caster;
 			else
 				m_spellTarget ??= target;
