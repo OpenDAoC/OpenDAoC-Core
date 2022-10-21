@@ -3057,17 +3057,17 @@ namespace DOL.GS.Spells
 		public virtual bool StartSpell(GameLiving target)
 		{
 			// For PBAOE spells always set the m_spellTarget to the caster
-			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (m_spellTarget == null || (Spell.Radius > 0 && Spell.Range == 0)))
+			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || (Spell.Radius > 0 && Spell.Range == 0)))
 				m_spellTarget = Caster;
-
-			m_spellTarget ??= target;
+			else
+				m_spellTarget ??= target;
 
 			if (m_spellTarget == null)
 				return false;
 
 			if (Caster.IsMezzed
 				|| Caster.IsStunned
-				|| (!m_spellTarget.IsAlive && Spell.Target != "corpse")
+				|| (!m_spellTarget.IsAlive && Spell.Target != "Corpse")
 				|| !Caster.IsWithinRadius(m_spellTarget, Spell.Range))
 			{
 				Caster.CancelFocusSpell();
