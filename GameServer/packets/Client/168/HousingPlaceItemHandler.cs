@@ -479,11 +479,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 									}
 									return;
 								case "housing_porch_remove_deed":
-
-									var consignmentMerchant = house.ConsignmentMerchant;
-									if (consignmentMerchant != null && (consignmentMerchant.DBItems(client.Player).Count > 0 || consignmentMerchant.TotalMoney > 0))
+									if (house.ConsignmentMerchant != null)
 									{
-										ChatUtil.SendSystemMessage(client, "All items and money must be removed from your consigmment merchant in order to remove the porch!");
+										ChatUtil.SendSystemMessage(client, "You must first remove the consignment merchant.");
 										client.Out.SendInventorySlotsUpdate(new[] { slot });
 										return;
 									}
@@ -506,7 +504,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										// make sure there is a porch for this consignment merchant!
 										if (!house.Porch)
 										{
-											ChatUtil.SendSystemMessage(client, "Your House needs a Porch first.");
+											ChatUtil.SendSystemMessage(client, "Your house needs a porch first.");
 											client.Out.SendInventorySlotsUpdate(new[] { slot });
 											return;
 										}
@@ -520,7 +518,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										}
 										else
 										{
-											ChatUtil.SendSystemMessage(client, "You can not add a Consignment Merchant here.");
+											ChatUtil.SendSystemMessage(client, "You cannot add a consignment merchant here.");
 											client.Out.SendInventorySlotsUpdate(new[] { slot });
 										}
 										return;
