@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
-using DOL.GS.PacketHandler.Client.v168;
 using log4net;
 
 namespace DOL.GS
@@ -344,7 +342,6 @@ namespace DOL.GS
 			return true;
         }
 
-
 		/// <summary>
 		/// Add an item to this object
 		/// </summary>
@@ -370,7 +367,6 @@ namespace DOL.GS
 			item.SellPrice = 0;
 			return MarketCache.RemoveItem(item);
 		}
-
 
 		/// <summary>
 		/// What to do after an item is added.  For consignment merchants this is called after price is set
@@ -437,7 +433,6 @@ namespace DOL.GS
 		{
 			return false; // not applicable
 		}
-
 
         /// <summary>
         /// The Player is buying an Item from the merchant
@@ -507,7 +502,6 @@ namespace DOL.GS
 			BuyItem(player);
 		}
 
-
 		/// <summary>
 		/// Response when buying from the MarketExplorer
 		/// </summary>
@@ -523,7 +517,6 @@ namespace DOL.GS
 
 			BuyItem(player, true);
 		}
-
 
 		protected virtual void BuyItem(GamePlayer player, bool usingMarketExplorer = false)
 		{
@@ -649,7 +642,6 @@ namespace DOL.GS
 				_observers.Remove(player.Name);
 			}
 		}
-
 
         /// <summary>
         /// Send inventory updates to all players actively viewing this merchant;

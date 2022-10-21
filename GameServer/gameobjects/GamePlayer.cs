@@ -13092,61 +13092,51 @@ namespace DOL.GS
             return gameItem;
         }
         /// <summary>
-        /// Called when the player picks up an item from the ground
+        /// Called when the player tries to pick up an object
         /// </summary>
         /// <param name="floorObject"></param>
         /// <param name="checkRange"></param>
         /// <returns></returns>
-        public virtual bool PickupObject(GameObject floorObject, bool checkRange)
+        public virtual void PickupObject(GameObject floorObject, bool checkRange)
         {
             if (floorObject == null)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.MustHaveTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
+                return;
             }
-            if (floorObject.ObjectState != eObjectState.Active)
-                return false;
 
-            if (floorObject is GameStaticItemTimed && ((GameStaticItemTimed)floorObject).IsOwner(this) == false && Client.Account.PrivLevel == (int)ePrivLevel.Player)
+            if (floorObject.ObjectState != eObjectState.Active)
+                return;
+
+            if (floorObject is GameStaticItemTimed staticItem && !staticItem.IsOwner(this) && Client.Account.PrivLevel == (uint)ePrivLevel.Player)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.LootDoesntBelongYou"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
+                return;
             }
 
-            if ((floorObject is GameBoat == false) && !checkRange && !floorObject.IsWithinRadius(this, GS.ServerProperties.Properties.WORLD_PICKUP_DISTANCE, true))
+            if (floorObject is not GameBoat && !checkRange && !floorObject.IsWithinRadius(this, Properties.WORLD_PICKUP_DISTANCE, true))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.ObjectTooFarAway", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                try
-                {
-                    log.DebugFormat("Pickup error: {0}  object x{1}, y{2}, z{3}, r{4} - player x{5}, y{6}, z{7}, r{8}",
-                        Name,
-                        floorObject.X, floorObject.Y, floorObject.Z, floorObject.CurrentRegionID,
-                        X, Y, Z, CurrentRegionID);
-                }
-                catch
-                {
-                }
-                return false;
+                return;
             }
 
             if (floorObject is WorldInventoryItem)
             {
                 WorldInventoryItem floorItem = floorObject as WorldInventoryItem;
-
                 lock (floorItem)
                 {
                     if (floorItem.ObjectState != eObjectState.Active)
-                        return false;
+                        return;
 
                     if (floorItem.Item == null || floorItem.Item.IsPickable == false)
                     {
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return false;
+                        return;
                     }
                     if (floorItem.GetPickupTime > 0)
                     {
                         Out.SendMessage("You must wait another " + floorItem.GetPickupTime / 1000 + " seconds to pick up " + floorItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return false;
+                        return;
                     }
 
                     Group group = Group;
@@ -13165,7 +13155,7 @@ namespace DOL.GS
                             if (!good)
                             {
                                 theTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                return false;
+                                return;
                             }
                             theTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", floorItem.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
@@ -13197,7 +13187,7 @@ namespace DOL.GS
                         if (eligibleMembers.Count <= 0)
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneWantsThis", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return false;
+                            return;
                         }
 
                         int i = Util.Random(0, eligibleMembers.Count - 1);
@@ -13213,7 +13203,7 @@ namespace DOL.GS
                             if (!good)
                             {
                                 eligibleMember.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                return false;
+                                return;
                             }
                             Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
                             group.SendMessageToGroupMembers(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.Autosplit", floorItem.Item.GetName(1, true), eligibleMember.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -13231,7 +13221,7 @@ namespace DOL.GS
                         if (!good)
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return false;
+                            return;
                         }
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", floorItem.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
@@ -13239,15 +13229,16 @@ namespace DOL.GS
                     }
                     floorItem.RemoveFromWorld();
                 }
-                return true;
+                return;
             }
-            else if (floorObject is GameMoney)
+
+            if (floorObject is GameMoney)
             {
                 GameMoney moneyObject = floorObject as GameMoney;
                 lock (moneyObject)
                 {
                     if (moneyObject.ObjectState != eObjectState.Active)
-                        return false;
+                        return;
 
                     if (Group != null && Group.AutosplitCoins)
                     {
@@ -13259,7 +13250,7 @@ namespace DOL.GS
                         if (!gamePlayers.Any())
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneGroupWantsMoney"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return false;
+                            return;
                         }
 
                         long moneyToPlayer = moneyObject.TotalCopper / gamePlayers.Count();
@@ -13307,23 +13298,31 @@ namespace DOL.GS
                         }
                     }
                     moneyObject.Delete();
-                    return true;
                 }
+                return;
             }
-            else if (floorObject is GameBoat)
+
+            if (floorObject is GameBoat)
             {
-                if (!this.IsWithinRadius(floorObject, 1000))
+                if (!IsWithinRadius(floorObject, 1000))
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.TooFarFromBoat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return false;
+                    return;
                 }
 
                 if (!InCombat)
                     MountSteed(floorObject as GameBoat, false);
 
-                return true;
+                return;
             }
-            else if (floorObject is GameHouseVault && floorObject.CurrentHouse != null)
+            
+            if (floorObject is GameConsignmentMerchant)
+            {
+                floorObject.CurrentHouse.PickUpConsignmentMerchant(this);
+                return;
+            }
+            
+            if (floorObject is GameHouseVault && floorObject.CurrentHouse != null)
             {
                 GameHouseVault houseVault = floorObject as GameHouseVault;
                 if (houseVault.Detach(this))
@@ -13332,18 +13331,17 @@ namespace DOL.GS
                     Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template));
                     InventoryLogging.LogInventoryAction("(HOUSE;" + floorObject.CurrentHouse.HouseNumber + ")", this, eInventoryActionType.Other, template);
                 }
-                return true;
+                return;
             }
-            else if ((floorObject is GameNPC || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
+            
+            if ((floorObject is GameNPC || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
             {
                 floorObject.CurrentHouse.EmptyHookpoint(this, floorObject);
-                return true;
+                return;
             }
-            else
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
-            }
+
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            return;
         }
 
         /// <summary>

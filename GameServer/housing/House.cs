@@ -907,44 +907,70 @@ namespace DOL.GS.Housing
 			return true;
 		}
 
-		public void RemoveConsignmentMerchant()
+		public bool RemoveConsignmentMerchant()
 		{
-			if (ConsignmentMerchant != null)
+			if (ConsignmentMerchant == null)
+				return false;
+
+			log.Warn("HOUSING: Removing consignment merchant for house " + HouseNumber);
+
+			// If this is a guild house and the house is removed the items still belong to the guild ID and will show up
+			// again if guild purchases another house and CM
+
+			int count = 0;
+			foreach(InventoryItem item in ConsignmentMerchant.DBItems(null))
 			{
-				log.Warn("HOUSING: Removing consignment merchant for house " + HouseNumber);
-
-				// If this is a guild house and the house is removed the items still belong to the guild ID and will show up
-				// again if guild purchases another house and CM
-
-				int count = 0;
-				foreach(InventoryItem item in ConsignmentMerchant.DBItems(null))
-				{
-					item.OwnerLot = 0;
-					GameServer.Database.SaveObject(item);
-					count++;
-				}
-
-				if (count > 0)
-				{
-					log.Warn("HOUSING: Cleared OwnerLot for " + count + " items on the consignment merchant!");
-				}
-
-				var houseCM = DOLDB<HouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
-				if (houseCM != null)
-				{
-					houseCM.HouseNumber = 0;
-					GameServer.Database.SaveObject(houseCM);
-				}
-
-				ConsignmentMerchant.HouseNumber = 0;
-				ConsignmentMerchant.DeleteFromDatabase();
-				ConsignmentMerchant.Delete();
-
-				ConsignmentMerchant = null;
-				DatabaseItem.HasConsignment = false;
-
-				SaveIntoDatabase();
+				item.OwnerLot = 0;
+				GameServer.Database.SaveObject(item);
+				count++;
 			}
+
+			if (count > 0)
+			{
+				log.Warn("HOUSING: Cleared OwnerLot for " + count + " items on the consignment merchant!");
+			}
+
+			var houseCM = DOLDB<HouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			if (houseCM != null)
+			{
+				houseCM.HouseNumber = 0;
+				GameServer.Database.SaveObject(houseCM);
+			}
+
+			ConsignmentMerchant.HouseNumber = 0;
+			ConsignmentMerchant.DeleteFromDatabase();
+			ConsignmentMerchant.Delete();
+
+			ConsignmentMerchant = null;
+			DatabaseItem.HasConsignment = false;
+
+			SaveIntoDatabase();
+			return true;
+		}
+
+		public void PickUpConsignmentMerchant(GamePlayer player)
+		{
+			if (!CanEmptyHookpoint(player))
+			{
+				ChatUtil.SendSystemMessage(player, "You don't have the permission to remove this consignment merchant.");
+				return;
+			}
+
+			ItemTemplate itemTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>("housing_consignment_deed");
+
+			if (itemTemplate == null || !RemoveConsignmentMerchant())
+			{
+				ChatUtil.SendSystemMessage(player, "Couldn't pick up the Consignment Merchant due to an internal error.");
+				return;
+			}
+
+			if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(itemTemplate)))
+			{
+				ChatUtil.SendSystemMessage(player, LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"));
+				return;
+			}
+
+			InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, eInventoryActionType.Loot, itemTemplate);
 		}
 
 		public void Edit(GamePlayer player, List<int> changes)
