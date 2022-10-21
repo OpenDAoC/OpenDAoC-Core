@@ -216,7 +216,7 @@ namespace DOL.GS.PropertyCalc
 					if (living.Level > 40)
 					{
 						//Console.WriteLine($"Scalar before {levelScalar} adding {(living.Level - 40) * .01} after {levelScalar + ((living.Level - 40) * .01)}");
-						levelScalar += (living.Level - 40) * .0025;
+						levelScalar += (living.Level - 40) * .0015;
 					}
 					// approx to original formula, thx to mathematica :)
 					hp = (int)(50 + 12*living.Level + levelScalar * living.Level * (living.Level)) + (living as GameNPC).Constitution;
