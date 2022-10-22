@@ -616,15 +616,17 @@ namespace DOL.GS
                 //double effectiveness = Effectiveness;
                 double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * AttackSpeed(weapon) *
                                 0.001;
-                if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND ||
-                    weapon.Item_Type == Slot.TWOHAND)
+                if (weapon == null
+                    || weapon.SlotPosition == Slot.RIGHTHAND
+                    || weapon.SlotPosition == Slot.LEFTHAND
+                    || weapon.SlotPosition == Slot.TWOHAND)
                 {
                     //Melee damage buff,debuff,RA
                     effectiveness += owner.GetModified(eProperty.MeleeDamage) * 0.01;
                 }
-                else if (weapon.Item_Type == Slot.RANGED && (weapon.Object_Type == (int) eObjectType.Longbow ||
-                                                             weapon.Object_Type == (int) eObjectType.RecurvedBow ||
-                                                             weapon.Object_Type == (int) eObjectType.CompositeBow))
+                else if (weapon.SlotPosition == Slot.RANGED && (weapon.Object_Type == (int) eObjectType.Longbow
+                                                                || weapon.Object_Type == (int) eObjectType.RecurvedBow
+                                                                || weapon.Object_Type == (int) eObjectType.CompositeBow))
                 {
                     // RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
                     if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
@@ -637,7 +639,7 @@ namespace DOL.GS
                         effectiveness += owner.GetModified(eProperty.SpellDamage) * 0.01;
                     }
                 }
-                else if (weapon.Item_Type == Slot.RANGED)
+                else if (weapon.SlotPosition == Slot.RANGED)
                 {
                     effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
                 }
