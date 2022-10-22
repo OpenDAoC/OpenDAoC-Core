@@ -2792,10 +2792,11 @@ namespace DOL.GS.Spells
 						{
 							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
 							{
-								if (!Spell.IsBuff)
-									list.Add(player.ControlledBrain.Body);
-								else
+								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
+								if (Spell.IsBuff || (Spell.ID >= 6121 && Spell.ID <= 6128) || Spell.ID == 5999)
 									list.Add(player);
+								else
+									list.Add(player.ControlledBrain.Body);
 							}
 							else
 								list.Add(target);
