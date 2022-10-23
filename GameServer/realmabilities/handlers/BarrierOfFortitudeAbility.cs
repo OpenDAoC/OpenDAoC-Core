@@ -1,10 +1,7 @@
-using System;
-using System.Reflection;
-using System.Collections;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
+using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
+using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
@@ -20,51 +17,38 @@ namespace DOL.GS.RealmAbilities
 
 		public override void Execute(GameLiving living)
 		{
+			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
+				return;
+
 			GamePlayer player = living as GamePlayer;
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-			/// [Atlas - Takii] We don't want this "does not stack" functionality in OF.
-// 			if (player.TempProperties.getProperty(BofBaSb, false))
-// 			{
-// 				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-// 				return;
-// 			}
-
-			DisableSkill(living);
-			ArrayList targets = new ArrayList();
-			if (player.Group == null)
-				targets.Add(player);
-			else
-			{
-				foreach (GamePlayer grpplayer in player.Group.GetPlayersInTheGroup())
-				{
-					if (player.IsWithinRadius(grpplayer, m_range ) && grpplayer.IsAlive)
-						targets.Add(grpplayer);
-				}
-			}
+			IEnumerable<GamePlayer> playersInGroup;
 			bool success;
-			foreach (GamePlayer target in targets)
+
+			SendCastMessage(player);
+
+			if (player.Group != null)
+				playersInGroup = player.Group.GetPlayersInTheGroup().Where(x => x.IsAlive && player.IsWithinRadius(player, m_range));
+			else
+				playersInGroup = new List<GamePlayer>() { player };
+
+			foreach (GamePlayer playerInGroup in playersInGroup)
 			{
-				//send spelleffect
-				if (!target.IsAlive) continue;
-				success = !target.TempProperties.getProperty(BofBaSb, false);
-				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					SendCasterSpellEffectAndCastMessage(player, 7009, success);
-					SendCasterSpellEffect(player, 1486, success);
-					SendCasterSpellEffect(player, 10535, success);
-				}
+				if (!playerInGroup.IsAlive)
+					continue;
+
+				success = !playerInGroup.TempProperties.getProperty(BofBaSb, false);
+
+				SendCasterSpellEffect(playerInGroup, 7009, success);
+				SendCasterSpellEffect(playerInGroup, 1486, success);
+				SendCasterSpellEffect(playerInGroup, 10535, success);
 				
-					
 				if (success)
-				{
-					BunkerOfFaithECSEffect eff = null;
-					if (target != null)
-						 eff = new BunkerOfFaithECSEffect(new ECSGameEffectInitParams(target, m_duration, GetAbsorbAmount(), CreateSpell(player)));
-					Console.WriteLine($"Effect {eff}");
-				}
+					new BunkerOfFaithECSEffect(new ECSGameEffectInitParams(playerInGroup, m_duration, GetAbsorbAmount(), CreateSpell(player)));
 			}
+
+			DisableSkill(player);
 		}
+
 		public virtual SpellHandler CreateSpell(GameLiving caster)
 		{
 			m_dbspell = new DBSpell();
@@ -101,6 +85,7 @@ namespace DOL.GS.RealmAbilities
 			else
 				return 0;
 		}
+
 		public override int GetReUseDelay(int level)
 		{
 			return 600;

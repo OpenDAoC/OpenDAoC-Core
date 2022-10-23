@@ -1,5 +1,5 @@
-using DOL.Database;
 using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 
@@ -18,12 +18,15 @@ namespace DOL.GS.RealmAbilities
 
         public override void Execute(GameLiving living)
         {
-            GamePlayer player = living as GamePlayer;
-            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            SendCasterSpellEffectAndCastMessage(player, 7009, true);
-            DisableSkill(living);
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
+                return;
 
-            new AtlasOF_BatteryOfLifeECSEffect(new ECSGameEffectInitParams(player, m_duration, 1, CreateSpell(living)));
+            GamePlayer player = living as GamePlayer;
+
+            SendCasterSpellEffectAndCastMessage(player, 7009, true);
+            DisableSkill(player);
+
+            new AtlasOF_BatteryOfLifeECSEffect(new ECSGameEffectInitParams(player, m_duration, 1, CreateSpell(player)));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)
