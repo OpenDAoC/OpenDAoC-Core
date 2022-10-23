@@ -1784,15 +1784,14 @@ namespace DOL.GS.ServerRules
 
 			killedPlayer.LastDeathRealmPoints = 0;
 			// "player has been killed recently"
-			long noExpSeconds = ServerProperties.Properties.RP_WORTH_SECONDS * 1000;
-			if (killedPlayer.DeathTime + noExpSeconds > GameLoop.GameLoopTime)
+			if (killedPlayer.DeathTime + Properties.RP_WORTH_SECONDS > killedPlayer.PlayedTime)
 			{
-				foreach (DictionaryEntry de in XPGainerList)
+				foreach (DictionaryEntry gainer in XPGainerList)
 				{
-					if (de.Key is GamePlayer)
+					if (gainer.Key is GamePlayer player)
 					{
-						((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					}
 				}
 				return;
