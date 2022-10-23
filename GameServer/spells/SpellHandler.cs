@@ -3081,22 +3081,22 @@ namespace DOL.GS.Spells
 			}
 
 			IList<GameLiving> targets;
-			if (Spell.Target.ToLower() == "realm"
+			if (Spell.Target == "Realm"
+				&& Spell.Radius > 0
 				&& (m_spellTarget == Caster || Caster is NecromancerPet nPet && m_spellTarget == nPet.Owner)
 				&& !Spell.IsConcentration
 				&& !Spell.IsHealing
 				&& Spell.IsBuff
-				&& Spell.SpellType != (byte)eSpellType.Bladeturn)
+				&& Spell.SpellType != (byte)eSpellType.Bladeturn
+				&& Spell.SpellType != (byte)eSpellType.Bomber)
 				targets = GetGroupAndPets(Spell);
 			else
 				targets = SelectTargets(m_spellTarget);
 
 			double effectiveness = Caster.Effectiveness;
 
-			if(SpellLine.KeyName.Equals("OffensiveProc") &&  Caster is GamePet gpet && !Spell.ScaledToPetLevel)
-            {
+			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GamePet gpet && !Spell.ScaledToPetLevel)
 				gpet.ScalePetSpell(Spell);
-			}
 
 			/// [Atlas - Takii] No effectiveness drop in OF MOC.
 // 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
