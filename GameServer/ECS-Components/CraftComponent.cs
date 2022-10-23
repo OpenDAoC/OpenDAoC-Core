@@ -40,8 +40,7 @@ namespace DOL.GS
                 if (m_recipes.Contains(recipe)) return;
                 m_recipes.Add(recipe);
 
-                if (m_recipes.Count() > 0 &&
-                    !EntityManager.GetLivingByComponent(typeof(CraftComponent)).Contains(owner))
+                if (m_recipes.Count() > 0)
                     EntityManager.AddComponent(typeof(CraftComponent), owner);
             }
         }
@@ -66,8 +65,7 @@ namespace DOL.GS
             ownerPlayer = owner as GamePlayer;
             m_recipes = new List<Recipe>();
             
-            if (!EntityManager.GetLivingByComponent(typeof(CraftComponent)).Contains(owner))
-                EntityManager.AddComponent(typeof(CraftComponent), owner);
+            EntityManager.AddComponent(typeof(CraftComponent), owner);
         }
 
         public void Tick(long time)

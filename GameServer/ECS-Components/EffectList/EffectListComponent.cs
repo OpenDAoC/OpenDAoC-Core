@@ -35,8 +35,7 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
-                    if (!EntityManager.GetLivingByComponent(typeof(EffectListComponent)).Contains(Owner))
-                        EntityManager.AddComponent(typeof(EffectListComponent), Owner);
+                    EntityManager.AddComponent(typeof(EffectListComponent), Owner);
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
