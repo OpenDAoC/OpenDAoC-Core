@@ -53,7 +53,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			m_dbspell = new DBSpell();
 			m_dbspell.Name = "Bunker Of Faith";
-			m_dbspell.Icon = 31119;
+			m_dbspell.Icon = 7132;
 			m_dbspell.ClientEffect = 4242;
 			m_dbspell.Damage = 0;
 			m_dbspell.DamageType = 0;

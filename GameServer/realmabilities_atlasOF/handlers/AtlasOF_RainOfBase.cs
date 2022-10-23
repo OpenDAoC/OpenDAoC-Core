@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
             list.Add("Casting time: instant");
         }
         
-        protected void Execute(string name, int icon, int clientEffect, int damageType, GameLiving living)
+        protected virtual void Execute(string name, int icon, int clientEffect, int damageType, GameLiving living)
         {
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
                 return;
