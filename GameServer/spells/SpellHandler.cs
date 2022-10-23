@@ -563,7 +563,7 @@ namespace DOL.GS.Spells
 				{
 					//Added to force non-Concentration spells cast on Necromancer to be cast on pet instead
 					if (!Spell.IsConcentration && Caster.TargetObject == m_spellTarget && (Caster.TargetObject as GamePlayer) != null 
-						&& (Caster.TargetObject as GamePlayer).IsShade && Spell.ID != 5999)
+						&& (Caster.TargetObject as GamePlayer).IsShade && Spell.SpellType != (byte)eSpellType.UniPortal)
                     {
                         m_spellTarget = m_spellTarget.ControlledBrain.Body;
                     }
@@ -1839,7 +1839,7 @@ namespace DOL.GS.Spells
 				FinishSpellCast(m_spellTarget);
 				if (Spell.IsFocus)
 				{
-					if (Spell.ID != 5998)
+					if (Spell.SpellType != (byte)eSpellType.GatewayPersonalBind)
 					{
 						CastState = eCastState.Focusing;
 					}
@@ -2790,10 +2790,10 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade && Spell.ID != 5999)
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
 							{
 								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
-								if (Spell.IsBuff || (Spell.ID >= 6121 && Spell.ID <= 6128) || Spell.ID == 5999)
+								if (Spell.IsBuff || Spell.SpellType == (byte)eSpellType.PowerTransferPet || Spell.SpellType == (byte)eSpellType.UniPortal)
 									list.Add(player);
 								else
 									list.Add(player.ControlledBrain.Body);
