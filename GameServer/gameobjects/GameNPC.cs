@@ -5898,7 +5898,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="trigger">The action triggering the message (e.g., aggroing, dying, roaming)</param>
 		/// <param name="living">The entity triggering the action (e.g., a player)</param>
-		public void FireAmbientSentence(eAmbientTrigger trigger, GameObject living)
+		public virtual void FireAmbientSentence(eAmbientTrigger trigger, GameObject living)
 		{
 			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0) return;
 			if (trigger == eAmbientTrigger.interact && living == null) return; // Do not trigger interact messages with a corpse
