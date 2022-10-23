@@ -3061,11 +3061,9 @@ namespace DOL.GS.Spells
 			// This applies to PBAE spells (except animist's) and positive weapon effects (reminder that weapon effects give the attack's target, not the spell's).
 			if (Spell.Range == 0)
 				m_spellTarget = Caster;
-			else
-				m_spellTarget ??= target;
-
-			if (m_spellTarget == null)
-				return false;
+			// We do the same if we have no target at all, which applies to chants / songs.
+			else if (m_spellTarget == null)
+				m_spellTarget = target ?? Caster;
 
 			if (Caster.IsMezzed
 				|| Caster.IsStunned
