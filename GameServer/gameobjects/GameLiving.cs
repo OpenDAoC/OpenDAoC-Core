@@ -4533,12 +4533,10 @@ namespace DOL.GS
             return removeMez || removeSnare || removeMovementSpeedDebuff;
 		}
 
-        public virtual bool HandleMovementSpeedEffectsOnAttacked(AttackData ad)
+        public virtual void HandleMovementSpeedEffectsOnAttacked(AttackData ad)
         {
             if (effectListComponent == null || ad == null)
-                return false;
-
-			bool effectRemoved = false;
+                return;
 
 			//Cancel SpeedOfTheRealm (Hastener Speed) 
 			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
@@ -4550,29 +4548,21 @@ namespace DOL.GS
 					if (effects[i] is null)
 						continue;
 
-					var spellEffect = effects[i] as ECSGameSpellEffect;
-					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
-					{
+					var spellEffect = effects[i];
+					if (spellEffect != null && spellEffect.SpellHandler.Spell.ID is 2430) // Speed of the Realm
 						EffectService.RequestImmediateCancelEffect(effects[i]);
-					}
 				}
             }
 
             // Cancel movement speed buffs when attacked only if damaged
-			if(ad != null & ad.Damage > 0)
-				effectRemoved = TryCancelMovementSpeedBuffs(false);
-
-			
-
-			return effectRemoved;
+			if (ad != null & ad.Damage > 0)
+				TryCancelMovementSpeedBuffs(false);
 		}
 
-        public virtual bool TryCancelMovementSpeedBuffs(bool isAttacker)
+        public virtual void TryCancelMovementSpeedBuffs(bool isAttacker)
         {
             if (effectListComponent == null)
-                return false;
-
-            bool effectRemoved = false;
+                return;
 
             if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
@@ -4583,48 +4573,35 @@ namespace DOL.GS
 					if (effects[i] is null)
 						continue;
 
-					var spellEffect = effects[i] as ECSGameSpellEffect;
-					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target.ToLower() == "pet")
+					var spellEffect = effects[i];
+					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == "Pet")
 					{
-						effectRemoved = false;
-						if (spellEffect.Name.ToLower().Equals("whip of encouragement"))
+						if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
+							or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
 							continue;
 					}
 					
 					EffectService.RequestImmediateCancelEffect(effects[i]);
-					effectRemoved = true;
 				}
             }
 
-            if (this is GameNPC npc && npc.Brain is ControlledNpcBrain pBrain || this is GamePet pet)
+			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GamePet)
             {
-				var ownerEffects = new List<ECSGameSpellEffect>(1);
-				pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
-				pet = this as GamePet;
+				List<ECSGameSpellEffect> ownerEffects;
+				ControlledNpcBrain pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
+				GamePet pet = this as GamePet;
+
 				if (pBrain != null)
-				{
 					ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-				}
 				else
-                {
 					ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-				}
 
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
-					if (!isAttacker && ownerEffects[i] is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.Target.ToLower() == "self")
-					{
-						effectRemoved = false;
-					}
-					else
-					{
+					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != "Self")
 						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
-						effectRemoved = true;
-					}
 				}				
             }
-
-            return effectRemoved;
         }
 
         ///// <summary>
