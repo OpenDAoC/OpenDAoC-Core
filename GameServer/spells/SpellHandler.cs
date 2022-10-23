@@ -2781,6 +2781,9 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, npc, true))
 							{
+								if (npc.Brain is BomberBrain)
+									return;
+
 								aoeMobs.Add(npc);
 							}
 						});
