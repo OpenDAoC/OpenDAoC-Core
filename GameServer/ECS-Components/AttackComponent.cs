@@ -101,7 +101,7 @@ namespace DOL.GS
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
             {
-                if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
+                if (EntityManager.GetLivingByComponent(typeof(AttackComponent)).Contains(owner))
                     EntityManager.RemoveComponent(typeof(AttackComponent), owner);
             }
         }
@@ -656,7 +656,7 @@ namespace DOL.GS
         /// <param name="attackTarget">the target to attack</param>
         public void StartAttack(GameObject attackTarget)
         {
-            if (!EntityManager.GetLivingByComponent(typeof(AttackComponent)).ToArray().Contains(owner))
+            if (!EntityManager.GetLivingByComponent(typeof(AttackComponent)).Contains(owner))
                 EntityManager.AddComponent(typeof(AttackComponent), owner);
 
             var p = owner as GamePlayer;

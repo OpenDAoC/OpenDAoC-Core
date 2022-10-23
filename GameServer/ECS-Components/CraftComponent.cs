@@ -66,7 +66,7 @@ namespace DOL.GS
             ownerPlayer = owner as GamePlayer;
             m_recipes = new List<Recipe>();
             
-            if (!EntityManager.GetLivingByComponent(typeof(CraftComponent)).ToArray().Contains(owner))
+            if (!EntityManager.GetLivingByComponent(typeof(CraftComponent)).Contains(owner))
                 EntityManager.AddComponent(typeof(CraftComponent), owner);
         }
 
