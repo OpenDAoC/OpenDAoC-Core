@@ -4890,9 +4890,8 @@ namespace DOL.GS
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
-			if(Brain is StandardMobBrain standardMobBrain && Brain is not NecromancerPetBrain)
+			if (Brain is StandardMobBrain standardMobBrain)
             {
-	           // Console.WriteLine($"dmg {ad.Damage} crit {ad.CriticalDamage} mod {Math.Abs(ad.Modifier)}");
 				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier));
 				standardMobBrain.OnAttackedByEnemy(ad);
             }
