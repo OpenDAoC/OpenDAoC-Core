@@ -552,27 +552,25 @@ namespace DOL.AI.Brain
             double maxAggro = 0;
             List<GameLiving> removable = new List<GameLiving>();
             
-            foreach(var currentKey in aggroList)
+            foreach (var currentKey in aggroList)
             {
                 GameLiving living = currentKey.Key;
 
-                if(living == null)
+                if (living == null)
                     continue;
 
-                // check to make sure this target is still valid
+                // Check to make sure this target is still valid.
                 if (!living.IsAlive
                     || living.ObjectState != GameObject.eObjectState.Active
                     || living.IsStealthed
                     || Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE
                     || !GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
                 {
-                    removable.Add(living);
+                    // Keep Necromancer shades so that we can attack them if their pets die.
+                    if (living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+                        removable.Add(living);
                     continue;
                 }
-
-                // Don't bother about necro shade, can't attack it anyway.
-                if (living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-                    continue;
 
                 long amount = currentKey.Value;
 

@@ -4906,21 +4906,18 @@ namespace DOL.GS
         {
 	        base.TakeDamage(ad);
 	        
-	        if(Brain is StandardMobBrain standardMobBrain && Brain is not NecromancerPetBrain)
+	        if (Brain is StandardMobBrain standardMobBrain)
 	        {
-		        // Console.WriteLine($"dmg {ad.Damage} crit {ad.CriticalDamage} mod {Math.Abs(ad.Modifier)}");
 		        var aggro = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
 
-		        if (ad.Attacker is GameNPC pet)
-		        {
-			        if (pet.Brain is IControlledBrain petBrain)
-			        {
-				        // owner gets 25% of aggro
-				        standardMobBrain.AddToAggroList(petBrain.Owner,(int)Math.Max(1, aggro * 0.25));
-				        // remaining of aggro is given to pet
-				        aggro = (int)Math.Max(1, aggro * 0.75);
-			        }
-		        }
+		        if (ad.Attacker is GameNPC attacker && attacker.Brain is IControlledBrain petBrain)
+			    {
+				    // Owner gets 25% of aggro
+				    standardMobBrain.AddToAggroList(petBrain.Owner, (int)Math.Max(1, aggro * 0.25));
+				    // Remaining of aggro is given to pet
+				    aggro = (int)Math.Max(1, aggro * 0.75);
+			    }
+
 		        standardMobBrain.AddToAggroList(ad.Attacker, aggro);
 		        standardMobBrain.OnAttackedByEnemy(ad);
 	        }
