@@ -1320,6 +1320,18 @@ namespace DOL.GS.ServerProperties
 		public static double NECRO_PET_QUI_MULTIPLIER;
 
 		/// <summary>
+		/// Base value to use when setting intelligence for most necromancer pets.
+		/// </summary>
+		[ServerProperty("npc", "necro_pet_int_base", "Base value to use when setting intelligence for most necromancer pets.", (short)60)]
+		public static short NECRO_PET_INT_BASE;
+
+		/// <summary>
+		/// Multiplier to use when setting intelligence for most necromancer pets.
+		/// </summary>
+		[ServerProperty("npc", "necro_pet_int_multiplier", "Multiplier to use when setting intelligence for most necromancer pets.", 0.3333)]
+		public static double NECRO_PET_INT_MULTIPLIER;
+
+		/// <summary>
 		/// Base value to use when setting strength for greater necroservant pets.
 		/// </summary>
 		[ServerProperty("npc", "necro_greater_pet_str_base", "Base value to use when setting strength for greater necroservant pets.", (short)60)]
@@ -1367,6 +1379,17 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("npc", "necro_greater_pet_qui_multiplier", "Multiplier to use when setting quickness for greater necroservant pets.", 1.0)]
 		public static double NECRO_GREATER_PET_QUI_MULTIPLIER;
 
+		/// <summary>
+		/// Base value to use when setting intelligence for greater necroservant pets.
+		/// </summary>
+		[ServerProperty("npc", "necro_greater_pet_int_base", "Base value to use when setting intelligence for greater necroservant pets.", (short)60)]
+		public static short NECRO_GREATER_PET_INT_BASE;
+
+		/// <summary>
+		/// Multiplier to use when setting intelligence for greater necroservant pets.
+		/// </summary>
+		[ServerProperty("npc", "necro_greater_pet_int_multiplier", "Multiplier to use when setting intelligence for greater necroservant pets.", 0.3333)]
+		public static double NECRO_GREATER_PET_INT_MULTIPLIER;
 
 		/// <summary>
 		/// How often should pets think?  Default 1500 or 1.5 seconds

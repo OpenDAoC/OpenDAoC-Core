@@ -279,6 +279,7 @@ namespace DOL.GS
 				Constitution = (short)(ServerProperties.Properties.NECRO_GREATER_PET_CON_BASE + m_summonConBonus);
 				Dexterity = ServerProperties.Properties.NECRO_GREATER_PET_DEX_BASE;
 				Quickness = ServerProperties.Properties.NECRO_GREATER_PET_QUI_BASE;
+				Intelligence = ServerProperties.Properties.NECRO_GREATER_PET_INT_BASE;
 
 				if (Level > 1)
 				{
@@ -286,6 +287,7 @@ namespace DOL.GS
 					Constitution += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_CON_MULTIPLIER * Level));
 					Dexterity += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_DEX_MULTIPLIER * Level));
 					Quickness += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_QUI_MULTIPLIER * Level));
+					Intelligence += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_INT_MULTIPLIER * Level));
 				}
 			}
 			else
@@ -294,6 +296,7 @@ namespace DOL.GS
 				Constitution = (short)(ServerProperties.Properties.NECRO_PET_CON_BASE + m_summonConBonus);
 				Dexterity = ServerProperties.Properties.NECRO_PET_DEX_BASE;
 				Quickness = ServerProperties.Properties.NECRO_PET_QUI_BASE;
+				Intelligence = ServerProperties.Properties.NECRO_PET_INT_BASE;
 
 				if (Level > 1)
 				{
@@ -301,12 +304,13 @@ namespace DOL.GS
 					Constitution += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_CON_MULTIPLIER * Level));
 					Dexterity += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_DEX_MULTIPLIER * Level));
 					Quickness += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_QUI_MULTIPLIER * Level));
+					Intelligence += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_INT_MULTIPLIER * Level));
 				}
 			}
 
-			Empathy = (byte)(29 + Level);
-			Piety = (byte)(29 + Level);
-			Charisma = (byte)(29 + Level);
+			Empathy = 60;
+			Piety = 60;
+			Charisma = 60;
 
 			// Now scale them according to NPCTemplate values
 			if (NPCTemplate != null)
