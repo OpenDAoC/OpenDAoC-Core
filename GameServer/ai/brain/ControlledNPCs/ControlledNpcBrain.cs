@@ -282,6 +282,7 @@ namespace DOL.AI.Brain
 				AggressionState = eAggressionState.Defensive;
 				UpdatePetWindow();
 			}
+
 			m_orderAttackTarget = null;
 			ClearAggroList();
 			Body.StopAttack();

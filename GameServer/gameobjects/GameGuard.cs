@@ -2,7 +2,6 @@ using System.Collections;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DOL.GS
 {
