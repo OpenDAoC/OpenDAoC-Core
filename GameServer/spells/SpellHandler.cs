@@ -706,6 +706,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 			}
+
 			if (Spell.Uninterruptible)
 				return false;
 
@@ -714,13 +715,14 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))// Stage < 2) //only interrupt if we're under 50% of the way through the cast
+			// Only interrupt if we're under 50% of the way through the cast
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5 ))
 			{
 				if (Caster.ChanceSpellInterrupt(attacker))
 				{
 					Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
 					MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
-					InterruptCasting(); // always interrupt at the moment
+					InterruptCasting(); // Always interrupt at the moment
 					return true;
 				}
 			}
@@ -876,14 +878,10 @@ namespace DOL.GS.Spells
 			}
 
 			//Check Interrupts for NPC
-			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GameNPC)
+			if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
 			{
                 if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
-				{
-					// Necro pet has Facilitate Painworking effect and isn't interrupted.
-					if (m_caster is not NecromancerPet necropet || !necropet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
-						return false;
-				}
+					return false;
 			}
 
 			if (m_spell.RecastDelay > 0)

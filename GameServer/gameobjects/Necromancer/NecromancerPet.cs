@@ -413,10 +413,22 @@ namespace DOL.GS
 			base.OnAttackedByEnemy(ad);
 		}
 
-        /// <summary>
-        /// Called when the necro pet attacks, which interrupts current spells being cast
-        /// </summary>
-        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+		public override void StartInterruptTimer(AttackData attack, int duration)
+		{
+			// Necromancer pets don't get interrupt timers.
+			return;
+		}
+
+		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+		{
+			// Necromancer pets don't get interrupt timers.
+			return;
+		}
+
+		/// <summary>
+		/// Called when the necro pet attacks, which interrupts current spells being cast
+		/// </summary>
+		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/)
 			{
