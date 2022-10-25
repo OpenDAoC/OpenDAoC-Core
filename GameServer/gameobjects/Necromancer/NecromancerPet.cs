@@ -389,19 +389,6 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (!effectListComponent.Effects.ContainsKey(eEffect.FacilitatePainworking)/*HasEffect(typeof(FacilitatePainworkingEffect))*/ &&
-				ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
-			{
-				if (Brain is NecromancerPetBrain necroBrain)
-				{					
-                    if (Brain.Body.IsCasting)
-	                    NecromancerPetBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted, Owner as GamePlayer);
-					StopCurrentSpellcast();
-					if (necroBrain.SpellsQueued)
-						necroBrain.ClearSpellQueue();
-				}
-			}
-
 			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
 			{
 				GamePlayer player = Owner as GamePlayer;
@@ -414,18 +401,15 @@ namespace DOL.GS
 					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
 				}
 			}
-			base.OnAttackedByEnemy(ad);
-		}
 
-		public override void StartInterruptTimer(AttackData attack, int duration)
-		{
-			// Necromancer pets don't get interrupt timers.
-			return;
+			base.OnAttackedByEnemy(ad);
 		}
 
 		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
 		{
 			// Necromancer pets don't get interrupt timers.
+			if (attacker != this)
+				castingComponent?.spellHandler?.CasterIsAttacked(attacker);
 			return;
 		}
 
