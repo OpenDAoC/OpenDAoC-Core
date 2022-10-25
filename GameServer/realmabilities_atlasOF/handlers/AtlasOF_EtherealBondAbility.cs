@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
 
         protected override string ValueUnit { get { return "%"; } }
 
-        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.HasSerenityLevel(player, 2); }
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetSerenityLevel(player) >= 2; }
 
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         

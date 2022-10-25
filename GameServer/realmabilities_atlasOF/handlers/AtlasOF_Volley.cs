@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
         public override int GetReUseDelay(int level) { return 15; } // 15 seconds
         public override bool CheckRequirement(GamePlayer player)
         {
-            return AtlasRAHelpers.HasLongshotLevel(player, 1);
+            return AtlasRAHelpers.GetLongshotLevel(player) >= 1;
         }
         public override ushort Icon => 4281;
         
