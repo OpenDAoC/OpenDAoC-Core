@@ -3081,7 +3081,6 @@ namespace DOL.GS.Spells
 
 			IList<GameLiving> targets;
 			if (Spell.Target == "Realm"
-				&& Spell.Radius > 0
 				&& (m_spellTarget == Caster || Caster is NecromancerPet nPet && m_spellTarget == nPet.Owner)
 				&& !Spell.IsConcentration
 				&& !Spell.IsHealing
