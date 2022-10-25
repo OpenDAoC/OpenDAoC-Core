@@ -132,14 +132,7 @@ namespace DOL.GS
 
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
-                {
-                    int hitsCap = MaxHealthCalculator.GetItemBonusCap(necroPetHandler.Caster)
-                        + MaxHealthCalculator.GetItemBonusCapIncrease(necroPetHandler.Caster);
-
-                    necroPetHandler.m_summonConBonus = necroPetHandler.Caster.GetModifiedFromItems(eProperty.Constitution);
-                    necroPetHandler.m_summonHitsBonus = Math.Min(necroPetHandler.Caster.ItemBonus[(int)(eProperty.MaxHealth)], hitsCap)
-                        + necroPetHandler.Caster.AbilityBonus[(int)(eProperty.MaxHealth)];
-                }
+                    necroPetHandler.SetConAndHitsBonus();
             }
 
             if (m_newSpellHandler.Spell.IsInstantCast)

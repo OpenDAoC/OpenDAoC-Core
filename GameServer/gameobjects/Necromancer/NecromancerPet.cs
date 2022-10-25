@@ -23,6 +23,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.Language;
 
@@ -34,8 +35,6 @@ namespace DOL.GS
 	/// <author>Aredhel</author>
 	public class NecromancerPet : GamePet
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// gets the DamageRvR Memory of this NecromancerPet
         /// </summary>
@@ -122,7 +121,8 @@ namespace DOL.GS
 			if (Brain == null || (Brain as IControlledBrain) == null)
 				return base.GetModified(property);
 
-            GameLiving owner = (Brain as IControlledBrain).GetLivingOwner();
+            GameLiving livingOwner = (Brain as IControlledBrain).GetLivingOwner();
+			GamePlayer playerOwner = livingOwner as GamePlayer;
 
 			switch (property)
 			{
@@ -141,7 +141,7 @@ namespace DOL.GS
 				case eProperty.Resist_Thrust:
 					{
 						// Get item bonuses from the shade, but buff bonuses from the pet.
-						int itemBonus = owner.GetModifiedFromItems(property);
+						int itemBonus = livingOwner.GetModifiedFromItems(property);
 						int buffBonus = GetModifiedFromBuffs(property);
 						int debuff = DebuffCategory[(int)property];
 
@@ -149,24 +149,29 @@ namespace DOL.GS
 						// afterwards, as it is treated the same way for
 						// debuffing purposes.
 						int baseBonus = 0;
+						int raBonus = 0;
 
 						switch (property)
 						{
 							case eProperty.Strength:
 								baseBonus = Strength;
+								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugStrLevel(playerOwner) : 0);
 								break;
 							case eProperty.Dexterity:
 								baseBonus = Dexterity;
+								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugDexLevel(playerOwner) : 0);
 								break;
 							case eProperty.Quickness:
 								baseBonus = Quickness;
+								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugQuiLevel(playerOwner) : 0);
 								break;
 							case eProperty.Intelligence:
 								baseBonus = Intelligence;
+								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugAcuityLevel(playerOwner) : 0);
 								break;
 						}
 
-						itemBonus += baseBonus;
+						itemBonus += baseBonus + raBonus;
 
 						// Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for item bonuses.
 						buffBonus -= Math.Abs(debuff);

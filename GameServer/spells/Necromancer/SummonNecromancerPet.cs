@@ -26,6 +26,7 @@ using DOL.Events;
 using DOL.GS.PropertyCalc;
 using System.Collections;
 using DOL.Language;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -36,32 +37,24 @@ namespace DOL.GS.Spells
 	[SpellHandler("SummonNecroPet")]
 	public class SummonNecromancerPet : SummonSpellHandler
 	{
-		public SummonNecromancerPet(GameLiving caster, Spell spell, SpellLine line) 
-			: base(caster, spell, line) { }
+		public SummonNecromancerPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public int m_summonConBonus;
-		public int m_summonHitsBonus;
+		private int m_summonConBonus;
+		private int m_summonHitsBonus;
 
 		/// <summary>
-		/// Note bonus constitution and bonus hits from items, then 
-		/// summon the pet.
+		/// Note bonus constitution and bonus hits from items and RAs
 		/// </summary>
-		public override bool CastSpell()
+		public void SetConAndHitsBonus()
 		{
-			// First check current item bonuses for constitution and hits
+			// Check current item bonuses for constitution and hits
             // (including cap increases) of the caster, bonuses from
 			// abilities such as Toughness will transfer as well.
+			int hitsCap = MaxHealthCalculator.GetItemBonusCap(Caster) + MaxHealthCalculator.GetItemBonusCapIncrease(Caster);
+			int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(Caster is GamePlayer playerOwner  ? AtlasRAHelpers.GetAugConLevel(playerOwner) : 0);
 
-			int hitsCap = MaxHealthCalculator.GetItemBonusCap(Caster) 
-			    + MaxHealthCalculator.GetItemBonusCapIncrease(Caster);
-
-			m_summonConBonus = Caster.GetModifiedFromItems(eProperty.Constitution);
-			m_summonHitsBonus = Math.Min(Caster.ItemBonus[(int)(eProperty.MaxHealth)], hitsCap)
-				+ Caster.AbilityBonus[(int)(eProperty.MaxHealth)]; ;
-
-            // Now summon the pet.
-
-			return base.CastSpell();
+			m_summonConBonus = Caster.GetModifiedFromItems(eProperty.Constitution) + conFromRa;
+			m_summonHitsBonus = Math.Min(Caster.ItemBonus[(int)eProperty.MaxHealth], hitsCap) + Caster.AbilityBonus[(int)eProperty.MaxHealth];
 		}
 
         /// <summary>
