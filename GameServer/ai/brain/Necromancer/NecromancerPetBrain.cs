@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
                 // This message is for spells from the spell queue only, so suppress
                 // it for insta cast buffs coming from the pet itself.
 
-                if (spellLine.Name != (Body as NecromancerPet).PetInstaSpellLine)
+                if (spellLine.Name != NecromancerPet.PetInstaSpellLine)
                 {
                     Owner.Notify(GameLivingEvent.CastStarting, Body, new CastingEventArgs(Body.CurrentSpellHandler));
                     MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), eChatType.CT_System, Owner as GamePlayer);

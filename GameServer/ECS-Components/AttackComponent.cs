@@ -1431,15 +1431,10 @@ namespace DOL.GS
 
                 return ad;
             }
-            else if (owner is NecromancerPet)
-            {
-                return (owner as NecromancerPet).MakeAttack(target, weapon, style, effectiveness, interruptDuration,
-                    dualWield, false);
-            }
             else
             {
                 effectiveness = 1;
-                return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
+                return LivingMakeAttack(target, weapon, style, owner is NecromancerPet ? effectiveness : 1, interruptDuration, dualWield);
             }
         }
 
