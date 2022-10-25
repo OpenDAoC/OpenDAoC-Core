@@ -25,6 +25,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
+using DOL.GS.Styles;
 using DOL.Language;
 
 namespace DOL.GS
@@ -404,6 +405,12 @@ namespace DOL.GS
 				castingComponent?.spellHandler?.CasterIsAttacked(attacker);
 
 			return;
+		}
+
+		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+		{
+			((NecromancerPetBrain)Brain).CheckAttackSpellQueue();
+			return attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
 		/// <summary>
