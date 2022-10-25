@@ -43,18 +43,17 @@ namespace DOL.GS.Spells
 		private int m_summonHitsBonus;
 
 		/// <summary>
-		/// Note bonus constitution and bonus hits from items and RAs
+		/// Note bonus constitution and bonus hits from items and RAs.
 		/// </summary>
 		public void SetConAndHitsBonus()
 		{
-			// Check current item bonuses for constitution and hits
-            // (including cap increases) of the caster, bonuses from
-			// abilities such as Toughness will transfer as well.
+			// Check current item bonuses for constitution and hits (including cap increases) of the caster.
+			// Bonus from Aug.Con is applied as well. Thoughness is applied later on.
 			int hitsCap = MaxHealthCalculator.GetItemBonusCap(Caster) + MaxHealthCalculator.GetItemBonusCapIncrease(Caster);
 			int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(Caster is GamePlayer playerOwner  ? AtlasRAHelpers.GetAugConLevel(playerOwner) : 0);
 
 			m_summonConBonus = Caster.GetModifiedFromItems(eProperty.Constitution) + conFromRa;
-			m_summonHitsBonus = Math.Min(Caster.ItemBonus[(int)eProperty.MaxHealth], hitsCap) + Caster.AbilityBonus[(int)eProperty.MaxHealth];
+			m_summonHitsBonus = Math.Min(Caster.ItemBonus[(int)eProperty.MaxHealth], hitsCap);
 		}
 
         /// <summary>

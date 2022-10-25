@@ -149,29 +149,29 @@ namespace DOL.GS
 						// afterwards, as it is treated the same way for
 						// debuffing purposes.
 						int baseBonus = 0;
-						int raBonus = 0;
+						int augRaBonus = 0;
 
 						switch (property)
 						{
 							case eProperty.Strength:
 								baseBonus = Strength;
-								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugStrLevel(playerOwner) : 0);
+								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugStrLevel(playerOwner) : 0);
 								break;
 							case eProperty.Dexterity:
 								baseBonus = Dexterity;
-								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugDexLevel(playerOwner) : 0);
+								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugDexLevel(playerOwner) : 0);
 								break;
 							case eProperty.Quickness:
 								baseBonus = Quickness;
-								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugQuiLevel(playerOwner) : 0);
+								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugQuiLevel(playerOwner) : 0);
 								break;
 							case eProperty.Intelligence:
 								baseBonus = Intelligence;
-								raBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugAcuityLevel(playerOwner) : 0);
+								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugAcuityLevel(playerOwner) : 0);
 								break;
 						}
 
-						itemBonus += baseBonus + raBonus;
+						itemBonus += baseBonus + augRaBonus;
 
 						// Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for item bonuses.
 						buffBonus -= Math.Abs(debuff);
@@ -216,8 +216,11 @@ namespace DOL.GS
 
 						if (conBonus < 0)
 							conBonus = 0;
+						
+						int totalBonus = conBonus + hitsBonus;
+						double toughnessMod = playerOwner != null ? (1 + playerOwner.AbilityBonus[(int)eProperty.MaxHealth] * 0.01) : 1;
 
-						return conBonus + hitsBonus;
+						return (int)(totalBonus * toughnessMod);
 					}
 			}
 
