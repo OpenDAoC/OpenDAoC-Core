@@ -36,7 +36,12 @@ namespace DOL.GS
         public static void AddComponent(Type t, GameLiving n)
         {
             if (_components.TryGetValue(t, out var p))
-                p.Add(n);
+            {
+                lock(p)
+                {
+                    p.Add(n);
+                }
+            }
             else
                 _components.TryAdd(t, new HashSet<GameLiving> { n });
         }
@@ -44,15 +49,25 @@ namespace DOL.GS
         public static GameLiving[] GetLivingByComponent(Type t)
         {
             if (_components.TryGetValue(t, out var p))
-                return p.ToArray();
+            {
+                lock(p)
+                {
+                    return p.ToArray();
+                }
+            }
             else
-                return new GameLiving[0];
+                return Array.Empty<GameLiving>();
         }
 
         public static void RemoveComponent(Type t, GameLiving n)
         {
             if (_components.TryGetValue(t, out var p))
-                p.Remove(n);
+            {
+                lock(p)
+                {
+                    p.Remove(n);
+                }
+            }
         }
 
         public static GamePlayer[] GetAllPlayers()
