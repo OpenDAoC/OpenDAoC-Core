@@ -1106,28 +1106,6 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// The target object.
-		/// </summary>
-		public override GameObject TargetObject
-		{
-			get
-			{
-				return base.TargetObject;
-			}
-			set
-			{
-				GameObject previousTarget = TargetObject;
-				GameObject newTarget = value;
-
-				base.TargetObject = newTarget;
-
-				// if (previousTarget != null && newTarget != previousTarget)
-				// 	previousTarget.Notify(GameNPCEvent.SwitchedTarget, this,
-				// 						  new SwitchedTargetEventArgs(previousTarget, newTarget));
-			}
-		}
-
 		private GameObject m_cachedTarget;
 
 		public GameObject CachedTarget

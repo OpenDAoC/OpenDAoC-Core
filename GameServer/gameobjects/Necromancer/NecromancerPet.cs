@@ -36,10 +36,23 @@ namespace DOL.GS
 	/// <author>Aredhel</author>
 	public class NecromancerPet : GamePet
 	{
-        /// <summary>
-        /// gets the DamageRvR Memory of this NecromancerPet
-        /// </summary>
-        public override long DamageRvRMemory
+		public override GameObject TargetObject
+		{
+			get => base.TargetObject;
+			set
+			{
+				// 1.60:
+				// - A Necromancer's target window will now update to reflect a target his pet has acquired, if he does not already have a target.
+				if (TargetObject != value && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
+					playerOwner.Client.Out.SendChangeTarget(value);
+				base.TargetObject = value;
+			}
+		}
+
+		/// <summary>
+		/// gets the DamageRvR Memory of this NecromancerPet
+		/// </summary>
+		public override long DamageRvRMemory
 		{
 			get => m_damageRvRMemory;
 			set => m_damageRvRMemory = value;
