@@ -3056,18 +3056,23 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-			// We'll assume that spells with no range have to be casted on the caster.
-			// This applies to PBAE spells (except animist's) and positive weapon effects (reminder that weapon effects give the attack's target, not the spell's).
-			if (Spell.Range == 0)
-				m_spellTarget = Caster;
-			// We do the same if we have no target at all, which applies to chants / songs.
-			else if (m_spellTarget == null)
-				m_spellTarget = target ?? Caster;
+			if (Caster.IsMezzed || Caster.IsStunned)
+			{
+				Caster.CancelFocusSpell();
+				return false;
+			}
 
-			if (Caster.IsMezzed
-				|| Caster.IsStunned
-				|| (!m_spellTarget.IsAlive && Spell.Target != "Corpse")
-				|| !Caster.IsWithinRadius(m_spellTarget, Spell.Range))
+			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || Spell.IsPBAoE))
+				m_spellTarget = Caster;
+			else if (m_spellTarget == null)
+			{
+				if (target == null)
+					return false;
+
+				m_spellTarget = target;
+			}
+
+			if (Spell.IsFocus && (!m_spellTarget.IsAlive || !Caster.IsWithinRadius(m_spellTarget, Spell.Range)))
 			{
 				Caster.CancelFocusSpell();
 				return false;
