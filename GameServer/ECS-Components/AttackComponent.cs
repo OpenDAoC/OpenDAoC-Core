@@ -1975,28 +1975,18 @@ namespace DOL.GS
                                 string.Format(
                                     LanguageMgr.GetTranslation(((GamePlayer) ad.Target).Client.Account.Language,
                                         "GameLiving.AttackData.YouBlock") +
-                                    " (" + /*(ad.Target as GamePlayer).GetBlockChance()*/
-                                    ad.BlockChance.ToString("0.0") + "%)", ad.Attacker.GetName(0, false),
+                                        $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, false),
                                     target.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                             ((GamePlayer) ad.Target).Stealth(false);
                         }
                     }
                     else if (ad.Target is GamePlayer)
                     {
-                        // Added for Nature's Shield
-                        int percent = 0;
-                        if (ad.Target.styleComponent != null && (ad.Target.styleComponent.NextCombatStyle != null &&
-                                                                 ad.Target.styleComponent.NextCombatStyle.ID == 394) ||
-                            (ad.Target.styleComponent.NextCombatBackupStyle != null &&
-                             ad.Target.styleComponent.NextCombatBackupStyle.ID == 394))
-                            percent = 60;
-
                         ((GamePlayer) ad.Target).Out.SendMessage(
                             string.Format(
                                 LanguageMgr.GetTranslation(((GamePlayer) ad.Target).Client.Account.Language,
-                                    "GameLiving.AttackData.AttacksYou") + " (" + (percent > 0
-                                    ? percent.ToString("0.0") + "%)"
-                                    : ad.BlockChance.ToString("0.0") + "%)"), ad.Attacker.GetName(0, true)),
+                                    "GameLiving.AttackData.AttacksYou") +
+                                    $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, true)),
                             eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                     }
 
@@ -2586,16 +2576,11 @@ namespace DOL.GS
 
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                // Nature's shield 60% block
-                if (owner.IsObjectInFront(ad.Attacker, 180) && (owner.styleComponent.NextCombatStyle != null &&
-                                                                owner.styleComponent.NextCombatStyle.ID == 394) ||
-                    (owner.styleComponent.NextCombatBackupStyle != null &&
-                     owner.styleComponent.NextCombatBackupStyle.ID == 394))
+                // Nature's shield, 100% block chance, 120° frontal angle
+                if (owner.IsObjectInFront(ad.Attacker, 120) && (owner.styleComponent.NextCombatStyle?.ID == 394 || owner.styleComponent.NextCombatBackupStyle?.ID == 394))
                 {
-                    if (Util.Chance(60))
-                    {
-                        return eAttackResult.Blocked;
-                    }
+                    ad.BlockChance = 1;
+                    return eAttackResult.Blocked;
                 }
             }
 
