@@ -130,7 +130,6 @@ namespace DOL.GS
                         else
                         {
                             bool addEffect = false;
-                            bool addEffectInDisabledState = false;
                             // foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
                             bool foundIsOverwriteableEffect = false;
                             // Check to see if we can add new Effect
@@ -169,7 +168,7 @@ namespace DOL.GS
                                                 || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
                                             {
                                                 addEffect = true;
-                                                addEffectInDisabledState = true;
+                                                newSpellEffect.IsDisabled = true;
                                                 break;
                                             }
                                         }
@@ -198,10 +197,6 @@ namespace DOL.GS
                             {
                                 Effects[newSpellEffect.EffectType].Add(newSpellEffect);
                                 EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
-
-                                if (addEffectInDisabledState)
-                                    EffectService.RequestDisableEffect(newSpellEffect);
-
                                 return true;
                             }
                         }
