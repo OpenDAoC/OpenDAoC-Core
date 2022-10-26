@@ -126,7 +126,7 @@ namespace DOL.GS
                     if (e is StatDebuffECSEffect && spellEffect.SpellHandler.Spell.CastTime == 0)
                         StatDebuffECSEffect.TryDebuffInterrupt(spellEffect.SpellHandler.Spell, e.OwnerPlayer, spellEffect.SpellHandler.Caster);
 
-                    if ((spellEffect.SpellHandler.Spell.IsConcentration && !spellEffect.SpellHandler.Spell.IsPulsing) || (!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
+                    if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
                         || spellEffect is SavageBuffECSGameEffect)
                     {
                         //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
@@ -191,34 +191,15 @@ namespace DOL.GS
 
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            //Console.WriteLine($"Handling Cancel Effect {e.SpellHandler.ToString()}");
             EntityManager.RemoveEffect(e);
             if (!e.Owner.effectListComponent.RemoveEffect(e))
-            {
-                //Console.WriteLine("Unable to remove effect!");
                 return;
-            }
 
             ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
             if (spellEffect != null)
             {
-                if (!spellEffect.IsBuffActive)
-                {
-                    //Console.WriteLine("Buff not active! {0} on {1}", e.SpellHandler.Spell.Name, e.Owner.Name);
-                }
-                else if (spellEffect.EffectType != eEffect.Pulse)
-                {
-                    if (!(spellEffect is ECSImmunityEffect))
-                    {
-                        //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                        //{
-                        //    //Console.WriteLine("Removing EnduranceRegenBuff");
-                        //    var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
-                        //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, spellEffect.Effectiveness, true);
-                        //}
-                        e.OnStopEffect();
-                    }
-                }
+                if (spellEffect.IsBuffActive && spellEffect.EffectType != eEffect.Pulse && !(spellEffect is ECSImmunityEffect))
+                    e.OnStopEffect();
 
                 e.IsBuffActive = false;
                 // Update the Concentration List if Conc Buff/Song/Chant.

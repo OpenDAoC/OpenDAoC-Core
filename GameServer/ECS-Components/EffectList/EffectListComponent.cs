@@ -61,7 +61,7 @@ namespace DOL.GS
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
                                 ECSGameSpellEffect existingEffect = existingEffects[i];
-                                ISpellHandler existingSpellHandler = existingEffects[i].SpellHandler;
+                                ISpellHandler existingSpellHandler = existingEffect.SpellHandler;
                                 Spell existingSpell = existingSpellHandler.Spell;
 
                                 // Console.WriteLine($"Effect found! Name: {existingEffect.Name}, Effectiveness: {existingEffect.Effectiveness}, Poison: {existingSpell.IsPoisonEffect}, ID: {existingSpell.ID}, EffectGroup: {existingSpell.EffectGroup}");
@@ -91,6 +91,7 @@ namespace DOL.GS
                                         newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
                                         newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
                                         Effects[newSpellEffect.EffectType][i] = newSpellEffect;
+                                        EffectIdToEffect[newSpellEffect.Icon] = newSpellEffect;
                                     }
                                     return true;
                                 }
