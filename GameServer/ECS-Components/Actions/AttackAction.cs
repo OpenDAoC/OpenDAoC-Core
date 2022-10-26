@@ -222,8 +222,12 @@ namespace DOL.GS
 
                     if (GameLoop.GameLoopTime > styleComponent.NextCombatStyleTime + mainHandAttackSpeed)
                     {
-                        // The styles are too old, cancel them
-                        styleComponent.NextCombatStyle = null;
+                        // Cancel the styles if they were registered too long ago
+                        // Nature's Shield stays active forever and falls back to a non-backup style
+                        if (styleComponent.NextCombatBackupStyle?.ID == 394)
+                            styleComponent.NextCombatStyle = styleComponent.NextCombatBackupStyle;
+                        else if (styleComponent.NextCombatStyle?.ID != 394)
+                            styleComponent.NextCombatStyle = null;
                         styleComponent.NextCombatBackupStyle = null;
                     }
 
