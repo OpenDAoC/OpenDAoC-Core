@@ -2151,7 +2151,7 @@ namespace DOL.GS
                                         string.Format(
                                             LanguageMgr.GetTranslation(owner.Client.Account.Language,
                                                 "GameLiving.AttackData.YourCriticallyHits"), ad.Attacker.Name,
-                                            ad.Target.GetName(0, false), ad.CriticalDamage), eChatType.CT_YouHit,
+                                            ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(ad.Weapon)}%)", eChatType.CT_YouHit,
                                         eChatLoc.CL_SystemWindow);
                                 }
 
@@ -3273,7 +3273,7 @@ namespace DOL.GS
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical",
                                         ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
-                                        ad.CriticalDamage) + " (" + AttackCriticalChance(ad.Weapon) + "%)",
+                                        ad.CriticalDamage) + $" ({AttackCriticalChance(ad.Weapon)}%)",
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -3386,9 +3386,9 @@ namespace DOL.GS
                             // critical hit
                             if (ad.CriticalDamage > 0)
                                 p.Out.SendMessage(
-                                    LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Critical",
-                                        ad.Target.GetName(0, false), ad.CriticalDamage) + " (" +
-                                    AttackCriticalChance(ad.Weapon) + "%)", eChatType.CT_YouHit,
+                                    LanguageMgr.GetTranslation(p.Client.Account.Language,
+                                        "GamePlayer.Attack.Critical", ad.Target.GetName(0, false),
+                                        ad.CriticalDamage) + $"({AttackCriticalChance(ad.Weapon)}%)", eChatType.CT_YouHit,
                                     eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -3406,7 +3406,7 @@ namespace DOL.GS
         {
             if (owner is GamePlayer)
             {
-                if (Util.Chance(AttackCriticalChance(weapon)))
+                    if (Util.Chance(AttackCriticalChance(weapon)))
                 {
                     // triple wield prevents critical hits
                     if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null) return 0;
