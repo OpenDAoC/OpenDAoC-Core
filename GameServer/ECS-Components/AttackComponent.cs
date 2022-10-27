@@ -1482,7 +1482,7 @@ namespace DOL.GS
             else if (weapon == null)
                 ad.AttackType = AttackData.eAttackType.MeleeOneHand;
             else
-                switch (weapon.Item_Type)
+                switch (weapon.SlotPosition)
                 {
                     default:
                     case Slot.RIGHTHAND:
