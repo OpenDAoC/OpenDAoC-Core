@@ -745,10 +745,16 @@ namespace DOL.GS.ServerProperties
 		public static bool ALWAYS_CHECK_LOS;
 
 		/// <summary>
-		/// Perform checklos on client with each mob
+		/// Perform checklos on client during cast
 		/// </summary>
-		[ServerProperty("world", "check_los_during_cast", "Perform a LOS check during a spell cast.", true)]
+		[ServerProperty("world", "check_los_during_cast", "Perform LOS checks during a spell cast.", true)]
 		public static bool CHECK_LOS_DURING_CAST;
+
+		/// <summary>
+		/// Interrupt cast if checklos fails before end of cast
+		/// </summary>
+		[ServerProperty("world", "check_los_during_cast_interrupt", "Should the casting animation be interrupted if a during cast LOS checks fails.", false)]
+		public static bool CHECK_LOS_DURING_CAST_INTERRUPT;
 
 		/// <summary>
 		/// Perform LOS check between controlled NPC's and players

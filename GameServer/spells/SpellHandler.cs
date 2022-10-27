@@ -787,17 +787,17 @@ namespace DOL.GS.Spells
 
 			if (quickCast != null)
 				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
-
-            if (m_caster is GamePlayer)
+			
+            if (m_caster is GamePlayer playerCaster)
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
 				if (nextSpellAvailTime > m_caster.CurrentRegion.Time && Spell.CastTime > 0) // instant spells ignore the potion cast delay
 				{
-					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
 				}
-				if (((GamePlayer)m_caster).Steed is GameSiegeRam)
+				if (playerCaster.Steed is GameSiegeRam)
 				{
 					if (!quiet)
 						MessageToCaster("You can't cast in a siegeram!", eChatType.CT_System);
@@ -859,7 +859,7 @@ namespace DOL.GS.Spells
 			{
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{
-					if(!(m_caster is GamePet))
+					if (m_caster is not GamePet)
 						m_caster.attackComponent.LivingStopAttack(); //dont stop melee for pet (probaby look at stopping attack just for game player)
 					return false;
 				}
@@ -1067,28 +1067,36 @@ namespace DOL.GS.Spells
 					engage.Cancel(false);
 			}
 
-			if (!(Caster is GamePlayer))
+			if (Caster is not GamePlayer)
 				Caster.Notify(GameLivingEvent.CastSucceeded, this, new PetSpellEventArgs(Spell, SpellLine, selectedTarget));
 
 			return true;
 		}
 
-		private void LosResponseHandler(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID)
+		private void CheckPlayerLosDuringCastCallback(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID)
 		{
-			if(player == null || sourceOID == 0 || targetOID == 0)
+			if (player == null || sourceOID == 0 || targetOID == 0)
 				return;
 			
-			// Check result
 			player.TargetInView = (response & 0x100) == 0x100;
+
+			if (!player.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			{
+				if (IsCasting)
+					MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+				InterruptCasting();
+			}
 		}
 		
-		private void PetLosResponseHandler(GameLiving living, ushort response, ushort sourceOID, ushort targetOID)
+		private void CheckPetLosDuringCastCallback(GameLiving living, ushort response, ushort sourceOID, ushort targetOID)
 		{
-			if(living == null || sourceOID == 0 || targetOID == 0)
+			if (living == null || sourceOID == 0 || targetOID == 0)
 				return;
 			
-			// Check result
 			m_caster.TargetInView = (response & 0x100) == 0x100;
+
+			if (!m_caster.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+				InterruptCasting();
 		}
 
 		/// <summary>
@@ -1126,60 +1134,6 @@ namespace DOL.GS.Spells
 			InterruptCasting(); // break;
 		}
 
-		/// <summary>
-		/// Check the Line of Sight from a player to a target
-		/// </summary>
-		/// <param name="player">The player</param>
-		/// <param name="response">The result</param>
-		/// <param name="targetOID">The target OID</param>
-		public virtual void CheckLOSPlayerToTarget(GamePlayer player, GameObject source, GameObject target, bool losOk, EventArgs args, PropertyCollection tempProperties)
-		{
-			if (player == null) // Hmm
-				return;
-
-			if (losOk) // In view?
-				return;
-
-			if (ServerProperties.Properties.ENABLE_DEBUG)
-			{
-				MessageToCaster("LoS Interrupt in CheckLOSPlayerToTarget", eChatType.CT_System);
-				log.Debug("LoS Interrupt in CheckLOSPlayerToTarget");
-			}
-
-			if (Caster is GamePlayer)
-			{
-				MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
-				if(Spell.IsFocus && Spell.IsHarmful)
-				{
-					FocusSpellAction(/*null, Caster, null*/);
-				}
-			}
-
-			InterruptCasting();
-		}
-
-		/// <summary>
-		/// Check the Line of Sight from an npc to a target
-		/// </summary>
-		/// <param name="player">The player</param>
-		/// <param name="response">The result</param>
-		/// <param name="targetOID">The target OID</param>
-		public virtual void CheckLOSNPCToTarget(GamePlayer player, GameObject source, GameObject target, bool losOk, EventArgs args, PropertyCollection tempProperties)
-		{
-			if (player == null) // Hmm
-				return;
-
-			if (losOk) // In view?
-				return;
-
-			if (ServerProperties.Properties.ENABLE_DEBUG)
-			{
-				MessageToCaster("LoS Interrupt in CheckLOSNPCToTarget", eChatType.CT_System);
-				log.Debug("LoS Interrupt in CheckLOSNPCToTarget");
-			}
-
-			InterruptCasting();
-		}
 		/// <summary>
 		/// Checks after casting before spell is executed
 		/// </summary>
@@ -1422,11 +1376,14 @@ namespace DOL.GS.Spells
 					//	return false;
 					//}
 
-					GamePlayer playerCheck = Caster as GamePlayer;
-					playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
+					if (Properties.CHECK_LOS_DURING_CAST)
+					{
+						GamePlayer playerCheck = Caster as GamePlayer;
+						playerCheck?.Out.SendCheckLOS(playerCheck, target, CheckPlayerLosDuringCastCallback);
 			
-					GamePet petcheck = Caster as GamePet;
-					(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
+						GamePet petCheck = Caster as GamePet;
+						(petCheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petCheck, target, CheckPetLosDuringCastCallback);
+					}
 				}
 
 				switch (m_spell.Target.ToLower())
@@ -1441,44 +1398,6 @@ namespace DOL.GS.Spells
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
 						}*/
-
-						if (ServerProperties.Properties.CHECK_LOS_DURING_CAST)
-						{
-							GamePlayer playerChecker = null;
-
-							if (target is GamePlayer)
-							{
-								playerChecker = target as GamePlayer;
-							}
-							else if (Caster is GamePlayer)
-							{
-								playerChecker = Caster as GamePlayer;
-							}
-							else if (Caster is GameNPC && (Caster as GameNPC).Brain != null && (Caster as GameNPC).Brain is IControlledBrain)
-							{
-								playerChecker = ((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-							}
-
-							if (playerChecker != null)
-							{
-								// If the area forces an LoS check then we do it, otherwise we only check
-								// if caster or target is a player
-								// This will generate an interrupt if LOS check fails
-
-								if (Caster is GamePlayer)
-								{
-									//playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSMgrResponse(CheckLOSPlayerToTarget));
-									LosCheckMgr chk = new LosCheckMgr();
-									chk.LosCheck(playerChecker, Caster, target, new LosMgrResponse(CheckLOSPlayerToTarget), false, Spell.CastTime);
-								}
-								else if (target is GamePlayer || MustCheckLOS(Caster))
-								{
-									//playerChecker.Out.SendCheckLOS(Caster, target, new CheckLOSMgrResponse(CheckLOSNPCToTarget));
-									LosCheckMgr chk = new LosCheckMgr();
-									chk.LosCheck(playerChecker, Caster, target, new LosMgrResponse(CheckLOSNPCToTarget), false, Spell.CastTime);
-								}
-							}
-						}
 
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, quiet))
 						{
@@ -1617,7 +1536,7 @@ namespace DOL.GS.Spells
 			{
 				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 				{
-					if (!quiet) MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
+					if (!quiet) MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
 					return false;
 				}
                 //if (!Caster.GroundTargetInView)
