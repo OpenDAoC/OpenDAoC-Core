@@ -1378,12 +1378,6 @@ namespace DOL.GS.Spells
 				if(!quiet) MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
 				return false;
 			}
-			
-			GamePlayer playerCheck = Caster as GamePlayer;
-			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
-			
-			GamePet petcheck = Caster as GamePet;
-			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
 
 			if (m_spell.InstrumentRequirement != 0)
 			{
@@ -1427,6 +1421,12 @@ namespace DOL.GS.Spells
 					//	if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 					//	return false;
 					//}
+
+					GamePlayer playerCheck = Caster as GamePlayer;
+					playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
+			
+					GamePet petcheck = Caster as GamePet;
+					(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
 				}
 
 				switch (m_spell.Target.ToLower())
