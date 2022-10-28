@@ -787,12 +787,6 @@ namespace DOL.GS.Spells
 
 			if (quickCast != null)
 				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
-			
-			GamePlayer playercheck = Caster as GamePlayer;
-			playercheck?.Out.SendCheckLOS(playercheck, selectedTarget, LosResponseHandler);
-			
-			GamePet petcheck = m_caster as GamePet;
-			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, selectedTarget, PetLosResponseHandler);
 
             if (m_caster is GamePlayer)
 			{
@@ -1193,12 +1187,6 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-			GamePlayer playercheck = Caster as GamePlayer;
-			playercheck?.Out.SendCheckLOS(playercheck, target, LosResponseHandler);
-			
-			GamePet petcheck = Caster as GamePet;
-			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
-			
 			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
 			{
 				// Message: You can't summon here!
@@ -1582,12 +1570,6 @@ namespace DOL.GS.Spells
 			{
 				return false;
 			}
-			
-			GamePlayer playerCheck = Caster as GamePlayer;
-			playerCheck?.Out.SendCheckLOS(playerCheck, target, LosResponseHandler);
-			
-			GamePet petcheck = Caster as GamePet;
-			(petcheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petcheck, target, PetLosResponseHandler);
 
 			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
 				!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) && !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
