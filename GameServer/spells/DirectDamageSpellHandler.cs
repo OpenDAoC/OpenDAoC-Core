@@ -100,16 +100,10 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public override void OnDirectEffect(GameLiving target, double effectiveness)
 		{
-			if (target == null) return;
+			if (target == null)
+				return;
 
-			bool spellOK = true;
-
-			if (Spell.Target.ToLower() == "cone" || (Spell.Target == "Enemy" && Spell.Radius > 0 && Spell.Range == 0))
-			{
-				spellOK = false;
-			}
-
-			if (spellOK == false || MustCheckLOS(Caster))
+			if (Spell.Target.ToLower() == "cone" || (Spell.Target == "Enemy" && Spell.IsPBAoE))
 			{
 				GamePlayer checkPlayer = null;
 				if (target is GamePlayer)

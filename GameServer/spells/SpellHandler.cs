@@ -1102,25 +1102,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// Does the area we are in force an LoS check on everything?
-		/// </summary>
-		/// <param name="living"></param>
-		/// <returns></returns>
-		protected bool MustCheckLOS(GameLiving living)
-		{
-			foreach (AbstractArea area in living.CurrentAreas)
-			{
-				if (area.CheckLOS)
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-
-		/// <summary>
 		/// Check the Line of Sight from you to your pet
 		/// </summary>
 		/// <param name="player">The player</param>

@@ -54,14 +54,10 @@ namespace DOL.GS.Spells
 		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
 		public override void OnDirectEffect(GameLiving target, double effectiveness)
 		{
-			if (target == null) return;
+			if (target == null)
+				return;
 
-			bool spellOK = true;
-			//cone spells
-			if (Spell.Target == "Frontal" || (Spell.Target == "Enemy" && Spell.Radius > 0 && Spell.Range == 0))
-				spellOK = false;
-
-			if (!spellOK || CheckLOS(Caster))
+			if (Spell.Target.ToLower() == "cone" || (Spell.Target == "Enemy" && Spell.IsPBAoE))
 			{
 				GamePlayer player = null;
 				if (target is GamePlayer)
@@ -91,16 +87,6 @@ namespace DOL.GS.Spells
 					DealDamage(target, effectiveness);
 			}
 			else DealDamage(target, effectiveness);
-		}
-
-		private bool CheckLOS(GameLiving living)
-		{
-			foreach (AbstractArea area in living.CurrentAreas)
-			{
-				if (area.CheckLOS)
-					return true;
-			}
-			return false;
 		}
 
 		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
