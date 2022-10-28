@@ -163,6 +163,8 @@ namespace DOL.GS.Spells
 
 		private long _calculatedCastTime = 0;
 
+		private long _lastDuringCastLosCheckTime;
+
 		/// <summary>
 		/// Does this spell ignore any damage cap?
 		/// </summary>
@@ -1376,8 +1378,10 @@ namespace DOL.GS.Spells
 					//	return false;
 					//}
 
-					if (Properties.CHECK_LOS_DURING_CAST)
+					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime >  _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 					{
+						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
+
 						GamePlayer playerCheck = Caster as GamePlayer;
 						playerCheck?.Out.SendCheckLOS(playerCheck, target, CheckPlayerLosDuringCastCallback);
 			

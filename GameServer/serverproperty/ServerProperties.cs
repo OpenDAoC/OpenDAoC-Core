@@ -739,19 +739,25 @@ namespace DOL.GS.ServerProperties
 		public static bool WEATHER_LOG_EVENTS;
 
 		/// <summary>
-		/// Perform checklos on client with each mob
+		/// Perform a LoS check on client with each mob
 		/// </summary>
 		[ServerProperty("world", "always_check_los", "Perform a LoS check before aggroing. This can involve a huge lag, handle with care!", false)]
 		public static bool ALWAYS_CHECK_LOS;
 
 		/// <summary>
-		/// Perform checklos on client during cast
+		/// Perform a LoS check on client during cast
 		/// </summary>
 		[ServerProperty("world", "check_los_during_cast", "Perform LOS checks during a spell cast.", true)]
 		public static bool CHECK_LOS_DURING_CAST;
 
 		/// <summary>
-		/// Interrupt cast if checklos fails before end of cast
+		/// Minimum interval between two LoS checks during cast
+		/// </summary>
+		[ServerProperty("world", "check_los_during_cast_minimum_interval", "The minimum interval (milliseconds) between two LOS checks performed during a spell cast.", 200)]
+		public static int CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
+
+		/// <summary>
+		/// Interrupt cast if a LoS check fails before end of cast
 		/// </summary>
 		[ServerProperty("world", "check_los_during_cast_interrupt", "Should the casting animation be interrupted if a during cast LOS checks fails.", false)]
 		public static bool CHECK_LOS_DURING_CAST_INTERRUPT;
