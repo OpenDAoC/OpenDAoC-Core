@@ -59,7 +59,6 @@ namespace DOL.GS.Keeps
 				{
 					m_dbArea = new DBArea();
 					m_dbArea.CanBroadcast = this.CanBroadcast;
-					m_dbArea.CheckLOS = this.CheckLOS;
 					m_dbArea.ClassType = this.GetType().ToString();
 					m_dbArea.Description = this.Description;
 					m_dbArea.Radius = this.Radius;

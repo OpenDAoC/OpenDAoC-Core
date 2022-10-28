@@ -298,7 +298,6 @@ namespace DOL.GS
             		newArea.LoadFromDatabase(newDBArea);
 					newArea.Sound = newDBArea.Sound;
 					newArea.CanBroadcast = newDBArea.CanBroadcast;
-					newArea.CheckLOS = newDBArea.CheckLOS;
 					this.AddArea(newArea);
 					areaCnt++;
 	            }

@@ -483,7 +483,6 @@ namespace DOL.GS.Keeps
 			{
 				area = new KeepArea(this);
 				area.CanBroadcast = true;
-				area.CheckLOS = true;
 				CurrentRegion.AddArea(area);
 			}
 			area.Keep = this;

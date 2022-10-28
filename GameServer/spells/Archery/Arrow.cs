@@ -80,16 +80,6 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		private bool CheckLOS(GameLiving living)
-		{
-			foreach (AbstractArea area in living.CurrentAreas)
-			{
-				if (area.CheckLOS)
-					return true;
-			}
-			return false;
-		}
-
 		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
 		{
 			if ((response & 0x100) == 0x100)

@@ -42,16 +42,6 @@ namespace DOL.GS
 			set { m_canBroadcast = value; }
 		}
 
-		protected bool m_checkLOS = false;
-		/// <summary>
-		/// Variable holding whether or not to check for LOS for spells in this area
-		/// </summary>
-		public bool CheckLOS
-		{
-			get { return m_checkLOS; }
-			set { m_checkLOS = value; }
-		}
-
 		protected bool m_displayMessage = true;
 		/// <summary>
 		/// Display entered message

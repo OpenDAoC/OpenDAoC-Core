@@ -14466,27 +14466,21 @@ namespace DOL.GS
             protected override int OnTick(ECSGameTimer timer)
             {
                 GamePlayer player = (GamePlayer)m_actionSource;
-                if (player.Client.Account.PrivLevel > 1) return 0;
 
-                bool checklos = false;
-                foreach (AbstractArea area in player.CurrentAreas)
-                {
-                    if (area.CheckLOS)
-                    {
-                        checklos = true;
-                        break;
-                    }
-                }
+                if (player.Client.Account.PrivLevel > 1)
+                    return 0;
 
                 foreach (GameNPC npc in player.GetNPCsInRadius(1024))
                 {
                     // Friendly mobs do not uncover stealthed players
-                    if (!GameServer.ServerRules.IsAllowedToAttack(npc, player, true)) continue;
+                    if (!GameServer.ServerRules.IsAllowedToAttack(npc, player, true))
+                        continue;
 
                     // Npc with player owner don't uncover
                     if (npc.Brain != null
                         && (npc.Brain as IControlledBrain) != null
-                        && (npc.Brain as IControlledBrain).GetPlayerOwner() != null) continue;
+                        && (npc.Brain as IControlledBrain).GetPlayerOwner() != null)
+                        continue;
 
                     double npcLevel = Math.Max(npc.Level, 1.0);
                     double stealthLevel = player.GetModifiedSpecLevel(Specs.Stealth);
@@ -14494,25 +14488,22 @@ namespace DOL.GS
 
                     // we have detect hidden and enemy don't = higher range
                     if (npc.HasAbility(Abilities.DetectHidden) && EffectListService.GetAbilityEffectOnTarget(player, eEffect.Camouflage) == null)
-                    {
                         detectRadius += 125;
-                    }
 
                     if (detectRadius < 126) detectRadius = 126;
 
-                    double distanceToPlayer = npc.GetDistanceTo( player );
+                    double distanceToPlayer = npc.GetDistanceTo(player);
 
-                    if ( distanceToPlayer > detectRadius )
+                    if (distanceToPlayer > detectRadius)
                         continue;
 
                     double fieldOfView = 90.0;  //90 degrees  = standard FOV
                     double fieldOfListen = 120.0; //120 degrees = standard field of listening
-                    if (npc.Level > 50)
-                    {
-                        fieldOfListen += (npc.Level - player.Level) * 3;
-                    }
 
-                    double angle = npc.GetAngle( player );
+                    if (npc.Level > 50)
+                        fieldOfListen += (npc.Level - player.Level) * 3;
+
+                    double angle = npc.GetAngle(player);
 
                     //player in front
                     fieldOfView /= 2.0;
@@ -14537,22 +14528,9 @@ namespace DOL.GS
                     if (Util.ChanceDouble(chanceToUncover))
                     {
                         if (canSeePlayer)
-                        {
-                            if (checklos)
-                            {
-                                player.Out.SendCheckLOS(player, npc, new CheckLOSResponse(player.UncoverLOSHandler));
-                            }
-                            else
-                            {
-                                player.Out.SendMessage(npc.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                player.Stealth(false);
-                                break;
-                            }
-                        }
+                            player.Out.SendCheckLOS(player, npc, new CheckLOSResponse(player.UncoverLOSHandler));
                         else
-                        {
                             npc.TurnTo(player, 10000);
-                        }
                     }
                 }
 
@@ -14566,7 +14544,8 @@ namespace DOL.GS
         {
             GameObject target = CurrentRegion.GetObject(targetOID);
 
-            if ((target == null) || (player.IsStealthed == false)) return;
+            if ((target == null) || (player.IsStealthed == false))
+                return;
 
             if ((response & 0x100) == 0x100)
             {

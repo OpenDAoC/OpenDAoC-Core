@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 		{
 			foreach (GameLiving targ in SelectTargets(target))
 			{
-				if (targ is GamePlayer && Spell.Target.ToLower() == "cone" && CheckLOS(Caster))
+				if (targ is GamePlayer && Spell.Target.ToLower() == "cone")
 				{
 					GamePlayer player = targ as GamePlayer;
 					player.Out.SendCheckLOS(Caster, player, new CheckLOSResponse(DealDamageCheckLOS));
@@ -71,16 +71,6 @@ namespace DOL.GS.Spells
 			}
 
 			return true;
-		}
-
-		private bool CheckLOS(GameLiving living)
-		{
-			foreach (AbstractArea area in living.CurrentAreas)
-			{
-				if (area.CheckLOS)
-					return true;
-			}
-			return false;
 		}
 
 		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
