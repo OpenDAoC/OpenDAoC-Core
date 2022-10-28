@@ -17,9 +17,8 @@
  *
  */
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 using log4net;
 
@@ -51,10 +50,12 @@ namespace DOL.GS
 		{
 			return getProperty<T>(key, default(T));
 		}
+
 		public T getProperty<T>(object key, T def)
 		{
 			return getProperty<T>(key, def, false);
 		}
+
 		public T getProperty<T>(object key, T def, bool loggued)
 		{
 			object val;
@@ -86,14 +87,9 @@ namespace DOL.GS
 		public void setProperty(object key, object val)
 		{
 			if (val == null)
-			{
-				object dummy;
-				_props.TryRemove(key, out dummy);
-			}
+				_props.TryRemove(key, out _);
 			else
-			{
 				_props[key] = val;
-			}
 		}
 
 		/// <summary>
@@ -102,8 +98,18 @@ namespace DOL.GS
 		/// <param name="key">key</param>
 		public void removeProperty(object key)
 		{
-			object dummy;
-			_props.TryRemove(key, out dummy);
+			_props.TryRemove(key, out _);
+		}
+
+		/// <summary>
+		/// Remove a property and return its value.
+		/// </summary>
+		/// <param name="key">key</param>
+		/// <param name="val">value</param>
+		/// <returns>True if the property exists and was removed</returns>
+		public bool removeAndGetProperty(object key, out object val)
+		{
+			return _props.TryRemove(key, out val);
 		}
 
 		/// <summary>
