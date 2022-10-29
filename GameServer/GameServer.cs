@@ -890,7 +890,7 @@ namespace DOL.GS
 			try
 			{
 				using var newsClient = new HttpClient();
-				const string url = "https://admin.atlasfreeshard.com/storage/servernews.txt";
+				var url = Properties.PATCH_NOTES_URL;
 				var newsResult = await newsClient.GetStringAsync(url);
 				news.Add(newsResult);
 				log.Debug("Patch notes updated.");

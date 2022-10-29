@@ -2955,6 +2955,9 @@ namespace DOL.GS.ServerProperties
 		
 		[ServerProperty("atlas", "epics_dmg_multiplier", "Use this to scale up/down the damage of epic mobs", 1)]
         public static int EPICS_DMG_MULTIPLIER;
+        
+        [ServerProperty("atlas", "patch_notes_url", "The URL of the remote patch notes .txt to display with /sn", "")]
+        public static string PATCH_NOTES_URL;
 
 		#endregion
 		public static IDictionary<string, object> AllCurrentProperties
