@@ -1,9 +1,7 @@
 using System;
-using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
-using log4net.Core;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -28,34 +26,27 @@ namespace DOL.GS.PropertyCalc
 				GamePlayer player = living as GamePlayer;
 				int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(eProperty.Constitution));
 				int buffBonus = living.BaseBuffBonusCategory[(int)property];
-				if (buffBonus < 0) buffBonus = (int)((1 + (buffBonus / -100.0)) * hpBase) - hpBase;
+
+				if (buffBonus < 0)
+					buffBonus = (int)((1 + (buffBonus / -100.0)) * hpBase) - hpBase;
+
 				int itemBonus = living.ItemBonus[(int)property];
-				int cap = Math.Max(player.Level * 4, 20) + // at least 20
+				int cap = Math.Max(player.Level * 4, 20) +
 						  Math.Min(living.ItemBonus[(int)eProperty.MaxHealthCapBonus], player.Level * 4);
 				itemBonus = Math.Min(itemBonus, cap);
+
 				if (player.HasAbility(Abilities.ScarsOfBattle) && player.Level >= 40)
 				{
 					int levelbonus = Math.Min(player.Level - 40, 10);
 					hpBase = (int)(hpBase * (100 + levelbonus) * 0.01);
 				}
+
 				int abilityBonus = living.AbilityBonus[(int)property];
+			
+				AtlasOF_ToughnessAbility toughness = player.GetAbility<AtlasOF_ToughnessAbility>();
+				double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
 
-				#region Calculation : AtlasOF_Thoughness
-				// --- [START] --- AtlasOF_Thoughness ---------------------------------------------------------
-				int raToughnessAmount = 0;
-				AtlasOF_ToughnessAbility raToughness = living.GetAbility<AtlasOF_ToughnessAbility>();
-
-				if (raToughness != null)
-				{
-					if (raToughness.Level > 0)
-					{
-						raToughnessAmount += (hpBase * raToughness.Level * 3) / 100;
-					}
-				}
-				// --- [ END ] --- AtlasOF_Thoughness ---------------------------------------------------------
-				#endregion
-
-				return Math.Max(hpBase + itemBonus + buffBonus + abilityBonus + raToughnessAmount, 1); // at least 1
+				return Math.Max((int)(hpBase * toughnessMod) + itemBonus + buffBonus + abilityBonus, 1);
 			}
 			else if (living is GameKeepComponent)
 			{
@@ -73,15 +64,12 @@ namespace DOL.GS.PropertyCalc
 				if (keepdoor.Component != null && keepdoor.Component.Keep != null)
 				{
 					if (keepdoor.IsRelic)
-					{
 						return Properties.RELIC_DOORS_HEALTH;
-					}
+
 					return (keepdoor.Component.Keep.EffectiveLevel(keepdoor.Component.Keep.Level) + 1) * keepdoor.Component.Keep.BaseLevel * 200;
 				}
 
 				return 0;
-
-				//todo : use material too to calculate maxhealth
 			}
 			else if (living is TheurgistPet theu)
 			{

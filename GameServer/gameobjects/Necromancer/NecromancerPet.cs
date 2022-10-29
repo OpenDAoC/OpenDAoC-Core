@@ -232,7 +232,9 @@ namespace DOL.GS
 							conBonus = 0;
 						
 						int totalBonus = conBonus + hitsBonus;
-						double toughnessMod = playerOwner != null ? (1 + playerOwner.AbilityBonus[(int)eProperty.MaxHealth] * 0.01) : 1;
+
+						AtlasOF_ToughnessAbility toughness = playerOwner?.GetAbility<AtlasOF_ToughnessAbility>();
+						double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
 
 						return (int)(totalBonus * toughnessMod);
 					}
