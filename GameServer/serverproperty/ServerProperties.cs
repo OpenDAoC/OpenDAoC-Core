@@ -2064,10 +2064,35 @@ namespace DOL.GS.ServerProperties
 		public static int GUARD_RESPAWN_VARIANCE;
 		
 		/// <summary>
+		/// Doors base health value.
+		/// </summary>
+		[ServerProperty("keeps", "keep_doors_base_health", "Keep doors base health. Will be multiplied by the keep's base level.", 200)]
+		public static int KEEP_DOORS_BASE_HEALTH;
+
+		/// <summary>
+		/// Doors health upgrade modifier.
+		/// </summary>
+		[ServerProperty("keeps", "keep_doors_health_upgrade_modifier", "The modifier used to calculate the extra amount of door health per upgrade.", 1.0)]
+		public static double KEEP_DOORS_HEALTH_UPGRADE_MODIFIER;
+
+		/// <summary>
+		/// Components base health value.
+		/// </summary>
+		[ServerProperty("keeps", "keep_components_base_health", "Keep components base health. Will be multiplied by the keep's base level.", 200)]
+		public static int KEEP_COMPONENTS_BASE_HEALTH;
+
+		/// <summary>
+		/// Components health upgrade modifier.
+		/// </summary>
+		[ServerProperty("keeps", "keep_components_health_upgrade_modifier", "The modifier used to calculate the extra amount of component health per upgrade.", 1.0)]
+		public static double KEEP_COMPONENTS_HEALTH_UPGRADE_MODIFIER;
+
+		/// <summary>
 		/// Relic gates health value.
 		/// </summary>
 		[ServerProperty("keeps", "relic_doors_health", "Relic gates health value", 180000)]
 		public static int RELIC_DOORS_HEALTH;
+
 		#endregion
 
 		#region PVE / TOA

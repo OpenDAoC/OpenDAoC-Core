@@ -50,23 +50,29 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is GameKeepComponent)
 			{
-				GameKeepComponent keepComp = living as GameKeepComponent;
+				AbstractGameKeep gameKeep = (living as GameKeepComponent)?.Keep;
 
-				if (keepComp.Keep != null)
-					return (keepComp.Keep.EffectiveLevel(keepComp.Keep.Level) + 1) * keepComp.Keep.BaseLevel * 200;
+				if (gameKeep != null)
+				{
+					int baseHealth = gameKeep.BaseLevel * Properties.KEEP_COMPONENTS_BASE_HEALTH;
+					baseHealth += (int)(baseHealth * (gameKeep.Level - 1) * Properties.KEEP_COMPONENTS_HEALTH_UPGRADE_MODIFIER);
+					return baseHealth;
+				}
 
 				return 0;
 			}
 			else if (living is GameKeepDoor)
 			{
-				GameKeepDoor keepdoor = living as GameKeepDoor;
+				AbstractGameKeep gameKeep = (living as GameKeepDoor)?.Component?.Keep;
 
-				if (keepdoor.Component != null && keepdoor.Component.Keep != null)
+				if (gameKeep != null)
 				{
-					if (keepdoor.IsRelic)
+					if (gameKeep.IsRelic)
 						return Properties.RELIC_DOORS_HEALTH;
 
-					return (keepdoor.Component.Keep.EffectiveLevel(keepdoor.Component.Keep.Level) + 1) * keepdoor.Component.Keep.BaseLevel * 200;
+					int baseHealth = gameKeep.BaseLevel * Properties.KEEP_DOORS_BASE_HEALTH;
+					baseHealth += (int)(baseHealth * (gameKeep.Level - 1) * Properties.KEEP_DOORS_HEALTH_UPGRADE_MODIFIER);
+					return baseHealth;
 				}
 
 				return 0;
