@@ -191,15 +191,23 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
-                if (npc.Brain is ControlledNpcBrain controlledNpcBrain
-                    && controlledNpcBrain.Owner is GamePlayer owner
-                    && GS.ServerProperties.Properties.ALWAYS_CHECK_LOS) // If this is a pet or charmed creature, check LoS
-                    owner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
-                else
+                if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
                 {
-                    AddToAggroList(npc, 1);
-                    return;
+                    // Check LoS if either the target or the current mob is a pet
+                    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.Owner is GamePlayer theirOwner)
+                    {
+                        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        continue;
+                    }
+                    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.Owner is GamePlayer ourOwner)
+                    {
+                        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        continue;
+                    }
                 }
+
+                AddToAggroList(npc, 1);
+                return;
             }
         }
 
@@ -265,7 +273,7 @@ namespace DOL.AI.Brain
 
         #region Aggro
 
-        private int _aggroRange;
+        protected int _aggroRange;
 
         /// <summary>
         /// Max Aggro range in that this npc searches for enemies
