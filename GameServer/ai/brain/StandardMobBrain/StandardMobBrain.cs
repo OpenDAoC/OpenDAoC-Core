@@ -38,7 +38,6 @@ namespace DOL.AI.Brain
     {
         public const int MAX_AGGRO_DISTANCE = 3600;
         public const int MAX_AGGRO_LIST_DISTANCE = 6000;
-        public const int MAX_PET_AGGRO_DISTANCE = 512; // Tolakram - Live test with caby pet - I was extremely close before auto aggro
 
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new List<GamePlayer>();
@@ -198,7 +197,7 @@ namespace DOL.AI.Brain
                     owner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
                 else
                 {
-                    AddToAggroList(npc, (npc.Level + 1) << 1);
+                    AddToAggroList(npc, 1);
                     return;
                 }
             }
@@ -266,10 +265,12 @@ namespace DOL.AI.Brain
 
         #region Aggro
 
+        private int _aggroRange;
+
         /// <summary>
         /// Max Aggro range in that this npc searches for enemies
         /// </summary>
-        public virtual int AggroRange { get; set; }
+        public virtual int AggroRange { get => Math.Min(_aggroRange, MAX_AGGRO_DISTANCE); set => _aggroRange = value; }
 
         /// <summary>
         /// Aggressive Level in % 0..100, 0 means not Aggressive
@@ -579,17 +580,11 @@ namespace DOL.AI.Brain
                     && living.CurrentRegion == Body.CurrentRegion
                     && living.ObjectState == GameObject.eObjectState.Active)
                 {
-                    int distance = Body.GetDistanceTo(living);
-                    int maxAggroDistance = (this is IControlledBrain) ? MAX_PET_AGGRO_DISTANCE : MAX_AGGRO_DISTANCE;
-
-                    if (distance <= maxAggroDistance)
+                    double aggro = amount * Math.Min(500.0 / Body.GetDistanceTo(living), 1);
+                    if (aggro > maxAggro)
                     {
-                        double aggro = amount * Math.Min(500.0 / distance, 1);
-                        if (aggro > maxAggro)
-                        {
-                            maxAggroObject = living;
-                            maxAggro = aggro;
-                        }
+                        maxAggroObject = living;
+                        maxAggro = aggro;
                     }
                 }
             }

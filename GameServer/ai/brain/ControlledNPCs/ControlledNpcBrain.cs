@@ -40,12 +40,13 @@ namespace DOL.AI.Brain
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+		public const int MAX_PET_AGGRO_DISTANCE = 512; // Tolakram - Live test with caby pet - I was extremely close before auto aggro
 		// note that a minimum distance is inforced in GameNPC
-		public static readonly short MIN_OWNER_FOLLOW_DIST = 50;
+		public const short MIN_OWNER_FOLLOW_DIST = 50;
 		//4000 - rough guess, needs to be confirmed
-		public static readonly short MAX_OWNER_FOLLOW_DIST = 10000; // setting this to max stick distance
-		public static readonly short MIN_ENEMY_FOLLOW_DIST = 90;
-		public static readonly short MAX_ENEMY_FOLLOW_DIST = 5000;
+		public const short MAX_OWNER_FOLLOW_DIST = 10000; // setting this to max stick distance
+		public const short MIN_ENEMY_FOLLOW_DIST = 90;
+		public const short MAX_ENEMY_FOLLOW_DIST = 5000;
 
 		protected int m_tempX = 0;
 		protected int m_tempY = 0;
@@ -78,16 +79,12 @@ namespace DOL.AI.Brain
 		public ControlledNpcBrain(GameLiving owner)
 			: base()
 		{
-            if (owner == null)
-                throw new ArgumentNullException("owner");
-
-            m_owner = owner;
+			m_owner = owner ?? throw new ArgumentNullException("owner");
             m_aggressionState = eAggressionState.Defensive;
             m_walkState = eWalkState.Follow;
-            if (owner is GameNPC && (owner as GameNPC).Brain is StandardMobBrain)
-            {
-                AggroLevel = ((owner as GameNPC).Brain as StandardMobBrain).AggroLevel;
-            }
+
+            if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
+                AggroLevel = npcOwnerBrain.AggroLevel;
             else
                 AggroLevel = 99;
             AggroRange = 1500;
@@ -101,12 +98,13 @@ namespace DOL.AI.Brain
 			FSM.Add(new StandardMobState_DEAD(FSM, this));
 
 			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
-			
 		}
 
 		protected bool m_isMainPet = true;
 		public bool checkAbility;
 		public bool sortedSpells;
+
+		public override int AggroRange => Math.Min(base.AggroRange, MAX_PET_AGGRO_DISTANCE);
 
 		/// <summary>
 		/// Checks if this NPC is a permanent/charmed or timed pet
@@ -482,8 +480,8 @@ namespace DOL.AI.Brain
 		/// <returns>True if we are begin to cast or are already casting</returns>
 		public override bool CheckSpells(eCheckSpellType type)
 		{
-			
-			if (Body == null || Body.Spells == null || Body.Spells.Count < 1) return false;
+			if (Body == null || Body.Spells == null || Body.Spells.Count < 1)
+				return false;
 			
 			bool casted = false;
 			if (type == eCheckSpellType.Defensive)
