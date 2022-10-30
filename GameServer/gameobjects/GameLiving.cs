@@ -6690,17 +6690,6 @@ namespace DOL.GS
 			// livings can't talk to themselves
 		}
 
-		/// <summary>
-		/// A message from something we control
-		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="chatType"></param>
-		public virtual void MessageFromControlled(string message, eChatType chatType)
-		{
-			// ignore for livings
-		}
-
-
 		#endregion
 		#region Item/Money
 

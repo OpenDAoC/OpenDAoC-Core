@@ -10879,16 +10879,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// A message from something we control, usually a pet
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="chatType"></param>
-        public override void MessageFromControlled(string message, eChatType chatType)
-        {
-            MessageToSelf(message, chatType);
-        }
-
-        /// <summary>
         /// A message sent to all objects within a set radius of the triggering entity (e.g., MessageToArea)
         /// </summary>
         /// <param name="source">The originating source of the message</param>

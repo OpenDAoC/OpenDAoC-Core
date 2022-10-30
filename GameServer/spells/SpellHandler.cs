@@ -3739,18 +3739,14 @@ namespace DOL.GS.Spells
 		/// <param name="type"></param>
 		public void MessageToCaster(string message, eChatType type)
 		{
-			if (Caster is GamePlayer)
+			if (Caster is GamePlayer playerCaster)
+				playerCaster.MessageToSelf(message, type);
+			else if (Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain
+			         && (type is eChatType.CT_YouHit or eChatType.CT_SpellResisted or eChatType.CT_Spell))
 			{
-				(Caster as GamePlayer).MessageToSelf(message, type);
-			}
-			else if (Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain
-			         && (type == eChatType.CT_YouHit || type == eChatType.CT_SpellResisted || type == eChatType.CT_Spell))
-			{
-				GamePlayer owner = ((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-				if (owner != null)
-				{
-					owner.MessageFromControlled(message, type);
-				}
+				GamePlayer playerOwner = npcCasterBrain.GetPlayerOwner();
+				if (npcCasterBrain.GetPlayerOwner() != null)
+					playerOwner.MessageToSelf(message, type);
 			}
 		}
 

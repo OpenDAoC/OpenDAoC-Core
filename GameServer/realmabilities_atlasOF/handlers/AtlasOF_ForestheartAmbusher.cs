@@ -8,13 +8,9 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_ForestheartAmbusher : TimedRealmAbility
     {
-        public AtlasOF_ForestheartAmbusher(DBAbility dba, int level) : base(dba, level)
-        {
-        }
+        public AtlasOF_ForestheartAmbusher(DBAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 180000; // 180 seconds - 3 minutes
-
-        // public const int duration = 10000; // 10 seconds
 
         public override int MaxLevel => 1;
 
@@ -28,7 +24,7 @@ namespace DOL.GS.RealmAbilities
             return 1800; // 30 mins
         }
 
-        public override ushort Icon => 4268; // this should be the correct icon but it's the same as Juggernaut? The effect has a temporary animist pet icon instead.
+        public override ushort Icon => 4268;
 
         public override void AddDelve(ref MiniDelveWriter w)
         {
@@ -37,29 +33,41 @@ namespace DOL.GS.RealmAbilities
                 w.AddKeyValuePair("icon", Icon);
         }
 
-        private GamePlayer m_player;
+        private GamePlayer _caster;
 
         protected virtual void CreateSpell()
         {
-            new AtlasOF_ForestheartAmbusherECSEffect(new ECSGameEffectInitParams(m_player, duration, Level));
+            new AtlasOF_ForestheartAmbusherECSEffect(new ECSGameEffectInitParams(_caster, duration, Level));
         }
 
         public override void Execute(GameLiving living)
         {
-            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            if (living is GamePlayer p)
-                m_player = p;
-            GamePlayer m_caster = living as GamePlayer;
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
+                return;
 
-            if (m_caster == null)
+            _caster = living as GamePlayer;
+
+            if (_caster == null)
                 return;
             
-            Region rgn = WorldMgr.GetRegion(m_caster.CurrentRegion.ID);
+            Region rgn = WorldMgr.GetRegion(_caster.CurrentRegion.ID);
             
-            if (rgn?.GetZone(m_caster.GroundTarget.X, m_caster.GroundTarget.Y) == null)
+            if (rgn?.GetZone(_caster.GroundTarget.X, _caster.GroundTarget.Y) == null)
             {
-                m_caster.MessageFromControlled(LanguageMgr.GetTranslation(m_caster.Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
+                _caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
                 return;
+            }
+
+            if (!_caster.GroundTargetInView)
+            {
+				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInView"), eChatType.CT_SpellResisted);
+				return;
+            }
+
+            if (!_caster.IsWithinRadius(_caster.GroundTarget, 2000))
+            {
+				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange"), eChatType.CT_SpellResisted);
+				return;
             }
 
             CreateSpell();

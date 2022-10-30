@@ -141,6 +141,7 @@ SummonAnimistPet.CheckBeginCast.AlreadyHaveaPet:	You already have a charmed crea
 SummonAnimistPet.CheckBeginCast.GroundTargetNull:	You have to set a ground target for this Spell.
 SummonAnimistPet.CheckBeginCast.GroundTargetNotInView:	Your ground target is not in view.
 SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange:	You have to select a closer ground target.
+
 ## Summon Necromancer Pet
 SummonNecromancerPet.CheckBeginCast.ShadeEffectIsNotNull:	You are already a shade!
 SummonNecromancerPet.DelveInfo.Function:	Function: shade summon
