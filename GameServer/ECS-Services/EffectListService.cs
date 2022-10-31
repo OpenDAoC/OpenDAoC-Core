@@ -87,13 +87,9 @@ namespace DOL.GS
                                 {
                                     if (effect.SpellHandler.Caster.Mana >= effect.SpellHandler.Spell.PulsePower)
                                     {
-                                        if (effect.SpellHandler.StartSpell(null))
-                                        {
-                                            effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
-                                            effect.ExpireTick += effect.PulseFreq;
-                                        }
-                                        else
-                                            continue;
+                                        effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
+                                        effect.SpellHandler.StartSpell(null);
+                                        effect.ExpireTick += effect.PulseFreq;
                                     }
                                     else
                                     {
@@ -104,13 +100,8 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    if (effect.SpellHandler.StartSpell(null))
-                                    {
-                                        effect.SpellHandler.Caster.Mana -= effect.SpellHandler.Spell.PulsePower;
-                                        effect.ExpireTick += effect.PulseFreq;
-                                    }
-                                    else
-                                        continue;
+                                    effect.SpellHandler.StartSpell(null);
+                                    effect.ExpireTick += effect.PulseFreq;
                                 }
 
                                 if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
