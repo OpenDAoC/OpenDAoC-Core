@@ -12,6 +12,8 @@ namespace DOL.GS {
     public static class AtlasROGManager {
 
         private static ItemTemplate beadTemplate = null;
+        
+        private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
 
         public static void GenerateROG(GameLiving living)
         {
@@ -125,8 +127,14 @@ namespace DOL.GS {
             if (living != null && living is GamePlayer)
             {
                 var player = living as GamePlayer;
-
-                var orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+                
+                var orbs = GameServer.Database.FindObjectByKey<ItemTemplate>(_currencyID);
+                
+                if (orbs == null)
+                {
+                    player.Out.SendMessage("Error: Currency ID not found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
 
                 InventoryItem item = GameInventoryItem.Create(orbs);
 

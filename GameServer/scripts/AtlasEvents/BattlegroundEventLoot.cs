@@ -17,6 +17,8 @@ namespace DOL.GS.Scripts
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static int freeLootLevelOffset = 2;
 		private int playerRewardOffset = 6;
+		
+		private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
         public override bool AddToWorld()
         {
             Model = 2026;
@@ -194,12 +196,7 @@ namespace DOL.GS.Scripts
 				charFreeEventMoney.Value = "1";
 				GameServer.Database.AddObject(charFreeEventMoney);
 
-				//ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
-			
-				//InventoryItem item = GameInventoryItem.Create(orbs);
 				player.AddMoney(5000000);
-			
-				//player.Inventory.AddTemplate(item, 10000, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 			}
 			else if (str.Equals("Atlas Orbs"))
 			{
@@ -220,7 +217,13 @@ namespace DOL.GS.Scripts
 				charFreeEventMoney.Value = "15000";
 				GameServer.Database.AddObject(charFreeEventMoney);
 
-				ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+				ItemTemplate orbs = GameServer.Database.FindObjectByKey<ItemTemplate>(_currencyID);
+				
+				if (orbs == null)
+				{
+					player.Out.SendMessage("Error: Currency ID not found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
 
 				InventoryItem item = GameInventoryItem.Create(orbs);
 
