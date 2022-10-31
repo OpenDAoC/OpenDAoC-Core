@@ -520,11 +520,8 @@ namespace DOL.AI.Brain
             {
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
-                // NPCs generate a much stronger initial aggro than players
-                if (gameObject is GamePlayer gamePlayer)
-                    AddToAggroList(gamePlayer, 1);
-                else if (gameObject is GameNPC gameNPC)
-                    AddToAggroList(gameNPC, (gameNPC.Level + 1) << 1);
+                if (gameObject is GameLiving gameLiving)
+                    AddToAggroList(gameLiving, 1);
             }
         }
 
