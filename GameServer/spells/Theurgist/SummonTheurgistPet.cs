@@ -16,16 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
-using log4net;
-using System.Reflection;
-using DOL.Events;
-using System.Linq;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -35,8 +28,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SummonTheurgistPet")]
 	public class SummonTheurgistPet : SummonSpellHandler
 	{
-		public SummonTheurgistPet(GameLiving caster, Spell spell, SpellLine line) 
-			: base(caster, spell, line) { }
+		public SummonTheurgistPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		/// <summary>
 		/// Check whether it's possible to summon a pet.
@@ -54,7 +46,6 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 
-
 		/// <summary>
 		/// Summon the pet.
 		/// </summary>
@@ -66,7 +57,7 @@ namespace DOL.GS.Spells
 
             m_pet.TempProperties.setProperty("target", target);
             (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
-			(m_pet.Brain as TheurgistPetBrain).Think();
+			m_pet.Brain.Think();
 
 			Caster.PetCount++;
 		}
@@ -85,35 +76,6 @@ namespace DOL.GS.Spells
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
-		//protected override void AddHandlers()
-		//{
-
-		//}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
-		{
-			m_pet = sender as GamePet;
-			if (m_pet == null)
-				return;
-
-			if ((m_pet.Brain as TheurgistPetBrain) == null)
-				return;
-
-
-			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.PetReleased, OnNpcReleaseCommand);
-
-			//GameSpellEffect effect = FindEffectOnTarget(m_pet, this);
-			//if (effect != null)
-			//	effect.Cancel(false);
-			if (m_pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
-				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
-		}
-
 		protected override GamePet GetGamePet(INpcTemplate template)
 		{
 			return new TheurgistPet(template);
@@ -124,13 +86,11 @@ namespace DOL.GS.Spells
 			return new TheurgistPetBrain(owner);
 		}
 
-		protected override void SetBrainToOwner(IControlledBrain brain)
-		{
-		}
+		protected override void SetBrainToOwner(IControlledBrain brain) { }
 
 		protected override void GetPetLocation(out int x, out int y, out int z, out ushort heading, out Region region)
 		{
-			base.GetPetLocation(out x, out y, out z, out heading, out region);
+			base.GetPetLocation(out x, out y, out z, out _, out region);
 			heading = Caster.Heading;
 		}
 	}
