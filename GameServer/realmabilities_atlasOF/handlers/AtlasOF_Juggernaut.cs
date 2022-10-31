@@ -8,13 +8,9 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_Juggernaut : TimedRealmAbility
     {
-        public AtlasOF_Juggernaut(DBAbility dba, int level) : base(dba, level)
-        {
-        }
+        public AtlasOF_Juggernaut(DBAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 240000; // 240 seconds - 4 minutes
-
-        // public const int duration = 30000; // 30 seconds
 
         public override int MaxLevel => 1;
 
@@ -37,28 +33,26 @@ namespace DOL.GS.RealmAbilities
                 w.AddKeyValuePair("icon", Icon);
         }
 
-        private GamePlayer m_player;
+        private GamePlayer _caster;
 
         protected virtual void CreateSpell()
         {
-            new AtlasOF_JuggernautECSEffect(new ECSGameEffectInitParams(m_player, duration, Level));
+            new AtlasOF_JuggernautECSEffect(new ECSGameEffectInitParams(_caster, duration, Level));
         }
 
         public override void Execute(GameLiving living)
         {
-            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            if (living is GamePlayer p)
-                m_player = p;
-            GamePlayer m_caster = living as GamePlayer;
-
-            if (m_caster == null)
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
                 return;
 
-            if (m_caster.ControlledBrain != null)
+            _caster = living as GamePlayer;
+
+            if (_caster == null)
+                return;
+
+            if (_caster.ControlledBrain != null)
             {
-                m_caster.Out.SendMessage(
-                    LanguageMgr.GetTranslation((m_caster).Client, "Summon.CheckBeginCast.AlreadyHaveaPet"),
-                    eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                _caster.Out.SendMessage(LanguageMgr.GetTranslation(_caster.Client, "Summon.CheckBeginCast.AlreadyHaveaPet"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;
             }
 

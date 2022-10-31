@@ -22,18 +22,16 @@ namespace DOL.GS.Effects
             Spell Juggernaut = SkillBase.GetSpellByID(90801);
             
             if (Juggernaut != null)
-            {
                 Owner.CastSpell(Juggernaut, RAspellLine);
-            }
+
             base.OnStartEffect();
         }
 
         public override void OnStopEffect()
         {
-            if (Owner.ControlledBrain is JuggernautBrain)
-            {
-                Owner.ControlledBrain.Body.TakeDamage(null, eDamageType.Natural, 9999,0);
-            }
+            if (Owner.ControlledBrain is JuggernautBrain juggernautBrain)
+                juggernautBrain.Body.TakeDamage(null, eDamageType.Natural, 9999,0);
+
             base.OnStopEffect();
         }
         
