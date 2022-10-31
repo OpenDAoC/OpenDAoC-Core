@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
-using DOL.GS.ServerProperties;
-using DOL.GS.SpellEffects;
 using DOL.GS.Spells;
 using DOL.Language;
 using ECS.Debug;
@@ -22,8 +18,6 @@ namespace DOL.GS
     public static class EffectService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        static int _segmentsize = 100;
-        static List<Task> _tasks = new List<Task>();
 
         private const string ServiceName = "EffectService";
 
@@ -45,23 +39,21 @@ namespace DOL.GS
                     return;
 
                 long startTick = GameTimer.GetTickCount();
+
                 if (effect.CancelEffect || effect.IsDisabled)
-                {
                     HandleCancelEffect(effect);
-                }
                 else
-                {
                     HandlePropertyModification(effect);
-                }
+
                 long stopTick = GameTimer.GetTickCount();
-                if((stopTick - startTick)  > 25 )
+
+                if ((stopTick - startTick)  > 25 )
                     log.Warn($"Long EffectService.Tick for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
             });
             
             Diagnostics.StopPerfCounter(ServiceName);
         }
     
-
         private static void HandlePropertyModification(ECSGameEffect e)
         {
             EntityManager.RemoveEffect(e);
@@ -71,73 +63,74 @@ namespace DOL.GS
                 return;
             }
 
+            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
             EffectListComponent effectList = e.Owner.effectListComponent;
+
             if (effectList == null)
             {
                 //Console.WriteLine($"No effect list found for {e.Owner}");
                 return;
             }
-
             // Early out if we're trying to add an effect that is already present.
             else if (!effectList.AddEffect(e))
             {
-                if (e is ECSGameSpellEffect spell && !spell.SpellHandler.Spell.IsPulsing)
+                if (spellEffect != null && !spellEffect.SpellHandler.Spell.IsPulsing)
                 {
                     SendSpellResistAnimation(e as ECSGameSpellEffect);
-                    if (spell.SpellHandler.Caster is GamePet casterPet && casterPet.Owner is GamePlayer casterOwner)
+                    if (spellEffect.SpellHandler.Caster is GamePet petCaster && petCaster.Owner is GamePlayer casterOwner)
                         ChatUtil.SendResistMessage(casterOwner, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
-                    if (spell.SpellHandler.Caster is GamePlayer)
-                        ChatUtil.SendResistMessage(spell.SpellHandler.Caster as GamePlayer, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
+                    if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
+                        ChatUtil.SendResistMessage(playerCaster, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
                 }
                 return;
             }
 
-            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
+            ISpellHandler spellHandler = spellEffect?.SpellHandler;
+            Spell spell = spellHandler?.Spell;
+            GameLiving caster = spellHandler?.Caster;
 
             // Update the Concentration List if Conc Buff/Song/Chant.
             if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
             {
-                if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects != null)
+                if (caster != null && caster.effectListComponent.ConcentrationEffects != null)
                 {
-                    spellEffect.SpellHandler.Caster.UsedConcentration += spellEffect.SpellHandler.Spell.Concentration;
+                    caster.UsedConcentration += spell.Concentration;
 
-                    lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
+                    lock (caster.effectListComponent.ConcentrationEffectsLock)
                     {
-                        spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects.Add(spellEffect);
+                        caster.effectListComponent.ConcentrationEffects.Add(spellEffect);
                     }
 
-                    if (spellEffect.SpellHandler.Caster is GamePlayer p)
+                    if (caster is GamePlayer p)
                         p.Out.SendConcentrationList();
                 }
             }
 
             if (spellEffect != null)
             {
-                if (e.EffectType == eEffect.Pulse)
+                // spellEffect is ECSPulseEffect only when the player casts the spell, on the first tick.
+                if (spellEffect is ECSPulseEffect)
+                    SendSpellAnimation(spellEffect);
+                else if (spellEffect != null)
                 {
-                    if (!e.RenewEffect && spellEffect.SpellHandler.Spell.IsInstantCast)
-                        ((SpellHandler)spellEffect.SpellHandler).SendCastAnimation();
+                    if (!spellEffect.RenewEffect && !spell.IsPulsing && spellEffect is not ECSImmunityEffect)
+                        SendSpellAnimation(spellEffect);
                 }
-                else
+
+                if (e is StatDebuffECSEffect && spell.CastTime == 0)
+                    StatDebuffECSEffect.TryDebuffInterrupt(spell, e.OwnerPlayer, caster);
+
+                if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
+                    || spellEffect is SavageBuffECSGameEffect)
                 {
-                    if (!spellEffect.RenewEffect && !(spellEffect is ECSImmunityEffect))
-                        SendSpellAnimation((ECSGameSpellEffect)e);
-
-                    if (e is StatDebuffECSEffect && spellEffect.SpellHandler.Spell.CastTime == 0)
-                        StatDebuffECSEffect.TryDebuffInterrupt(spellEffect.SpellHandler.Spell, e.OwnerPlayer, spellEffect.SpellHandler.Caster);
-
-                    if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
-                        || spellEffect is SavageBuffECSGameEffect)
-                    {
-                        //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                        //{
-                        //    //Console.WriteLine("Applying EnduranceRegenBuff");
-                        //    var handler = spellEffect.SpellHandler as EnduranceRegenSpellHandler;
-                        //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spellEffect.SpellHandler.Spell.Value, 1, false);
-                        //}
-                        e.OnStartEffect();
-                        e.IsBuffActive = true;
-                    }
+                    //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
+                    //{
+                    //    //Console.WriteLine("Applying EnduranceRegenBuff");
+                    //    var handler = spellHandler as EnduranceRegenSpellHandler;
+                    //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spell.Value, 1, false);
+                    //}
+                    e.OnStartEffect();
+                    e.IsBuffActive = true;
                 }
             }
             else

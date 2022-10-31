@@ -1,13 +1,10 @@
-using DOL.GS.Spells;
 using System.Collections.Generic;
-using ECS.Debug;
 using System.Linq;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using System.Threading.Tasks;
-using System;
-using System.Threading;
 using System.Reflection;
+using System.Threading.Tasks;
+using DOL.GS.Spells;
+using DOL.GS.PacketHandler;
+using ECS.Debug;
 using log4net;
 
 namespace DOL.GS
@@ -15,8 +12,7 @@ namespace DOL.GS
     public static class EffectListService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        static int _segmentsize = 1000;
-        static List<Task> _tasks = new List<Task>();
+
         private const string ServiceName = "EffectListService";
 
         static EffectListService()

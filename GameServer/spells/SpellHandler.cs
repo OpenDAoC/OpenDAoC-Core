@@ -2145,14 +2145,9 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation()
 		{
             if (Spell.CastTime == 0)
-            {
                 SendCastAnimation(0);
-            }
             else
-            {
-				ushort castTime = (ushort)(CalculateCastingTime() / 100);
-                SendCastAnimation(castTime);
-            }
+                SendCastAnimation((ushort)(CalculateCastingTime() / 100));
 		}
 
 		/// <summary>
