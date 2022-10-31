@@ -614,7 +614,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			
 			m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 				"You receive {0} as a reward.");
-			AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
+			AtlasROGManager.GenerateReward(m_questPlayer, 5000);
 			_enemiesKilled = 0;
 			_captured = 0;
 			_relicsCaptured = 0;
