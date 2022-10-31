@@ -59,7 +59,7 @@ namespace DOL.GS
         protected String m_glareAnnounce;
         protected String[] m_deathAnnounce;
 
-        private int OrbsReward = Properties.EPICBOSS_ORBS;
+        private int Reward = Properties.EPICBOSS_ORBS;
 
         /// <summary>
         /// Creates a new instance of GameDragon.
@@ -226,7 +226,7 @@ namespace DOL.GS
                             if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             {
                                 if (bgPlayer.Level < 45) continue;
-                                AtlasROGManager.GenerateOrbAmount(bgPlayer, OrbsReward);
+                                AtlasROGManager.GenerateReward(bgPlayer, Reward);
                                 AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
                                 bgPlayer.Achieve($"{achievementMob}-Credit");
                             }
@@ -240,7 +240,7 @@ namespace DOL.GS
                         if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
                             if (groupPlayer.Level < 45) continue;
-                            AtlasROGManager.GenerateOrbAmount(groupPlayer, OrbsReward);
+                            AtlasROGManager.GenerateReward(groupPlayer, Reward);
                             AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
                             groupPlayer.Achieve($"{achievementMob}-Credit");
                         }
@@ -250,7 +250,7 @@ namespace DOL.GS
                 {
                     if (playerKiller.Level >= 45)
                     {
-                        AtlasROGManager.GenerateOrbAmount(playerKiller, OrbsReward);
+                        AtlasROGManager.GenerateReward(playerKiller, Reward);
                         AtlasROGManager.GenerateBeetleCarapace(playerKiller);
                         playerKiller.Achieve($"{achievementMob}-Credit"); ;
                     }

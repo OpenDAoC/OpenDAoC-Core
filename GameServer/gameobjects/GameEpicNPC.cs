@@ -86,7 +86,7 @@ namespace DOL.GS
 
                                 if (Util.Chance(baseChance + realmLoyalty))
                                 {
-                                    AtlasROGManager.GenerateOrbAmount(bgPlayer, amount);
+                                    AtlasROGManager.GenerateReward(bgPlayer, amount);
                                 }
 
                                 if (Util.ChanceDouble(carapaceChance))
@@ -111,7 +111,7 @@ namespace DOL.GS
 
                             if (Util.Chance(baseChance + realmLoyalty))
                             {
-                                AtlasROGManager.GenerateOrbAmount(groupPlayer, amount);
+                                AtlasROGManager.GenerateReward(groupPlayer, amount);
                             }
                             if (Util.ChanceDouble(carapaceChance))
                             {
@@ -128,7 +128,7 @@ namespace DOL.GS
                     {
                         if (Util.Chance(baseChance + realmLoyalty))
                         {
-                            AtlasROGManager.GenerateOrbAmount(playerKiller, amount);
+                            AtlasROGManager.GenerateReward(playerKiller, amount);
                         }
 
                         if (Util.ChanceDouble(carapaceChance))
