@@ -16,9 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS.PacketHandler;
-
 namespace DOL.GS.Spells
 {
 	/// <summary>
@@ -27,33 +24,27 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("CombatHeal")]
 	public class CombatHealSpellHandler : HealSpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
-		{
-			new HealOverTimeECSGameEffect(initParams);
-		}
-		
+		public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
 		/// <summary>
 		/// Execute heal spell
 		/// </summary>
 		/// <param name="target"></param>
 		public override bool StartSpell(GameLiving target)
 		{
-            //if (!Caster.effectListComponent.Effects.ContainsKey(eEffect.CombatHeal))
-            //{
-            //    CreateECSPulseEffect(Caster, Caster.Effectiveness);
-            //    Caster.LastPulseCast = Spell;
-            //}
-
 			m_startReuseTimer = true;
-			// do not start spell if not in combat
+
+			foreach (GameLiving member in GetGroupAndPets(Spell))
+			{
+				new CombatHealECSEffect(new ECSGameEffectInitParams(member, Spell.Frequency, Caster.Effectiveness, this));
+			}
+
 			GamePlayer player = Caster as GamePlayer;
+
 			if (!Caster.InCombat && (player==null || player.Group==null || !player.Group.IsGroupInCombat()))
-				return false;
+				return false; // Do not start healing if not in combat
 
 			return base.StartSpell(target);
 		}
-
-		// constructor
-		public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 }

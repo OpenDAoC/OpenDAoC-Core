@@ -1,10 +1,8 @@
-﻿using DOL.GS.Spells;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
-    public class HealOverTimeECSGameEffect : ECSGameSpellEffect
+    public class CombatHealECSEffect : ECSGameSpellEffect
     {
-        public HealOverTimeECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) 
+        public CombatHealECSEffect(ECSGameEffectInitParams initParams) : base(initParams) 
         {
             NextTick = StartTick;
         }
@@ -21,12 +19,6 @@ namespace DOL.GS
             //"Your meditative state fades."
             //"{0}'s meditative state fades."
             OnEffectExpiresMsg(Owner, true, false, true);
-        }
-
-        public override void OnEffectPulse()
-        {
-            ((HoTSpellHandler)SpellHandler).OnDirectEffect(Owner, Effectiveness);
-            NextTick += PulseFreq;
         }
     }
 }
