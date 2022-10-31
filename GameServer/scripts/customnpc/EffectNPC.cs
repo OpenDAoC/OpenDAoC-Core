@@ -36,6 +36,8 @@ namespace DOL.GS {
         public string DisplayedItem = "EffectDisplay";
         public string TempEffectId = "TempEffectID";
         public string TempColorId = "TempColorID";
+        private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+
 
 
         public override bool AddToWorld()
@@ -76,7 +78,7 @@ namespace DOL.GS {
 
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
-            if (source == null || item == null || item.Id_nb == "token_many") return false;
+            if (source == null || item == null || item.Id_nb == _currencyID) return false;
             if (source is GamePlayer p)
             {
                 SendReply(p, "What service do you want to use ?\n" +
@@ -995,7 +997,7 @@ namespace DOL.GS {
                 return;
             }
 
-            int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -1033,7 +1035,7 @@ namespace DOL.GS {
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
             player.TempProperties.removeProperty(TempProperty);
             player.TempProperties.removeProperty(DisplayedItem);
@@ -1097,7 +1099,7 @@ namespace DOL.GS {
                 return;
             }
 
-            int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -1136,7 +1138,7 @@ namespace DOL.GS {
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
             player.TempProperties.removeProperty(TempProperty);
             player.TempProperties.removeProperty(DisplayedItem);

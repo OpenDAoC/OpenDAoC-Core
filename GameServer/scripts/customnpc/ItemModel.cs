@@ -19,6 +19,7 @@ namespace DOL.GS {
         public string TempModelID = "TempModelID";
         public string TempModelPrice = "TempModelPrice";
         public string currencyName = "Orbs";
+        private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
         private int Chance;
         private Random rnd = new Random();
 
@@ -6058,7 +6059,7 @@ namespace DOL.GS {
         public override bool ReceiveItem(GameLiving source, InventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
-            if (t == null || item == null|| item.Id_nb == "token_many") return false;
+            if (t == null || item == null|| item.Id_nb == _currencyID) return false;
             if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
             {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -6721,7 +6722,7 @@ namespace DOL.GS {
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
@@ -6759,7 +6760,7 @@ namespace DOL.GS {
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
                 return true;
@@ -6774,7 +6775,7 @@ namespace DOL.GS {
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate("token_many", eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
+                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
                 //log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
@@ -6811,7 +6812,7 @@ namespace DOL.GS {
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate("token_many", price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
 

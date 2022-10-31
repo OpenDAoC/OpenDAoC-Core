@@ -852,16 +852,15 @@ namespace DOL.GS
 	// checks for achievement completion at realm level
 	public class GameAtlasMerchant : GameItemCurrencyMerchant
 	{
-		//Atlas Orbs itemtemplate = token_many
-		public override string MoneyKey { get { return "token_many"; } }
+		public override string MoneyKey { get; } = ServerProperties.Properties.ALT_CURRENCY_ID; // remember to set this in server properties
 
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+		public override void OnPlayerBuy(GamePlayer player, int itemSlot, int number)
 		{
 			if (m_moneyItem == null || m_moneyItem.Item == null)
 				return;
 			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			int pagenumber = itemSlot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			int slotnumber = itemSlot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
 			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
@@ -952,10 +951,8 @@ namespace DOL.GS
 	// checks for achievement completion at account level
 	public class AtlasAchievementMerchant : GameItemCurrencyMerchant
 	{
-		//Atlas Orbs itemtemplate = token_many
-		public override string MoneyKey { get { return "token_many"; } }
+		public override string MoneyKey { get; } = ServerProperties.Properties.ALT_CURRENCY_ID; // remember to set this in server properties
 
-		
 		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
 		{
 			if (m_moneyItem == null || m_moneyItem.Item == null)

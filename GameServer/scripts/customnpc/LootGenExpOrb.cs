@@ -30,7 +30,8 @@ namespace DOL.GS
     public class LootGeneratorExpOrb : LootGeneratorBase
     {
 
-        private static ItemTemplate m_token_many = GameServer.Database.FindObjectByKey<ItemTemplate>("token_many");
+        private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+        private static ItemTemplate m_token_many = GameServer.Database.FindObjectByKey<ItemTemplate>(_currencyID);
 
         /// <summary>
         /// Generate loot for given mob
