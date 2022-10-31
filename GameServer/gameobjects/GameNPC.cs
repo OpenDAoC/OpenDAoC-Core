@@ -5532,10 +5532,7 @@ namespace DOL.GS
 			if (LosChecker == null && this is GamePet pet)
 			{
 				if (pet.Owner is GamePlayer player)
-				{
-					player.MessageToSelf(m_spellTargetLosChecks.ToString(), eChatType.CT_Say);
 					LosChecker = player;
-				}
 				else if (pet.Owner is CommanderPet commander && commander.Owner is GamePlayer owner)
 					LosChecker = owner;
 			}
