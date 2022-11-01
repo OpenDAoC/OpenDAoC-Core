@@ -53,7 +53,7 @@ namespace DOL.GS
 				else if (Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
 					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 			}
-			AddStatsToWeapon();
+			
 			BroadcastLivingEquipmentUpdate();
 
 			ScalingFactor = 14;
@@ -139,45 +139,6 @@ namespace DOL.GS
 			Level = newLevel;
 			return true;
 		}
-
-        #region Inventory
-
-        /// <summary>
-        /// Load equipment for the pet.
-        /// </summary>
-        /// <param name="templateID">Equipment Template ID.</param>
-        /// <returns>True on success, else false.</returns>
-        protected virtual void AddStatsToWeapon()
-		{
-			if (Inventory != null)
-			{
-				InventoryItem item;
-				if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
-				{
-					item.DPS_AF = (int)(Level * 3.3);
-					item.SPD_ABS = 50;
-				}
-				if ((item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
-				{
-					item.DPS_AF = (int)(Level * 3.3);
-					item.SPD_ABS = 37;
-				}
-				if ((item = Inventory.GetItem(eInventorySlot.LeftHandWeapon)) != null)
-				{
-					item.DPS_AF = (int)(Level * 3.3);
-					item.SPD_ABS = 50;
-				}
-				if ((item = Inventory.GetItem(eInventorySlot.DistanceWeapon)) != null)
-				{
-					item.DPS_AF = (int)(Level * 3.3);
-					item.SPD_ABS = 50;
-					SwitchWeapon(eActiveWeaponSlot.Distance);
-					BroadcastLivingEquipmentUpdate();
-				}
-			}
-		}
-
-		#endregion
 
 		#region Shared Melee & Spells
 		private double m_effectiveness = 1;
