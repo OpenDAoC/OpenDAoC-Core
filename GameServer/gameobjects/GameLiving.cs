@@ -23,7 +23,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -646,126 +645,17 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int SwingTimeLeft
 		{
-			//get { return (m_attackAction != null && m_attackAction.IsAlive) ? m_attackAction.TimeUntilElapsed : 0; }
             get { return attackComponent.attackAction != null ? (int)attackComponent.attackAction.TimeUntilStart : 0; }
 		}
-        /// <summary>
-        /// Decides which style living will use in this moment
-        /// </summary>
-        /// <returns>Style to use or null if none</returns>
-        //public virtual Style GetStyleToUse()
-        //{
-        //	InventoryItem weapon;
-        //	if (NextCombatStyle == null) return null;
-        //	if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
-        //		weapon = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-        //	else weapon = AttackWeapon;
-
-        //	if (StyleProcessor.CanUseStyle(this, NextCombatStyle, weapon))
-        //		return NextCombatStyle;
-
-        //	if (NextCombatBackupStyle == null) return NextCombatStyle;
-
-        //	return NextCombatBackupStyle;
-        //}
-
-        ///// <summary>
-        ///// Holds the Style that this living should use next
-        ///// </summary>
-        //protected Style m_nextCombatStyle;
-        ///// <summary>
-        ///// Holds the backup style for the style that the living should use next
-        ///// </summary>
-        //protected Style m_nextCombatBackupStyle;
-
-        ///// <summary>
-        ///// Gets or Sets the next combat style to use
-        ///// </summary>
-        //public Style NextCombatStyle
-        //{
-        //	get { return m_nextCombatStyle; }
-        //	set { m_nextCombatStyle = value; }
-        //}
-        ///// <summary>
-        ///// Gets or Sets the next combat backup style to use
-        ///// </summary>
-        //public Style NextCombatBackupStyle
-        //{
-        //	get { return m_nextCombatBackupStyle; }
-        //	set { m_nextCombatBackupStyle = value; }
-        //}
 
         /// <summary>
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>
-        /// <param name="weapon">attack weapons</param>
         /// <returns>effective speed of the attack. average if more than one weapon.</returns>
-        public virtual int AttackSpeed(params InventoryItem[] weapon)
+        public virtual int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
         {
-            double speed = 3000 * (1.0 - (GetModified(eProperty.Quickness) - 60) / 500.0);
-
-            if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-            {
-                speed *= 1.5; // mob archer speed too fast
-
-                // Old archery uses archery speed, but new archery uses casting speed
-                if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-                    speed *= 1.0 - GetModified(eProperty.ArcherySpeed) * 0.01;
-                else
-                    speed *= 1.0 - GetModified(eProperty.CastingSpeed) * 0.01;
-            }
-            else
-            {
-                speed *= GetModified(eProperty.MeleeSpeed) * 0.01;
-            }
-
-            return (int)Math.Max(500.0, speed);
+			return attackComponent.AttackSpeed(mainWeapon, leftWeapon);
         }
-        ///// <summary>
-        ///// Returns the Damage this Living does on an attack
-        ///// </summary>
-        ///// <param name="weapon">the weapon used for attack</param>
-        ///// <returns></returns>
-        //public virtual double AttackDamage(InventoryItem weapon)
-        //{
-        //	double effectiveness = 1.00;
-        //	//double effectiveness = Effectiveness;
-        //	double damage = (1.0 + Level / 3.7 + Level * Level / 175.0) * AttackSpeed(weapon) * 0.001;
-        //	if (weapon == null || weapon.Item_Type == Slot.RIGHTHAND || weapon.Item_Type == Slot.LEFTHAND || weapon.Item_Type == Slot.TWOHAND)
-        //	{
-        //		//Melee damage buff,debuff,RA
-        //		effectiveness += GetModified(eProperty.MeleeDamage) * 0.01;
-        //	}
-        //	else if (weapon.Item_Type == Slot.RANGED && (weapon.Object_Type == (int)eObjectType.Longbow || weapon.Object_Type == (int)eObjectType.RecurvedBow || weapon.Object_Type == (int)eObjectType.CompositeBow))
-        //	{
-        //		// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
-        //		if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-        //		{
-        //			effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
-        //		}
-        //		// RDSandersJR: If we are NOT using old archery it should be SpellDamage
-        //		else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
-        //		{
-        //			effectiveness += GetModified(eProperty.SpellDamage) * 0.01;
-        //		}
-        //	}
-        //	else if (weapon.Item_Type == Slot.RANGED)
-        //	{
-        //		effectiveness += GetModified(eProperty.RangedDamage) * 0.01;
-        //	}
-        //	damage *= effectiveness;
-        //	return damage;
-        //}
-
-        ///// <summary>
-        ///// Max. Damage possible without style
-        ///// </summary>
-        ///// <param name="weapon">attack weapon</param>
-        ///// <returns></returns>
-        //public virtual double UnstyledDamageCap(InventoryItem weapon)
-        //{
-        //	return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon));
-        //}
 
         /// <summary>
         /// Minimum reduction possible to spell casting speed (CastTime * CastingSpeedCap)
