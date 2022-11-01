@@ -1131,13 +1131,11 @@ namespace DOL.GS.Spells
 				return false;
 			}
 			
-			if (Caster is GameNPC casterNPC && Caster is not NecromancerPet)
+			if (Caster != target && Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
-			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
-			{
+			if (m_caster.ObjectState != GameObject.eObjectState.Active)
 				return false;
-			}
 
 			if (!m_caster.IsAlive)
 			{
