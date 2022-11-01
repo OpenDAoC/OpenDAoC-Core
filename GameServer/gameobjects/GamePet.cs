@@ -18,14 +18,13 @@
  */
 using System;
 using System.Collections.Generic;
+using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.Events;
+using DOL.GS.Effects;
 using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.AI;
 
 namespace DOL.GS
 {
@@ -44,18 +43,6 @@ namespace DOL.GS
 
 		public GamePet(INpcTemplate template) : base(template)
 		{
-			if (Inventory != null)
-			{
-				if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-					SwitchWeapon(eActiveWeaponSlot.Distance);
-				else if (Inventory.GetItem(eInventorySlot.RightHandWeapon) != null)
-					SwitchWeapon(eActiveWeaponSlot.Standard);
-				else if (Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
-					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-			}
-			
-			BroadcastLivingEquipmentUpdate();
-
 			ScalingFactor = 14;
 		}
 
