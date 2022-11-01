@@ -5521,7 +5521,7 @@ namespace DOL.GS
 			else
 				spellToCast = spell;
 
-			if (TargetObject == this && spellToCast.Target == "Self")
+			if (TargetObject == this)
 				return base.CastSpell(spellToCast, line);
 
 			if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
