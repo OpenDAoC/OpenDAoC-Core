@@ -1,6 +1,5 @@
 ﻿using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -14,9 +13,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DOL.GS.PropertyCalc;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
@@ -488,7 +484,7 @@ namespace DOL.GS
             }
             else
             {
-                double speed = 3000 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
+                double speed = NpcWeaponSpeed() * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
                 if (owner is GamePet pet)
                 {
                     if (pet != null)
@@ -509,10 +505,8 @@ namespace DOL.GS
                 {
                     if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        speed *= 1.5; // mob archer speed too fast
-
                         // Old archery uses archery speed, but new archery uses casting speed
-                        if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+                        if (Properties.ALLOW_OLD_ARCHERY)
                             speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
                         else
                             speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
@@ -522,7 +516,26 @@ namespace DOL.GS
                         speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01;
                     }
                 }
+
                 return (int) Math.Max(500.0, speed);
+            }
+        }
+
+        /// <summary>
+        /// Gets the speed of a NPC's weapon, based on its ActiveWeaponSlot.
+        /// InventoryItem.SPD_ABS isn't set for NPCs, so this method must be used instead.
+        /// </summary>
+        public int NpcWeaponSpeed()
+        {
+            switch (owner.ActiveWeaponSlot)
+            {
+                default:
+                case eActiveWeaponSlot.Standard:
+                    return 30;
+                case eActiveWeaponSlot.TwoHanded:
+                    return 40;
+                case eActiveWeaponSlot.Distance:
+                    return 45;
             }
         }
 
@@ -594,9 +607,7 @@ namespace DOL.GS
                                     var leftAxeEffectiveness = 0.625 + 0.0034 * LASpec;
                                 
                                     if (p.GetModified(eProperty.OffhandDamageAndChance) > 0)
-                                    {
                                         leftAxeEffectiveness += .01 * p.GetModified(eProperty.OffhandDamageAndChance);
-                                    }
 
                                     damage *= leftAxeEffectiveness;
                                 }
@@ -611,42 +622,33 @@ namespace DOL.GS
             else
             {
                 double effectiveness = 1.00;
-                //double effectiveness = Effectiveness;
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * AttackSpeed(weapon) *
-                                0.001;
+                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
+
                 if (weapon == null
                     || weapon.SlotPosition == Slot.RIGHTHAND
                     || weapon.SlotPosition == Slot.LEFTHAND
                     || weapon.SlotPosition == Slot.TWOHAND)
-                {
                     //Melee damage buff,debuff,RA
                     effectiveness += owner.GetModified(eProperty.MeleeDamage) * 0.01;
-                }
-                else if (weapon.SlotPosition == Slot.RANGED && (weapon.Object_Type == (int) eObjectType.Longbow
-                                                                || weapon.Object_Type == (int) eObjectType.RecurvedBow
-                                                                || weapon.Object_Type == (int) eObjectType.CompositeBow))
-                {
-                    // RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
-                    {
-                        effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
-                    }
-                    // RDSandersJR: If we are NOT using old archery it should be SpellDamage
-                    else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
-                    {
-                        effectiveness += owner.GetModified(eProperty.SpellDamage) * 0.01;
-                    }
-                }
                 else if (weapon.SlotPosition == Slot.RANGED)
                 {
-                    effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
+                    if (weapon.Object_Type == (int)eObjectType.Longbow
+                        || weapon.Object_Type == (int)eObjectType.RecurvedBow
+                        || weapon.Object_Type == (int)eObjectType.CompositeBow)
+                    {
+                        if (ServerProperties.Properties.ALLOW_OLD_ARCHERY)
+                            effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
+                        else
+                            effectiveness += owner.GetModified(eProperty.SpellDamage) * 0.01;
+                    }
+                    else
+                        effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
                 }
 
                 damage *= effectiveness;
                 return damage;
             }
         }
-
 
         /// <summary>
         /// Starts a melee attack with this player
@@ -3553,11 +3555,11 @@ namespace DOL.GS
                                                             weapon.Object_Type == (int) eObjectType.RecurvedBow ||
                                                             weapon.Object_Type == (int) eObjectType.CompositeBow))
                     {
-                        if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+                        if (Properties.ALLOW_OLD_ARCHERY)
                         {
                             result += p.GetModified(eProperty.RangedDamage) * 0.01;
                         }
-                        else if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                        else
                         {
                             result += p.GetModified(eProperty.SpellDamage) * 0.01;
                             result += p.GetModified(eProperty.RangedDamage) * 0.01;
