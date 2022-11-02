@@ -48,9 +48,16 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property] + living.AbilityBonus[(int)property]
-                - living.DebuffCategory[(int)property]);
+            GameLiving livingToCheck;
+
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
+            // Hardcap at 25%
+            // While it doesn't make much sense, ItemBonus is retrieved from the pet too. I don't know if the bonus is supposed to transfer from the owner.
+            return Math.Min(25, livingToCheck.ItemBonus[(int)property] + livingToCheck.AbilityBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
         }
     }
 
