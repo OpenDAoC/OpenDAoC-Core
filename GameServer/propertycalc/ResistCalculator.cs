@@ -29,10 +29,16 @@ namespace DOL.GS.PropertyCalc
         {
             int propertyIndex = (int)property;
 
-            // Abilities/racials/debuffs.
+            // Necromancer pets receive resistances from Avoidance of Magic.
+            GameLiving livingToCheck;
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
 
+            // Abilities/racials/debuffs.
             int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
-			int abilityBonus = living.AbilityBonus[propertyIndex];
+			int abilityBonus = livingToCheck.AbilityBonus[propertyIndex];
 			int racialBonus = SkillBase.GetRaceResist( living.Race, (eResist)property );
 
             // Items and buffs.

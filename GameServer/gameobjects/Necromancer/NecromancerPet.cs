@@ -140,19 +140,20 @@ namespace DOL.GS
 
 			switch (property)
 			{
-				case eProperty.Strength:
-				case eProperty.Dexterity:
-				case eProperty.Quickness:
-				case eProperty.Intelligence:
-				case eProperty.Resist_Crush:
 				case eProperty.Resist_Body:
 				case eProperty.Resist_Cold:
+				case eProperty.Resist_Crush:
 				case eProperty.Resist_Energy:
 				case eProperty.Resist_Heat:
 				case eProperty.Resist_Matter:
 				case eProperty.Resist_Slash:
 				case eProperty.Resist_Spirit:
 				case eProperty.Resist_Thrust:
+					return base.GetModified(property);
+				case eProperty.Strength:
+				case eProperty.Dexterity:
+				case eProperty.Quickness:
+				case eProperty.Intelligence:
 					{
 						// Get item bonuses from the shade, but buff bonuses from the pet.
 						int itemBonus = livingOwner.GetModifiedFromItems(property);
