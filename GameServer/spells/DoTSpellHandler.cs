@@ -17,14 +17,10 @@
  *
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Language;
 using DOL.AI.Brain;
-using DOL.GS.RealmAbilities;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Spells
 {
@@ -368,23 +364,24 @@ namespace DOL.GS.Spells
 		public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		private int CalculateCriticalDamage(AttackData ad)
         {
-			if (CriticalDamage > 0 || !firstTick || !Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			if (CriticalDamage > 0 || !firstTick)
 				return CriticalDamage;
 
-			int criticalchance = this.Caster.DotCriticalChance;
+			int criticalChance = Caster.DotCriticalChance;
 
-			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
-			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
+			if (criticalChance < 0)
+				return 0;
 
-			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
-			{
+			int randNum = Util.CryptoNextInt(1, 100);
+			int critCap = Math.Min(50, criticalChance);
+
+			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 				spellCaster.Out.SendMessage($"dot crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-			}
 
 			if (critCap > randNum && (ad.Damage >= 1))
 			{
 				int critmax = (ad.Target is GamePlayer) ? ad.Damage / 2 : ad.Damage;
-				CriticalDamage = Util.Random(ad.Damage / 10, critmax); //think min crit is 10% of damage
+				CriticalDamage = Util.Random(ad.Damage / 10, critmax); //tThink min crit is 10% of damage
 			}
 
 			return CriticalDamage;

@@ -1,24 +1,23 @@
-    /*
-    * DAWN OF LIGHT - The first free open source DAoC server emulator
-    *
-    * This program is free software; you can redistribute it and/or
-    * modify it under the terms of the GNU General Public License
-    * as published by the Free Software Foundation; either version 2
-    * of the License, or (at your option) any later version.
-    *
-    * This program is distributed in the hope that it will be useful,
-    * but WITHOUT ANY WARRANTY; without even the implied warranty of
-    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    * GNU General Public License for more details.
-    *
-    * You should have received a copy of the GNU General Public License
-    * along with this program; if not, write to the Free Software
-    * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-    *
-    */
-    using System;
-	using DOL.AI.Brain;
-    using DOL.GS.Effects;
+/*
+* DAWN OF LIGHT - The first free open source DAoC server emulator
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*
+*/
+using System;
+using DOL.AI.Brain;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -40,34 +39,27 @@ namespace DOL.GS.PropertyCalc
 
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			// no berserk for ranged weapons
+			// No berserk for ranged weapons.
 			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(living, eEffect.Berserk);
-			if (berserk != null)
-			{
-				return 100;
-			}
 
-			// base 10% chance of critical for all with melee weapons plus ra bonus
+			if (berserk != null)
+				return 100;
+
+			// Base 10% chance of critical for all with melee weapons plus ra bonus.
 			int chance = living.BuffBonusCategory4[(int)property] + living.AbilityBonus[(int)property];
 
-			if (living is NecromancerPet necroPet)
-			{
-				chance += 10;
-				if (necroPet.Brain is IControlledBrain necroPetBrain && necroPetBrain.GetPlayerOwner() is GamePlayer necro
-					&& necro.GetAbility<RealmAbilities.MasteryOfPain>() is RealmAbilities.MasteryOfPain raMoP)
-					chance += raMoP.Amount;
-			}
 			// Summoned or Charmed pet.
-			else if (living is GameNPC npc)
+			if (living is GameNPC npc && npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player)
 			{
-				if (npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player
-					&& player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>() is RealmAbilities.AtlasOF_WildMinionAbility raWM)
-					chance += raWM.Amount;
+				if (npc is NecromancerPet)
+					chance += 10;
+
+				chance += player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>()?.Amount ?? 0;
 			}
-			else // not a pet
+			else
 				chance += 10;
 
-			//50% hardcap
+			// 50% hardcap.
 			return Math.Min(chance, 50);
 		}
 	}

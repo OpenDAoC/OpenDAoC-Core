@@ -538,8 +538,6 @@ namespace DOL.AI.Brain
 			return casted || Body.IsCasting || checkingSpellLOS;
 		}
 
-		
-
 		/// <summary>
 		/// Checks the Positive Spells.  Handles buffs, heals, etc.
 		/// </summary>
@@ -621,26 +619,21 @@ namespace DOL.AI.Brain
                 case (byte)eSpellType.DamageShield:
                 case (byte)eSpellType.Bladeturn:
                     {
-						String target;
-
+						string target = spell.Target.ToUpper();
 						spell.IsSpec = true;
-						//Buff self
+
+						// Buff self
 						if (!LivingHasEffect(Body, spell))
 						{
                             Body.TargetObject = Body;
 							break;
 						}
-
-						target = spell.Target.ToUpper();
-							
-						if (target == "SELF")
-							break;
 						
-						if (target == "REALM" || target == "GROUP")
+						if (target is "REALM" or "GROUP")
 						{
 							owner = (this as IControlledBrain).Owner;
-							player = null;
-							//Buff owner
+
+							// Buff owner
 							if (!LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
 							{
                                 Body.TargetObject = owner;
@@ -663,7 +656,7 @@ namespace DOL.AI.Brain
 
 							player = GetPlayerOwner();
 
-							//Buff player
+							// Buff player
 							if (player != null)
 							{
 								if (!LivingHasEffect(player, spell))
@@ -674,11 +667,11 @@ namespace DOL.AI.Brain
 
 								if (player.Group != null)
 								{
-									foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
+									foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
 									{
-										if (!LivingHasEffect(p, spell) && Body.IsWithinRadius(p, spell.Range))
+										if (!LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.Range))
 										{
-                                            Body.TargetObject = p;
+                                            Body.TargetObject = member;
 											break;
 										}
 									}
@@ -871,7 +864,7 @@ namespace DOL.AI.Brain
 
 				default:
 					log.Warn($"CheckDefensiveSpells() encountered an unknown spell type [{spell.SpellType}], calling base method");
-					return base.CheckDefensiveSpells(spell);
+				return base.CheckDefensiveSpells(spell);
 			}
 
 			if (Body.TargetObject != null)
@@ -887,8 +880,6 @@ namespace DOL.AI.Brain
 						Body.TurnTo(Body.TargetObject);
 				}
 			}
-
-			
 
 			return casted;
 		}

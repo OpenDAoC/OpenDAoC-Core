@@ -18,20 +18,17 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
-using DOL.GS.Keeps;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
@@ -40,7 +37,6 @@ using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
-using FiniteStateMachine;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -5153,9 +5149,11 @@ namespace DOL.GS
 		#endregion
 
 		#region Spell
-		private List<Spell> m_spells = new List<Spell>(0);
 
-		//public bool SortedSpells = false;
+		private List<Spell> m_spells = new List<Spell>(0);
+		private SpellAction m_spellaction = null;
+		private ConcurrentDictionary<GameObject, Tuple<Spell, SpellLine, long>> m_spellTargetLosChecks = new();
+
 		/// <summary>
 		/// property of spell array of NPC
 		/// </summary>
@@ -5341,9 +5339,267 @@ namespace DOL.GS
 
 			//SortedSpells = true;
 		}
+
+		/// <summary>
+		/// The timer that controls an npc's spell casting
+		/// </summary>
+		public SpellAction SpellTimer
+		{
+			get { return m_spellaction; }
+			set { m_spellaction = value; }
+		}
+
+		/// <summary>
+		/// Callback after spell execution finished and next spell can be processed
+		/// </summary>
+		/// <param name="handler"></param>
+		public override void OnAfterSpellCastSequence(ISpellHandler handler)
+		{
+			/*
+			if (SpellTimer != null)
+			{
+				if (this == null || this.ObjectState != eObjectState.Active || !this.IsAlive || this.TargetObject == null || (this.TargetObject is GameLiving && this.TargetObject.ObjectState != eObjectState.Active || !(this.TargetObject as GameLiving).IsAlive))
+					SpellTimer.Stop();
+				else
+				{
+					int interval = 1500;
+
+					if (Brain != null)
+					{
+						interval = Math.Min(interval, Brain.ThinkInterval);
+					}
+
+					SpellTimer.Start(interval);
+				}
+			}
+			*/
+			
+
+			if (CurrentSpellHandler != null)
+			{
+				//prevent from relaunch
+				base.OnAfterSpellCastSequence(handler);
+			}
+
+			if(TargetObject == null)
+            {
+				TargetObject = CachedTarget;
+            }
+
+			// Notify Brain of Cast Finishing.
+			if (Brain != null)
+				Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
+		}
+
+		/// <summary>
+		/// The spell action of this living
+		/// </summary>
+		public class SpellAction : RegionECSAction
+		{
+			/// <summary>
+			/// Constructs a new attack action
+			/// </summary>
+			/// <param name="owner">The action source</param>
+			public SpellAction(GameLiving owner)
+				: base(owner)
+			{
+			}
+
+			/// <summary>
+			/// Called on every timer tick
+			/// </summary>
+			protected override int OnTick(ECSGameTimer timer)
+			{
+				GameNPC owner = null;
+				if (m_actionSource != null && m_actionSource is GameNPC)
+					owner = (GameNPC)m_actionSource;
+				else
+				{
+					Stop();
+					return 0;
+				}
+
+				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
+				{
+					Stop();
+					return 0;
+				}
+
+				//If we started casting a spell, stop the timer and wait for
+				//GameNPC.OnAfterSpellSequenceCast to start again
+				if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
+				{
+					Stop();
+					return 0;
+				}
+				else
+				{
+					//If we aren't a distance NPC, lets make sure we are in range to attack the target!
+					if (owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance && !owner.IsWithinRadius(owner.TargetObject, STICKMINIMUMRANGE))
+						((GameNPC)owner).Follow(owner.TargetObject, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
+				}
+
+				if (owner.Brain != null)
+				{
+					Interval = Math.Min(1500, owner.Brain.CastInterval);
+				}
+				else
+				{
+					Interval = 1500;
+				}
+
+				return Interval;
+			}
+		}
+
+		/// <summary>
+		/// Cast a spell, with optional LOS check
+		/// </summary>
+		/// <param name="spell"></param>
+		/// <param name="line"></param>
+		/// <param name="checkLOS"></param>
+		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
+		{
+			bool cast;
+
+			if (IsIncapacitated)
+				return false;
+
+			if (checkLOS)
+			{
+				cast = CastSpell(spell, line);
+			}
+			else
+			{
+				Spell spellToCast;
+
+				if (line.KeyName == GlobalSpellsLines.Mob_Spells)
+				{
+					// NPC spells will get the level equal to their caster
+					spellToCast = (Spell)spell.Clone();
+					spellToCast.Level = Level;
+				}
+				else
+				{
+					spellToCast = spell;
+				}
+
+				cast = base.CastSpell(spellToCast, line);
+			}
+
+			return cast;
+		}
+
+		/// <summary>
+		/// Cast a spell with LOS check to a player
+		/// </summary>
+		/// <param name="spell"></param>
+		/// <param name="line"></param>
+ 		/// <returns>Whether the spellcast started successfully</returns>
+		public override bool CastSpell(Spell spell, SpellLine line)
+		{
+			// Good opportunity to clean up our SpellTargetLosChecks.
+			// Entries older than 3 seconds are removed.
+			for (int i = m_spellTargetLosChecks.Count - 1 ; i >= 0 ; i--)
+			{
+				var element = m_spellTargetLosChecks.ElementAt(i);
+				if (element.Value.Item3 + 3000 > GameLoop.GameLoopTime)
+					m_spellTargetLosChecks.TryRemove(element.Key, out _);
+			}
+
+			if (IsIncapacitated)
+				return false;
+
+			Spell spellToCast = null;
+
+			if (line.KeyName == GlobalSpellsLines.Mob_Spells)
+			{
+				// NPC spells will get the level equal to their caster
+				spellToCast = (Spell)spell.Clone();
+				spellToCast.Level = Level;
+			}
+			else
+				spellToCast = spell;
+
+			if (TargetObject == this)
+				return base.CastSpell(spellToCast, line);
+
+			if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
+				return false;
+
+			GamePlayer LosChecker = TargetObject as GamePlayer;
+
+			if (LosChecker == null && this is GamePet pet)
+			{
+				if (pet.Owner is GamePlayer player)
+					LosChecker = player;
+				else if (pet.Owner is CommanderPet commander && commander.Owner is GamePlayer owner)
+					LosChecker = owner;
+			}
+			else if (LosChecker == null && Brain is IControlledBrain controlledBrain) // Check for charmed pets
+			{
+				if (controlledBrain.Owner is GamePlayer player)
+					LosChecker = player;
+			}
+
+			if (LosChecker == null)
+			{
+				foreach (GamePlayer playerInRange in GetPlayersInRadius(350))
+				{
+					if (playerInRange != null)
+					{
+						LosChecker = playerInRange;
+						break;
+					}
+				}
+			}
+
+			if (LosChecker == null)
+				return base.CastSpell(spellToCast, line);
+			else
+			{
+				if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
+					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLOS)); 
+				
+				return true;
+			}
+		}
+
+		public void StartSpellAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		{
+			if (targetOID == 0)
+				return;
+
+			GameObject target = CurrentRegion.GetObject(targetOID);
+
+			if (m_spellTargetLosChecks.TryRemove(target, out Tuple<Spell, SpellLine, long> value))
+			{
+				Spell spell = value.Item1;
+				SpellLine line = value.Item2;
+
+				if ((response & 0x100) == 0x100 && line != null && spell != null)
+				{
+					GameObject lasttarget = TargetObject;
+					TargetObject = target;
+
+					if (TargetObject is GameLiving living && living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+					{
+						if (living is GamePlayer && (living as GamePlayer).ControlledBrain != null)
+							TargetObject = (living as GamePlayer).ControlledBrain.Body;
+					}
+
+					base.CastSpell(spell, line);
+					TargetObject = lasttarget;
+				}
+				else
+					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
+			}
+		}
+
 		#endregion
 
 		#region Styles
+
 		/// <summary>
 		/// Styles for this NPC
 		/// </summary>
@@ -5567,283 +5823,6 @@ namespace DOL.GS
 				}
 
 				return tmp;
-			}
-		}
-
-		private SpellAction m_spellaction = null;
-		/// <summary>
-		/// The timer that controls an npc's spell casting
-		/// </summary>
-		public SpellAction SpellTimer
-		{
-			get { return m_spellaction; }
-			set { m_spellaction = value; }
-		}
-
-		/// <summary>
-		/// Callback after spell execution finished and next spell can be processed
-		/// </summary>
-		/// <param name="handler"></param>
-		public override void OnAfterSpellCastSequence(ISpellHandler handler)
-		{
-			/*
-			if (SpellTimer != null)
-			{
-				if (this == null || this.ObjectState != eObjectState.Active || !this.IsAlive || this.TargetObject == null || (this.TargetObject is GameLiving && this.TargetObject.ObjectState != eObjectState.Active || !(this.TargetObject as GameLiving).IsAlive))
-					SpellTimer.Stop();
-				else
-				{
-					int interval = 1500;
-
-					if (Brain != null)
-					{
-						interval = Math.Min(interval, Brain.ThinkInterval);
-					}
-
-					SpellTimer.Start(interval);
-				}
-			}
-			*/
-			
-
-			if (CurrentSpellHandler != null)
-			{
-				//prevent from relaunch
-				base.OnAfterSpellCastSequence(handler);
-			}
-
-			if(TargetObject == null)
-            {
-				TargetObject = CachedTarget;
-            }
-
-			// Notify Brain of Cast Finishing.
-			if (Brain != null)
-				Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
-		}
-
-		/// <summary>
-		/// The spell action of this living
-		/// </summary>
-		public class SpellAction : RegionECSAction
-		{
-			/// <summary>
-			/// Constructs a new attack action
-			/// </summary>
-			/// <param name="owner">The action source</param>
-			public SpellAction(GameLiving owner)
-				: base(owner)
-			{
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameNPC owner = null;
-				if (m_actionSource != null && m_actionSource is GameNPC)
-					owner = (GameNPC)m_actionSource;
-				else
-				{
-					Stop();
-					return 0;
-				}
-
-				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
-				{
-					Stop();
-					return 0;
-				}
-
-				//If we started casting a spell, stop the timer and wait for
-				//GameNPC.OnAfterSpellSequenceCast to start again
-				if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
-				{
-					Stop();
-					return 0;
-				}
-				else
-				{
-					//If we aren't a distance NPC, lets make sure we are in range to attack the target!
-					if (owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance && !owner.IsWithinRadius(owner.TargetObject, STICKMINIMUMRANGE))
-						((GameNPC)owner).Follow(owner.TargetObject, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
-				}
-
-				if (owner.Brain != null)
-				{
-					Interval = Math.Min(1500, owner.Brain.CastInterval);
-				}
-				else
-				{
-					Interval = 1500;
-				}
-
-				return Interval;
-			}
-		}
-
-		private const string LOSTEMPCHECKER = "LOSTEMPCHECKER";
-		private const string LOSCURRENTSPELL = "LOSCURRENTSPELL";
-		private const string LOSCURRENTLINE = "LOSCURRENTLINE";
-		private const string LOSSPELLTARGET = "LOSSPELLTARGET";
-
-
-		/// <summary>
-		/// Cast a spell, with optional LOS check
-		/// </summary>
-		/// <param name="spell"></param>
-		/// <param name="line"></param>
-		/// <param name="checkLOS"></param>
-		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
-		{
-			bool cast = false;
-			if (IsIncapacitated)
-				return false;
-
-			if (checkLOS)
-			{
-				cast = CastSpell(spell, line);
-			}
-			else
-			{
-				Spell spellToCast = null;
-
-				if (line.KeyName == GlobalSpellsLines.Mob_Spells)
-				{
-					// NPC spells will get the level equal to their caster
-					spellToCast = (Spell)spell.Clone();
-					spellToCast.Level = Level;
-				}
-				else
-				{
-					spellToCast = spell;
-				}
-
-				cast = base.CastSpell(spellToCast, line);
-			}
-
-			return cast;
-		}
-
-		/// <summary>
-		/// Cast a spell with LOS check to a player
-		/// </summary>
-		/// <param name="spell"></param>
-		/// <param name="line"></param>
- 		/// <returns>Whether the spellcast started successfully</returns>
-		public override bool CastSpell(Spell spell, SpellLine line)
-		{
-			if (IsIncapacitated)
-				return false;
-
-			if (TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null) != null)
-			{
-				return false;
-			}
-			bool casted = false;
-			Spell spellToCast = null;
-
-			if (line.KeyName == GlobalSpellsLines.Mob_Spells)
-			{
-				// NPC spells will get the level equal to their caster
-				spellToCast = (Spell)spell.Clone();
-				spellToCast.Level = Level;
-			}
-			else
-			{
-				spellToCast = spell;
-			}
-
-			// Let's do a few checks to make sure it doesn't just wait on the LOS check
-			int tempProp = TempProperties.getProperty<int>(LOSTEMPCHECKER);
-			if (tempProp <= 0)
-			{
-				GamePlayer LOSChecker = TargetObject as GamePlayer;
-
-				if (LOSChecker == null && this is GamePet pet)
-				{
-					if (pet.Owner is GamePlayer player)
-						LOSChecker = player;
-					else if (pet.Owner is CommanderPet petComm && petComm.Owner is GamePlayer owner)
-						LOSChecker = owner;
-				}
-				else if (LOSChecker == null && this.Brain is IControlledBrain brain) // Check for charmed pets
-				{
-					if (brain.Owner is GamePlayer player)
-						LOSChecker = player;
-				}
-
-				if (LOSChecker == null)
-				{
-					foreach (GamePlayer ply in GetPlayersInRadius(350))
-					{
-						if (ply != null)
-						{
-							LOSChecker = ply;
-							break;
-						}
-					}
-				}
-
-				if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
-					return false;
-
-				if (LOSChecker == null)
-				{
-					TempProperties.setProperty(LOSTEMPCHECKER, 0);
-					casted = base.CastSpell(spellToCast, line);
-				}
-				else
-				{
-					TempProperties.setProperty(LOSTEMPCHECKER, 10);
-					TempProperties.setProperty(LOSCURRENTSPELL, spellToCast);
-					TempProperties.setProperty(LOSCURRENTLINE, line);
-					TempProperties.setProperty(LOSSPELLTARGET, TargetObject);
-					//LOSChecker.Out.SendCheckLOS(LOSChecker, this, new CheckLOSResponse(StartSpellAttackCheckLOS)); //is this checking LOS between player and pet?
-					LOSChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLOS)); 
-					casted = true;
-				}
-			}
-			else
-				TempProperties.setProperty(LOSTEMPCHECKER, tempProp - 1);
-
-			return casted;
-		}
-
-		public void StartSpellAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
-		{
-			SpellLine line = TempProperties.getProperty<SpellLine>(LOSCURRENTLINE, null);
-			Spell spell = TempProperties.getProperty<Spell>(LOSCURRENTSPELL, null);
-			GameObject target = TempProperties.getProperty<GameObject>(LOSSPELLTARGET, null);
-			GameObject lasttarget = TargetObject;
-
-			TempProperties.removeProperty(LOSSPELLTARGET);
-			TempProperties.removeProperty(LOSTEMPCHECKER);
-			TempProperties.removeProperty(LOSCURRENTLINE);
-			TempProperties.removeProperty(LOSCURRENTSPELL);
-			TempProperties.setProperty(LOSTEMPCHECKER, 0);
-
-			if ((response & 0x100) == 0x100 && line != null && spell != null)
-			{
-				TargetObject = target;
-
-				GameLiving living = TargetObject as GameLiving;
-
-				if (living != null && living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-				{
-					if (living is GamePlayer && (living as GamePlayer).ControlledBrain != null)
-					{
-						TargetObject = (living as GamePlayer).ControlledBrain.Body;
-					}
-				}
-
-				base.CastSpell(spell, line);
-				TargetObject = lasttarget;
-			}
-			else
-			{
-				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
 			}
 		}
 

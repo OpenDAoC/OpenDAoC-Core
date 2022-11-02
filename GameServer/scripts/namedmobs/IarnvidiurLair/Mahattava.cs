@@ -43,9 +43,9 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackSpeed(params InventoryItem[] weapon)
+		public override int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
 		{
-			return base.AttackSpeed(weapon) * 2;
+			return base.AttackSpeed(mainWeapon, leftWeapon) * 2;
 		}
 		public override int AttackRange
 		{

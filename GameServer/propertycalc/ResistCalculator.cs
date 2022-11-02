@@ -29,11 +29,17 @@ namespace DOL.GS.PropertyCalc
         {
             int propertyIndex = (int)property;
 
-            // Abilities/racials/debuffs.
+            // Necromancer pets receive resistances from Avoidance of Magic.
+            GameLiving livingToCheck;
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
 
+            // Abilities/racials/debuffs.
             int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
-			int abilityBonus = living.AbilityBonus[propertyIndex];
-			int racialBonus = SkillBase.GetRaceResist( living.Race, (eResist)property );
+			int abilityBonus = livingToCheck.AbilityBonus[propertyIndex];
+			int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist)property);
 
             // Items and buffs.
             int itemBonus = CalcValueFromItems(living, property);
@@ -65,8 +71,7 @@ namespace DOL.GS.PropertyCalc
 
             buffBonus -= Math.Abs(debuff);
 
-            // Apply debuffs. 100% Effectiveness for player buffs, but only 50%
-            // effectiveness for item bonuses.
+            // Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for item bonuses.
             if (living is GamePlayer && buffBonus < 0)
             {
                 itemBonus += buffBonus / 2;
@@ -84,6 +89,7 @@ namespace DOL.GS.PropertyCalc
             int racialBonus = (living is GamePlayer) ? SkillBase.GetRaceResist(((living as GamePlayer).Race), (eResist)property) : 0;
             int itemBonus = CalcValueFromItems(living, property);
             int buffBonus = CalcValueFromBuffs(living, property);
+
             switch (property)
             {
                 case eProperty.Resist_Body:
@@ -100,9 +106,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GameNPC)
             {
-                // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff
+                // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff.
                 // See PropertyChangingSpell.ApplyNpcEffect() for details.
-                buffBonus = buffBonus << 1;
+                buffBonus <<= 1;
                 int specDebuff = Math.Abs(living.SpecDebuffCategory[property]);
 
                 switch (property)
@@ -120,7 +126,7 @@ namespace DOL.GS.PropertyCalc
 
                 buffBonus -= specDebuff;
                 if (buffBonus > 0)
-                    buffBonus = buffBonus >> 1;
+                    buffBonus >>= 1;
             }
 
             buffBonus -= Math.Abs(debuff);
@@ -129,7 +135,8 @@ namespace DOL.GS.PropertyCalc
             {
                 itemBonus += buffBonus / 2;
                 buffBonus = 0;
-                if (itemBonus < 0) itemBonus = 0;
+                if (itemBonus < 0)
+                    itemBonus = 0;
             }
             return Math.Min(itemBonus + buffBonus + racialBonus, HardCap);
         }
@@ -142,12 +149,17 @@ namespace DOL.GS.PropertyCalc
         /// <returns></returns>
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
         {
-            int buffBonus = living.BaseBuffBonusCategory[(int)property]
-				+ living.BuffBonusCategory4[(int)property];
-            if (living is GameNPC)
-                return buffBonus;
-            int RACalcHolder = Math.Min(buffBonus, BuffBonusCap);
-            return RACalcHolder + living.SpecBuffBonusCategory[(int) property];
+            // Necromancer pets receive resistances from The Empty Mind.
+            GameLiving livingToCheck;
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
+            int buffBonus = living.BaseBuffBonusCategory[(int)property] + living.BuffBonusCategory4[(int)property];
+            int RACalcHolder = livingToCheck is GameNPC ? buffBonus : Math.Min(buffBonus, BuffBonusCap);
+
+            return RACalcHolder + livingToCheck.SpecBuffBonusCategory[(int)property];
         }
 
         /// <summary>
@@ -158,15 +170,22 @@ namespace DOL.GS.PropertyCalc
         /// <returns></returns>
         public override int CalcValueFromItems(GameLiving living, eProperty property)
         {
-            if (living is GameNPC)
+            // Necromancer pets receive resistances from their owner's items.
+            GameLiving livingToCheck;
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
+            if (livingToCheck is GameNPC)
                 return 0;
 
-            int itemBonus = living.ItemBonus[(int)property];
+            int itemBonus = livingToCheck.ItemBonus[(int)property];
 
             // Item bonus cap and cap increase from Mythirians.
+            int itemBonusCap = livingToCheck.Level / 2 + 1;
+            int itemBonusCapIncrease = GetItemBonusCapIncrease(livingToCheck, property);
 
-            int itemBonusCap = living.Level / 2 + 1;
-            int itemBonusCapIncrease = GetItemBonusCapIncrease(living, property);
             return Math.Min(itemBonus, itemBonusCap + itemBonusCapIncrease);
         }
 
@@ -179,7 +198,8 @@ namespace DOL.GS.PropertyCalc
         /// <returns></returns>
         public static int GetItemBonusCapIncrease(GameLiving living, eProperty property)
         {
-            if (living == null) return 0;
+            if (living == null)
+                return 0;
             return Math.Min(living.ItemBonus[(int)(eProperty.ResCapBonus_First - eProperty.Resist_First + property)], 5);
         }
 

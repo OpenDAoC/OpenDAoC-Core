@@ -1303,7 +1303,6 @@ namespace DOL.AI.Brain
                 return true;
 
             /* all my homies hate vampires
-             * 
             if (target is GamePlayer && (target as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Vampiir)
             {
                 switch (spell.SpellType)
@@ -1314,34 +1313,22 @@ namespace DOL.AI.Brain
                     case (byte)eSpellType.DexterityBuff:
                     case (byte)eSpellType.ConstitutionBuff:
                     case (byte)eSpellType.AcuityBuff:
-
                         return true;
                 }
             }*/
 
-            spell.IsSpec = true;
-            if (EffectListService.GetEffectOnTarget(target, EffectService.GetEffectFromSpell(spell)) != null)
-            //if (target.effectListComponent.ContainsEffectForEffectType(EffectService.GetEffectFromSpell(spell)))
+            // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
+            if (spell.SpellType is (byte)eSpellType.OffensiveProc or (byte)eSpellType.DefensiveProc)
             {
-                return true;
-            }
-                /*
-                //Check through each effect in the target's effect list
-                foreach (IGameEffect effect in target.EffectList)
+                if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell), out List<ECSGameEffect> existingEffects))
                 {
-                    //If the effect we are checking is not a gamespelleffect keep going
-                    if (effect is GameSpellEffect == false)
-                        continue;
-
-                    GameSpellEffect speffect = effect as GameSpellEffect;
-
-                    //if the effect effectgroup is the same as the checking spells effectgroup then these are considered the same
-                    if (speffect.Spell.EffectGroup == spell.EffectGroup)
+                    if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null)
                         return true;
-                }*/
+                }
+            }
+            else if (EffectListService.GetEffectOnTarget(target, EffectService.GetEffectFromSpell(spell)) != null)
+                return true;
 
-
-            //the answer is no, the effect has not been found
             return false;
         }
 

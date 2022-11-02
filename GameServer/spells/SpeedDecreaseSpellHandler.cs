@@ -17,11 +17,9 @@
  *
  */
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Events;
-using DOL.GS.RealmAbilities;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -73,23 +71,21 @@ namespace DOL.GS.Spells
 			// 	}
 			// }
 
-			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
+			int criticalChance = Caster.DotCriticalChance;
+
+			if (criticalChance > 0)
 			{
-				int criticalchance = this.Caster.DotCriticalChance;
+				int randNum = Util.CryptoNextInt(1, 100);
+				int critCap = Math.Min(50, criticalChance);
+				GamePlayer playerCaster = Caster as GamePlayer;
 
-				int randNum = Util.CryptoNextInt(1, 100); //grab our random number
-				int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
-
-				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
-				{
-					spellCaster.Out.SendMessage($"debuff crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-				}
+				if (playerCaster?.UseDetailedCombatLog == true && critCap > 0)
+					playerCaster.Out.SendMessage($"Debuff crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (critCap > randNum)
 				{
-					//effectiveness *= 2;
 					crit = true;
-					if(Caster is GamePlayer c) c.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					playerCaster?.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 				}
 			}
 			

@@ -36,9 +36,8 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property]
-                - living.DebuffCategory[(int)property]);
+            // Hardcap at 25%
+            return Math.Min(25, living.ItemBonus[(int)property] - living.DebuffCategory[(int)property]);
         }
     }
 
@@ -48,9 +47,16 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property] + living.AbilityBonus[(int)property]
-                - living.DebuffCategory[(int)property]);
+            GameLiving livingToCheck;
+
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
+            // Hardcap at 25%
+            // While it doesn't make much sense, ItemBonus is retrieved from the pet too. I don't know if the bonus is supposed to transfer from the owner.
+            return Math.Min(25, livingToCheck.ItemBonus[(int)property] + livingToCheck.AbilityBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
         }
     }
 
@@ -60,7 +66,7 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            //hardcap at 25%
+            // Hardcap at 25%
             int percent = Math.Min(25, living.BaseBuffBonusCategory[(int)property]
                 - living.DebuffCategory[(int)property]
                 + living.ItemBonus[(int)property]);
@@ -68,10 +74,8 @@ namespace DOL.GS.PropertyCalc
             percent += living.AbilityBonus[(int)property];
 
             // Relic bonus calculated before RA bonuses
-			if (living is GamePlayer || living is GamePet)
-			{
+			if (living is GamePlayer or GamePet)
 				percent += (int)(100 * RelicMgr.GetRelicBonusModifier(living.Realm, eRelicType.Magic));
-			}
 
             return percent;
         }
@@ -91,7 +95,7 @@ namespace DOL.GS.PropertyCalc
         {
             int percent = living.AbilityBonus[(int)property];
 
-            // hardcap at 50%
+            // Hardcap at 50%
             return Math.Min(50, percent);
         }
     }
@@ -102,13 +106,19 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
+            GameLiving livingToCheck;
+
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
             /// [Atlas - Takii] Re-introduce usage of CastingSpeed ability bonus instead of Item bonus since we have Mastery of the Art RA in OF.
             /// Hard cap at 15% since that's what MotA goes up to.
-            return Math.Min(15, living.AbilityBonus[(int)property] - living.DebuffCategory[(int)property]);
+            return Math.Min(15, livingToCheck.AbilityBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
 
-            //hardcap at 10%
-            //return Math.Min(10, living.ItemBonus[(int)property]
-            //- living.DebuffCategory[(int)property]);
+            // Hardcap at 10%
+            //return Math.Min(10, livingToCheck.ItemBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
         }
     }
 
@@ -119,8 +129,7 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             //hardcap at 25%
-            return Math.Min(25, living.ItemBonus[(int)property]
-                - living.DebuffCategory[(int)property]);
+            return Math.Min(25, living.ItemBonus[(int)property] - living.DebuffCategory[(int)property]);
         }
     }
 
@@ -130,7 +139,7 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            //hardcap at 10%
+            // Hardcap at 10%
             int percent = Math.Min(10, living.BaseBuffBonusCategory[(int)property]
                 + living.ItemBonus[(int)property]
                 - living.DebuffCategory[(int)property]);
