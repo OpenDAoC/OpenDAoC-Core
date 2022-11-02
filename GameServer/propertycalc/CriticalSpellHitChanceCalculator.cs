@@ -36,7 +36,7 @@ namespace DOL.GS.PropertyCalc
             else if (living is GameNPC npc && ServerProperties.Properties.EXPAND_WILD_MINION)
             {
                 if (npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer playerOwner)
-                    chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>().Amount;
+                    chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>()?.Amount ?? 0;
             }
 
 			return Math.Min(chance, 50);
@@ -64,7 +64,7 @@ namespace DOL.GS.PropertyCalc
 			int chance = living.AbilityBonus[(int)property];
 
 			if (living is NecromancerPet necroPet && necroPet.Brain is IControlledBrain necroBrain && necroBrain.GetPlayerOwner() is GamePlayer playerOwner)
-				chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildArcanaAbility>().Amount;
+				chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildArcanaAbility>()?.Amount ?? 0;
 
 			return Math.Min(chance, 50);
 		}

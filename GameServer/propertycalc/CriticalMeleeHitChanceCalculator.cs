@@ -54,7 +54,7 @@ namespace DOL.GS.PropertyCalc
 				if (npc is NecromancerPet)
 					chance += 10;
 
-				chance += player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>().Amount;
+				chance += player.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>()?.Amount ?? 0;
 			}
 			else
 				chance += 10;
