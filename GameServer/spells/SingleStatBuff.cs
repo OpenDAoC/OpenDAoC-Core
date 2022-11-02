@@ -165,7 +165,7 @@ namespace DOL.GS.Spells
             GamePlayer playerCaster = Caster as GamePlayer;
 
             if (playerCaster?.UseDetailedCombatLog == true && critChance > 0)
-                playerCaster.Out.SendMessage($"debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             if (Util.Chance(critChance))
             {                    
