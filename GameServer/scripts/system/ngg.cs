@@ -97,7 +97,7 @@ namespace DOL.GS.Commands
                 {
                     x = 0;
                    // temp = GameServer.Database.SelectObjects<ItemTemplate>("Object_Type = " + ot[a] + " AND Item_Type = " + slots[b]);
-                   temp = GameServer.Database.SelectObjects<ItemTemplate>("`Object_Type` = @Object AND `Item_Type` = @Item", new [] { new QueryParameter("@Object", ot[a]), new QueryParameter("@Item", slots[b]) });
+                   temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Object_Type").IsEqualTo(ot[a]).And(DB.Column("Item_Type").IsEqualTo(slots[b])));
                   	armor[a][b] = new ushort[temp.Count];
                     foreach (DataObject item in temp)
                     {
@@ -107,7 +107,7 @@ namespace DOL.GS.Commands
             }
 
             x = 0;
-            temp = GameServer.Database.SelectObjects<ItemTemplate>("Item_Type = @Item", new QueryParameter("@Item", slots[6]));
+            temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[6]));
             cloak = new ushort[temp.Count];
             foreach (DataObject item in temp)
             {
@@ -117,7 +117,7 @@ namespace DOL.GS.Commands
             for (int a = 0; a < 11; a++)
             {
                 x = 0;
-                temp = GameServer.Database.SelectObjects<ItemTemplate>( "Item_Type = @Item", new QueryParameter("@Item", slots[a]));
+                temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[a]));
                 equip[a] = new ushort[temp.Count];
                 foreach (DataObject item in temp)
                 {

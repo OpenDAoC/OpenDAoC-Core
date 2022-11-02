@@ -588,7 +588,7 @@ namespace DOL.GS.Commands
                     {
                         DBVoting[] votings;
                         if (param != string.Empty)
-                            votings = (DBVoting[])GameServer.Database.SelectObjects<DBVoting> ("VoteID LIKE '%" + GameServer.Database.Escape(param) + "%'");
+                            votings = (DBVoting[])GameServer.Database.SelectObjects<DBVoting>(DB.Column("VoteID").IsLike("%" + GameServer.Database.Escape(param) + "%"));
                         else
                             votings = (DBVoting[])GameServer.Database.SelectAllObjects<DBVoting>();
 

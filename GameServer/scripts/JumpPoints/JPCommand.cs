@@ -75,7 +75,7 @@ namespace DOL.GS.Commands
                 return;
             }
             
-            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>("Name = @Name", new QueryParameter("@Name", args[2])).FirstOrDefault();
+            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
             
             if(p != null)
             {
@@ -116,7 +116,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>("Name = @Name", new QueryParameter("@Name", args[2])).FirstOrDefault();;
+            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
 
             if(p == null)
             {
@@ -132,7 +132,7 @@ namespace DOL.GS.Commands
         {
             if (args.Length == 4 && args[2] == "to")
             {
-                DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>("Name = @Name", new QueryParameter("@Name", args[3])).FirstOrDefault();
+                DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[3])).FirstOrDefault();
 
                 if(p == null)
                 {

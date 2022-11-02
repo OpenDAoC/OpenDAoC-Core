@@ -38,7 +38,7 @@ namespace DOL.GS.Keeps
             if (this.m_destinationsIn.Count > 0)
                 return;
 
-            this.m_destinationsIn.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(" Text = 'sortir' AND TeleportType = '" + type + "'"));
+            this.m_destinationsIn.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(DB.Column("Text").IsEqualTo("sortir").And(DB.Column("TeleportType").IsEqualTo(type))));
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace DOL.GS.Keeps
             if (this.m_destinationsOut.Count > 0)
                 return;
 
-            this.m_destinationsOut.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(" Text = 'entrer' AND TeleportType = '" + type + "'"));
+            this.m_destinationsOut.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(DB.Column("Text").IsEqualTo("entrer").And(DB.Column("TeleportType").IsEqualTo(type))));
         }
 
         /// <summary>

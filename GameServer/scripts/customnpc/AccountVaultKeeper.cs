@@ -375,9 +375,7 @@ namespace DOL.GS
         /// </summary>
         private new IList<InventoryItem> DBItems(GamePlayer player = null)
         {
-            string sqlQuery = String.Format("OwnerID = '{0}' and SlotPosition >= {1} and SlotPosition <= {2}", GetOwner(player), FirstDBSlot, LastDBSlot);
-            
-            return GameServer.Database.SelectObjects<InventoryItem>(sqlQuery);
+            return GameServer.Database.SelectObjects<InventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot))));
         }
 
         public override int FirstDBSlot

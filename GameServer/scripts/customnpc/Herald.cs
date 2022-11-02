@@ -3,6 +3,8 @@ using System.Collections;
 using DOL.GS.PacketHandler;
 using DOL.Database;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace DOL.GS.Scripts
 {
     public class Herald : GameNPC
@@ -28,7 +30,7 @@ namespace DOL.GS.Scripts
             
             TurnTo(player, 500);
 
-            DOLCharacters[] chars = (DOLCharacters[])GameServer.Database.SelectObjects<DOLCharacters>("RealmPoints > 0 AND RealmPoints < 70000000 ORDER BY RealmPoints DESC LIMIT 25");
+            DOLCharacters[] chars = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("RealmPoints").IsGreatherThan(0).And(DB.Column("RealmPoints").IsLessThan(70000000))).OrderByDescending(x => x.RealmPoints).Take(25).ToArray();
             List<string> list = new List<string>();
             
             list.Add("Top 25 Highest Realm Points:\n\n");
@@ -51,8 +53,8 @@ namespace DOL.GS.Scripts
                 }
 
                 string str = "#" + count + ": " + chr.Name + " (" + realm + ") - " + chr.RealmPoints + " realm points\n";
-                count++;
                 list.Add(str);
+                count++;
             }
 
             player.Out.SendCustomTextWindow("Realm Point Herald", list);

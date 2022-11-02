@@ -49,9 +49,7 @@ namespace DOL.GS.Quests.Midgard
 
 		private static IList<WorldObject> GetItems()
 		{
-			string FreeyasGrave = "Name = \"Freeya\'s Grave\"";
-			
-			return (GameServer.Database.SelectObjects<WorldObject>(FreeyasGrave));
+			return GameServer.Database.SelectObjects<WorldObject>(DB.Column("Name").IsEqualTo("Freeya's Grave"));
 		}
 
 		// Constructors
