@@ -17,16 +17,10 @@
  *
  */
 using System;
-using System.Collections;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
-using DOL.Language;
 using System.Collections.Generic;
-using DOL.GS.RealmAbilities;
-using System.Linq;
+using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Spells
 {
@@ -141,26 +135,27 @@ namespace DOL.GS.Spells
 			if(Spell.CastTime>0) target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
-		private double GetCritBonus()
-		{
-			double critMod = 1;
+        private double GetCritBonus()
+        {
+            double critMod = 1.0;
+            int critChance = Caster.DotCriticalChance;
 
-			if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
-			{
-				if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && Caster.DotCriticalChance > 0)
-				{
-					spellCaster.Out.SendMessage($"debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-				}
+            if (critChance <= 0)
+                return critMod;
 
-				if (Util.Chance(Caster.DotCriticalChance * 2))
-				{
-					critMod *= 1 + Util.Random(1, 10) * .1;
-					if (Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1, 3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				}
-			}
+            GamePlayer playerCaster = Caster as GamePlayer;
 
-			return critMod;
-		}
+            if (playerCaster?.UseDetailedCombatLog == true && critChance > 0)
+                playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            if (Util.Chance(critChance))
+            {                    
+                critMod *= 1 + Util.Random(1, 10) * 0.1;
+                playerCaster?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            }
+
+            return critMod;
+        }
 
 		/// <summary>
 		/// Calculates chance of spell getting resisted
