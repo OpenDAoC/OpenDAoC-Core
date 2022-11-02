@@ -148,12 +148,16 @@ namespace DOL.GS.PropertyCalc
         /// <returns></returns>
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
         {
-            int buffBonus = living.BaseBuffBonusCategory[(int)property]
-				+ living.BuffBonusCategory4[(int)property];
-            if (living is GameNPC)
-                return buffBonus;
-            int RACalcHolder = Math.Min(buffBonus, BuffBonusCap);
-            return RACalcHolder + living.SpecBuffBonusCategory[(int) property];
+            // Necromancer pets receive resistances from The Empty Mind.
+            GameLiving livingToCheck;
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
+            int buffBonus = living.BaseBuffBonusCategory[(int)property] + living.BuffBonusCategory4[(int)property];
+            int RACalcHolder = livingToCheck is GameNPC ? buffBonus : Math.Min(buffBonus, BuffBonusCap);
+            return RACalcHolder + livingToCheck.SpecBuffBonusCategory[(int) property];
         }
 
         /// <summary>
