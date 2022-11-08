@@ -551,22 +551,6 @@ namespace DOL.Database
 		#endregion
 
 		#region Select Implementation
-		[Obsolete("Use ExecuteSelectImpl(string,IEnumerable<IEnumerable<QueryParameter>>,Action<IDataReader>) instead.")]
-		protected void ExecuteSelectImpl(string SQLCommand, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
-			=> ExecuteSelectImpl(SQLCommand, new [] { new QueryParameter[] { } }, Reader);
-
-		[Obsolete("Use ExecuteSelectImpl(string,IEnumerable<IEnumerable<QueryParameter>>,Action<IDataReader>) instead.")]
-		protected void ExecuteSelectImpl(string SQLCommand, QueryParameter param, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
-			=> ExecuteSelectImpl(SQLCommand, new [] { new [] { param } }, Reader);
-
-		[Obsolete("Use ExecuteSelectImpl(string,IEnumerable<IEnumerable<QueryParameter>>,Action<IDataReader>) instead.")]
-		protected void ExecuteSelectImpl(string SQLCommand, IEnumerable<QueryParameter> parameter, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
-			=> ExecuteSelectImpl(SQLCommand, new [] { parameter }, Reader);
-
-		[Obsolete("Use ExecuteSelectImpl(string,IEnumerable<IEnumerable<QueryParameter>>,Action<IDataReader>) instead.")]
-		protected virtual void ExecuteSelectImpl(string SQLCommand, IEnumerable<IEnumerable<QueryParameter>> parameters, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
-			=> ExecuteSelectImpl(SQLCommand, parameters, Reader);
-
 		protected virtual void ExecuteSelectImpl(string SQLCommand, IEnumerable<IEnumerable<QueryParameter>> parameters, Action<IDataReader> Reader)
 		{
 			if (log.IsDebugEnabled)
@@ -747,7 +731,7 @@ namespace DOL.Database
 		/// <param name="SQLCommand">Raw Command</param>
 		protected int ExecuteNonQueryImpl(string SQLCommand)
 		{
-			return ExecuteNonQueryImpl(SQLCommand, new [] { new QueryParameter[] { }}).First();
+			return ExecuteNonQueryImpl(SQLCommand, new [] { Array.Empty<QueryParameter>() } ).First();
 		}
 		
 		/// <summary>
@@ -868,7 +852,7 @@ namespace DOL.Database
 		/// <returns>Object Returned by Scalar</returns>
 		protected object ExecuteScalarImpl(string SQLCommand, bool retrieveLastInsertID = false)
 		{
-			return ExecuteScalarImpl(SQLCommand, new [] { new QueryParameter[] { }}, retrieveLastInsertID).First();
+			return ExecuteScalarImpl(SQLCommand, new [] { Array.Empty<QueryParameter>() }, retrieveLastInsertID).First();
 		}
 		
 		/// <summary>

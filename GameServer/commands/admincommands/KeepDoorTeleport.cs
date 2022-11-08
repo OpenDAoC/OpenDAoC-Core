@@ -126,7 +126,7 @@ namespace DOL.GS.Commands
         {
             GamePlayer player = client.Player;
 
-            var verification = GameServer.Database.SelectObject<DBKeepDoorTeleport>("KeepID = '" + keep.KeepID + "'" + " AND Text = '" + Text + "'" + "AND Type = '" + teleportType + "'");
+            var verification = GameServer.Database.SelectObject<DBKeepDoorTeleport>(DB.Column("KeepID").IsEqualTo(keep.KeepID).And(DB.Column("Text").IsEqualTo(Text).And(DB.Column("Type").IsEqualTo(teleportType))));
             if (verification != null)
             {
                 client.Out.SendMessage(String.Format("Teleport ID with same parameter already exists!"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

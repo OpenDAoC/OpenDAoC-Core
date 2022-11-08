@@ -189,7 +189,7 @@ namespace DOL.GS.Commands
         {
             IList<string> output = new List<string>();
             IList<HCCharacter> hcCharacters = new List<HCCharacter>();
-            IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>("HCFlag = '1'").OrderByDescending(x => x.Level).Take(50).ToList();
+            IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("HCFlag").IsEqualTo(1)).OrderByDescending(x => x.Level).Take(50).ToList();
             
             output.Add("Top 50 Hardcore characters:\n");
             

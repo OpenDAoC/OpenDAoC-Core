@@ -55,10 +55,9 @@ namespace DOL.GS.Spells
                 Npc.LoadTemplate(template);
             }
            
-            int x, y;
-            m_caster.GetSpotFromHeading(64, out x, out y);
-            Npc.X = x;
-            Npc.Y = y;
+            Point2D point = m_caster.GetPointFromHeading(m_caster.Heading, 64);
+            Npc.X = point.X;
+            Npc.Y = point.Y;
             Npc.Z = m_caster.Z;
             Npc.Flags += (byte) GameNPC.eFlags.GHOST + (byte) GameNPC.eFlags.PEACE;
             Npc.CurrentRegion = m_caster.CurrentRegion;

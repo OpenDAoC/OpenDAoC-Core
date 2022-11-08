@@ -49,9 +49,7 @@ namespace DOL.GS.Quests.Albion
 
 		private static IList<WorldObject> GetItems()
 		{
-			string FlitzitinaGrave = "Name = \"Flitzitina\'s Grave\"";
-			
-			return (GameServer.Database.SelectObjects<WorldObject>(FlitzitinaGrave));
+			return GameServer.Database.SelectObjects<WorldObject>(DB.Column("Name").IsEqualTo("Flitzitina's Grave"));
 		}
 
 		// Constructors

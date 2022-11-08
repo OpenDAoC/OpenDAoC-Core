@@ -173,7 +173,7 @@ namespace DOL.GS.Commands
 				{
 					IList<string> output = new List<string>();
 					IList<SoloCharacter> soloCharacters = new List<SoloCharacter>();
-					IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>("NoHelp = '1'")
+					IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("NoHelp").IsEqualTo(1))
 						.OrderByDescending(x => x.Level).Take(50).ToList();
 
 					output.Add("Top 50 Solo characters:\n");
