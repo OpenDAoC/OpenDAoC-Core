@@ -120,6 +120,51 @@ namespace DOL.GS {
                         invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
+
+        public static void GenerateReward(GameLiving living, int amount)
+        {
+            if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+            {
+                GenerateBPs(living, amount);
+            }
+            else
+            {
+                GenerateOrbAmount(living, amount);
+            }
+        }
+
+        private static void GenerateBPs(GameLiving living, int amount)
+        {
+            if (amount == 0) return; 
+
+            if (living != null && living is GamePlayer)
+            {
+                var player = living as GamePlayer;
+                
+
+                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player) != null ? LoyaltyManager.GetPlayerRealmLoyalty(player).Days : 0;
+
+                if(numCurrentLoyalDays >= 30)
+                {
+                    numCurrentLoyalDays = 30;
+                }
+
+                var loyaltyBonus = ((amount * .2) * (numCurrentLoyalDays / 30));
+                
+                double relicBonus = (amount * (0.025 * RelicMgr.GetRelicCount(player.Realm)));
+
+                var totBPs = amount + Convert.ToInt32(loyaltyBonus) + Convert.ToInt32(relicBonus);
+                
+                player.GainBountyPoints(totBPs, false);
+                
+                if (loyaltyBonus > 0)
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(loyaltyBonus)} BPs due to your realm loyalty!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                if (relicBonus > 0)
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicBonus)} BPs due to your realm's relic ownership!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+            }
+            
+        }
         public static void GenerateOrbAmount(GameLiving living, int amount)
         {
             if (amount == 0) return; 

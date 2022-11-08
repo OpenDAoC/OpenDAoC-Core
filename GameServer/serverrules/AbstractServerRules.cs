@@ -1235,7 +1235,7 @@ namespace DOL.GS.ServerRules
 						max *= 5;
 					}
 					//Console.WriteLine($"min {min} max {max}");
-					AtlasROGManager.GenerateOrbAmount(living as GameLiving, Util.Random(min, max));
+					AtlasROGManager.GenerateReward(living as GameLiving, Util.Random(min, max));
 				}
 					
 			});
@@ -2175,7 +2175,11 @@ namespace DOL.GS.ServerRules
             foreach (var player in playersToAward)
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
-                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
+                
+                if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvP)
+                {
+	                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
+                }
 
                 int bonusRegion = 0;
                 switch (ZoneBonusRotator.GetCurrentBonusRealm())

@@ -181,7 +181,7 @@ namespace DOL.GS.Scripts
 
                     player.MoveTo(249, 47400, 48686, 25000, 2085);
 
-                    AtlasROGManager.GenerateOrbAmount(player, orbAmount);
+                    AtlasROGManager.GenerateReward(player, orbAmount);
 
                     GameServer.Database.SaveObject(player.Client.Account);
 

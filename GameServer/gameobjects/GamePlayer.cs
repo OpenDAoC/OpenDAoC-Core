@@ -5884,7 +5884,7 @@ namespace DOL.GS
                     HCFlag = false;
                     HCCompleted = true;
                     Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    AtlasROGManager.GenerateOrbAmount(this, 5000);
+                    AtlasROGManager.GenerateReward(this, 5000);
                 }
                 
                 // Creates a TimeXLevel to track the levelling time to 50

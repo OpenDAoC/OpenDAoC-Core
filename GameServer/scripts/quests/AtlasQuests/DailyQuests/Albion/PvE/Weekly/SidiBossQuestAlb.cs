@@ -363,7 +363,7 @@ namespace DOL.GS.WeeklyQuest.Albion
         {
             m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
             m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
-            AtlasROGManager.GenerateOrbAmount(m_questPlayer, 1500);
+            AtlasROGManager.GenerateReward(m_questPlayer, 1500);
             _deadSidiBossMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

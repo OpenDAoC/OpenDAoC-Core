@@ -380,7 +380,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
 				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 5000);
+				AtlasROGManager.GenerateReward(m_questPlayer, 5000);
 				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
 				AtlasROGManager.GenerateJewel(m_questPlayer, 50);
 				PlayersKilled = 0;

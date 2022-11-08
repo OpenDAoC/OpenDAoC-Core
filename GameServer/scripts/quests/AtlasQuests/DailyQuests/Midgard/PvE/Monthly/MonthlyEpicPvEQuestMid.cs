@@ -370,7 +370,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
 				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateOrbAmount(m_questPlayer, 3000);
+				AtlasROGManager.GenerateReward(m_questPlayer, 3000);
 				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
 				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
 				_iarnvidiurKilled = 0;

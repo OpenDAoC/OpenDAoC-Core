@@ -109,7 +109,7 @@ namespace DOL.GS.Scripts
                                            $"The whole realm of {RealmName(Realm)} thanks you for your help and wish you luck with your adventures! \n \n" +
                                            "Now, don't forget to visit my friend Cruella de Ville, I'm sure she will have more rewards for you.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     
-                    AtlasROGManager.GenerateOrbAmount(player, OrbsReward);
+                    AtlasROGManager.GenerateReward(player, OrbsReward);
                     SetCustomParam(player);
                     return true;
                 default:
