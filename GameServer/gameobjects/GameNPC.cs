@@ -2081,7 +2081,6 @@ namespace DOL.GS
 				if (Inventory != null)
 				{
 					//if the distance slot isnt empty we use that
-					//Seems to always
 					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
 						SwitchWeapon(eActiveWeaponSlot.Distance);
 					else
@@ -4182,26 +4181,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual double AttackDamage(InventoryItem weapon)
 		{
-			double damage = attackComponent.AttackDamage(weapon);
-
-			if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded && m_blockChance > 0)
-				switch (this)
-				{
-					case Keeps.GameKeepGuard guard:
-						if (ServerProperties.Properties.GUARD_2H_BONUS_DAMAGE)
-							damage *= (100 + m_blockChance) / 100.00;
-						break;
-					case GamePet pet:
-						if (ServerProperties.Properties.PET_2H_BONUS_DAMAGE)
-							damage *= (100 + m_blockChance) / 100.00;
-						break;
-					default:
-						if (ServerProperties.Properties.MOB_2H_BONUS_DAMAGE)
-							damage *= (100 + m_blockChance) / 100.00;
-						break;
-				}
-
-			return damage;
+			return attackComponent.AttackDamage(weapon);
 		}
 
 		/// <summary>
