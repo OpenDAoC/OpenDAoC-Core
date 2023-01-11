@@ -286,7 +286,7 @@ namespace DOL.AI.Brain
         public virtual int AggroLevel { get; set; }
 
         /// <summary>
-        /// List of livings that this npc has aggro on, living => aggroamount
+        /// List of livings that this npc has aggro on, living => aggroAmount
         /// </summary>
         public Dictionary<GameLiving, long> AggroTable { get; private set; } = new Dictionary<GameLiving, long>();
 
@@ -328,12 +328,12 @@ namespace DOL.AI.Brain
 
         /// <summary>
         /// Add living to the aggrolist
-        /// aggroamount can be negative to lower amount of aggro
+        /// aggroAmount can be negative to lower amount of aggro
         /// </summary>
         /// <param name="living"></param>
-        /// <param name="aggroamount"></param>
+        /// <param name="aggroAmount"></param>
         /// <param name="CheckLOS"></param>
-        public virtual void AddToAggroList(GameLiving living, int aggroamount)
+        public virtual void AddToAggroList(GameLiving living, int aggroAmount)
         {
             // tolakram - duration spell effects will attempt to add to aggro after npc is dead
             if (Body.IsConfused || !Body.IsAlive || living == null)
@@ -345,8 +345,8 @@ namespace DOL.AI.Brain
             if (AggroTable.Count < 1)
                 Body.FireAmbientSentence(GameNPC.eAmbientTrigger.aggroing, living);
 
-            // Only protect if gameplayer and aggroamout > 0
-            if (living is GamePlayer player && aggroamount > 0)
+            // Only protect if gameplayer and aggroAmount > 0
+            if (living is GamePlayer player && aggroAmount > 0)
             {
                 // If player is in group, add whole group to aggro list
                 if (player.Group != null)
@@ -363,7 +363,7 @@ namespace DOL.AI.Brain
 
                 foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                 {
-                    if (aggroamount <= 0)
+                    if (aggroAmount <= 0)
                         break;
 
                     if (protect.ProtectTarget != living)
@@ -387,11 +387,11 @@ namespace DOL.AI.Brain
                     // P III: prevents 30% of aggro amount
                     // guessed percentages, should never be higher than or equal to 50%
                     int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
-                    int protectAmount = (int)(abilityLevel * 0.10 * aggroamount);
+                    int protectAmount = (int)(abilityLevel * 0.10 * aggroAmount);
 
                     if (protectAmount > 0)
                     {
-                        aggroamount -= protectAmount;
+                        aggroAmount -= protectAmount;
                         protectSource.Out.SendMessage(LanguageMgr.GetTranslation(protectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
                                                                                  Body.GetName(0, false, protectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
@@ -411,7 +411,7 @@ namespace DOL.AI.Brain
                 if (AggroTable.ContainsKey(living))
                 {
                     long amount = AggroTable[living];
-                    amount += aggroamount;
+                    amount += aggroAmount;
 
                     // can't be removed this way, set to minimum
                     if (amount <= 0)
@@ -421,8 +421,8 @@ namespace DOL.AI.Brain
                 }
                 else
                 {
-                    if (aggroamount > 0)
-                        AggroTable[living] = aggroamount;
+                    if (aggroAmount > 0)
+                        AggroTable[living] = aggroAmount;
                     else
                         AggroTable[living] = 1L;
                 }
@@ -666,33 +666,56 @@ namespace DOL.AI.Brain
                 Body.WalkToSpawn();
         }
 
-        /// <summary>
-        /// Attacked by enemy event
-        /// </summary>
-        /// <param name="ad"></param>
-        public virtual void OnAttackedByEnemy(AttackData ad)
-        {
-            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
-                return;
-    
-            if (!Body.attackComponent.AttackState
-                && Body.IsAlive
-                && Body.ObjectState == GameObject.eObjectState.Active)
-            {
-                if (ad.AttackResult == eAttackResult.Missed)
-                    AddToAggroList(ad.Attacker, 1);
-                else
-                    AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
+		/// <summary>
+		/// Attacked by enemy event
+		/// </summary>
+		public virtual void OnAttackedByEnemy(AttackData ad)
+		{
+			if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
+				return;
 
-                if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
-                {
-                    if (this is CommanderBrain cBrain)
-                        cBrain.Attack(ad.Attacker);
-                    FSM.SetCurrentState(eFSMStateType.AGGRO);
-                    FSM.Think();
-                }
-            }
-        }
+			if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
+				return;
+
+			int damage = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
+
+			if (!Body.attackComponent.AttackState && FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+			{
+				// Aggro must be generated before calling Think(), otherwise the mob won't attack immediately.
+				// Ensure that non damaging hits still result in the mob reacting.
+				ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
+
+				if (this is CommanderBrain commanderBrain)
+					commanderBrain.Attack(ad.Attacker);
+
+				FSM.SetCurrentState(eFSMStateType.AGGRO);
+				FSM.Think();
+			}
+			else if (damage > 0)
+				ConvertDamageToAggroAmount(ad.Attacker, damage);
+		}
+
+		/// <summary>
+		/// Converts a damage amount into an aggro amount, and splits it between the pet and its owner if necessary.
+		/// Assumes damage to be superior than 0.
+		/// </summary>
+		private void ConvertDamageToAggroAmount(GameLiving attacker, int damage)
+		{
+			if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is IControlledBrain controlledBrain)
+			{
+				// Aggro is split between the owner (25%) and their pet (75%).
+				// We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat mob could attack the owner when their pet engages it.
+				// This is one relatively fast way of doing it, and should (?) work as long as the split isn't 50 / 50.
+				int aggroForOwner = (int)(damage * 0.25);
+
+				if (aggroForOwner > 0)
+					AddToAggroList(controlledBrain.Owner, aggroForOwner);
+
+				AddToAggroList(NpcAttacker, damage - aggroForOwner);
+			}
+			else
+				AddToAggroList(attacker, damage);
+		}
 
         #endregion
 

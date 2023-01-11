@@ -4842,40 +4842,16 @@ namespace DOL.GS
         //		SwitchWeapon(eActiveWeaponSlot.Distance);
         //}
 
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
+		public override void OnAttackedByEnemy(AttackData ad)
+		{
 			if (Brain is StandardMobBrain standardMobBrain)
-            {
-				standardMobBrain.AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier));
 				standardMobBrain.OnAttackedByEnemy(ad);
-            }
 
 			if ((Flags & eFlags.STEALTH) != 0)
 				Flags ^= eFlags.STEALTH;
-			
+
 			base.OnAttackedByEnemy(ad);
-        }
-
-        public override void TakeDamage(AttackData ad)
-        {
-	        base.TakeDamage(ad);
-	        
-	        if (Brain is StandardMobBrain standardMobBrain)
-	        {
-		        var aggro = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
-
-		        if (ad.Attacker is GameNPC attacker && attacker.Brain is IControlledBrain petBrain)
-			    {
-				    // Owner gets 25% of aggro
-				    standardMobBrain.AddToAggroList(petBrain.Owner, (int)Math.Max(1, aggro * 0.25));
-				    // Remaining of aggro is given to pet
-				    aggro = (int)Math.Max(1, aggro * 0.75);
-			    }
-
-		        standardMobBrain.AddToAggroList(ad.Attacker, aggro);
-		        standardMobBrain.OnAttackedByEnemy(ad);
-	        }
-        }
+		}
 
         /// <summary>
         /// This method is called to drop loot after this mob dies
