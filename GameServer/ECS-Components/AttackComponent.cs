@@ -3140,15 +3140,6 @@ namespace DOL.GS
             return null;
         }
 
-        private bool ShouldRoundShowMessage(eAttackResult attackResult)
-        {
-            bool shouldRoundShowMessage = true;
-
-
-
-            return shouldRoundShowMessage;
-        }
-
         /// <summary>
         /// Send the messages to the GamePlayer
         /// </summary>
