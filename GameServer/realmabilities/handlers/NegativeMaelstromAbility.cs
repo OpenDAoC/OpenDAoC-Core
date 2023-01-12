@@ -42,7 +42,7 @@ namespace DOL.GS.RealmAbilities
             this.player = caster;
             if (caster.attackComponent.AttackState) 
             {
-                caster.attackComponent.LivingStopAttack();
+                caster.attackComponent.StopAttack();
             }
             caster.StopCurrentSpellcast();
 

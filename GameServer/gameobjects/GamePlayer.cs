@@ -1043,7 +1043,7 @@ namespace DOL.GS
         /// </summary>
         protected virtual void CleanupOnDisconnect()
         {
-            attackComponent.LivingStopAttack();
+            attackComponent.StopAttack();
             // remove all stealth handlers
             Stealth(false);
             if (IsOnHorse)
@@ -6360,7 +6360,7 @@ namespace DOL.GS
                 {
                     attackComponent.attackAction.StartTime = 1000;
                 }
-                attackComponent.LivingStopAttack();
+                attackComponent.StopAttack();
             }
 
             if (CurrentSpellHandler != null)
@@ -11987,7 +11987,7 @@ namespace DOL.GS
                         if (attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown)
                             attackTypeMsg = "throw";
                         Out.SendMessage("You move and interrupt your " + attackTypeMsg + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        attackComponent.LivingStopAttack();
+                        attackComponent.StopAttack();
                     }
                 }
             }
@@ -12129,7 +12129,7 @@ namespace DOL.GS
                 {
                     string attackTypeMsg = (attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown ? "throw" : "shot");
                     Out.SendMessage("You move and interrupt your " + attackTypeMsg + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    attackComponent.LivingStopAttack();
+                    attackComponent.StopAttack();
                 }
                 else
                 {
@@ -12222,7 +12222,7 @@ namespace DOL.GS
             //Stop attack if you sit down while attacking
             if (sit && attackComponent.AttackState)
             {
-                attackComponent.LivingStopAttack();
+                attackComponent.StopAttack();
             }
 
             if (!sit)

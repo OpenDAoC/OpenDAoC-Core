@@ -862,7 +862,7 @@ namespace DOL.GS.Spells
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{
 					if (m_caster is not GamePet)
-						m_caster.attackComponent.LivingStopAttack(); //dont stop melee for pet (probaby look at stopping attack just for game player)
+						m_caster.attackComponent.StopAttack(); //dont stop melee for pet (probaby look at stopping attack just for game player)
 					return false;
 				}
 			}

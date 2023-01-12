@@ -83,11 +83,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 				else
 				{
-					player.attackComponent.StopAttack(false);
+					player.attackComponent.StopAttack();
 					return 0;
 				}
-
-				return Interval;
 			}
 		}
 	}

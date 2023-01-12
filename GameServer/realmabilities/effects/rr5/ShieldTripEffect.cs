@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
 			owner = target;
 			//target.IsDisarmed = true;
             target.DisarmedTime = target.CurrentRegion.Time + m_duration;
-			target.attackComponent.LivingStopAttack();
+			target.attackComponent.StopAttack();
 
 		}
 

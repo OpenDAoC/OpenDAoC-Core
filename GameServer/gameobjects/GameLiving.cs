@@ -2042,7 +2042,7 @@ namespace DOL.GS
 				interruptChance = Math.Min(99, interruptChance);
 				if (Util.Chance((int)interruptChance))
 				{
-					attackComponent.LivingStopAttack();
+					attackComponent.StopAttack();
 					return true;
 				}
 			}
@@ -2992,25 +2992,13 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Interrupts a ranged attack.
-		/// </summary>
-		public virtual void InterruptRangedAttack()
-		{
-            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
-            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				player.Out.SendInterruptAnimation(this);
-		}
-
-		/// <summary>
 		/// Our target is dead or we don't have a target
 		/// </summary>
 		public virtual void OnTargetDeadOrNoTarget()
 		{
 			if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 			{
-				attackComponent.LivingStopAttack();
+				attackComponent.StopAttack();
 			}
 
 			if (this is GameNPC && ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
@@ -4730,7 +4718,7 @@ namespace DOL.GS
 				GameServer.ServerRules.OnLivingKilled(this, killer);
 			}
 
-			attackComponent.LivingStopAttack();
+			attackComponent.StopAttack();
 
 			List<GameObject> clone;
 			lock (attackComponent.Attackers)
@@ -7044,7 +7032,7 @@ namespace DOL.GS
 		{
 			if (!base.RemoveFromWorld()) return false;
 
-			attackComponent.LivingStopAttack();
+			attackComponent.StopAttack();
 			List<GameObject> temp;
 			lock (attackComponent.Attackers)
 			{

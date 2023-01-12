@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 				{
 					ColialtPhase = true;
 					if (Body.attackComponent.AttackState && ColialtPhase)
-						Body.attackComponent.NPCStopAttack();
+						Body.attackComponent.StopAttack();
 
 					if (Body.TargetObject != null)
 					{

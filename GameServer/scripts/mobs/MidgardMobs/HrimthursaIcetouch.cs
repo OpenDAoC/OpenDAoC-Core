@@ -89,7 +89,7 @@ namespace DOL.AI.Brain
 						{
 							CanHeal = true;
 							ClearAggroList();
-							Body.attackComponent.NPCStopAttack();
+							Body.attackComponent.StopAttack();
 							Body.TargetObject = HealNpc;
 							Body.CastSpell(IcetouchHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 							ResetNoTarget = false;

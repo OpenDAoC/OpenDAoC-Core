@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
 				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
 			}
             effect.Owner.DisarmedTime = effect.Owner.CurrentRegion.Time + CalculateEffectDuration(effect.Owner, Caster.Effectiveness);
-			effect.Owner.attackComponent.LivingStopAttack();
+			effect.Owner.attackComponent.StopAttack();
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_Spell, effect.Owner);
 			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);

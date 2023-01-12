@@ -1087,7 +1087,7 @@ namespace DOL.AI.Brain
 						if (!Body.IsCasting && !Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
 						{
 							if (Body.attackComponent.AttackState)
-								Body.attackComponent.NPCStopAttack();
+								Body.attackComponent.StopAttack();
 							if (Body.IsMoving)
 								Body.StopFollowing();
 							Body.TurnTo(Body.TargetObject);

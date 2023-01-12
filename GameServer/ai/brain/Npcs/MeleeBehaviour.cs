@@ -23,7 +23,7 @@ namespace DOL.AI.Brain
 
         public void Retreat()
         {
-            Body.attackComponent.LivingStopAttack();
+            Body.attackComponent.StopAttack();
         }
 
         #endregion

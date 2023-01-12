@@ -283,13 +283,13 @@ namespace DOL.GS
         public int AttackRange
         {
             /* tested with:
-			staff					= 125-130
-			sword			   		= 126-128.06
-			shield (Numb style)		= 127-129
-			polearm	(Impale style)	= 127-130
-			mace (Daze style)		= 127.5-128.7
+            staff					= 125-130
+            sword			   		= 126-128.06
+            shield (Numb style)		= 127-129
+            polearm	(Impale style)	= 127-130
+            mace (Daze style)		= 127.5-128.7
 
-			Think it's safe to say that it never changes; different with mobs. */
+            Think it's safe to say that it never changes; different with mobs. */
 
             get
             {
@@ -728,10 +728,10 @@ namespace DOL.GS
                     p.IsOnHorse = false;
 
                 if (p.Steed != null && p.Steed is GameSiegeRam)
-				{
-					p.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
-					return;
-				}
+                {
+                    p.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
+                    return;
+                }
 
                 if (p.IsDisarmed)
                 {
@@ -1124,69 +1124,33 @@ namespace DOL.GS
             }
         }
 
-
         /// <summary>
-        /// Stops all attacks this player is making
+        /// Stops all attacks this object's owner is currently doing.
         /// </summary>
-        /// <param name="forced">Is this a forced stop or is the client suggesting we stop?</param>
-        public void StopAttack(bool forced)
+        public void StopAttack()
         {
-            var p = owner as GamePlayer;
-
-            if (p != null)
-            {
-                owner.styleComponent.NextCombatStyle = null;
-                owner.styleComponent.NextCombatBackupStyle = null;
-                LivingStopAttack(forced);
-                if (p.IsAlive)
-                {
-                    p.Out.SendAttackMode(AttackState);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Stops all attacks this GameLiving is currently making.
-        /// </summary>
-        public void LivingStopAttack()
-        {
-            if (owner is GamePlayer)
-            {
-                StopAttack(true);
-            }
-            else
-            {
-                LivingStopAttack(true);
-            }
-        }
-
-        /// <summary>
-        /// Stop all attackes this GameLiving is currently making
-        /// </summary>
-        /// <param name="forced">Is this a forced stop or is the client suggesting we stop?</param>
-        public void LivingStopAttack(bool forced)
-        {
-            owner.CancelEngageEffect();
             AttackState = false;
+            owner.CancelEngageEffect();
+            owner.styleComponent.NextCombatStyle = null;
+            owner.styleComponent.NextCombatBackupStyle = null;
 
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                owner.InterruptRangedAttack();
-        }
+            {
+                // Only cancel the animation if the ranged ammo isn't released already.
+                if (weaponAction?.AttackFinished != true)
+                {
+                    foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        player.Out.SendInterruptAnimation(owner);
+                }
 
-        /// <summary>
-        /// Stops all attack actions, including following target
-        /// </summary>
-        public void NPCStopAttack()
-        {
-            var p = owner as GameNPC;
+                owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+            }
 
-            LivingStopAttack();
-            p.StopFollowing();
-
-            // Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
-            if (p.Inventory != null && p.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null &&
-                p.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                p.SwitchWeapon(eActiveWeaponSlot.Distance);
+            if (owner is GamePlayer playerOwner && playerOwner.IsAlive)
+                playerOwner.Out.SendAttackMode(AttackState);
+            else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                npcOwner.SwitchWeapon(eActiveWeaponSlot.Distance);
         }
 
         /// <summary>
@@ -2933,15 +2897,15 @@ namespace DOL.GS
             // Bladeturn
             // TODO: high level mob attackers penetrate bt, players are tested and do not penetrate (lv30 vs lv20)
             /*
-			 * http://www.camelotherald.com/more/31.shtml
-			 * - Bladeturns can now be penetrated by attacks from higher level monsters and
-			 * players. The chance of the bladeturn deflecting a higher level attack is
-			 * approximately the caster's level / the attacker's level.
-			 * Please be aware that everything in the game is
-			 * level/chance based - nothing works 100% of the time in all cases.
-			 * It was a bug that caused it to work 100% of the time - now it takes the
-			 * levels of the players involved into account.
-			 */
+             * http://www.camelotherald.com/more/31.shtml
+             * - Bladeturns can now be penetrated by attacks from higher level monsters and
+             * players. The chance of the bladeturn deflecting a higher level attack is
+             * approximately the caster's level / the attacker's level.
+             * Please be aware that everything in the game is
+             * level/chance based - nothing works 100% of the time in all cases.
+             * It was a bug that caused it to work 100% of the time - now it takes the
+             * levels of the players involved into account.
+             */
             // "The blow penetrated the magical barrier!"
             if (ecsbladeturn != null)
             {

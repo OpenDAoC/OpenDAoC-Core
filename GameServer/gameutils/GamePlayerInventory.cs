@@ -1103,7 +1103,7 @@ namespace DOL.GS
 					if ((updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.DistanceWeapon)
 					    || (updatedSlot >= eInventorySlot.FirstQuiver && updatedSlot <= eInventorySlot.FourthQuiver))
 					{
-						m_player.attackComponent.LivingStopAttack();
+						m_player.attackComponent.StopAttack();
 						break;
 					}
 				}

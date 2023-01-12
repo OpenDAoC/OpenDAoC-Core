@@ -1519,7 +1519,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void WalkToSpawn(short speed)
 		{
-			attackComponent.NPCStopAttack();
+			attackComponent.StopAttack();
 			StopFollowing();
 
 			StandardMobBrain brain = Brain as StandardMobBrain;
@@ -3906,7 +3906,7 @@ namespace DOL.GS
 
         public virtual void StopAttack()
         {
-            attackComponent.NPCStopAttack();
+            attackComponent.StopAttack();
         }
 
         /// <summary>
@@ -4149,7 +4149,7 @@ namespace DOL.GS
 					log.Debug(Name + " FAILED stop ranged attack LOS check to player " + player.Name);
 				}
 
-                attackComponent.NPCStopAttack();
+                attackComponent.StopAttack();
 			}
 		}
 
@@ -4517,7 +4517,7 @@ namespace DOL.GS
 		{
 			// Tolakram: Order is important here.  First StopAttack, then switch weapon
 			StopFollowing();
-            attackComponent.NPCStopAttack();
+            attackComponent.StopAttack();
 
 			InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 			InventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
@@ -4543,7 +4543,7 @@ namespace DOL.GS
 		public void SwitchToRanged(GameObject target)
 		{
 			StopFollowing();
-            attackComponent.NPCStopAttack();
+            attackComponent.StopAttack();
 			SwitchWeapon(eActiveWeaponSlot.Distance);
 			attackComponent.StartAttack(target);
 		}

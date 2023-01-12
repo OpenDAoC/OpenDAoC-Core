@@ -13,7 +13,7 @@ namespace DOL.GS
 
         protected void OnHardCCStart()
         {
-            Owner.attackComponent.LivingStopAttack();
+            Owner.attackComponent.StopAttack();
             Owner.StopCurrentSpellcast();
             Owner.DisableTurning(true);
             if (Owner is GameNPC npc)

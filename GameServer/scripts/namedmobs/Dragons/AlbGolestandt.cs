@@ -421,7 +421,7 @@ namespace DOL.AI.Brain
 				if (HasAggro)//if got aggro clear it
 				{
 					if (Body.attackComponent.AttackState && Body.IsCasting)//make sure it stop all actions
-						Body.attackComponent.NPCStopAttack();
+						Body.attackComponent.StopAttack();
 					ClearAggroList();
 				}
 				IsRestless = true;//start roam

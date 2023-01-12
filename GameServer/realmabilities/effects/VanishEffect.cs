@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			base.Start(target);
 			GamePlayer player = target as GamePlayer;
-			player.attackComponent.LivingStopAttack();
+			player.attackComponent.StopAttack();
 			player.Stealth(true);
 			player.Out.SendUpdateMaxSpeed();
 			m_countDownTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CountDown));

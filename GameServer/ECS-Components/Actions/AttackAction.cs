@@ -105,7 +105,7 @@ namespace DOL.GS
                     }
                     else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || attackTarget == null)
                     {
-                        attackComponent.LivingStopAttack();
+                        attackComponent.StopAttack();
                         attackComponent.attackAction?.CleanupAttackAction();
                         return;
                     }
@@ -368,7 +368,7 @@ namespace DOL.GS
 
                     if (m_owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
                     {
-                        attackComponent.LivingStopAttack();
+                        attackComponent.StopAttack();
                         attackComponent.attackAction?.CleanupAttackAction();
                         return;
                     }
@@ -454,7 +454,7 @@ namespace DOL.GS
                             else
                                 playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
-                            playerOwner.attackComponent.StopAttack(true);
+                            playerOwner.attackComponent.StopAttack();
                             return;
                         }
                     }

@@ -306,7 +306,7 @@ namespace DOL.AI.Brain
                 if (spell.CastTime > 0)
                 {
                     Body.StopFollowing();
-                    Body.attackComponent.NPCStopAttack();
+                    Body.attackComponent.StopAttack();
                 }
 
                 GameObject previousTarget = Body.TargetObject;

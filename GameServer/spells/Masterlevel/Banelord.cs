@@ -247,7 +247,7 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
             effect.Owner.IsStunned = true;
-            effect.Owner.attackComponent.LivingStopAttack();
+            effect.Owner.attackComponent.StopAttack();
             effect.Owner.StopCurrentSpellcast();
             effect.Owner.DisableTurning(true);
 
@@ -266,7 +266,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                effect.Owner.attackComponent.LivingStopAttack();
+                effect.Owner.attackComponent.StopAttack();
             }
 
             base.OnEffectStart(effect);

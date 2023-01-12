@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 					if (Body.IsCasting)
 					{
 						if (Body.attackComponent.AttackState)
-							Body.attackComponent.NPCStopAttack();
+							Body.attackComponent.StopAttack();
 						if (Body.IsMoving)
 							Body.StopFollowing();
 					}
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 				if (Body.IsCasting)
 				{
 					if (Body.attackComponent.AttackState)
-						Body.attackComponent.NPCStopAttack();
+						Body.attackComponent.StopAttack();
 					if (Body.IsMoving)
 						Body.StopFollowing();
 				}

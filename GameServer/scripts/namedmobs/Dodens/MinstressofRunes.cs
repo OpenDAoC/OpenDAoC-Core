@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 					if (RandomTarget != null && RandomTarget.IsAlive)
 					{
 						if (Body.attackComponent.AttackState && Body.IsCasting)
-							Body.attackComponent.NPCStopAttack();
+							Body.attackComponent.StopAttack();
 						Body.TargetObject = RandomTarget;					
 						if (Body.GetSkillDisabledDuration(NearsightMistress) == 0 && (!Body.IsCasting || Body.IsCasting))
 							Body.TurnTo(RandomTarget);

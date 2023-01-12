@@ -279,7 +279,7 @@ namespace DOL.GS
                 case eAttackResult.NotAllowed_ServerRules:
                 case eAttackResult.NoValidTarget:
                     {
-                        m_owner.attackComponent.LivingStopAttack();
+                        m_owner.attackComponent.StopAttack();
                         return;
                     }
                 case eAttackResult.OutOfRange:

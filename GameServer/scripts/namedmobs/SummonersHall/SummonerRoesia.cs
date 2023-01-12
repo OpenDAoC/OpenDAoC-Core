@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
 							if (spells != null)
 							{
 								if (Body.attackComponent.AttackState && Body.IsCasting)
-									Body.attackComponent.NPCStopAttack();
+									Body.attackComponent.StopAttack();
 								if (Body.IsMoving && Body.TargetObject.IsWithinRadius(Body.TargetObject, spells.Range) && Body.IsCasting)
 									Body.StopFollowing();
 

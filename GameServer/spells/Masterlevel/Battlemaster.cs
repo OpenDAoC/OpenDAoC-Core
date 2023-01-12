@@ -104,7 +104,7 @@ namespace DOL.GS.Spells
                     player.Client.Out.SendUpdateMaxSpeed();
                     check = 1;
                 }
-                effect.Owner.attackComponent.LivingStopAttack();
+                effect.Owner.attackComponent.StopAttack();
                 effect.Owner.StopCurrentSpellcast();
                 effect.Owner.DisarmedTime = effect.Owner.CurrentRegion.Time + Spell.Duration;
             }

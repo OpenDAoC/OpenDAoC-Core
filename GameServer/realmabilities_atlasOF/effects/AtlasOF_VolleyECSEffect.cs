@@ -94,7 +94,7 @@ namespace DOL.GS.Effects
         }
         public override void OnStopEffect()
         {
-            m_player.attackComponent.LivingStopAttack();    //stop all attacks
+            m_player.attackComponent.StopAttack();    //stop all attacks
             m_player.StopCurrentSpellcast();                //stop all casts
             #region Stop timers properties
             var readyTimer = m_player.TempProperties.getProperty<ECSGameTimer>("volley_readyTimer");
@@ -1008,7 +1008,7 @@ namespace DOL.GS.Effects
                     }
                 }
                 byte HoldAttack = 0x1E;//30 seconds
-                player.attackComponent.LivingStopAttack();    //stop all attacks
+                player.attackComponent.StopAttack();    //stop all attacks
                 player.StopCurrentSpellcast();                //stop all casts
 
                 if (nbShoot >= 1)

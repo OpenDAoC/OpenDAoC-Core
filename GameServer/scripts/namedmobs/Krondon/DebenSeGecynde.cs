@@ -356,7 +356,7 @@ namespace DOL.AI.Brain
 				if (!Body.IsCasting && !Body.IsBeingInterrupted)
 				{
 					if (Body.attackComponent.AttackState)
-						Body.attackComponent.NPCStopAttack();
+						Body.attackComponent.StopAttack();
 					if (Body.IsMoving)
 						Body.StopFollowing();
 					Body.TurnTo(Body.TargetObject);

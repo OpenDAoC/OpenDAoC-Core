@@ -87,7 +87,7 @@ namespace DOL.GS.RealmAbilities
 						{
 							((IOldAggressiveBrain)npc.Brain).RemoveFromAggroList(living);
 						}
-						attacker.attackComponent.LivingStopAttack();
+						attacker.attackComponent.StopAttack();
 					}
 				}
 			}
