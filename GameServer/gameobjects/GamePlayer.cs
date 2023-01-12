@@ -9902,10 +9902,10 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    if (rangeAttackComponent.RangeAttackTarget == null)
+                                    if (rangeAttackComponent.Target == null)
                                     {
                                         //set new target only if there was no target before
-                                        rangeAttackComponent.RangeAttackTarget = TargetObject;
+                                        rangeAttackComponent.Target = TargetObject;
                                     }
 
                                     rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;

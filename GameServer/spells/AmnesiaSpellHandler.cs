@@ -79,7 +79,7 @@ namespace DOL.GS.Spells
 				target.CurrentSpellHandler?.AmnesiaInterruptCasting(); //stop even if MoC or QC
 			}
 			
-			target.rangeAttackComponent.RangeAttackTarget = null;
+			target.rangeAttackComponent.Target = null;
 			//if(target is GamePlayer)
 				//target.TargetObject = null;
 

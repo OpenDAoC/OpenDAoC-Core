@@ -4814,7 +4814,7 @@ namespace DOL.GS
 			//ConcentrationEffects.CancelAll();
 
             // clear all of our targets
-            rangeAttackComponent.RangeAttackTarget = null;
+            rangeAttackComponent.Target = null;
 			TargetObject = null;
 
 			// cancel all left effects

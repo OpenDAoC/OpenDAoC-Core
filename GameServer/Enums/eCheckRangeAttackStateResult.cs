@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
     /// <summary>
     /// The possible results for prechecks for range attacks

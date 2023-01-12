@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
                 attackrangeMin = 2000 * 0.66;//minimum attack range
                 attackrangeMax = 4200;//maximum attack range
             }
-            InventoryItem ammo = m_player.rangeAttackComponent.RangeAttackAmmo;
+            InventoryItem ammo = m_player.rangeAttackComponent.Ammo;
             Region rgn = WorldMgr.GetRegion(m_player.CurrentRegion.ID);
 
             if (CheckPreconditions(m_player, DEAD | SITTING | MEZZED | STUNNED))

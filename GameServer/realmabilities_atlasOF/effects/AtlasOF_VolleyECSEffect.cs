@@ -440,7 +440,7 @@ namespace DOL.GS.Effects
                 Cancel(false);
             else
             {
-                InventoryItem ammo = player.rangeAttackComponent.RangeAttackAmmo;
+                InventoryItem ammo = player.rangeAttackComponent.Ammo;
                 sol = new Point3D(player.GroundTarget.X, player.GroundTarget.Y, player.GroundTarget.Z);
 
                 //m_player.attackComponent.LivingStopAttack();
@@ -456,7 +456,7 @@ namespace DOL.GS.Effects
                     return;
                 }
                 // Check if selected ammo is compatible for ranged attack
-                if (!player.rangeAttackComponent.CheckRangedAmmoCompatibilityWithActiveWeapon())
+                if (!player.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
                 {
                     player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
@@ -542,7 +542,7 @@ namespace DOL.GS.Effects
             // DEBUG
             // Console.WriteLine($"base dmg {baseDamage} dps {WeaponDPS} ws {AcherWeaponSkill} af {TargetAF} divvy {AcherWeaponSkill/TargetAF} slowwep {SlowWeaponBonus} 2hbon {WeaponBonus2H} speed {weaponspeed}");
 
-            switch ((archer?.rangeAttackComponent?.RangeAttackAmmo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
+            switch ((archer?.rangeAttackComponent?.Ammo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
             {
                 case 0:
                     baseDamage *= 0.85;
@@ -919,7 +919,7 @@ namespace DOL.GS.Effects
                 var player = m_player;
                 decNbShoot();
 
-                InventoryItem ammo = player.rangeAttackComponent.RangeAttackAmmo;
+                InventoryItem ammo = player.rangeAttackComponent.Ammo;
                 InventoryItem attackWeapon = player.AttackWeapon;
                 eDamageType damagetype = player.attackComponent.AttackDamageType(attackWeapon);
                 int speed = player.AttackSpeed(attackWeapon);

@@ -247,7 +247,7 @@ namespace DOL.GS
                     case eObjectType.CompositeBow:
                     case eObjectType.RecurvedBow:
                     case eObjectType.Fired:
-                        InventoryItem ammo = p.rangeAttackComponent?.RangeAttackAmmo;
+                        InventoryItem ammo = p.rangeAttackComponent?.Ammo;
                         if (ammo == null)
                             return (eDamageType) weapon.Type_Damage;
                         return (eDamageType) ammo.Type_Damage;
@@ -307,7 +307,7 @@ namespace DOL.GS
                             return 0;
 
                         double range;
-                        InventoryItem ammo = p.rangeAttackComponent?.RangeAttackAmmo;
+                        InventoryItem ammo = p.rangeAttackComponent?.Ammo;
 
                         switch ((eObjectType) weapon.Object_Type)
                         {
@@ -568,9 +568,9 @@ namespace DOL.GS
                 if (weapon.Item_Type == Slot.RANGED)
                 {
                     //ammo damage bonus
-                    if (p.rangeAttackComponent?.RangeAttackAmmo != null)
+                    if (p.rangeAttackComponent?.Ammo != null)
                     {
-                        switch ((p.rangeAttackComponent?.RangeAttackAmmo.SPD_ABS) & 0x3)
+                        switch ((p.rangeAttackComponent?.Ammo.SPD_ABS) & 0x3)
                         {
                             case 0:
                                 damage *= 0.85;
@@ -777,7 +777,7 @@ namespace DOL.GS
                     }
 
                     // Check arrows for ranged attack
-                    if (p.rangeAttackComponent?.RangeAttackAmmo == null)
+                    if (p.rangeAttackComponent?.Ammo == null)
                     {
                         p.Out.SendMessage(
                             LanguageMgr.GetTranslation(p.Client.Account.Language,
@@ -786,7 +786,7 @@ namespace DOL.GS
                     }
 
                     // Check if selected ammo is compatible for ranged attack
-                    if (!p.rangeAttackComponent.CheckRangedAmmoCompatibilityWithActiveWeapon())
+                    if (!p.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
                     {
                         p.Out.SendMessage(
                             LanguageMgr.GetTranslation(p.Client.Account.Language,
@@ -1373,21 +1373,18 @@ namespace DOL.GS
                                         while (extraTargets.Count < numTargetsCanHit)
                                         {
                                             random = Util.Random(listAvailableTargets.Count - 1);
+
                                             if (!extraTargets.Contains(listAvailableTargets[random]))
                                                 extraTargets.Add(listAvailableTargets[random] as GameObject);
                                         }
 
                                         foreach (GameObject obj in extraTargets)
                                         {
-                                            if (obj is GamePlayer && ((GamePlayer) obj).IsSitting)
-                                            {
+                                            if (obj is GamePlayer player && player.IsSitting)
                                                 effectiveness *= 2;
-                                            }
 
-                                            //new WeaponOnTargetAction(this, obj as GameObject, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null).Start(1);  // really start the attack
-                                            //if (GameServer.ServerRules.IsAllowedToAttack(this, target as GameLiving, false))
-                                            weaponAction = new WeaponAction(p, obj as GameObject, attackWeapon,
-                                                leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
+                                            weaponAction = new WeaponAction(p, obj, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
+                                            weaponAction.Execute();
                                         }
                                     }
                                 }
@@ -1471,7 +1468,6 @@ namespace DOL.GS
             ad.ArmorHitLocation = eArmorSlot.NOTSET;
             ad.Weapon = weapon;
             ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
-            AttackState = true;
 
             // Asp style range add
             int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte) eSpellType.StyleRange
@@ -2858,7 +2854,7 @@ namespace DOL.GS
 
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                InventoryItem ammo = ad.Attacker.rangeAttackComponent.RangeAttackAmmo;
+                InventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
                 if (ammo != null)
                     switch ((ammo.SPD_ABS >> 4) & 0x3)
                     {
@@ -3144,16 +3140,41 @@ namespace DOL.GS
             return null;
         }
 
+        private bool ShouldRoundShowMessage(eAttackResult attackResult)
+        {
+            bool shouldRoundShowMessage = true;
+
+
+
+            return shouldRoundShowMessage;
+        }
+
         /// <summary>
         /// Send the messages to the GamePlayer
         /// </summary>
         /// <param name="ad"></param>
         public void SendAttackingCombatMessages(AttackData ad)
         {
-            if (!attackAction.ShouldRoundShowMessage(ad.AttackResult))
-                return;
+            // Used to prevent combat log spam when the target is out of range, dead, not visible, etc.
+            // A null attackAction means it was cleared up before we had a chance to send combat messages.
+            // This typically happens when a ranged weapon is shot once without auto reloading.
+            // In this case, we simply assume the last round should show a combat message.
+            if (attackAction != null)
+            {
+                if (ad.AttackResult is not eAttackResult.Missed
+                    and not eAttackResult.HitUnstyled
+                    and not eAttackResult.HitStyle
+                    and not eAttackResult.Evaded
+                    and not eAttackResult.Blocked
+                    and not eAttackResult.Parried)
+                {
+                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime > 1500)
+                        attackAction.RoundWithNoAttackTime = 0;
+                    else
+                        return;
+                }
+            }
 
-            //base.SendAttackingCombatMessages(ad);
             if (owner is GamePlayer)
             {
                 var p = owner as GamePlayer;
@@ -3528,9 +3549,9 @@ namespace DOL.GS
                             // http://home.comcast.net/~shadowspawn3/bowdmg.html
                             //ammo damage bonus
                             double ammoDamageBonus = 1;
-                            if (p.rangeAttackComponent.RangeAttackAmmo != null)
+                            if (p.rangeAttackComponent.Ammo != null)
                             {
-                                switch ((p.rangeAttackComponent.RangeAttackAmmo.SPD_ABS) & 0x3)
+                                switch ((p.rangeAttackComponent.Ammo.SPD_ABS) & 0x3)
                                 {
                                     case 0:
                                         ammoDamageBonus = 0.85;
