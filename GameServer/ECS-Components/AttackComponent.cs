@@ -932,7 +932,14 @@ namespace DOL.GS
 
             if (speed <= 0)
                 return;
-            
+
+            // Npcs aren't allowed to prepare their ranged attack while moving or out of range.
+            if (owner is not GamePlayer && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            {
+                if (owner.IsMoving || !owner.IsWithinRadius(owner.rangeAttackComponent.Target, owner.attackComponent.AttackRange))
+                    return;
+            }
+
             attackAction = owner.CreateAttackAction();
 
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
@@ -1047,42 +1054,38 @@ namespace DOL.GS
 
         public virtual void ContinueStartAttack(GameObject target)
         {
-            var p = owner as GameNPC;
+            GameNPC npc = owner as GameNPC;
 
-            p.StopMovingOnPath();
+            npc.StopMovingOnPath();
 
-            if (p.Brain != null && p.Brain is IControlledBrain)
+            if (npc.Brain != null && npc.Brain is IControlledBrain)
             {
-                if ((p.Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+                if ((npc.Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
                     return;
-
-                //GamePlayer owner = null;
-
-                //if ((owner = ((IControlledBrain)p.Brain).GetPlayerOwner()) != null)
-                //    owner.Stealth(false);
             }
-
-            // TODO: need to look into these timers
-            //p.SetLastMeleeAttackTick();
-            //p.StartMeleeAttackTimer();
 
             LivingStartAttack();
 
             if (AttackState)
             {
-                // if we're moving we need to lock down the current position
-                if (p.IsMoving)
-                    p.SaveCurrentPosition();
+                // If we're moving we need to lock down the current position.
+                if (npc.IsMoving)
+                    npc.SaveCurrentPosition();
 
-                if (p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
+                    // Cancel the attack if the npc is moving.
+                    if (npc.IsMoving)
+                    {
+                        StopAttack();
+                        attackAction?.CleanupAttackAction();
+                    }
+
                     // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
-                    p.Follow(target, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
+                    npc.Follow(target, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
                 }
                 else
-                {
-                    p.Follow(target, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
-                }
+                    npc.Follow(target, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
             }
         }
 
