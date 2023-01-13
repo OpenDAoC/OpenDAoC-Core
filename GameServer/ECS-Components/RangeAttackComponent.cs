@@ -258,7 +258,12 @@ namespace DOL.GS
                 return eCheckRangeAttackStateResult.Fire;
             }
             else
+            {
+                if (!m_owner.IsWithinRadius(target, m_owner.attackComponent.AttackRange))
+                    return eCheckRangeAttackStateResult.Stop;
+
                 return eCheckRangeAttackStateResult.Fire;
+            }
         }
 
         public void RemoveEnduranceAndAmmoOnShot()
