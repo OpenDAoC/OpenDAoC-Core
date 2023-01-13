@@ -112,6 +112,7 @@ namespace DOL.GS
 
                     int model = attackWeapon == null ? 0 : attackWeapon.Model;
                     ticksToTarget = m_owner.GetDistanceTo(attackTarget) * 1000 / 1800; // 1800 units per second. Live value is unknown, but DoL had 1500.
+                    byte flightDuration = (byte)(ticksToTarget > 350 ? 1 + (ticksToTarget - 350) / 75 : 1);
                     bool cancelPrepareAnimation = m_owner.attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown;
 
                     Parallel.ForEach(m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
@@ -128,7 +129,7 @@ namespace DOL.GS
                         // 0 doesn't display any arrow.
                         // 1 means roughly 350ms (the lowest time possible), then each increment adds about 75ms (needs testing).
                         // Using ticksToTarget, we can make the arrow take more time to reach its target the farther it is.
-                        player.Out.SendCombatAnimation(m_owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, (byte)(ticksToTarget > 350 ? 1 + (ticksToTarget - 350) / 75 : 1), 0x00, ((GameLiving)attackTarget).HealthPercent);
+                        player.Out.SendCombatAnimation(m_owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, flightDuration, 0x00, ((GameLiving)attackTarget).HealthPercent);
                     });
 
                     interruptDuration = attackComponent.AttackSpeed(attackWeapon);
