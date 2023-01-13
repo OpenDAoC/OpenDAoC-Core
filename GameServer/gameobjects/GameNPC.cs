@@ -1071,7 +1071,7 @@ namespace DOL.GS
 		/// <summary>
 		/// At what health percent will npc give up range attack and rush the attacker
 		/// </summary>
-		protected const int MINHEALTHPERCENTFORRANGEDATTACK = 70;
+		protected const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
 
 		private string m_pathID;
 		public string PathID
@@ -4551,38 +4551,15 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// If npcs cant move, they cant be interupted from range attack
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <param name="attackType"></param>
-		/// <returns></returns>
 		protected override bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
 		{
-			if (this.MaxSpeedBase == 0)
-			{
-				if (attackType == AttackData.eAttackType.Ranged || attackType == AttackData.eAttackType.Spell)
-				{
-					if (this.IsWithinRadius(attacker, 150) == false)
-						return false;
-				}
-			}
+			// Immobile NPCs can only be interrupted from close range attacks.
+			if (MaxSpeedBase == 0 && attackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell && !IsWithinRadius(attacker, 150))
+				return false;
 
-			// Experimental - this prevents interrupts from causing ranged attacks to always switch to melee
-			if (attackComponent.AttackState)
-			{
-				if (ActiveWeaponSlot == eActiveWeaponSlot.Distance && HealthPercent < MINHEALTHPERCENTFORRANGEDATTACK)
-				{
-					SwitchToMelee(attacker);
-				}
-				else if (ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
-						 Inventory != null &&
-						 Inventory.GetItem(eInventorySlot.DistanceWeapon) != null &&
-						 GetDistanceTo(attacker) > 500)
-				{
-					SwitchToRanged(attacker);
-				}
-			}
+			// Switch to melee if the NPC is hurt.
+			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
+				SwitchToMelee(attacker);
 
 			return base.OnInterruptTick(attacker, attackType);
 		}
@@ -4599,6 +4576,7 @@ namespace DOL.GS
 		/// The sync object for respawn timer modifications
 		/// </summary>
 		protected readonly object m_respawnTimerLock = new object();
+
 		/// <summary>
 		/// The Respawn Interval of this mob in milliseconds
 		/// </summary>
