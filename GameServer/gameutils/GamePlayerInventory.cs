@@ -437,7 +437,7 @@ namespace DOL.GS
 			if (oldSlot >= eInventorySlot.RightHandWeapon && oldSlot <= eInventorySlot.DistanceWeapon)
 			{
 				// if active weapon was destroyed
-				if (m_player.AttackWeapon == null)
+				if (m_player.EquippedMainWeapon == null)
 				{
 					m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
 				}

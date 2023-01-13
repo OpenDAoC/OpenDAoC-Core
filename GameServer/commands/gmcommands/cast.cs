@@ -136,13 +136,13 @@ namespace DOL.GS.Commands
 					#region Style
 				case "style":
 					{
-						if (client.Player.AttackWeapon == null)
+						if (client.Player.EquippedMainWeapon == null)
 						{
 							DisplayMessage(client, "You need an active weapon to play style animation.");
 							return;
 						}
 
-						client.Player.Out.SendCombatAnimation(client.Player, null, (ushort)client.Player.AttackWeapon.Model, 0, id, 0, (byte)11, 100);
+						client.Player.Out.SendCombatAnimation(client.Player, null, (ushort)client.Player.EquippedMainWeapon.Model, 0, id, 0, (byte)11, 100);
 						break;
 					}
 					#endregion Style

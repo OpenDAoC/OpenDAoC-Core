@@ -16,10 +16,10 @@ namespace DOL.GS
 			if (source is GamePlayer || source is GamePet)
 			{
 				GameLiving target = source as GameLiving;
-				if (target == null || target.AttackWeapon == null) return;
+				if (target == null || target.EquippedMainWeapon == null) return;
 				if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
 					damageType == eDamageType.Energy || damageType == eDamageType.Heat
-					|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || target.AttackWeapon.Object_Type == (int)eObjectType.RecurvedBow || target.AttackWeapon.Object_Type == (int)eObjectType.Fired)
+					|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || target.EquippedMainWeapon.Object_Type == (int)eObjectType.RecurvedBow || target.EquippedMainWeapon.Object_Type == (int)eObjectType.Fired)
 				{
 					GamePlayer truc;
 					if (source is GamePlayer)
@@ -39,7 +39,7 @@ namespace DOL.GS
 			if (source is GameNPC)//for charmed pets or other faction mobs
 			{
 				GameNPC npc = source as GameNPC;
-				if (npc.AttackWeapon != null && npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				if (npc.EquippedMainWeapon != null && npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				{
 					base.TakeDamage(source, damageType, 0, 0);
 					return;

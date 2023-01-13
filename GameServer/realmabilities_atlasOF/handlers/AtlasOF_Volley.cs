@@ -49,7 +49,7 @@ namespace DOL.GS.RealmAbilities
                 m_player.Out.SendMessage("You can't use Volley in dungeons!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance || m_player.AttackWeapon == null)
+            if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance || m_player.EquippedMainWeapon == null)
             {
                 m_player.Out.SendMessage("You need to be equipped with a bow to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;

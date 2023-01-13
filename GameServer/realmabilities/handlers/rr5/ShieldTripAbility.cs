@@ -28,9 +28,9 @@ namespace DOL.GS.RealmAbilities
 				return;
 			if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				return;
-			if (living.AttackWeapon == null)
+			if (living.EquippedMainWeapon == null)
 				return;
-			if (living.AttackWeapon.Hand == 1)
+			if (living.EquippedMainWeapon.Hand == 1)
 				return;
 			GameLiving target = (GameLiving)living.TargetObject;
 			if (target == null) return;

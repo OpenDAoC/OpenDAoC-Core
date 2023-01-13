@@ -366,9 +366,9 @@ namespace DOL.GS.Spells
                     case eAttackResult.HitStyle: resultByte = 11; break;
                     case eAttackResult.Parried:
                         resultByte = 1;
-                        if (ad.Target != null && ad.Target.AttackWeapon != null)
+                        if (ad.Target != null && ad.Target.EquippedMainWeapon != null)
                         {
-                            defendersWeapon = ad.Target.AttackWeapon.Model;
+                            defendersWeapon = ad.Target.EquippedMainWeapon.Model;
                         }
                         break;
                     case eAttackResult.Blocked:

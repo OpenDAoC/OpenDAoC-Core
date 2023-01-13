@@ -834,7 +834,7 @@ namespace DOL.GS
         /// <summary>
         /// Returns the currently equipped weapon, null=natural
         /// </summary>
-        public virtual InventoryItem AttackWeapon
+        public virtual InventoryItem EquippedMainWeapon
         {
             get
             {

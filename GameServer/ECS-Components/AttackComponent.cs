@@ -647,7 +647,7 @@ namespace DOL.GS
         {
             EntityManager.AddComponent(typeof(AttackComponent), owner);
             
-            AttackWeapon = owner.AttackWeapon;
+            AttackWeapon = owner.EquippedMainWeapon;
             GamePlayer player = owner as GamePlayer;
 
             if (player != null)

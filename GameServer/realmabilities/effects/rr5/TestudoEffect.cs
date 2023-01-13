@@ -59,7 +59,7 @@ namespace DOL.GS.Effects
 				return;
 			if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				return;
-			if (living.AttackWeapon.Hand == 1)
+			if (living.EquippedMainWeapon.Hand == 1)
 				return;
 			AttackedByEnemyEventArgs attackedByEnemy = arguments as AttackedByEnemyEventArgs;
 			AttackData ad = null;

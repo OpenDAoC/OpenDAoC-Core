@@ -920,7 +920,7 @@ namespace DOL.GS.Effects
                 decNbShoot();
 
                 InventoryItem ammo = player.rangeAttackComponent.Ammo;
-                InventoryItem attackWeapon = player.AttackWeapon;
+                InventoryItem attackWeapon = player.EquippedMainWeapon;
                 eDamageType damagetype = player.attackComponent.AttackDamageType(attackWeapon);
                 int speed = player.AttackSpeed(attackWeapon);
                 byte attackSpeed = (byte)(speed / 1000);

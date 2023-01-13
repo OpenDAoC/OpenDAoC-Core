@@ -137,7 +137,7 @@ namespace DOL.GS.Spells
 				}
 			}
 			
-			if (Caster != null && Caster is GamePlayer && Caster.AttackWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)Caster.AttackWeapon.Object_Type))
+			if (Caster != null && Caster is GamePlayer && Caster.EquippedMainWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)Caster.EquippedMainWeapon.Object_Type))
 			{
 				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
 				{
