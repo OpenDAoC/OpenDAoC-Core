@@ -199,6 +199,16 @@ namespace DOL.GS
                 {
                     attackTarget = m_owner.TargetObject;
 
+                    // NPCs try to switch to their ranged weapon whenever possible.
+                    if (m_owner is GameNPC &&
+                        !m_owner.IsBeingInterrupted &&
+                        m_owner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
+                        !m_owner.IsWithinRadius(attackTarget, 500))
+                    {
+                        ((GameNPC)m_owner).SwitchToRanged(attackTarget);
+                        return;
+                    }
+
                     if (attackData != null && attackData.AttackResult is eAttackResult.Fumbled)
                     {
                         // Don't start the attack if the last one fumbled.
