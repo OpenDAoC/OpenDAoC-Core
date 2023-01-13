@@ -1437,8 +1437,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Walk to a certain spot at a given speed.
 		/// </summary>
-		/// <param name="p"></param>
-		/// <param name="speed"></param>
 		public virtual void WalkTo(IPoint3D target, short speed)
 		{
 			if (IsTurningDisabled)
@@ -1450,38 +1448,28 @@ namespace DOL.GS
 			if (speed <= 0)
 				return;
 
+			TargetPosition = target; // This also saves the current position.
 
-		
-			TargetPosition = target; // this also saves the current position
-			
-
+			// No need to start walking.
 			if (IsWithinRadius(TargetPosition, CONST_WALKTOTOLERANCE))
-			{
-				// No need to start walking.
-
-				//Notify(GameNPCEvent.ArriveAtTarget, this);
 				return;
-			}
 
-
-			//update existing component
-			//register moveComponent w/ the movement-to-be-processed queue
-
-
-			//kill everything below this line?
 			CancelWalkToTimer();
-		
-
 			m_Heading = GetHeading(TargetPosition);
 			m_currentSpeed = speed;
-			MovementStartTick = GameLoop.GameLoopTime; //Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
+			MovementStartTick = GameLoop.GameLoopTime; // Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
 			UpdateTickSpeed();
-			
-			// Notify(GameNPCEvent.WalkTo, this, new WalkToEventArgs(TargetPosition, speed));
-			
-			StartArriveAtTargetAction(GetTicksToArriveAt(TargetPosition, speed));
+			int ticksToArrive = GetTicksToArriveAt(TargetPosition, speed);
+
+			// Cancel the ranged attack if the NPC is moving.
+			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance && ticksToArrive > 0)
+			{
+				StopAttack();
+				attackComponent.attackAction?.CleanupAttackAction();
+			}
+
+			StartArriveAtTargetAction(ticksToArrive);
 			NeedsBroadcastUpdate = true;
-			//BroadcastUpdate();
 		}
 
 		private void StartArriveAtTargetAction(int requiredTicks)

@@ -1074,13 +1074,6 @@ namespace DOL.GS
 
                 if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
-                    // Cancel the attack if the npc is moving.
-                    if (npc.IsMoving)
-                    {
-                        StopAttack();
-                        attackAction?.CleanupAttackAction();
-                    }
-
                     // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
                     npc.Follow(target, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
                 }
