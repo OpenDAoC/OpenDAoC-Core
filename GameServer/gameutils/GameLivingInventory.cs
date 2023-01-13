@@ -606,7 +606,6 @@ namespace DOL.GS
 						m_changedSlots.Add(slot);
 
 					item.OwnerID = null;
-					item.SlotPosition = (int) eInventorySlot.Invalid;
 
 					if (m_changesCounter <= 0)
 						UpdateChangedSlots();

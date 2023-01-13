@@ -832,7 +832,7 @@ namespace DOL.GS
 		}
 
         /// <summary>
-        /// Returns the weapon used to attack, null=natural
+        /// Returns the currently equipped weapon, null=natural
         /// </summary>
         public virtual InventoryItem AttackWeapon
         {

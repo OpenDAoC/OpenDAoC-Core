@@ -24,14 +24,12 @@ namespace DOL.GS
         public WeaponAction weaponAction;
         public AttackAction attackAction;
 
-
         /// <summary>
         /// The objects currently attacking this living
         /// To be more exact, the objects that are in combat
         /// and have this living as target.
         /// </summary>
         protected List<GameObject> m_attackers;
-
 
         /// <summary>
         /// Returns the list of attackers
@@ -97,6 +95,7 @@ namespace DOL.GS
             if (weaponAction is null && attackAction is null && !owner.InCombat)
             {
                 EntityManager.RemoveComponent(typeof(AttackComponent), owner);
+                AttackWeapon = null;
             }
         }
 
@@ -278,7 +277,7 @@ namespace DOL.GS
         public int UsedHandOnLastDualWieldAttack { get; set; }
 
         /// <summary>
-        /// Returns the AttackRange of this living
+        /// Returns this attack's range
         /// </summary>
         public int AttackRange
         {
@@ -288,26 +287,23 @@ namespace DOL.GS
             shield (Numb style)		= 127-129
             polearm	(Impale style)	= 127-130
             mace (Daze style)		= 127.5-128.7
-
             Think it's safe to say that it never changes; different with mobs. */
 
             get
             {
                 if (owner is GamePlayer)
                 {
-                    var p = owner as GamePlayer;
+                    if (AttackWeapon == null)
+                        return 0;
 
-                    GameLiving livingTarget = p.TargetObject as GameLiving;
+                    InventoryItem weapon = AttackWeapon;
+                    var player = owner as GamePlayer;
+                    GameLiving target = player.TargetObject as GameLiving;
 
-                    //TODO change to real distance of bows!
-                    if (p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                    // TODO: Change to real distance of bows.
+                    if (weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon)
                     {
-                        InventoryItem weapon = AttackWeapon;
-                        if (weapon == null)
-                            return 0;
-
                         double range;
-                        InventoryItem ammo = p.rangeAttackComponent?.Ammo;
 
                         switch ((eObjectType) weapon.Object_Type)
                         {
@@ -327,67 +323,60 @@ namespace DOL.GS
                                 break;
                             default:
                                 range = 1200;
-                                
-                                break; // shortbow, xbow, throwing
+                                break; // Shortbow, crossbow, throwing.
                         }
 
-                        range = Math.Max(32, range * p.GetModified(eProperty.ArcheryRange) * 0.01);
+                        range = Math.Max(32, range * player.GetModified(eProperty.ArcheryRange) * 0.01);
+                        InventoryItem ammo = player.rangeAttackComponent?.Ammo;
 
                         if (ammo != null)
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
                             {
                                 case 0:
                                     range *= 0.85;
-                                    break; //Clout -15%
-                                //						case 1:                break; //(none) 0%
+                                    break; // Clout -15%
+                                //case 1:
+                                //  break; // (none) 0%
                                 case 2:
                                     range *= 1.15;
-                                    break; //doesn't exist on live
+                                    break; // Doesn't exist on live
                                 case 3:
                                     range *= 1.25;
-                                    break; //Flight +25%
+                                    break; // Flight +25%
                             }
 
-                        if (livingTarget != null) range += Math.Min((p.Z - livingTarget.Z) / 2.0, 500);
-                        if (range < 32) range = 32;
+                        if (target != null)
+                            range += Math.Min((player.Z - target.Z) / 2.0, 500);
+                        if (range < 32)
+                            range = 32;
 
-                        return (int) (range);
+                        return (int)range;
                     }
 
 
-                    // int meleerange = 128;
-                    int meleerange = 150; //Increase default melee range to 150 to help with higher latency players
-                    GameKeepComponent
-                        keepcomponent =
-                            livingTarget as GameKeepComponent; // TODO better component melee attack range check
-                    if (keepcomponent != null)
-                        meleerange += 150;
+                    // int meleeRange = 128;
+                    int meleeRange = 150; // Increase default melee range to 150 to help with higher latency players.
+
+                    if (target is GameKeepComponent)
+                        meleeRange += 150;
                     else
                     {
-                        if (livingTarget != null && livingTarget.IsMoving)
-                            meleerange += 32;
-                        if (p.IsMoving)
-                            meleerange += 32;
+                        if (target != null && target.IsMoving)
+                            meleeRange += 32;
+                        if (player.IsMoving)
+                            meleeRange += 32;
                     }
 
-                    //Console.WriteLine($"melee range: {meleerange} moving? {p.IsMoving} targmoving {livingTarget.IsMoving}");
-                    return meleerange;
+                    return meleeRange;
                 }
                 else
                 {
-                    //Mobs have a good distance range with distance weapons
-                    //automatically
                     if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    {
                         return Math.Max(32, (int) (2000.0 * owner.GetModified(eProperty.ArcheryRange) * 0.01));
-                    }
 
-                    //Normal mob attacks have 200 ...
-                    //TODO dragon, big mobs etc...
                     return 200;
                 }
             }
-            set { }
         }
 
         /// <summary>
@@ -657,99 +646,98 @@ namespace DOL.GS
         public void StartAttack(GameObject attackTarget)
         {
             EntityManager.AddComponent(typeof(AttackComponent), owner);
+            
+            AttackWeapon = owner.AttackWeapon;
+            GamePlayer player = owner as GamePlayer;
 
-            var p = owner as GamePlayer;
-
-            if (p != null)
+            if (player != null)
             {
-                if (p.CharacterClass.StartAttack(attackTarget) == false)
+                if (player.CharacterClass.StartAttack(attackTarget) == false)
                 {
                     return;
                 }
 
-                if (!p.IsAlive)
+                if (!player.IsAlive)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouCantCombat"),
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouCantCombat"),
                         eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 // Necromancer with summoned pet cannot attack
-                if (p.ControlledBrain != null)
-                    if (p.ControlledBrain.Body != null)
-                        if (p.ControlledBrain.Body is NecromancerPet)
-                        {
-                            p.Out.SendMessage(
-                                LanguageMgr.GetTranslation(p.Client.Account.Language,
-                                    "GamePlayer.StartAttack.CantInShadeMode"), eChatType.CT_YouHit,
-                                eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
-                if (p.IsStunned)
+                if (player.ControlledBrain?.Body is NecromancerPet)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language,
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language,
+                            "GamePlayer.StartAttack.CantInShadeMode"), eChatType.CT_YouHit,
+                        eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                if (player.IsStunned)
+                {
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language,
                             "GamePlayer.StartAttack.CantAttackStunned"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (p.IsMezzed)
+                if (player.IsMezzed)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language,
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language,
                             "GamePlayer.StartAttack.CantAttackmesmerized"), eChatType.CT_YouHit,
                         eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                long vanishTimeout = p.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long vanishTimeout = player.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain",
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain",
                             (vanishTimeout - GameLoop.GameLoopTime + 1000) / 1000), eChatType.CT_YouHit,
                         eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                long VanishTick = p.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long VanishTick = player.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 long changeTime = GameLoop.GameLoopTime - VanishTick;
                 if (changeTime < 30000 && VanishTick > 0)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouMustWait",
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWait",
                             ((30000 - changeTime) / 1000).ToString()), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (p.IsOnHorse)
-                    p.IsOnHorse = false;
+                if (player.IsOnHorse)
+                    player.IsOnHorse = false;
 
-                if (p.Steed != null && p.Steed is GameSiegeRam)
+                if (player.Steed != null && player.Steed is GameSiegeRam)
                 {
-                    p.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (p.IsDisarmed)
+                if (player.IsDisarmed)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CantDisarmed"),
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantDisarmed"),
                         eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (p.IsSitting)
+                if (player.IsSitting)
                 {
-                    p.Sit(false);
+                    player.Sit(false);
                 }
 
                 if (AttackWeapon == null)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language,
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language,
                             "GamePlayer.StartAttack.CannotWithoutWeapon"), eChatType.CT_YouHit,
                         eChatLoc.CL_SystemWindow);
                     return;
@@ -757,19 +745,19 @@ namespace DOL.GS
 
                 if (AttackWeapon.Object_Type == (int) eObjectType.Instrument)
                 {
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CannotMelee"),
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CannotMelee"),
                         eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (p.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
                     if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
                     {
-                        if ((eCharacterClass) p.CharacterClass.ID == eCharacterClass.Scout ||
-                            (eCharacterClass) p.CharacterClass.ID == eCharacterClass.Hunter ||
-                            (eCharacterClass) p.CharacterClass.ID == eCharacterClass.Ranger)
+                        if ((eCharacterClass) player.CharacterClass.ID == eCharacterClass.Scout ||
+                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Hunter ||
+                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Ranger)
                         {
                             // There is no feedback on live when attempting to fire a bow with arrows
                             return;
@@ -777,79 +765,79 @@ namespace DOL.GS
                     }
 
                     // Check arrows for ranged attack
-                    if (p.rangeAttackComponent?.Ammo == null)
+                    if (player.rangeAttackComponent?.Ammo == null)
                     {
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language,
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.SelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     // Check if selected ammo is compatible for ranged attack
-                    if (!p.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
+                    if (!player.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
                     {
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language,
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.SureShot) != null)
-                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.RapidFire) != null)
-                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                    if (EffectListService.GetAbilityEffectOnTarget(p, eEffect.TrueShot) != null)
-                        p.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
+                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) != null)
+                        player.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) != null)
+                        player.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot) != null)
+                        player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
 
 
-                    if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical &&
-                        p.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE)
+                    if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical &&
+                        player.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE)
                     {
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.TiredShot"),
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredShot"),
                             eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    if (p.Endurance < RangeAttackComponent.RANGE_ATTACK_ENDURANCE)
+                    if (player.Endurance < RangeAttackComponent.RANGE_ATTACK_ENDURANCE)
                     {
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.TiredUse",
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredUse",
                                 AttackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    if (p.IsStealthed)
+                    if (player.IsStealthed)
                     {
                         // -Chance to unstealth while nocking an arrow = stealth spec / level
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
-                        int stealthSpec = p.GetModifiedSpecLevel(Specs.Stealth);
-                        int stayStealthed = stealthSpec * 100 / p.Level;
-                        if (p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+                        int stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
+                        int stayStealthed = stealthSpec * 100 / player.Level;
+                        if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                             stayStealthed -= 20;
 
                         if (!Util.Chance(stayStealthed))
-                            p.Stealth(false);
+                            player.Stealth(false);
                     }
                 }
                 else
                 {
                     if (attackTarget == null)
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language,
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatNoTarget"), eChatType.CT_YouHit,
                             eChatLoc.CL_SystemWindow);
                     else if (attackTarget is GameNPC)
                     {
-                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatTarget",
-                                attackTarget.GetName(0, false, p.Client.Account.Language, (attackTarget as GameNPC))),
+                                attackTarget.GetName(0, false, player.Client.Account.Language, (attackTarget as GameNPC))),
                             eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     }
                     else
                     {
-                        p.Out.SendMessage(
-                            LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget",
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget",
                                 attackTarget.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     }
                 }
@@ -870,11 +858,11 @@ namespace DOL.GS
                 }*/
                 LivingStartAttack();
 
-                if (p.IsCasting && !p.castingComponent.spellHandler.Spell.Uninterruptible)
+                if (player.IsCasting && !player.castingComponent.spellHandler.Spell.Uninterruptible)
                 {
-                    p.StopCurrentSpellcast();
-                    p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"),
+                    player.StopCurrentSpellcast();
+                    player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"),
                         eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 }
 
@@ -882,13 +870,13 @@ namespace DOL.GS
                 owner.styleComponent.NextCombatStyle = null;
                 owner.styleComponent.NextCombatBackupStyle = null;
 
-                if (p.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
-                    p.Out.SendAttackMode(AttackState);
+                    player.Out.SendAttackMode(AttackState);
                 }
                 else
                 {
-                    p.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
+                    player.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
 
                     string typeMsg = "shot";
                     if (AttackWeapon.Object_Type == (int) eObjectType.Thrown)
@@ -897,23 +885,23 @@ namespace DOL.GS
                     string targetMsg = "";
                     if (attackTarget != null)
                     {
-                        if (p.IsWithinRadius(attackTarget, AttackRange))
-                            targetMsg = LanguageMgr.GetTranslation(p.Client.Account.Language,
+                        if (player.IsWithinRadius(attackTarget, AttackRange))
+                            targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.TargetInRange");
                         else
-                            targetMsg = LanguageMgr.GetTranslation(p.Client.Account.Language,
+                            targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.TargetOutOfRange");
                     }
 
                     int speed = AttackSpeed(AttackWeapon) / 100;
-                    if (p.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                    if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         speed = Math.Max(15, speed / 2);
 
-                    if (p.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
                     { }
                     else
-                        p.Out.SendMessage(
-                        LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
+                        player.Out.SendMessage(
+                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
                             typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 }
             }
@@ -1407,7 +1395,7 @@ namespace DOL.GS
             ad.Weapon = weapon;
             ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
 
-            // Asp style range add
+            // Asp style range add.
             int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte) eSpellType.StyleRange
                 ? (int) style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange
                 : 0;
@@ -1433,7 +1421,7 @@ namespace DOL.GS
                         break;
                 }
 
-            //No target, stop the attack
+            // No target.
             if (ad.Target == null)
             {
                 ad.AttackResult = (target == null) ? eAttackResult.NoTarget : eAttackResult.NoValidTarget;
@@ -1441,7 +1429,7 @@ namespace DOL.GS
                 return ad;
             }
 
-            // check region
+            // Region / state check.
             if (ad.Target.CurrentRegionID != owner.CurrentRegionID || ad.Target.ObjectState != eObjectState.Active)
             {
                 ad.AttackResult = eAttackResult.NoValidTarget;
@@ -1449,7 +1437,7 @@ namespace DOL.GS
                 return ad;
             }
 
-            //Check if the target is in front of attacker
+            // LoS / in front check.
             if (!ignoreLOS && ad.AttackType != AttackData.eAttackType.Ranged && owner is GamePlayer &&
                 !(ad.Target is GameKeepComponent) &&
                 !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
@@ -1459,7 +1447,7 @@ namespace DOL.GS
                 return ad;
             }
 
-            //Target is dead already
+            // Target is already dead.
             if (!ad.Target.IsAlive)
             {
                 ad.AttackResult = eAttackResult.TargetDead;
@@ -1467,22 +1455,18 @@ namespace DOL.GS
                 return ad;
             }
 
-            //Console.WriteLine($"AttkRange {AttackRange} AddRange {addRange} targetAttkComp {ad.Target.attackComponent.AttackRange}");
-            //We have no attacking distance!
-            if (!owner.IsWithinRadius(ad.Target,
-                    ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard
-                        ? Math.Max(AttackRange + addRange, ad.Target.attackComponent.AttackRange + addRange)
-                        : AttackRange + addRange))
+            // Melee range check (ranged is already done at this point).
+            if (ad.AttackType != AttackData.eAttackType.Ranged)
             {
-                ad.AttackResult = eAttackResult.OutOfRange;
-                SendAttackingCombatMessages(ad);
-                return ad;
-            }
-
-            if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Long)
-            {
-                AttackRange = (int) Math.Round(AttackRange * 1.5);
-                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+                // What the hell is happening here?
+                if (!owner.IsWithinRadius(ad.Target, ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard
+                                                     ? Math.Max(AttackRange + addRange, ad.Target.attackComponent.AttackRange + addRange)
+                                                     : AttackRange + addRange))
+                {
+                    ad.AttackResult = eAttackResult.OutOfRange;
+                    SendAttackingCombatMessages(ad);
+                    return ad;
+                }
             }
 
             if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, false))
@@ -3562,25 +3546,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Returns the weapon used to attack, null=natural
+        /// Returns the weapon for this attack, null=natural
         /// </summary>
-        public virtual InventoryItem AttackWeapon
-        {
-            get
-            {
-                if (owner.Inventory != null)
-                {
-                    switch (owner.ActiveWeaponSlot)
-                    {
-                        case eActiveWeaponSlot.Standard: return owner.Inventory.GetItem(eInventorySlot.RightHandWeapon);
-                        case eActiveWeaponSlot.TwoHanded: return owner.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-                        case eActiveWeaponSlot.Distance: return owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
-                    }
-                }
-
-                return null;
-            }
-        }
+        public virtual InventoryItem AttackWeapon { get; private set; }
 
         /// <summary>
         /// Whether the living is actually attacking something.
