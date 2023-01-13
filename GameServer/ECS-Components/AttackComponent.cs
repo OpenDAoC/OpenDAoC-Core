@@ -868,7 +868,7 @@ namespace DOL.GS
                     if (DreamweaverRR5 != null)
                         DreamweaverRR5.Cancel(false);
                 }*/
-                LivingStartAttack(attackTarget);
+                LivingStartAttack();
 
                 if (p.IsCasting && !p.castingComponent.spellHandler.Spell.Uninterruptible)
                 {
@@ -923,18 +923,15 @@ namespace DOL.GS
             }
             else
             {
-                LivingStartAttack(attackTarget);
+                LivingStartAttack();
             }
         }
 
         /// <summary>
         /// Starts a melee or ranged attack on a given target.
         /// </summary>
-        /// <param name="attackTarget">The object to attack.</param>
-        private void LivingStartAttack(GameObject attackTarget)
+        private void LivingStartAttack()
         {
-            // Aredhel: Let the brain handle this, no need to call StartAttack
-            // if the body can't do anything anyway.
             if (owner.IsIncapacitated)
                 return;
 
@@ -945,54 +942,31 @@ namespace DOL.GS
 
             int speed = AttackSpeed(AttackWeapon);
 
-            if (speed > 0)
-            {
-                //m_attackAction = CreateAttackAction();
-                //attackAction = new AttackAction(owner);
-                attackAction = owner.CreateAttackAction();
+            if (speed <= 0)
+                return;
+            
+            attackAction = owner.CreateAttackAction();
 
-                if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            {
+                // Only start another attack action if we aren't already aiming to shoot.
+                if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim)
                 {
-                    // only start another attack action if we aren't already aiming to shoot
-                    if (owner.rangeAttackComponent?.RangedAttackState != eRangedAttackState.Aim)
+                    owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
+
+                    if (owner is not GamePlayer || !owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
                     {
-                        owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
-                        if (owner is GamePlayer && owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
-                        {
-                        }
-                        else
-                        {
-                            var players = owner?.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-                            if (players == null) return;
-                            foreach (GamePlayer player in players)
-                                try
-                                {
-                                    player?.Out.SendCombatAnimation(owner, null,
-                                        (ushort) (AttackWeapon?.Model ?? 0),
-                                        0x00, player.Out.BowPrepare, (byte) (speed / 100), 0x00, 0x00);
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine($"Error encountered when sending player attack animations: {e}");
-                                }
-                                
-                        }
-                        //m_attackAction.Start((RangedAttackType == eRangedAttackType.RapidFire) ? speed / 2 : speed);
-                        attackAction.StartTime =
-                            (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire)
-                                ? Math.Max(1500, speed / 2)
-                                : speed;
-                        attackAction.RangeInterruptTime = speed;
+                        // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+                        foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            player.Out.SendCombatAnimation(owner, null, (ushort)(AttackWeapon != null ? AttackWeapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
                     }
-                }
-                else
-                {
-                    //if (m_attackAction.TimeUntilElapsed < 500)
-                    //	m_attackAction.Start(500);
-                    if (0 < attackAction.TimeUntilStart && attackAction.TimeUntilStart < 100)
-                        attackAction.StartTime = 100;
+
+                    attackAction.StartTime = owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, speed / 2) : speed;
+                    attackAction.RangeInterruptTime = speed;
                 }
             }
+            else if (attackAction.TimeUntilStart is > 0 and < 100)
+                attackAction.StartTime = 100;
         }
 
         /// <summary>
@@ -1104,7 +1078,7 @@ namespace DOL.GS
             //p.SetLastMeleeAttackTick();
             //p.StartMeleeAttackTimer();
 
-            LivingStartAttack(target);
+            LivingStartAttack();
 
             if (AttackState)
             {

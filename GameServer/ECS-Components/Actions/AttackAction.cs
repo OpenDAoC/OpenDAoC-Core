@@ -111,14 +111,20 @@ namespace DOL.GS
                     }
 
                     int model = attackWeapon == null ? 0 : attackWeapon.Model;
-                    ticksToTarget = m_owner.GetDistanceTo(attackTarget) * 1000 / 1800; // 1800 units per second.
+                    ticksToTarget = m_owner.GetDistanceTo(attackTarget) * 1000 / 1800; // 1800 units per second. Live value is unknown, but DoL had 1500.
+                    bool cancelPrepareAnimation = m_owner.attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown;
 
                     Parallel.ForEach(m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                     {
                         if (player == null)
                             return;
 
-                        // The stance parameter appears to be used to indicate the time it should take for the arrow's model to reach its target.
+                        // Special case for thrown weapons (bows and crossbows don't need this).
+                        // For some obscure reason, their 'BowShoot' animation doesn't cancel their 'BowPrepare', and 'BowPrepare' resumes after 'BowShoot'.
+                        if (cancelPrepareAnimation)
+                            player.Out.SendInterruptAnimation(m_owner);
+
+                        // The 'stance' parameter appears to be used to indicate the time it should take for the arrow's model to reach its target.
                         // 0 doesn't display any arrow.
                         // 1 means roughly 350ms (the lowest time possible), then each increment adds about 75ms (needs testing).
                         // Using ticksToTarget, we can make the arrow take more time to reach its target the farther it is.
@@ -391,11 +397,6 @@ namespace DOL.GS
                         if (m_owner is GamePlayer)
                             m_owner.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
 
-                        int speed = attackComponent.AttackSpeed(attackWeapon);
-                        byte attackSpeed = (byte)(speed / 100);
-                        int model = attackWeapon == null ? 0 : attackWeapon.Model;
-
-                        // Volley check.
                         if (m_owner is not GamePlayer || !m_owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
                         {
                             Parallel.ForEach(m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
@@ -403,9 +404,12 @@ namespace DOL.GS
                                 if (player == null)
                                     return;
 
-                                player.Out.SendCombatAnimation(m_owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
+                                // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+                                player.Out.SendCombatAnimation(m_owner, null, (ushort)(attackWeapon != null ? attackWeapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
                             });
                         }
+
+                        int speed = attackComponent.AttackSpeed(attackWeapon);
 
                         if (m_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         {
