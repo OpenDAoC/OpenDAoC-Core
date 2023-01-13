@@ -239,68 +239,67 @@ namespace DOL.GS
 
                 int addRange = combatStyle?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte)eSpellType.StyleRange ? (int)combatStyle?.Procs?.FirstOrDefault()?.Item1.Value - attackComponent.AttackRange : 0;
 
-                // Target not in range yet.
-                if (attackTarget != null && !m_owner.IsWithinRadius(attackTarget, attackComponent.AttackRange + addRange) && m_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                // This is a NPC and the target isn't in melee range yet. Check if another target is in range to attack on the way to the main target.
+                if (attackTarget != null &&
+                    m_owner is GameNPC npcOwner &&
+                    m_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance &&
+                    npcOwner.Brain is not IControlledBrain &&
+                    npcOwner.Brain is StandardMobBrain npcBrain &&
+                    npcBrain.AggroTable.Count > 0 &&
+                    !m_owner.IsWithinRadius(attackTarget, attackComponent.AttackRange + addRange))
                 {
-                    // This is a NPC and target not in range. Check if another target is in range to attack on the way to main target.
-                    if (m_owner is GameNPC npcOwner &&
-                        npcOwner.Brain is not IControlledBrain &&
-                        npcOwner.Brain is StandardMobBrain npcBrain &&
-                        npcBrain.AggroTable.Count > 0)
-                    {
-                        GameLiving possibleTarget = null;
-                        long maxaggro = 0;
-                        long aggro = 0;
+                    GameLiving possibleTarget = null;
+                    long maxaggro = 0;
+                    long aggro = 0;
 
-                        foreach (GamePlayer playerInRadius in m_owner.GetPlayersInRadius((ushort)attackComponent.AttackRange))
+                    foreach (GamePlayer playerInRadius in m_owner.GetPlayersInRadius((ushort)attackComponent.AttackRange))
+                    {
+                        if (npcBrain.AggroTable.ContainsKey(playerInRadius))
                         {
-                            if (npcBrain.AggroTable.ContainsKey(playerInRadius))
+                            aggro = npcBrain.GetAggroAmountForLiving(playerInRadius);
+
+                            if (aggro <= 0)
+                                continue;
+
+                            if (aggro > maxaggro)
                             {
-                                aggro = npcBrain.GetAggroAmountForLiving(playerInRadius);
+                                possibleTarget = playerInRadius;
+                                maxaggro = aggro;
+                            }
+                        }
+                    }
+
+                    // Check for NPCs in attack range. Only check if the NPCNextNPCVicinityCheck is less than the current GameLoop Time.
+                    if (m_NPCNextNPCVicinityCheck < GameLoop.GameLoopTime)
+                    {
+                        // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
+                        m_NPCNextNPCVicinityCheck = GameLoop.GameLoopTime + Util.Random(100,NPC_VICINITY_CHECK_DELAY);
+
+                        foreach (GameNPC npcInRadius in m_owner.GetNPCsInRadius((ushort)attackComponent.AttackRange))
+                        {
+                            if (npcBrain.AggroTable.ContainsKey(npcInRadius))
+                            {
+                                aggro = npcBrain.GetAggroAmountForLiving(npcInRadius);
 
                                 if (aggro <= 0)
                                     continue;
 
                                 if (aggro > maxaggro)
                                 {
-                                    possibleTarget = playerInRadius;
+                                    possibleTarget = npcInRadius;
                                     maxaggro = aggro;
                                 }
                             }
                         }
-
-                        // Check for NPCs in attack range. Only check if the NPCNextNPCVicinityCheck is less than the current GameLoop Time.
-                        if (m_NPCNextNPCVicinityCheck < GameLoop.GameLoopTime)
-                        {
-                            // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
-                            m_NPCNextNPCVicinityCheck = GameLoop.GameLoopTime + Util.Random(100,NPC_VICINITY_CHECK_DELAY);
-
-                            foreach (GameNPC npcInRadius in m_owner.GetNPCsInRadius((ushort)attackComponent.AttackRange))
-                            {
-                                if (npcBrain.AggroTable.ContainsKey(npcInRadius))
-                                {
-                                    aggro = npcBrain.GetAggroAmountForLiving(npcInRadius);
-
-                                    if (aggro <= 0)
-                                        continue;
-
-                                    if (aggro > maxaggro)
-                                    {
-                                        possibleTarget = npcInRadius;
-                                        maxaggro = aggro;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (possibleTarget == null)
-                        {
-                            m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
-                            return;
-                        }
-                        else
-                            attackTarget = possibleTarget;
                     }
+
+                    if (possibleTarget == null)
+                    {
+                        m_interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                        return;
+                    }
+                    else
+                        attackTarget = possibleTarget;
                 }
 
                 attackComponent.weaponAction = new WeaponAction(m_owner, attackTarget, attackWeapon, leftWeapon, effectiveness, interruptDuration, combatStyle);
@@ -341,7 +340,7 @@ namespace DOL.GS
                 attackData = m_owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
                 m_interval = attackComponent.AttackSpeed(attackWeapon, leftWeapon);
 
-                // Non-ranged weapons tick every TICK_INTERVAL_FOR_NON_ATTACK if they didn't attack (
+                // Non-ranged weapons tick every TICK_INTERVAL_FOR_NON_ATTACK if they didn't attack.
                 if (m_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
                     if (attackData == null ||
