@@ -2012,11 +2012,16 @@ namespace DOL.GS
 					return false;
 			}
 
-			long elapsedTime = GameLoop.GameLoopTime - TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
-			long halfwayPoint = attackComponent.AttackSpeed(attackComponent.AttackWeapon) / 2;
+			long rangeAttackHoldStart = TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
+
+			if (rangeAttackHoldStart > 0)
+			{
+				long elapsedTime = GameLoop.GameLoopTime - rangeAttackHoldStart;
+				long halfwayPoint = attackComponent.AttackSpeed(attackComponent.AttackWeapon) / 2;
 				
-			if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
-				return false;
+				if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
+					return false;
+			}
 
 			double mod = GetConLevel(attacker);
 			double interruptChance = BaseInterruptChance;
