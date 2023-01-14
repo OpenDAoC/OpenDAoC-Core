@@ -876,7 +876,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    player.TempProperties.setProperty(RangeAttackComponent.RANGE_ATTACK_HOLD_START, GameLoop.GameLoopTime);
+                    player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
 
                     string typeMsg = "shot";
                     if (AttackWeapon.Object_Type == (int) eObjectType.Thrown)

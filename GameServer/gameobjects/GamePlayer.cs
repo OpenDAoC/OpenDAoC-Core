@@ -6355,7 +6355,7 @@ namespace DOL.GS
             {
                 if (attackComponent.AttackWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon 
                     && rangeAttackComponent.RangedAttackState != eRangedAttackState.None 
-                    && GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START) > 100
+                    && GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
                     && attackComponent.attackAction != null)
                 {
                     attackComponent.attackAction.StartTime = 1000;

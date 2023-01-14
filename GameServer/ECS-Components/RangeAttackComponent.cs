@@ -15,7 +15,7 @@ namespace DOL.GS
             m_owner = owner;
         }
 
-        internal const string RANGE_ATTACK_HOLD_START = " RangeAttackHoldStart";
+        internal const string RANGED_ATTACK_START = " RangedAttackStart";
         public const int RANGE_ATTACK_ENDURANCE = 5;
         public const int CRITICAL_SHOT_ENDURANCE = 10;
         protected eRangedAttackState m_rangedAttackState;
@@ -163,15 +163,16 @@ namespace DOL.GS
         {
             if (m_owner is GamePlayer playerOwner)
             {
-                long holdStart = m_owner.TempProperties.getProperty<long>(RANGE_ATTACK_HOLD_START);
+                long attackStart = m_owner.TempProperties.getProperty<long>(RANGED_ATTACK_START);
 
-                if (holdStart == 0)
+                // Failsafe, but it should never happen.
+                if (attackStart == 0)
                 {
-                    holdStart = GameLoop.GameLoopTime;
-                    playerOwner.TempProperties.setProperty(RANGE_ATTACK_HOLD_START, holdStart);
+                    attackStart = GameLoop.GameLoopTime;
+                    playerOwner.TempProperties.setProperty(RANGED_ATTACK_START, attackStart);
                 }
 
-                if ((GameLoop.GameLoopTime - holdStart) > 15000 && playerOwner.attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - attackStart) > 15000 && playerOwner.attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop;

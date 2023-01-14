@@ -2011,7 +2011,7 @@ namespace DOL.GS
 					return false;
 			}
 
-			long rangeAttackHoldStart = TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
+			long rangeAttackHoldStart = TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START);
 
 			if (rangeAttackHoldStart > 0)
 			{

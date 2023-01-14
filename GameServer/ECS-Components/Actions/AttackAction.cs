@@ -254,7 +254,7 @@ namespace DOL.GS
                     // and the resulting interrupt will last 1.5 seconds."
 
                     long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START); // elapsed time before ready to fire
+                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
 
                     if (elapsedTime < rapidFireMaxDuration)
                     {
