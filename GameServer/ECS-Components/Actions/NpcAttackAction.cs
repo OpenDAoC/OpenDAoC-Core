@@ -103,11 +103,6 @@ namespace DOL.GS
             return true;
         }
 
-        protected override bool PrepareRangedAttack()
-        {
-            return base.PrepareRangedAttack();
-        }
-
         protected override bool FinalizeRangedAttack()
         {
             // Switch to melee if range to target is less than 200.
