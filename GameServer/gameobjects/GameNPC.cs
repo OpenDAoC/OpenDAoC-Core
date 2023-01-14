@@ -1465,7 +1465,7 @@ namespace DOL.GS
 			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance && ticksToArrive > 0)
 			{
 				StopAttack();
-				attackComponent.attackAction?.CleanupAttackAction();
+				attackComponent.attackAction?.CleanUp();
 			}
 
 			StartArriveAtTargetAction(ticksToArrive);
@@ -4777,7 +4777,7 @@ namespace DOL.GS
 			//if (m_attackAction != null)
 			//	m_attackAction.Stop();
             if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanupAttackAction();
+                attackComponent.attackAction.CleanUp();
 			StopFollowing();
 		}
 

@@ -947,6 +947,9 @@ namespace DOL.GS
                 // Only start another attack action if we aren't already aiming to shoot.
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim)
                 {
+                    if (attackAction.CheckAimInterrupt())
+                        return;
+
                     owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
                     if (owner is not GamePlayer || !owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
@@ -957,7 +960,6 @@ namespace DOL.GS
                     }
 
                     attackAction.StartTime = owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, speed / 2) : speed;
-                    attackAction.RangeInterruptTime = speed;
                 }
             }
             else if (attackAction.TimeUntilStart is > 0 and < 100)

@@ -2106,7 +2106,7 @@ namespace DOL.GS
 		public virtual AttackAction CreateAttackAction()
 		{
 			//return m_attackAction ?? new AttackAction(this);
-            return attackComponent.attackAction ?? new AttackAction(this);
+            return attackComponent.attackAction ?? AttackAction.Create(this);
         }
 
 		///// <summary>
@@ -7019,8 +7019,8 @@ namespace DOL.GS
 			//m_attackAction = new AttackAction(this);
 
             if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanupAttackAction();
-            attackComponent.attackAction = new AttackAction(this);
+                attackComponent.attackAction.CleanUp();
+            attackComponent.attackAction = AttackAction.Create(this);
 
 			return true;
 		}
@@ -7045,14 +7045,14 @@ namespace DOL.GS
 			StopEnduranceRegeneration();
 
 			//if (m_attackAction != null) m_attackAction.Stop();
-            if (attackComponent.attackAction != null) attackComponent.attackAction.CleanupAttackAction();
+            if (attackComponent.attackAction != null) attackComponent.attackAction.CleanUp();
 			if (this is GameNPC && ((GameNPC)this).SpellTimer != null) ((GameNPC)this).SpellTimer.Stop();
 			if (m_healthRegenerationTimer != null) m_healthRegenerationTimer.Stop();
 			if (m_powerRegenerationTimer != null) m_powerRegenerationTimer.Stop();
 			if (m_enduRegenerationTimer != null) m_enduRegenerationTimer.Stop();
             //m_attackAction = null;
             if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanupAttackAction();
+                attackComponent.attackAction.CleanUp();
 			m_healthRegenerationTimer = null;
 			m_powerRegenerationTimer = null;
 			m_enduRegenerationTimer = null;
