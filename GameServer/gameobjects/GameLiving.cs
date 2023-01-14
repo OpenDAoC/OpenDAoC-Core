@@ -1893,7 +1893,7 @@ namespace DOL.GS
 		/// <param name="duration"></param>
 		public virtual void StartInterruptTimer(AttackData attack, int duration)
 		{
-			if(attack != null)
+			if (attack != null)
 				StartInterruptTimer(duration, attack.AttackType, attack.Attacker);
 		}
 
@@ -1903,7 +1903,7 @@ namespace DOL.GS
 		/// <param name="duration"></param>
 		/// <param name="attackType"></param>
 		/// <param name="attacker"></param>
-		public virtual void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+		public virtual void StartInterruptTimer(int duration, eAttackType attackType, GameLiving attacker)
 		{
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
@@ -1912,23 +1912,10 @@ namespace DOL.GS
 				return;
 			}
 
-			//modify interrupt chance by mob con
-			double mod = GetConLevel(attacker);
-			double chance = BaseInterruptChance;
-			chance += mod * 15;
-			chance = Math.Max(1, chance);
-			chance = Math.Min(99, chance);
-			//if (attacker is GamePlayer) chance = 99;
-			
-			if (Util.Chance((int)chance))
-            {
-				//if (InterruptTime < GameLoop.GameLoopTime + duration)
-					InterruptTime = GameLoop.GameLoopTime + duration;
-			}
+			InterruptTime = GameLoop.GameLoopTime + duration;
 
 			if (castingComponent?.spellHandler != null)
-				/*CurrentSpellHandler*/
-				castingComponent?.spellHandler.CasterIsAttacked(attacker);
+				castingComponent.spellHandler.CasterIsAttacked(attacker);
 			
 			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
 				CheckRangedAttackInterrupt(attacker, attackType);
