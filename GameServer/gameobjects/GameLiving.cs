@@ -1912,12 +1912,16 @@ namespace DOL.GS
 				return;
 			}
 
+			bool interrupt = InterruptChance(attacker);
+
+			if (!interrupt)
+				return;
+
 			InterruptTime = GameLoop.GameLoopTime + duration;
 
 			if (castingComponent?.spellHandler != null)
 				castingComponent.spellHandler.CasterIsAttacked(attacker);
-			
-			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
+			else if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				CheckRangedAttackInterrupt(attacker, attackType);
 		}
 
@@ -1979,12 +1983,7 @@ namespace DOL.GS
 			get { return ServerProperties.Properties.SPELL_INTERRUPT_AGAIN; }
 		}
 
-		/// <summary>
-		/// Does an attacker interrupt this livings cast?
-		/// </summary>
-		/// <param name="attacker"></param>
-		/// <returns></returns>
-		public virtual bool ChanceSpellInterrupt(GameLiving attacker)
+		public virtual bool InterruptChance(GameLiving attacker)
 		{
 			double chance;
 
@@ -2023,19 +2022,8 @@ namespace DOL.GS
 					return false;
 			}
 
-			double mod = GetConLevel(attacker);
-			double interruptChance = BaseInterruptChance;
-			interruptChance += mod * 10;
-			interruptChance = Math.Max(1, interruptChance);
-			interruptChance = Math.Min(99, interruptChance);
-
-			if (Util.Chance((int)interruptChance))
-			{
-				attackComponent.StopAttack();
-				return true;
-			}
-
-			return false;
+			attackComponent.StopAttack();
+			return true;
 		}
 
 		///// <summary>

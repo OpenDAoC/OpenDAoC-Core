@@ -690,16 +690,9 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// casting sequence has a chance for interrupt through attack from enemy
-		/// the final decision and the interrupt is done here
-		/// TODO: con level dependend
-		/// </summary>
-		/// <param name="attacker">attacker that interrupts the cast sequence</param>
-		/// <returns>true if casting was interrupted</returns>
 		public virtual bool CasterIsAttacked(GameLiving attacker)
 		{
-			//[StephenxPimentel] Check if the necro has MoC effect before interrupting.
+			// [StephenxPimentel] Check if the necro has MoC effect before interrupting.
 			if (Caster is NecromancerPet necroPet && necroPet.Owner is GamePlayer necroOwner)
             {
 				if (necroOwner.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
@@ -714,25 +707,22 @@ namespace DOL.GS.Spells
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
 				return false;
 
-			// Only interrupt if we're under 50% of the way through the cast
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * .5))
+			// Only interrupt if we're under 50% of the way through the cast.
+			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
 			{
-				if (Caster.ChanceSpellInterrupt(attacker))
+				if (Caster is GamePet petCaster && petCaster.Owner is GamePlayer casterOwner)
 				{
-					if (Caster is GamePet petCaster && petCaster.Owner is GamePlayer casterOwner)
-					{
-						casterOwner.LastInterruptMessage = $"Your {Caster.Name} was attacked by {attacker.Name} and their spell was interrupted!";
-						MessageToLiving(casterOwner, casterOwner.LastInterruptMessage, eChatType.CT_SpellResisted);
-					}
-					else if (Caster is GamePlayer playerCaster)
-					{
-						playerCaster.LastInterruptMessage = $"{attacker.GetName(0, true)} attacks you and your spell is interrupted!";
-						MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
-					}
-												
-					InterruptCasting(); // Always interrupt at the moment
-					return true;
+					casterOwner.LastInterruptMessage = $"Your {Caster.Name} was attacked by {attacker.Name} and their spell was interrupted!";
+					MessageToLiving(casterOwner, casterOwner.LastInterruptMessage, eChatType.CT_SpellResisted);
 				}
+				else if (Caster is GamePlayer playerCaster)
+				{
+					playerCaster.LastInterruptMessage = $"{attacker.GetName(0, true)} attacks you and your spell is interrupted!";
+					MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
+				}
+												
+				InterruptCasting(); // Always interrupt at the moment.
+				return true;
 			}
 
 			return false;

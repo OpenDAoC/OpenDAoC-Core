@@ -4555,7 +4555,6 @@ namespace DOL.GS
 
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
-			// Switch to melee if the NPC is interrupted and below a certain amount of health.
 			if (interrupted)
 				attackComponent.attackAction.OnAimInterrupt();
 

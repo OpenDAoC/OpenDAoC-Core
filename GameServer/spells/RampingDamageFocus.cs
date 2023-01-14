@@ -119,13 +119,10 @@ namespace DOL.GS.Spells
            
 			if (IsCasting && Stage < 2)
 			{
-				if (Caster.ChanceSpellInterrupt(attacker))
-				{
-					Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
-					MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
-					InterruptCasting(); // always interrupt at the moment
-					return true;
-				}
+				Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
+				MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
+				InterruptCasting(); // always interrupt at the moment
+				return true;
 			}
 			return false;
 		}
