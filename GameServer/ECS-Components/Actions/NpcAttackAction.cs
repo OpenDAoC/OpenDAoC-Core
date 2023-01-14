@@ -5,6 +5,7 @@ namespace DOL.GS
     public class NpcAttackAction : AttackAction
     {
         // Check interval (upper bound) in ms of entities around this NPC when its main target is out of range. Used to attack other entities on its path.
+		private const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
         private const int NPC_VICINITY_CHECK_DELAY = 1000;
         private GameNPC _npcOwner;
         // Next check for NPCs in attack range to hit while on the way to main target.
@@ -13,6 +14,12 @@ namespace DOL.GS
         public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
+        }
+
+        public override void OnAimInterrupt()
+        {
+            if (_npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
+				_npcOwner.SwitchToMelee(_target);
         }
 
         protected override bool PrepareMeleeAttack()

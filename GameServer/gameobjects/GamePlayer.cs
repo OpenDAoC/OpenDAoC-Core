@@ -7611,22 +7611,14 @@ namespace DOL.GS
         /// <param name="attacker">the attacker that is interrupting</param>
         /// <param name="attackType">The attack type</param>
         /// <returns>true if interrupted successfully</returns>
-        protected override bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
+        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
         {
-            if (base.OnInterruptTick(attacker, attackType))
+            if (base.CheckRangedAttackInterrupt(attacker, attackType))
             {
-                if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                {
-                    string attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Type.Shot");
-                    if (attackComponent.AttackWeapon != null && attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown)
-                        attackTypeMsg = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Type.Throw");
-                    if (attacker is GameNPC)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, Client.Account.Language, (attacker as GameNPC)), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    else
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                }
+                attackComponent.attackAction.OnAimInterrupt();
                 return true;
             }
+
             return false;
         }
 

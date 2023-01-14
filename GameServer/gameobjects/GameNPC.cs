@@ -1068,10 +1068,6 @@ namespace DOL.GS
 		/// Minimum allowed pet follow distance
 		/// </summary>
 		protected const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
-		/// <summary>
-		/// At what health percent will npc give up range attack and rush the attacker
-		/// </summary>
-		protected const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
 
 		private string m_pathID;
 		public string PathID
@@ -4551,17 +4547,19 @@ namespace DOL.GS
 			}
 		}
 
-		protected override bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
+		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
 		{
 			// Immobile NPCs can only be interrupted from close range attacks.
 			if (MaxSpeedBase == 0 && attackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell && !IsWithinRadius(attacker, 150))
 				return false;
 
-			// Switch to melee if the NPC is hurt.
-			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
-				SwitchToMelee(attacker);
+			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
-			return base.OnInterruptTick(attacker, attackType);
+			// Switch to melee if the NPC is interrupted and below a certain amount of health.
+			if (interrupted)
+				attackComponent.attackAction.OnAimInterrupt();
+
+			return interrupted;
 		}
 
 		/// <summary>

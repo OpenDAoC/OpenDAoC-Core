@@ -1931,7 +1931,7 @@ namespace DOL.GS
 				castingComponent?.spellHandler.CasterIsAttacked(attacker);
 			
 			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance && attacker != this)
-				OnInterruptTick(attacker, attackType);
+				CheckRangedAttackInterrupt(attacker, attackType);
 		}
 
 		protected long m_interruptTime = 0;
@@ -1999,53 +1999,50 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool ChanceSpellInterrupt(GameLiving attacker)
 		{
-			double mod = GetConLevel(attacker);
-			double chance = BaseInterruptChance;
-			chance += mod * 10;
-			chance = Math.Max(1, chance);
-			chance = Math.Min(99, chance);
-			if (attacker is GamePlayer) chance = 99;
+			double chance;
+
+			if (attacker is GamePlayer)
+				chance = 99;
+			else
+			{
+				double mod = GetConLevel(attacker);
+				chance = BaseInterruptChance;
+				chance += mod * 10;
+				chance = Math.Max(1, chance);
+				chance = Math.Min(99, chance);
+			}
+
 			return Util.Chance((int)chance);
 		}
 
-		/// <summary>
-		/// Does needed interrupt checks and interrupts this living
-		/// </summary>
-		/// <param name="attacker">the attacker that is interrupting</param>
-		/// <param name="attackType">the attack type</param>
-		/// <returns>true if interrupted successfully</returns>
-		protected virtual bool OnInterruptTick(GameLiving attacker, AttackData.eAttackType attackType)
+		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
 		{
-			if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
 			{
-				if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
-				{
-					if (attackType != AttackData.eAttackType.MeleeOneHand
-					    && attackType != AttackData.eAttackType.MeleeTwoHand
-					    && attackType != AttackData.eAttackType.MeleeDualWield)
-						return false;
-				}
-				long elapsedTime = GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
-				long halfwayPoint = this.attackComponent.AttackSpeed(this.attackComponent.AttackWeapon) / 2;
-				
-				if (rangeAttackComponent.RangedAttackState != eRangedAttackState.ReadyToFire &&
-				    rangeAttackComponent.RangedAttackState != eRangedAttackState.None &&
-				    elapsedTime > halfwayPoint)
-				{
+				if (attackType is not eAttackType.MeleeOneHand
+                    and not eAttackType.MeleeTwoHand
+                    and not eAttackType.MeleeDualWield)
 					return false;
-				}
-
-				double mod = GetConLevel(attacker);
-				double interruptChance = BaseInterruptChance;
-				interruptChance += mod * 10;
-				interruptChance = Math.Max(1, interruptChance);
-				interruptChance = Math.Min(99, interruptChance);
-				if (Util.Chance((int)interruptChance))
-				{
-					attackComponent.StopAttack();
-					return true;
-				}
 			}
+
+			long elapsedTime = GameLoop.GameLoopTime - TempProperties.getProperty<long>(RangeAttackComponent.RANGE_ATTACK_HOLD_START);
+			long halfwayPoint = attackComponent.AttackSpeed(attackComponent.AttackWeapon) / 2;
+				
+			if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
+				return false;
+
+			double mod = GetConLevel(attacker);
+			double interruptChance = BaseInterruptChance;
+			interruptChance += mod * 10;
+			interruptChance = Math.Max(1, interruptChance);
+			interruptChance = Math.Min(99, interruptChance);
+
+			if (Util.Chance((int)interruptChance))
+			{
+				attackComponent.StopAttack();
+				return true;
+			}
+
 			return false;
 		}
 
