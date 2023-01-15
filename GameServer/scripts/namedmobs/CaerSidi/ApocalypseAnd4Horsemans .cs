@@ -1915,8 +1915,8 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
                 //cleri,merc,arms,infi,scout
-                if (truc.CharacterClass.ID == 6 || (truc.CharacterClass.ID == 11 && truc.EquippedMainWeapon.Object_Type == 5) || (truc.CharacterClass.ID == 2 && truc.EquippedMainWeapon.Object_Type == 10) 
-                    || (truc.CharacterClass.ID == 9 && truc.EquippedMainWeapon.Object_Type == 10) || (truc.CharacterClass.ID == 3 && truc.EquippedMainWeapon.Object_Type == 9))
+                if (truc.CharacterClass.ID == 6 || (truc.CharacterClass.ID == 11 && truc.ActiveWeapon.Object_Type == 5) || (truc.CharacterClass.ID == 2 && truc.ActiveWeapon.Object_Type == 10) 
+                    || (truc.CharacterClass.ID == 9 && truc.ActiveWeapon.Object_Type == 10) || (truc.CharacterClass.ID == 3 && truc.ActiveWeapon.Object_Type == 9))
                 {
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }

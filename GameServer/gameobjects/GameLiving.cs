@@ -831,23 +831,39 @@ namespace DOL.GS
 			return (int)((Level + 1) * bs * (1 + (GetWeaponStat(weapon) - 50) * 0.005) * Level * 2 / 50);
 		}
 
+		private (InventoryItem item, long time) m_cachedActiveWeapon;
+
         /// <summary>
-        /// Returns the currently equipped weapon, null=natural
+        /// Returns the currently active weapon, null=natural
         /// </summary>
-        public virtual InventoryItem EquippedMainWeapon
+        public virtual InventoryItem ActiveWeapon
         {
             get
             {
+				// We cache the weapon since 'ActiveWeapon' can be called multiple times per tick and 'GameInventory.GetItem' is potentially expensive.
+				if (m_cachedActiveWeapon.time >= GameLoop.GameLoopTime)
+					return m_cachedActiveWeapon.item;
+
+				m_cachedActiveWeapon.item = null;
+				m_cachedActiveWeapon.time = GameLoop.GameLoopTime;
+
                 if (Inventory != null)
                 {
                     switch (ActiveWeaponSlot)
                     {
-                        case eActiveWeaponSlot.Standard: return Inventory.GetItem(eInventorySlot.RightHandWeapon);
-                        case eActiveWeaponSlot.TwoHanded: return Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-                        case eActiveWeaponSlot.Distance: return Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                        case eActiveWeaponSlot.Standard:
+							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+							break;
+                        case eActiveWeaponSlot.TwoHanded:
+							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+							break;
+                        case eActiveWeaponSlot.Distance:
+							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+							break;
                     }
                 }
-                return null;
+
+                return m_cachedActiveWeapon.item;
             }
         }
 
@@ -2016,7 +2032,7 @@ namespace DOL.GS
 			if (rangeAttackHoldStart > 0)
 			{
 				long elapsedTime = GameLoop.GameLoopTime - rangeAttackHoldStart;
-				long halfwayPoint = attackComponent.AttackSpeed(attackComponent.AttackWeapon) / 2;
+				long halfwayPoint = attackComponent.AttackSpeed(ActiveWeapon) / 2;
 				
 				if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
 					return false;
@@ -3673,18 +3689,18 @@ namespace DOL.GS
 					//BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry
 					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
 					//They still need an active weapon to parry with BladeBarrier
-					if( BladeBarrier != null && (attackComponent.AttackWeapon != null ) )
+					if( BladeBarrier != null && (ActiveWeapon != null ) )
 					{
 						parryChance = 0.90;
 					}
 					else if( IsObjectInFront( ad.Attacker, 120 ) )
 					{
-						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (attackComponent.AttackWeapon != null 
-							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.RecurvedBow
-								&& attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Longbow
-							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.CompositeBow
-							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow
-							   && attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Fired))
+						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (ActiveWeapon != null 
+							   && ActiveWeapon.Object_Type != (int)eObjectType.RecurvedBow
+								&& ActiveWeapon.Object_Type != (int)eObjectType.Longbow
+							   && ActiveWeapon.Object_Type != (int)eObjectType.CompositeBow
+							   && ActiveWeapon.Object_Type != (int)eObjectType.Crossbow
+							   && ActiveWeapon.Object_Type != (int)eObjectType.Fired))
 							parryChance = GetModified( eProperty.ParryChance );
 					}
 				}
@@ -3770,7 +3786,7 @@ namespace DOL.GS
 			if ( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
 			{
 				lefthand = Inventory.GetItem( eInventorySlot.LeftHandWeapon );
-				if( lefthand != null && ( player.attackComponent.AttackWeapon == null || player.attackComponent.AttackWeapon.Item_Type == Slot.RIGHTHAND || player.attackComponent.AttackWeapon.Item_Type == Slot.LEFTHAND ) )
+				if( lefthand != null && ( player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND ) )
 				{
 					if (lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront(ad.Attacker, 120))
 						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01 * lefthand.Condition / lefthand.MaxCondition;

@@ -130,7 +130,7 @@ namespace DOL.GS
                     playerOwner.TempProperties.setProperty(RANGED_ATTACK_START, attackStart);
                 }
 
-                if ((GameLoop.GameLoopTime - attackStart) > 15000 && playerOwner.attackComponent.AttackWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - attackStart) > 15000 && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop;
@@ -156,7 +156,7 @@ namespace DOL.GS
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     else if (!playerOwner.IsObjectInFront(target, 90))
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.NotInView", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    else if (UpdateAmmo(playerOwner.attackComponent.AttackWeapon) == null)
+                    else if (UpdateAmmo(playerOwner.ActiveWeapon) == null)
                         // Another check for ammo just before firing.
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else if (!m_isAmmoCompatible)

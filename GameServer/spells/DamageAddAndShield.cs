@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
 
 			int spread = m_minDamageSpread;
 			spread += Util.Random(50);
-			double damage = Spell.Damage * target.AttackSpeed(target.EquippedMainWeapon) * spread * 0.00001;
+			double damage = Spell.Damage * target.AttackSpeed(target.ActiveWeapon) * spread * 0.00001;
 			double damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
 
             if (!Spell.IsFocus)

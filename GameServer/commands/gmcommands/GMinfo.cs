@@ -402,7 +402,7 @@ namespace DOL.GS.Commands
 					// info.Add(" ");
 					
 					info.Add("MELEE SPEED INFORMATION");
-					info.Add("MeleeSpeed: " + target.attackComponent.AttackSpeed(target.EquippedMainWeapon));
+					info.Add("MeleeSpeed: " + target.attackComponent.AttackSpeed(target.ActiveWeapon));
 					info.Add(" ");
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);

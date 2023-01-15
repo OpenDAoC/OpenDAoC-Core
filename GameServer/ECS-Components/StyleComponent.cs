@@ -113,7 +113,7 @@ namespace DOL.GS
             if (NextCombatStyle == null) return null;
             if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
                 weapon = owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            else weapon = owner.attackComponent.AttackWeapon;
+            else weapon = owner.ActiveWeapon;
 
             if (StyleProcessor.CanUseStyle(owner, NextCombatStyle, weapon))
                 return NextCombatStyle;
@@ -139,12 +139,12 @@ namespace DOL.GS
             // 0.4% of the time.
             if (p.StylesChain != null && p.StylesChain.Count > 0)
                 foreach (Style s in p.StylesChain)
-                    if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon))
+                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
                         return s;
 
             if (p.StylesDefensive != null && p.StylesDefensive.Count > 0)
                 foreach (Style s in p.StylesDefensive)
-                    if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon)
+                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon)
                         && p.CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
                         return s;
 
@@ -161,21 +161,21 @@ namespace DOL.GS
                 if (p.StylesBack != null && p.StylesBack.Count > 0)
                 {
                     Style s = p.StylesBack[Util.Random(0, p.StylesBack.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon))
+                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
                         return s;
                 }
 
                 if (p.StylesSide != null && p.StylesSide.Count > 0)
                 {
                     Style s = p.StylesSide[Util.Random(0, p.StylesSide.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon))
+                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
                         return s;
                 }
 
                 if (p.StylesFront != null && p.StylesFront.Count > 0)
                 {
                     Style s = p.StylesFront[Util.Random(0, p.StylesFront.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.attackComponent.AttackWeapon))
+                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
                         return s;
                 }
 

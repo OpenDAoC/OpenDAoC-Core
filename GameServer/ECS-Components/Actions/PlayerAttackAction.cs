@@ -32,7 +32,7 @@ namespace DOL.GS
             string attackTypeMsg;
             GameObject attacker = _playerOwner.attackComponent.Attackers.Last();
 
-            if (_playerOwner.attackComponent.AttackWeapon != null && _playerOwner.attackComponent.AttackWeapon.Object_Type == (int)eObjectType.Thrown)
+            if (_playerOwner.ActiveWeapon != null && _playerOwner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown)
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Throw");
             else
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Shot");

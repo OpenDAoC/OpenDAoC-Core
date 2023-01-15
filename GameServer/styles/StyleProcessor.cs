@@ -226,7 +226,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				InventoryItem weapon = (style.WeaponTypeRequirement == (int)eObjectType.Shield) ? living.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : living.attackComponent.AttackWeapon;
+				InventoryItem weapon = (style.WeaponTypeRequirement == (int)eObjectType.Shield) ? living.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : living.ActiveWeapon;
 				//				if (weapon == null) return;	// no weapon = no style
 				if (!CheckWeaponType(style, living, weapon))
 				{
@@ -424,9 +424,9 @@ namespace DOL.GS.Styles
 
 					if (staticGrowth)
 					{
-						//if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
+						//if (living.ActiveWeapon.Item_Type == Slot.TWOHAND)
 						//{
-						//	styleGrowth = styleGrowth * 1.25 + living.WeaponDamage(living.attackComponent.AttackWeapon) * Math.Max(0,living.attackComponent.AttackWeapon.SPD_ABS - 21) * 10 / 66d;
+						//	styleGrowth = styleGrowth * 1.25 + living.WeaponDamage(living.ActiveWeapon) * Math.Max(0,living.ActiveWeapon.SPD_ABS - 21) * 10 / 66d;
 						//}
 						//attackData.StyleDamage = (int)(absorbRatio * styleGrowth * ServerProperties.Properties.CS_OPENING_EFFECTIVENESS);
 
@@ -447,7 +447,7 @@ namespace DOL.GS.Styles
 								}
 								break;
 							case 343: //Perforate Artery
-								if (living.attackComponent.AttackWeapon.Item_Type == Slot.TWOHAND)
+								if (living.ActiveWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
 									attackData.StyleDamage = (int)((Math.Min(75, spec * 1.5) +  spec * 12));
@@ -629,7 +629,7 @@ namespace DOL.GS.Styles
 				case Style.SpecialWeaponType.DualWield:
 					// both weapons are needed to use style,
 					// shield is not a weapon here
-					InventoryItem rightHand = player.attackComponent.AttackWeapon;
+					InventoryItem rightHand = player.ActiveWeapon;
 					InventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
 					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
@@ -655,7 +655,7 @@ namespace DOL.GS.Styles
 
 					// can't use shield styles if no active weapon
 					if (style.WeaponTypeRequirement == (int)eObjectType.Shield
-						&& (player.attackComponent.AttackWeapon == null || (player.attackComponent.AttackWeapon.Item_Type != Slot.RIGHTHAND && player.attackComponent.AttackWeapon.Item_Type != Slot.LEFTHAND)))
+						&& (player.ActiveWeapon == null || (player.ActiveWeapon.Item_Type != Slot.RIGHTHAND && player.ActiveWeapon.Item_Type != Slot.LEFTHAND)))
 						return false;
 
 					// weapon type check

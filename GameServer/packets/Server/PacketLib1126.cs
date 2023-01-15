@@ -341,7 +341,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0x00); //unk
 
 					// weapondamage
-					var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.EquippedMainWeapon) * 100.0);
+					var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.ActiveWeapon) * 100.0);
 					pak.WriteByte((byte)(wd / 256));
 					pak.WriteByte(0x00);
 					pak.WriteByte((byte)(wd % 256));

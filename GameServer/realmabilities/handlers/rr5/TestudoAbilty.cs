@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 				return;
 			if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				return;
-			if (living.EquippedMainWeapon.Hand == 1)
+			if (living.ActiveWeapon.Hand == 1)
 				return;
 
 			GamePlayer player = living as GamePlayer;

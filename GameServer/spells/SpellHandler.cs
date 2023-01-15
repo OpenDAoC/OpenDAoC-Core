@@ -329,7 +329,7 @@ namespace DOL.GS.Spells
 		/// <returns>true if right instrument</returns>
 		protected bool CheckInstrument()
 		{
-			InventoryItem instrument = Caster.EquippedMainWeapon;
+			InventoryItem instrument = Caster.ActiveWeapon;
 			// From patch 1.97:  Flutes, Lutes, and Drums will now be able to play any song type, and will no longer be limited to specific songs.
 			if (instrument == null || instrument.Object_Type != (int)eObjectType.Instrument ) // || (instrument.DPS_AF != 4 && instrument.DPS_AF != m_spell.InstrumentRequirement))
 			{
@@ -2206,7 +2206,7 @@ namespace DOL.GS.Spells
 		public virtual void FinishSpellCast(GameLiving target)
 		{
 			GamePlayer playerCaster = Caster as GamePlayer;
-			GameInventoryItem playerWeapon = playerCaster?.EquippedMainWeapon as GameInventoryItem;
+			GameInventoryItem playerWeapon = playerCaster.ActiveWeapon as GameInventoryItem;
 
 			if (playerCaster != null)
 			{
@@ -3112,7 +3112,7 @@ namespace DOL.GS.Spells
 			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
 			if (Spell.InstrumentRequirement != 0)
 			{
-				InventoryItem instrument = Caster.EquippedMainWeapon;
+				InventoryItem instrument = Caster.ActiveWeapon;
 				if (instrument != null)
 				{
 					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double)Caster.Level); // up to 200% duration for songs
@@ -4253,9 +4253,9 @@ namespace DOL.GS.Spells
 				}
 				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
-					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.EquippedMainWeapon)) /
-					                           (1 + .005 * player.GetWeaponStat(player.EquippedMainWeapon));
-					spellDamage *= (player.GetWeaponSkill(player.EquippedMainWeapon) * weaponskillScalar /3 + 200) / 200;
+					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.ActiveWeapon)) /
+					                           (1 + .005 * player.GetWeaponStat(player.ActiveWeapon));
+					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponskillScalar /3 + 200) / 200;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
 				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect

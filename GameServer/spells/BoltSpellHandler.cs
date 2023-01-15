@@ -223,7 +223,7 @@ namespace DOL.GS.Spells
 				{ // mobs left out yet
 					GamePlayer player = (GamePlayer)target;
 					InventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-					if (lefthand!=null && (player.EquippedMainWeapon==null || player.EquippedMainWeapon.Item_Type==Slot.RIGHTHAND || player.EquippedMainWeapon.Item_Type==Slot.LEFTHAND)) 
+					if (lefthand!=null && (player.ActiveWeapon==null || player.ActiveWeapon.Item_Type==Slot.RIGHTHAND || player.ActiveWeapon.Item_Type==Slot.LEFTHAND)) 
 					{
 						if (target.IsObjectInFront(caster, 180) && lefthand.Object_Type == (int)eObjectType.Shield) 
 						{

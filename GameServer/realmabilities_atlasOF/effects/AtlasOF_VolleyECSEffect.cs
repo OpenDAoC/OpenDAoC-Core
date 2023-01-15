@@ -62,7 +62,7 @@ namespace DOL.GS.Effects
                     m_player.TempProperties.removeProperty("volley_readyTimerAgain");
                 }
                 #endregion
-                InventoryItem attackWeapon = m_player.attackComponent.AttackWeapon;//define user weapon
+                InventoryItem attackWeapon = m_player.ActiveWeapon;//define user weapon
                 byte HoldAttack = 255;//0x1E;//30 seconds
                 int speed = attackWeapon.SPD_ABS * 100;//weapon speed used to timer
                 ECSGameTimer readyTimer = new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(ReadyToFire), speed);//timer to prepare bow
@@ -71,7 +71,7 @@ namespace DOL.GS.Effects
                 m_player.TempProperties.setProperty("volley_tiredTimer", tiredTimer);              
                 m_player.Out.SendMessage("You prepare to unleash a volley of arrows!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 m_player.Out.SendMessage(String.Format("You prepare to fire. ({0}s to fire)", (double)speed/1000), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                int model = (m_player.attackComponent.AttackWeapon == null ? 0 : m_player.attackComponent.AttackWeapon.Model);
+                int model = (m_player.ActiveWeapon == null ? 0 : m_player.ActiveWeapon.Model);
 
                 if (!BowPreparation)
                 {
@@ -189,7 +189,7 @@ namespace DOL.GS.Effects
         private void PrepareBowAgain()//Bow prepare again incase player hold too long volley
         {
             ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
-            InventoryItem attackWeapon = m_player.attackComponent.AttackWeapon;
+            InventoryItem attackWeapon = m_player.ActiveWeapon;
             byte HoldAttack = 0x1E;//30 seconds
             int speed = attackWeapon.SPD_ABS * 100;//weapon speed used to timer
             #region Properties and Timers for each shot
@@ -224,7 +224,7 @@ namespace DOL.GS.Effects
             }
             #endregion
             m_player.Out.SendMessage(String.Format("You prepare to fire. ({0}s to fire)", (double)speed / 1000), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            int model = (m_player.attackComponent.AttackWeapon == null ? 0 : m_player.attackComponent.AttackWeapon.Model);
+            int model = (m_player.ActiveWeapon == null ? 0 : m_player.ActiveWeapon.Model);
 
             //m_player.attackComponent.LivingStopAttack();    //stop all attacks
             //m_player.StopCurrentSpellcast();                //stop all casts
@@ -437,7 +437,7 @@ namespace DOL.GS.Effects
                 Cancel(false);
             else
             {
-                InventoryItem ammo = player.rangeAttackComponent.UpdateAmmo(player.attackComponent.AttackWeapon);
+                InventoryItem ammo = player.rangeAttackComponent.UpdateAmmo(player.ActiveWeapon);
                 sol = new Point3D(player.GroundTarget.X, player.GroundTarget.Y, player.GroundTarget.Z);
 
                 //m_player.attackComponent.LivingStopAttack();
@@ -478,7 +478,7 @@ namespace DOL.GS.Effects
                  }*/
                 if (!AbortShot)//make sure AbortShot not active
                 {
-                    int model = (m_player.attackComponent.AttackWeapon == null ? 0 : m_player.attackComponent.AttackWeapon.Model);
+                    int model = (m_player.ActiveWeapon == null ? 0 : m_player.ActiveWeapon.Model);
                     foreach (GamePlayer players in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         if (players == null) continue;
@@ -497,7 +497,7 @@ namespace DOL.GS.Effects
         #region DamageTarget
         private void DamageTarget(GameLiving target, GamePlayer archer)
         {
-            InventoryItem attackWeapon = archer.attackComponent.AttackWeapon;
+            InventoryItem attackWeapon = archer.ActiveWeapon;
             eDamageType damagetype = archer.attackComponent.AttackDamageType(attackWeapon);
             int modifier = archer.RealmLevel;
             double effectivenes = 1;
@@ -920,7 +920,7 @@ namespace DOL.GS.Effects
                 decNbShoot();
 
                 InventoryItem ammo = player.rangeAttackComponent.Ammo;
-                InventoryItem attackWeapon = player.EquippedMainWeapon;
+                InventoryItem attackWeapon = player.ActiveWeapon;
                 eDamageType damagetype = player.attackComponent.AttackDamageType(attackWeapon);
                 int speed = player.AttackSpeed(attackWeapon);
                 byte attackSpeed = (byte)(speed / 1000);
@@ -976,7 +976,7 @@ namespace DOL.GS.Effects
                 targets.Clear();
                 CanLaunch = false;
                 IsReadyToFire = false;
-                int model = (player.attackComponent.AttackWeapon == null ? 0 : player.attackComponent.AttackWeapon.Model);
+                int model = (player.ActiveWeapon == null ? 0 : player.ActiveWeapon.Model);
 
                 if (!AbortShot)
                 {

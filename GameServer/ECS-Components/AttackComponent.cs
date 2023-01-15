@@ -93,10 +93,7 @@ namespace DOL.GS
             }
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-            {
                 EntityManager.RemoveComponent(typeof(AttackComponent), owner);
-                AttackWeapon = null;
-            }
         }
 
 
@@ -293,10 +290,11 @@ namespace DOL.GS
             {
                 if (owner is GamePlayer)
                 {
-                    if (AttackWeapon == null)
+                    InventoryItem weapon = owner.ActiveWeapon;
+
+                    if (weapon == null)
                         return 0;
 
-                    InventoryItem weapon = AttackWeapon;
                     var player = owner as GamePlayer;
                     GameLiving target = player.TargetObject as GameLiving;
 
@@ -648,11 +646,8 @@ namespace DOL.GS
         public void StartAttack(GameObject attackTarget)
         {
             EntityManager.AddComponent(typeof(AttackComponent), owner);
-            
-            AttackWeapon = owner.EquippedMainWeapon;
-            GamePlayer player = owner as GamePlayer;
 
-            if (player != null)
+            if (owner is GamePlayer player)
             {
                 if (player.CharacterClass.StartAttack(attackTarget) == false)
                 {
@@ -736,7 +731,9 @@ namespace DOL.GS
                     player.Sit(false);
                 }
 
-                if (AttackWeapon == null)
+                InventoryItem attackWeapon = owner.ActiveWeapon;
+
+                if (attackWeapon == null)
                 {
                     player.Out.SendMessage(
                         LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -745,7 +742,7 @@ namespace DOL.GS
                     return;
                 }
 
-                if (AttackWeapon.Object_Type == (int) eObjectType.Instrument)
+                if (attackWeapon.Object_Type == (int) eObjectType.Instrument)
                 {
                     player.Out.SendMessage(
                         LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CannotMelee"),
@@ -767,7 +764,7 @@ namespace DOL.GS
                     }
 
                     // Check arrows for ranged attack
-                    if (player.rangeAttackComponent.UpdateAmmo(AttackWeapon) == null)
+                    if (player.rangeAttackComponent.UpdateAmmo(attackWeapon) == null)
                     {
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -805,7 +802,7 @@ namespace DOL.GS
                     {
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredUse",
-                                AttackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                attackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
@@ -881,7 +878,7 @@ namespace DOL.GS
                     player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
 
                     string typeMsg = "shot";
-                    if (AttackWeapon.Object_Type == (int) eObjectType.Thrown)
+                    if (attackWeapon.Object_Type == (int) eObjectType.Thrown)
                         typeMsg = "throw";
 
                     string targetMsg = "";
@@ -895,7 +892,7 @@ namespace DOL.GS
                                 "GamePlayer.StartAttack.TargetOutOfRange");
                     }
 
-                    int speed = AttackSpeed(AttackWeapon) / 100;
+                    int speed = AttackSpeed(attackWeapon) / 100;
                     if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                         speed = Math.Max(15, speed / 2);
 
@@ -929,8 +926,9 @@ namespace DOL.GS
                 owner.CancelEngageEffect();
 
             AttackState = true;
+            InventoryItem attackWeapon = owner.ActiveWeapon;
 
-            int speed = AttackSpeed(AttackWeapon);
+            int speed = AttackSpeed(attackWeapon);
 
             if (speed <= 0)
                 return;
@@ -958,7 +956,7 @@ namespace DOL.GS
                     {
                         // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
                         foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.Out.SendCombatAnimation(owner, null, (ushort)(AttackWeapon != null ? AttackWeapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
+                            player.Out.SendCombatAnimation(owner, null, (ushort)(attackWeapon != null ? attackWeapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
                     }
 
                     attackAction.StartTime = owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, speed / 2) : speed;
@@ -1241,7 +1239,7 @@ namespace DOL.GS
                             int random;
                             IList extraTargets = new ArrayList();
                             IList listAvailableTargets = new ArrayList();
-                            InventoryItem attackWeapon = AttackWeapon;
+                            InventoryItem attackWeapon = owner.ActiveWeapon;
                             InventoryItem leftWeapon = (p.Inventory == null)
                                 ? null
                                 : p.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
@@ -2518,7 +2516,7 @@ namespace DOL.GS
                 {
                     // check player is wearing shield and NO two handed weapon
                     InventoryItem leftHand = guard.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                    InventoryItem rightHand = guard.GuardSource.attackComponent.AttackWeapon;
+                    InventoryItem rightHand = guard.GuardSource.ActiveWeapon;
                     if (((rightHand == null || rightHand.Hand != 1) && leftHand != null &&
                          leftHand.Object_Type == (int) eObjectType.Shield) || guard.GuardSource is GameNPC)
                     {
@@ -2617,7 +2615,7 @@ namespace DOL.GS
                 {
                     // check player is wearing shield and NO two handed weapon
                     InventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-                    InventoryItem rightHand = dashing.GuardSource.attackComponent.AttackWeapon;
+                    InventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
                     InventoryItem twoHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
                     if ((rightHand == null || rightHand.Hand != 1) && leftHand != null &&
                         leftHand.Object_Type == (int) eObjectType.Shield)
@@ -2989,9 +2987,9 @@ namespace DOL.GS
 
                     case eAttackResult.Parried:
                         resultByte = 1;
-                        if (target != null && target.attackComponent.AttackWeapon != null)
+                        if (target != null && target.ActiveWeapon != null)
                         {
-                            defendersWeapon = target.attackComponent.AttackWeapon.Model;
+                            defendersWeapon = target.ActiveWeapon.Model;
                         }
 
                         break;
@@ -3549,11 +3547,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Returns the weapon for this attack, null=natural
-        /// </summary>
-        public virtual InventoryItem AttackWeapon { get; private set; }
-
-        /// <summary>
         /// Whether the living is actually attacking something.
         /// </summary>
         public virtual bool IsAttacking
@@ -3628,7 +3621,7 @@ namespace DOL.GS
 
                 // HtH chance
                 specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
-                InventoryItem attackWeapon = AttackWeapon;
+                InventoryItem attackWeapon = owner.ActiveWeapon;
                 InventoryItem leftWeapon = (owner.Inventory == null)
                     ? null
                     : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);

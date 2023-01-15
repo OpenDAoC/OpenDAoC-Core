@@ -174,7 +174,7 @@ namespace DOL.GS
                     //    RealmAbilities.L3RAPropertyEnhancer ra = living.GetAbility<RealmAbilities.ReflexAttackAbility>();
                     //    if (ra != null && Util.Chance(ra.Amount))
                     //    {
-                    //        AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.attackComponent.AttackWeapon, null, 1, m_interruptDuration, false, true);
+                    //        AttackData ReflexAttackAD = living.attackComponent.LivingMakeAttack(owner, living.ActiveWeapon, null, 1, m_interruptDuration, false, true);
                     //        living.DealDamage(ReflexAttackAD);
                     //        living.SendAttackingCombatMessages(ReflexAttackAD);
                     //    }
@@ -371,7 +371,7 @@ namespace DOL.GS
                 case eAttackResult.Blocked:
                 case eAttackResult.Evaded:
                 case eAttackResult.Parried:
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(attacker, target.attackComponent.AttackWeapon, null, 1, interruptDuration, false, true);
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(attacker, target.ActiveWeapon, null, 1, interruptDuration, false, true);
                     target.DealDamage(ReflexAttackAD);
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
