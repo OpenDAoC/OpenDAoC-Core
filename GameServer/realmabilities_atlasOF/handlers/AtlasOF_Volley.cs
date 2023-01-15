@@ -168,8 +168,8 @@ namespace DOL.GS.RealmAbilities
                     }
                 }
             }
+
             new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(m_player, 0, 1));
-            //DisableSkill(living);
 		}
         public override void AddEffectsInfo(IList<string> list)
         {
