@@ -196,7 +196,7 @@ namespace DOL.GS
 
             _interval = _attackComponent.AttackSpeed(_weapon);
             _interruptDuration = _interval;
-            _ticksToTarget = _owner.GetDistanceTo(_target) * 1000 / 1800; // 1800 units per second. Live value is unknown, but DoL had 1500.
+            _ticksToTarget = _owner.GetDistanceTo(_target) * 1000 / RangeAttackComponent.PROJECTILE_FLIGHT_SPEED;
             int model = _weapon == null ? 0 : _weapon.Model;
             byte flightDuration = (byte)(_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
             bool cancelPrepareAnimation = _owner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown;

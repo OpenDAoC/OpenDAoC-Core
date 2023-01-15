@@ -18,6 +18,7 @@ namespace DOL.GS
         internal const string RANGED_ATTACK_START = "RangedAttackStart";
         public const int RANGE_ATTACK_ENDURANCE = 5;
         public const int CRITICAL_SHOT_ENDURANCE = 10;
+        public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
         protected eRangedAttackState m_rangedAttackState;
         protected eRangedAttackType m_rangedAttackType;
         protected eActiveQuiverSlot m_activeQuiverSlot;
