@@ -246,7 +246,7 @@ namespace DOL.GS
                     case eObjectType.CompositeBow:
                     case eObjectType.RecurvedBow:
                     case eObjectType.Fired:
-                        InventoryItem ammo = p.rangeAttackComponent?.Ammo;
+                        InventoryItem ammo = p.rangeAttackComponent.Ammo;
                         if (ammo == null)
                             return (eDamageType) weapon.Type_Damage;
                         return (eDamageType) ammo.Type_Damage;
@@ -327,7 +327,7 @@ namespace DOL.GS
                         }
 
                         range = Math.Max(32, range * player.GetModified(eProperty.ArcheryRange) * 0.01);
-                        InventoryItem ammo = player.rangeAttackComponent?.Ammo;
+                        InventoryItem ammo = player.rangeAttackComponent.Ammo;
 
                         if (ammo != null)
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
@@ -557,9 +557,11 @@ namespace DOL.GS
                 if (weapon.Item_Type == Slot.RANGED)
                 {
                     //ammo damage bonus
-                    if (p.rangeAttackComponent?.Ammo != null)
+                    InventoryItem ammo = p.rangeAttackComponent.Ammo;
+
+                    if (ammo != null)
                     {
-                        switch ((p.rangeAttackComponent?.Ammo.SPD_ABS) & 0x3)
+                        switch ((ammo.SPD_ABS) & 0x3)
                         {
                             case 0:
                                 damage *= 0.85;
@@ -765,7 +767,7 @@ namespace DOL.GS
                     }
 
                     // Check arrows for ranged attack
-                    if (player.rangeAttackComponent?.Ammo == null)
+                    if (player.rangeAttackComponent.UpdateAmmo(AttackWeapon) == null)
                     {
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -774,7 +776,7 @@ namespace DOL.GS
                     }
 
                     // Check if selected ammo is compatible for ranged attack
-                    if (!player.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
+                    if (!player.rangeAttackComponent.IsAmmoCompatible)
                     {
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -2773,6 +2775,7 @@ namespace DOL.GS
             if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 InventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
+
                 if (ammo != null)
                     switch ((ammo.SPD_ABS >> 4) & 0x3)
                     {
@@ -2780,7 +2783,9 @@ namespace DOL.GS
                         case 0:
                             missrate += (int) Math.Round(missrate * .15);
                             break; // Rough
-                        //						case 1: missrate -= 0; break;
+                        //case 1:
+                        //  missrate -= 0;
+                        //  break;
                         case 2:
                             missrate -= (int) Math.Round(missrate * .15);
                             break; // doesn't exist (?)
@@ -3458,16 +3463,18 @@ namespace DOL.GS
                             // http://home.comcast.net/~shadowspawn3/bowdmg.html
                             //ammo damage bonus
                             double ammoDamageBonus = 1;
-                            if (p.rangeAttackComponent.Ammo != null)
+                            InventoryItem ammo = p.rangeAttackComponent.Ammo;
+
+                            if (ammo != null)
                             {
-                                switch ((p.rangeAttackComponent.Ammo.SPD_ABS) & 0x3)
+                                switch ((ammo.SPD_ABS) & 0x3)
                                 {
                                     case 0:
                                         ammoDamageBonus = 0.85;
-                                        break; //Blunt       (light) -15%
+                                        break; //Blunt (light) -15%
                                     case 1:
                                         ammoDamageBonus = 1;
-                                        break; //Bodkin     (medium)   0%
+                                        break; //Bodkin (medium) 0%
                                     case 2:
                                         ammoDamageBonus = 1.15;
                                         break; //doesn't exist on live

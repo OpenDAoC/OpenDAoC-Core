@@ -15,7 +15,7 @@ namespace DOL.GS
             m_owner = owner;
         }
 
-        internal const string RANGED_ATTACK_START = " RangedAttackStart";
+        internal const string RANGED_ATTACK_START = "RangedAttackStart";
         public const int RANGE_ATTACK_ENDURANCE = 5;
         public const int CRITICAL_SHOT_ENDURANCE = 10;
         protected eRangedAttackState m_rangedAttackState;
@@ -23,6 +23,8 @@ namespace DOL.GS
         protected eActiveQuiverSlot m_activeQuiverSlot;
         protected WeakReference m_rangeAttackAmmo = new WeakRef(null);
         protected WeakReference m_rangeAttackTarget = new WeakRef(null);
+        protected InventoryItem m_ammo;
+        protected bool m_isAmmoCompatible;
 
         public eRangedAttackState RangedAttackState
         {
@@ -36,105 +38,61 @@ namespace DOL.GS
             set => m_rangedAttackType = value;
         }
 
-        public virtual eActiveQuiverSlot ActiveQuiverSlot
+        public eActiveQuiverSlot ActiveQuiverSlot
         {
             get => m_activeQuiverSlot;
             set => m_activeQuiverSlot = value;
         }
 
-        public virtual bool IsRangedAmmoCompatibleWithActiveWeapon()
+        public InventoryItem Ammo => m_ammo;
+        public bool IsAmmoCompatible => m_isAmmoCompatible;
+
+        private InventoryItem GetAmmoFromInventory(eObjectType ammoType)
         {
-            GamePlayer playerOwner = m_owner as GamePlayer;
-            InventoryItem weapon = playerOwner.attackComponent.AttackWeapon;
-
-            if (weapon != null)
+            switch (ActiveQuiverSlot)
             {
-                switch ((eObjectType)weapon.Object_Type)
-                {
-                    case eObjectType.Crossbow:
-                    case eObjectType.Longbow:
-                    case eObjectType.CompositeBow:
-                    case eObjectType.RecurvedBow:
-                    case eObjectType.Fired:
-                        {
-                            if (ActiveQuiverSlot != eActiveQuiverSlot.None)
-                            {
-                                InventoryItem ammo = null;
-                                switch (ActiveQuiverSlot)
-                                {
-                                    case eActiveQuiverSlot.Fourth: ammo = playerOwner.Inventory.GetItem(eInventorySlot.FourthQuiver); break;
-                                    case eActiveQuiverSlot.Third: ammo = playerOwner.Inventory.GetItem(eInventorySlot.ThirdQuiver); break;
-                                    case eActiveQuiverSlot.Second: ammo = playerOwner.Inventory.GetItem(eInventorySlot.SecondQuiver); break;
-                                    case eActiveQuiverSlot.First: ammo = playerOwner.Inventory.GetItem(eInventorySlot.FirstQuiver); break;
-                                }
-
-                                if (ammo == null)
-                                    return false;
-
-                                return weapon.Object_Type == (int)eObjectType.Crossbow ? ammo.Object_Type == (int)eObjectType.Bolt : ammo.Object_Type == (int)eObjectType.Arrow;
-                            }
-                        }
-
-                        break;
-                }
+                case eActiveQuiverSlot.First:
+                    return m_owner.Inventory.GetItem(eInventorySlot.FirstQuiver);
+                case eActiveQuiverSlot.Second:
+                    return m_owner.Inventory.GetItem(eInventorySlot.SecondQuiver);
+                case eActiveQuiverSlot.Third:
+                    return m_owner.Inventory.GetItem(eInventorySlot.ThirdQuiver);
+                case eActiveQuiverSlot.Fourth:
+                    return m_owner.Inventory.GetItem(eInventorySlot.FourthQuiver);
+                case eActiveQuiverSlot.None:
+                    return m_owner.Inventory.GetFirstItemByObjectType((int)ammoType, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             }
 
-            return true;
+            return null;
         }
 
-        public InventoryItem Ammo
+        public InventoryItem UpdateAmmo(InventoryItem weapon)
         {
-            get
+            m_ammo = null;
+            m_isAmmoCompatible = true;
+
+            if (m_owner is not GamePlayer || weapon == null)
+                return null;
+
+            switch (weapon.Object_Type)
             {
-                if (m_owner is GamePlayer)
-                {
-                    // TODO: Ammo should be saved on start of every range attack and used here.
-                    InventoryItem ammo = null;
-                    InventoryItem weapon = m_owner.attackComponent.AttackWeapon;
-
-                    if (weapon != null)
-                    {
-                        switch (weapon.Object_Type)
-                        {
-                            case (int)eObjectType.Thrown: ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon); break;
-                            case (int)eObjectType.Crossbow:
-                            case (int)eObjectType.Longbow:
-                            case (int)eObjectType.CompositeBow:
-                            case (int)eObjectType.RecurvedBow:
-                            case (int)eObjectType.Fired:
-                                {
-                                    switch (ActiveQuiverSlot)
-                                    {
-                                        case eActiveQuiverSlot.First: ammo = m_owner.Inventory.GetItem(eInventorySlot.FirstQuiver); break;
-                                        case eActiveQuiverSlot.Second: ammo = m_owner.Inventory.GetItem(eInventorySlot.SecondQuiver); break;
-                                        case eActiveQuiverSlot.Third: ammo = m_owner.Inventory.GetItem(eInventorySlot.ThirdQuiver); break;
-                                        case eActiveQuiverSlot.Fourth: ammo = m_owner.Inventory.GetItem(eInventorySlot.FourthQuiver); break;
-                                        case eActiveQuiverSlot.None:
-                                            eObjectType findType = eObjectType.Arrow;
-
-                                            if (weapon.Object_Type == (int)eObjectType.Crossbow)
-                                                findType = eObjectType.Bolt;
-
-                                            ammo = m_owner.Inventory.GetFirstItemByObjectType((int)findType, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-
-                                            break;
-                                    }
-                                }
-
-                                break;
-                        }
-                    }
-
-                    return ammo;
-                }
-                else
-                    return null;
+                case (int)eObjectType.Thrown:
+                    m_ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                    break;
+                case (int)eObjectType.Crossbow:
+                    m_ammo = GetAmmoFromInventory(eObjectType.Bolt);
+                    m_isAmmoCompatible = m_ammo.Object_Type == (int)eObjectType.Bolt;
+                    break;
+                case (int)eObjectType.Longbow:
+                case (int)eObjectType.CompositeBow:
+                case (int)eObjectType.RecurvedBow:
+                case (int)eObjectType.Fired:
+                    m_ammo = GetAmmoFromInventory(eObjectType.Arrow);
+                    m_isAmmoCompatible = m_ammo.Object_Type == (int)eObjectType.Arrow;
+                    break;
             }
-            set
-            {
-                if (m_owner is GamePlayer)
-                    m_rangeAttackAmmo.Target = value;
-            }
+
+            return m_ammo;
         }
 
         public GameObject Target
@@ -198,16 +156,16 @@ namespace DOL.GS
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     else if (!playerOwner.IsObjectInFront(target, 90))
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.NotInView", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    else if (Ammo == null)
+                    else if (UpdateAmmo(playerOwner.attackComponent.AttackWeapon) == null)
                         // Another check for ammo just before firing.
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    else if (!IsRangedAmmoCompatibleWithActiveWeapon())
+                    else if (!m_isAmmoCompatible)
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving)target, false))
                     {
                         if (target is GameLiving living &&
                             RangedAttackType == eRangedAttackType.Critical &&
-                            (living.CurrentSpeed > 90 || // >alk speed == 85, hope that's what they mean.
+                            (living.CurrentSpeed > 90 || // Walk speed == 85, hope that's what they mean.
                             (living.attackComponent.AttackState && living.InCombat) || // Maybe not 100% correct.
                             EffectListService.GetEffectOnTarget(living, eEffect.Mez) != null))
                         {
@@ -272,7 +230,7 @@ namespace DOL.GS
             int arrowRecoveryChance = m_owner.GetModified(eProperty.ArrowRecovery);
 
             if (arrowRecoveryChance == 0 || Util.Chance(100 - arrowRecoveryChance))
-                m_owner.Inventory.RemoveCountFromStack(Ammo, 1);
+                m_owner.Inventory.RemoveCountFromStack(m_ammo, 1);
 
             if (RangedAttackType == eRangedAttackType.Critical)
                 m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE;

@@ -1,8 +1,8 @@
-﻿using DOL.Database;
-using DOL.GS.PacketHandler;
+﻿using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.Effects;
-using System.Collections.Generic;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
                 attackrangeMin = 2000 * 0.66;//minimum attack range
                 attackrangeMax = 4200;//maximum attack range
             }
-            InventoryItem ammo = m_player.rangeAttackComponent.Ammo;
+
             Region rgn = WorldMgr.GetRegion(m_player.CurrentRegion.ID);
 
             if (CheckPreconditions(m_player, DEAD | SITTING | MEZZED | STUNNED))
@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities
                 m_player.Out.SendMessage("You need to be equipped with a bow to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            if (ammo == null)
+            if (m_player.rangeAttackComponent.UpdateAmmo(m_player.EquippedMainWeapon) == null)
             {
                 m_player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;

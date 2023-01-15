@@ -1,14 +1,11 @@
-﻿using DOL.GS.PacketHandler;
-using DOL.Events;
-using DOL.Language;
-using System;
+﻿using System;
 using System.Collections;
-using DOL.GS.RealmAbilities;
-using DOL.Database;
 using DOL.AI.Brain;
-using DOL.GS.Spells;
-using System.Collections.Generic;
-using DOL.GS.Commands;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
+using DOL.Language;
 
 namespace DOL.GS.Effects
 {
@@ -440,7 +437,7 @@ namespace DOL.GS.Effects
                 Cancel(false);
             else
             {
-                InventoryItem ammo = player.rangeAttackComponent.Ammo;
+                InventoryItem ammo = player.rangeAttackComponent.UpdateAmmo(player.attackComponent.AttackWeapon);
                 sol = new Point3D(player.GroundTarget.X, player.GroundTarget.Y, player.GroundTarget.Z);
 
                 //m_player.attackComponent.LivingStopAttack();
@@ -456,7 +453,7 @@ namespace DOL.GS.Effects
                     return;
                 }
                 // Check if selected ammo is compatible for ranged attack
-                if (!player.rangeAttackComponent.IsRangedAmmoCompatibleWithActiveWeapon())
+                if (!player.rangeAttackComponent.IsAmmoCompatible)
                 {
                     player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
@@ -542,12 +539,14 @@ namespace DOL.GS.Effects
             // DEBUG
             // Console.WriteLine($"base dmg {baseDamage} dps {WeaponDPS} ws {AcherWeaponSkill} af {TargetAF} divvy {AcherWeaponSkill/TargetAF} slowwep {SlowWeaponBonus} 2hbon {WeaponBonus2H} speed {weaponspeed}");
 
-            switch ((archer?.rangeAttackComponent?.Ammo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
+            switch ((archer.rangeAttackComponent.Ammo?.SPD_ABS) & 0x3)//switch dmg based of arrow type
             {
                 case 0:
                     baseDamage *= 0.85;
-                    break; //Blunt       (light) -15%
-                           //case 1: damage *= 1;	break; //Bodkin     (medium)   0%
+                    break; //Blunt  (light) -15%
+                //case 1:
+                //  damage *= 1;
+                //  break; //Bodkin (medium) 0%
                 case 2:
                     baseDamage *= 1.15;
                     break; //doesn't exist on live
@@ -911,6 +910,7 @@ namespace DOL.GS.Effects
                 return;
             }
         }
+
         private int MakeAnimation(ECSGameTimer timer)
         {
             ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
