@@ -2206,17 +2206,18 @@ namespace DOL.GS.Spells
 		public virtual void FinishSpellCast(GameLiving target)
 		{
 			GamePlayer playerCaster = Caster as GamePlayer;
-			GameInventoryItem playerWeapon = playerCaster.ActiveWeapon as GameInventoryItem;
+			InventoryItem playerWeapon = null;
 
 			if (playerCaster != null)
 			{
+				playerWeapon = playerCaster.ActiveWeapon;
+
 				if (!HasPositiveEffect)
 				{
 					if (playerCaster.IsOnHorse)
 						playerCaster.IsOnHorse = false;
 
-					if (playerWeapon != null)
-						playerWeapon.OnSpellCast(playerCaster, target, Spell);
+					(playerWeapon as GameInventoryItem)?.OnSpellCast(playerCaster, target, Spell);
 				}
 
 				if (UnstealthCasterOnFinish)
