@@ -4081,62 +4081,6 @@ namespace DOL.GS
   
 			return weaponskill;
         }
-		
-
-		public override void RangedAttackFinished()
-		{
-			base.RangedAttackFinished();
-
-			if (ServerProperties.Properties.ALWAYS_CHECK_PET_LOS &&
-				Brain != null &&
-				Brain is IControlledBrain &&
-				(TargetObject is GamePlayer || (TargetObject is GameNPC && (TargetObject as GameNPC).Brain != null && (TargetObject as GameNPC).Brain is IControlledBrain)))
-			{
-				GamePlayer player = null;
-
-				if (TargetObject is GamePlayer)
-				{
-					player = TargetObject as GamePlayer;
-				}
-				else if (TargetObject is GameNPC && (TargetObject as GameNPC).Brain != null && (TargetObject as GameNPC).Brain is IControlledBrain)
-				{
-					if (((TargetObject as GameNPC).Brain as IControlledBrain).Owner is GamePlayer)
-					{
-						player = ((TargetObject as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
-					}
-				}
-
-				if (player != null)
-				{
-					player.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(NPCStopRangedAttackCheckLOS));
-					if (ServerProperties.Properties.ENABLE_DEBUG)
-					{
-						log.Debug(Name + " sent LOS check to player " + player.Name);
-					}
-				}
-			}
-		}
-
-
-		/// <summary>
-		/// If we don't have LOS we stop attack
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="response"></param>
-		/// <param name="targetOID"></param>
-		public void NPCStopRangedAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
-		{
-			if ((response & 0x100) != 0x100)
-			{
-				if (ServerProperties.Properties.ENABLE_DEBUG)
-				{
-					log.Debug(Name + " FAILED stop ranged attack LOS check to player " + player.Name);
-				}
-
-                attackComponent.StopAttack();
-			}
-		}
-
 
 		public void SetLastMeleeAttackTick()
 		{
