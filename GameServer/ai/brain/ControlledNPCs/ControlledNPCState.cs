@@ -114,12 +114,8 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
             brain.Goto(brain.Body.TargetObject);
 
-        // If pet is in agressive mode then check aggressive spells and attacks first.
         if (brain.AggressionState == eAggressionState.Aggressive)
-        {
             brain.CheckProximityAggro();
-            brain.AttackMostWanted();
-        }
 
         /* this was added in 1.88 : https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.88
          * removing to conform to 1.65
