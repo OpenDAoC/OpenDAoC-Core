@@ -109,12 +109,12 @@ namespace DOL.GS
             StartTime = _interval;
         }
         
-        public virtual bool CheckAimInterrupt()
+        public virtual bool CheckInterruptTimer()
         {
             return false;
         }
 
-        public virtual void OnAimInterrupt() { }
+        public virtual void OnAimInterrupt(GameObject attacker) { }
 
         protected virtual bool CanPerformAction()
         {
@@ -347,7 +347,7 @@ namespace DOL.GS
                 return false;
             }
 
-            if (CheckAimInterrupt())
+            if (CheckInterruptTimer())
                 return false;
 
             _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;

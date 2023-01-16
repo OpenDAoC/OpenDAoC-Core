@@ -13,24 +13,25 @@ namespace DOL.GS
             _playerOwner = playerOwner;
         }
 
-        public override bool CheckAimInterrupt()
+        public override bool CheckInterruptTimer()
         {
             if (_playerOwner.attackComponent.Attackers.Count <= 0)
                 return false;
+
+            GameObject attacker = _playerOwner.attackComponent.Attackers.Last();
 
             // Don't interrupt aiming if we haven't received an interrupt timer.
             if (_playerOwner.InterruptTime <= GameLoop.GameLoopTime)
                 return false;
 
             _playerOwner.attackComponent.StopAttack();
-            OnAimInterrupt();
+            OnAimInterrupt(attacker);
             return true;
         }
 
-        public override void OnAimInterrupt()
+        public override void OnAimInterrupt(GameObject attacker)
         {
             string attackTypeMsg;
-            GameObject attacker = _playerOwner.attackComponent.Attackers.Last();
 
             if (_playerOwner.ActiveWeapon != null && _playerOwner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown)
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Throw");

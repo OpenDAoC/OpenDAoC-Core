@@ -16,7 +16,7 @@ namespace DOL.GS
             _npcOwner = npcOwner;
         }
 
-        public override void OnAimInterrupt()
+        public override void OnAimInterrupt(GameObject attacker)
         {
             if (_npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
 				_npcOwner.SwitchToMelee(_target);

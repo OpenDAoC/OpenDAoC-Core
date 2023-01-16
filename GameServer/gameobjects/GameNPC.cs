@@ -4556,7 +4556,7 @@ namespace DOL.GS
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
 			if (interrupted)
-				attackComponent.attackAction.OnAimInterrupt();
+				attackComponent.attackAction.OnAimInterrupt(attacker);
 
 			return interrupted;
 		}

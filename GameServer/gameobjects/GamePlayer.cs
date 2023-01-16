@@ -7624,7 +7624,7 @@ namespace DOL.GS
         {
             if (base.CheckRangedAttackInterrupt(attacker, attackType))
             {
-                attackComponent.attackAction.OnAimInterrupt();
+                attackComponent.attackAction.OnAimInterrupt(attacker);
                 return true;
             }
 

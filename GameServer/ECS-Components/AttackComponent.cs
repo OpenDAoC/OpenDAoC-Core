@@ -942,7 +942,7 @@ namespace DOL.GS
                 // Only start another attack action if we aren't already aiming to shoot.
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim)
                 {
-                    if (attackAction.CheckAimInterrupt())
+                    if (attackAction.CheckInterruptTimer())
                         return false;
 
                     owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
