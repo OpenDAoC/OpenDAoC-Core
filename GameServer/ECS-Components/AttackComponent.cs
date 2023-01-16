@@ -972,80 +972,60 @@ namespace DOL.GS
             if (target == null)
                 return;
 
-            var npc = owner as GameNPC;
+            GameNPC npcOwner = owner as GameNPC;
 
-            npc.TargetObject = target;
+            npcOwner.TargetObject = target;
 
-            long lastTick = npc.TempProperties.getProperty<long>(GameNPC.LAST_LOS_TICK_PROPERTY);
+            long lastTick = npcOwner.TempProperties.getProperty<long>(GameNPC.LAST_LOS_TICK_PROPERTY);
 
-            if (ServerProperties.Properties.ALWAYS_CHECK_PET_LOS &&
-                npc.Brain != null &&
-                npc.Brain is IControlledBrain &&
-                (target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain != null &&
-                                          (target as GameNPC).Brain is IControlledBrain)))
+            if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain)
             {
-                GameObject lastTarget =
-                    (GameObject) npc.TempProperties.getProperty<object>(GameNPC.LAST_LOS_TARGET_PROPERTY, null);
-                if (lastTarget != null && lastTarget == target)
-                {
-                    if (lastTick != 0 && GameLoop.GameLoopTime - lastTick <
-                        ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-                        return;
-                }
+                GamePlayer player = null;
 
-                GamePlayer losChecker = null;
-                if (target is GamePlayer)
+                if (target is GamePlayer targetPlayer)
+                    player = targetPlayer;
+                else if (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain)
+                    player = targetNpcBrain.GetPlayerOwner();
+
+                // LoS check are done only against a player or a pet.
+                if (player != null)
                 {
-                    losChecker = target as GamePlayer;
-                }
-                else if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-                {
-                    losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-                }
-                else
-                {
-                    // try to find another player to use for checking line of site
-                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    GameObject lastTarget = (GameObject)npcOwner.TempProperties.getProperty<object>(GameNPC.LAST_LOS_TARGET_PROPERTY, null);
+
+                    if (lastTarget != null && lastTarget == target)
                     {
-                        losChecker = player;
-                        break;
+                        if (lastTick != 0 && GameLoop.GameLoopTime - lastTick < Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                            return;
                     }
-                }
 
-                if (losChecker == null)
-                {
-                    return;
-                }
-
-                lock (npc.LOS_LOCK)
-                {
-                    int count = npc.TempProperties.getProperty<int>(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
-
-                    if (count > 10)
+                    lock (npcOwner.LOS_LOCK)
                     {
-                        GameNPC.log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", npc.Name);
+                        int count = npcOwner.TempProperties.getProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
 
-                        // Now do a safety check.  If it's been a while since we sent any check we should clear count
-                        if (lastTick == 0 || GameLoop.GameLoopTime - lastTick >
-                            ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                        if (count > 10)
                         {
-                            GameNPC.log.Debug("LOS count reset!");
-                            npc.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
+                            GameNPC.log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", npcOwner.Name);
+
+                            // Now do a safety check. If it's been a while since we sent any check we should clear count.
+                            if (lastTick == 0 || GameLoop.GameLoopTime - lastTick > Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
+                            {
+                                GameNPC.log.Debug("LOS count reset!");
+                                npcOwner.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
+                            }
+
+                            return;
                         }
 
-                        return;
+                        count++;
+                        npcOwner.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, count);
+                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TARGET_PROPERTY, target);
+                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
+                        npcOwner.m_targetLOSObject = target;
                     }
 
-                    count++;
-                    npc.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, count);
-
-                    npc.TempProperties.setProperty(GameNPC.LAST_LOS_TARGET_PROPERTY, target);
-                    npc.TempProperties.setProperty(GameNPC.LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
-                    npc.m_targetLOSObject = target;
+                    player.Out.SendCheckLOS(npcOwner, target, new CheckLOSResponse(npcOwner.NPCStartAttackCheckLOS));
+                    return;
                 }
-
-                losChecker.Out.SendCheckLOS(npc, target, new CheckLOSResponse(npc.NPCStartAttackCheckLOS));
-                return;
             }
 
             ContinueStartAttack(target);

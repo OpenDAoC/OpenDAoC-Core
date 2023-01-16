@@ -194,12 +194,12 @@ namespace DOL.AI.Brain
                 if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
                 {
                     // Check LoS if either the target or the current mob is a pet
-                    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.Owner is GamePlayer theirOwner)
+                    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
                         theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
                         continue;
                     }
-                    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.Owner is GamePlayer ourOwner)
+                    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
                         ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
                         continue;
@@ -616,13 +616,9 @@ namespace DOL.AI.Brain
 
             // Get owner if target is pet or subpet
             GameLiving realTarget = target;
-            if (target is GamePet pet && (pet.Owner is GamePlayer || pet.Owner is GamePet))
-            {
-                if (pet.Owner is GamePet mainpet && mainpet.Owner is GamePlayer)
-                    realTarget = mainpet.Owner;
-                else
-                    realTarget = pet.Owner;
-            }
+
+            if (realTarget is GameNPC npcTarget && npcTarget.Brain is IControlledBrain npcTargetBrain)
+                realTarget = npcTargetBrain.GetPlayerOwner();
 
             // Only attack if green+ to target
             if (realTarget.IsObjectGreyCon(Body))

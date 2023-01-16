@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -32,7 +31,6 @@ using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.Language;
-
 using log4net;
 
 namespace DOL.GS.Spells
@@ -1347,15 +1345,14 @@ namespace DOL.GS.Spells
 					//	return false;
 					//}
 
-					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime >  _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
+					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 					{
 						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
-						GamePlayer playerCheck = Caster as GamePlayer;
-						playerCheck?.Out.SendCheckLOS(playerCheck, target, CheckPlayerLosDuringCastCallback);
-			
-						GamePet petCheck = Caster as GamePet;
-						(petCheck?.Owner as GamePlayer)?.Out.SendCheckLOS(petCheck, target, CheckPetLosDuringCastCallback);
+						if (Caster is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
+							npcBrain.GetPlayerOwner()?.Out.SendCheckLOS(npc, target, CheckPetLosDuringCastCallback);
+						else if (Caster is GamePlayer player)
+							player.Out.SendCheckLOS(player, target, CheckPlayerLosDuringCastCallback);
 					}
 				}
 
