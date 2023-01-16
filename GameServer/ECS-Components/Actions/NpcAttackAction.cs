@@ -24,7 +24,7 @@ namespace DOL.GS
             // Guard archers shouldn't switch to melee when interrupted, otherwise they fall from the wall.
             // They will still switch to melee if their target is in melee range.
             if (!_isGuardArcher && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
-				_npcOwner.SwitchToMelee(_target);
+                _npcOwner.SwitchToMelee(_target);
         }
 
         protected override bool PrepareMeleeAttack()
