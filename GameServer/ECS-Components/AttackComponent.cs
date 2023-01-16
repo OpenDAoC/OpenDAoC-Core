@@ -855,72 +855,67 @@ namespace DOL.GS
                     if (DreamweaverRR5 != null)
                         DreamweaverRR5.Cancel(false);
                 }*/
-                LivingStartAttack();
-
-                if (player.IsCasting && !player.castingComponent.spellHandler.Spell.Uninterruptible)
+                if (LivingStartAttack())
                 {
-                    player.StopCurrentSpellcast();
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"),
-                        eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                }
-
-                //Clear styles
-                owner.styleComponent.NextCombatStyle = null;
-                owner.styleComponent.NextCombatBackupStyle = null;
-
-                if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                {
-                    player.Out.SendAttackMode(AttackState);
-                }
-                else
-                {
-                    player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
-
-                    string typeMsg = "shot";
-                    if (attackWeapon.Object_Type == (int) eObjectType.Thrown)
-                        typeMsg = "throw";
-
-                    string targetMsg = "";
-                    if (attackTarget != null)
+                    if (player.IsCasting && !player.castingComponent.spellHandler.Spell.Uninterruptible)
                     {
-                        if (player.IsWithinRadius(attackTarget, AttackRange))
-                            targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.TargetInRange");
-                        else
-                            targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.TargetOutOfRange");
+                        player.StopCurrentSpellcast();
+                        player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"),
+                            eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
 
-                    int speed = AttackSpeed(attackWeapon) / 100;
-                    if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
-                        speed = Math.Max(15, speed / 2);
+                    //Clear styles
+                    owner.styleComponent.NextCombatStyle = null;
+                    owner.styleComponent.NextCombatBackupStyle = null;
 
-                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
-                    { }
+                    if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                    {
+                        player.Out.SendAttackMode(AttackState);
+                    }
                     else
-                        player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
-                            typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    {
+                        player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+
+                        string typeMsg = "shot";
+                        if (attackWeapon.Object_Type == (int) eObjectType.Thrown)
+                            typeMsg = "throw";
+
+                        string targetMsg = "";
+                        if (attackTarget != null)
+                        {
+                            if (player.IsWithinRadius(attackTarget, AttackRange))
+                                targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
+                                    "GamePlayer.StartAttack.TargetInRange");
+                            else
+                                targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
+                                    "GamePlayer.StartAttack.TargetOutOfRange");
+                        }
+
+                        int speed = AttackSpeed(attackWeapon) / 100;
+                        if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
+                            speed = Math.Max(15, speed / 2);
+
+                        if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
+                            player.Out.SendMessage(
+                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
+                                typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    }
                 }
             }
             else if (owner is GameNPC)
-            {
                 NPCStartAttack(attackTarget);
-            }
             else
-            {
                 LivingStartAttack();
-            }
         }
 
         /// <summary>
         /// Starts a melee or ranged attack on a given target.
         /// </summary>
-        private void LivingStartAttack()
+        private bool LivingStartAttack()
         {
             if (owner.IsIncapacitated)
-                return;
+                return false;
 
             if (owner.IsEngaging)
                 owner.CancelEngageEffect();
@@ -931,13 +926,13 @@ namespace DOL.GS
             int speed = AttackSpeed(attackWeapon);
 
             if (speed <= 0)
-                return;
+                return false;
 
             // Npcs aren't allowed to prepare their ranged attack while moving or out of range.
             if (owner is not GamePlayer && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 if (owner.IsMoving || !owner.IsWithinRadius(owner.rangeAttackComponent.Target, owner.attackComponent.AttackRange))
-                    return;
+                    return false;
             }
 
             attackAction = owner.CreateAttackAction();
@@ -948,7 +943,7 @@ namespace DOL.GS
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim)
                 {
                     if (attackAction.CheckAimInterrupt())
-                        return;
+                        return false;
 
                     owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
@@ -964,6 +959,8 @@ namespace DOL.GS
             }
             else if (attackAction.TimeUntilStart is > 0 and < 100)
                 attackAction.StartTime = 100;
+
+            return true;
         }
 
         /// <summary>
