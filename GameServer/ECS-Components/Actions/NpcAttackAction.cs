@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
@@ -8,17 +9,21 @@ namespace DOL.GS
         // Check interval (upper bound) in ms of entities around this NPC when its main target is out of range. Used to attack other entities on its path.
         private const int NPC_VICINITY_CHECK_DELAY = 1000;
         private GameNPC _npcOwner;
+        private bool _isGuardArcher;
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
 
         public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
+            _isGuardArcher = _npcOwner is GuardArcher;
         }
 
         public override void OnAimInterrupt(GameObject attacker)
         {
-            if (_npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
+            // Guard archers shouldn't switch to melee when interrupted, otherwise they fall from the wall.
+            // They will still switch to melee if their target is in melee range.
+            if (!_isGuardArcher && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT)
 				_npcOwner.SwitchToMelee(_target);
         }
 
