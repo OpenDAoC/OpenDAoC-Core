@@ -28,6 +28,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.API;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -6363,6 +6364,14 @@ namespace DOL.GS
                 attackComponent.StopAttack();
             }
 
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            {
+                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+
+                if (volley != null)
+                    volley.OnPlayerSwitchedWeapon();
+            }
+
             if (CurrentSpellHandler != null)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -12139,13 +12148,13 @@ namespace DOL.GS
                 }
             }
 
-            if(effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
             {
                 AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
-                if(volley != null)
-                    volley.PlayerMoving();
-            }
 
+                if (volley != null)
+                    volley.OnPlayerMoved();
+            }
 
             //Notify the GameEventMgr of the moving player
             // GameEventMgr.Notify(GamePlayerEvent.Moving, this);

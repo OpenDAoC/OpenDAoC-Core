@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -167,6 +169,19 @@ namespace DOL.GS.RealmAbilities
                         }
                     }
                 }
+            }
+
+            if (m_player.attackComponent.Attackers.Count > 0 && m_player.InterruptTime > GameLoop.GameLoopTime)
+            {
+                string attackTypeMsg;
+                GameObject attacker = m_player.attackComponent.Attackers.Last();
+
+                if (attacker is GameNPC npcAttacker)
+                    m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, m_player.Client.Account.Language, npcAttacker), "volley"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                else
+                    m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), "volley"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+
+                return;
             }
 
             new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(m_player, 0, 1));

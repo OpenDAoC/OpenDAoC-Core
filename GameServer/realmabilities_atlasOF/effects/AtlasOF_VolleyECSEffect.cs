@@ -76,18 +76,14 @@ namespace DOL.GS.Effects
 
             if (!BowPreparation)
             {
-                //m_player.attackComponent.LivingStopAttack();    //stop all attacks
-                //m_player.StopCurrentSpellcast();                //stop all casts
                 foreach (GamePlayer player in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    player.Out.SendCombatAnimation(m_player, null, (ushort)model, 0x00, player.Out.BowPrepare, HoldAttack, 0x00, m_player.HealthPercent);//bow animation
-                }
+                    player.Out.SendCombatAnimation(m_player, null, (ushort)model, 0x00, player.Out.BowPrepare, HoldAttack, 0x00, m_player.HealthPercent);
+
                 BowPreparation = true;
-            }              
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-            // GameEventMgr.AddHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
+            }
+            
+            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
             GameEventMgr.AddHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
         }
         public override void OnStopEffect()
         {
@@ -173,17 +169,17 @@ namespace DOL.GS.Effects
                 m_player.TempProperties.removeProperty("volley_shot5Continue");
             }
             #endregion
-            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+
+            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-            // GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Moving, new DOLEventHandler(PlayerMoving));
-            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.TakeDamage, new DOLEventHandler(AttackedByEnemy));
             base.OnStopEffect();
         }
+
         public void Cancel(bool playerCancel)
         {
             EffectService.RequestImmediateCancelEffect(this, playerCancel);
-            OnStopEffect();
         }
+
         private void PrepareBowAgain()//Bow prepare again incase player hold too long volley
         {
             ECSGameEffect volley = EffectListService.GetEffectOnTarget(m_player, eEffect.Volley);
@@ -978,57 +974,46 @@ namespace DOL.GS.Effects
         }
         #endregion
 
-        #region PlayerLeftWorld / PlayerMoving / AttackedByEnemy(TakeDamage)
-        /// <summary>
-        /// Called when a player leaves the game
-        /// </summary>
-        /// <param name="e">The event which was raised</param>
-        /// <param name="sender">Sender of the event</param>
-        /// <param name="args">EventArgs associated with the event</param>
-        private void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+        private void OnPlayerLeftWorld(DOLEvent e, object sender, EventArgs arguments)
         {
             Cancel(false);
         }
-        /// <summary>
-        /// Called when a player move
-        /// </summary>
-        /// <param name="e">The event which was raised</param>
-        /// <param name="sender">Sender of the event</param>
-        /// <param name="args">EventArgs associated with the event</param>
-        //private void PlayerMoving(DOLEvent e, object sender, EventArgs args)
-        public void PlayerMoving()
+
+        public void OnPlayerMoved()
         {
-            if (m_player == null) return;
-            m_player.Out.SendAttackMode(false);
             Cancel(false);
-            AtlasOF_Volley volle = m_player.GetAbility<AtlasOF_Volley>();
-            m_player.DisableSkill(volle, AtlasOF_Volley.DISABLE_DURATION);
+            AtlasOF_Volley volley = m_player.GetAbility<AtlasOF_Volley>();
+            m_player.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
             m_player.Out.SendMessage("You move and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
             foreach (GamePlayer playerInRadius in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
                 playerInRadius.Out.SendInterruptAnimation(m_player);
-            }
-           
         }
-        private void AttackedByEnemy(DOLEvent e, object sender, EventArgs arguments)
+
+        public void OnPlayerSwitchedWeapon()
         {
-            GamePlayer player = sender as GamePlayer;
-            if (player == null) return; 
-            if (e == GamePlayerEvent.TakeDamage)
-            {
-                Cancel(false);
-                AttackData ad = player.TempProperties.getProperty<object>(GameLiving.LAST_ATTACK_DATA, null) as AttackData;
-                player.StartInterruptTimer(ad, ServerProperties.Properties.SPELL_INTERRUPT_DURATION);
-                player.Out.SendMessage("You have been attacked and your volley is interrupted!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer playerInRadius in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    playerInRadius.Out.SendInterruptAnimation(player);
-                }
-            }
+            Cancel(false);
+            AtlasOF_Volley volley = m_player.GetAbility<AtlasOF_Volley>();
+            m_player.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+            m_player.Out.SendMessage("You put away your bow and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+            foreach (GamePlayer playerInRadius in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                playerInRadius.Out.SendInterruptAnimation(m_player);
         }
-        #endregion
+
+        public void OnAttacked()
+        {
+            Cancel(false);
+            AtlasOF_Volley volley = m_player.GetAbility<AtlasOF_Volley>();
+            m_player.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+            m_player.Out.SendMessage("You have been attacked and your volley is interrupted!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+            foreach (GamePlayer playerInRadius in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                playerInRadius.Out.SendInterruptAnimation(m_player);
+        }
     }
 }
+
 /// <summary>
 /// //////////////////////////////Volley mob to show player actuall volley location hit and nice effect for ability
 /// </summary>

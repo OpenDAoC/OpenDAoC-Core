@@ -1937,8 +1937,18 @@ namespace DOL.GS
 
 			if (castingComponent?.spellHandler != null)
 				castingComponent.spellHandler.CasterIsAttacked(attacker);
-			else if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				CheckRangedAttackInterrupt(attacker, attackType);
+			else if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			{
+				if (attackComponent.AttackState)
+					CheckRangedAttackInterrupt(attacker, attackType);
+				else if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+				{
+					AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+
+					if (volley != null)
+						volley.OnAttacked();
+				}
+			}
 		}
 
 		protected long m_interruptTime = 0;
