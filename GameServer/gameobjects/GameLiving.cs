@@ -7001,29 +7001,10 @@ namespace DOL.GS
 		
 		#region Region
 
-		/// <summary>
-		/// Creates the item in the world
-		/// </summary>
-		/// <returns>true if object was created</returns>
-		public override bool AddToWorld()
-		{
-			if (!base.AddToWorld()) return false;
-
-			//if (m_attackAction != null)
-			//	m_attackAction.Stop();
-			//m_attackAction = new AttackAction(this);
-
-            if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanUp();
-            attackComponent.attackAction = AttackAction.Create(this);
-
-			return true;
-		}
-
-		/// <summary>
-		/// Removes the item from the world
-		/// </summary>
-		public override bool RemoveFromWorld()
+        /// <summary>
+        /// Removes the item from the world
+        /// </summary>
+        public override bool RemoveFromWorld()
 		{
 			if (!base.RemoveFromWorld()) return false;
 
