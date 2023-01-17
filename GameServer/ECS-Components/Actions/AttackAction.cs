@@ -61,33 +61,18 @@ namespace DOL.GS
             if (time <= StartTime)
                 return;
 
+            if (!CheckAttackState())
+                return;
+
             if (!CanPerformAction())
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                 return;
             }
 
-            _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
             _effectiveness = _owner.Effectiveness;
-
-            if (!_attackComponent.AttackState)
-            {
-                _owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
-
-                if (_attackData?.Target != null)
-                    _attackData.Target.attackComponent.RemoveAttacker(_owner);
-
-                _attackComponent.attackAction?.CleanUp();
-                return;
-            }
-
-            if (_owner.ObjectState != eObjectState.Active)
-            {
-                _attackComponent.attackAction?.CleanUp();
-                return;
-            }
 
             if (_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
             {
@@ -115,6 +100,30 @@ namespace DOL.GS
         }
 
         public virtual void OnAimInterrupt(GameObject attacker) { }
+
+        protected virtual bool CheckAttackState()
+        {
+            if (_owner.ObjectState != eObjectState.Active)
+            {
+                _attackComponent.attackAction?.CleanUp();
+                return false;
+            }
+
+            _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+
+            if (!_attackComponent.AttackState)
+            {
+                _owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
+
+                if (_attackData?.Target != null)
+                    _attackData.Target.attackComponent.RemoveAttacker(_owner);
+
+                _attackComponent.attackAction.CleanUp();
+                return false;
+            }
+
+            return true;
+        }
 
         protected virtual bool CanPerformAction()
         {
