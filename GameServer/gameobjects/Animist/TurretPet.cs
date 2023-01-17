@@ -92,7 +92,7 @@ namespace DOL.GS
 
             if (Brain is TurretMainPetTankBrain)
             {
-                attackComponent.StartAttack(TargetObject);
+                attackComponent.RequestStartAttack(TargetObject);
             }
         }
 

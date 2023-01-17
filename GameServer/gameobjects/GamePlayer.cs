@@ -9872,7 +9872,7 @@ namespace DOL.GS
                         else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument && volley == null)//volley check
                         {
                             StopCurrentSpellcast();
-                            attackComponent.StartAttack(TargetObject);
+                            attackComponent.RequestStartAttack(TargetObject);
                             newAttack = true;
                         }
 

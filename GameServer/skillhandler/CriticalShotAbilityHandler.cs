@@ -77,7 +77,7 @@ namespace DOL.GS.SkillHandler
 				return;
 			}
 			player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Critical;
-			player.attackComponent.StartAttack(player.TargetObject);
+			player.attackComponent.RequestStartAttack(player.TargetObject);
 		}
 	}
 }

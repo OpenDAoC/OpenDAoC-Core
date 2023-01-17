@@ -39,7 +39,7 @@ namespace DOL.GS
             TimePassed = (DateTime.Now - StartTime);
 
             if (!this.attackComponent.AttackState)
-                this.attackComponent.StartAttack(ad.Attacker);
+                this.attackComponent.RequestStartAttack(ad.Attacker);
             
         }
 

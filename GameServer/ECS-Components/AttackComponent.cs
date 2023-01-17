@@ -1,4 +1,9 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
@@ -9,10 +14,6 @@ using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
@@ -29,15 +30,12 @@ namespace DOL.GS
         /// To be more exact, the objects that are in combat
         /// and have this living as target.
         /// </summary>
-        protected List<GameObject> m_attackers;
+        protected List<GameObject> m_attackers = new();
 
         /// <summary>
         /// Returns the list of attackers
         /// </summary>
-        public List<GameObject> Attackers
-        {
-            get { return m_attackers; }
-        }
+        public List<GameObject> Attackers => m_attackers;
 
         /// <summary>
         /// Adds an attacker to the attackerlist
@@ -73,18 +71,37 @@ namespace DOL.GS
             }
         }
 
+        /// <summary>
+        /// The target that was passed when 'StartAttackReqest' was called and the request accepted.
+        /// </summary>
+        private GameObject m_startAttackTarget;
+
+        /// <summary>
+        /// Actually a boolean. Use 'StartAttackRequested' to preserve thread safety.
+        /// </summary>
+        private long m_startAttackRequested;
+
+        public bool StartAttackRequested
+        {
+            get => Interlocked.Read(ref m_startAttackRequested) == 1;
+            set => Interlocked.Exchange(ref m_startAttackRequested, Convert.ToInt64(value));
+        }
+
         public AttackComponent(GameLiving owner)
         {
             this.owner = owner;
-            m_attackers = new List<GameObject>();
         }
 
         public void Tick(long time)
         {
-            if (attackAction != null)
+            if (StartAttackRequested)
             {
-                attackAction.Tick(time);
+                StartAttack();
+                m_startAttackTarget = null;
+                StartAttackRequested = false;
             }
+
+            attackAction?.Tick(time);
 
             if (weaponAction != null)
             {
@@ -95,82 +112,6 @@ namespace DOL.GS
             if (weaponAction is null && attackAction is null && !owner.InCombat)
                 EntityManager.RemoveComponent(typeof(AttackComponent), owner);
         }
-
-
-        //      /// <summary>
-        ///// The result of an attack
-        ///// </summary>
-        //public enum eAttackResult : int
-        //      {
-        //          /// <summary>
-        //          /// No specific attack
-        //          /// </summary>
-        //          Any = 0,
-        //          /// <summary>
-        //          /// The attack was a hit
-        //          /// </summary>
-        //          HitUnstyled = 1,
-        //          /// <summary>
-        //          /// The attack was a hit
-        //          /// </summary>
-        //          HitStyle = 2,
-        //          /// <summary>
-        //          /// Attack was denied by server rules
-        //          /// </summary>
-        //          NotAllowed_ServerRules = 3,
-        //          /// <summary>
-        //          /// No target for the attack
-        //          /// </summary>
-        //          NoTarget = 5,
-        //          /// <summary>
-        //          /// Target is already dead
-        //          /// </summary>
-        //          TargetDead = 6,
-        //          /// <summary>
-        //          /// Target is out of range
-        //          /// </summary>
-        //          OutOfRange = 7,
-        //          /// <summary>
-        //          /// Attack missed
-        //          /// </summary>
-        //          Missed = 8,
-        //          /// <summary>
-        //          /// The attack was evaded
-        //          /// </summary>
-        //          Evaded = 9,
-        //          /// <summary>
-        //          /// The attack was blocked
-        //          /// </summary>
-        //          Blocked = 10,
-        //          /// <summary>
-        //          /// The attack was parried
-        //          /// </summary>
-        //          Parried = 11,
-        //          /// <summary>
-        //          /// The target is invalid
-        //          /// </summary>
-        //          NoValidTarget = 12,
-        //          /// <summary>
-        //          /// The target is not visible
-        //          /// </summary>
-        //          TargetNotVisible = 14,
-        //          /// <summary>
-        //          /// The attack was fumbled
-        //          /// </summary>
-        //          Fumbled = 15,
-        //          /// <summary>
-        //          /// The attack was Bodyguarded
-        //          /// </summary>
-        //          Bodyguarded = 16,
-        //          /// <summary>
-        //          /// The attack was Phaseshiftet
-        //          /// </summary>
-        //          Phaseshift = 17,
-        //          /// <summary>
-        //          /// The attack was Grappled
-        //          /// </summary>
-        //          Grappled = 18
-        //      }
 
         /// <summary>
         /// The chance for a critical hit
@@ -639,17 +580,21 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Starts a melee attack with this player
-        /// </summary>
-        /// <param name="attackTarget">the target to attack</param>
-        public void StartAttack(GameObject attackTarget)
+        public void RequestStartAttack(GameObject attackTarget)
         {
-            EntityManager.AddComponent(typeof(AttackComponent), owner);
+            if (!StartAttackRequested)
+            {
+                StartAttackRequested = true;
+                m_startAttackTarget = attackTarget;
+                EntityManager.AddComponent(typeof(AttackComponent), owner);
+            }
+        }
 
+        private void StartAttack()
+        {
             if (owner is GamePlayer player)
             {
-                if (player.CharacterClass.StartAttack(attackTarget) == false)
+                if (player.CharacterClass.StartAttack(m_startAttackTarget) == false)
                 {
                     return;
                 }
@@ -821,23 +766,23 @@ namespace DOL.GS
                 }
                 else
                 {
-                    if (attackTarget == null)
+                    if (m_startAttackTarget == null)
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatNoTarget"), eChatType.CT_YouHit,
                             eChatLoc.CL_SystemWindow);
-                    else if (attackTarget is GameNPC)
+                    else if (m_startAttackTarget is GameNPC)
                     {
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatTarget",
-                                attackTarget.GetName(0, false, player.Client.Account.Language, (attackTarget as GameNPC))),
+                                m_startAttackTarget.GetName(0, false, player.Client.Account.Language, (m_startAttackTarget as GameNPC))),
                             eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     }
                     else
                     {
                         player.Out.SendMessage(
                             LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget",
-                                attackTarget.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                m_startAttackTarget.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     }
                 }
 
@@ -865,14 +810,8 @@ namespace DOL.GS
                             eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
 
-                    //Clear styles
-                    owner.styleComponent.NextCombatStyle = null;
-                    owner.styleComponent.NextCombatBackupStyle = null;
-
                     if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                    {
                         player.Out.SendAttackMode(AttackState);
-                    }
                     else
                     {
                         player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
@@ -882,9 +821,9 @@ namespace DOL.GS
                             typeMsg = "throw";
 
                         string targetMsg = "";
-                        if (attackTarget != null)
+                        if (m_startAttackTarget != null)
                         {
-                            if (player.IsWithinRadius(attackTarget, AttackRange))
+                            if (player.IsWithinRadius(m_startAttackTarget, AttackRange))
                                 targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
                                     "GamePlayer.StartAttack.TargetInRange");
                             else
@@ -903,15 +842,12 @@ namespace DOL.GS
                     }
                 }
             }
-            else if (owner is GameNPC)
-                NPCStartAttack(attackTarget);
+            else if (owner is GameNPC && m_startAttackTarget != null)
+                NPCStartAttack(m_startAttackTarget);
             else
                 LivingStartAttack();
         }
 
-        /// <summary>
-        /// Starts a melee or ranged attack on a given target.
-        /// </summary>
         private bool LivingStartAttack()
         {
             if (owner.IsIncapacitated)
@@ -963,36 +899,27 @@ namespace DOL.GS
             return true;
         }
 
-        /// <summary>
-        /// Starts a melee attack on a target
-        /// </summary>
-        /// <param name="target">The object to attack</param>
-        private void NPCStartAttack(GameObject target)
+        private void NPCStartAttack(GameObject attackTarget)
         {
-            if (target == null)
-                return;
-
             GameNPC npcOwner = owner as GameNPC;
-
-            npcOwner.TargetObject = target;
-
-            long lastTick = npcOwner.TempProperties.getProperty<long>(GameNPC.LAST_LOS_TICK_PROPERTY);
+            npcOwner.TargetObject = attackTarget;
 
             if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain)
             {
                 GamePlayer player = null;
 
-                if (target is GamePlayer targetPlayer)
+                if (attackTarget is GamePlayer targetPlayer)
                     player = targetPlayer;
-                else if (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain)
+                else if (attackTarget is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain)
                     player = targetNpcBrain.GetPlayerOwner();
 
                 // LoS check are done only against a player or a pet.
                 if (player != null)
                 {
                     GameObject lastTarget = (GameObject)npcOwner.TempProperties.getProperty<object>(GameNPC.LAST_LOS_TARGET_PROPERTY, null);
+                    long lastTick = npcOwner.TempProperties.getProperty<long>(GameNPC.LAST_LOS_TICK_PROPERTY);
 
-                    if (lastTarget != null && lastTarget == target)
+                    if (lastTarget != null && lastTarget == attackTarget)
                     {
                         if (lastTick != 0 && GameLoop.GameLoopTime - lastTick < Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
                             return;
@@ -1018,20 +945,20 @@ namespace DOL.GS
 
                         count++;
                         npcOwner.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, count);
-                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TARGET_PROPERTY, target);
+                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TARGET_PROPERTY, attackTarget);
                         npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
-                        npcOwner.m_targetLOSObject = target;
+                        npcOwner.m_targetLOSObject = attackTarget;
                     }
 
-                    player.Out.SendCheckLOS(npcOwner, target, new CheckLOSResponse(npcOwner.NPCStartAttackCheckLOS));
+                    player.Out.SendCheckLOS(npcOwner, attackTarget, new CheckLOSResponse(npcOwner.NPCStartAttackCheckLOS));
                     return;
                 }
             }
 
-            ContinueStartAttack(target);
+            ContinueStartAttack(attackTarget);
         }
 
-        public virtual void ContinueStartAttack(GameObject target)
+        public virtual void ContinueStartAttack(GameObject attackTarget)
         {
             GameNPC npc = owner as GameNPC;
 
@@ -1053,15 +980,12 @@ namespace DOL.GS
 
                 // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
                 if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    npc.Follow(target, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
+                    npc.Follow(attackTarget, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
                 else
-                    npc.Follow(target, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
+                    npc.Follow(attackTarget, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
             }
         }
 
-        /// <summary>
-        /// Stops all attacks this object's owner is currently doing.
-        /// </summary>
         public void StopAttack()
         {
             AttackState = false;

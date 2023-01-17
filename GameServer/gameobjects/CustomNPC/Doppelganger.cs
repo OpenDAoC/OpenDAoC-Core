@@ -131,7 +131,7 @@ namespace DOL.GS
                 else
                     SwitchWeapon(eActiveWeaponSlot.Standard);
             }
-            attackComponent.StartAttack(attackTarget);
+            attackComponent.RequestStartAttack(attackTarget);
         }
 
         /// <summary>

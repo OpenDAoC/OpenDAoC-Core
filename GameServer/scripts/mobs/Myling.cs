@@ -20,7 +20,7 @@ namespace DOL.GS.Scripts
         public override void StartAttack(GameObject attackTarget)
         {
             Reveal();
-            attackComponent.StartAttack(attackTarget);
+            attackComponent.RequestStartAttack(attackTarget);
         }
         
         public override void StopAttack()

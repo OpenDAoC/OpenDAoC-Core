@@ -78,7 +78,7 @@ namespace DOL.GS.RealmAbilities
 				return;
 			}
 			player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-			player.attackComponent.StartAttack(player.TargetObject);
+			player.attackComponent.RequestStartAttack(player.TargetObject);
 			
 			DisableSkill(player);
 		}

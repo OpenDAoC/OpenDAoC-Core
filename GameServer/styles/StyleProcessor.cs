@@ -216,7 +216,7 @@ namespace DOL.GS.Styles
 				//Changing the attack state clears out the styles...
 				if (living.attackComponent.AttackState == false || EffectListService.GetEffectOnTarget(living, eEffect.Engage) != null)
 				{
-					living.attackComponent.StartAttack(player.TargetObject);
+					living.attackComponent.RequestStartAttack(player.TargetObject);
 				}
 
 				if (living.TargetObject == null)

@@ -3899,7 +3899,7 @@ namespace DOL.GS
         /// <param name="target">The object to attack</param>
         public virtual void StartAttack(GameObject target)
         {
-            attackComponent.StartAttack(target);
+            attackComponent.RequestStartAttack(target);
             //if(m_followTimer != null) m_followTimer.Stop();
 			if(CurrentFollowTarget!=target)
 			{
@@ -4461,7 +4461,7 @@ namespace DOL.GS
 			else
 				SwitchWeapon(eActiveWeaponSlot.Standard);
 
-			attackComponent.StartAttack(target);
+			attackComponent.RequestStartAttack(target);
 		}
 
 		/// <summary>
@@ -4473,7 +4473,7 @@ namespace DOL.GS
 			StopFollowing();
             attackComponent.StopAttack();
 			SwitchWeapon(eActiveWeaponSlot.Distance);
-			attackComponent.StartAttack(target);
+			attackComponent.RequestStartAttack(target);
 		}
 
 		/// <summary>

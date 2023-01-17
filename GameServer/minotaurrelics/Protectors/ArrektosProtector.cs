@@ -80,7 +80,7 @@ namespace DOL.GS
         }
         public void StartAttack(GameObject target)
         {
-            attackComponent.StartAttack(target);
+            attackComponent.RequestStartAttack(target);
 
             if (!TempProperties.getProperty<bool>(ALREADY_GOT_HELP))
             {
@@ -88,7 +88,7 @@ namespace DOL.GS
                 {
                     //on initial attack, all fireborn in range add!
                     if (npc.Name == "minotaur fireborn")
-                    npc.attackComponent.StartAttack(target);
+                    npc.attackComponent.RequestStartAttack(target);
                 }
 
                 TempProperties.setProperty(ALREADY_GOT_HELP, true);
