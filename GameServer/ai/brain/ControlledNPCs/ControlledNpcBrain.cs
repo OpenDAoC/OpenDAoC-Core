@@ -1075,20 +1075,12 @@ namespace DOL.AI.Brain
 
 				if (!CheckSpells(eCheckSpellType.Offensive))
 				{
-					//StartAttack if already in AttackState or currently interrupted or have a distance weapon
-					if(Body.attackComponent.AttackState || Body.IsBeingInterrupted || Body.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-						Body.StartAttack(target);
-					//StartAttack if within AttackRange
-					else if(Body.IsWithinRadius(target,Body.attackComponent.AttackRange))
-						Body.StartAttack(target);
-					//Get closer to the target
-					else
+					Body.StartAttack(target);
+
+					if (Body.CurrentFollowTarget != target)
 					{
-						if(Body.CurrentFollowTarget!=target)
-						{
-							Body.StopFollowing();
-							Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
-						}
+						Body.StopFollowing();
+						Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
 					}
 				}
 			}
