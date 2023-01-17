@@ -17,6 +17,7 @@ namespace DOL.GS
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
         private GamePlayer _npcOwnerOwner;
+        private int _petLosCheckInterval = PET_LOS_CHECK_INTERVAL;
         private bool _hasLos;
 
         public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
@@ -158,20 +159,25 @@ namespace DOL.GS
             }            
         }
 
+        public override void CleanUp()
+        {
+            _petLosCheckInterval = 0;
+            base.CleanUp();
+        }
+
         private int CheckLos(ECSGameTimer timer)
         {
-            if (!_npcOwner.attackComponent.AttackState)
-                return 0;
-
-            // Target is either a player or a pet owned by a player.
-            if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
-                                         _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
-                                         _targetNpcBrain.GetPlayerOwner() != null))
+            if (_target == null)
+                _hasLos = false;
+            else if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
+                                            _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
+                                            _targetNpcBrain.GetPlayerOwner() != null))
+                // Target is either a player or a pet owned by a player.
                 _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
             else
                 _hasLos = true;
 
-            return PET_LOS_CHECK_INTERVAL;
+            return _petLosCheckInterval;
         }
 
         private void LosCheckCallback(GamePlayer player, ushort response, ushort targetOID)
@@ -179,10 +185,7 @@ namespace DOL.GS
             if (targetOID == 0)
                 return;
 
-            if ((response & 0x100) == 0x100)
-                _hasLos = true;
-            else
-                _hasLos = false;
+            _hasLos = (response & 0x100) == 0x100;
         }
     }
 }

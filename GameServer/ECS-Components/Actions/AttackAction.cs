@@ -392,7 +392,7 @@ namespace DOL.GS
             return true;
         }
 
-        public void CleanUp()
+        public virtual void CleanUp()
         {
             _owner.attackComponent.attackAction = null;
         }
