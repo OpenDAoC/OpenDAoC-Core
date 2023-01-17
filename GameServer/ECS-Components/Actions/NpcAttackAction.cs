@@ -160,26 +160,29 @@ namespace DOL.GS
 
         private int CheckLos(ECSGameTimer timer)
         {
-            if (!_npcOwner.attackComponent.AttackState || _target == null)
+            if (!_npcOwner.attackComponent.AttackState)
                 return 0;
 
-            // Target is neither a player or a pet owned by a player.
-            if (_target is not GamePlayer && (_target is not GameNPC _targetNpc || _targetNpc.Brain is not IControlledBrain _targetNpcBrain || _targetNpcBrain.GetPlayerOwner() == null))
-                return 0;
+            // Target is either a player or a pet owned by a player.
+            if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
+                                         _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
+                                         _targetNpcBrain.GetPlayerOwner() != null))
+                _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
+            else
+                _hasLos = true;
 
-            _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
             return PET_LOS_CHECK_INTERVAL;
         }
 
         private void LosCheckCallback(GamePlayer player, ushort response, ushort targetOID)
-		{
+        {
             if (targetOID == 0)
                 return;
 
-			if ((response & 0x100) == 0x100)
+            if ((response & 0x100) == 0x100)
                 _hasLos = true;
             else
                 _hasLos = false;
-		}
+        }
     }
 }
