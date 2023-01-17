@@ -1,5 +1,7 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -7,16 +9,28 @@ namespace DOL.GS
     {
         private const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
         // Check interval (upper bound) in ms of entities around this NPC when its main target is out of range. Used to attack other entities on its path.
-        private const int NPC_VICINITY_CHECK_DELAY = 1000;
+        private const int NPC_VICINITY_CHECK_INTERVAL = 1000;
+        private const int PET_LOS_CHECK_INTERVAL = 1000;
+
         private GameNPC _npcOwner;
         private bool _isGuardArcher;
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
+        private GamePlayer _npcOwnerOwner;
+        private bool _hasLos;
 
         public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
             _isGuardArcher = _npcOwner is GuardArcher;
+
+            if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
+            {
+                _npcOwnerOwner = npcOwnerBrain.GetPlayerOwner();
+                new ECSGameTimer(_npcOwner, new ECSGameTimer.ECSTimerCallback(CheckLos), 1);
+            }
+            else
+                _hasLos = true;
         }
 
         public override void OnAimInterrupt(GameObject attacker)
@@ -29,6 +43,12 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
+            if (!_hasLos)
+            {
+                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                return false;
+            }
+
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
@@ -76,7 +96,7 @@ namespace DOL.GS
                 if (_nextVicinityCheck < GameLoop.GameLoopTime)
                 {
                     // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
-                    _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100,NPC_VICINITY_CHECK_DELAY);
+                    _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
 
                     foreach (GameNPC npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
                     {
@@ -108,6 +128,17 @@ namespace DOL.GS
             return true;
         }
 
+        protected override bool PrepareRangedAttack()
+        {
+            if (!_hasLos)
+            {
+                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                return false;
+            }
+
+            return base.PrepareRangedAttack();
+        }
+
         protected override bool FinalizeRangedAttack()
         {
             // Switch to melee if range to target is less than 200.
@@ -126,5 +157,29 @@ namespace DOL.GS
                 return base.FinalizeRangedAttack();
             }            
         }
+
+        private int CheckLos(ECSGameTimer timer)
+        {
+            if (!_npcOwner.attackComponent.AttackState || _target == null)
+                return 0;
+
+            // Target is neither a player or a pet owned by a player.
+            if (_target is not GamePlayer && (_target is not GameNPC _targetNpc || _targetNpc.Brain is not IControlledBrain _targetNpcBrain || _targetNpcBrain.GetPlayerOwner() == null))
+                return 0;
+
+            _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
+            return PET_LOS_CHECK_INTERVAL;
+        }
+
+        private void LosCheckCallback(GamePlayer player, ushort response, ushort targetOID)
+		{
+            if (targetOID == 0)
+                return;
+
+			if ((response & 0x100) == 0x100)
+                _hasLos = true;
+            else
+                _hasLos = false;
+		}
     }
 }

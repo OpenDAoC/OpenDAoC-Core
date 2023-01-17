@@ -3880,14 +3880,6 @@ namespace DOL.GS
 		/// </summary>
 		public const int CHARMED_NOEXP_TIMEOUT = 60000;
 
-		public const string LAST_LOS_TARGET_PROPERTY = "last_LOS_checkTarget";
-		public const string LAST_LOS_TICK_PROPERTY = "last_LOS_checkTick";
-		public const string NUM_LOS_CHECKS_INPROGRESS = "num_LOS_progress";
-
-		public object LOS_LOCK = new object();
-
-		public GameObject m_targetLOSObject = null;
-
         public virtual void StopAttack()
         {
             attackComponent.StopAttack();
@@ -3900,167 +3892,18 @@ namespace DOL.GS
         public virtual void StartAttack(GameObject target)
         {
             attackComponent.RequestStartAttack(target);
-            //if(m_followTimer != null) m_followTimer.Stop();
-			if(CurrentFollowTarget!=target)
+
+			if (CurrentFollowTarget!=target)
 			{
 				StopFollowing();
 				Follow(target, m_followMinDist, m_followMaxDist);
 			}
             
             FireAmbientSentence(eAmbientTrigger.fighting, target);
-            //if (target == null)
-            //    return;
-
-            //TargetObject = target;
-
-            //long lastTick = this.TempProperties.getProperty<long>(LAST_LOS_TICK_PROPERTY);
-
-            //if (ServerProperties.Properties.ALWAYS_CHECK_PET_LOS &&
-            //    Brain != null &&
-            //    Brain is IControlledBrain &&
-            //    (target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain != null && (target as GameNPC).Brain is IControlledBrain)))
-            //{
-            //    GameObject lastTarget = (GameObject)this.TempProperties.getProperty<object>(LAST_LOS_TARGET_PROPERTY, null);
-            //    if (lastTarget != null && lastTarget == target)
-            //    {
-            //        if (lastTick != 0 && CurrentRegion.Time - lastTick < ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-            //            return;
-            //    }
-
-            //    GamePlayer losChecker = null;
-            //    if (target is GamePlayer)
-            //    {
-            //        losChecker = target as GamePlayer;
-            //    }
-            //    else if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-            //    {
-            //        losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-            //    }
-            //    else
-            //    {
-            //        // try to find another player to use for checking line of site
-            //        foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            //        {
-            //            losChecker = player;
-            //            break;
-            //        }
-            //    }
-
-            //    if (losChecker == null)
-            //    {
-            //        return;
-            //    }
-
-            //    lock (LOS_LOCK)
-            //    {
-            //        int count = TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
-
-            //        if (count > 10)
-            //        {
-            //            log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", Name);
-
-            //            // Now do a safety check.  If it's been a while since we sent any check we should clear count
-            //            if (lastTick == 0 || CurrentRegion.Time - lastTick > ServerProperties.Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-            //            {
-            //                log.Debug("LOS count reset!");
-            //                TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, 0);
-            //            }
-
-            //            return;
-            //        }
-
-            //        count++;
-            //        TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, count);
-
-            //        TempProperties.setProperty(LAST_LOS_TARGET_PROPERTY, target);
-            //        TempProperties.setProperty(LAST_LOS_TICK_PROPERTY, CurrentRegion.Time);
-            //        m_targetLOSObject = target;
-
-            //    }
-
-            //    losChecker.Out.SendCheckLOS(this, target, new CheckLOSResponse(this.NPCStartAttackCheckLOS));
-            //    return;
-            //}
-
-            //ContinueStartAttack(target);
         }
 
-        /// <summary>
-        /// We only attack if we have LOS
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="response"></param>
-        /// <param name="targetOID"></param>
-        public void NPCStartAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
-		{
-			lock (LOS_LOCK)
-			{
-				int count = TempProperties.getProperty<int>(NUM_LOS_CHECKS_INPROGRESS, 0);
-				count--;
-				TempProperties.setProperty(NUM_LOS_CHECKS_INPROGRESS, Math.Max(0, count));
-			}
-
-			if ((response & 0x100) == 0x100)
-			{
-				// make sure we didn't switch targets
-				if (TargetObject != null && m_targetLOSObject != null && TargetObject == m_targetLOSObject)
-					attackComponent.ContinueStartAttack(m_targetLOSObject);
-			}
-			else
-			{
-				if (m_targetLOSObject != null && m_targetLOSObject is GameLiving && Brain != null && Brain is IOldAggressiveBrain)
-				{
-					// there will be a think delay before mob attempts to attack next target
-					(Brain as IOldAggressiveBrain).RemoveFromAggroList(m_targetLOSObject as GameLiving);
-				}
-			}
-		}
-
-
-		//public virtual void ContinueStartAttack(GameObject target)
-		//{
-		//	StopMoving();
-		//	StopMovingOnPath();
-
-		//	if (Brain != null && Brain is IControlledBrain)
-		//	{
-		//		if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
-		//			return;
-
-		//		GamePlayer owner = null;
-
-		//		if ((owner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
-		//			owner.Stealth(false);
-		//	}
-
-		//	SetLastMeleeAttackTick();
-		//	StartMeleeAttackTimer();
-
-		//	base.StartAttack(target);
-
-		//	if (AttackState)
-		//	{
-		//		// if we're moving we need to lock down the current position
-		//		if (IsMoving)
-		//			SaveCurrentPosition();
-
-		//		if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-		//		{
-		//			// Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
-		//			Follow(target, AttackRange - 30, STICKMAXIMUMRANGE);
-		//		}
-		//		else
-		//		{
-		//			Follow(target, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
-		//		}
-		//	}
-
-		//}
-
 		private int scalingFactor = Properties.GAMENPC_SCALING;
-
 		private int orbsReward = 0;
-		
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{

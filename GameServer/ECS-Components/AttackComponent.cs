@@ -103,11 +103,8 @@ namespace DOL.GS
 
             attackAction?.Tick(time);
 
-            if (weaponAction != null)
-            {
-                if (weaponAction.AttackFinished)
-                    weaponAction = null;
-            }
+            if (weaponAction?.AttackFinished == true)
+                weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
                 EntityManager.RemoveComponent(typeof(AttackComponent), owner);
@@ -843,7 +840,7 @@ namespace DOL.GS
                 }
             }
             else if (owner is GameNPC && m_startAttackTarget != null)
-                NPCStartAttack(m_startAttackTarget);
+                NpcStartAttack(m_startAttackTarget);
             else
                 LivingStartAttack();
         }
@@ -899,67 +896,11 @@ namespace DOL.GS
             return true;
         }
 
-        private void NPCStartAttack(GameObject attackTarget)
+        private void NpcStartAttack(GameObject attackTarget)
         {
             GameNPC npcOwner = owner as GameNPC;
             npcOwner.TargetObject = attackTarget;
 
-            if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain)
-            {
-                GamePlayer player = null;
-
-                if (attackTarget is GamePlayer targetPlayer)
-                    player = targetPlayer;
-                else if (attackTarget is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain)
-                    player = targetNpcBrain.GetPlayerOwner();
-
-                // LoS check are done only against a player or a pet.
-                if (player != null)
-                {
-                    GameObject lastTarget = (GameObject)npcOwner.TempProperties.getProperty<object>(GameNPC.LAST_LOS_TARGET_PROPERTY, null);
-                    long lastTick = npcOwner.TempProperties.getProperty<long>(GameNPC.LAST_LOS_TICK_PROPERTY);
-
-                    if (lastTarget != null && lastTarget == attackTarget)
-                    {
-                        if (lastTick != 0 && GameLoop.GameLoopTime - lastTick < Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-                            return;
-                    }
-
-                    lock (npcOwner.LOS_LOCK)
-                    {
-                        int count = npcOwner.TempProperties.getProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
-
-                        if (count > 10)
-                        {
-                            GameNPC.log.DebugFormat("{0} LOS count check exceeds 10, aborting LOS check!", npcOwner.Name);
-
-                            // Now do a safety check. If it's been a while since we sent any check we should clear count.
-                            if (lastTick == 0 || GameLoop.GameLoopTime - lastTick > Properties.LOS_PLAYER_CHECK_FREQUENCY * 1000)
-                            {
-                                GameNPC.log.Debug("LOS count reset!");
-                                npcOwner.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, 0);
-                            }
-
-                            return;
-                        }
-
-                        count++;
-                        npcOwner.TempProperties.setProperty(GameNPC.NUM_LOS_CHECKS_INPROGRESS, count);
-                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TARGET_PROPERTY, attackTarget);
-                        npcOwner.TempProperties.setProperty(GameNPC.LAST_LOS_TICK_PROPERTY, GameLoop.GameLoopTime);
-                        npcOwner.m_targetLOSObject = attackTarget;
-                    }
-
-                    player.Out.SendCheckLOS(npcOwner, attackTarget, new CheckLOSResponse(npcOwner.NPCStartAttackCheckLOS));
-                    return;
-                }
-            }
-
-            ContinueStartAttack(attackTarget);
-        }
-
-        public virtual void ContinueStartAttack(GameObject attackTarget)
-        {
             GameNPC npc = owner as GameNPC;
 
             npc.StopMovingOnPath();

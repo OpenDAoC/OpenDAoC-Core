@@ -76,6 +76,8 @@ namespace DOL.GS
 
             if (_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
             {
+                _target = _owner.TargetObject;
+
                 if (PrepareMeleeAttack())
                 {
                     PerformMeleeAttack();
@@ -84,6 +86,9 @@ namespace DOL.GS
             }
             else
             {
+                // Must be done here because RangeAttackTarget is changed in CheckRangeAttackState.
+                _target = _owner.rangeAttackComponent.Target;
+
                 if (PrepareRangedAttack())
                 {
                     PerformRangedAttack();
@@ -141,8 +146,6 @@ namespace DOL.GS
 
         protected virtual bool PrepareMeleeAttack()
         {
-            _target = _owner.TargetObject;
-
             if (_attackData != null && _attackData.AttackResult is eAttackResult.Fumbled)
             {
                 // Skip this attack if the last one fumbled.
@@ -187,8 +190,6 @@ namespace DOL.GS
 
         protected virtual bool PrepareRangedAttack()
         {
-            // Must be done here because RangeAttackTarget is changed in CheckRangeAttackState.
-            _target = _owner.rangeAttackComponent.Target;
             eCheckRangeAttackStateResult rangeCheckresult = _owner.rangeAttackComponent.CheckRangeAttackState(_target);
 
             if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
