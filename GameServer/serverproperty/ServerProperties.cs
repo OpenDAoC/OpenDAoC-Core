@@ -2503,9 +2503,6 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("spells", "spell_interrupt_duration", "", 4500)]
 		public static int SPELL_INTERRUPT_DURATION;
 
-		[ServerProperty("spells", "spell_interrupt_recast", "", 2000)]
-		public static int SPELL_INTERRUPT_RECAST;
-
 		[ServerProperty("spells", "spell_interrupt_again", "", 100)]
 		public static int SPELL_INTERRUPT_AGAIN;
 

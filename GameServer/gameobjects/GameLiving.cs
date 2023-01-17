@@ -1994,14 +1994,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The amount of time the caster has to wait before being able to cast again
-		/// </summary>
-		public virtual int SpellInterruptRecastTime
-		{
-			get { return ServerProperties.Properties.SPELL_INTERRUPT_RECAST; }
-		}
-
-		/// <summary>
 		/// Additional interrupt time if interrupted again
 		/// </summary>
 		public virtual int SpellInterruptRecastAgain
