@@ -631,7 +631,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class BlightControllerBrain : StandardMobBrain
+	public class BlightControllerBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -639,8 +639,6 @@ namespace DOL.AI.Brain
 		public BlightControllerBrain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		public static bool CreateLateBlight = false;
@@ -655,8 +653,13 @@ namespace DOL.AI.Brain
 				SpawnFleshBlight();
 			if (FleshBlight.FleshBlightCount == 2)
 				SpawnBlight();
-			base.Think();
 		}
+
+		public override void KillFSM()
+		{
+			
+		}
+
 		public void SpawnLateBlight()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
