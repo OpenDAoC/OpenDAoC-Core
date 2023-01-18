@@ -46,7 +46,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class PilusFuryBrain : StandardMobBrain
+	public class PilusFuryBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -92,6 +92,11 @@ namespace DOL.AI.Brain
 					CanDD = true;
 				}
 			}
+		}
+
+		public override void KillFSM()
+		{
+			
 		}
 
 		private void HandlePlayerCheck(GamePlayer player)
