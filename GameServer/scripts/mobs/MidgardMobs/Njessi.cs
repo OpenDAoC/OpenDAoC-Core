@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -128,98 +129,37 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
+            
+            _roamingPathPoints.Add(new Point3D(783055, 882613, 4613));
+            _roamingPathPoints.Add(new Point3D(781504, 886149, 4613));
+            _roamingPathPoints.Add(new Point3D(788057, 899051, 4613));
+            _roamingPathPoints.Add(new Point3D(797231, 909562, 4613));
+            _roamingPathPoints.Add(new Point3D(791084, 894015, 4613));
+            _roamingPathPoints.Add(new Point3D(788652, 887943, 4613));
 		}
-		public static bool point1check = false;
-		public static bool point2check = false;
-		public static bool point3check = false;
-		public static bool point4check = false;
-		public static bool point5check = false;
-		public static bool point6check = false;
-        public static bool walkback = false;
+		
+		private List<Point3D> _roamingPathPoints = new List<Point3D>();
+        private int _lastRoamIndex = 0;
+        
         public override void Think()
 		{
-			Point3D point1 = new Point3D(783055, 882613, 4613);
-			Point3D point2 = new Point3D(781504, 886149, 4613);
-			Point3D point3 = new Point3D(788057, 899051, 4613);
-			Point3D point4 = new Point3D(797231, 909562, 4613);
-			Point3D point5 = new Point3D(791084, 894015, 4613);
-			Point3D point6 = new Point3D(788652, 887943, 4613);
+			
             Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
             #region WalkPoints
             if (!Body.InCombat && !HasAggro)
             {
 
-                if (!Body.IsWithinRadius(point1, 30) && point1check == false)
-                {
-                    Body.WalkTo(point1, 200);
-                }
-                else
-                {
-                    point1check = true;
-                    walkback = false;
-                    if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
-                    {
-                        Body.WalkTo(point2, 120);
-                    }
-                    else
-                    {
-                        point2check = true;
-                        if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-                            point3check == false)
-                        {
-                            Body.WalkTo(point3, 120);
-                        }
-                        else
-                        {
-                            point3check = true;
-                            if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-                                point3check == true && point4check == false)
-                            {
-                                Body.WalkTo(point4, 120);
-                            }
-                            else
-                            {
-                                point4check = true;
-                                if (!Body.IsWithinRadius(point5, 30) && point1check == true &&
-                                    point2check == true && point3check == true && point4check == true &&
-                                    point5check == false)
-                                {
-                                    Body.WalkTo(point5, 120);
-                                }
-                                else
-                                {
-                                    point5check = true;
-                                    if (!Body.IsWithinRadius(point6, 30) && point1check == true &&
-                                        point2check == true && point3check == true && point4check == true &&
-                                        point5check == true && point6check == false)
-                                    {
-                                        Body.WalkTo(point6, 120);
-                                    }
-                                    else
-                                    {
-                                        point6check = true;
-                                        if (!Body.IsWithinRadius(spawn, 30) && point1check == true &&
-                                            point2check == true && point3check == true && point4check == true &&
-                                            point5check == true && point6check == true && walkback == false)
-                                        {
-                                            Body.WalkTo(spawn, 120);
-                                        }
-                                        else
-                                        {
-                                            walkback = true;
-                                            point1check = false;
-                                            point2check = false;
-                                            point3check = false;
-                                            point4check = false;
-                                            point5check = false;
-                                            point6check = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+	            if (Body.IsWithinRadius(_roamingPathPoints[_lastRoamIndex], 100))
+	            {
+		            _lastRoamIndex++;
+	            }
+
+	            if (_lastRoamIndex >= _roamingPathPoints.Count)
+	            {
+		            _lastRoamIndex = 0;
+	            }
+	            else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], 120);
+                
             }
             #endregion
             if (Body.IsAlive)
