@@ -232,29 +232,32 @@ namespace DOL.AI.Brain
 		/// Gets or sets the aggression state of the brain
 		/// </summary>
 		public virtual eAggressionState AggressionState
-		{
-			get { return m_aggressionState; }
-			set
-			{
-				m_aggressionState = value;
+        {
+            get => m_aggressionState;
+            set
+            {
+                m_aggressionState = value;
 
-				if (m_aggressionState == eAggressionState.Passive)
-				{
-					Disengage();
+                if (m_aggressionState == eAggressionState.Passive)
+                {
+                    Disengage();
 
-					if (WalkState == eWalkState.Follow)
-						FollowOwner();
-					else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-						Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
-				}
-			}
-		}
+                    if (WalkState == eWalkState.Follow)
+                        FollowOwner();
+                    else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
+                    {
+                        Body.StopFollowing();
+                        Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		/// Attack the target on command
-		/// </summary>
-		/// <param name="target"></param>
-		public virtual void Attack(GameObject target)
+        /// <summary>
+        /// Attack the target on command
+        /// </summary>
+        /// <param name="target"></param>
+        public virtual void Attack(GameObject target)
 		{
 			if (AggressionState == eAggressionState.Passive)
 			{
