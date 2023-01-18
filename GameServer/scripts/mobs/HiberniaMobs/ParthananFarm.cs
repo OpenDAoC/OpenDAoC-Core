@@ -906,7 +906,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class ParthananFarmController1Brain : StandardMobBrain
+	public class ParthananFarmController1Brain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -914,8 +914,6 @@ namespace DOL.AI.Brain
 		public ParthananFarmController1Brain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		public static bool BossIsUP = false;
@@ -954,9 +952,12 @@ namespace DOL.AI.Brain
 				SacrificeParthanan1 = false;
 				LoughDergBoss = 1;
 			}
-
-			base.Think();
 		}
+
+		public override void KillFSM()
+		{
+		}
+
 		public void SpawnBigOne()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
@@ -1006,7 +1007,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class ParthananFarmController2Brain : StandardMobBrain
+	public class ParthananFarmController2Brain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -1014,8 +1015,6 @@ namespace DOL.AI.Brain
 		public ParthananFarmController2Brain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		public static bool BossIsUP2 = false;
@@ -1054,8 +1053,13 @@ namespace DOL.AI.Brain
 				SacrificeParthanan2 = false;
 				ConnachtBoss = 1;
 			}
-			base.Think();
 		}
+
+		public override void KillFSM()
+		{
+			
+		}
+
 		public void SpawnBigOne()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
@@ -1106,7 +1110,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class ParthananFarmController2bBrain : StandardMobBrain
+	public class ParthananFarmController2bBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -1114,8 +1118,6 @@ namespace DOL.AI.Brain
 		public ParthananFarmController2bBrain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		public static bool BossIsUP2b = false;
@@ -1154,8 +1156,12 @@ namespace DOL.AI.Brain
 				SacrificeParthanan2b = false;
 				Connacht2Boss = 1;
 			}
-			base.Think();
 		}
+
+		public override void KillFSM()
+		{
+		}
+
 		public void SpawnBigOne()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
