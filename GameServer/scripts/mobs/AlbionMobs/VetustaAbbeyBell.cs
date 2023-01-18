@@ -30,7 +30,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class VetustaAbbeyBellBrain : StandardMobBrain
+	public class VetustaAbbeyBellBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -38,8 +38,6 @@ namespace DOL.AI.Brain
 		public VetustaAbbeyBellBrain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		private int RingBell(ECSGameTimer timer)
@@ -98,7 +96,12 @@ namespace DOL.AI.Brain
 					}
 					break;
 			}
-			base.Think();
+			
+		}
+
+		public override void KillFSM()
+		{
+			
 		}
 	}
 }
