@@ -757,7 +757,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-    public class HjalmarSuttungControllerBrain : StandardMobBrain
+    public class HjalmarSuttungControllerBrain : APlayerVicinityBrain
     {
         private static readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -765,8 +765,6 @@ namespace DOL.AI.Brain
         public HjalmarSuttungControllerBrain()
             : base()
         {
-            AggroLevel = 0; //neutral
-            AggroRange = 0;
             ThinkInterval = 1000;
         }
         public static bool Spawn_Boss = false;
@@ -789,8 +787,13 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            base.Think();
         }
+
+        public override void KillFSM()
+        {
+            
+        }
+
         private int SpawnBoss(ECSGameTimer timer)
         {
             switch(Util.Random(1,2))
