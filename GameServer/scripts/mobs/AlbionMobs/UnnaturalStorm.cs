@@ -249,15 +249,13 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class UnnaturalStormControllerBrain : StandardMobBrain
+	public class UnnaturalStormControllerBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public UnnaturalStormControllerBrain()
 			: base()
 		{
-			AggroLevel = 0; //neutral
-			AggroRange = 0;
 			ThinkInterval = 1000;
 		}
 		public override void Think()
@@ -283,9 +281,13 @@ namespace DOL.AI.Brain
 			}
 			if (hour == 18 && minute == 30)
 				SpawnUnnaturalStorm();
-
-			base.Think();
+			
 		}
+
+		public override void KillFSM()
+		{
+		}
+
 		public void SpawnUnnaturalStorm()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
