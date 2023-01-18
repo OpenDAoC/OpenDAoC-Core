@@ -4,6 +4,7 @@ using System;
 using DOL.GS;
 using DOL.Database;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -48,158 +49,157 @@ namespace DOL.AI.Brain
 	public class PilusFuryBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		private List<Point3D> _points = new List<Point3D>();
+
 		public PilusFuryBrain() : base()
 		{
-			AggroLevel = 0;
-			AggroRange = 0;
 			ThinkInterval = 1500;
+			
+			_points.Add(new Point3D(33374, 42009, 15007));//400 range
+			_points.Add(new Point3D(33376, 41368, 15007));//200
+			_points.Add(new Point3D(33374, 40973, 15007));//200
+			_points.Add(new Point3D(33369, 40587, 15007));//200
+			_points.Add(new Point3D(33370, 40194, 15007));//400
+			_points.Add(new Point3D(33372, 39597, 15007));//200
+			_points.Add(new Point3D(33368, 39196, 15007));//200
+			_points.Add(new Point3D(33374, 38797, 15007));//200
+			_points.Add(new Point3D(33370, 38653, 15007));//200
+			_points.Add(new Point3D(33368, 38257, 15007));//200
+			_points.Add(new Point3D(33364, 37859, 15007));//200
+			_points.Add(new Point3D(33365, 37667, 15007));//200
 		}
+		
 		List<GameLiving> DD_Enemys = new List<GameLiving>();
 		private bool CanDD = false;
+		
 		public override void Think()
 		{
-			Point3D point1 = new Point3D(33374, 42009, 15007);//400 range
-			Point3D point2 = new Point3D(33376, 41368, 15007);//200
-			Point3D point3 = new Point3D(33374, 40973, 15007);//200
-			Point3D point4 = new Point3D(33369, 40587, 15007);//200
-			Point3D point5 = new Point3D(33370, 40194, 15007);//400
-			Point3D point6 = new Point3D(33372, 39597, 15007);//200
-			Point3D point7 = new Point3D(33368, 39196, 15007);//200
-			Point3D point8 = new Point3D(33374, 38797, 15007);//200
-			Point3D point9 = new Point3D(33370, 38653, 15007);//200
-			Point3D point10 = new Point3D(33368, 38257, 15007);//200
-			Point3D point11 = new Point3D(33364, 37859, 15007);//200
-			Point3D point12 = new Point3D(33365, 37667, 15007);//200
 			if(Body.IsAlive)
-            {
+			{
 				foreach(GamePlayer player in Body.GetPlayersInRadius(10000))
-                {
-					if(player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-						if((player.IsWithinRadius(point1,400) || player.IsWithinRadius(point2, 200) || player.IsWithinRadius(point3, 200) || player.IsWithinRadius(point4, 200) || player.IsWithinRadius(point5, 400)
-						|| player.IsWithinRadius(point6, 200) || player.IsWithinRadius(point7, 200) || player.IsWithinRadius(point8, 200) || player.IsWithinRadius(point9, 200) || player.IsWithinRadius(point10, 200)
-						|| player.IsWithinRadius(point11, 200) || player.IsWithinRadius(point12, 200)))
-                        {
-							if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.ControlledBrain != null)
-							{
-								if (player.ControlledBrain.Body != null)
-								{
-									NecromancerPet pet = (NecromancerPet)player.ControlledBrain.Body;
-									GamePlayer PetOwner = pet.Owner as GamePlayer;
-									if (pet != null && !DD_Enemys.Contains(pet))
-									{
-										if ((pet.IsWithinRadius(point1, 400) || pet.IsWithinRadius(point2, 200) || pet.IsWithinRadius(point3, 200) || pet.IsWithinRadius(point4, 200) || pet.IsWithinRadius(point5, 400)
-										|| pet.IsWithinRadius(point6, 200) || pet.IsWithinRadius(point7, 200) || pet.IsWithinRadius(point8, 200) || pet.IsWithinRadius(point9, 200) || pet.IsWithinRadius(point10, 200)
-										|| pet.IsWithinRadius(point11, 200) || pet.IsWithinRadius(point12, 200)))
-										{
-											DD_Enemys.Add(pet);
-											PetOwner.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-										}
-									}
-								}
-							}
-							else
-							{
-								if (!DD_Enemys.Contains(player))
-								{
-									DD_Enemys.Add(player);
-									player.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-								}
-							}
-                        }
-						if (!player.IsWithinRadius(point1, 400) && !player.IsWithinRadius(point2, 200) && !player.IsWithinRadius(point3, 200) && !player.IsWithinRadius(point4, 200) && !player.IsWithinRadius(point5, 400)
-						&& !player.IsWithinRadius(point6, 200) && !player.IsWithinRadius(point7, 200) && !player.IsWithinRadius(point8, 200) && !player.IsWithinRadius(point9, 200) && !player.IsWithinRadius(point10, 200)
-						&& !player.IsWithinRadius(point11, 200) && !player.IsWithinRadius(point12, 200))
-						{
-							if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.ControlledBrain != null)
-							{
-								if (player.ControlledBrain.Body != null)
-								{
-									NecromancerPet pet = (NecromancerPet)player.ControlledBrain.Body;
-									if (pet != null && DD_Enemys.Contains(pet))
-									{
-										if (!pet.IsWithinRadius(point1, 400) && !pet.IsWithinRadius(point2, 200) && !pet.IsWithinRadius(point3, 200) && !pet.IsWithinRadius(point4, 200) && !pet.IsWithinRadius(point5, 400)
-										&& !pet.IsWithinRadius(point6, 200) && !pet.IsWithinRadius(point7, 200) && !pet.IsWithinRadius(point8, 200) && !pet.IsWithinRadius(point9, 200) && !pet.IsWithinRadius(point10, 200)
-										&& !pet.IsWithinRadius(point11, 200) && !pet.IsWithinRadius(point12, 200))
-											DD_Enemys.Remove(pet);
-									}
-								}
-							}
-							else
-							{
-								if (DD_Enemys.Contains(player))
-									DD_Enemys.Remove(player);
-							}
-						}
-					}
-					if (player != null && player.Client.Account.PrivLevel != 1)
-					{
-						if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.ControlledBrain != null)
-						{
-							if (player.ControlledBrain.Body != null)
-							{
-								NecromancerPet pet = (NecromancerPet)player.ControlledBrain.Body;
-								if (pet != null && DD_Enemys.Contains(pet))
-									DD_Enemys.Remove(pet);
-							}
-						}
-						else
-						{
-							if (DD_Enemys.Contains(player))
-								DD_Enemys.Remove(player);
-						}
-					}
-					if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.ControlledBrain != null)
-					{
-						if (player.ControlledBrain.Body != null)
-						{
-							NecromancerPet pet = (NecromancerPet)player.ControlledBrain.Body;
-							if (pet != null && !pet.IsAlive && DD_Enemys.Contains(pet))
-								DD_Enemys.Remove(pet);
-						}
-					}
-					else
-					{
-						if (player != null && !player.IsAlive && DD_Enemys.Contains(player))
-							DD_Enemys.Remove(player);
-					}
-				}
+	            {
+		            HandlePlayerCheck(player);
+	            }
 				foreach(GameNPC npc in Body.GetNPCsInRadius(10000))
-                {
-					if(npc != null && npc.IsAlive && npc is GamePet pet)
-                    {
-						if (pet is not NecromancerPet)
-						{
-							GamePlayer playerOwner = pet.Owner as GamePlayer;
-							if (!DD_Enemys.Contains(pet))
-							{
-								if ((pet.IsWithinRadius(point1, 400) || pet.IsWithinRadius(point2, 200) || pet.IsWithinRadius(point3, 200) || pet.IsWithinRadius(point4, 200) || pet.IsWithinRadius(point5, 400)
-								|| pet.IsWithinRadius(point6, 200) || pet.IsWithinRadius(point7, 200) || pet.IsWithinRadius(point8, 200) || pet.IsWithinRadius(point9, 200) || pet.IsWithinRadius(point10, 200)
-								|| pet.IsWithinRadius(point11, 200) || pet.IsWithinRadius(point12, 200)))
-									DD_Enemys.Add(pet);
-							}
-							if (DD_Enemys.Contains(pet))
-							{
-								if (!pet.IsWithinRadius(point1, 400) && !pet.IsWithinRadius(point2, 200) && !pet.IsWithinRadius(point3, 200) && !pet.IsWithinRadius(point4, 200) && !pet.IsWithinRadius(point5, 400)
-								&& !pet.IsWithinRadius(point6, 200) && !pet.IsWithinRadius(point7, 200) && !pet.IsWithinRadius(point8, 200) && !pet.IsWithinRadius(point9, 200) && !pet.IsWithinRadius(point10, 200)
-								&& !pet.IsWithinRadius(point11, 200) && !pet.IsWithinRadius(point12, 200))
-									DD_Enemys.Remove(pet);
-							}
-							if (pet != null && !pet.IsAlive && DD_Enemys.Contains(pet))
-								DD_Enemys.Remove(pet);
-							if (playerOwner != null && playerOwner.IsAlive && playerOwner.Client.Account.PrivLevel != 1 && pet.IsAlive && DD_Enemys.Contains(pet))
-								DD_Enemys.Remove(pet);
-						}
-					}
-                }
+				{
+					HandleNpcCheck(npc);
+				}
+				
 				if (!CanDD && DD_Enemys.Count > 0)
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareDD), 3000);
 					CanDD = true;
 				}
 			}
-			base.Think();
 		}
+
+		private void HandlePlayerCheck(GamePlayer player)
+		{
+			if (player is {IsAlive: true} && player.Client.Account.PrivLevel == 1)
+			{
+				var nearbyPoint = _points.FirstOrDefault(point => ((point == _points[0] || point == _points[4]) && player.IsWithinRadius(point, 400)) 
+				                                          || player.IsWithinRadius(point, 200));
+
+				if (nearbyPoint != null)
+				{
+					if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+					{
+						if (player.ControlledBrain.Body != null)
+						{
+							NecromancerPet pet = (NecromancerPet) player.ControlledBrain.Body;
+							HandleNpcCheck(pet);
+						}
+					}
+					else
+					{
+						if (!DD_Enemys.Contains(player))
+						{
+							DD_Enemys.Add(player);
+							player.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.",
+								eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+						}
+					}
+				}
+				else 
+				{
+					if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+					{
+						if (player.ControlledBrain.Body != null && DD_Enemys.Contains(player.ControlledBrain.Body))
+						{
+							DD_Enemys.Remove(player.ControlledBrain.Body);
+						}
+					}
+
+					if (DD_Enemys.Contains(player))
+					{
+						DD_Enemys.Remove(player);
+					}
+				}
+			}
+
+			if (player != null && player.Client.Account.PrivLevel != 1)
+			{
+				if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+				{
+					if (player.ControlledBrain.Body != null)
+					{
+						NecromancerPet pet = (NecromancerPet) player.ControlledBrain.Body;
+						if (pet != null && DD_Enemys.Contains(pet))
+							DD_Enemys.Remove(pet);
+					}
+				}
+				else
+				{
+					if (DD_Enemys.Contains(player))
+						DD_Enemys.Remove(player);
+				}
+			}
+
+			if (player?.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+			{
+				NecromancerPet pet = (NecromancerPet) player.ControlledBrain.Body;
+				if (pet is {IsAlive: false} && DD_Enemys.Contains(pet))
+					DD_Enemys.Remove(pet);
+			}
+			else
+			{
+				if (player is {IsAlive: false} && DD_Enemys.Contains(player))
+					DD_Enemys.Remove(player);
+			}
+		}
+
+		private void HandleNpcCheck(GameNPC npc)
+		{
+			if (npc is {IsAlive: true} and GamePet pet)
+			{
+				GamePlayer playerOwner = pet.Owner as GamePlayer;
+				var nearbyPoint = _points.FirstOrDefault(point => ((point == _points[0] || point == _points[4]) && pet.IsWithinRadius(point, 400))
+				                                          || pet.IsWithinRadius(point, 200));
+
+				if (nearbyPoint != null)
+				{
+					if (!DD_Enemys.Contains(pet))
+					{
+						DD_Enemys.Add(pet);
+					}
+				}
+				else
+				{
+					if (DD_Enemys.Contains(pet))
+					{
+						DD_Enemys.Remove(pet);
+					}
+				}
+
+				if (pet is {IsAlive: false} && DD_Enemys.Contains(pet))
+					DD_Enemys.Remove(pet);
+				if (playerOwner is {IsAlive: true} && playerOwner.Client.Account.PrivLevel != 1 &&
+				    pet.IsAlive && DD_Enemys.Contains(pet))
+					DD_Enemys.Remove(pet);
+			}
+		}
+
 		private int PrepareDD(ECSGameTimer timer)
         {
 			if (DD_Enemys.Count > 0)
