@@ -507,8 +507,8 @@ namespace DOL.AI.Brain
 		{
 			if (IsRestless && Body.IsAlive)
 			{
-				Body.MaxSpeedBase = 3100;
-				short speed = 3000;
+				Body.MaxSpeedBase = 400;
+				short speed = 350;
 				
 				if (Body.IsWithinRadius(_roamingPathPoints[_lastRoamIndex], 100))
 				{

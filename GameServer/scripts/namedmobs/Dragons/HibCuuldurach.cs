@@ -226,34 +226,6 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			#region All bools here
-			HibCuuldurachBrain.pathpoint1 = false;
-			HibCuuldurachBrain.pathpoint2 = false;
-			HibCuuldurachBrain.pathpoint3 = false;
-			HibCuuldurachBrain.pathpoint4 = false;
-			HibCuuldurachBrain.pathpoint5 = false;
-			HibCuuldurachBrain.pathpoint6 = false;
-			HibCuuldurachBrain.pathpoint7 = false;
-			HibCuuldurachBrain.pathpoint8 = false;
-			HibCuuldurachBrain.pathpoint9 = false;
-			HibCuuldurachBrain.pathpoint10 = false;
-			HibCuuldurachBrain.pathpoint11 = false;
-			HibCuuldurachBrain.pathpoint12 = false;
-			HibCuuldurachBrain.pathpoint13 = false;
-			HibCuuldurachBrain.pathpoint14 = false;
-			HibCuuldurachBrain.pathpoint15 = false;
-			HibCuuldurachBrain.pathpoint16 = false;
-			HibCuuldurachBrain.pathpoint17 = false;
-			HibCuuldurachBrain.pathpoint18 = false;
-			HibCuuldurachBrain.pathpoint19 = false;
-			HibCuuldurachBrain.pathpoint20 = false;
-			HibCuuldurachBrain.pathpoint21 = false;
-			HibCuuldurachBrain.pathpoint22 = false;
-			HibCuuldurachBrain.pathpoint23 = false;
-			HibCuuldurachBrain.pathpoint24 = false;
-			HibCuuldurachBrain.pathpoint25 = false;
-			HibCuuldurachBrain.pathpoint26 = false;
-			HibCuuldurachBrain.pathpoint27 = false;
-			HibCuuldurachBrain.pathpoint28 = false;
 			HibCuuldurachBrain.ResetChecks = false;
 			HibCuuldurachBrain.IsRestless = false;
 			HibCuuldurachBrain.LockIsRestless = false;
@@ -318,6 +290,36 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 800;
 			ThinkInterval = 5000;
+			
+			_roamingPathPoints.Add(new Point3D(408646, 706432, 2965));//spawn
+			_roamingPathPoints.Add(new Point3D(399021, 704912, 6212));
+			_roamingPathPoints.Add(new Point3D(391823, 706981, 6212));
+			_roamingPathPoints.Add(new Point3D(379666, 707613, 6212));
+			_roamingPathPoints.Add(new Point3D(374210, 703692, 6212));
+			_roamingPathPoints.Add(new Point3D(369800, 698565, 6212));
+			_roamingPathPoints.Add(new Point3D(376500, 693899, 6212));
+			_roamingPathPoints.Add(new Point3D(382065, 695219, 6212));
+			_roamingPathPoints.Add(new Point3D(383638, 677035, 6212));
+			_roamingPathPoints.Add(new Point3D(391481, 681660, 6810));
+			_roamingPathPoints.Add(new Point3D(384378, 684504, 6226));
+			_roamingPathPoints.Add(new Point3D(376941, 691151, 6226));
+			_roamingPathPoints.Add(new Point3D(373055, 684792, 7197));
+			_roamingPathPoints.Add(new Point3D(371289, 666663, 7197));
+			_roamingPathPoints.Add(new Point3D(361740, 659874, 7197));
+			_roamingPathPoints.Add(new Point3D(367670, 653364, 7197));
+			_roamingPathPoints.Add(new Point3D(374128, 652093, 8016));
+			_roamingPathPoints.Add(new Point3D(392383, 658971, 8016));
+			_roamingPathPoints.Add(new Point3D(399312, 670926, 8016));
+			_roamingPathPoints.Add(new Point3D(399806, 678950, 6685));
+			_roamingPathPoints.Add(new Point3D(394874, 680283, 6685));
+			_roamingPathPoints.Add(new Point3D(399038, 686435, 6685));
+			_roamingPathPoints.Add(new Point3D(410606, 672288, 6685));
+			_roamingPathPoints.Add(new Point3D(406201, 657594, 8321));
+			_roamingPathPoints.Add(new Point3D(411408, 655769, 8321));
+			_roamingPathPoints.Add(new Point3D(411061, 673862, 6722));
+			_roamingPathPoints.Add(new Point3D(409199, 679881, 6722));
+			_roamingPathPoints.Add(new Point3D(409781, 696669, 7148));
+
 		}
 		public static bool CanGlare = false;
 		public static bool CanGlare2 = false;
@@ -329,6 +331,8 @@ namespace DOL.AI.Brain
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
 		public static System.Collections.Generic.List<GameNPC> DragonAdds = new System.Collections.Generic.List<GameNPC>();
+		private List<Point3D> _roamingPathPoints = new List<Point3D>();
+		private int _lastRoamIndex = 0;
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
@@ -338,7 +342,6 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			Point3D spawn = new Point3D(408646, 706432, 2965);
 			if (!CheckProximityAggro())
 			{
 				Body.Health = Body.MaxHealth;
@@ -426,6 +429,7 @@ namespace DOL.AI.Brain
 					ClearAggroList();
 				}
 				IsRestless = true;//start roam
+				_lastRoamIndex = 0;
 				LockEndRoute = false;
 				foreach (GameClient client in WorldMgr.GetClientsOfZone(Body.CurrentZone.ID))//from current zone
 				{
@@ -447,41 +451,12 @@ namespace DOL.AI.Brain
 			if (IsRestless)
 				DragonFlyingPath();//make dragon follow the path
 
-			if (!ResetChecks && pathpoint28)
+			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
 				IsRestless = false;//can roam again
 				Body.WalkToSpawn();//move dragon to spawn so he can attack again
 				Body.Flags = 0; //remove all flags
-				#region All bools pathpoints here
-				pathpoint1 = false;
-				pathpoint2 = false;
-				pathpoint3 = false;
-				pathpoint4 = false;
-				pathpoint5 = false;
-				pathpoint6 = false;
-				pathpoint7 = false;
-				pathpoint8 = false;
-				pathpoint9 = false;
-				pathpoint10 = false;
-				pathpoint11 = false;
-				pathpoint12 = false;
-				pathpoint13 = false;
-				pathpoint14 = false;
-				pathpoint15 = false;
-				pathpoint16 = false;
-				pathpoint17 = false;
-				pathpoint18 = false;
-				pathpoint19 = false;
-				pathpoint20 = false;
-				pathpoint21 = false;
-				pathpoint22 = false;
-				pathpoint23 = false;
-				pathpoint24 = false;
-				pathpoint25 = false;
-				pathpoint26 = false;
-				pathpoint27 = false;
-				pathpoint28 = false;
-				#endregion
+				_lastRoamIndex = 0;
 				ResetChecks = true;//do it only once
 			}
 			if (Body.CurrentRegion.IsNightTime == true && !LockEndRoute)//reset bools to dragon can roam again
@@ -530,279 +505,20 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Dragon Roaming Path
-		#region PathPoints checks
-		public static bool pathpoint1 = false;
-		public static bool pathpoint2 = false;
-		public static bool pathpoint3 = false;
-		public static bool pathpoint4 = false;
-		public static bool pathpoint5 = false;
-		public static bool pathpoint6 = false;
-		public static bool pathpoint7 = false;
-		public static bool pathpoint8 = false;
-		public static bool pathpoint9 = false;
-		public static bool pathpoint10 = false;
-		public static bool pathpoint11 = false;
-		public static bool pathpoint12 = false;
-		public static bool pathpoint13 = false;
-		public static bool pathpoint14 = false;
-		public static bool pathpoint15 = false;
-		public static bool pathpoint16 = false;
-		public static bool pathpoint17 = false;
-		public static bool pathpoint18 = false;
-		public static bool pathpoint19 = false;
-		public static bool pathpoint20 = false;
-		public static bool pathpoint21 = false;
-		public static bool pathpoint22 = false;
-		public static bool pathpoint23 = false;
-		public static bool pathpoint24 = false;
-		public static bool pathpoint25 = false;
-		public static bool pathpoint26 = false;
-		public static bool pathpoint27 = false;
-		public static bool pathpoint28 = false;
-		#endregion
 		private void DragonFlyingPath()
 		{
-			#region Route PathPoints
-			Point3D point1 = new Point3D(399021, 704912, 6212);
-			Point3D point2 = new Point3D(391823, 706981, 6212);
-			Point3D point3 = new Point3D(379666, 707613, 6212);
-			Point3D point4 = new Point3D(374210, 703692, 6212);
-			Point3D point5 = new Point3D(369800, 698565, 6212);
-			Point3D point6 = new Point3D(376500, 693899, 6212);
-			Point3D point7 = new Point3D(382065, 695219, 6212);
-			Point3D point8 = new Point3D(383638, 677035, 6212);
-			Point3D point9 = new Point3D(391481, 681660, 6810);
-			Point3D point10 = new Point3D(384378, 684504, 6226);
-			Point3D point11 = new Point3D(376941, 691151, 6226);
-			Point3D point12 = new Point3D(373055, 684792, 7197);
-			Point3D point13 = new Point3D(371289, 666663, 7197);
-			Point3D point14 = new Point3D(361740, 659874, 7197);
-			Point3D point15 = new Point3D(367670, 653364, 7197);
-			Point3D point16 = new Point3D(374128, 652093, 8016);
-			Point3D point17 = new Point3D(392383, 658971, 8016);
-			Point3D point18 = new Point3D(399312, 670926, 8016);
-			Point3D point19 = new Point3D(399806, 678950, 6685);
-			Point3D point20 = new Point3D(394874, 680283, 6685);
-			Point3D point21 = new Point3D(399038, 686435, 6685);
-			Point3D point22 = new Point3D(410606, 672288, 6685);
-			Point3D point23 = new Point3D(406201, 657594, 8321);
-			Point3D point24 = new Point3D(411408, 655769, 8321);
-			Point3D point25 = new Point3D(411061, 673862, 6722);
-			Point3D point26 = new Point3D(409199, 679881, 6722);
-			Point3D point27 = new Point3D(409781, 696669, 7148);
-			Point3D point28 = new Point3D(408646, 706432, 2965);//spawn
-			#endregion
 			if (IsRestless && Body.IsAlive)
 			{
 				Body.MaxSpeedBase = 400;
 				short speed = 350;
-				#region WalkToPoints
-				if (!Body.IsWithinRadius(point1, 30) && !pathpoint1)
-					Body.WalkTo(point1, speed);
-				else
+				
+				if (Body.IsWithinRadius(_roamingPathPoints[_lastRoamIndex], 100))
 				{
-					pathpoint1 = true;
-					if (!Body.IsWithinRadius(point2, 30) && pathpoint1 && !pathpoint2)
-						Body.WalkTo(point2, speed);
-					else
-					{
-						pathpoint2 = true;
-						if (!Body.IsWithinRadius(point3, 30) && pathpoint1 && pathpoint2 && !pathpoint3)
-							Body.WalkTo(point3, speed);
-						else
-						{
-							pathpoint3 = true;
-							if (!Body.IsWithinRadius(point4, 30) && pathpoint1 && pathpoint2 && pathpoint3 && !pathpoint4)
-								Body.WalkTo(point4, speed);
-							else
-							{
-								pathpoint4 = true;
-								if (!Body.IsWithinRadius(point5, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && !pathpoint5)
-									Body.WalkTo(point5, speed);
-								else
-								{
-									pathpoint5 = true;
-									if (!Body.IsWithinRadius(point6, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && !pathpoint6)
-										Body.WalkTo(point6, speed);
-									else
-									{
-										pathpoint6 = true;
-										if (!Body.IsWithinRadius(point7, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && !pathpoint7)
-											Body.WalkTo(point7, speed);
-										else
-										{
-											pathpoint7 = true;
-											if (!Body.IsWithinRadius(point8, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-												&& !pathpoint8)
-												Body.WalkTo(point8, speed);
-											else
-											{
-												pathpoint8 = true;
-												if (!Body.IsWithinRadius(point9, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-													&& pathpoint8 && !pathpoint9)
-													Body.WalkTo(point9, speed);
-												else
-												{
-													pathpoint9 = true;
-													if (!Body.IsWithinRadius(point10, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-														&& pathpoint8 && pathpoint9 && !pathpoint10)
-														Body.WalkTo(point10, speed);
-													else
-													{
-														pathpoint10 = true;
-														if (!Body.IsWithinRadius(point11, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-															&& pathpoint8 && pathpoint9 && pathpoint10 && !pathpoint11)
-															Body.WalkTo(point11, speed);
-														else
-														{
-															pathpoint11 = true;
-															if (!Body.IsWithinRadius(point12, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && !pathpoint12)
-																Body.WalkTo(point12, speed);
-															else
-															{
-																pathpoint12 = true;
-																if (!Body.IsWithinRadius(point13, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																	&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && !pathpoint13)
-																	Body.WalkTo(point13, speed);
-																else
-																{
-																	pathpoint13 = true;
-																	if (!Body.IsWithinRadius(point14, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																		&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && !pathpoint14)
-																		Body.WalkTo(point14, speed);
-																	else
-																	{
-																		pathpoint14 = true;
-																		if (!Body.IsWithinRadius(point15, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																			&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && !pathpoint15)
-																			Body.WalkTo(point15, speed);
-																		else
-																		{
-
-																			pathpoint15 = true;
-																			if (!Body.IsWithinRadius(point16, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																				&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && !pathpoint16)
-																				Body.WalkTo(point16, speed);
-																			else
-																			{
-																				pathpoint16 = true;
-																				if (!Body.IsWithinRadius(point17, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																					&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																					&& !pathpoint17)
-																					Body.WalkTo(point17, speed);
-																				else
-																				{
-																					pathpoint17 = true;
-																					if (!Body.IsWithinRadius(point18, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																						&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																						&& pathpoint17 && !pathpoint18)
-																						Body.WalkTo(point18, speed);
-																					else
-																					{
-																						pathpoint18 = true;
-																						if (!Body.IsWithinRadius(point19, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																							&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																							&& pathpoint17 && pathpoint18 && !pathpoint19)
-																							Body.WalkTo(point19, speed);
-																						else
-																						{
-																							pathpoint19 = true;
-																							if (!Body.IsWithinRadius(point20, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																								&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																								&& pathpoint17 && pathpoint18 && pathpoint19 && !pathpoint20)
-																								Body.WalkTo(point20, speed);
-																							else
-																							{
-																								pathpoint20 = true;
-																								if (!Body.IsWithinRadius(point21, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																									&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																									&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && !pathpoint21)
-																									Body.WalkTo(point21, speed);
-																								else
-																								{
-																									pathpoint21 = true;
-																									if (!Body.IsWithinRadius(point22, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																										&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																										&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && !pathpoint22)
-																										Body.WalkTo(point22, speed);
-																									else
-																									{
-																										pathpoint22 = true;
-																										if (!Body.IsWithinRadius(point23, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																											&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																											&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && !pathpoint23)
-																											Body.WalkTo(point23, speed);
-																										else
-																										{
-																											pathpoint23 = true;
-																											if (!Body.IsWithinRadius(point24, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																												&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																												&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && pathpoint23 && !pathpoint24)
-																												Body.WalkTo(point24, speed);
-																											else
-																											{
-																												pathpoint24 = true;
-																												if (!Body.IsWithinRadius(point25, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																													&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																													&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && pathpoint23 && pathpoint24 && !pathpoint25)
-																													Body.WalkTo(point25, speed);
-																												else
-																												{
-																													pathpoint25 = true;
-																													if (!Body.IsWithinRadius(point26, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																														&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																														&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && pathpoint23 && pathpoint24 && pathpoint25
-																														&& !pathpoint26)
-																														Body.WalkTo(point26, speed);
-																													else
-																													{
-																														pathpoint26 = true;
-																														if (!Body.IsWithinRadius(point27, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																															&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																															&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && pathpoint23 && pathpoint24 && pathpoint25
-																															&& pathpoint26 && !pathpoint27)
-																															Body.WalkTo(point27, speed);
-																														else
-																														{
-																															pathpoint27 = true;
-																															if (!Body.IsWithinRadius(point28, 30) && pathpoint1 && pathpoint2 && pathpoint3 && pathpoint4 && pathpoint5 && pathpoint6 && pathpoint7
-																																&& pathpoint8 && pathpoint9 && pathpoint10 && pathpoint11 && pathpoint12 && pathpoint13 && pathpoint14 && pathpoint15 && pathpoint16
-																																&& pathpoint17 && pathpoint18 && pathpoint19 && pathpoint20 && pathpoint21 && pathpoint22 && pathpoint23 && pathpoint24 && pathpoint25
-																																&& pathpoint26 && pathpoint27 && !pathpoint28)
-																																Body.WalkTo(point28, speed);
-																															else
-																															{
-																																pathpoint28 = true;
-																															}
-																														}
-																													}
-																												}
-																											}
-																										}
-																									}
-																								}
-																							}
-																						}
-																					}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+					_lastRoamIndex++;
 				}
-				#endregion
+
+				if(_lastRoamIndex >= _roamingPathPoints.Count) Body.WalkToSpawn();
+				else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
 			}
 		}
 		#endregion
