@@ -64,7 +64,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-    public class EyesWatchingYouInitBrain : StandardMobBrain
+    public class EyesWatchingYouInitBrain : APlayerVicinityBrain
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public EyesWatchingYouInitBrain()
@@ -141,7 +141,11 @@ namespace DOL.AI.Brain
                 new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TimerDoStuff), Util.Random(25000, 45000));
                 allowTimer = true;
             }
-            base.Think();
+        }
+
+        public override void KillFSM()
+        {
+            
         }
     }
 }
