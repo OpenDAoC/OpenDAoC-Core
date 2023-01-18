@@ -2492,7 +2492,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Spells-related properties
 		/// </summary>
-		[ServerProperty("spells", "spell_interrupt_duration", "", 4500)]
+		[ServerProperty("spells", "spell_interrupt_duration", "", 3000)]
 		public static int SPELL_INTERRUPT_DURATION;
 
 		[ServerProperty("spells", "spell_interrupt_again", "", 100)]
