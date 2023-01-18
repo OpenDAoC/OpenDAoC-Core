@@ -322,7 +322,6 @@ namespace DOL.AI.Brain
 		public static List<GameNPC> DragonAdds = new List<GameNPC>();
 		private List<Point3D> _roamingPathPoints = new List<Point3D>();
 		private int _lastRoamIndex = 0;
-		private bool arrived = true;
 
 		public static bool m_isrestless = false;
 		public static bool IsRestless
