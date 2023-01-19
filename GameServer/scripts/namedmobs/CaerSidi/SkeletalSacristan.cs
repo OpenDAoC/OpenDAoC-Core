@@ -115,7 +115,11 @@ namespace DOL.AI.Brain
                     _lastRoamIndex++;
                 }
 
-                if(_lastRoamIndex >= _roamingPathPoints.Count) Body.WalkToSpawn();
+                if(_lastRoamIndex >= _roamingPathPoints.Count)
+                {
+                    _lastRoamIndex = 0;
+                    Body.WalkToSpawn();
+                }
                 else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], (short)Util.Random(195, 250));
                 
             }
