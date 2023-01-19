@@ -99,19 +99,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// called when spell effect has to be started and applied to targets
-		/// </summary>
-		/// <param name="target">The current target object</param>
-		public override bool StartSpell(GameLiving target)
-		{
-			// paladin chants seem special
-			if (SpellLine.Spec == Specs.Chants)
-				SendEffectAnimation(Caster, 0, true, 1);
-
-			return base.StartSpell(target);
-		}
-
-		/// <summary>
 		/// start changing effect on target
 		/// </summary>
 		/// <param name="effect"></param>

@@ -1650,6 +1650,7 @@ namespace DOL.GS.Spells
 					{
 						m_started = GameLoop.GameLoopTime;
 						_castStartTick = currentTick;
+
 						if (!Spell.IsInstantCast)
 							SendSpellMessages();
 						if (Spell.IsInstantCast)
@@ -1658,7 +1659,13 @@ namespace DOL.GS.Spells
 								CastState = eCastState.Interrupted;
 							else
 							{
-								SendCastAnimation(0);
+								// Unsure about this. Calling 'SendCastAnimation' on non-harmful instant spells plays an annoying deep hum that overlaps with the
+								// sound of the spell effect (but is fine to have on harmful ones). For certain spells (like Skald's resist chants) it instead
+								// plays the audio of the spell effect a second time.
+								// It may prevent certain animations from playing, but I don't think there's any non-harmful instant spell with a casting animation.
+								if (Spell.IsHarmful)
+									SendCastAnimation(0);
+
 								CastState = eCastState.Finished;
 							}
 						}
@@ -3237,8 +3244,6 @@ namespace DOL.GS.Spells
 				
 			if (!HasPositiveEffect)
 			{
-				SendEffectAnimation(target, 0, false, 1);
-				// if(Spell.SpellType == (byte)eSpellType.Amnesia) return;
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;

@@ -172,8 +172,8 @@ namespace DOL.GS
             else if (_npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 _hasLos = true;
             else if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
-                                            _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
-                                            _targetNpcBrain.GetPlayerOwner() != null))
+                                              _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
+                                              _targetNpcBrain.GetPlayerOwner() != null))
                 // Target is either a player or a pet owned by a player.
                 _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
             else

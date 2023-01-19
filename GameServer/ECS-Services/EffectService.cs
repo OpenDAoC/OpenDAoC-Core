@@ -108,14 +108,22 @@ namespace DOL.GS
 
             if (spellEffect != null)
             {
-                // spellEffect is ECSPulseEffect only when the player casts the spell, on the first tick.
-                if (spellEffect is ECSPulseEffect)
-                    SendSpellAnimation(spellEffect);
-                else if (spellEffect != null)
+                if (spell.IsPulsing)
                 {
-                    if (!spellEffect.RenewEffect && !spell.IsPulsing && spellEffect is not ECSImmunityEffect)
+                    // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
+                    // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
+                    // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
+                    // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
+                    if (spellEffect is ECSPulseEffect)
+                    {
+                        if (!spell.IsHarmful && !spellEffect.RenewEffect)
+                            SendSpellAnimation(spellEffect);
+                    }
+                    else if (spell.IsHarmful)
                         SendSpellAnimation(spellEffect);
                 }
+                else if (spellEffect is not ECSImmunityEffect)
+                    SendSpellAnimation(spellEffect);
 
                 if (e is StatDebuffECSEffect && spell.CastTime == 0)
                     StatDebuffECSEffect.TryDebuffInterrupt(spell, e.OwnerPlayer, caster);
