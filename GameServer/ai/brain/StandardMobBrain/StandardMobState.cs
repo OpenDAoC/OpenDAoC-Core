@@ -249,28 +249,28 @@ public class StandardMobState_ROAMING : StandardMobState
         //if randomWalkChance,
         //find new point
         //walk to point
-        if (Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE) && _lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime )
+        if (!_brain.Body.IsCasting)
         {
-            IPoint3D target = _brain.CalcRandomWalkTarget();
-            if (target != null)
+            if (_lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
-                if (Util.IsNearDistance(target.X, target.Y, target.Z, _brain.Body.X, _brain.Body.Y, _brain.Body.Z, GameNPC.CONST_WALKTOTOLERANCE))
+                IPoint3D target = _brain.CalcRandomWalkTarget();
+
+                if (target != null)
                 {
-                    _brain.Body.TurnTo(_brain.Body.GetHeading(target));
-                }
-                else
-                {
-                    _brain.Body.WalkTo(target, 50);
+                    if (Util.IsNearDistance(target.X, target.Y, target.Z, _brain.Body.X, _brain.Body.Y, _brain.Body.Z, GameNPC.CONST_WALKTOTOLERANCE))
+                        _brain.Body.TurnTo(_brain.Body.GetHeading(target));
+                    else
+                        _brain.Body.WalkTo(target, 50);
+
+                    _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
                 }
 
-                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
+                _lastRoamTick = GameLoop.GameLoopTime;
             }
-            _lastRoamTick = GameLoop.GameLoopTime;
+
+            //cast self buffs if applicable
+            _brain.CheckSpells(eCheckSpellType.Defensive);
         }
-
-
-        //cast self buffs if applicable
-        _brain.CheckSpells(eCheckSpellType.Defensive);
 
         base.Think();
     }
