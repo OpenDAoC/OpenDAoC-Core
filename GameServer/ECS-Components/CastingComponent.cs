@@ -41,7 +41,7 @@ namespace DOL.GS
         {
             spellHandler?.Tick(time);
         }
-          
+        
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
             EntityManager.AddComponent(typeof(CastingComponent), owner);
@@ -65,20 +65,18 @@ namespace DOL.GS
 
             // Performing the first tick here since 'SpellHandler' relies on the owner's target, which may get cleared before 'Tick()' is called by the casting service.
             // Eventually, the target should instead be passed to 'ScriptMgr.CreateSpellHandler()', and SpellHandler.Tick() use it instead of 'GameLiving.TargetObject'.
-            m_newSpellHandler.Tick(GameLoop.GameLoopTime);
-
             if (spellHandler != null)
             {
                 if (spellHandler.Spell != null && spellHandler.Spell.IsFocus)
                 {
                     if (m_newSpellHandler.Spell.IsInstantCast)
-                        instantSpellHandler = m_newSpellHandler;
+                        ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
                     else
-                        spellHandler = m_newSpellHandler;
+                        ReplaceSpellHandlerThenTick(ref spellHandler, m_newSpellHandler);
                 }
                 else if (m_newSpellHandler.Spell.IsInstantCast)
                 {
-                    instantSpellHandler = m_newSpellHandler;
+                    ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
                 }
                 else
                 {
@@ -118,10 +116,9 @@ namespace DOL.GS
             else
             {
                 if (m_newSpellHandler.Spell.IsInstantCast)
-                    instantSpellHandler = m_newSpellHandler;
+                    ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
                 else
-                    spellHandler = m_newSpellHandler;
-
+                    ReplaceSpellHandlerThenTick(ref spellHandler, m_newSpellHandler);
 
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
@@ -182,6 +179,12 @@ namespace DOL.GS
                 }
             }
             return true;
+        }
+
+        private static void ReplaceSpellHandlerThenTick(ref ISpellHandler oldSpellHandler, ISpellHandler newSpellHandler)
+        {
+            oldSpellHandler = newSpellHandler;
+            newSpellHandler.Tick(GameLoop.GameLoopTime);
         }
     }
 }
