@@ -5204,14 +5204,17 @@ namespace DOL.GS
  		/// <returns>Whether the spellcast started successfully</returns>
 		public override bool CastSpell(Spell spell, SpellLine line)
 		{
-			// Good opportunity to clean up our SpellTargetLosChecks.
-			// Entries older than 3 seconds are removed.
+			// Good opportunity to clean up our 'm_spellTargetLosChecks'.
+			// Entries older than 3 seconds are removed, so that another check can be performed in case the previous one never was.
 			for (int i = m_spellTargetLosChecks.Count - 1 ; i >= 0 ; i--)
 			{
-				var element = m_spellTargetLosChecks.ElementAt(i);
-				if (element.Value.Item3 + 3000 > GameLoop.GameLoopTime)
+                var element = m_spellTargetLosChecks.ElementAt(i);
+
+				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
 					m_spellTargetLosChecks.TryRemove(element.Key, out _);
 			}
+
+			int a = 55;
 
 			if (IsIncapacitated)
 				return false;
@@ -5265,7 +5268,7 @@ namespace DOL.GS
 			else
 			{
 				if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
-					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLOS)); 
+					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLOS));
 				
 				return true;
 			}

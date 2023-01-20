@@ -537,8 +537,8 @@ namespace DOL.AI.Brain
 							break;
 						}
 			}
-			bool checkingSpellLOS = Body.TempProperties.getProperty<Spell>("LOSCURRENTSPELL", null) != null; //Check if pet is checking for spell LoS
-			return casted || Body.IsCasting || checkingSpellLOS;
+
+			return casted || Body.IsCasting;
 		}
 
 		/// <summary>
