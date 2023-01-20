@@ -912,9 +912,6 @@ namespace DOL.AI.Brain
         /// <returns></returns>
         public virtual bool CheckSpells(eCheckSpellType type)
         {
-            if (Body.IsCasting)
-                return true;
-
             bool casted = false;
 
             if (Body != null && Body.Spells != null && Body.Spells.Count > 0)
@@ -962,10 +959,7 @@ namespace DOL.AI.Brain
                         spellToCast = (Spell)spell_rec[Util.Random((spell_rec.Count - 1))];
                         if (!Body.IsReturningToSpawnPoint)
                         {
-                            if (spellToCast.Uninterruptible && CheckDefensiveSpells(spellToCast))
-                                casted = true;
-                            else
-                                if (!Body.IsBeingInterrupted && CheckDefensiveSpells(spellToCast))
+                            if ((spellToCast.Uninterruptible || !Body.IsBeingInterrupted) && CheckDefensiveSpells(spellToCast))
                                 casted = true;
                         }
                     }
@@ -974,7 +968,6 @@ namespace DOL.AI.Brain
                 {
                     foreach (Spell spell in Body.Spells)
                     {
-
                         if (Body.GetSkillDisabledDuration(spell) == 0)
                         {
                             if (spell.CastTime > 0)
@@ -988,18 +981,13 @@ namespace DOL.AI.Brain
                     {
                         spellToCast = (Spell)spell_rec[Util.Random((spell_rec.Count - 1))];
 
-
-                        if (spellToCast.Uninterruptible && CheckOffensiveSpells(spellToCast))
-                            casted = true;
-                        else
-                            if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spellToCast))
+                        if ((spellToCast.Uninterruptible || !Body.IsBeingInterrupted) && CheckOffensiveSpells(spellToCast))
                             casted = true;
                     }
                 }
-
-                return casted;
             }
-            return casted;
+
+            return casted || Body.IsCasting;
         }
 
         /// <summary>
@@ -1007,8 +995,13 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual bool CheckDefensiveSpells(Spell spell)
         {
-            if (spell == null) return false;
-            if (Body.GetSkillDisabledDuration(spell) > 0) return false;
+            if (spell == null || Body.GetSkillDisabledDuration(spell) > 0)
+                return false;
+
+			// Only allow non-buff heal spells to be checked and queued while casting.
+			// Otherwise buffs will be casted twice on the same target due to the delay induced by the LoS check.
+			if (Body.IsCasting && (spell.IsBuff || !spell.IsHealing))
+				return false;
 
             bool casted = false;
 

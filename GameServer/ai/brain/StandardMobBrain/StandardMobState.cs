@@ -267,11 +267,10 @@ public class StandardMobState_ROAMING : StandardMobState
 
                 _lastRoamTick = GameLoop.GameLoopTime;
             }
-
-            //cast self buffs if applicable
-            _brain.CheckSpells(eCheckSpellType.Defensive);
         }
 
+        //cast self buffs if applicable
+        _brain.CheckSpells(eCheckSpellType.Defensive);
         base.Think();
     }
 }
