@@ -501,25 +501,22 @@ namespace DOL.AI.Brain
 						if (CheckDefensiveSpells(spell))
 							break;
 
-				if (!Body.IsCasting)
-				{
-					// Check spell lists, prioritizing healing
-					if (Body.CanCastHealSpells)
-						foreach (Spell spell in Body.HealSpells)
-							if (CheckDefensiveSpells(spell))
-							{
-								casted = true;
-								break;
-							}
+				// Check spell lists, prioritizing healing
+				if (Body.CanCastHealSpells)
+					foreach (Spell spell in Body.HealSpells)
+						if (CheckDefensiveSpells(spell))
+						{
+							casted = true;
+							break;
+						}
 
-					if (!casted && Body.CanCastMiscSpells)
-						foreach (Spell spell in Body.MiscSpells)
-							if (CheckDefensiveSpells(spell))
-							{
-								casted = true;
-								break;
-							}
-				}
+				if (!casted && Body.CanCastMiscSpells)
+					foreach (Spell spell in Body.MiscSpells)
+						if (CheckDefensiveSpells(spell))
+						{
+							casted = true;
+							break;
+						}
 			}
 			else if (Body.TargetObject is GameLiving living && living.IsAlive)
 			{
@@ -549,8 +546,13 @@ namespace DOL.AI.Brain
 			if (spell == null || spell.IsHarmful)
 				return false;
 
+			// Only allow non-buff heal spells to be checked and queued while casting.
+			// Otherwise buffs will be casted twice on the same target due to the delay induced by the LoS check.
+			if (Body.IsCasting && (spell.IsBuff || !spell.IsHealing))
+				return false;
+
 			// Make sure we're currently able to cast the spell
-			if (spell.CastTime > 0 && (Body.IsCasting || (Body.IsBeingInterrupted && !spell.Uninterruptible)))
+			if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible)
 				return false;
 
 			// Make sure the spell isn't disabled
