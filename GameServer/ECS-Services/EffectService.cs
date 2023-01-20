@@ -391,16 +391,14 @@ namespace DOL.GS
                     e.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageShield)
                     return;
 
-                //foreach (GamePlayer player in e.SpellHandler.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                //foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 Parallel.ForEach(e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                 {
-                        player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                    player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
                 });
             }
         }
 
-        public static eEffect GetEffectFromSpell(Spell spell)
+        public static eEffect GetEffectFromSpell(Spell spell, bool isBaseLine = true)
         {
             //Console.WriteLine("Spell of type: " + (spell.SpellType).ToString());
 
@@ -450,10 +448,7 @@ namespace DOL.GS
                 case (byte)eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
                 case (byte)eSpellType.ArmorFactorBuff:
-                    if (spell.IsSpec)
-                        return eEffect.SpecAFBuff; 
-                    else
-                        return eEffect.BaseAFBuff;
+                    return isBaseLine ? eEffect.BaseAFBuff : eEffect.SpecAFBuff;
 
                 //resists
                 case (byte)eSpellType.BodyResistBuff:

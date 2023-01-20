@@ -623,7 +623,6 @@ namespace DOL.AI.Brain
                 case (byte)eSpellType.Bladeturn:
                     {
 						string target = spell.Target.ToUpper();
-						spell.IsSpec = true;
 
 						// Buff self
 						if (!LivingHasEffect(Body, spell))

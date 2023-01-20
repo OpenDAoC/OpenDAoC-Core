@@ -26,7 +26,7 @@ namespace DOL.GS
         {
             SpellHandler = initParams.SpellHandler;
             Spell spell = SpellHandler.Spell;
-            EffectType = MapSpellEffect();
+            EffectType = EffectService.GetEffectFromSpell(SpellHandler.Spell, SpellHandler.SpellLine.IsBaseLine);
             PulseFreq = spell.Frequency;
             Caster = SpellHandler.Caster;
 
@@ -47,20 +47,6 @@ namespace DOL.GS
 
             if (this is not ECSImmunityEffect and not ECSPulseEffect)
                 EffectService.RequestStartEffect(this);
-        }
-
-        private eEffect MapSpellEffect()
-        {
-            if (SpellHandler.SpellLine.IsBaseLine)
-            {
-                SpellHandler.Spell.IsSpec = false;
-            }
-            else
-            {
-                SpellHandler.Spell.IsSpec = true;
-            }
-
-            return EffectService.GetEffectFromSpell(SpellHandler.Spell);
         }
 
         public override bool IsConcentrationEffect()

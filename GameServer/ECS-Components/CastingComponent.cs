@@ -67,15 +67,6 @@ namespace DOL.GS
             // Eventually, the target should instead be passed to 'ScriptMgr.CreateSpellHandler()', and SpellHandler.Tick() use it instead of 'GameLiving.TargetObject'.
             m_newSpellHandler.Tick(GameLoop.GameLoopTime);
 
-            if (spellHandler != null && spellHandler.Spell != null && !spellHandler.SpellLine.IsBaseLine)
-            {
-                spellHandler.Spell.IsSpec = true;
-            }
-            if (instantSpellHandler != null && instantSpellHandler.Spell != null && !instantSpellHandler.SpellLine.IsBaseLine)
-            {
-                instantSpellHandler.Spell.IsSpec = true;
-            }
-
             if (spellHandler != null)
             {
                 if (spellHandler.Spell != null && spellHandler.Spell.IsFocus)
