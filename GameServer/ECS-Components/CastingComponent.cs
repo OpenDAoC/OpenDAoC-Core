@@ -70,13 +70,13 @@ namespace DOL.GS
                 if (spellHandler.Spell != null && spellHandler.Spell.IsFocus)
                 {
                     if (m_newSpellHandler.Spell.IsInstantCast)
-                        ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
+                        TickThenReplaceSpellHandler(ref instantSpellHandler, m_newSpellHandler);
                     else
-                        ReplaceSpellHandlerThenTick(ref spellHandler, m_newSpellHandler);
+                        TickThenReplaceSpellHandler(ref spellHandler, m_newSpellHandler);
                 }
                 else if (m_newSpellHandler.Spell.IsInstantCast)
                 {
-                    ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
+                    TickThenReplaceSpellHandler(ref instantSpellHandler, m_newSpellHandler);
                 }
                 else
                 {
@@ -116,9 +116,9 @@ namespace DOL.GS
             else
             {
                 if (m_newSpellHandler.Spell.IsInstantCast)
-                    ReplaceSpellHandlerThenTick(ref instantSpellHandler, m_newSpellHandler);
+                    TickThenReplaceSpellHandler(ref instantSpellHandler, m_newSpellHandler);
                 else
-                    ReplaceSpellHandlerThenTick(ref spellHandler, m_newSpellHandler);
+                    TickThenReplaceSpellHandler(ref spellHandler, m_newSpellHandler);
 
                 //Special CastSpell rules
                 if (spellHandler is SummonNecromancerPet necroPetHandler)
@@ -181,10 +181,10 @@ namespace DOL.GS
             return true;
         }
 
-        private static void ReplaceSpellHandlerThenTick(ref ISpellHandler oldSpellHandler, ISpellHandler newSpellHandler)
+        private static void TickThenReplaceSpellHandler(ref ISpellHandler oldSpellHandler, ISpellHandler newSpellHandler)
         {
-            oldSpellHandler = newSpellHandler;
             newSpellHandler.Tick(GameLoop.GameLoopTime);
+            oldSpellHandler = newSpellHandler;
         }
     }
 }
