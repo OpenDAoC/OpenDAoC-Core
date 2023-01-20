@@ -35,11 +35,8 @@ using log4net;
 
 namespace DOL.GS
 {
-
 	public class ScriptMgr
 	{
-		private delegate void SpellhandlerConstructor(GameLiving caster, Spell spell, SpellLine spellLine);
-
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
