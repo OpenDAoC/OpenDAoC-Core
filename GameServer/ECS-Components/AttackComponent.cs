@@ -1296,10 +1296,7 @@ namespace DOL.GS
             // Melee range check (ranged is already done at this point).
             if (ad.AttackType != AttackData.eAttackType.Ranged)
             {
-                // What the hell is happening here?
-                if (!owner.IsWithinRadius(ad.Target, ad.Target.ActiveWeaponSlot == eActiveWeaponSlot.Standard
-                                                     ? Math.Max(AttackRange + addRange, ad.Target.attackComponent.AttackRange + addRange)
-                                                     : AttackRange + addRange))
+                if (!owner.IsWithinRadius(ad.Target, AttackRange + addRange))
                 {
                     ad.AttackResult = eAttackResult.OutOfRange;
                     SendAttackingCombatMessages(ad);
