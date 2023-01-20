@@ -902,13 +902,8 @@ namespace DOL.GS
 			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0)
 				return null;
 
-			Func<GameLiving, Spell, SpellLine, ISpellHandler> handlerConstructor = null;
-
-			if (m_spellhandlerConstructorCache.ContainsKey(((eSpellType)spell.SpellType).ToString()))
-				handlerConstructor = m_spellhandlerConstructorCache[((eSpellType)spell.SpellType).ToString()];
-
 			// try to find it in assemblies when not in cache
-			if (handlerConstructor == null)
+			if (!m_spellhandlerConstructorCache.TryGetValue(((eSpellType)spell.SpellType).ToString(), out var handlerConstructor))
 			{
 				foreach (Assembly script in GameServerScripts)
 				{
@@ -929,7 +924,7 @@ namespace DOL.GS
 							{
 								if (attrib.SpellType == ((eSpellType)spell.SpellType).ToString())
 								{
-									ParameterExpression[] constructorParams = new ParameterExpression[] {  Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine)) };
+									ParameterExpression[] constructorParams = new ParameterExpression[] { Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine)) };
 									ConstructorInfo constructor = type.GetConstructor(new[] { typeof(GameLiving), typeof(Spell), typeof(SpellLine) });
 									handlerConstructor = Expression.Lambda<Func<GameLiving, Spell, SpellLine, SpellHandler>>(Expression.New(constructor, constructorParams), constructorParams).Compile();
 
