@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using DOL.AI.Brain;
@@ -34,15 +35,18 @@ using log4net;
 
 namespace DOL.GS
 {
+
 	public class ScriptMgr
 	{
+		private delegate void SpellhandlerConstructor(GameLiving caster, Spell spell, SpellLine spellLine);
+
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static Dictionary<string, Assembly> m_compiledScripts = new Dictionary<string, Assembly>();
-		private static Dictionary<string, ConstructorInfo> m_spellhandlerConstructorCache = new Dictionary<string, ConstructorInfo>();
+		private static Dictionary<string, Assembly> m_compiledScripts = new();
+		private static Dictionary<string, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
 
         /// <summary>
         /// This class will hold all info about a gamecommand
@@ -876,6 +880,15 @@ namespace DOL.GS
 			return (IControlledBrain)handlerConstructor.Invoke(new object[] { owner });
 		}
 
+		private static Delegate CreateDelegate(ConstructorInfo constructorInfo)
+		{
+            ParameterInfo[] parameters = constructorInfo.GetParameters();
+            ParameterExpression[] lambdaParameters = parameters.Select(x => Expression.Parameter(x.ParameterType, x.Name)).ToArray();
+            IEnumerable<UnaryExpression> argsExp = parameters.Select((p, i) => Expression.Convert(lambdaParameters[i], p.ParameterType));
+            NewExpression newExp = Expression.New(constructorInfo, argsExp);
+            LambdaExpression lambda = Expression.Lambda(newExp, lambdaParameters);
+			return lambda.Compile();
+		}
 
 		/// <summary>
 		/// Create a spell handler for caster with given spell
@@ -886,9 +899,10 @@ namespace DOL.GS
 		/// <returns>spellhandler or null if not found</returns>
 		public static ISpellHandler CreateSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 		{
-			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0) return null;
+			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0)
+				return null;
 
-			ConstructorInfo handlerConstructor = null;
+			Func<GameLiving, Spell, SpellLine, ISpellHandler> handlerConstructor = null;
 
 			if (m_spellhandlerConstructorCache.ContainsKey(((eSpellType)spell.SpellType).ToString()))
 				handlerConstructor = m_spellhandlerConstructorCache[((eSpellType)spell.SpellType).ToString()];
@@ -896,26 +910,29 @@ namespace DOL.GS
 			// try to find it in assemblies when not in cache
 			if (handlerConstructor == null)
 			{
-				Type[] constructorParams = new Type[] { typeof(GameLiving), typeof(Spell), typeof(SpellLine) };
-
 				foreach (Assembly script in GameServerScripts)
 				{
 					foreach (Type type in script.GetTypes())
 					{
-						if (type.IsClass != true) continue;
-						if (type.GetInterface("DOL.GS.Spells.ISpellHandler") == null) continue;
+						if (type.IsClass != true || type.GetInterface("DOL.GS.Spells.ISpellHandler") == null)
+							continue;
 
 						// look for attribute
 						try
 						{
 							object[] objs = type.GetCustomAttributes(typeof(SpellHandlerAttribute), false);
-							if (objs.Length == 0) continue;
+
+							if (objs.Length == 0)
+								continue;
 
 							foreach (SpellHandlerAttribute attrib in objs)
 							{
 								if (attrib.SpellType == ((eSpellType)spell.SpellType).ToString())
 								{
-									handlerConstructor = type.GetConstructor(constructorParams);
+									ParameterExpression[] constructorParams = new ParameterExpression[] {  Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine)) };
+									ConstructorInfo constructor = type.GetConstructor(new[] { typeof(GameLiving), typeof(Spell), typeof(SpellLine) });
+									handlerConstructor = Expression.Lambda<Func<GameLiving, Spell, SpellLine, SpellHandler>>(Expression.New(constructor, constructorParams), constructorParams).Compile();
+
 									if (log.IsDebugEnabled)
 										log.Debug("Found spell handler " + type);
 									break;
@@ -934,16 +951,14 @@ namespace DOL.GS
 				}
 
 				if (handlerConstructor != null)
-				{
 					m_spellhandlerConstructorCache.TryAdd(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
-				}
 			}
 
 			if (handlerConstructor != null)
 			{
 				try
 				{
-					return (ISpellHandler)handlerConstructor.Invoke(new object[] { caster, spell, line });
+					return handlerConstructor(caster, spell, line);
 				}
 				catch (Exception e)
 				{
@@ -956,6 +971,7 @@ namespace DOL.GS
 				if (log.IsErrorEnabled)
 					log.Error("Couldn't find spell handler for spell type " + spell.SpellType);
 			}
+
 			return null;
 		}
 
