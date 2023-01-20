@@ -880,16 +880,6 @@ namespace DOL.GS
 			return (IControlledBrain)handlerConstructor.Invoke(new object[] { owner });
 		}
 
-		private static Delegate CreateDelegate(ConstructorInfo constructorInfo)
-		{
-            ParameterInfo[] parameters = constructorInfo.GetParameters();
-            ParameterExpression[] lambdaParameters = parameters.Select(x => Expression.Parameter(x.ParameterType, x.Name)).ToArray();
-            IEnumerable<UnaryExpression> argsExp = parameters.Select((p, i) => Expression.Convert(lambdaParameters[i], p.ParameterType));
-            NewExpression newExp = Expression.New(constructorInfo, argsExp);
-            LambdaExpression lambda = Expression.Lambda(newExp, lambdaParameters);
-			return lambda.Compile();
-		}
-
 		/// <summary>
 		/// Create a spell handler for caster with given spell
 		/// </summary>
