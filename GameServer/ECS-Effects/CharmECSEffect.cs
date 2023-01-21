@@ -58,10 +58,12 @@ namespace DOL.GS
                     foreach (GamePlayer player in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         player.Out.SendNPCCreate(charmMob);
+
                         if (charmMob.Inventory != null)
                             player.Out.SendLivingEquipmentUpdate(charmMob);
 
-                        player.Out.SendObjectGuildID(charmMob, casterPlayer.Guild);
+                        // 'SendNPCCreate' should already call 'SendObjectGuildID'
+                        //player.Out.SendObjectGuildID(charmMob, casterPlayer.Guild);
                     }
                 }
                 ((CharmSpellHandler)SpellHandler).SendEffectAnimation(charmMob, 0, false, 1);
