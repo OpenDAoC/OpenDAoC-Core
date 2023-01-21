@@ -16,14 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using DOL.GS.PacketHandler;
+using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
-using DOL.GS.API;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -223,7 +222,7 @@ namespace DOL.GS
 			const string customKey = "grouped_char";
 			var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
-			if(hasGrouped == null)
+			if (hasGrouped == null)
             {
 				DOLCharactersXCustomParam groupedChar = new DOLCharactersXCustomParam();
 				groupedChar.DOLCharactersObjectId = player.ObjectId;
@@ -232,6 +231,46 @@ namespace DOL.GS
 				GameServer.Database.AddObject(groupedChar);
 			}
 
+			// Part of the hack to make friendly pets untargetable (or targetable again) with tab on a PvP server.
+			// We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
+			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+			{
+				IControlledBrain controlledBrain = player.ControlledBrain;
+				Guild playerGuild = player.Guild;
+				bool updateOneself = false;
+
+				// Update how the added player sees their pet and themself.
+				if (controlledBrain != null)
+				{
+					player.Out.SendObjectGuildID(controlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+					updateOneself = true;
+				}
+
+				// Let's all be friends.
+				foreach (GamePlayer groupMember in m_groupMembers.OfType<GamePlayer>().Where(x => x != player))
+				{
+					Guild groupMemberGuild = groupMember.Guild;
+
+					if (controlledBrain != null)
+					{
+						// Update how the group member sees the added player's pet and themself.
+						groupMember.Out.SendObjectGuildID(controlledBrain.Body, groupMemberGuild ?? Guild.DummyGuild);
+						groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? Guild.DummyGuild);
+					}
+
+					IControlledBrain groupMemberControlledBrain = groupMember.ControlledBrain;
+
+					if (groupMemberControlledBrain != null)
+					{
+						// Update how the added player sees the group member's pet and themself.
+						player.Out.SendObjectGuildID(groupMemberControlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+						updateOneself = true;
+					}
+				}
+
+				if (updateOneself)
+					player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+			}
 
 			return true;
 		}
@@ -251,12 +290,54 @@ namespace DOL.GS
 			
 			living.Group = null;
 			living.GroupIndex = 0xFF;
+			GamePlayer player = living as GamePlayer;
+
 			// Update Player.
-			var player = living as GamePlayer;
 			if (player != null)
 			{
 				player.Out.SendGroupWindowUpdate();
 				player.Out.SendQuestListUpdate();
+
+				// Part of the hack to make friendly pets untargetable (or targetable again) with tab on a PvP server.
+				// We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
+				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+				{
+					IControlledBrain controlledBrain = player.ControlledBrain;
+					Guild playerGuild = player.Guild;
+					bool updateOneself = false;
+
+					// Update how the removed player sees their pet and themself.
+					if (controlledBrain != null)
+					{
+						player.Out.SendObjectGuildID(controlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+						updateOneself = true;
+					}
+
+					foreach (GamePlayer groupMember in m_groupMembers.OfType<GamePlayer>())
+					{
+						Guild groupMemberGuild = groupMember.Guild;
+
+						if (playerGuild == null || groupMemberGuild == null || playerGuild != groupMemberGuild)
+						{
+							// Update how the group member sees the removed player's pet.
+							// There shouldn't be any need to update them.
+							if (controlledBrain != null)
+								groupMember.Out.SendObjectGuildID(controlledBrain.Body, playerGuild);
+
+							IControlledBrain groupMemberControlledBrain = groupMember.ControlledBrain;
+
+							// Update how the removed player sees the group member's pet and themself.
+							if (groupMemberControlledBrain != null)
+							{
+								player.Out.SendObjectGuildID(groupMemberControlledBrain.Body, groupMember.Guild);
+								updateOneself = true;
+							}
+						}
+					}
+
+					if (updateOneself)
+						player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+				}
 			}
 			
 			UpdateGroupWindow();

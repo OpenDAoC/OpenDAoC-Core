@@ -2108,36 +2108,34 @@ namespace DOL.GS.PacketHandler
 				SendPetFakeFriendlyGuildID(npc);
 		}
 
-		public virtual void SendPetFakeFriendlyGuildID(GameNPC pet)
+		private void SendPetFakeFriendlyGuildID(GameNPC pet)
 		{
 			if (pet.Brain is not IControlledBrain npcBrain)
 				return;
 
 			GamePlayer playerOwner = npcBrain.GetPlayerOwner();
+			GamePlayer player = m_gameClient.Player;
+			Guild playerGuild = player.Guild;
 
 			// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
-			if (playerOwner != m_gameClient.Player)
+			if (playerOwner != player)
 			{
-				if (playerOwner.Guild == null || m_gameClient.Player.Guild == null || playerOwner.Guild != m_gameClient.Player.Guild)
+				Guild playerOwnerGuild = playerOwner.Guild;
+
+				if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
 				{
-					if (playerOwner.Group == null || !playerOwner.Group.GetMembersInTheGroup().Contains(m_gameClient.Player))
+					Group playerOwnerGroup = playerOwner.Group;
+
+					if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
 						return;
 				}
 			}
 
-			// Make the client believe the NPC is in the same guild as them.
+			// Make the client believe the pet is in the same guild as them.
 			// Use a dummy guild for guildless players.
-			if (m_gameClient.Player.Guild != null)
-				SendObjectGuildID(pet, m_gameClient.Player.Guild);
-			else
-			{
-				SendObjectGuildID(pet, m_dummyGuild);
-				SendObjectGuildID(m_gameClient.Player, m_dummyGuild);
-			}
+			SendObjectGuildID(pet, playerGuild ?? Guild.DummyGuild);
+			SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
 		}
-
-		// Used by the hack to make pets untargetable with tab on a PvP server. Effectively creates a dummy guild to get a unique ID.
-		private static Guild m_dummyGuild = GuildMgr.CreateGuild(0, "DummyGuildToMakePetsUntargetable") ?? GuildMgr.GetGuildByName("DummyGuildToMakePetsUntargetable");
 
 		public virtual void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
 		{
