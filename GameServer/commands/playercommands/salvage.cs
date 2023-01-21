@@ -112,7 +112,7 @@ namespace DOL.GS.Commands
 							return;
 					}
 				}
-				
+
 				IList<InventoryItem> items = new List<InventoryItem>();
 				firstItem += (uint)eInventorySlot.FirstBackpack - 1;
 				lastItem += (uint)eInventorySlot.FirstBackpack - 1;

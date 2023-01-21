@@ -4070,107 +4070,89 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
-            try
-            {
+			int hashCode = GetHashCode();
 
-			Brain?.KillFSM();
-
-			FireAmbientSentence(eAmbientTrigger.dying, killer);
-
-			if (ControlledBrain != null)
-				ControlledNPC_Release();
-
-			
-			if (killer != null)
+			try
 			{
-				if (killer is GamePet pet) killer = pet.Owner;
-				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
-				if (IsWorthReward)
-					DropLoot(killer);
-				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-DropLoot-NPC("+this.GetHashCode()+")");
+				Brain?.KillFSM();
 
-				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
-				Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
-				if (killer is GamePlayer)
-					((GamePlayer)killer).Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-AreaMessages-NPC("+this.GetHashCode()+")");
-			}
-			StopFollowing();
+				FireAmbientSentence(eAmbientTrigger.dying, killer);
 
-			if (Group != null)
-				Group.RemoveMember(this);
+				if (ControlledBrain != null)
+					ControlledNPC_Release();
 
-			if (killer != null)
-			{
-				//Handle faction alignement changes // TODO Review
-				if ((Faction != null) && (killer is GamePlayer))
+				if (killer != null)
 				{
-					lock (this.attackComponent.Attackers)
-					{
-						List <GamePlayer> additionalPlayerList = new List<GamePlayer>();
-						// Get All Attackers. // TODO check if this shouldn't be set to Attackers instead of XPGainers ?
-						foreach (GameObject de in this.attackComponent.Attackers)
-						{
-							GameLiving living = de as GameLiving;
-							GamePlayer player = living as GamePlayer;
-							if (player != null && player.IsObjectGreyCon(this)) continue;
-							// Get Pets Owner (// TODO check if they are not already treated as attackers ?)
-							if (living is GameNPC && (living as GameNPC).Brain is IControlledBrain)
-                                {
-									player = ((living as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-									if (!this.attackComponent.Attackers.Contains(player) && !additionalPlayerList.Contains(player))
-                                    {
-										// Petmaster never attacked the mob but still needs to get the increase / decrease only once
-										// we have to keep a second list because a Pet master could have more than 1 pet in the attackers list (Bds)
-										additionalPlayerList.Add(player);
-									}
-									continue;
-								}
+					if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
+						killer = petBrain.GetPlayerOwner();
 
-							if (player != null && player.ObjectState == GameObject.eObjectState.Active && player.IsAlive && player.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-							{
-								Faction.KillMember(player);
-							}
-						}
+					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
 
-							//masters of pets who didnt attack the mob themselfs and let pet do all the work
-                            foreach (GamePlayer additionalPlayer in additionalPlayerList)
-                            {
-								if (additionalPlayer != null && additionalPlayer.ObjectState == GameObject.eObjectState.Active && additionalPlayer.IsAlive && additionalPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-								{
-									Faction.KillMember(additionalPlayer);
-								}
-							}
-					}
+					if (IsWorthReward)
+						DropLoot(killer);
+
+					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
+					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
+
+					Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
+
+					if (killer is GamePlayer player)
+						player.Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+
+					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
 				}
 
-				// deal out exp and realm points based on server rules
-				Diagnostics.StartPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
-				GameServer.ServerRules.OnNPCKilled(this, killer);
-				Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC("+this.GetHashCode()+")");
-			}
+				StopFollowing();
 
-			base.ProcessDeath(killer);
+				if (Group != null)
+					Group.RemoveMember(this);
 
-			lock (this.XPGainers.SyncRoot)
-				this.XPGainers.Clear();
-			
-			
-			Delete();
-			Diagnostics.StopPerfCounter("ReaperService-NPC-ProcessDeath-Delete-NPC("+this.GetHashCode()+")");
+				if (killer != null)
+				{
+					// Handle faction alignement changes.
+					if (Faction != null && killer is GamePlayer)
+					{
+						lock (m_xpGainers.SyncRoot)
+						{
+							foreach (GameLiving xpGainer in m_xpGainers.Keys)
+							{
+								GamePlayer playerXpGainer = xpGainer as GamePlayer;
 
-			// remove temp properties
-			TempProperties.removeAllProperties();
+								if (playerXpGainer != null && playerXpGainer.IsObjectGreyCon(this))
+									continue;
 
-			if (!(this is GamePet) && !(this is SINeckBoss))
-				StartRespawn();
+								if (playerXpGainer != null &&
+									playerXpGainer.ObjectState == eObjectState.Active &&
+									playerXpGainer.IsAlive &&
+									playerXpGainer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+									Faction.KillMember(playerXpGainer);
+							}
+						}
+					}
+
+					// Deal out exp and realm points based on server rules.
+					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC({hashCode})");
+					GameServer.ServerRules.OnNPCKilled(this, killer);
+					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC({hashCode})");
+				}
+
+				base.ProcessDeath(killer);
+
+				lock (XPGainers.SyncRoot)
+				{
+					XPGainers.Clear();
+				}
+
+				Delete();
+				TempProperties.removeAllProperties();
+
+				if (this is not GamePet and not SINeckBoss)
+					StartRespawn();
 			}
 			finally
 			{
-				if(isDeadOrDying == true)
-                {
+				if (isDeadOrDying == true)
 					base.ProcessDeath(killer);
-                }
 			}
 		}
 
