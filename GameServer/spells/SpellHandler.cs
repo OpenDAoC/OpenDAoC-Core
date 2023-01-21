@@ -856,22 +856,24 @@ namespace DOL.GS.Spells
 			}
 
 			//Check Interrupts for Player
-			if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer
-				&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast)
-				&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
+			if (m_caster is GamePlayer)
 			{
-                if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+				if (!m_spell.Uninterruptible && m_spell.CastTime > 0
+					&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast)
+					&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 				{
-					if (!quiet)
-						MessageToCaster("You must wait " + (((Caster.InterruptTime) - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
-					return false;
+					if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+					{
+						if (!quiet)
+							MessageToCaster("You must wait " + ((Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
+						return false;
+					}
 				}
 			}
-
 			//Check Interrupts for NPC
-			if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
+			else if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
 			{
-                if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 					return false;
 			}
 
