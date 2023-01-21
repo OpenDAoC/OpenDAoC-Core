@@ -1,8 +1,9 @@
- using System.Collections.Generic;
- using System.Linq;
- using DOL.Database;
+using System;
+using System.Collections.Generic;
+using DOL.Database;
+using DOL.GS.PacketHandler;
 
- namespace DOL.GS.Commands
+namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&salvage",
@@ -15,27 +16,30 @@
 		{
 			if (IsSpammingCommand(client.Player, "salvage"))
 				return;
-			int firstItem = 0, lastItem = 0, firstBag = 0, lastBag = 0, qualityInt = 0;
+
+			uint firstItem = 0, lastItem = 0, qualityInt = 0;
 
 			if (args.Length >= 2)
 			{
-				if (args[1].Contains("all"))
+				if (args[1].Equals("all", StringComparison.OrdinalIgnoreCase))
 				{
 					firstItem = 1;
 					lastItem = 40;
 				}
 				else if (args[1].Contains('-'))
 				{ 
-					string [] bags = args[1].Split("-".ToCharArray(), 2);
-					firstBag = int.TryParse(bags[0], out firstBag) ? firstBag : 0;
-					lastBag = int.TryParse(bags[1], out lastBag) ? lastBag : 0;
-					
-					// if (firstBag > lastBag)
-					// {
-					// 	(firstBag, lastBag) = (lastBag, firstBag);
-					// }
+					string[] bags = args[1].Split("-".ToCharArray(), 2);
 
-					switch(firstBag)
+					if (!uint.TryParse(bags[0], out uint firstBag) || !uint.TryParse(bags[1], out uint lastBag))
+						return;
+
+					if (firstBag > lastBag)
+					{
+						client.Player.Out.SendMessage("Invalid bag numbers. the first number can't be higher than the last.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+
+					switch (firstBag)
 					{
 						case 1:
 							firstItem = 1;
@@ -52,6 +56,9 @@
 						case 5:
 							firstItem = 33;
 							break;
+						default:
+							client.Player.Out.SendMessage("Invalid first bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
 					}
 
 					switch (lastBag)
@@ -71,10 +78,12 @@
 						case 5:
 							lastItem = 40;
 							break;
+						default:
+							client.Player.Out.SendMessage("Invalid last bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
 					}
-					
 				} 
-				else if (int.TryParse(args[1], out int bag))
+				else if (uint.TryParse(args[1], out uint bag))
 				{
 					switch (bag)
 					{
@@ -98,27 +107,46 @@
 							firstItem = 33;
 							lastItem = 40;
 							break;
+						default:
+							client.Player.Out.SendMessage("Invalid bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
 					}
 				}
 				
 				IList<InventoryItem> items = new List<InventoryItem>();
-				
-				firstItem += (int)eInventorySlot.FirstBackpack - 1;
-				lastItem += (int)eInventorySlot.FirstBackpack - 1;
+				firstItem += (uint)eInventorySlot.FirstBackpack - 1;
+				lastItem += (uint)eInventorySlot.FirstBackpack - 1;
 
-				foreach (var arg in args)
+				foreach (string arg in args)
 				{
-					if (!arg.Contains('Q')) continue;
-					var quality = arg.Replace("Q", "");
-					qualityInt = int.TryParse(quality, out qualityInt) ? qualityInt : 0;
+					if (!arg.StartsWith("Q", StringComparison.OrdinalIgnoreCase))
+						continue;
+
+					string quality = arg.Replace("Q", "", StringComparison.OrdinalIgnoreCase);
+
+					if (!uint.TryParse(quality, out qualityInt))
+					{
+						client.Player.Out.SendMessage("Invalid quality filter. Use \"Qxx\" where \"xx\" is a number.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+
+					if (qualityInt > 100)
+					{
+						client.Player.Out.SendMessage("Invalid quality filter. Quality can't be higher than 100.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
 				}
 
-				for (var i = firstItem; i <= lastItem; i++)
+				for (uint i = firstItem; i <= lastItem; i++)
 				{
-					var item = client.Player.Inventory.GetItem((eInventorySlot)i);
+					InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)i);
 
-					if (item == null) continue;
-					if (!Salvage.IsAllowedToBeginWork(client.Player, item, true)) continue;
+					if (item == null)
+						continue;
+
+					if (!Salvage.IsAllowedToBeginWork(client.Player, item, true))
+						continue;
+
 					if (qualityInt > 0)
 					{
 						if (item.Quality <= qualityInt)
@@ -135,6 +163,7 @@
 			{
 				if (client.Player.TargetObject is not WorldInventoryItem item)
 					return;
+
 				client.Player.SalvageItem(item.Item);
 			}
 		}
