@@ -5,15 +5,15 @@ using DOL.GS.Keeps;
 namespace DOL.GS.Commands
 {
     [CmdAttribute(
-        "&craft",
+        "&craftmacro",
         ePrivLevel.Player,
         "Crafting macros and utilities",
-        "'/craft set <#>' to set how many items you want to craft",
-        "'/craft clear' to reset to crafting once",
-        "'/craft show' to show the current craft settings",
-        "'/craft buy' to buy the necessary materials to craft one item",
-        "'/craft buy <#>' to buy the necessary materials to craft <#> items",
-        "'/craft buyto <#>' to buy only the missing materials to craft <#> items")]
+        "'/craftmacro set <#>' to set how many items you want to craft",
+        "'/craftmacro clear' to reset to crafting once",
+        "'/craftmacro show' to show the current craft settings",
+        "'/craftmacro buy' to buy the necessary materials to craft one item",
+        "'/craftmacro buy <#>' to buy the necessary materials to craft <#> items",
+        "'/craftmacro buyto <#>' to buy only the missing materials to craft <#> items")]
     public class CraftMacroCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public const string CraftQueueLength = "CraftQueueLength";
