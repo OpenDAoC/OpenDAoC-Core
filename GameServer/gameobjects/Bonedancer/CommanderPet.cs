@@ -197,11 +197,11 @@ namespace DOL.GS
 			if (!(source is GamePlayer player) || player != Owner)
 				return false;
 
-			string[] strargs = str.ToUpper().Split(' ');
+			string[] strargs = str.ToUpper().Split(new char[] { ' ', '-' });
 
 			for (int i = 0; i < strargs.Length; i++)
 			{
-				String curStr = strargs[i];
+				string curStr = strargs[i];
 
 				if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Commander").ToUpper())
 				{

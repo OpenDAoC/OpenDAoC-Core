@@ -875,7 +875,7 @@ namespace DOL.GS.Spells
 			{
 				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroPetBrain)
+					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
 					{
 						if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
 						{
