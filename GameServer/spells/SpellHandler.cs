@@ -743,6 +743,18 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
+			if (Caster is GameNPC npcOwner)
+			{
+				if (Spell.CastTime > 0)
+				{
+					if (npcOwner.IsMoving)
+						npcOwner.StopFollowing();
+				}
+
+				if (npcOwner != Target)
+					npcOwner.TurnTo(Target);
+			}
+
 			if (m_caster.LastPulseCast != null)
 			{
 				if (m_caster.LastPulseCast.Equals(Spell) && m_spell.IsPulsing && m_spell.Pulse != 0 && m_spell.Frequency > 0)
@@ -1092,7 +1104,7 @@ namespace DOL.GS.Spells
 		{
 			if (living == null || sourceOID == 0 || targetOID == 0)
 				return;
-			
+
 			m_caster.TargetInView = (response & 0x100) == 0x100;
 
 			if (!m_caster.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
@@ -1287,20 +1299,6 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			//if (!m_spell.Uninterruptible && m_spell.CastTime > 0 && m_caster is GamePlayer &&
-			//	m_caster.EffectList.GetOfType<QuickCastEffect>() == null && m_caster.EffectList.GetOfType<MasteryofConcentrationEffect>() == null)
-			//{
-			//	if(Caster.InterruptTime > 0 && Caster.InterruptTime > m_started)
-			//	{
-			//		if (!quiet)
-			//		{
-			//			if (Caster.LastInterruptMessage != "") MessageToCaster(Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
-			//			else MessageToCaster("You are interrupted and must wait " + ((Caster.InterruptTime - m_started) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
-			//		}
-			//		return false;
-			//	}
-			//}
-
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
 			{
 				return false;
@@ -1308,15 +1306,29 @@ namespace DOL.GS.Spells
 
 			if (!m_caster.IsAlive)
 			{
-				if(!quiet) MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
+				if (!quiet)
+					MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
 				return false;
+			}
+
+			if (Caster is GameNPC npcOwner)
+			{
+				if (Spell.CastTime > 0)
+				{
+					if (npcOwner.IsMoving)
+						npcOwner.StopFollowing();
+				}
+
+				if (npcOwner != Target)
+					npcOwner.TurnTo(Target);
 			}
 
 			if (m_spell.InstrumentRequirement != 0)
 			{
 				if (!CheckInstrument())
 				{
-					if (!quiet) MessageToCaster("You are not wielding the right type of instrument!", eChatType.CT_SpellResisted);
+					if (!quiet)
+						MessageToCaster("You are not wielding the right type of instrument!", eChatType.CT_SpellResisted);
 					return false;
 				}
 			}
@@ -1751,12 +1763,9 @@ namespace DOL.GS.Spells
 				else
 					CastState = eCastState.Cleanup;
 			}
-			if (CastState == eCastState.Cleanup)
-			{
-				CleanupSpellCast();
-			}
 
-			
+			if (CastState == eCastState.Cleanup)
+				CleanupSpellCast();
 		}
 
 		public void CleanupSpellCast()
@@ -1771,14 +1780,10 @@ namespace DOL.GS.Spells
 						p.castingComponent.queuedSpellHandler = null;
 					}
 					else
-					{
 						p.castingComponent.spellHandler = null;
-					}
 				}
 				else
-				{
 					p.castingComponent.instantSpellHandler = null;
-				}
 			}
 			else if (Caster is NecromancerPet nPet)
 			{
@@ -1787,6 +1792,7 @@ namespace DOL.GS.Spells
 					if (Spell.CastTime > 0)
 					{
 						necroBrain.RemoveSpellFromQueue();
+
 						if (nPet.attackComponent.AttackState)
 							necroBrain.RemoveSpellFromAttackQueue();
 
@@ -1796,9 +1802,7 @@ namespace DOL.GS.Spells
 							Caster.castingComponent.queuedSpellHandler = null;
 						}
 						else
-						{
 							Caster.castingComponent.spellHandler = null;
-						}
 
 						if (necroBrain.SpellsQueued)
 							necroBrain.CheckSpellQueue();
@@ -1820,13 +1824,9 @@ namespace DOL.GS.Spells
 					Caster.castingComponent.queuedSpellHandler = null;
 				}
 				else
-				{
 					Caster.castingComponent.spellHandler = null;
-				}
 			}
 		}
-
-		
 
 		/// <summary>
 		/// Calculates the power to cast the spell

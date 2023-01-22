@@ -25,7 +25,6 @@ namespace DOL.GS
         //data for instant spells 
         public ISpellHandler instantSpellHandler;
 
-
         public CastingComponent(GameLiving owner)
         {
             this.owner = owner;
@@ -35,7 +34,7 @@ namespace DOL.GS
         {
             spellHandler?.Tick(time);
         }
-        
+
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             EntityManager.AddComponent(typeof(CastingComponent), owner);

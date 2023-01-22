@@ -1621,10 +1621,7 @@ namespace DOL.GS
 			lock (m_followTimer)
 			{
 				if (m_followTimer.IsAlive)
-				{
 					m_followTimer.Stop();
-				}
-					
 
 				m_followTarget.Target = null;
 				StopMoving();
@@ -5170,15 +5167,6 @@ namespace DOL.GS
 				casted = base.CastSpell(spellToCast, line);
 			}
 
-			if (casted && spell.CastTime > 0)
-			{
-				if (IsMoving)
-					StopFollowing();
-
-				if (TargetObject != this)
-					TurnTo(TargetObject);
-			}
-
 			return casted;
 		}
 
@@ -5270,16 +5258,7 @@ namespace DOL.GS
 						livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
 						target = livingTarget.ControlledBrain?.Body;
 
-					bool casted = CastSpellWithTarget(spell, line, target as GameLiving);
-
-					if (casted && spell.CastTime > 0)
-					{
-						if (IsMoving)
-							StopFollowing();
-
-						if (TargetObject != this)
-							TurnTo(target);
-					}
+					CastSpellWithTarget(spell, line, target as GameLiving);
 				}
 				else
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));

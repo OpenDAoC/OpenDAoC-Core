@@ -215,7 +215,6 @@ namespace DOL.GS.Spells
 		/// </summary>
 		GameLiving Caster { get; }
 
-		
 		void Tick(long currentTick);
 
 		/// <summary>
