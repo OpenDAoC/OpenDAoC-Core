@@ -872,18 +872,7 @@ namespace DOL.AI.Brain
 			}
 
 			if (Body.TargetObject != null)
-            {
 				casted = Body.CastSpell(spell, m_mobSpellLine, true);
-
-				if (casted && spell.CastTime > 0)
-				{
-					if (Body.IsMoving)
-						Body.StopFollowing();
-
-					if (Body.TargetObject != Body)
-						Body.TurnTo(Body.TargetObject);
-				}
-			}
 
 			return casted;
 		}

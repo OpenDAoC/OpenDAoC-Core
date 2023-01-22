@@ -5148,14 +5148,14 @@ namespace DOL.GS
 		/// <param name="checkLOS"></param>
 		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
 		{
-			bool cast;
+			bool casted;
 
 			if (IsIncapacitated)
 				return false;
 
 			if (checkLOS)
 			{
-				cast = CastSpell(spell, line);
+				casted = CastSpell(spell, line);
 			}
 			else
 			{
@@ -5172,10 +5172,19 @@ namespace DOL.GS
 					spellToCast = spell;
 				}
 
-				cast = base.CastSpell(spellToCast, line);
+				casted = base.CastSpell(spellToCast, line);
 			}
 
-			return cast;
+			if (casted && spell.CastTime > 0)
+			{
+				if (IsMoving)
+					StopFollowing();
+
+				if (TargetObject != this)
+					TurnTo(TargetObject);
+			}
+
+			return casted;
 		}
 
 		/// <summary>
@@ -5280,7 +5289,17 @@ namespace DOL.GS
 							TargetObject = (living as GamePlayer).ControlledBrain.Body;
 					}
 
-					base.CastSpell(spell, line);
+					bool casted = base.CastSpell(spell, line);
+
+					if (casted && spell.CastTime > 0)
+					{
+						if (IsMoving)
+							StopFollowing();
+
+						if (TargetObject != this)
+							TurnTo(TargetObject);
+					}
+
 					TargetObject = lasttarget;
 				}
 				else

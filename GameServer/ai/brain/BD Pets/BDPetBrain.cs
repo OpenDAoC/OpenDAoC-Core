@@ -24,8 +24,6 @@ namespace DOL.AI.Brain
 {
 	public abstract class BDPetBrain : ControlledNpcBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		protected const int BASEFORMATIONDIST = 50;
 
 		public BDPetBrain(GameLiving Owner) : base(Owner)
@@ -40,23 +38,22 @@ namespace DOL.AI.Brain
 		public override GamePlayer GetPlayerOwner()
 		{
 			GameNPC commanderOwner = (GameNPC)Owner;
+
 			if (commanderOwner != null && commanderOwner.Brain is IControlledBrain)
 			{
 				GamePlayer playerOwner = (commanderOwner.Brain as IControlledBrain).Owner as GamePlayer;
 				return playerOwner;
 			}
+
 			return null;
 		}
 
-		/// <summary>
-		/// Are minions assisting the commander?
-		/// </summary>
-		public bool MinionsAssisting
-		{ 
-			get { return Owner is CommanderPet commander && commander.MinionsAssisting; } 
-		}
+        /// <summary>
+        /// Are minions assisting the commander?
+        /// </summary>
+        public bool MinionsAssisting => Owner is CommanderPet commander && commander.MinionsAssisting;
 
-		public override void OnOwnerAttacked(AttackData ad)
+        public override void OnOwnerAttacked(AttackData ad)
 		{
 			// react only on these attack results
 			switch (ad.AttackResult)
@@ -86,7 +83,6 @@ namespace DOL.AI.Brain
 			// Attack immediately rather than waiting for the next Think()
 			if (AggressionState != eAggressionState.Passive)
 				Attack(Owner.TargetObject);
-				
 		}
 
 		/// <summary>
@@ -114,7 +110,8 @@ namespace DOL.AI.Brain
 		/// <returns>true if stopped</returns>
 		public override bool Stop()
 		{
-			if (!base.Stop()) return false;
+			if (!base.Stop())
+				return false;
 
 			GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
 			return true;
@@ -125,36 +122,33 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void FollowOwner()
 		{
-			if (Body.IsCasting || Body.attackComponent.AttackState)
-			{
+			if (Body.attackComponent.AttackState)
 				Body.StopAttack();
-			}
+
 			Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
 		/// <summary>
 		/// Checks for the formation position of the BD pet
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <returns></returns>
 		public override bool CheckFormation(ref int x, ref int y, ref int z)
 		{
-			if (!Body.attackComponent.AttackState && Body.attackComponent.Attackers.Count == 0)
+			if (!Body.IsCasting && !Body.attackComponent.AttackState && Body.attackComponent.Attackers.Count == 0)
 			{
 				GameNPC commander = (GameNPC)Owner;
-				double heading = ((double)commander.Heading) * Point2D.HEADING_TO_RADIAN;
+				double heading = commander.Heading * Point2D.HEADING_TO_RADIAN;
 				//Get which place we should put minion
 				int i = 0;
 				//How much do we want to slide back and left/right
 				int perp_slide = 0;
 				int par_slide = 0;
+
 				for (; i < commander.ControlledNpcList.Length; i++)
 				{
 					if (commander.ControlledNpcList[i] == this)
 						break;
 				}
+
 				switch (commander.Formation)
 				{
 					case GameNPC.eFormationType.Triangle:
@@ -178,25 +172,29 @@ namespace DOL.AI.Brain
 								perp_slide = BASEFORMATIONDIST;
 								break;
 						}
+
 						break;
 				}
 				//Slide backwards - every pet will need to do this anyways
-				x += (int)(((double)commander.FormationSpacing * par_slide) * Math.Cos(heading - Math.PI / 2));
-				y += (int)(((double)commander.FormationSpacing * par_slide) * Math.Sin(heading - Math.PI / 2));
+				x += (int)((double)commander.FormationSpacing * par_slide * Math.Cos(heading - Math.PI / 2));
+				y += (int)((double)commander.FormationSpacing * par_slide * Math.Sin(heading - Math.PI / 2));
+
 				//In addition with sliding backwards, slide the other two pets sideways
 				switch (i)
 				{
 					case 1:
-						x += (int)(((double)commander.FormationSpacing * perp_slide) * Math.Cos(heading - Math.PI));
-						y += (int)(((double)commander.FormationSpacing * perp_slide) * Math.Sin(heading - Math.PI));
+						x += (int)((double)commander.FormationSpacing * perp_slide * Math.Cos(heading - Math.PI));
+						y += (int)((double)commander.FormationSpacing * perp_slide * Math.Sin(heading - Math.PI));
 						break;
 					case 2:
-						x += (int)(((double)commander.FormationSpacing * perp_slide) * Math.Cos(heading));
-						y += (int)(((double)commander.FormationSpacing * perp_slide) * Math.Sin(heading));
+						x += (int)((double)commander.FormationSpacing * perp_slide * Math.Cos(heading));
+						y += (int)((double)commander.FormationSpacing * perp_slide * Math.Sin(heading));
 						break;
 				}
+
 				return true;
 			}
+
 			return false;
 		}
 
@@ -211,62 +209,20 @@ namespace DOL.AI.Brain
 				GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
 				return;
 			}
+
 			FollowOwner();
 		}
 
-		/// <summary>
-		/// The interval for thinking, 1.5 seconds
-		/// </summary>
-		public override int ThinkInterval
+        /// <summary>
+        /// The interval for thinking, 1.5 seconds
+        /// </summary>
+        public override int ThinkInterval => 1500;
+
+        /// <summary>
+        /// Standard think method for all the pets
+        /// </summary>
+        public override void Think()
 		{
-			get { return 1500; }
-		}
-
-		/// <summary>
-		/// Standard think method for all the pets
-		/// </summary>
-		public override void Think()
-		{
-			/*
-			GamePlayer playerowner = GetPlayerOwner();
-
-			long lastUpdate = 0;
-			if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out lastUpdate))
-			{
-				playerowner.Client.GameObjectUpdateArray.Add(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
-			}
-
-			if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
-			{
-				playerowner.Out.SendObjectUpdate(Body);
-			}
-
-			//See if the pet is too far away, if so release it!
-			if (!Body.IsWithinRadius(Owner, MAX_OWNER_FOLLOW_DIST))
-			{
-				if (Body.IsCasting)
-					Body.StopCurrentSpellcast();
-				else
-					GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
-			}
-
-			if ((!Body.attackComponent.AttackState && !Body.IsCasting && !Body.InCombat && m_orderAttackTarget == null) || AggressionState == eAggressionState.Passive)
-			{
-				FollowOwner();
-			}
-
-			//Check for buffs, heals, etc
-			CheckSpells(eCheckSpellType.Defensive);
-
-			if (AggressionState == eAggressionState.Aggressive)
-			{
-				CheckPlayerAggro();
-				CheckNPCAggro();
-			}
-
-			if (AggressionState != eAggressionState.Passive)
-				AttackMostWanted();
-			*/
 			CheckAbilities();
 			CheckSpells(eCheckSpellType.Defensive);
 			base.Think();
@@ -275,17 +231,13 @@ namespace DOL.AI.Brain
 		public override void Attack(GameObject target)
 		{
 			base.Attack(target);
-			//Check for any abilities
 			CheckAbilities();
 		}
 
 		public override eWalkState WalkState
-		{
-			get
-			{
-				return eWalkState.Follow;
-			}
-			set	{ }
-		}
-	}
+        {
+            get => eWalkState.Follow;
+            set { }
+        }
+    }
 }
