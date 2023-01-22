@@ -5145,20 +5145,15 @@ namespace DOL.GS
 		/// <summary>
 		/// Cast a spell, with optional LOS check
 		/// </summary>
-		/// <param name="spell"></param>
-		/// <param name="line"></param>
-		/// <param name="checkLOS"></param>
-		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
+		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLos)
 		{
 			bool casted;
 
 			if (IsIncapacitated)
 				return false;
 
-			if (checkLOS)
-			{
+			if (checkLos)
 				casted = CastSpell(spell, line);
-			}
 			else
 			{
 				Spell spellToCast;
@@ -5170,9 +5165,7 @@ namespace DOL.GS
 					spellToCast.Level = Level;
 				}
 				else
-				{
 					spellToCast = spell;
-				}
 
 				casted = base.CastSpell(spellToCast, line);
 			}
@@ -5227,18 +5220,8 @@ namespace DOL.GS
 
 			GamePlayer LosChecker = TargetObject as GamePlayer;
 
-			if (LosChecker == null && this is GamePet pet)
-			{
-				if (pet.Owner is GamePlayer player)
-					LosChecker = player;
-				else if (pet.Owner is CommanderPet commander && commander.Owner is GamePlayer owner)
-					LosChecker = owner;
-			}
-			else if (LosChecker == null && Brain is IControlledBrain controlledBrain) // Check for charmed pets
-			{
-				if (controlledBrain.Owner is GamePlayer player)
-					LosChecker = player;
-			}
+			if (LosChecker == null && Brain is IControlledBrain brain)
+				LosChecker = brain.GetPlayerOwner();
 
 			if (LosChecker == null)
 			{
@@ -5258,7 +5241,7 @@ namespace DOL.GS
 			{
 				if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
 				{
-					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLOS));
+					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLos));
 					return true;
 				}
 				
@@ -5266,7 +5249,7 @@ namespace DOL.GS
 			}
 		}
 
-		public void StartSpellAttackCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		public void StartSpellAttackCheckLos(GamePlayer player, ushort response, ushort targetOID)
 		{
 			if (targetOID == 0)
 				return;
