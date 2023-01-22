@@ -875,13 +875,15 @@ namespace DOL.GS.Spells
 			{
 				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 				{
-					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroPetBrain &&
-						!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroPetBrain)
 					{
-						if (!quiet)
-							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
+						if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+						{
+							if (!quiet)
+								MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
 
-						return false;
+							return false;
+						}
 					}
 					else
 						return false;
