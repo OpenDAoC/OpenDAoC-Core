@@ -5458,7 +5458,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The default frequency of regenerating endurance in milliseconds
 		/// </summary>
-		protected const ushort m_enduranceRegenerationPeriod = 2000;
+		protected const ushort m_enduranceRegenerationPeriod = 1500;
 
 		/// <summary>
 		/// Interval for endurance regeneration tics
@@ -5734,7 +5734,7 @@ namespace DOL.GS
 			}
 			if (Endurance >= MaxEndurance) return 0;
 
-			return 500 + Util.Random(EnduranceRegenerationPeriod);
+			return EnduranceRegenerationPeriod;
 		}
         #endregion
 
