@@ -858,14 +858,14 @@ namespace DOL.GS.Spells
 			//Check Interrupts for Player
 			if (m_caster is GamePlayer)
 			{
-				if (!m_spell.Uninterruptible && m_spell.CastTime > 0
-					&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast)
-					&& !m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
+				if (!m_spell.Uninterruptible && m_spell.CastTime > 0 &&
+					!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
+					!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 				{
 					if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 					{
 						if (!quiet)
-							MessageToCaster("You must wait " + ((Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted);
+							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
 						return false;
 					}
 				}
@@ -874,7 +874,18 @@ namespace DOL.GS.Spells
 			else if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
 			{
 				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
-					return false;
+				{
+					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroPetBrain &&
+						!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+					{
+						if (!quiet)
+							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
+
+						return false;
+					}
+					else
+						return false;
+				}
 			}
 
 			if (m_spell.RecastDelay > 0)

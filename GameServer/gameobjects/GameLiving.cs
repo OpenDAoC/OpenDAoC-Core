@@ -1951,6 +1951,11 @@ namespace DOL.GS
 			}
 		}
 
+		public virtual bool StartInterruptTimerOnItselfOnMeleeAttack()
+		{
+			return true;
+		}
+
 		protected long m_interruptTime = 0;
 		public virtual long InterruptTime
 		{

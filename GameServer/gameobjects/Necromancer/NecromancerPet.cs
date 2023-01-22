@@ -414,16 +414,12 @@ namespace DOL.GS
 			base.OnAttackedByEnemy(ad);
 		}
 
-		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
-		{
-			// Necromancer pets don't get interrupt timers.
-			if (attacker != this)
-				castingComponent?.spellHandler?.CasterIsAttacked(attacker);
+        public override bool StartInterruptTimerOnItselfOnMeleeAttack()
+        {
+            return false;
+        }
 
-			return;
-		}
-
-		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			((NecromancerPetBrain)Brain).CheckAttackSpellQueue();
 			return attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
