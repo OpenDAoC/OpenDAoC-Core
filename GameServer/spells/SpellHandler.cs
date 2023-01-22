@@ -736,7 +736,7 @@ namespace DOL.GS.Spells
 			if (m_caster.ObjectState != GameObject.eObjectState.Active)
 				return false;
  
-            if (!m_caster.IsAlive)
+			if (!m_caster.IsAlive)
 			{
 				if (!quiet)
 					MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
@@ -770,8 +770,8 @@ namespace DOL.GS.Spells
 
 			if (quickCast != null)
 				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
-			
-            if (m_caster is GamePlayer playerCaster)
+
+			if (m_caster is GamePlayer playerCaster)
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.getProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
@@ -788,7 +788,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-            /*
+			/*
 			GameSpellEffect Phaseshift = FindEffectOnTarget(Caster, "Phaseshift");
 			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
 			{
@@ -796,7 +796,7 @@ namespace DOL.GS.Spells
 				return false;
 			}*/
 
-			// Apply Mentalist RA5L
+			// Apply Mentalist RA5L.
 			if (Spell.Range>0)
 			{
 				SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
@@ -829,10 +829,10 @@ namespace DOL.GS.Spells
 					return false;
 				}
 			}
-			else if (m_caster.IsSitting) // songs can be played if sitting
+			// Songs can be played even if sitting.
+			else if (m_caster.IsSitting)
 			{
-				//Purge can be cast while sitting but only if player has negative effect that
-				//don't allow standing up (like stun or mez)
+				// Purge can be cast while sitting but only if player has negative effect that doesn't allow standing up (like stun or mez)
 				if (!quiet)
 					MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
 				return false;
@@ -842,13 +842,15 @@ namespace DOL.GS.Spells
 			{
 				if (m_caster.CanCastInCombat(Spell) == false)
 				{
-					if (m_caster is not GamePet)
-						m_caster.attackComponent.StopAttack(); //dont stop melee for pet (probaby look at stopping attack just for game player)
+					// Don't stop melee for pets
+					if (m_caster is not GameNPC npcCaster || npcCaster.Brain is not IControlledBrain)
+						m_caster.attackComponent.StopAttack();
+
 					return false;
 				}
 			}
 
-			//Check Interrupts for Player
+			// Check Interrupts for Player.
 			if (m_caster is GamePlayer)
 			{
 				if (!m_spell.Uninterruptible && m_spell.CastTime > 0 &&
@@ -863,7 +865,7 @@ namespace DOL.GS.Spells
 					}
 				}
 			}
-			//Check Interrupts for NPC
+			// Check Interrupts for NPC.
 			else if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
 			{
 				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)

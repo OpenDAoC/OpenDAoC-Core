@@ -1,3 +1,4 @@
+using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
@@ -73,9 +74,7 @@ namespace DOL.GS
                         TickThenReplaceSpellHandler(ref spellHandler, m_newSpellHandler);
                 }
                 else if (m_newSpellHandler.Spell.IsInstantCast)
-                {
                     TickThenReplaceSpellHandler(ref instantSpellHandler, m_newSpellHandler);
-                }
                 else
                 {
                     if (owner is GamePlayer pl)
@@ -85,13 +84,9 @@ namespace DOL.GS
                             if (spellHandler.Spell.InstrumentRequirement != 0)
                             {
                                 if (spell.InstrumentRequirement != 0)
-                                {
                                     pl.Out.SendMessage(LanguageMgr.GetTranslation(pl.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                                }
                                 else
-                                {
                                     pl.Out.SendMessage("You must wait " + (((spellHandler.CastStartTick + spellHandler.Spell.CastTime) - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                                }
                                 return false;
                             }
                         }
@@ -101,14 +96,10 @@ namespace DOL.GS
                             queuedSpellHandler = m_newSpellHandler;
                         }
                         else
-                        {
                             pl.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                        }
                     }
-                    else if (owner is GamePet pet)
-                    {
+                    else if (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain)
                         queuedSpellHandler = m_newSpellHandler;
-                    }
                 }
             }
             else
