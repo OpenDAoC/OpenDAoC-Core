@@ -745,6 +745,9 @@ namespace DOL.GS.Spells
 
 			if (Caster is GameNPC npcOwner)
 			{
+				// Reset for LoS checks during cast.
+				m_caster.TargetInView = true;
+
 				if (Spell.CastTime > 0)
 				{
 					if (npcOwner.IsMoving)
