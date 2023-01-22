@@ -426,7 +426,7 @@ namespace DOL.GS
 		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			((NecromancerPetBrain)Brain).CheckAttackSpellQueue();
-			return attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
+			return attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
 		/// <summary>

@@ -114,29 +114,22 @@ namespace DOL.GS
         /// The chance for a critical hit
         /// </summary>
         /// <param name="weapon">attack weapon</param>
-        public int AttackCriticalChance(InventoryItem weapon)
+        public int AttackCriticalChance(WeaponAction action, InventoryItem weapon)
         {
             if (owner is GamePlayer)
             {
                 var p = owner as GamePlayer;
 
-                if (weapon != null && weapon.Item_Type == Slot.RANGED &&
-                    p.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
-                    return 0; // no crit damage for crit shots
+                if (weapon != null && weapon.Item_Type == Slot.RANGED && action?.RangedAttackType == eRangedAttackType.Critical)
+                    return 0;
 
-                // check for melee attack
                 if (weapon != null && weapon.Item_Type != Slot.RANGED)
-                {
                     return p.GetModified(eProperty.CriticalMeleeHitChance);
-                }
 
-                // check for ranged attack
                 if (weapon != null && weapon.Item_Type == Slot.RANGED)
-                {
                     return p.GetModified(eProperty.CriticalArcheryHitChance);
-                }
 
-                // base 10% chance of critical for all with melee weapons
+                // Base of 10% critical chance.
                 return 10;
             }
 
@@ -366,7 +359,7 @@ namespace DOL.GS
 
                 if (bowWeapon)
                 {
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY)
+                    if (Properties.ALLOW_OLD_ARCHERY)
                     {
                         //Draw Time formulas, there are very many ...
                         //Formula 2: y = iBowDelay * ((100 - ((iQuickness - 50) / 5 + iMasteryofArcheryLevel * 3)) / 100)
@@ -382,7 +375,8 @@ namespace DOL.GS
                         // Apply RA difference
                         speed -= percent;
                         //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
-                        if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+
+                        if (owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical) 
                             speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
                     }
                     else
@@ -956,15 +950,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="weapon"></param>
-        /// <param name="style"></param>
-        /// <param name="effectiveness"></param>
-        /// <param name="interruptDuration"></param>
-        /// <param name="dualWield"></param>
-        /// <returns></returns>
-        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness,
-            int interruptDuration, bool dualWield)
+        public AttackData MakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
         {
             var p = owner as GamePlayer;
 
@@ -989,8 +975,7 @@ namespace DOL.GS
                     p.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(target, weapon, style, effectiveness * p.Effectiveness,
-                    interruptDuration, dualWield);
+                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness * p.Effectiveness, interruptDuration, dualWield);
 
                 switch (ad.AttackResult)
                 {
@@ -1180,8 +1165,7 @@ namespace DOL.GS
                                         {
                                             if (obj != ad.Target)
                                             {
-                                                LivingMakeAttack(obj, attackWeapon, null, 1,
-                                                    ServerProperties.Properties.SPELL_INTERRUPT_DURATION, false, false);
+                                                LivingMakeAttack(action, obj, attackWeapon, null, 1, Properties.SPELL_INTERRUPT_DURATION, false);
                                             }
                                         }
                                     }
@@ -1197,29 +1181,16 @@ namespace DOL.GS
             else if (owner is NecromancerPet necromancerPet)
                 return necromancerPet.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
             else
-                return LivingMakeAttack(target, weapon, style, 1, interruptDuration, dualWield);
+                return LivingMakeAttack(action, target, weapon, style, 1, interruptDuration, dualWield);
         }
 
         /// <summary>
         /// This method is called to make an attack, it is called from the
         /// attacktimer and should not be called manually
         /// </summary>
-        /// <param name="target">the target that is attacked</param>
-        /// <param name="weapon">the weapon used for attack</param>
-        /// <param name="style">the style used for attack</param>
-        /// <param name="effectiveness">damage effectiveness (0..1)</param>
-        /// <param name="interruptDuration">the interrupt duration</param>
-        /// <param name="dualWield">indicates if both weapons are used for attack</param>
         /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness,
-            int interruptDuration, bool dualWield)
-        {
-            return LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
-        }
-
-
-        public AttackData LivingMakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness,
-            int interruptDuration, bool dualWield, bool ignoreLOS)
+        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness,
+            int interruptDuration, bool dualWield, bool ignoreLOS = false)
         {
             AttackData ad = new AttackData();
             ad.Attacker = owner;
@@ -1352,7 +1323,7 @@ namespace DOL.GS
 
 
             //Calculate our attack result and attack damage
-            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(ad, weapon);
+            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon);
 
             // calculate damage only if we hit the target
             if (ad.AttackResult == eAttackResult.HitUnstyled
@@ -1604,7 +1575,8 @@ namespace DOL.GS
                 // apply total damage cap
                 //Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)} ");
                 ad.UncappedDamage = ad.Damage;
-                if (owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
+
+                if (action?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
                 else
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) /* * effectiveness*/));
@@ -1906,7 +1878,7 @@ namespace DOL.GS
                                         string.Format(
                                             LanguageMgr.GetTranslation(owner.Client.Account.Language,
                                                 "GameLiving.AttackData.YourCriticallyHits"), ad.Attacker.Name,
-                                            ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(ad.Weapon)}%)", eChatType.CT_YouHit,
+                                            ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(null, ad.Weapon)}%)", eChatType.CT_YouHit,
                                         eChatLoc.CL_SystemWindow);
                                 }
 
@@ -2028,7 +2000,7 @@ namespace DOL.GS
         /// <param name="ad">AttackData</param>
         /// <param name="weapon">the weapon used for attack</param>
         /// <returns>the result of the attack</returns>
-        public virtual eAttackResult CalculateEnemyAttackResult(AttackData ad, InventoryItem weapon)
+        public virtual eAttackResult CalculateEnemyAttackResult(WeaponAction action, AttackData ad, InventoryItem weapon)
         {
             if (!IsValidTarget)
                 return eAttackResult.NoValidTarget;
@@ -2707,24 +2679,19 @@ namespace DOL.GS
             {
                 bool penetrate = false;
 
-
                 if (stealthStyle)
-                    return
-                        eAttackResult
-                            .HitUnstyled; //exit early for stealth to prevent breaking bubble but still register a hit
+                    return eAttackResult.HitUnstyled; //exit early for stealth to prevent breaking bubble but still register a hit
 
-                if (ad.Attacker.rangeAttackComponent.RangedAttackType ==
-                    eRangedAttackType.Long // stealth styles pierce bladeturn
-                    || (ad.AttackType == AttackData.eAttackType.Ranged &&
-                        ad.Target != ecsbladeturn.SpellHandler.Caster && ad.Attacker is GamePlayer &&
-                        ((GamePlayer) ad.Attacker).HasAbility(Abilities
-                            .PenetratingArrow))) // penetrating arrow attack pierce bladeturn
+                if (action?.RangedAttackType == eRangedAttackType.Long ||
+                    (ad.AttackType == AttackData.eAttackType.Ranged &&
+                    ad.Target != ecsbladeturn.SpellHandler.Caster &&
+                    ad.Attacker is GamePlayer &&
+                    ((GamePlayer) ad.Attacker).HasAbility(Abilities.PenetratingArrow))) // penetrating arrow attack pierce bladeturn
                     penetrate = true;
 
-
-                if (ad.IsMeleeAttack &&
-                    !Util.ChanceDouble((double) ecsbladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
+                if (ad.IsMeleeAttack && !Util.ChanceDouble(ecsbladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))
                     penetrate = true;
+
                 if (penetrate)
                 {
                     if (ad.Target is GamePlayer)
@@ -3047,7 +3014,7 @@ namespace DOL.GS
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical",
                                         ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
-                                        ad.CriticalDamage) + $" ({AttackCriticalChance(ad.Weapon)}%)",
+                                        ad.CriticalDamage) + $" ({AttackCriticalChance(null, ad.Weapon)}%)",
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -3162,7 +3129,7 @@ namespace DOL.GS
                                 p.Out.SendMessage(
                                     LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical", ad.Target.GetName(0, false),
-                                        ad.CriticalDamage) + $"({AttackCriticalChance(ad.Weapon)}%)", eChatType.CT_YouHit,
+                                        ad.CriticalDamage) + $"({AttackCriticalChance(null, ad.Weapon)}%)", eChatType.CT_YouHit,
                                     eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -3180,7 +3147,7 @@ namespace DOL.GS
         {
             if (owner is GamePlayer)
             {
-                    if (Util.Chance(AttackCriticalChance(weapon)))
+                    if (Util.Chance(AttackCriticalChance(null, weapon)))
                 {
                     // triple wield prevents critical hits
                     if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null) return 0;
@@ -3232,7 +3199,7 @@ namespace DOL.GS
         /// <returns>The amount of critical damage.</returns>
         public int LivingGetMeleeCriticalDamage(AttackData attackData, InventoryItem weapon)
         {
-            if (Util.Chance(AttackCriticalChance(weapon)))
+            if (Util.Chance(AttackCriticalChance(null, weapon)))
             {
                 int maxCriticalDamage = (attackData.Target is GamePlayer)
                     ? attackData.Damage / 2

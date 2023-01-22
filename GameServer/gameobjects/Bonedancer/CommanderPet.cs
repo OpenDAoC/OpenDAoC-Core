@@ -171,7 +171,7 @@ namespace DOL.GS
         /// </summary>
         public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
-			AttackData ad = attackComponent.LivingMakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield);
+			AttackData ad = attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield);
 
 			if (Taunting && ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE > 100
 				&& (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled)

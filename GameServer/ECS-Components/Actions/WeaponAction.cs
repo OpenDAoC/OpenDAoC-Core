@@ -19,6 +19,10 @@ namespace DOL.GS
         protected readonly double m_effectiveness;
         protected readonly int m_interruptDuration;
         protected readonly Style m_combatStyle;
+        protected readonly eRangedAttackType m_RangedAttackType;
+
+        // The ranged attack type at the time the shot was released.
+        public eRangedAttackType RangedAttackType => m_RangedAttackType;
 
         public bool AttackFinished { get; set; }
 
@@ -31,6 +35,7 @@ namespace DOL.GS
             m_effectiveness = effectiveness;
             m_interruptDuration = interruptDuration;
             m_combatStyle = combatStyle;
+            m_RangedAttackType = owner.rangeAttackComponent.RangedAttackType;
         }
 
         public void Execute()
@@ -104,7 +109,7 @@ namespace DOL.GS
                 }
 
                 // Both hands are used for attack.
-                mainHandAD = m_owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
+                mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, usingOH);
 
                 if (style == null)
                     mainHandAD.AnimationId = -2; // Virtual code for both weapons swing animation.
@@ -123,14 +128,14 @@ namespace DOL.GS
                 {
                     m_owner.attackComponent.UsedHandOnLastDualWieldAttack = 1;
                     mainWeapon = leftWeapon;
-                    mainHandAD = m_owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+                    mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
                     mainHandAD.AnimationId = -1; // Virtual code for left weapons swing animation.
                 }
                 else
-                    mainHandAD = m_owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+                    mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
             }
             else
-                mainHandAD = m_owner.attackComponent.MakeAttack(m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
+                mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
 
             m_owner.TempProperties.setProperty(LAST_ATTACK_DATA, mainHandAD);
 
@@ -228,9 +233,9 @@ namespace DOL.GS
 
                             // Savage swings - main, left, main, left.
                             if (i % 2 == 0)
-                                leftHandAD = m_owner.attackComponent.MakeAttack(m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
+                                leftHandAD = m_owner.attackComponent.MakeAttack(this, m_target, leftWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
                             else
-                                leftHandAD = m_owner.attackComponent.MakeAttack(m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
+                                leftHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, null, leftHandEffectiveness, m_interruptDuration, usingOH);
 
                             // Notify the target of our attack (sends damage messages, should be before damage).
                             leftHandAD.Target?.OnAttackedByEnemy(leftHandAD);
@@ -371,7 +376,7 @@ namespace DOL.GS
                 case eAttackResult.Blocked:
                 case eAttackResult.Evaded:
                 case eAttackResult.Parried:
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(attacker, target.ActiveWeapon, null, 1, interruptDuration, false, true);
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(null, attacker, target.ActiveWeapon, null, 1, interruptDuration, false, true);
                     target.DealDamage(ReflexAttackAD);
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually

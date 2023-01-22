@@ -305,7 +305,12 @@ namespace DOL.GS
         {
             _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, null, _effectiveness, _interruptDuration, null);
 
-            _owner.rangeAttackComponent?.RemoveEnduranceAndAmmoOnShot();
+            _owner.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();
+
+            // Order is important. 'WeaponAction()' creates a snapshot of 'RangedAttackType' that will be used for damage calculation.
+            // We then reset it for the next interval calculation.
+            if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
+                _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
@@ -360,6 +365,8 @@ namespace DOL.GS
             if (CheckInterruptTimer())
                 return false;
 
+            // Need to find a way to not have to call 'AttackSpeed()' again (currently needed
+            _interval = _attackComponent.AttackSpeed(_weapon);
             _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
             if (_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long)
