@@ -1189,18 +1189,7 @@ namespace DOL.AI.Brain
             }
 
             if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
-            {
                 casted = Body.CastSpell(spell, m_mobSpellLine);
-
-                if (casted && spell.CastTime > 0)
-                {
-                    if (Body.IsMoving)
-                        Body.StopFollowing();
-
-                    if (Body.TargetObject != Body)
-                        Body.TurnTo(Body.TargetObject);
-                }
-            }
 
             Body.TargetObject = lastTarget;
 
