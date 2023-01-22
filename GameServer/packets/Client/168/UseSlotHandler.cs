@@ -82,14 +82,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
-				if ((m_flagSpeedData & 0x200) != 0)
-				{
-					player.CurrentSpeed = (short)(-(m_flagSpeedData & 0x1ff)); // backward movement
-				}
-				else
-				{
-					player.CurrentSpeed = (short)(m_flagSpeedData & 0x1ff); // forwardmovement
-				}
+
+				// Commenting out. 'flagSpeedData' doesn't vary with movement speed, and this stops the player for a fraction of a second.
+				//if ((m_flagSpeedData & 0x200) != 0)
+				//{
+				//	player.CurrentSpeed = (short)(-(m_flagSpeedData & 0x1ff)); // backward movement
+				//}
+				//else
+				//{
+				//	player.CurrentSpeed = (short)(m_flagSpeedData & 0x1ff); // forwardmovement
+				//}
+
 				player.IsStrafing = (m_flagSpeedData & 0x4000) != 0;
 				player.TargetInView = (m_flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
 				player.GroundTargetInView = ((m_flagSpeedData & 0x1000) != 0);

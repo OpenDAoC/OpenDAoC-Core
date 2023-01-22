@@ -87,14 +87,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			GamePlayer player = client.Player;
 
-			if ((flagSpeedData & 0x200) != 0)
-			{
-				player.CurrentSpeed = (short)(-(flagSpeedData & 0x1ff)); // backward movement
-			}
-			else
-			{
-				player.CurrentSpeed = (short)(flagSpeedData & 0x1ff); // forward movement
-			}
+			// Commenting out. 'flagSpeedData' doesn't vary with movement speed, and this stops the player for a fraction of a second.
+			//if ((flagSpeedData & 0x200) != 0)
+			//{
+			//	player.CurrentSpeed = (short)(-(flagSpeedData & 0x1ff)); // backward movement
+			//}
+			//else
+			//{
+			//	player.CurrentSpeed = (short)(flagSpeedData & 0x1ff); // forward movement
+			//}
+
 			player.IsStrafing = (flagSpeedData & 0x4000) != 0;
 			if(!player.IsCasting) player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
 			player.GroundTargetInView = ((flagSpeedData & 0x1000) != 0);
