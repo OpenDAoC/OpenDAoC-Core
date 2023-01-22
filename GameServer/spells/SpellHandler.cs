@@ -1796,8 +1796,8 @@ namespace DOL.GS.Spells
 					{
 						necroBrain.RemoveSpellFromQueue();
 
-						if (nPet.attackComponent.AttackState)
-							necroBrain.RemoveSpellFromAttackQueue();
+						if (!Caster.attackComponent.AttackState)
+							necroBrain.CheckAttackSpellQueue();
 
 						if (Caster.castingComponent.queuedSpellHandler != null)
 						{

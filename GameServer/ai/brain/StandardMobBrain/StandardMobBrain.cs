@@ -535,7 +535,7 @@ namespace DOL.AI.Brain
             {
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
-				if (gameObject is GameLiving gameLiving)
+                if (gameObject is GameLiving gameLiving)
                 {
                     FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                     RemoveFromAggroList(gameLiving);
