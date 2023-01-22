@@ -487,11 +487,11 @@ namespace DOL.GS.Spells
 	                {
 		                // Message: {0} resists the charm! ({1}%)
 		                MessageToCaster(LanguageMgr.GetTranslation(charmCaster.Client, "GamePlayer.StartCharm.Fail.Resist", target.GetName(0, true), resistString), eChatType.CT_SpellResisted);
-		                SendEffectAnimation(GetTarget(), 0, false, 0);
+		                SendEffectAnimation(Target, 0, false, 0);
 		                return;
 	                }
 		            
-	                SendEffectAnimation(GetTarget(), 0, false, 1);
+	                SendEffectAnimation(Target, 0, false, 1);
                 }
                 if (!target.IsWithinRadius(Caster, 2000))
                 {

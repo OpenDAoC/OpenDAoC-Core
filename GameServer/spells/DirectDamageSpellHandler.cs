@@ -86,7 +86,7 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.Damage < 0)
 			{
-				return (m_spellTarget.MaxHealth * -Spell.Damage * .01) * 3.0 * effectiveness;
+				return (Target.MaxHealth * -Spell.Damage * .01) * 3.0 * effectiveness;
 			}
 
 			return base.DamageCap(effectiveness);

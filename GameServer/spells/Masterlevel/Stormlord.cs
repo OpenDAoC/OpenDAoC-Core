@@ -626,9 +626,9 @@ namespace DOL.GS.Spells
             get
             {
                 eProperty temp = eProperty.Acuity;
-                if (m_spellTarget.Realm == eRealm.Albion) temp = eProperty.Intelligence;
-                if (m_spellTarget.Realm == eRealm.Midgard) temp = eProperty.Piety;
-                if (m_spellTarget.Realm == eRealm.Hibernia) temp = eProperty.Intelligence;
+                if (Target.Realm == eRealm.Albion) temp = eProperty.Intelligence;
+                if (Target.Realm == eRealm.Midgard) temp = eProperty.Piety;
+                if (Target.Realm == eRealm.Hibernia) temp = eProperty.Intelligence;
 
                 return temp;
             }
@@ -743,7 +743,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.Damage < 0)
             {
-                return (m_spellTarget.MaxHealth * -Spell.Damage * .01) * 3.0 * effectiveness;
+                return (Target.MaxHealth * -Spell.Damage * .01) * 3.0 * effectiveness;
             }
 
             return base.DamageCap(effectiveness);

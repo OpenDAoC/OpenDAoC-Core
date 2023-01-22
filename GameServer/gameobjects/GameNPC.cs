@@ -59,10 +59,9 @@ namespace DOL.GS
 		public const int CONST_WALKTOTOLERANCE = 20;
 
 		private int m_databaseLevel;
-		
+
 		public bool NeedsBroadcastUpdate { get; set; }
 
-		
 		#region Formations/Spacing
 
 		//Space/Offsets used in formations
@@ -4330,6 +4329,11 @@ namespace DOL.GS
 			return interrupted;
 		}
 
+		public override bool StartInterruptTimerOnItselfOnMeleeAttack()
+		{
+			return false;
+		}
+
 		/// <summary>
 		/// The time to wait before each mob respawn
 		/// </summary>
@@ -5190,8 +5194,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Cast a spell with LOS check to a player
 		/// </summary>
-		/// <param name="spell"></param>
-		/// <param name="line"></param>
  		/// <returns>Whether the spellcast started successfully</returns>
 		public override bool CastSpell(Spell spell, SpellLine line)
 		{
@@ -5199,7 +5201,7 @@ namespace DOL.GS
 			// Entries older than 3 seconds are removed, so that another check can be performed in case the previous one never was.
 			for (int i = m_spellTargetLosChecks.Count - 1 ; i >= 0 ; i--)
 			{
-                var element = m_spellTargetLosChecks.ElementAt(i);
+				var element = m_spellTargetLosChecks.ElementAt(i);
 
 				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
 					m_spellTargetLosChecks.TryRemove(element.Key, out _);
@@ -5280,16 +5282,11 @@ namespace DOL.GS
 
 				if ((response & 0x100) == 0x100 && line != null && spell != null)
 				{
-					GameObject lasttarget = TargetObject;
-					TargetObject = target;
+					if (target is GameLiving livingTarget &&
+						livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+						target = livingTarget.ControlledBrain?.Body;
 
-					if (TargetObject is GameLiving living && living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-					{
-						if (living is GamePlayer && (living as GamePlayer).ControlledBrain != null)
-							TargetObject = (living as GamePlayer).ControlledBrain.Body;
-					}
-
-					bool casted = base.CastSpell(spell, line);
+					bool casted = CastSpellWithTarget(spell, line, target as GameLiving);
 
 					if (casted && spell.CastTime > 0)
 					{
@@ -5297,10 +5294,8 @@ namespace DOL.GS
 							StopFollowing();
 
 						if (TargetObject != this)
-							TurnTo(TargetObject);
+							TurnTo(target);
 					}
-
-					TargetObject = lasttarget;
 				}
 				else
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));

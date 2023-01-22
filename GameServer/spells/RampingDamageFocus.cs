@@ -51,10 +51,10 @@ namespace DOL.GS.Spells
 
 		public override bool StartSpell(GameLiving target)
 		{
-			if (m_spellTarget == null)
-				m_spellTarget = target;
+			if (Target == null)
+				Target = target;
 
-			if (m_spellTarget == null) return false;
+			if (Target == null) return false;
 
 			ApplyEffectOnTarget(target, CurrentEffectiveness);
 			return true;

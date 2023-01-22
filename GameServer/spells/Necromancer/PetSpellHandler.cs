@@ -40,18 +40,18 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public override bool CastSpell()
 		{
-			m_spellTarget = Caster.TargetObject as GameLiving;
+			Target = Caster.TargetObject as GameLiving;
 			bool casted = true;
 
-			if (GameServer.ServerRules.IsAllowedToCastSpell(Caster, m_spellTarget, Spell, SpellLine) && CheckBeginCast(m_spellTarget))
+			if (GameServer.ServerRules.IsAllowedToCastSpell(Caster, Target, Spell, SpellLine) && CheckBeginCast(Target))
             {
                 if (Spell.CastTime > 0)
                 {
-					StartCastTimer(m_spellTarget);
+					StartCastTimer(Target);
                 }
                 else
                 {
-					FinishSpellCast(m_spellTarget);
+					FinishSpellCast(Target);
                 }
             }
             else 

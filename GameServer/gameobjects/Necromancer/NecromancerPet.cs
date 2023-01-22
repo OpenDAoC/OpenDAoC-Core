@@ -60,7 +60,7 @@ namespace DOL.GS
 
 		public override short MaxSpeed => (short)GetModified(eProperty.MaxSpeed);
 
-        /// <summary>
+		/// <summary>
 		/// Proc IDs for various pet weapons.
 		/// </summary>
 		private enum Procs
@@ -135,7 +135,7 @@ namespace DOL.GS
 			if (Brain == null || (Brain as IControlledBrain) == null)
 				return base.GetModified(property);
 
-            GameLiving livingOwner = (Brain as IControlledBrain).GetLivingOwner();
+			GameLiving livingOwner = (Brain as IControlledBrain).GetLivingOwner();
 			GamePlayer playerOwner = livingOwner as GamePlayer;
 
 			switch (property)
@@ -414,12 +414,7 @@ namespace DOL.GS
 			base.OnAttackedByEnemy(ad);
 		}
 
-        public override bool StartInterruptTimerOnItselfOnMeleeAttack()
-        {
-            return false;
-        }
-
-        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 		{
 			((NecromancerPetBrain)Brain).CheckAttackSpellQueue();
 			return attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
@@ -464,12 +459,12 @@ namespace DOL.GS
 				}
 				
 				if (!handler.Spell.IsInstantCast)
-                {
+				{
 					handler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
 				}
 			}
 			
-            return cast;
+			return cast;
 		}
 
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
@@ -549,11 +544,11 @@ namespace DOL.GS
 			return WhisperReceive(player, "arawn");
 		}
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
 			criticalAmount /= 2;
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-        }
+			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+		}
 
 		/// <summary>
 		/// Load equipment for the pet.
