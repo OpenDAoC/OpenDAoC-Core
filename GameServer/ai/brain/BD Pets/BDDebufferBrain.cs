@@ -59,32 +59,6 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected override bool CheckDefensiveSpells(Spell spell) { return false; }
 
-		/// <summary>
-		/// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
-		/// </summary>
-		protected override bool CheckInstantSpells(Spell spell)
-		{
-			GameObject lastTarget = Body.TargetObject;
-			Body.TargetObject = null;
-			switch (spell.SpellType)
-			{
-				case (byte)eSpellType.CombatSpeedDebuff:
-					Body.TargetObject = lastTarget;
-					break;
-			}
-
-			if (Body.TargetObject != null)
-			{
-				if (LivingHasEffect((GameLiving)Body.TargetObject, spell))
-					return false;
-				Body.CastSpell(spell, m_mobSpellLine);
-				//Body.TargetObject = lastTarget;
-				return true;
-			}
-			Body.TargetObject = lastTarget;
-			return false;
-		}
-
 		#endregion
 	}
 }
