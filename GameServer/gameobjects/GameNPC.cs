@@ -4295,22 +4295,20 @@ namespace DOL.GS
 		public void SwitchToRanged(GameObject target)
 		{
 			StopFollowing();
-            attackComponent.StopAttack();
+			attackComponent.StopAttack();
 			SwitchWeapon(eActiveWeaponSlot.Distance);
 			attackComponent.RequestStartAttack(target);
 		}
 
 		/// <summary>
 		/// Draw the weapon, but don't actually start a melee attack.
-		/// </summary>		
+		/// </summary>
 		public virtual void DrawWeapon()
 		{
 			if (!attackComponent.AttackState)
 			{
-                attackComponent.AttackState = true;
-
+				attackComponent.AttackState = true;
 				BroadcastUpdate();
-
 				attackComponent.AttackState = false;
 			}
 		}
@@ -4324,7 +4322,7 @@ namespace DOL.GS
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
 			if (interrupted)
-				attackComponent.attackAction.OnAimInterrupt(attacker);
+				attackComponent.attackAction?.OnAimInterrupt(attacker);
 
 			return interrupted;
 		}
@@ -5274,6 +5272,9 @@ namespace DOL.GS
 				return;
 
 			GameObject target = CurrentRegion.GetObject(targetOID);
+
+			if (target == null)
+				return;
 
 			if (m_spellTargetLosChecks.TryRemove(target, out Tuple<Spell, SpellLine, long> value))
 			{
