@@ -16,17 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using DOL.GS;
-using System.Collections;
-using System.Reflection;
-using log4net;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 
 namespace DOL.AI.Brain
 {
@@ -35,27 +25,16 @@ namespace DOL.AI.Brain
 	/// </summary>
 	public class CommanderBrain : ControlledNpcBrain
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		public CommanderBrain(GameLiving owner) : base(owner) { }
 
-		public CommanderBrain(GameLiving owner)
-			: base(owner)
-		{
-		}
+        public bool MinionsAssisting => Body is CommanderPet commander && commander.MinionsAssisting;
 
-		public bool MinionsAssisting
-		{
-			get { return Body is CommanderPet commander && commander.MinionsAssisting; }
-		}
-
-		/// <summary>
-		/// Determines if a given controlled brain is part of the commanders subpets
-		/// </summary>
-		/// <param name="brain">The brain to check</param>
-		/// <returns>True if found, else false</returns>
-		public bool FindPet(IControlledBrain brain)
+        /// <summary>
+        /// Determines if a given controlled brain is part of the commanders subpets
+        /// </summary>
+        /// <param name="brain">The brain to check</param>
+        /// <returns>True if found, else false</returns>
+        public bool FindPet(IControlledBrain brain)
 		{
 			if (Body.ControlledNpcList != null)
 			{
@@ -115,8 +94,10 @@ namespace DOL.AI.Brain
 				lock (Body.ControlledNpcList)
 				{
 					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					{
 						if (icb != null)
 							icb.Attack(target);
+					}
 				}
 			}
 		}
@@ -151,8 +132,10 @@ namespace DOL.AI.Brain
 				lock (Body.ControlledNpcList)
 				{
 					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					{
 						if (icb != null)
 							icb.FollowOwner();
+					}
 				}
 			}
 		}
@@ -193,8 +176,10 @@ namespace DOL.AI.Brain
 				lock (Body.ControlledNpcList)
 				{
 					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					{
 						if (icb != null)
 							icb.SetAggressionState(state);
+					}
 				}
 			}
 		}
@@ -251,8 +236,10 @@ namespace DOL.AI.Brain
 				// Check instant spells, but only cast one to prevent spamming
 				if (Body.CanCastInstantHarmfulSpells)
 					foreach (Spell spell in Body.InstantHarmfulSpells)
+					{
 						if (CheckOffensiveSpells(spell))
 							break;
+					}
 			}
 			else
 				// Only call base method if we didn't cast anything, 
@@ -261,5 +248,19 @@ namespace DOL.AI.Brain
 
 			return casted;
 		}
-	}
+
+        public override int ModifyDamageWithTaunt(int damage)
+        {
+			// TODO: Move 'CommanderPet.Taunting' to the brain.
+			if (Body is CommanderPet commanderPet)
+			{
+				int tauntScale = GS.ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE;
+
+				if (commanderPet.Taunting && tauntScale > 100)
+					damage = (int)(damage * tauntScale / 100.0);
+			}
+
+            return base.ModifyDamageWithTaunt(damage);
+        }
+    }
 }

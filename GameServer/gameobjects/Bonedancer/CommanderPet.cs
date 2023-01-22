@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
 using DOL.Language;
 
 namespace DOL.GS
@@ -29,8 +28,6 @@ namespace DOL.GS
 	public class CommanderPet : BDPet
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-
 
 		public enum eCommanderType
 		{
@@ -166,24 +163,6 @@ namespace DOL.GS
 			}
 		}
 
-        /// <summary>
-        /// Adds additional aggro to melee attacks if pet is set to taunt
-        /// </summary>
-        public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
-		{
-			AttackData ad = attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield);
-
-			if (Taunting && ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE > 100
-				&& (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled)
-				&& ActiveWeaponSlot != eActiveWeaponSlot.Distance && target is GameNPC npc && npc.Brain is IOldAggressiveBrain aggroBrain)
-			{
-				int aggro = ad.Damage * ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE / 100;
-				aggroBrain.AddToAggroList(this, aggro);
-			}
-
-			return ad;
-		}
-
 		/// <summary>
 		/// Called when owner sends a whisper to the pet
 		/// </summary>
@@ -193,7 +172,9 @@ namespace DOL.GS
 		/// <returns>True, if string needs further processing.</returns>
 		public override bool WhisperReceive(GameLiving source, string str)
 		{
-			return false; // everything below this comment is added in 1.83, and should not exist in a strict 1.65 level. feel free to add it back in if desired
+			return false;
+			// Everything below this comment is added in 1.83, and should not exist in a strict 1.65 level. Feel free to add it back in if desired.
+
 			if (!(source is GamePlayer player) || player != Owner)
 				return false;
 

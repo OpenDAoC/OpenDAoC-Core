@@ -49,17 +49,12 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			/*if (obj is GameLiving == false)
-			{
-				DisplayMessage(client, "You look pretty silly whispering to " + obj.GetName(0, false) + ".");
-				return;
-			}*/
-
 			if (obj == client.Player)
 			{
 				DisplayMessage(client, "Hmmmm...you shouldn't talk to yourself!");
 				return;
 			}
+
 			client.Player.Whisper(obj, string.Join(" ", args, 1, args.Length - 1));
 		}
 	}

@@ -1146,10 +1146,9 @@ namespace DOL.AI.Brain
 			AttackMostWanted();
 		}
 
-		protected override void BringFriends(GameLiving trigger)
-		{
-			// don't
-		}
+		public virtual int ModifyDamageWithTaunt(int damage) { return damage; }
+
+		protected override void BringFriends(GameLiving trigger) { }
 
 		public override bool CheckFormation(ref int x, ref int y, ref int z) { return false; }
 
