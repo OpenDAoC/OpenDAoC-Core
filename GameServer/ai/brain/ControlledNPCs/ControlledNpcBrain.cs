@@ -528,11 +528,13 @@ namespace DOL.AI.Brain
 
 				if (Body.CanCastHarmfulSpells)
 					foreach (Spell spell in Body.HarmfulSpells)
+					{
 						if (CheckOffensiveSpells(spell))
 						{
 							casted = true;
 							break;
 						}
+					}
 			}
 
 			return casted || Body.IsCasting;
@@ -892,10 +894,6 @@ namespace DOL.AI.Brain
 				return false;
 
 			if (!Body.IsWithinRadius(Body.TargetObject, spell.Range))
-				return false;
-
-			//Don't allow casting of non-instant Offsensive spells if already in attackstate and cant cast this spell in combat
-			if(spell.CastTime > 0 && Body.attackComponent.AttackState && !Body.CanCastInCombat(spell))
 				return false;
 
 			return base.CheckOffensiveSpells(spell);
