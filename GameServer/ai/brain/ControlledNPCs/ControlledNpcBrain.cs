@@ -66,28 +66,22 @@ namespace DOL.AI.Brain
 		/// Holds the aggression level of the brain
 		/// </summary>
 		protected eAggressionState m_aggressionState;
-		
-		/// <summary>
-		/// Allows to check if your target is stealthing - trying to escape your pet
-		/// </summary>
-		public bool previousIsStealthed;
 
 		/// <summary>
 		/// Constructs new controlled npc brain
 		/// </summary>
 		/// <param name="owner"></param>
-		public ControlledNpcBrain(GameLiving owner)
-			: base()
+		public ControlledNpcBrain(GameLiving owner) : base()
 		{
 			m_owner = owner ?? throw new ArgumentNullException("owner");
-            m_aggressionState = eAggressionState.Defensive;
-            m_walkState = eWalkState.Follow;
+			m_aggressionState = eAggressionState.Defensive;
+			m_walkState = eWalkState.Follow;
 
-            if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
-                AggroLevel = npcOwnerBrain.AggroLevel;
-            else
-                AggroLevel = 99;
-            AggroRange = 1500;
+			if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
+				AggroLevel = npcOwnerBrain.AggroLevel;
+			else
+				AggroLevel = 99;
+			AggroRange = 1500;
 
 			FSM.ClearStates();
 
@@ -264,11 +258,10 @@ namespace DOL.AI.Brain
 				AggressionState = eAggressionState.Defensive;
 				UpdatePetWindow();
 			}
+
 			m_orderAttackTarget = target as GameLiving;
-			previousIsStealthed = false;
-			if (target is GamePlayer) 
-				previousIsStealthed = (target as GamePlayer).IsStealthed;
 			FSM.SetCurrentState(eFSMStateType.AGGRO);
+
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
 

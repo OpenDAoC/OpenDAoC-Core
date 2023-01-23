@@ -38,6 +38,18 @@ namespace DOL.AI.Brain
 		/// <param name="owner"></param>
 		public BDBufferBrain(GameLiving owner) : base(owner) { }
 
+		/// <summary>
+		/// Attack the target on command
+		/// </summary>
+		/// <param name="target"></param>
+		public override void Attack(GameObject target)
+		{
+			// Don't stop casting. Buffer should prioritize buffing.
+			// 'AttackMostWanted()' will be called automatically once the pet is done buffing.
+			m_orderAttackTarget = target as GameLiving;
+			FSM.SetCurrentState(eFSMStateType.AGGRO);
+		}
+
 		#region AI
 
 		/// <summary>
