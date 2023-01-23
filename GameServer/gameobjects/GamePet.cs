@@ -242,9 +242,9 @@ namespace DOL.GS
 			}
 		}
 
+		/// <summary>
 		/// Called when spell has finished casting.
 		/// </summary>
-		/// <param name="handler"></param>
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
 			if(castingComponent.queuedSpellHandler != null)

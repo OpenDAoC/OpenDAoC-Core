@@ -37,6 +37,7 @@ using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using log4net;
+using System.Drawing;
 
 namespace DOL.GS.PacketHandler
 {
@@ -2105,15 +2106,17 @@ namespace DOL.GS.PacketHandler
 			// Hack to make pets untargetable with tab on a PvP server. There might be a better way to do it.
 			// Relies on 'SendObjectGuildID' not to be called after this.
 			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
-				SendPetFakeFriendlyGuildID(npc);
+			{
+				if (npc.Brain is IControlledBrain npcBrain)
+					SendPetFakeFriendlyGuildID(npc, npcBrain);
+				else
+					SendNpcFakeFriendlyGuildID(npc);
+			}
 		}
 
-		private void SendPetFakeFriendlyGuildID(GameNPC pet)
+		private void SendPetFakeFriendlyGuildID(GameNPC pet, IControlledBrain petBrain)
 		{
-			if (pet.Brain is not IControlledBrain npcBrain)
-				return;
-
-			GamePlayer playerOwner = npcBrain.GetPlayerOwner();
+			GamePlayer playerOwner = petBrain.GetPlayerOwner();
 			GamePlayer player = m_gameClient.Player;
 			Guild playerGuild = player.Guild;
 
@@ -2135,6 +2138,18 @@ namespace DOL.GS.PacketHandler
 			// Use a dummy guild for guildless players.
 			SendObjectGuildID(pet, playerGuild ?? Guild.DummyGuild);
 			SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+		}
+
+		private void SendNpcFakeFriendlyGuildID(GameNPC npc)
+		{
+			GamePlayer player = m_gameClient.Player;
+			Guild playerGuild = player.Guild;
+
+			if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
+			{
+				SendObjectGuildID(npc, playerGuild ?? Guild.DummyGuild);
+				SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+			}
 		}
 
 		public virtual void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
