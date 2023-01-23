@@ -4297,19 +4297,6 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
-		/// <summary>
-		/// Draw the weapon, but don't actually start a melee attack.
-		/// </summary>
-		public virtual void DrawWeapon()
-		{
-			if (!attackComponent.AttackState)
-			{
-				attackComponent.AttackState = true;
-				BroadcastUpdate();
-				attackComponent.AttackState = false;
-			}
-		}
-
 		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
 		{
 			// Increase substantially the base interrupt timer duration for non player controlled NPCs

@@ -972,15 +972,8 @@ namespace DOL.GS.Spells
 						if (Caster is TurretPet)
 							return true;
 
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell && !Caster.TargetInView)
-						{
-							if (!quiet)
-								MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
-							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-							return false;
-						}
-
-						if (!m_caster.IsObjectInFront(selectedTarget, 180) || !Caster.TargetInView)
+						// Pet spells (shade) don't require the target to be in front.
+						if ((m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)) || !Caster.TargetInView)
 						{
 							if (!quiet)
 								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
