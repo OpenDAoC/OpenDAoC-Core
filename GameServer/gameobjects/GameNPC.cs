@@ -5200,7 +5200,7 @@ namespace DOL.GS
 			else
 				spellToCast = spell;
 
-			if (TargetObject == this)
+			if (TargetObject == this || TargetObject == null)
 				return base.CastSpell(spellToCast, line);
 
 			if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
