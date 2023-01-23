@@ -96,18 +96,13 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// [Ganrod] Nidel: Don't interrupt turret cast.
-        /// </summary>
-        /// <param name="duration"></param>
-        /// <param name="attackType"></param>
-        /// <param name="attacker"></param>
-        public override void StartInterruptTimer(AttackData attack, int duration)
-		{
-			return;
-		}
+        public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+        {
+            // Don't interrupt turrets.
+            return;
+        }
 
-		public override void AutoSetStats()
+        public override void AutoSetStats()
 		{
 			Strength = Properties.PET_AUTOSET_STR_BASE;
 			if (Strength < 1)

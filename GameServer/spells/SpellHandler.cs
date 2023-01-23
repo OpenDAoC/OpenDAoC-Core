@@ -748,7 +748,7 @@ namespace DOL.GS.Spells
 				// Reset for LoS checks during cast.
 				m_caster.TargetInView = true;
 
-				if (Spell.CastTime > 0)
+				if (!Spell.IsInstantCast)
 				{
 					if (npcOwner.IsMoving)
 						npcOwner.StopFollowing();
@@ -795,6 +795,7 @@ namespace DOL.GS.Spells
 					playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
 				}
+
 				if (playerCaster.Steed is GameSiegeRam)
 				{
 					if (!quiet)
@@ -812,7 +813,7 @@ namespace DOL.GS.Spells
 			}*/
 
 			// Apply Mentalist RA5L.
-			if (Spell.Range>0)
+			if (Spell.Range > 0)
 			{
 				SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
 				if (SelectiveBlindness != null)
@@ -847,57 +848,40 @@ namespace DOL.GS.Spells
 			// Songs can be played even if sitting.
 			else if (m_caster.IsSitting)
 			{
-				// Purge can be cast while sitting but only if player has negative effect that doesn't allow standing up (like stun or mez)
+				// Purge can be cast while sitting but only if player has negative effect that doesn't allow standing up (like stun or mez).
 				if (!quiet)
 					MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
-			if (m_caster.IsBeingInterrupted && m_spell.CastTime != 0)
-			{
-				if (m_caster.CanCastInCombat(Spell) == false)
-				{
-					// Don't stop melee for pets
-					if (m_caster is not GameNPC npcCaster || npcCaster.Brain is not IControlledBrain)
-						m_caster.attackComponent.StopAttack();
+			// Stop our melee attack. NPC brains will resume it automatically.
+			if (!Spell.IsInstantCast && !m_caster.CanCastWhileAttacking())
+				m_caster.attackComponent.StopAttack();
 
-					return false;
-				}
-			}
-
-			// Check Interrupts for Player.
-			if (m_caster is GamePlayer)
+			// Check interrupt timer.
+			if (!m_spell.Uninterruptible && !m_spell.IsInstantCast && Caster.InterruptAction > 0 && Caster.IsBeingInterrupted)
 			{
-				if (!m_spell.Uninterruptible && m_spell.CastTime > 0 &&
-					!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
-					!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
+				if (m_caster is GamePlayer)
 				{
-					if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+					if (!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
+						!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 					{
 						if (!quiet)
 							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
 						return false;
 					}
 				}
-			}
-			// Check Interrupts for NPC.
-			else if (!m_spell.Uninterruptible && m_spell.CastTime > 0)
-			{
-				if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+				else if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
 				{
-					if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
+					if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
 					{
-						if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
-						{
-							if (!quiet)
-								MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
-
-							return false;
-						}
-					}
-					else
+						if (!quiet)
+							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
 						return false;
+					}
 				}
+				else
+					return false;
 			}
 
 			if (m_spell.RecastDelay > 0)

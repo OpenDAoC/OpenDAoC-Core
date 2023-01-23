@@ -242,17 +242,6 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Can this living cast the given spell while in combat?
-		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
-		public override bool CanCastInCombat(Spell spell)
-		{
-			return spell == null || spell.IsInstantCast || spell.Uninterruptible;
-		}
-
-		/// <summary>
 		/// Called when spell has finished casting.
 		/// </summary>
 		/// <param name="handler"></param>

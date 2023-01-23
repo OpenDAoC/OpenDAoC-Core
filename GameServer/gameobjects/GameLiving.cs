@@ -674,22 +674,16 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Can this living cast the given spell while in combat?
+		/// Can this living cast while attacking?
 		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
-		public virtual bool CanCastInCombat(Spell spell)
+		public virtual bool CanCastWhileAttacking()
 		{
-			// by default npc's can start casting spells while in combat
-			return true;
+			return false;
 		}
-
 
 		/// <summary>
 		/// Calculate how fast this living can cast a given spell
 		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
 		public virtual int CalculateCastingTime(SpellLine line, Spell spell)
 		{
 			int ticks = spell.CastTime;
@@ -1901,17 +1895,6 @@ namespace DOL.GS
 		//	//Return the result
 		//	return ad;
 		//}
-
-		/// <summary>
-		/// Starts the interrupt timer on this living.
-		/// </summary>
-		/// <param name="attack"></param>
-		/// <param name="duration"></param>
-		public virtual void StartInterruptTimer(AttackData attack, int duration)
-		{
-			if (attack != null)
-				StartInterruptTimer(duration, attack.AttackType, attack.Attacker);
-		}
 
 		/// <summary>
 		/// Starts the interrupt timer on this living.

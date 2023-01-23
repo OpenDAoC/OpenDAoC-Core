@@ -391,12 +391,6 @@ namespace DOL.GS
 			return attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
-		public override bool CanCastInCombat(Spell spell)
-		{
-			// Necromancer pets can always start to cast while in combat.
-			return true;
-		}
-
 		public override void ModifyAttack(AttackData attackData)
 		{
 			base.ModifyAttack(attackData);

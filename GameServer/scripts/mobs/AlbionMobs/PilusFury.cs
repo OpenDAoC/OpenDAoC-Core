@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 			}
 
 			if(target is NecromancerPet pet)
-            {
+			{
 				if (pet != null && pet.Owner.IsAlive && pet.Owner != null)
 				{
 					GamePlayer PetOwner = pet.Owner as GamePlayer;
@@ -255,7 +255,7 @@ namespace DOL.AI.Brain
 			{
 				target.LastAttackTickPvP = GameLoop.GameLoopTime;
 				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				target.StartInterruptTimer(ad, GS.ServerProperties.Properties.SPELL_INTERRUPT_DURATION);
+				target.StartInterruptTimer(GS.ServerProperties.Properties.SPELL_INTERRUPT_DURATION, ad.AttackType, ad.Attacker);
 			}
 		}		
 	}

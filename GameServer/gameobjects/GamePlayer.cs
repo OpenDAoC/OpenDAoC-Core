@@ -8079,22 +8079,14 @@ namespace DOL.GS
         //	}
         //}
 
-        /// <summary>
-        /// Can this player cast the given spell while in combat?
-        /// </summary>
-        /// <param name="spell"></param>
-        /// <returns></returns>
-        public override bool CanCastInCombat(Spell spell)
+        public override bool CanCastWhileAttacking()
         {
-            if (spell == null || spell.IsInstantCast)
-                return true;
-
             switch (CharacterClass)
             {
-                case PlayerClass.ClassVampiir vampiir:
-                case PlayerClass.ClassMaulerAlb maulerAlb:
-                case PlayerClass.ClassMaulerMid maulerMid:
-                case PlayerClass.ClassMaulerHib maulerHib:
+                case ClassVampiir:
+                case ClassMaulerAlb:
+                case ClassMaulerMid:
+                case ClassMaulerHib:
                     return true;
             }
 

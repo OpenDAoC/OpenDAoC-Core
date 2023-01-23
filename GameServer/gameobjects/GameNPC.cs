@@ -4310,6 +4310,17 @@ namespace DOL.GS
 			}
 		}
 
+		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+		{
+			// Increase substantially the base interrupt timer duration for non player controlled NPCs
+			// so that they don't start attacking immediately after the attacker's melee swing interval.
+			// It makes repositioning them easier without having to constantly attack them.
+			if (Brain is not IControlledBrain controlledBrain || controlledBrain.GetPlayerOwner() == null)
+				duration += 2500;
+
+			base.StartInterruptTimer(duration, attackType, attacker);
+		}
+
 		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
 		{
 			// Immobile NPCs can only be interrupted from close range attacks.
@@ -4447,6 +4458,7 @@ namespace DOL.GS
 				}
 			}
 		}
+
 		/// <summary>
 		/// The callback that will respawn this mob
 		/// </summary>

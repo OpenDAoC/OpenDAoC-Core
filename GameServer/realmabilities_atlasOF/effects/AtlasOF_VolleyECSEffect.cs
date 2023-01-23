@@ -828,7 +828,7 @@ namespace DOL.GS.Effects
             {
                 target.LastAttackTickPvP = GameLoop.GameLoopTime;
                 target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                target.StartInterruptTimer(ad, ServerProperties.Properties.SPELL_INTERRUPT_DURATION);
+                target.StartInterruptTimer(ServerProperties.Properties.SPELL_INTERRUPT_DURATION, ad.AttackType, ad.Attacker);
             }
             if (archer is GamePlayer && archer != null)//combat timer for archer
             {
