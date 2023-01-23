@@ -16,17 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-using DOL.Events;
 using DOL.GS;
-using DOL.GS.Spells;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.SkillHandler;
 using log4net;
 
 namespace DOL.AI.Brain
@@ -83,6 +74,118 @@ namespace DOL.AI.Brain
 		/// <param name="spell"></param>
 		/// <returns></returns>
 		protected override bool CheckOffensiveSpells(Spell spell) { return false; }
+
+		/// <summary>
+		/// Checks the Positive Spells.  Handles buffs, heals, etc.
+		/// </summary>
+		protected override bool CheckDefensiveSpells(Spell spell)
+		{
+			if (!CanCastDefensiveSpell(spell))
+				return false;
+
+			bool casted = false;
+			Body.TargetObject = null;
+			GamePlayer player;
+			GameLiving owner;
+
+			switch (spell.SpellType)
+			{
+				#region Heals
+				case (byte)eSpellType.Heal:
+					player = GetPlayerOwner();
+					if (player != null)
+					{
+
+						if (player.HealthPercent < 90)
+						{
+							Body.TargetObject = player;
+							break;
+						}
+					}
+					//Heal owner
+					owner = (this as IControlledBrain).Owner;
+					if (owner.HealthPercent < 90)
+					{
+						Body.TargetObject = owner;
+						break;
+					}
+					//Heal self
+					if (Body.HealthPercent < 90)
+					{
+						Body.TargetObject = Body;
+						break;
+					}
+
+					//Heal other minions
+					foreach (IControlledBrain icb in ((GameNPC)owner).ControlledNpcList)
+					{
+						if (icb == null)
+							continue;
+						if (icb.Body.HealthPercent < 90)
+						{
+							Body.TargetObject = icb.Body;
+							break;
+						}
+					}
+					break;
+				#endregion
+				#region Buffs
+				case (byte)eSpellType.HealthRegenBuff:
+					{
+						//Buff self
+						if (!LivingHasEffect(Body, spell))
+						{
+							Body.TargetObject = Body;
+							break;
+						}
+
+						owner = (this as IControlledBrain).Owner;
+
+						//Buff owner
+						if (owner != null)
+						{
+							player = GetPlayerOwner();
+
+							//Buff player
+							if (player != null)
+							{
+								if (!LivingHasEffect(player, spell))
+								{
+									Body.TargetObject = player;
+									break;
+								}
+							}
+
+							if (!LivingHasEffect(owner, spell))
+							{
+								Body.TargetObject = owner;
+								break;
+							}
+
+							//Buff other minions
+							foreach (IControlledBrain icb in ((GameNPC)owner).ControlledNpcList)
+							{
+								if (icb == null)
+									continue;
+								if (!LivingHasEffect(icb.Body, spell))
+								{
+									Body.TargetObject = icb.Body;
+									break;
+								}
+							}
+
+
+						}
+						break;
+					}
+				#endregion
+			}
+
+			if (Body.TargetObject != null)
+				casted = Body.CastSpell(spell, m_mobSpellLine, true);
+
+			return casted;
+		}
 
 		/// <summary>
 		/// Don't

@@ -16,17 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-using DOL.Events;
 using DOL.GS;
-using DOL.GS.Spells;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.SkillHandler;
 using log4net;
 
 namespace DOL.AI.Brain
@@ -53,6 +44,88 @@ namespace DOL.AI.Brain
 		/// Checks the Abilities
 		/// </summary>
 		public override void CheckAbilities() { }
+
+		/// <summary>
+		/// Checks the Positive Spells.  Handles buffs, heals, etc.
+		/// </summary>
+		protected override bool CheckDefensiveSpells(Spell spell)
+		{
+			if (!CanCastDefensiveSpell(spell))
+				return false;
+
+			Body.TargetObject = null;
+			GamePlayer player;
+			GameLiving owner;
+
+			switch (spell.SpellType)
+			{
+				#region Buffs
+				case (byte)eSpellType.CombatSpeedBuff:
+				case (byte)eSpellType.DamageShield:
+				case (byte)eSpellType.Bladeturn:
+					{
+						if (!Body.IsAttacking)
+						{
+							//Buff self
+							if (!LivingHasEffect(Body, spell))
+							{
+								Body.TargetObject = Body;
+								break;
+							}
+
+							if (spell.Target != "Self")
+							{
+
+								owner = (this as IControlledBrain).Owner;
+
+								//Buff owner
+								if (owner != null)
+								{
+									player = GetPlayerOwner();
+
+									//Buff player
+									if (player != null)
+									{
+										if (!LivingHasEffect(player, spell))
+										{
+											Body.TargetObject = player;
+											break;
+										}
+									}
+
+									if (!LivingHasEffect(owner, spell))
+									{
+										Body.TargetObject = owner;
+										break;
+									}
+
+									//Buff other minions
+									foreach (IControlledBrain icb in ((GameNPC)owner).ControlledNpcList)
+									{
+										if (icb == null)
+											continue;
+										if (!LivingHasEffect(icb.Body, spell))
+										{
+											Body.TargetObject = icb.Body;
+											break;
+										}
+									}
+
+								}
+							}
+						}
+						break;
+					}
+				#endregion
+			}
+
+			bool casted = false;
+
+			if (Body.TargetObject != null)
+				casted = Body.CastSpell(spell, m_mobSpellLine, true);
+
+			return casted;
+		}
 
 		/// <summary>
 		/// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.

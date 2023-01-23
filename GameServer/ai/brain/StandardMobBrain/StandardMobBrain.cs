@@ -988,18 +988,35 @@ namespace DOL.AI.Brain
             return casted || Body.IsCasting;
         }
 
+        protected bool CanCastDefensiveSpell(Spell spell)
+        {
+            if (spell == null || spell.IsHarmful)
+                return false;
+
+            // Only allow non-buff heal spells to be checked and queued while casting.
+            // Otherwise buffs will be casted twice on the same target due to the delay induced by the LoS check.
+            // We could add a parameter to ignore this if we aren't going to check LoS.
+            if (Body.IsCasting && (spell.IsBuff || !spell.IsHealing))
+                return false;
+
+            // Make sure we're currently able to cast the spell.
+            if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible)
+                return false;
+
+            // Make sure the spell isn't disabled.
+            if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
+                return false;
+
+            return true;
+        }
+
         /// <summary>
-        /// Checks defensive spells.  Handles buffs, heals, etc.
+        /// Checks defensive spells. Handles buffs, heals, etc.
         /// </summary>
         protected virtual bool CheckDefensiveSpells(Spell spell)
         {
-            if (spell == null || Body.GetSkillDisabledDuration(spell) > 0)
+            if (!CanCastDefensiveSpell(spell))
                 return false;
-
-			// Only allow non-buff heal spells to be checked and queued while casting.
-			// Otherwise buffs will be casted twice on the same target due to the delay induced by the LoS check.
-			if (Body.IsCasting && (spell.IsBuff || !spell.IsHealing))
-				return false;
 
             bool casted = false;
 
