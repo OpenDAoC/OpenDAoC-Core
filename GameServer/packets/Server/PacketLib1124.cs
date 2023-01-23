@@ -2097,13 +2097,7 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 
-			/* removed, hack fix for client spamming requests for npcupdates/ creates
-            if (_gameClient.Player.Client.Version < _gameClient.eClientVersion.Version1124) 
-            {   // Update Cache
-                _gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(npc.CurrentRegionID, (ushort)npc.ObjectID)] = 0;
-            }*/
-
-			// Hack to make pets untargetable with tab on a PvP server. There might be a better way to do it.
+			// Hack to make NPCs untargetable with TAB on a PvP server. There might be a better way to do it.
 			// Relies on 'SendObjectGuildID' not to be called after this.
 			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
 			{
@@ -2142,11 +2136,13 @@ namespace DOL.GS.PacketHandler
 
 		private void SendNpcFakeFriendlyGuildID(GameNPC npc)
 		{
-			GamePlayer player = m_gameClient.Player;
-			Guild playerGuild = player.Guild;
-
 			if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
 			{
+				GamePlayer player = m_gameClient.Player;
+				Guild playerGuild = player.Guild;
+
+				// Make the client believe the NPC is in the same guild as them.
+				// Use a dummy guild for guildless players.
 				SendObjectGuildID(npc, playerGuild ?? Guild.DummyGuild);
 				SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
 			}
