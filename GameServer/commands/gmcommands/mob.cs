@@ -21,11 +21,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
@@ -3161,14 +3159,17 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			if (targetMob.EffectList.Count > 0)
+			List<ECSGameEffect> allEffects = targetMob.effectListComponent.GetAllEffects();
+
+			if (allEffects.Count > 0)
 			{
 				text.Add("");
 				text.Add("Effect List:");
 
-				foreach (IGameEffect effect in targetMob.EffectList)
+				foreach (ECSGameEffect effect in allEffects)
 				{
-					text.Add(effect.Name + " remaining " + effect.RemainingTime);
+					long remaining = effect.IsConcentrationEffect() ? -1 : effect.GetRemainingTimeForClient();
+					text.Add($"{effect.Name}  (remaining: {remaining})  (source: {effect.SpellHandler.Caster.Name})");
 				}
 			}
 
