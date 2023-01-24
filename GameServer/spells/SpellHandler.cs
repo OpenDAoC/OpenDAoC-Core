@@ -3002,14 +3002,10 @@ namespace DOL.GS.Spells
 				}
 			}
 
-            Parallel.ForEach(targets, (Action<GameLiving>) (t =>
+			Parallel.ForEach(targets, t =>
 			{
-				
-				// Aggressive NPCs will aggro on every target they hit
-				// with an AoE spell, whether it landed or was resisted.
-
-				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy"
-				    && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
+				// Aggressive NPCs will aggro on every target they hit with an AoE spell, whether it landed or was resisted.
+				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy" && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
 					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
 
 				int spellResistChance = CalculateSpellResistChance(t);
@@ -3018,71 +3014,54 @@ namespace DOL.GS.Spells
 
 				if (spellResistChance > 0)
 				{
-					if (Caster is GamePlayer caster && !UseRNGOverride)
-					{
-						randNum = caster.RandomNumberDeck.GetInt();
-					}
-					else
-					{
-						randNum = Util.CryptoNextInt(100);
-					}
+					randNum = Caster is GamePlayer caster && !UseRNGOverride ? caster.RandomNumberDeck.GetInt() : Util.CryptoNextInt(100);
 
-					if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
-					{
-						spellCaster.Out.SendMessage(
-							$"Target chance to resist: {spellResistChance} RandomNumber: {randNum}",
-                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-					}
+					if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+						spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-					if (this.Target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
-					{
-						spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}",
-                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-					}
+					if (Target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
+						spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 					if (spellResistChance > randNum)
 					{
-                        OnSpellResisted(t);
+						OnSpellResisted(t);
 						return;
 					}
 				}
-                if (Spell.Radius == 0 || HasPositiveEffect)
-				{
-                    ApplyEffectOnTarget(t, effectiveness);
-				}
+
+				if (Spell.Radius == 0 || HasPositiveEffect)
+					ApplyEffectOnTarget(t, effectiveness);
 				else if (Spell.Target.ToLower() == "area")
 				{
 					int dist = t.GetDistanceTo(Caster.GroundTarget);
 					if (dist >= 0)
-                        ApplyEffectOnTarget(t, (effectiveness - CalculateAreaVariance(t, dist, Spell.Radius)));
+						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Radius));
 				}
 				else if (Spell.Target.ToLower() == "cone")
 				{
 					int dist = t.GetDistanceTo(Caster);
-					//Cone spells use the range for their variance!
+					// Cone spells use the range for their variance.
 					if (dist >= 0)
-                        ApplyEffectOnTarget(t, (effectiveness - CalculateAreaVariance(t, dist, Spell.Range)));
+						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Range));
 				}
 				else
 				{
-					int dist = t.GetDistanceTo((IPoint3D) this.Target);
+					int dist = t.GetDistanceTo(Target);
 					if (dist >= 0)
-                        ApplyEffectOnTarget(t, (effectiveness - CalculateAreaVariance(t, dist, Spell.Radius)));
+						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Radius));
 				}
 
-				if (Caster is GamePet pet && Spell.IsBuff)
-					pet.AddBuffedTarget((GameLiving) this.Target);
-			}));
+				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
+					npcBrain.AddBuffedTarget(Target);
+			});
 
 			if (Spell.Target.ToLower() == "ground")
-			{
 				ApplyEffectOnTarget(null, 1);
-			}
 
 			CastSubSpells(Target);
 			return true;
 		}
-		
+
 		/// <summary>
 		/// Calculate the variance due to the radius of the spell
 		/// </summary>
@@ -4738,9 +4717,9 @@ namespace DOL.GS.Spells
 			if ((int)Spell.DamageType > 0)
 			{
 				//Added to fix the mis-match between client and server
-				int addTo = 1;
+				int addTo;
 				switch ((int)Spell.DamageType)
-                {
+				{
 					case 10:
 						addTo = 6;
 						break;
@@ -4801,9 +4780,9 @@ namespace DOL.GS.Spells
 		}
 
 		private string GetDelveType(eSpellType spellType)
-        {
+		{
 			switch (spellType)
-            {
+			{
 				case eSpellType.AblativeArmor:
 					return "hit_buffer";
 				case eSpellType.AcuityBuff:
@@ -5057,10 +5036,10 @@ namespace DOL.GS.Spells
 		}
 
 		private void WriteParm(ref MiniDelveWriter dw)
-        {
+		{
 			string parm = "parm";
 			switch ((eSpellType)Spell.SpellType)
-            {
+			{
 				case eSpellType.CombatSpeedDebuff:
 				
 				case eSpellType.DexterityBuff:
@@ -5137,7 +5116,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.DirectDamageWithDebuff:
 					//Added to fix the mis-match between client and server
-					int addTo = 1;
+					int addTo;
 					switch ((int)Spell.DamageType)
 					{
 						case 10:
@@ -5164,17 +5143,17 @@ namespace DOL.GS.Spells
 				case eSpellType.SavageThrustResistanceBuff:
 					dw.AddKeyValuePair(parm, (int)eDamageType.Thrust);
 					break;
-                case eSpellType.DefensiveProc:
-                case eSpellType.OffensiveProc:
-                    dw.AddKeyValuePair(parm, SkillBase.GetSpellByID((int)Spell.Value).InternalID);
-                    break;
-            }
+				case eSpellType.DefensiveProc:
+				case eSpellType.OffensiveProc:
+					dw.AddKeyValuePair(parm, SkillBase.GetSpellByID((int)Spell.Value).InternalID);
+					break;
+			}
 		}
 
 		private void WriteDamage(ref MiniDelveWriter dw)
-        {
+		{
 			switch ((eSpellType)Spell.SpellType)
-            {
+			{
 				case eSpellType.AblativeArmor:
 				case eSpellType.CombatHeal:
 				case eSpellType.EnduranceRegenBuff:
@@ -5211,7 +5190,7 @@ namespace DOL.GS.Spells
 					break;
 				case eSpellType.PowerTransferPet:
 					dw.AddKeyValuePair("damage", Spell.Value * 10);
-					break;								
+					break;
 				case eSpellType.SummonHunterPet:
 				case eSpellType.SummonSimulacrum:
 				case eSpellType.SummonSpiritFighter:
@@ -5224,7 +5203,7 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("damage", Spell.Value);
 					break;
 			}
-        }
+		}
 
 		private void WriteSpecial(ref MiniDelveWriter dw)
 		{

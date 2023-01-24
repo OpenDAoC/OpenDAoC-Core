@@ -19,11 +19,10 @@
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.GS.Effects;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using DOL.Language;
 using DOL.GS.Realm;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -349,15 +348,16 @@ namespace DOL.GS
 		public virtual void CommandNpcRelease()
 		{
 			IControlledBrain controlledBrain = Player.ControlledBrain;
+
 			if (controlledBrain == null)
 				return;
 
+			(controlledBrain as ControlledNpcBrain)?.StripCastedBuffs();
+
 			GameNPC npc = controlledBrain.Body;
+
 			if (npc == null)
 				return;
-			
-			if (npc is GamePet pet)
-				pet.StripBuffs();
 
 			Player.Notify(GameLivingEvent.PetReleased, npc);
 		}
@@ -365,9 +365,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Invoked when pet is released.
 		/// </summary>
-		public virtual void OnPetReleased()
-		{
-		}
+		public virtual void OnPetReleased() { }
 
 		/// <summary>
 		/// Can this character start an attack?

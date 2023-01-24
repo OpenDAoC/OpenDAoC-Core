@@ -17,12 +17,10 @@
  *
  */
 using System;
-using System.Collections.Generic;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.Effects;
 using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 
@@ -31,7 +29,9 @@ namespace DOL.GS
 	public class GamePet : GameNPC
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
+
+		private bool m_targetInView;
+
 		public override bool TargetInView
 		{
 			get
@@ -46,10 +46,7 @@ namespace DOL.GS
 			ScalingFactor = 14;
 		}
 
-        public GamePet(ABrain brain) : base(brain)
-        {
-
-        }
+		public GamePet(ABrain brain) : base(brain) { }
 
 		/// <summary>
 		/// The owner of this pet
@@ -135,17 +132,17 @@ namespace DOL.GS
 		public override double Effectiveness
 		{
 			get 
-            {
-                GameLiving gl = (Brain as IControlledBrain).GetLivingOwner();
+			{
+				GameLiving gl = (Brain as IControlledBrain).GetLivingOwner();
 				if (gl != null)
 					return m_effectiveness;//gl.Effectiveness;
 
-                return 1.0;
-            }
+				return 1.0;
+			}
 			set
-            {
+			{
 				m_effectiveness = value;
-            }
+			}
 		}
 		#endregion
 
@@ -248,10 +245,10 @@ namespace DOL.GS
 		public override void OnAfterSpellCastSequence(ISpellHandler handler)
 		{
 			if(castingComponent.queuedSpellHandler != null)
-            {
+			{
 				castingComponent.spellHandler = castingComponent.queuedSpellHandler;
 				castingComponent.queuedSpellHandler = null;
-            }
+			}
 			base.OnAfterSpellCastSequence(handler);
 			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
 		}
@@ -497,69 +494,18 @@ namespace DOL.GS
 
 		public override void Die(GameObject killer)
 		{
-            try
-            {
-				StripBuffs();
+			try
+			{
+				(Brain as ControlledNpcBrain)?.StripCastedBuffs();
 				GameEventMgr.Notify(GameLivingEvent.PetReleased, this);
 			}
-            finally
-            {
+			finally
+			{
 				base.Die(killer);
 				CurrentRegion = null;
 			}
 		}
 
-		/// <summary>
-		/// Targets the pet has buffed, to allow correct buff removal when the pet dies
-		/// </summary>
-		private List<GameLiving> m_buffedTargets = null;
-		private object _buffedTargetsLock = new object();
-		private bool m_targetInView = true;
-
-		/// <summary>
-		/// Add a target to the pet's list of buffed targets
-		/// </summary>
-		/// <param name="living">Target to add to the list</param>
-		public void AddBuffedTarget(GameLiving living)
-		{
-			
-			if (living == this)
-				return;
-
-			if (m_buffedTargets == null)
-			{
-				lock(_buffedTargetsLock)
-				{
-					if (m_buffedTargets == null)
-						m_buffedTargets = new List<GameLiving>(1);
-				}
-			}
-
-			lock(_buffedTargetsLock)
-			{
-				if (!m_buffedTargets.Contains(living))
-					m_buffedTargets.Add(living);
-			}
-			
-		}
-
-		/// <summary>
-		/// Strips any buffs this pet cast
-		/// </summary>
-		public virtual void StripBuffs()
-		{
-			lock(_buffedTargetsLock)
-			{
-				if (m_buffedTargets != null)
-					foreach (GameLiving living in m_buffedTargets)
-						if (living != this && living.EffectList != null)
-							foreach (IGameEffect effect in living.EffectList)
-								if (effect is GameSpellEffect spellEffect && spellEffect.SpellHandler != null 
-									&& spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster == this)
-									effect.Cancel(false);
-			}
-		}
-		
 		/// <summary>
 		/// Spawn texts are in database
 		/// </summary>
@@ -577,7 +523,7 @@ namespace DOL.GS
 			GameObject tempobj = obj;
 			if (Brain is IControlledBrain)
 			{
-                GameLiving player = (Brain as IControlledBrain).GetLivingOwner();
+				GameLiving player = (Brain as IControlledBrain).GetLivingOwner();
 				if (player != null)
 					tempobj = player;
 			}
