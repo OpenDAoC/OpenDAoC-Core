@@ -1,5 +1,7 @@
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using static DOL.GS.GameObject;
 
 namespace DOL.GS.Keeps
 {
@@ -8,7 +10,6 @@ namespace DOL.GS.Keeps
 	/// </summary>
 	public class SpellMgr
 	{
-
 		/// <summary>
 		/// Method to check the area for heals
 		/// </summary>
@@ -47,14 +48,35 @@ namespace DOL.GS.Keeps
 
 			if (target != null)
 			{
-                GamePlayer losChecker = guard.LosChecker(guard, target); // devrait renvoyer "player"
+				GamePlayer losChecker = null;
 
-                if (losChecker == null)
+				if (target is GamePlayer playerTarget)
+					losChecker = playerTarget;
+				else if (target is GameNPC npcTarget)
+				{
+					if (npcTarget.Brain is IControlledBrain npcTargetBrain)
+						losChecker = npcTargetBrain.GetPlayerOwner();
+					else
+					{
+						foreach (GamePlayer playerInRadius in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						{
+							if (playerInRadius?.ObjectState == eObjectState.Active)
+								losChecker = playerInRadius;
+
+							break;
+						}
+					}
+				}
+
+				if (losChecker == null)
 					return;
-				if (!target.IsAlive) return;
+
+				if (!target.IsAlive)
+					return;
+
 				guard.TargetObject = target;
 
-                losChecker.Out.SendCheckLOS(guard, target, new CheckLOSResponse(guard.GuardStartSpellHealCheckLOS));
+				losChecker.Out.SendCheckLOS(guard, target, new CheckLOSResponse(guard.GuardStartSpellHealCheckLOS));
 			}
 		}
 
