@@ -28,7 +28,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using log4net;
-using System.Collections.Concurrent;
 
 namespace DOL.AI.Brain
 {
@@ -69,7 +68,8 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected eAggressionState m_aggressionState;
 
-		private ConcurrentBag<WeakReference> m_buffedTargets = new();
+		private HashSet<GameLiving> m_buffedTargets = new();
+		private object m_buffedTargetsLock = new();
 
 		/// <summary>
 		/// Constructs new controlled npc brain
@@ -1121,21 +1121,24 @@ namespace DOL.AI.Brain
 			if (living == Body)
 				return;
 
-			m_buffedTargets.Add(new WeakReference(living));
+			lock (m_buffedTargetsLock)
+			{
+				m_buffedTargets.Add(living);
+			}
 		}
 
 		public void StripCastedBuffs()
 		{
-			foreach (WeakReference livingRef in m_buffedTargets)
+			lock (m_buffedTargetsLock)
 			{
-				if (livingRef.Target is GameLiving living)
+				foreach (GameLiving living in m_buffedTargets)
 				{
 					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
 						EffectService.RequestCancelEffect(effect);
 				}
-			}
 
-			m_buffedTargets.Clear();
+				m_buffedTargets.Clear();
+			}
 		}
 
 		public virtual int ModifyDamageWithTaunt(int damage) { return damage; }
