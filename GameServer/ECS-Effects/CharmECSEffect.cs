@@ -93,6 +93,7 @@ namespace DOL.GS
                     }
 
                     charmMob.StopAttack();
+                    charmMob.StopCurrentSpellcast();
                     charmMob.RemoveBrain(oldBrain);
 
                     charmMob.AddBrain(new StandardMobBrain());
@@ -100,7 +101,6 @@ namespace DOL.GS
 
                     if (charmMob.Brain != null && charmMob.Brain is IOldAggressiveBrain)
                     {
-
                         ((IOldAggressiveBrain)charmMob.Brain).ClearAggroList();
 
                         if (SpellHandler.Spell.Pulse != 0 && SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active && SpellHandler.Caster.IsAlive
