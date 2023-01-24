@@ -496,7 +496,7 @@ namespace DOL.GS.Spells
                 if (!target.IsWithinRadius(Caster, 2000))
                 {
 	                // Message: Your controlled creature is too far away!
-	                MessageToCaster(LanguageMgr.GetTranslation(charmCaster.Client, "GamePlayer.GameSummonedPet.Movement.TooFarAway"), eChatType.CT_SpellResisted);
+	                MessageToCaster(LanguageMgr.GetTranslation(charmCaster.Client, "GamePlayer.GamePet.Movement.TooFarAway"), eChatType.CT_SpellResisted);
 	                return;
                 }
             }
