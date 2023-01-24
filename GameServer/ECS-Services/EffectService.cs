@@ -77,7 +77,7 @@ namespace DOL.GS
                 if (spellEffect != null && !spellEffect.SpellHandler.Spell.IsPulsing)
                 {
                     SendSpellResistAnimation(e as ECSGameSpellEffect);
-                    if (spellEffect.SpellHandler.Caster is GamePet petCaster && petCaster.Owner is GamePlayer casterOwner)
+                    if (spellEffect.SpellHandler.Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
                         ChatUtil.SendResistMessage(casterOwner, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
                     if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
                         ChatUtil.SendResistMessage(playerCaster, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));

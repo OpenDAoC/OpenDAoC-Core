@@ -701,7 +701,7 @@ namespace DOL.GS.Spells
 			// Only interrupt if we're under 50% of the way through the cast.
 			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
 			{
-				if (Caster is GamePet petCaster && petCaster.Owner is GamePlayer casterOwner)
+				if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 				{
 					casterOwner.LastInterruptMessage = $"Your {Caster.Name} was attacked by {attacker.Name} and their spell was interrupted!";
 					MessageToLiving(casterOwner, casterOwner.LastInterruptMessage, eChatType.CT_SpellResisted);
@@ -2861,7 +2861,7 @@ namespace DOL.GS.Spells
 				if (target != null && spell != null && spell.SubSpellID == 0)
 				{
 					// We have to scale pet subspells when cast
-					if (Caster is GamePet pet && !(Caster is NecromancerPet))
+					if (Caster is GameSummonedPet pet && !(Caster is NecromancerPet))
 						pet.ScalePetSpell(spell);
 
 					ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
@@ -2964,7 +2964,7 @@ namespace DOL.GS.Spells
 
 			double effectiveness = Caster.Effectiveness;
 
-			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GamePet gpet && !Spell.ScaledToPetLevel)
+			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
 				gpet.ScalePetSpell(Spell);
 
 			/// [Atlas - Takii] No effectiveness drop in OF MOC.
@@ -4064,7 +4064,7 @@ namespace DOL.GS.Spells
 
 			int speclevel = 1;
 
-			if (m_caster is GamePet)
+			if (m_caster is GameSummonedPet)
 			{
 				IControlledBrain brain = (m_caster as GameNPC).Brain as IControlledBrain;
 				speclevel = brain.GetLivingOwner().Level;
@@ -4189,7 +4189,7 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				if (Caster is GamePet pet)
+				if (Caster is GameSummonedPet pet)
 				{
 					// There is no reason to cap pet spell damage if it's being scaled anyway.
 					if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
@@ -4428,10 +4428,10 @@ namespace DOL.GS.Spells
 			CalculateDamageVariance(target, out minVariance, out maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 
-			if (m_caster is GamePlayer or GamePet)
+			if (m_caster is GamePlayer or GameSummonedPet)
 			{
 				var caster = m_caster;
-				if (m_caster is GamePet p) caster = p.Owner;
+				if (m_caster is GameSummonedPet p) caster = p.Owner;
 				effectiveness += caster.GetModified(eProperty.SpellDamage) * 0.01;
 
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap

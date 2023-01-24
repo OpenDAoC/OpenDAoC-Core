@@ -73,7 +73,7 @@ namespace DOL.GS.Spells
             //Set pet infos & Brain
         }
 
-        protected override GamePet GetGamePet(INpcTemplate template) { return new IllusionBladePet(template); }
+        protected override GameSummonedPet GetGamePet(INpcTemplate template) { return new IllusionBladePet(template); }
         protected override IControlledBrain GetPetBrain(GameLiving owner) { return new ProcPetBrain(owner); }
         protected override void SetBrainToOwner(IControlledBrain brain) { }
         protected override void AddHandlers() { GameEventMgr.AddHandler(m_pet, GameLivingEvent.AttackFinished, EventHandler); }
@@ -91,7 +91,7 @@ namespace DOL.GS.Spells
 
 namespace DOL.GS
 {
-    public class IllusionBladePet : GamePet
+    public class IllusionBladePet : GameSummonedPet
     {
         public override int MaxHealth
         {

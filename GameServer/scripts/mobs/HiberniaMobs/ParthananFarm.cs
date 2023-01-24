@@ -13,7 +13,7 @@ namespace DOL.GS
         #region Immune to specific dammage/range attack
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (source is GamePlayer || source is GamePet)
+			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				GameLiving target = source as GameLiving;
 				if (target == null || target.ActiveWeapon == null) return;
@@ -25,7 +25,7 @@ namespace DOL.GS
 					if (source is GamePlayer)
 						truc = (source as GamePlayer);
 					else
-						truc = ((source as GamePet).Owner as GamePlayer);
+						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
 						truc.Out.SendMessage(Name + " is immune to this form of attack!", eChatType.CT_SpellResisted, eChatLoc.CL_ChatWindow);
 					base.TakeDamage(source, damageType, 0, 0);

@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 		/// <param name="arguments"></param>
 		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
 		{
-			m_pet = sender as GamePet;
+			m_pet = sender as GameSummonedPet;
 			if (m_pet == null)
 				return;
 

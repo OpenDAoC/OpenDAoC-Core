@@ -120,7 +120,7 @@ namespace DOL.GS
         //boss does not move so he will not take damage if enemys hit him from far away
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (!source.IsWithinRadius(this, 200)) //take no damage
                 {
@@ -128,7 +128,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -250,7 +250,7 @@ namespace DOL.GS
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             Point3D point = new Point3D(49617, 32874, 10859);
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (!source.IsWithinRadius(point, 400)) //take no damage
                 {
@@ -258,7 +258,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);

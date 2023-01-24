@@ -44,9 +44,9 @@ namespace DOL.GS.Spells
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected GamePet m_pet = null;
+		protected GameSummonedPet m_pet = null;
 
-		public GamePet Pet
+		public GameSummonedPet Pet
 		{
 			get => m_pet;
 			protected set => m_pet = value;
@@ -103,7 +103,7 @@ namespace DOL.GS.Spells
 			region = Caster.CurrentRegion;
 		}
 
-		protected virtual GamePet GetGamePet(INpcTemplate template)
+		protected virtual GameSummonedPet GetGamePet(INpcTemplate template)
 		{
 			return Caster.CreateGamePet(template);
 		}

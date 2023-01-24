@@ -324,7 +324,7 @@ namespace DOL.Tests.Unit.Gameserver
             owner.Level = 50; 
             var brain = new FakeControlledBrain();
             brain.fakeOwner = owner;
-            GamePet source = new GamePet(brain);
+            GameSummonedPet source = new GameSummonedPet(brain);
             source.Level = 50; //temporal coupling through AutoSetStat()
             source.Intelligence = 100;
             var target = NewFakePlayer();

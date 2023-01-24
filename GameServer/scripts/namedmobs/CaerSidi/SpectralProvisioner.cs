@@ -24,7 +24,7 @@ namespace DOL.GS.Scripts
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (source is GamePlayer || source is GamePet)
+			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (damageType == eDamageType.Heat || damageType == eDamageType.Spirit || damageType == eDamageType.Cold) //take no damage
 				{
@@ -32,7 +32,7 @@ namespace DOL.GS.Scripts
 					if (source is GamePlayer)
 						truc = (source as GamePlayer);
 					else
-						truc = ((source as GamePet).Owner as GamePlayer);
+						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
 						truc.Out.SendMessage("The Spectral Provisioner is immune to this form of attack.", eChatType.CT_System,eChatLoc.CL_ChatWindow);
 
@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
 				//}				
 				//new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDecayingJunk), Util.Random(25000,35000));
 				//CanAddJunk = true;
-				if(ad.Attacker is not GamePet)
+				if(ad.Attacker is not GameSummonedPet)
 					Body.CastSpell(SpectralDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			}
 			base.OnAttackedByEnemy(ad);

@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 			base.OnAttackedByEnemy(ad);
 
 			// Get help from the commander and other minions
-			if (ad.CausesCombat && Owner is GamePet own && own.Brain is CommanderBrain ownBrain)
+			if (ad.CausesCombat && Owner is GameSummonedPet own && own.Brain is CommanderBrain ownBrain)
 				ownBrain.DefendMinion(ad.Attacker);
 		}
 

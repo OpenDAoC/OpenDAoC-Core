@@ -95,7 +95,7 @@ namespace DOL.GS.PropertyCalc
                 {
 					if(attacker is GamePlayer)
 						epicScaleFactor -= 0.4;
-					if (attacker is GamePet && petCount <= petCap)
+					if (attacker is GameSummonedPet && petCount <= petCap)
                     {
 						epicScaleFactor -= 0.1;
 						petCount++;
@@ -113,7 +113,7 @@ namespace DOL.GS.PropertyCalc
 				- Math.Abs(living.DebuffCategory[(int)property])/6
 				+ living.BuffBonusCategory4[(int)property];
 			}
-			else if (living is GamePet)
+			else if (living is GameSummonedPet)
 			{
 				int baseVal = (int)((1 + (living.Level / 175.0)) * (living.Level << 1))
 				              + (living.BaseBuffBonusCategory[(int)property] / 6)

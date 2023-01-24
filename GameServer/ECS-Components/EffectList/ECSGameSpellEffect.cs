@@ -70,7 +70,7 @@ namespace DOL.GS
             {
                 if (OwnerPlayer != null)
                 {
-                    if ((EffectType == eEffect.Stun && SpellHandler.Caster is GamePet) || SpellHandler is UnresistableStunSpellHandler)
+                    if ((EffectType == eEffect.Stun && SpellHandler.Caster is GameSummonedPet) || SpellHandler is UnresistableStunSpellHandler)
                         return;
 
                     new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
@@ -123,7 +123,7 @@ namespace DOL.GS
 				if (Caster is GamePlayer caster && caster == target)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
-				else if (Caster is GamePet || target is GamePet or GamePlayer)
+				else if (Caster is GameSummonedPet || target is GameSummonedPet or GamePlayer)
 					// "{0} looks more agile!"
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}
@@ -167,7 +167,7 @@ namespace DOL.GS
 				if (Caster is GamePlayer areaTarget && areaTarget == target)
 					// "{0}'s enhanced agility fades."
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
-				else if (Caster is GamePet || target is GamePet or GamePlayer)
+				else if (Caster is GameSummonedPet || target is GameSummonedPet or GamePlayer)
 					// "{0}'s enhanced agility fades."
 					Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
 			}

@@ -26,7 +26,7 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-	public class TurretPet : GamePet
+	public class TurretPet : GameSummonedPet
 	{
 		public TurretPet(INpcTemplate template)
 			: base(template)

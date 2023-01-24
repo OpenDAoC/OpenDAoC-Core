@@ -249,7 +249,7 @@ namespace DOL.GS.Scripts
             //possible AttackRange
             int distance = 1400;
             
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (!source.IsWithinRadius(this, distance)) //take no damage from source that is not in radius 1000
                 {
@@ -257,7 +257,7 @@ namespace DOL.GS.Scripts
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);

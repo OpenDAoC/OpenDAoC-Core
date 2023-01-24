@@ -26,7 +26,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-	public class GamePet : GameNPC
+	public class GameSummonedPet : GameNPC
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -41,12 +41,12 @@ namespace DOL.GS
 			set { m_targetInView = value; }
 		}
 
-		public GamePet(INpcTemplate template) : base(template)
+		public GameSummonedPet(INpcTemplate template) : base(template)
 		{
 			ScalingFactor = 14;
 		}
 
-		public GamePet(ABrain brain) : base(brain) { }
+		public GameSummonedPet(ABrain brain) : base(brain) { }
 
 		/// <summary>
 		/// The owner of this pet
@@ -106,7 +106,7 @@ namespace DOL.GS
 
 			if (SummonSpellDamage >= 0)
 				newLevel = (byte)SummonSpellDamage;
-			else if (!(Owner is GamePet))
+			else if (!(Owner is GameSummonedPet))
 				newLevel = (byte)((Owner?.Level ?? 0) * SummonSpellDamage * -0.01);
 			else if (RootOwner is GameLiving summoner)
 				newLevel = (byte)(summoner?.Level * SummonSpellDamage * -0.01);

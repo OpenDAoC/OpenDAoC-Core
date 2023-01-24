@@ -28,7 +28,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	public class NecromancerPet : GamePet
+	public class NecromancerPet : GameSummonedPet
 	{
 		public override GameObject TargetObject
 		{

@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
-		protected override GamePet GetGamePet(INpcTemplate template)
+		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
 			return new TheurgistPet(template);
 		}

@@ -29,7 +29,7 @@ namespace DOL.GS.PropertyCalc
 				if (archer.GetAbility<RealmAbilities.AtlasOF_FalconsEye>() is RealmAbilities.AtlasOF_FalconsEye falcon_eye)
 					chance += falcon_eye.Amount;
 			}
-			if (living is GamePet gamePet)
+			if (living is GameSummonedPet gamePet)
 			{
 				if (ServerProperties.Properties.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain
 					&& playerBrain.GetPlayerOwner() is GamePlayer player

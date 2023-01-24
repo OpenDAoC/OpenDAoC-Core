@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
 
 			if (client.Player.TempProperties.getProperty<bool>(NoveltyPetBrain.HAS_PET, false))
 			{
-				foreach (GamePet pet in client.Player.GetNPCsInRadius(500))
+				foreach (GameSummonedPet pet in client.Player.GetNPCsInRadius(500))
 				{
 					if (pet.Brain is NoveltyPetBrain)
 					{

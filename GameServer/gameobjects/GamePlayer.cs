@@ -3592,7 +3592,7 @@ namespace DOL.GS
             if (CharacterClass is CharacterClassBoneDancer
                 && DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
                 && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
-                && ControlledBrain is IControlledBrain brain && brain.Body is GamePet pet
+                && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
                 && pet.ControlledNpcList != null)
                 foreach (ABrain subBrain in pet.ControlledNpcList)
                     if (subBrain != null && subBrain.Body is BDSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
@@ -6050,7 +6050,7 @@ namespace DOL.GS
 			
             // Level up pets and subpets
             if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER &&
-                ControlledBrain is ControlledNpcBrain brain && brain.Body is GamePet pet)
+                ControlledBrain is ControlledNpcBrain brain && brain.Body is GameSummonedPet pet)
             {
                 if (pet.SetPetLevel())
                 {
@@ -6063,7 +6063,7 @@ namespace DOL.GS
                 // subpets
                 if (pet.ControlledNpcList != null)
                     foreach (ABrain subBrain in pet.ControlledNpcList)
-                        if (subBrain != null && subBrain.Body is GamePet subPet)
+                        if (subBrain != null && subBrain.Body is GameSummonedPet subPet)
                             if (subPet.SetPetLevel()) // Levels up subpet
                                 if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
                                     subPet.SortSpells();

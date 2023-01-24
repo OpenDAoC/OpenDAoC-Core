@@ -329,7 +329,7 @@ namespace DOL.GS.DailyQuest
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target is GamePet)
+			if (gArgs.Target is GameSummonedPet)
 				return;
 			
 			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||

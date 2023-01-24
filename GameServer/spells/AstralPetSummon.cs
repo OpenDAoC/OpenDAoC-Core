@@ -57,7 +57,7 @@ namespace DOL.GS.Spells
 
         }
 
-        protected override GamePet GetGamePet(INpcTemplate template) { return new AstralPet(template); }
+        protected override GameSummonedPet GetGamePet(INpcTemplate template) { return new AstralPet(template); }
         protected override IControlledBrain GetPetBrain(GameLiving owner) { return new ProcPetBrain(owner); }
         protected override void SetBrainToOwner(IControlledBrain brain) {}
 
@@ -88,7 +88,7 @@ namespace DOL.GS.Spells
 
 namespace DOL.GS
 {
-    public class AstralPet : GamePet
+    public class AstralPet : GameSummonedPet
     {
         public override int MaxHealth
         {

@@ -33,7 +33,7 @@ namespace DOL.spells
 
         public override void OnDirectEffect(GameLiving target, double effectiveness)
         {
-            if(Caster == null || !(Caster is GamePet) || !(((GamePet) Caster).Brain is IControlledBrain))
+            if(Caster == null || !(Caster is GameSummonedPet) || !(((GameSummonedPet) Caster).Brain is IControlledBrain))
                 return;
             base.OnDirectEffect(target, effectiveness);
         }
@@ -41,7 +41,7 @@ namespace DOL.spells
         public override void StealLife(AttackData ad)
         {
             if(ad == null) return;
-            GamePlayer player = ((IControlledBrain) ((GamePet) Caster).Brain).GetPlayerOwner();
+            GamePlayer player = ((IControlledBrain) ((GameSummonedPet) Caster).Brain).GetPlayerOwner();
             if(player == null || !player.IsAlive) return;
             int heal = ((ad.Damage + ad.CriticalDamage)*m_spell.LifeDrainReturn)/100;
             if(player.IsDiseased)

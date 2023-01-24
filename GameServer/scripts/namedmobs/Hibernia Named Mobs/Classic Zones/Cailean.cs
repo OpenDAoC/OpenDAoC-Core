@@ -19,7 +19,7 @@ namespace DOL.GS
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (source is GamePlayer || source is GamePet)
+			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
@@ -33,7 +33,7 @@ namespace DOL.GS
 						if (source is GamePlayer)
 							truc = (source as GamePlayer);
 						else
-							truc = ((source as GamePet).Owner as GamePlayer);
+							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
 							truc.Out.SendMessage(Name + " is too far away from it's habbitat and is immune to your damage!", eChatType.CT_System,
 								eChatLoc.CL_ChatWindow);

@@ -69,7 +69,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				GamePet pet = InterceptSource as GamePet;
+				GameSummonedPet pet = InterceptSource as GameSummonedPet;
 				if (pet == null) { return 0; }
 				if (pet.Brain is BrittleBrain)
 					return 100;

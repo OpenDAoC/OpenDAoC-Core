@@ -452,11 +452,11 @@ namespace DOL.GS.ServerRules
 					return true;
 
 				// Anything can attack pets
-				if (defender is GamePet || defendnpc.Brain is ControlledNpcBrain)
+				if (defender is GameSummonedPet || defendnpc.Brain is ControlledNpcBrain)
 					return true;
 
 				// Pets can attack everything else
-				if (attacknpc is GamePet || attacknpc.Brain is ControlledNpcBrain)
+				if (attacknpc is GameSummonedPet || attacknpc.Brain is ControlledNpcBrain)
 					return true;
 
 				// Mobs can attack mobs only if they both have a faction
@@ -2102,12 +2102,12 @@ namespace DOL.GS.ServerRules
 					{
 						var killerCheck = killer;
 						//if main pet killed target, check using owner
-						if (killer is GamePet pet && pet.Owner == expGainPlayer)
+						if (killer is GameSummonedPet pet && pet.Owner == expGainPlayer)
 						{
 							killerCheck = expGainPlayer;
 						}
 						//same check for subpets
-						if(killer is GamePet {Owner: GamePet mainpet} && mainpet.Owner == expGainPlayer)
+						if(killer is GameSummonedPet {Owner: GameSummonedPet mainpet} && mainpet.Owner == expGainPlayer)
 						{
 							killerCheck = expGainPlayer;
 						}
@@ -2247,13 +2247,13 @@ namespace DOL.GS.ServerRules
 			foreach (DictionaryEntry gainer in XPGainerList)
 			{
 				//check for pets
-				if (gainer.Key is GamePet pet && pet.Owner == playerToCheck && gainer.Value is float)
+				if (gainer.Key is GameSummonedPet pet && pet.Owner == playerToCheck && gainer.Value is float)
 				{
 					calcDamage += (float)gainer.Value;
 				}
 				
 				//check for subpets (bonedancer and animist)
-				if (gainer.Key is GamePet subpet && subpet.Owner is GamePet masterpet &&
+				if (gainer.Key is GameSummonedPet subpet && subpet.Owner is GameSummonedPet masterpet &&
 				    masterpet.Owner == playerToCheck && gainer.Value is float)
 				{
 					calcDamage += (float)gainer.Value;

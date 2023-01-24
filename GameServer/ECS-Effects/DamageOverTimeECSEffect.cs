@@ -127,7 +127,7 @@ namespace DOL.GS
                 NextTick = LastTick + PulseFreq;
             }
             
-            if(SpellHandler.Caster is GamePet)
+            if(SpellHandler.Caster is GameSummonedPet)
                 Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
                 
         }

@@ -326,7 +326,7 @@ namespace DOL.GS.DailyQuest.Albion
             
             EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-            if (gArgs.Target is GamePet)
+            if (gArgs.Target is GameSummonedPet)
                 return;
             // check if a GameNPC died + if its in Caer sidi
             if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 60)

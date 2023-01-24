@@ -368,7 +368,7 @@ namespace DOL.GS.Quests.Hibernia
         
 			var player = args.Killer as GamePlayer;
 
-			if (args.Killer is GamePet pet)
+			if (args.Killer is GameSummonedPet pet)
 			{
 				if(pet != null && pet.Owner != null)
                 {

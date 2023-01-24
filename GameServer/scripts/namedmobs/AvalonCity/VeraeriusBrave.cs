@@ -43,7 +43,7 @@ namespace DOL.GS
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			if (source is GamePlayer || source is GamePet)
+			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (damageType == eDamageType.Spirit || damageType == eDamageType.Body)
 				{
@@ -51,7 +51,7 @@ namespace DOL.GS
 					if (source is GamePlayer)
 						truc = (source as GamePlayer);
 					else
-						truc = ((source as GamePet).Owner as GamePlayer);
+						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
 						truc.Out.SendMessage("Your damage is absorbed and used to heal " + Name, eChatType.CT_System, eChatLoc.CL_ChatWindow);
 					Health += damageAmount + criticalAmount;

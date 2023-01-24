@@ -4142,7 +4142,7 @@ namespace DOL.GS
 				Delete();
 				TempProperties.removeAllProperties();
 
-				if (this is not GamePet and not SINeckBoss)
+				if (this is not GameSummonedPet and not SINeckBoss)
 					StartRespawn();
 			}
 			finally

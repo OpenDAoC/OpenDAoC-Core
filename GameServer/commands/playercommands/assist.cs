@@ -322,9 +322,9 @@ namespace DOL.GS.Commands
                                         
                                 if(client.Player.TargetObject is GameNPC)
                                 {
-                                    if(client.Player.TargetObject is GamePet)
+                                    if(client.Player.TargetObject is GameSummonedPet)
                                     {
-                                        GamePet targetPet = client.Player.TargetObject as GamePet;
+                                        GameSummonedPet targetPet = client.Player.TargetObject as GameSummonedPet;
 
                                         if(targetPet.Owner is GamePlayer)
                                         {

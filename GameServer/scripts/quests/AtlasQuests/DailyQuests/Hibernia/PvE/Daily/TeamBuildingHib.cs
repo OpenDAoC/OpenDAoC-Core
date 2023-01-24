@@ -351,7 +351,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target is GamePet)
+			if (gArgs.Target is GameSummonedPet)
 				return;
 
 			if (player.Group != null)

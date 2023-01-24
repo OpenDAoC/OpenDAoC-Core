@@ -350,7 +350,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target is GamePet)
+			if (gArgs.Target is GameSummonedPet)
 				return;
 				
 			if (player.Group != null)

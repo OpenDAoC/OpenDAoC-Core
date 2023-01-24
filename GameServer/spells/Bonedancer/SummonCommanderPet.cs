@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
 			return new CommanderBrain(owner);
 		}
 
-		protected override GamePet GetGamePet(INpcTemplate template)
+		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
 			return new CommanderPet(template);
 		}

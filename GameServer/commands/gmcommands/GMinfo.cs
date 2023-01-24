@@ -104,9 +104,9 @@ namespace DOL.GS.Commands
 						info.Add("Enemies: " + target.Faction.EnemyFactions.Count);
 						info.Add("Friends: " + target.Faction.FriendFactions.Count);
 					}
-					if (client.Player.TargetObject is GamePet)
+					if (client.Player.TargetObject is GameSummonedPet)
 					{
-						var targetP = client.Player.TargetObject as GamePet;
+						var targetP = client.Player.TargetObject as GameSummonedPet;
                         info.Add(" + Is Pet ");
 						info.Add(" + Pet Owner:   " + targetP.Owner);
 						info.Add(" ");

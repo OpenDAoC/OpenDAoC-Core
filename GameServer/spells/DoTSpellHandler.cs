@@ -175,9 +175,9 @@ namespace DOL.GS.Spells
 			GamePlayer PlayerReceivingMessages = null;
 			if (m_caster is GamePlayer)
 				PlayerReceivingMessages = m_caster as GamePlayer;
-            if ( m_caster is GamePet)
-                if ((m_caster as GamePet).Brain is IControlledBrain)
-                    PlayerReceivingMessages = ((m_caster as GamePet).Brain as IControlledBrain).GetPlayerOwner();
+            if ( m_caster is GameSummonedPet)
+                if ((m_caster as GameSummonedPet).Brain is IControlledBrain)
+                    PlayerReceivingMessages = ((m_caster as GameSummonedPet).Brain as IControlledBrain).GetPlayerOwner();
             if (PlayerReceivingMessages == null) 
                 return;
 				

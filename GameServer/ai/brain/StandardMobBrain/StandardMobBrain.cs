@@ -763,12 +763,12 @@ namespace DOL.AI.Brain
                 puller = (GamePlayer)attacker;
                 actualPuller = puller;
             }
-            else if (attacker is GamePet pet && pet.Owner is GamePlayer owner)
+            else if (attacker is GameSummonedPet pet && pet.Owner is GamePlayer owner)
             {
                 puller = owner;
                 actualPuller = attacker;
             }
-            else if (attacker is BDSubPet bdSubPet && bdSubPet.Owner is GamePet bdPet && bdPet.Owner is GamePlayer bdOwner)
+            else if (attacker is BDSubPet bdSubPet && bdSubPet.Owner is GameSummonedPet bdPet && bdPet.Owner is GamePlayer bdOwner)
             {
                 puller = bdOwner;
                 actualPuller = bdPet;

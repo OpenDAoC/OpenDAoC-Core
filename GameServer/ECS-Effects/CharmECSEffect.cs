@@ -51,7 +51,7 @@ namespace DOL.GS
                         ((CharmSpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, charmMob.GetName(0, true)), eChatType.CT_Spell);
                     else
                         // Message: {0} is now under your control.
-                        ((CharmSpellHandler)SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
+                        ((CharmSpellHandler)SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GameSummonedPet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
                     
                     casterPlayer.SetControlledBrain(((CharmSpellHandler)SpellHandler).m_controlledBrain);
 
@@ -82,7 +82,7 @@ namespace DOL.GS
                 casterPlayer.SetControlledBrain(null);
                 
                 // Message: You lose control of {0}!
-                //((CharmSpellHandler) SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.SpellEnd.YouLoseControl", charmMob.GetName(0, false)), eChatType.CT_SpellExpires);
+                //((CharmSpellHandler) SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GameSummonedPet.SpellEnd.YouLoseControl", charmMob.GetName(0, false)), eChatType.CT_SpellExpires);
 
                 lock (charmMob.BrainSync)
                 {

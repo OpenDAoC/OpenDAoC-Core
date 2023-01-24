@@ -21,9 +21,9 @@ namespace DOL.GS.Spells
 			effect.PetSpellHander = this;
 		}
 
-		protected override GamePet GetGamePet(INpcTemplate template)
+		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
-			return new GamePet(template);
+			return new GameSummonedPet(template);
 		}
 
 		protected override IControlledBrain GetPetBrain(GameLiving owner)

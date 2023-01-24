@@ -140,7 +140,7 @@ namespace DOL.GS
             if (owner is GameNPC NPC)
             {
                 // Player-Summoned pet
-                if (NPC is GamePet summonedPet && summonedPet.Owner is GamePlayer)
+                if (NPC is GameSummonedPet summonedPet && summonedPet.Owner is GamePlayer)
                 {
                     return NPC.GetModified(eProperty.CriticalMeleeHitChance);
                 }
@@ -404,7 +404,7 @@ namespace DOL.GS
             else
             {
                 double speed = NpcWeaponSpeed() * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
-                if (owner is GamePet pet)
+                if (owner is GameSummonedPet pet)
                 {
                     if (pet != null)
                     {
@@ -2496,7 +2496,7 @@ namespace DOL.GS
             }
 
             // Missrate
-            int missrate = ad.Attacker is GamePlayer or GamePet ? 18 : 25; 
+            int missrate = ad.Attacker is GamePlayer or GameSummonedPet ? 18 : 25; 
             missrate -= ad.Attacker.GetModified(eProperty.ToHitBonus);
             //Console.WriteLine($"ToHitBonus { ad.Attacker.GetModified(eProperty.ToHitBonus)} ");
             // PVE group missrate
@@ -2511,7 +2511,7 @@ namespace DOL.GS
             else if (owner is GameNPC || ad.Attacker is GameNPC) // if target is not player use level mod
             {
                 var misscheck = ad.Attacker;
-                if (ad.Attacker is GamePet gpet && gpet.Level < gpet.Owner.Level) misscheck = gpet.Owner; 
+                if (ad.Attacker is GameSummonedPet gpet && gpet.Level < gpet.Owner.Level) misscheck = gpet.Owner; 
                 missrate += (int) (5 * misscheck.GetConLevel(owner));
                 //Console.WriteLine($"NPC missrate {(int) (5 * misscheck.GetConLevel(owner))} missrate {missrate} owner {owner.Name} lvl {owner.Level} attacker {misscheck.Name} lvl {misscheck.Level} condiff {misscheck.GetConLevel(owner)}");
             }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DOL.GS
 {
-	public class TheurgistPet : GamePet
+	public class TheurgistPet : GameSummonedPet
 	{
 		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{

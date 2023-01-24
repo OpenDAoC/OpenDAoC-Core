@@ -164,7 +164,7 @@ namespace DOL.GS.Commands
 
                                 foreach (GameNPC npc in GetClientSpot(client))
                                 {
-                                    if (npc is GamePet) continue;
+                                    if (npc is GameSummonedPet) continue;
                                     
                                     copy(client, npc, radius);
                                 }

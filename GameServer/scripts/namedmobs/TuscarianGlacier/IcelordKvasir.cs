@@ -26,7 +26,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (damageType == eDamageType.Cold) //take no damage
                 {

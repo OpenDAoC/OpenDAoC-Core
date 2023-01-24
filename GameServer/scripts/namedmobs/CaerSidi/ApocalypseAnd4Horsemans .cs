@@ -1350,7 +1350,7 @@ namespace DOL.GS
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Morbus_Swarm_count > 0)
                 {
@@ -1362,7 +1362,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 
@@ -1929,9 +1929,9 @@ namespace DOL.GS
                     return;
                 }
             }
-            if(source is GamePet)
+            if(source is GameSummonedPet)
             {
-                GamePet truc = source as GamePet;
+                GameSummonedPet truc = source as GameSummonedPet;
                 GamePlayer pet_owner = truc.Owner as GamePlayer;
                 pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 BroadcastMessage(String.Format("Funus takes damage from " + pet_owner.Name + " and restoring it's whole health."));

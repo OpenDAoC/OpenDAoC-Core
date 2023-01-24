@@ -33,7 +33,7 @@ using DOL.GS.Styles;
 
 namespace DOL.GS
 {
-	public class BDPet : GamePet
+	public class BDPet : GameSummonedPet
 	{
 		/// <summary>
 		/// Proc IDs for various pet weapons.

@@ -466,16 +466,16 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="template"></param>
 		/// <returns></returns>
-		public virtual GamePet CreateGamePet(INpcTemplate template)
+		public virtual GameSummonedPet CreateGamePet(INpcTemplate template)
 		{
-			return new GamePet(template);
+			return new GameSummonedPet(template);
 		}
 
 		/// <summary>
 		/// A new pet has been summoned, do we do anything?
 		/// </summary>
 		/// <param name="pet"></param>
-		public virtual void OnPetSummoned(GamePet pet)
+		public virtual void OnPetSummoned(GameSummonedPet pet)
 		{
 		}
 
@@ -4446,11 +4446,11 @@ namespace DOL.GS
 				}
             }
 
-			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GamePet)
+			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GameSummonedPet)
             {
 				List<ECSGameSpellEffect> ownerEffects;
 				ControlledNpcBrain pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
-				GamePet pet = this as GamePet;
+				GameSummonedPet pet = this as GameSummonedPet;
 
 				if (pBrain != null)
 					ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);

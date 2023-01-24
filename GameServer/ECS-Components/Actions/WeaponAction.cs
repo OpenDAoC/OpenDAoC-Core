@@ -74,7 +74,7 @@ namespace DOL.GS
             if (owner is GameNPC
                 && m_target is GamePlayer
                 && ((GamePlayer)m_target).IsStealthed 
-                && !(owner is GamePet))
+                && !(owner is GameSummonedPet))
             {
                 // note due to the 2 lines above all npcs stop attacking
                 GameNPC npc = (GameNPC)owner;

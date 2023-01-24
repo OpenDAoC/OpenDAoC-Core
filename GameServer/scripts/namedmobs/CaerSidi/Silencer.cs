@@ -57,7 +57,7 @@ namespace DOL.GS
         public static int attackers_count = 0;
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 attackers.Add(source as GamePlayer);
                 attackers_count = attackers.Count / 10;

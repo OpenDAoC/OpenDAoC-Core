@@ -684,7 +684,7 @@ namespace DOL.GS.Styles
 				if (spell.ID == spellID)
 				{
 					// We have to scale style procs when cast
-					if (caster is GamePet pet)
+					if (caster is GameSummonedPet pet)
 						pet.ScalePetSpell(spell);
 
 					styleSpell = spell;

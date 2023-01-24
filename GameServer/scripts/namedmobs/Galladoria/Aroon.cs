@@ -33,7 +33,7 @@ namespace DOL.GS
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if ((Aroon_slash == false && Aroon_thrust == false && Aroon_crush == false && Aroon_body == false &&
                     Aroon_cold == false && Aroon_energy == false && Aroon_heat == false
@@ -49,7 +49,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -76,7 +76,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -103,7 +103,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -129,7 +129,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -155,7 +155,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -180,7 +180,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -205,7 +205,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -229,7 +229,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -253,7 +253,7 @@ namespace DOL.GS
                         if (source is GamePlayer)
                             truc = (source as GamePlayer);
                         else
-                            truc = ((source as GamePet).Owner as GamePlayer);
+                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
                             truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                                 eChatLoc.CL_ChatWindow);
@@ -850,7 +850,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash)
                 {
@@ -862,7 +862,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -1045,7 +1045,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust)
                 {
@@ -1057,7 +1057,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -1246,7 +1246,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush)
                 {
@@ -1258,7 +1258,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -1447,7 +1447,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
                     Aroon.Aroon_body)
@@ -1460,7 +1460,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -1650,7 +1650,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
                     Aroon.Aroon_body && Aroon.Aroon_cold)
@@ -1663,7 +1663,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -1853,7 +1853,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
                     Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy)
@@ -1866,7 +1866,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -2056,7 +2056,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
                     Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
@@ -2070,7 +2070,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);
@@ -2260,7 +2260,7 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GamePet)
+            if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Aroon.Aroon_slash && Aroon.Aroon_thrust && Aroon.Aroon_crush &&
                     Aroon.Aroon_body && Aroon.Aroon_cold && Aroon.Aroon_energy
@@ -2274,7 +2274,7 @@ namespace DOL.GS
                     if (source is GamePlayer)
                         truc = (source as GamePlayer);
                     else
-                        truc = ((source as GamePet).Owner as GamePlayer);
+                        truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
                         truc.Out.SendMessage(Name + " is immune to this damage!", eChatType.CT_System,
                             eChatLoc.CL_ChatWindow);

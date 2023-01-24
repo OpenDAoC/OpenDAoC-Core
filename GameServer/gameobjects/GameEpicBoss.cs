@@ -60,7 +60,7 @@ namespace DOL.GS {
                 // debug
                 log.Debug($"{Name} killed by {killer.Name}");
 
-                if (killer is GamePet pet) killer = pet.Owner; 
+                if (killer is GameSummonedPet pet) killer = pet.Owner; 
                 
                 var playerKiller = killer as GamePlayer;
                 

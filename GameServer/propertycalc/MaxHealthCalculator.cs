@@ -151,7 +151,7 @@ namespace DOL.GS.PropertyCalc
 
 				return hp;
 			}
-            else if (living is GamePet pet)
+            else if (living is GameSummonedPet pet)
             {
 				int hp = 0;
 

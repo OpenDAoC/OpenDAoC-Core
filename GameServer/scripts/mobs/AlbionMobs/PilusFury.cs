@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 
 		private void HandleNpcCheck(GameNPC npc)
 		{
-			if (npc is {IsAlive: true} and GamePet pet)
+			if (npc is {IsAlive: true} and GameSummonedPet pet)
 			{
 				GamePlayer playerOwner = pet.Owner as GamePlayer;
 				var nearbyPoint = _points.FirstOrDefault(point => ((point == _points[0] || point == _points[4]) && pet.IsWithinRadius(point, 400))

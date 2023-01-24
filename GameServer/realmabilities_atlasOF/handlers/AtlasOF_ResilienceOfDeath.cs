@@ -69,10 +69,10 @@ namespace DOL.GS.RealmAbilities
 
             foreach (GameNPC npcs in m_player.GetNPCsInRadius((ushort)m_spell.Range))
             {
-                if (npcs is GamePet pet)
+                if (npcs is GameSummonedPet pet)
                 {
                     if (pet.Owner == m_player
-                        || (pet.Owner is GamePet petOwner && petOwner.Owner == m_player))
+                        || (pet.Owner is GameSummonedPet petOwner && petOwner.Owner == m_player))
                     {
                         ISpellHandler dd = ScriptMgr.CreateSpellHandler(m_player, m_spell, m_spellline);
                         dd.StartSpell(pet);

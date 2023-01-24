@@ -60,7 +60,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				GamePet pet = InterceptSource as GamePet;
+				GameSummonedPet pet = InterceptSource as GameSummonedPet;
 				if (pet == null) { return 50; }
 				if (pet.Brain is BrittleBrain)
 					return 100;

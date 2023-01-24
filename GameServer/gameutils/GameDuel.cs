@@ -91,7 +91,7 @@ namespace DOL.GS
 
 			StopNegativeEffects(Starter, Target);
 			StopNegativeEffects(Target, Starter);
-			if (Caster is GamePet casterPet && (casterPet.Owner == Target || casterPet.Owner == Starter))
+			if (Caster is GameSummonedPet casterPet && (casterPet.Owner == Target || casterPet.Owner == Starter))
 			{
 				StopNegativeEffects(Target, casterPet);
 				StopNegativeEffects(Starter, casterPet);

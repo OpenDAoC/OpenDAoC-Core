@@ -328,7 +328,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 			
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 			
-			if (gArgs.Target is GamePet)
+			if (gArgs.Target is GameSummonedPet)
 				return;
 			
 			if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 249 ||

@@ -70,7 +70,7 @@ namespace DOL.GS.RealmAbilities
 
             foreach (GameNPC npcs in m_player.GetNPCsInRadius((ushort)m_spell.Range))
             {
-                if (npcs is GamePet pet)
+                if (npcs is GameSummonedPet pet)
                 {
                     if (pet.Owner == m_player)
                     {

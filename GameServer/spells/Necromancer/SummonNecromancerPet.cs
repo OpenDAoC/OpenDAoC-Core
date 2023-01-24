@@ -133,7 +133,7 @@ namespace DOL.GS.Spells
 			return new NecromancerPetBrain(owner);
 		}
 
-		protected override GamePet GetGamePet(INpcTemplate template)
+		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
 			return new NecromancerPet(template, m_summonConBonus, m_summonHitsBonus);
 		}
