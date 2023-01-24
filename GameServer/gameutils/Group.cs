@@ -187,19 +187,17 @@ namespace DOL.GS
 		/// <param name="living">GameLiving to be added to the group</param>
 		/// <returns>true if added successfully</returns>
 		public virtual bool AddMember(GameLiving living) 
-        {
-			if (!m_groupMembers.FreezeWhile<bool>(l => {
-			                                      	if (l.Count >= ServerProperties.Properties.GROUP_MAX_MEMBER || l.Count >= (byte.MaxValue - 1))
-			                                      		return false;
-			                                      	
-			                                      	if (l.Contains(living))
-			                                      		return false;
-			                                      	
-			                                      	l.Add(living);
-			                                      	living.Group = this;
-			                                      	living.GroupIndex = (byte)(l.Count - 1);
-			                                      	return true;
-			                                      }))
+		{
+			if (!m_groupMembers.FreezeWhile<bool>(l => { if (l.Count >= ServerProperties.Properties.GROUP_MAX_MEMBER || l.Count >= (byte.MaxValue - 1))
+															return false;
+													
+														if (l.Contains(living))
+															return false;
+													
+														l.Add(living);
+														living.Group = this;
+														living.GroupIndex = (byte)(l.Count - 1);
+														return true; }))
 				return false;
 
 			if (living is GamePlayer p && p.DuelTarget != null) 
@@ -223,7 +221,7 @@ namespace DOL.GS
 			var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
 			if (hasGrouped == null)
-            {
+			{
 				DOLCharactersXCustomParam groupedChar = new DOLCharactersXCustomParam();
 				groupedChar.DOLCharactersObjectId = player.ObjectId;
 				groupedChar.KeyName = customKey;
@@ -231,7 +229,7 @@ namespace DOL.GS
 				GameServer.Database.AddObject(groupedChar);
 			}
 
-			// Part of the hack to make friendly pets untargetable (or targetable again) with tab on a PvP server.
+			// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
 			// We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
 			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
 			{
@@ -242,7 +240,7 @@ namespace DOL.GS
 				// Update how the added player sees their pet and themself.
 				if (controlledBrain != null)
 				{
-					player.Out.SendObjectGuildID(controlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+					SendControlledBodyGuildID(player, playerGuild, controlledBrain.Body);
 					updateOneself = true;
 				}
 
@@ -254,7 +252,7 @@ namespace DOL.GS
 					if (controlledBrain != null)
 					{
 						// Update how the group member sees the added player's pet and themself.
-						groupMember.Out.SendObjectGuildID(controlledBrain.Body, groupMemberGuild ?? Guild.DummyGuild);
+						SendControlledBodyGuildID(groupMember, groupMemberGuild, controlledBrain.Body);
 						groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? Guild.DummyGuild);
 					}
 
@@ -263,7 +261,7 @@ namespace DOL.GS
 					if (groupMemberControlledBrain != null)
 					{
 						// Update how the added player sees the group member's pet and themself.
-						player.Out.SendObjectGuildID(groupMemberControlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+						SendControlledBodyGuildID(player, playerGuild, groupMemberControlledBrain.Body);
 						updateOneself = true;
 					}
 				}
@@ -298,7 +296,7 @@ namespace DOL.GS
 				player.Out.SendGroupWindowUpdate();
 				player.Out.SendQuestListUpdate();
 
-				// Part of the hack to make friendly pets untargetable (or targetable again) with tab on a PvP server.
+				// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
 				// We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
 				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
 				{
@@ -309,7 +307,7 @@ namespace DOL.GS
 					// Update how the removed player sees their pet and themself.
 					if (controlledBrain != null)
 					{
-						player.Out.SendObjectGuildID(controlledBrain.Body, playerGuild ?? Guild.DummyGuild);
+						SendControlledBodyGuildID(player, playerGuild, controlledBrain.Body);
 						updateOneself = true;
 					}
 
@@ -322,14 +320,14 @@ namespace DOL.GS
 							// Update how the group member sees the removed player's pet.
 							// There shouldn't be any need to update them.
 							if (controlledBrain != null)
-								groupMember.Out.SendObjectGuildID(controlledBrain.Body, playerGuild);
+								SendControlledBodyGuildID(groupMember, playerGuild, controlledBrain.Body);
 
 							IControlledBrain groupMemberControlledBrain = groupMember.ControlledBrain;
 
 							// Update how the removed player sees the group member's pet and themself.
 							if (groupMemberControlledBrain != null)
 							{
-								player.Out.SendObjectGuildID(groupMemberControlledBrain.Body, groupMember.Guild);
+								SendControlledBodyGuildID(player, groupMember.Guild, groupMemberControlledBrain.Body);
 								updateOneself = true;
 							}
 						}
@@ -342,23 +340,23 @@ namespace DOL.GS
 			
 			UpdateGroupWindow();
 			
-            if (player != null)
-            {
-                player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Notify(GamePlayerEvent.LeaveGroup, player);
-            }
-            
-            SendMessageToGroupMembers(string.Format("{0} has left the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (player != null)
+			{
+				player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Notify(GamePlayerEvent.LeaveGroup, player);
+			}
 			
-            
-            // only one member left?
+			SendMessageToGroupMembers(string.Format("{0} has left the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			
+			
+			// only one member left?
 			if (MemberCount == 1)
 			{
 				// RR4: Group is disbanded, ending mission group if any
 				RemoveMember(m_groupMembers.First());
 			}
 			
-            // Update all members
+			// Update all members
 			if (MemberCount > 1 && LivingLeader == living)
 			{
 				var newLeader = m_groupMembers.OfType<GamePlayer>().First();
@@ -380,7 +378,22 @@ namespace DOL.GS
 
 			return true;
 		}
-		
+
+		// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
+		// Calls 'SendObjectGuildID' on the player and looks for all controlled NPCs controlled by 'controlledBody' recursively.
+		private static void SendControlledBodyGuildID(GamePlayer player, Guild playerGuild, GameNPC controlledBody)
+		{
+			IControlledBrain[] npcControlledBrains = controlledBody.ControlledNpcList;
+
+			if (npcControlledBrains != null)
+			{
+				foreach (IControlledBrain npcControlledBrain in npcControlledBrains.Where(x => x != null))
+					SendControlledBodyGuildID(player, playerGuild, npcControlledBrain.Body);
+			}
+
+			player.Out.SendObjectGuildID(controlledBody, playerGuild ?? Guild.DummyGuild);
+		}
+
 		/// <summary>
 		/// Clear this group
 		/// </summary>
@@ -401,8 +414,8 @@ namespace DOL.GS
 		private void UpdateGroupIndexes()
 		{
 			m_groupMembers.FreezeWhile(l => {
-			                           	for (byte ind = 0; ind < l.Count; ind++)
-			                           		l[ind].GroupIndex = ind;
+										for (byte ind = 0; ind < l.Count; ind++)
+											l[ind].GroupIndex = ind;
 			});
 		}
 		
@@ -414,19 +427,19 @@ namespace DOL.GS
 		public bool MakeLeader(GameLiving living)
 		{
 			bool allOk = m_groupMembers.FreezeWhile<bool>(l => {
-			                                        	if (!l.Contains(living))
-			                                        		return false;
-			                                        	
-			                                        	byte ind = living.GroupIndex;
-			                                        	var oldLeader = l[0];
-			                                        	l[ind] = oldLeader;
-			                                        	l[0] = living;
-			                                        	LivingLeader = living;
-			                                        	living.GroupIndex = 0;
-			                                        	oldLeader.GroupIndex = ind;
-			                                        	
-			                                        	return true;
-			                                        });
+														if (!l.Contains(living))
+															return false;
+														
+														byte ind = living.GroupIndex;
+														var oldLeader = l[0];
+														l[ind] = oldLeader;
+														l[0] = living;
+														LivingLeader = living;
+														living.GroupIndex = 0;
+														oldLeader.GroupIndex = ind;
+														
+														return true;
+													});
 			if (allOk)
 			{
 				// all went ok
@@ -450,7 +463,7 @@ namespace DOL.GS
 					return false;
 				if (!l.Contains(target))
 					return false;
-			                                        	
+														
 				byte sourceInd = source.GroupIndex;
 				byte targetInd = target.GroupIndex;
 				
