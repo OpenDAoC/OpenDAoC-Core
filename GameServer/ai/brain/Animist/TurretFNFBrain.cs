@@ -16,187 +16,117 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS;
+using DOL.GS.Effects;
 
 namespace DOL.AI.Brain
 {
-	public class TurretFNFBrain : TurretBrain
-	{
-		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public TurretFNFBrain(GameLiving owner) : base(owner)
-		{
-		}
-
-		/// <summary>
-		/// Get a random target from aggro table
-		/// </summary>
-		/// <returns></returns>
-		protected override GameLiving CalculateNextAttackTarget()
-		{
-			List<GameLiving> newTargets = new List<GameLiving>();
-			List<GameLiving> oldTargets = new List<GameLiving>();
-			base.CalculateNextAttackTarget();
-			TurretPet turretBody = Body as TurretPet;
-			if (turretBody == null) return null;
-			
-			lock((AggroTable as ICollection).SyncRoot)
-			{
-				foreach(GameLiving living in AggroTable.Keys)
-				{
-					if(!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-						continue;
-
-					if (living.IsMezzed || living.IsStealthed)
-						continue;
-
-					if (!Body.IsWithinRadius(living, MAX_AGGRO_DISTANCE, true))
-						continue;
-
-					if (!Body.IsWithinRadius(living, turretBody.TurretSpell.Range, true))
-						continue;
-
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (turretBody.TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
-						continue;
-
-					if (turretBody.TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || EffectListService.GetEffectOnTarget(living, eEffect.SpeedOfSound) != null))
-						continue;
-
-					if(!newTargets.Contains(living))
-						newTargets.Add(living);
-				}
-			}
-
-			IEnumerable PlayerList = null;
-			try
-			{
-				PlayerList = Body.GetPlayersInRadius((ushort) turretBody.TurretSpell.Range,
-					!Body.CurrentRegion.IsDungeon);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"Error encountered in animist FNF turret: {e}");
-				PlayerList = new List<GameLiving>();
-			}
-			
-			
-			foreach (GameLiving living in PlayerList)
-			{
-				// if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-				// 	continue;
-				
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-					continue;
-
-				if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-					continue;
-
-				if (living.IsMezzed || living.IsStealthed)
-					continue;
-
-				if (living is GameNPC)
-				{
-					if (Body.GetConLevel(living) < -2)
-						continue;
-
-					if(EffectListService.GetEffectOnTarget(living, eEffect.SpeedOfSound) != null)
-						continue;
-
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (turretBody.TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null && living.CurrentSpeed <= (living.MaxSpeed / 10)) //turrets will only not attack enemies that are snared, only rooted
-						continue;
-
-					if (turretBody.TurretSpell.SpellType == (byte)eSpellType.SpeedDecrease && (living.HasAbility(Abilities.RootImmunity) || living.HasAbility(Abilities.DamageImmunity)))
-						continue;
-				} else if (living is GamePlayer gamelivingPl)
-				{
-					if (gamelivingPl.IsInvulnerableToAttack)
-						continue;
-					//if (((TurretPet)Body).TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && SpellHandler.FindEffectOnTarget(living, "SpeedDecrease") != null)
-					if (turretBody.TurretSpell.SpellType != (byte)eSpellType.SpeedDecrease && EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff) != null)
-						continue;
-				}
-				
-				if (LivingHasEffect(living, turretBody.TurretSpell))
-				{
-					oldTargets.Add(living);
-				}
-				else
-				{
-					newTargets.Add(living);
-				}
-								
-			}
-
-			IEnumerable NPCList = null;
-			try
-			{
-				NPCList = Body.GetNPCsInRadius((ushort) turretBody.TurretSpell.Range, !Body.CurrentRegion.IsDungeon);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"Error encountered in animist FNF turret: {e}");
-				NPCList = new List<GameLiving>();
-			}
-			
-			foreach (GameNPC living in NPCList)
-			{
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-					continue;
-
-				if (!living.IsAlive || living.CurrentRegion != Body.CurrentRegion || living.ObjectState != GameObject.eObjectState.Active)
-					continue;
-
-				if (living.IsMezzed || living.IsStealthed)
-					continue;
-				
-				if (Body.GetConLevel(living) < -2)
-					continue;
-
-				if (LivingHasEffect(living, turretBody.TurretSpell))
-				{
-					oldTargets.Add(living);
-				}
-				else
-				{
-					newTargets.Add(living as GameLiving);
-				}
-			}
-			
-
-			// always favor previous targets and new targets that have not been attacked first, then re-attack old targets
-
-            if (newTargets.Count > 0)
-			{
-				return newTargets[Util.Random(newTargets.Count - 1)];
-			}
-			else if (oldTargets.Count > 0)
-			{
-				return oldTargets[Util.Random(oldTargets.Count - 1)];
-			}
-
-			lock ((AggroTable as ICollection).SyncRoot)
-			{
-				AggroTable.Clear();
-			}
-			return null;
-		}
-
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			AddToAggroList(ad.Attacker, (ad.Attacker.Level + 1) << 1);
-		}
-
-		/// <summary>
-    /// Updates the pet window
-    /// </summary>
-    public override void UpdatePetWindow()
+    public class TurretFNFBrain : TurretBrain
     {
+        public TurretFNFBrain(GameLiving owner) : base(owner)
+        {
+            // Forced to aggressive, otherwise 'CheckProximityAggro()' won't be called.
+            AggressionState = eAggressionState.Aggressive;
+        }
+
+        public override bool CheckProximityAggro()
+        {
+            // FnF turrets need to add all players and NPCs to their aggro list to be able to switch target randomnly and effectively.
+            CheckPlayerAggro();
+            CheckNPCAggro();
+
+            return HasAggro;
+        }
+
+        protected override void CheckPlayerAggro()
+        {
+            // Copy paste of 'base.CheckPlayerAggro()' except we add all players in range.
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            {
+                if (!CanAggroTarget(player))
+                    continue;
+
+                if (player.IsStealthed || player.Steed != null)
+                    continue;
+
+                if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+                    continue;
+
+                // Disabled LoS check for 1.61~1.88 compliance. FnF turrets start casting without LoS.
+                //if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
+                //    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+                //else
+                    AddToAggroList(player, 0);
+            }
+        }
+
+        protected override void CheckNPCAggro()
+        {
+            // Copy paste of 'base.CheckNPCAggro()' except we add all NPCs in range.
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, !Body.CurrentRegion.IsDungeon))
+            {
+                if (!CanAggroTarget(npc))
+                    continue;
+
+                if (npc is GameTaxi or GameTrainingDummy)
+                    continue;
+
+                // Disabled LoS check for 1.61~1.88 compliance. FnF turrets start casting without LoS.
+                //if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
+                //{
+                //    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
+                //    {
+                //        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                //        continue;
+                //    }
+                //    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
+                //    {
+                //        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                //        continue;
+                //    }
+                //}
+
+                AddToAggroList(npc, 0);
+            }
+        }
+
+        protected override void LosCheckForAggroCallback(GamePlayer player, ushort response, ushort targetOID)
+        {
+            // Copy paste of 'base.LosCheckForAggroCallback()' except we don't care if we already have aggro.
+            if (targetOID == 0)
+                return;
+
+            if ((response & 0x100) == 0x100)
+            {
+                GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
+
+                if (gameObject is GameLiving gameLiving)
+                    AddToAggroList(gameLiving, 0);
+            }
+        }
+
+        protected override GameLiving CalculateNextAttackTarget()
+        {
+            Dictionary<GameLiving, long> tempAggroList = FilterOutInvalidLivingsFromAggroList();
+            List<GameLiving> livingsWithoutEffect = tempAggroList.Where(IsLivingWithoutEffect).Select(x => x.Key).ToList();
+
+            // Prioritize targets that don't already have our effect and aren't immune to it.
+            // If there's none, allow them to be attacked again but only if our spell does damage.
+            if (livingsWithoutEffect.Any())
+                return livingsWithoutEffect[Util.Random(livingsWithoutEffect.Count - 1)];
+            else if (tempAggroList.Count > 0 && ((TurretPet)Body).TurretSpell.Damage > 0)
+                return tempAggroList.ElementAt(Util.Random(tempAggroList.Count - 1)).Key;
+
+            return null;
+
+            bool IsLivingWithoutEffect(KeyValuePair<GameLiving, long> livingPair)
+            {
+                return !LivingHasEffect(livingPair.Key, ((TurretPet)Body).TurretSpell) && EffectListService.GetEffectOnTarget(livingPair.Key, eEffect.SnareImmunity) == null;
+            }
+        }
+
+        public override void UpdatePetWindow() { }
     }
-  }
 }

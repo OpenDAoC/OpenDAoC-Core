@@ -107,7 +107,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
             return;
         }
-        
+
         brain.CheckSpells(eCheckSpellType.Offensive);
 
         // Handle pet movement.

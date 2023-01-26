@@ -16,68 +16,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.Events;
 using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-  public class TurretMainPetTankBrain : TurretMainPetCasterBrain
-  {
-    public TurretMainPetTankBrain(GameLiving owner) : base(owner) { }
+    public class TurretMainPetTankBrain : TurretBrain
+    {
+        public TurretMainPetTankBrain(GameLiving owner) : base(owner) { }
 
-	public override void Notify(DOLEvent e, object sender, System.EventArgs args)
-	{
-		base.Notify(e, sender, args);
-		// if(AggressionState != eAggressionState.Passive)
-		// {
-		// 	if(e == GameLivingEvent.CastFinished || e == GameLivingEvent.AttackFinished)
-		// 	{
-		// 		TurretPet pet = sender as TurretPet;
-		// 		if(pet == null || pet != Body || !(pet.Brain is TurretMainPetTankBrain))
-		// 			return;
-		//
-		// 		if(e == GameLivingEvent.CastFinished)
-		// 		{
-		// 			if(Body.TargetObject != null)
-		// 			{
-		// 				//Force to stop spell casting
-		// 				if(Body.IsCasting)
-		// 				{
-		// 					Body.StopCurrentSpellcast();
-		// 				}
-		// 				if(Body.SpellTimer != null && Body.SpellTimer.IsAlive)
-		// 				{
-		// 					Body.SpellTimer.Stop();
-		// 				}
-		// 				Body.StartAttack(Body.TargetObject);
-		// 			}
-		// 			return;
-		// 		}
-		// 		if(e == GameLivingEvent.AttackFinished)
-		// 		{
-		// 			Body.StopAttack();
-		// 			AttackMostWanted();
-		// 		}
-		// 	}
-		// }
-	}
-
-  	public override void AttackMostWanted()
-	{
-		// Force to wait body attack before casting.
-		if(Body.attackComponent.AttackState)
-		{
-			return;
-		}
-		CheckSpells(eCheckSpellType.Offensive);
-	}
-
-  	public override void OnAttackedByEnemy(AttackData ad)
-	{
-	  if (AggressionState != eAggressionState.Passive)
-	  {
-		AddToAggroList(ad.Attacker, (ad.Attacker.Level + 1) << 1);
-	  }
-	}
-  }
+        public override bool CheckSpells(eCheckSpellType type)
+        {
+            // Tank turret doesn't check for spells if its target is close, and attacks instead.
+            if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange))
+            {
+                Body.StartAttack(Body.TargetObject);
+                return true;
+            }
+            else
+            {
+                Body.StopAttack();
+                return base.CheckSpells(type);
+            }
+        }
+    }
 }

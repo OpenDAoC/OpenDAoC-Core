@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
@@ -67,7 +66,6 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Returns the string representation of the StandardMobBrain
         /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
             return base.ToString() + ", AggroLevel=" + AggroLevel.ToString() + ", AggroRange=" + AggroRange.ToString();
@@ -97,17 +95,18 @@ namespace DOL.AI.Brain
             FSM.Think();
         }
 
-        public bool ShouldCheckProximityAggro = true;
+        public bool IsReturningToSpawn;
 
         public virtual bool CheckProximityAggro()
         {
             FireAmbientSentence();
 
             // Check aggro only if we're not in combat.
-            if (ShouldCheckProximityAggro && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null) 
+            if (!IsReturningToSpawn && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null) 
             {
                 // Don't check aggro if we spawned less than X seconds ago. This is to prevent clients from sending positive LoS check
-                // when they shouldn't, which can happen right after SendNPCCreate and makes mobs aggro through walls.
+                // when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
+                // TODO: Find a way to delay the first tick of 'Think()' instead.
                 if (GameLoop.GameLoopTime - Body.SpawnTick < 1250)
                     return false;
 
@@ -152,8 +151,6 @@ namespace DOL.AI.Brain
                 return false;
         }
 
-        public long LastNPCAggroCheckTick = 0;
-
         /// <summary>
         /// Check for aggro against players
         /// </summary>
@@ -163,8 +160,10 @@ namespace DOL.AI.Brain
             {
                 if (!CanAggroTarget(player))
                     continue;
+
                 if (player.IsStealthed || player.Steed != null)
                     continue;
+
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
@@ -173,7 +172,7 @@ namespace DOL.AI.Brain
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
                 else
                 {
-                    AddToAggroList(player, 1);
+                    AddToAggroList(player, 0);
                     return;
                 }
             }
@@ -188,6 +187,7 @@ namespace DOL.AI.Brain
             {
                 if (!CanAggroTarget(npc))
                     continue;
+
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                AddToAggroList(npc, 1);
+                AddToAggroList(npc, 0);
                 return;
             }
         }
@@ -297,21 +297,16 @@ namespace DOL.AI.Brain
         {
             get
             {
-                bool hasAggro = false;
-
                 lock ((AggroTable as ICollection).SyncRoot)
                 {
-                    hasAggro = AggroTable.Count > 0;
+                    return AggroTable.Count > 0;
                 }
-
-                return hasAggro;
             }
         }
 
         /// <summary>
         /// Add aggro table of this brain to that of another living.
         /// </summary>
-        /// <param name="brain">The target brain.</param>
         public void AddAggroListTo(StandardMobBrain brain)
         {
             if (!brain.Body.IsAlive)
@@ -330,9 +325,6 @@ namespace DOL.AI.Brain
         /// Add living to the aggrolist
         /// aggroAmount can be negative to lower amount of aggro
         /// </summary>
-        /// <param name="living"></param>
-        /// <param name="aggroAmount"></param>
-        /// <param name="CheckLOS"></param>
         public virtual void AddToAggroList(GameLiving living, int aggroAmount)
         {
             // tolakram - duration spell effects will attempt to add to aggro after npc is dead
@@ -438,10 +430,8 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Get current amount of aggro on aggrotable
+        /// Get current amount of aggro on aggrotable.
         /// </summary>
-        /// <param name="living"></param>
-        /// <returns></returns>
         public virtual long GetAggroAmountForLiving(GameLiving living)
         {
             lock ((AggroTable as ICollection).SyncRoot)
@@ -453,9 +443,8 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Remove one living from aggro list
+        /// Remove one living from aggro list.
         /// </summary>
-        /// <param name="living"></param>
         public virtual void RemoveFromAggroList(GameLiving living)
         {
             lock ((AggroTable as ICollection).SyncRoot)
@@ -463,7 +452,7 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Remove all livings from the aggrolist
+        /// Remove all livings from the aggrolist.
         /// </summary>
         public virtual void ClearAggroList()
         {
@@ -477,17 +466,7 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Makes a copy of current aggro list
-        /// </summary>
-        /// <returns></returns>
-        public virtual Dictionary<GameLiving, long> CloneAggroList()
-        {
-            lock ((AggroTable as ICollection).SyncRoot)
-                return new Dictionary<GameLiving, long>(AggroTable);
-        }
-
-        /// <summary>
-        /// Selects and attacks the next target or does nothing
+        /// Selects and attacks the next target or does nothing.
         /// </summary>
         public virtual void AttackMostWanted()
         {
@@ -506,28 +485,23 @@ namespace DOL.AI.Brain
             }
         }
 
-        /// <summary>
-        /// Callback for when we receive a LoS check reply
-        /// </summary>
         protected virtual void LosCheckForAggroCallback(GamePlayer player, ushort response, ushort targetOID)
         {
-            // If we kept adding to the aggro list it would make mobs go from one target immediately to another
-            // For whatever reason, a call to CheckLOSResponse will result in this method being called with 0 arguments. We need to filter that out
+            // If we kept adding to the aggro list it would make mobs go from one target immediately to another.
             if (HasAggro || targetOID == 0)
-                return; 
+                return;
 
             if ((response & 0x100) == 0x100)
             {
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
                 if (gameObject is GameLiving gameLiving)
-                    AddToAggroList(gameLiving, 1);
+                    AddToAggroList(gameLiving, 0);
             }
         }
 
         protected virtual void LosCheckInCombatCallback(GamePlayer player, ushort response, ushort targetOID)
         {
-            // For whatever reason, a call to CheckLOSResponse will result in this method being called with 0 arguments. We need to filter that out
             if (targetOID == 0)
                 return;
 
@@ -544,69 +518,77 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Returns the best target to attack
+        /// Returns whether or not 'living' is still a valid target.
         /// </summary>
-        /// <returns>the best target</returns>
-        protected virtual GameLiving CalculateNextAttackTarget()
+        protected virtual bool ShouldThisLivingBeFilteredOutFromAggroList(GameLiving living)
         {
-            GameLiving maxAggroObject = null;
-            List<KeyValuePair<GameLiving, long>> aggroList = new List<KeyValuePair<GameLiving, long>>();
+            return !living.IsAlive ||
+                   living.ObjectState != GameObject.eObjectState.Active ||
+                   living.IsStealthed ||
+                   living.CurrentRegion != Body.CurrentRegion ||
+                   !Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
+                   !GameServer.ServerRules.IsAllowedToAttack(Body, living, true);
+        }
+
+        /// <summary>
+        /// Returns a copy of 'aggroList' ordered by aggro amount (descending), modified by range.
+        /// </summary>
+        protected virtual List<KeyValuePair<GameLiving, long>> OrderAggroListByModifiedAggroAmount(Dictionary<GameLiving, long> aggroList)
+        {
+            return aggroList.OrderByDescending(x => x.Value * Math.Min(500.0 / Body.GetDistanceTo(x.Key), 1)).ToList();
+        }
+
+        /// <summary>
+        /// Filters out invalid targets from the current aggro list and returns a copy.
+        /// </summary>
+        protected virtual Dictionary<GameLiving, long> FilterOutInvalidLivingsFromAggroList()
+        {
+            Dictionary<GameLiving, long> tempAggroList;
+            bool modified = false;
 
             lock ((AggroTable as ICollection).SyncRoot)
-                aggroList = AggroTable.ToList();
-
-            double maxAggro = 0;
-            List<GameLiving> removable = new List<GameLiving>();
-            
-            foreach (var currentKey in aggroList)
             {
-                GameLiving living = currentKey.Key;
+                tempAggroList = new Dictionary<GameLiving, long>(AggroTable);
+            }
+
+            foreach (KeyValuePair<GameLiving, long> pair in tempAggroList.ToList())
+            {
+                GameLiving living = pair.Key;
 
                 if (living == null)
                     continue;
 
-                // Check to make sure this target is still valid.
-                if (!living.IsAlive
-                    || living.ObjectState != GameObject.eObjectState.Active
-                    || living.IsStealthed
-                    || Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE
-                    || !GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+                // Check to make sure this living is still a valid target.
+                if (ShouldThisLivingBeFilteredOutFromAggroList(living))
                 {
                     // Keep Necromancer shades so that we can attack them if their pets die.
-                    if (living.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-                        removable.Add(living);
-                    continue;
-                }
+                    if (EffectListService.GetEffectOnTarget(living, eEffect.Shade) != null)
+                        continue;
 
-                long amount = currentKey.Value;
-
-                if (living.IsAlive
-                    && amount > maxAggro
-                    && living.CurrentRegion == Body.CurrentRegion
-                    && living.ObjectState == GameObject.eObjectState.Active)
-                {
-                    double aggro = amount * Math.Min(500.0 / Body.GetDistanceTo(living), 1);
-                    if (aggro > maxAggro)
-                    {
-                        maxAggroObject = living;
-                        maxAggro = aggro;
-                    }
+                    modified = true;
+                    tempAggroList.Remove(living);
                 }
             }
 
-            foreach (GameLiving l in removable)
+            if (modified)
             {
-                RemoveFromAggroList(l);
-                Body.attackComponent.RemoveAttacker(l);
-            }
+                // Body.attackComponent.RemoveAttacker(removable.Key); ???
 
-            if (maxAggroObject == null)
-            {
                 lock ((AggroTable as ICollection).SyncRoot)
-                    AggroTable.Clear();
+                {
+                    AggroTable = tempAggroList.ToDictionary(x => x.Key, x => x.Value);
+                }
             }
 
-            return maxAggroObject;
+            return tempAggroList;
+        }
+
+        /// <summary>
+        /// Returns the best target to attack from the current aggro list.
+        /// </summary>
+        protected virtual GameLiving CalculateNextAttackTarget()
+        {
+            return OrderAggroListByModifiedAggroAmount(FilterOutInvalidLivingsFromAggroList()).FirstOrDefault().Key;
         }
 
         public virtual bool CanAggroTarget(GameLiving target)
@@ -640,21 +622,6 @@ namespace DOL.AI.Brain
             return AggroLevel > 0;
         }
 
-        /// <summary>
-        /// Receives all messages of the body
-        /// </summary>
-        /// <param name="e">The event received</param>
-        /// <param name="sender">The event sender</param>
-        /// <param name="args">The event arguments</param>
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
-        {
-            base.Notify(e, sender, args);
-        }
-        
-        /// <summary>
-        /// Lost follow target event
-        /// </summary>
-        /// <param name="target"></param>
         protected virtual void OnFollowLostTarget(GameObject target)
         {
             AttackMostWanted();
@@ -662,9 +629,6 @@ namespace DOL.AI.Brain
                 Body.WalkToSpawn();
         }
 
-		/// <summary>
-		/// Attacked by enemy event
-		/// </summary>
 		public virtual void OnAttackedByEnemy(AttackData ad)
 		{
 			if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
@@ -695,7 +659,7 @@ namespace DOL.AI.Brain
 		{
 			if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledNpcBrain controlledBrain)
 			{
-                damage = controlledBrain.ModifyDamageWithTaunt(damage);
+			    damage = controlledBrain.ModifyDamageWithTaunt(damage);
 
 				// Aggro is split between the owner (25%) and their pet (75%).
 				// We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat mob could attack the owner when their pet engages it.
@@ -881,7 +845,7 @@ namespace DOL.AI.Brain
                             else
                                 target = actualPuller;
 
-                            brain.AddToAggroList(target, 1);
+                            brain.AddToAggroList(target, 0);
                             brain.AttackMostWanted();
                             numAdds++;
                         }

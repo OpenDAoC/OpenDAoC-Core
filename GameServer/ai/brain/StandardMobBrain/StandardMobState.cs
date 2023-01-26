@@ -50,7 +50,7 @@ public class StandardMobState_IDLE : StandardMobState
         {
             Console.WriteLine($"{_brain.Body} is entering IDLE");
         }
-        _brain.ShouldCheckProximityAggro = true;
+
         base.Enter();
     }
 
@@ -155,19 +155,20 @@ public class StandardMobState_AGGRO : StandardMobState
 
     public override void Enter()
     {
-        //enable attack component
-        //enable spell component
-        if (_brain.Body.attackComponent == null) { _brain.Body.attackComponent = new DOL.GS.AttackComponent(_brain.Body); }
+        if (_brain.Body.attackComponent == null)
+            _brain.Body.attackComponent = new AttackComponent(_brain.Body);
+
         EntityManager.AddComponent(typeof(AttackComponent), _brain.Body);
-        if (_brain.Body.castingComponent == null) { _brain.Body.castingComponent = new DOL.GS.CastingComponent(_brain.Body); }
+
+        if (_brain.Body.castingComponent == null)
+            _brain.Body.castingComponent = new CastingComponent(_brain.Body);
+
         EntityManager.AddComponent(typeof(CastingComponent), _brain.Body);
 
         if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
         {
             Console.WriteLine($"{_brain.Body} is entering AGGRO");
         }
-        _brain.ShouldCheckProximityAggro = true;
-        //_brain.AttackMostWanted();
 
         base.Enter();
     }
@@ -291,14 +292,14 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
         if (_brain.Body.WasStealthed)
             _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
         _brain.ClearAggroList();
-        _brain.ShouldCheckProximityAggro = false;
+        _brain.IsReturningToSpawn = true;
         _brain.Body.WalkToSpawn();
         base.Enter();
     }
 
     public override void Exit()
     {
-        _brain.ShouldCheckProximityAggro = true;
+        _brain.IsReturningToSpawn = false;
 
         base.Exit();
     }

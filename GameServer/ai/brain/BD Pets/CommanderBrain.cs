@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
 					casted = CheckOffensiveSpells(cast);
 			}
 
-			if(casted)
+			if (casted)
 			{
 				// Check instant spells, but only cast one to prevent spamming
 				if (Body.CanCastInstantHarmfulSpells)
@@ -249,8 +249,8 @@ namespace DOL.AI.Brain
 			return casted;
 		}
 
-        public override int ModifyDamageWithTaunt(int damage)
-        {
+		public override int ModifyDamageWithTaunt(int damage)
+		{
 			// TODO: Move 'CommanderPet.Taunting' to the brain.
 			if (Body is CommanderPet commanderPet)
 			{
@@ -260,7 +260,7 @@ namespace DOL.AI.Brain
 					damage = (int)(damage * tauntScale / 100.0);
 			}
 
-            return base.ModifyDamageWithTaunt(damage);
-        }
-    }
+			return base.ModifyDamageWithTaunt(damage);
+		}
+	}
 }

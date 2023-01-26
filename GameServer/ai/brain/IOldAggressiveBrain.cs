@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -17,23 +16,18 @@ namespace DOL.AI.Brain
 
 		/// <summary>
 		/// Add living to the aggrolist
-		/// aggroamount can be negative to lower amount of aggro		
+		/// aggroamount can be negative to lower amount of aggro
 		/// </summary>
-		/// <param name="living"></param>
-		/// <param name="aggroamount"></param>
 		void AddToAggroList(GameLiving living, int aggroamount);
 
 		/// <summary>
 		/// Get current amount of aggro on aggrotable
 		/// </summary>
-		/// <param name="living"></param>
-		/// <returns></returns>
 		long GetAggroAmountForLiving(GameLiving living);
 
 		/// <summary>
 		/// Remove one living from aggro list
 		/// </summary>
-		/// <param name="living"></param>
 		void RemoveFromAggroList(GameLiving living);
 
 		/// <summary>
@@ -42,16 +36,8 @@ namespace DOL.AI.Brain
 		void ClearAggroList();
 
 		/// <summary>
-		/// Makes a copy of current aggro list
-		/// </summary>
-		/// <returns></returns>
-		Dictionary<GameLiving, long> CloneAggroList();
-
-		/// <summary>
 		/// Check if this npc has a high enough aggro level to aggro
 		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
 		bool CanAggroTarget(GameLiving target);
 	}
 }

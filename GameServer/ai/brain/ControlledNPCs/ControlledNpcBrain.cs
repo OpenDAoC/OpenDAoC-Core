@@ -18,7 +18,6 @@
  */
 using System;
 using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Events;
@@ -909,68 +908,47 @@ namespace DOL.AI.Brain
 			return AggroLevel > 0;
 		}
 
-        /// <summary>
-        /// Returns the best target to attack
-        /// </summary>
-        /// <returns>the best target</returns>
-        protected override GameLiving CalculateNextAttackTarget()
+		protected override bool ShouldThisLivingBeFilteredOutFromAggroList(GameLiving living)
 		{
-			if (AggressionState == eAggressionState.Passive)
-				return null;
+			if (living.IsMezzed ||
+				!living.IsAlive ||
+				living.ObjectState != GameObject.eObjectState.Active ||
+				living.CurrentRegion != Body.CurrentRegion ||
+				!Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
+				!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
+				return true;
+			else
+			{
+				ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 
-			if (m_orderAttackTarget != null)
+				if (root != null && root.SpellHandler.Spell.Value == 99)
+					return true;
+			}
+			
+			return false;
+		}
+
+		/// <summary>
+		/// Perform some checks on 'm_orderAttackTarget'. Returns it if it's still a valid target, sets it to null otherwise.
+		/// </summary>
+		protected virtual GameLiving CheckAttackOrderTarget()
+		{
+			if (AggressionState != eAggressionState.Passive && m_orderAttackTarget != null)
 			{
 				if (m_orderAttackTarget.IsAlive &&
-				    m_orderAttackTarget.ObjectState == GameObject.eObjectState.Active &&
-				    GameServer.ServerRules.IsAllowedToAttack(this.Body, m_orderAttackTarget, true))
-				{
+					m_orderAttackTarget.ObjectState == GameObject.eObjectState.Active &&
+					GameServer.ServerRules.IsAllowedToAttack(Body, m_orderAttackTarget, true))
 					return m_orderAttackTarget;
-				}
 
 				m_orderAttackTarget = null;
 			}
 
-			lock ((AggroTable as ICollection).SyncRoot)
-			{
-				IDictionaryEnumerator aggros = AggroTable.GetEnumerator();
-				List<GameLiving> removable = new List<GameLiving>();
-				while (aggros.MoveNext())
-				{
-					GameLiving living = (GameLiving)aggros.Key;
-					
-					if(living == null)
-						continue;
+			return null;
+		}
 
-					if (living != null)
-					{
-						if (living.IsMezzed ||
-						    living.IsAlive == false ||
-						    living.ObjectState != GameObject.eObjectState.Active ||
-						    Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
-						    GameServer.ServerRules.IsAllowedToAttack(this.Body, living, true) == false)
-						{
-							removable.Add(living);
-						}
-						else
-						{
-							//GameSpellEffect root = SpellHandler.FindEffectOnTarget(living, "SpeedDecrease");
-							ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
-							if (root != null && root.SpellHandler.Spell.Value == 99)
-							{
-								removable.Add(living);
-							}
-						}
-					}
-				}
-
-				foreach (GameLiving living in removable)
-				{
-					RemoveFromAggroList(living);
-					Body.attackComponent.RemoveAttacker(living);
-				}
-			}
-
-			return base.CalculateNextAttackTarget();
+		protected override GameLiving CalculateNextAttackTarget()
+		{
+			return CheckAttackOrderTarget() ?? base.CalculateNextAttackTarget();
 		}
 
 		/// <summary>
@@ -978,24 +956,25 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void AttackMostWanted()
 		{
-			if (!IsActive || m_aggressionState == eAggressionState.Passive) return;
+			if (!IsActive || m_aggressionState == eAggressionState.Passive)
+				return;
 
-            GameNPC owner_npc = GetNPCOwner();
-            if (owner_npc != null && owner_npc.Brain is StandardMobBrain)
-            {
-                if ((owner_npc.IsCasting || owner_npc.IsAttacking) &&
-                    owner_npc.TargetObject != null &&
-                    owner_npc.TargetObject is GameLiving &&
-                    GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
-                {
+			GameNPC owner_npc = GetNPCOwner();
 
-                    if (!CheckSpells(eCheckSpellType.Offensive))
-                    {
-                        Body.StartAttack(owner_npc.TargetObject);
-                    }
-                    return;
-                }
-            }
+			if (owner_npc != null && owner_npc.Brain is StandardMobBrain)
+			{
+				if ((owner_npc.IsCasting || owner_npc.IsAttacking) &&
+					owner_npc.TargetObject != null &&
+					owner_npc.TargetObject is GameLiving &&
+					GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
+				{
+
+					if (!CheckSpells(eCheckSpellType.Offensive))
+						Body.StartAttack(owner_npc.TargetObject);
+
+					return;
+				}
+			}
 
 			GameLiving target = CalculateNextAttackTarget();
 			
@@ -1005,27 +984,14 @@ namespace DOL.AI.Brain
 				{
 					Body.TargetObject = target;
 
-                    //if (target is GamePlayer)
-                    //{
-                    //    Body.LastAttackTickPvP = GameLoop.GameLoopTime;
-                    //    Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                    //}
-                    //else
-                    //{
-                    //    Body.LastAttackTickPvE = GameLoop.GameLoopTime;
-                    //    Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                    //}
-
-                    List<GameSpellEffect> effects = new List<GameSpellEffect>();
+					List<GameSpellEffect> effects = new List<GameSpellEffect>();
 
 					lock (Body.EffectList)
 					{
 						foreach (IGameEffect effect in Body.EffectList)
 						{
 							if (effect is GameSpellEffect && (effect as GameSpellEffect).SpellHandler is SpeedEnhancementSpellHandler)
-							{
 								effects.Add(effect as GameSpellEffect);
-							}
 						}
 					}
 
@@ -1034,17 +1000,12 @@ namespace DOL.AI.Brain
 						foreach (IGameEffect effect in Owner.EffectList)
 						{
 							if (effect is GameSpellEffect && (effect as GameSpellEffect).SpellHandler is SpeedEnhancementSpellHandler)
-							{
 								effects.Add(effect as GameSpellEffect);
-							}
 						}
 					}
 
 					foreach (GameSpellEffect effect in effects)
-					{
 						effect.Cancel(false);
-					}
-
 				}
 
 				if (!CheckSpells(eCheckSpellType.Offensive))
@@ -1069,36 +1030,23 @@ namespace DOL.AI.Brain
 					Body.SpellTimer.Stop();
 
 				if (WalkState == eWalkState.Follow)
-				{
 					FollowOwner();
-				}
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-				{
 					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
-				}
 			}
 		}
 
-		/// <summary>
-		/// Owner attacked event
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
 			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
 
-			// theurgist pets don't help their owner
-			//edit for BD - possibly add support for Theurgist GameNPCs
+			// Theurgist pets don't help their owner.
 			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
 				return;
 
-			//AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
-			//if (args == null) return;
 			if (ad.Target is GamePlayer && ((ad.Target as GamePlayer).ControlledBrain != this || (ad.Target as GamePlayer).ControlledBrain.Body == Owner))
 				return;
-			// react only on these attack results
+
 			switch (ad.AttackResult)
 			{
 				case eAttackResult.Blocked:
