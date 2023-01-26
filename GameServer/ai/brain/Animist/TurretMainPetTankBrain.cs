@@ -35,7 +35,7 @@ namespace DOL.AI.Brain
             else
             {
                 Body.StopAttack();
-                return base.CheckSpells(type);
+                return base.CheckSpells(type) || Body.IsCasting;
             }
         }
     }

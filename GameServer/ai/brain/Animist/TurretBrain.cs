@@ -56,20 +56,20 @@ namespace DOL.AI.Brain
             if (Body == null || ((TurretPet)Body).TurretSpell == null)
                 return false;
 
-            if (Body.IsCasting)
-                return true;
-
             Spell spell = ((TurretPet)Body).TurretSpell;
+            bool casted = false;
 
             switch (type)
             {
                 case eCheckSpellType.Defensive:
-                    return CheckDefensiveSpells(spell);
+                    casted = CheckDefensiveSpells(spell);
+                    break;
                 case eCheckSpellType.Offensive:
-                    return CheckOffensiveSpells(spell);
+                    casted = CheckOffensiveSpells(spell);
+                    break;
             }
 
-            return false;
+            return casted/* || Body.IsCasting*/;
         }
 
         protected override bool CheckDefensiveSpells(Spell spell)
@@ -119,15 +119,11 @@ namespace DOL.AI.Brain
                 else
                     target = CalculateNextAttackTarget();
 
-                if (target != null && Body.IsWithinRadius(target, spell.Range))
+                if (target != null)
                 {
                     if (!Body.IsAttacking || target != Body.TargetObject)
                     {
                         Body.TargetObject = target;
-
-                        if(spell.CastTime > 0)
-                            Body.TurnTo(Body.TargetObject);
-
                         Body.CastSpell(spell, m_mobSpellLine, false);
                     }
                 }
@@ -166,7 +162,7 @@ namespace DOL.AI.Brain
                     continue;
                 }
 
-                if(player == GetPlayerOwner())
+                if (player == GetPlayerOwner())
                     return player;
 
                 ListDefensiveTarget.Add(player);
