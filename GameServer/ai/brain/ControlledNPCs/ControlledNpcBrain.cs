@@ -84,7 +84,7 @@ namespace DOL.AI.Brain
 				AggroLevel = npcOwnerBrain.AggroLevel;
 			else
 				AggroLevel = 99;
-			AggroRange = 1500;
+			AggroRange = MAX_PET_AGGRO_DISTANCE;
 
 			FSM.ClearStates();
 

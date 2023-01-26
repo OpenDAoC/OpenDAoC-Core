@@ -278,7 +278,11 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Max Aggro range in that this npc searches for enemies
         /// </summary>
-        public virtual int AggroRange { get => Math.Min(_aggroRange, MAX_AGGRO_DISTANCE); set => _aggroRange = value; }
+        public virtual int AggroRange
+        {
+            get => Math.Min(_aggroRange, MAX_AGGRO_DISTANCE);
+            set => _aggroRange = value;
+        }
 
         /// <summary>
         /// Aggressive Level in % 0..100, 0 means not Aggressive
