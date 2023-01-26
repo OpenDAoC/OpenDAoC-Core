@@ -11052,10 +11052,14 @@ namespace DOL.GS
             m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
             m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
             m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
+
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == null) continue;
-                if (player != this)
+                if (player == null)
+                    continue;
+
+                // Prevents players from seeing stealthed GMs during their loading time.
+                if (player != this && (IsStealthed == false || player.CanDetect(this)))
                     player.Out.SendPlayerCreate(this);
             }
 

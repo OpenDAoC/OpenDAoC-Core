@@ -162,7 +162,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.Out.SendUpdatePlayer();
 				player.Out.SendUpdateMoney();
 				player.Out.SendCharStatsUpdate();
-
 				player.Out.SendCharResistsUpdate();
 				int effectsCount = 0;
 				player.Out.SendUpdateIcons(null, ref effectsCount);
@@ -180,12 +179,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.Out.SendUpdateMaxSpeed(); // Speed in debug mode ?
 												 //WARNING: This would change problems if a scripter changed the values for plvl
 												 //GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);
-				bool isStealthed = player.IsStealthed;
-
 				player.UpdateEncumberance(); // Update encumberance on init.
-				player.Stealth(false);
+
+				// Don't unstealth GMs.
 				if (player.Client.Account.PrivLevel > 1)
-					player.GMStealthed = isStealthed;
+					player.GMStealthed = player.IsStealthed;
+				else
+					player.Stealth(false);
 
 				player.Out.SendSetControlledHorse(player);
 				//check item at world load
