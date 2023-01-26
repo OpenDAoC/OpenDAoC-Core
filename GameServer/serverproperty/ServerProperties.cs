@@ -743,6 +743,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "always_check_los", "Perform a LoS check before aggroing. This can involve a huge lag, handle with care!", false)]
 		public static bool ALWAYS_CHECK_LOS;
 
+		[ServerProperty("classes", "fnf_turrets_require_los_to_aggro", "Should FnF turrets require LoS to aggro entities (may send many requests to the player)", false)]
+		public static bool FNF_TURRETS_REQUIRE_LOS_TO_AGGRO;
+
 		/// <summary>
 		/// Perform a LoS check on client during cast
 		/// </summary>
@@ -1667,12 +1670,6 @@ namespace DOL.GS.ServerProperties
 		#endregion
 		
 		#region KEEPS
-		/// <summary>
-		/// Number of seconds between allowed LOS checks for keep guards
-		/// </summary>
-		[ServerProperty("keeps", "keep_guard_los_check_time", "Number of seconds between allowed LOS checks for keep guards", 5)]
-		public static int KEEP_GUARD_LOS_CHECK_TIME;
-
 		/// <summary>
 		/// The number of players needed for claiming
 		/// </summary>

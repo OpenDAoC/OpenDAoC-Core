@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
@@ -54,10 +55,9 @@ namespace DOL.AI.Brain
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
-                // Disabled LoS check for 1.61~1.88 compliance. FnF turrets start casting without LoS.
-                //if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
-                //    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
-                //else
+                if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+                    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+                else
                     AddToAggroList(player, 0);
             }
         }
@@ -73,20 +73,19 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
-                // Disabled LoS check for 1.61~1.88 compliance. FnF turrets start casting without LoS.
-                //if (GS.ServerProperties.Properties.ALWAYS_CHECK_LOS)
-                //{
-                //    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
-                //    {
-                //        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
-                //        continue;
-                //    }
-                //    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
-                //    {
-                //        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
-                //        continue;
-                //    }
-                //}
+                if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+                {
+                    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
+                    {
+                        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        continue;
+                    }
+                    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
+                    {
+                        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        continue;
+                    }
+                }
 
                 AddToAggroList(npc, 0);
             }
