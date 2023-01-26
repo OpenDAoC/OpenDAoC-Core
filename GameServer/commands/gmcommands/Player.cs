@@ -21,7 +21,6 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
-
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -67,7 +66,7 @@ namespace DOL.GS.Commands
 		"/player setml <level> - Set this players current Master Level.",
 		"/player setmlstep <level> <step> [false] - Sets a step for an ML level to finished. 0 to set as unfinished.",
         "/player allchars <PlayerName>", 
-        "/player class <list|classID> - view a list of classes, or change the targets class.",
+        "/player class <list|classID|className> - view a list of classes, or change the targets class.",
         "/player areas - list all the areas the player is currently inside of "
 		)]
 	public class PlayerCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -2189,7 +2188,7 @@ namespace DOL.GS.Commands
 
                         if (args.Length < 3)
                         {
-                            DisplayMessage(client, "/player class <list|classID>");
+                            DisplayMessage(client, "/player class <list|classID|className>");
                             return;
                         }
 
@@ -2209,28 +2208,32 @@ namespace DOL.GS.Commands
                                 break;
                             default:
                                 {
-                                    foreach (char c in args[2])
-                                    {
-                                        if (char.IsLetter(c))
-                                        {
-                                            DisplayMessage(client, "You must use the ID. use /player class list.");
-                                            return;
-                                        }
-                                    }
-
                                     if (targetPlayer == null)
                                     {
                                         DisplayMessage(client, "You must have a player target to use this command!");
                                         return;
                                     }
 
-                                    SetClass(targetPlayer, int.Parse(args[2]));
+                                    if (int.TryParse(args[2], out int valueInt))
+                                    {
+                                        SetClass(targetPlayer, valueInt);
+                                    }
+                                    else if (Enum.TryParse(args[2], true, out eCharacterClass valueEnum))
+                                    {
+                                        SetClass(targetPlayer, (byte)valueEnum);
+                                    }
+                                    else
+                                    {
+                                        DisplayMessage(client, "You must use either the ID or the name of the class. Check /player class list.");
+                                        return;
+                                    }
                                 }
                                 break;
                         }
                     }
                     break; 
                 #endregion
+
                 #region areas
                 case "areas":
                     {
