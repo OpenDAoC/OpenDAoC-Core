@@ -33,7 +33,6 @@ namespace DOL.AI.Brain
 
         public List<GameLiving> ListDefensiveTarget => m_listDefensiveTarget;
         public override int ThinkInterval => 1500;
-
         public override int AggroRange => ((TurretPet) Body).TurretSpell.Range;
 
         public override void Think()

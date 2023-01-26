@@ -96,14 +96,14 @@ namespace DOL.GS.Spells
 				m_pet.Spells.Add(SkillBase.GetSpellByID(Spell.SubSpellID));
 			}
 
-			(m_pet.Brain as TurretBrain).IsMainPet = false;
-			(m_pet.Brain as TurretBrain).Think();
-
 			if (m_pet.Spells.Count > 0)
 			{
 				//[Ganrod] Nidel: Set only one spell.
 				(m_pet as TurretPet).TurretSpell = m_pet.Spells[0] as Spell;
 			}
+
+			(m_pet.Brain as TurretBrain).IsMainPet = false;
+			(m_pet.Brain as TurretBrain).Think();
 
 			Caster.PetCount++;
 		}
