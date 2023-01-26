@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -42,16 +41,16 @@ namespace DOL.GS.Commands
 
 			try
 			{
-				amount = Convert.ToInt16(args[1]);
-				GameLiving living = client.Player.TargetObject as GameLiving;
-				if (living != null)
+				amount = Convert.ToInt32(args[1]);
+
+				if (client.Player.TargetObject is GameLiving living)
 					living.TakeDamage(client.Player, eDamageType.GM, amount, 0);
 				else
 					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Harm.InvalidTarget"));
 			}
 			catch (Exception ex)
 			{
-				List<string> list = new List<string>();
+				List<string> list = new();
 				list.Add(ex.ToString());
 				client.Out.SendCustomTextWindow("Exception", list);
 			}
