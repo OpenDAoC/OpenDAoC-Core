@@ -64,6 +64,12 @@ namespace DOL.GS
             return false;
         }
 
+        protected override void PerformRangedAttack()
+        {
+            _playerOwner.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();
+            base.PerformRangedAttack();
+        }
+
         protected override bool FinalizeMeleeAttack()
         {
             if (base.FinalizeMeleeAttack())
@@ -79,6 +85,23 @@ namespace DOL.GS
 
         protected override bool FinalizeRangedAttack()
         {
+            bool stopAttack = false;
+
+            if (_playerOwner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
+                stopAttack = true;
+            else if (_playerOwner.Endurance < RangeAttackComponent.RANGE_ATTACK_ENDURANCE)
+            {
+                stopAttack = true;
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.TiredUse", _weapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            }
+
+            if (stopAttack)
+            {
+                _attackComponent.StopAttack();
+                _attackComponent.attackAction?.CleanUp();
+                return false;
+            }
+
             if (base.FinalizeRangedAttack())
             {
                 _playerOwner.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);

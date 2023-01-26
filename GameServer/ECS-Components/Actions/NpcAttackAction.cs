@@ -152,11 +152,7 @@ namespace DOL.GS
                 return false;
             }
             else
-            {
-                // Mobs always shoot and reload.
-                _npcOwner.rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFireReload;
                 return base.FinalizeRangedAttack();
-            }            
         }
 
         public override void CleanUp()

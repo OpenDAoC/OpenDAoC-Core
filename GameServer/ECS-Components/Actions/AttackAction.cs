@@ -305,8 +305,6 @@ namespace DOL.GS
         {
             _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, null, _effectiveness, _interruptDuration, null);
 
-            _owner.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();
-
             // Order is important. 'WeaponAction()' creates a snapshot of 'RangedAttackType' that will be used for damage calculation.
             // We then reset it for the next interval calculation.
             if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
@@ -355,13 +353,6 @@ namespace DOL.GS
 
         protected virtual bool FinalizeRangedAttack()
         {
-            if (_owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
-            {
-                _attackComponent.StopAttack();
-                _attackComponent.attackAction?.CleanUp();
-                return false;
-            }
-
             if (CheckInterruptTimer())
                 return false;
 
@@ -384,17 +375,14 @@ namespace DOL.GS
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;                            
             }
 
-            if (!_owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
             {
-                Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
-                {
-                    if (player == null)
-                        return;
+                if (player == null)
+                    return;
 
-                    // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
-                    player.Out.SendCombatAnimation(_owner, null, (ushort)(_weapon != null ? _weapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
-                });
-            }
+                // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+                player.Out.SendCombatAnimation(_owner, null, (ushort)(_weapon != null ? _weapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
+            });
 
             return true;
         }
