@@ -97,7 +97,6 @@ namespace DOL.GS.Spells
 			}
 
 			(m_pet.Brain as TurretBrain).IsMainPet = false;
-			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			(m_pet.Brain as TurretBrain).Think();
 
 			if (m_pet.Spells.Count > 0)
