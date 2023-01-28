@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -28,7 +29,34 @@ namespace DOL.GS.Spells
 	[SpellHandler("SummonTheurgistPet")]
 	public class SummonTheurgistPet : SummonSpellHandler
 	{
-		public SummonTheurgistPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		private enum PetType
+		{
+			None,
+			Earth,
+			Ice,
+			Air
+		};
+
+		private static string[] m_petTypeNames = Enum.GetNames(typeof(PetType));
+		private PetType m_petType;
+
+		public SummonTheurgistPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
+		{
+			string spellName = m_spell.Name;
+
+			// Deduce the pet type from the spell name.
+			// It would be better to have a spell handler for each pet type instead.
+			for (int i = 1; i < m_petTypeNames.Length; i++)
+			{
+				string petTypeName = m_petTypeNames[i];
+
+				if (spellName.Contains(petTypeName, StringComparison.OrdinalIgnoreCase))
+				{
+					m_petType = (PetType)Enum.Parse(typeof(PetType), petTypeName);
+					break;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Check whether it's possible to summon a pet.
@@ -72,11 +100,33 @@ namespace DOL.GS.Spells
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
+			switch (m_petType)
+			{
+				case PetType.Earth:
+					return new TheurgistEarthPet(template);
+				case PetType.Ice:
+					return new TheurgistIcePet(template);
+				case PetType.Air:
+					return new TheurgistAirPet(template);
+			}
+
+			// Happens only if the name of the spell doesn't contains "earth", "ice", or "air".
 			return new TheurgistPet(template);
 		}
 
 		protected override IControlledBrain GetPetBrain(GameLiving owner)
 		{
+			switch (m_petType)
+			{
+				case PetType.Earth:
+					return new TheurgistEarthPetBrain(owner);
+				case PetType.Ice:
+					return new TheurgistIcePetBrain(owner);
+				case PetType.Air:
+					return new TheurgistAirPetBrain(owner);
+			}
+
+			// Happens only if the name of the spell doesn't contains "earth", "ice", or "air".
 			return new TheurgistPetBrain(owner);
 		}
 

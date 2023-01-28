@@ -5,33 +5,7 @@ namespace DOL.GS
 {
 	public class TheurgistPet : GameSummonedPet
 	{
-		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate)
-		{
-			if (npcTemplate.Name.ToLower().Contains("earth"))
-				ScalingFactor = 17;
-			else if (npcTemplate.Name.ToLower().Contains("air"))
-			{
-				ScalingFactor = 11;
-
-				// Make air pet's instant stun a bit more random, see 'DisableSkill'.
-				// Should ideally be in its own class.
-				foreach (Spell spell in Spells)
-				{
-					if (spell.IsInstantCast)
-						DisableSkill(spell, 0);
-				}
-			}
-		}
-
-		public override void DisableSkill(Skill skill, int duration)
-		{
-			// Make air pet's instant stun a bit more random.
-			// Should ideally be in its own class.
-			if (skill is Spell spell && spell.IsInstantCast)
-				duration += Util.Random((int)(spell.RecastDelay / 2.5));
-
-			base.DisableSkill(skill, duration);
-		}
+		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
 
 		protected override void BuildAmbientTexts()
 		{
