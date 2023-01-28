@@ -502,7 +502,7 @@ namespace DOL.GS
 			finally
 			{
 				base.Die(killer);
-				CurrentRegion = null;
+				//CurrentRegion = null;
 			}
 		}
 
