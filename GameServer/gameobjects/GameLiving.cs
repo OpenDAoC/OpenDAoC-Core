@@ -1939,55 +1939,43 @@ namespace DOL.GS
 			return true;
 		}
 
-		protected long m_interruptTime = 0;
-		public virtual long InterruptTime
+		private long m_interruptTime = 0;
+		public long InterruptTime
 		{
-			get { return m_interruptTime; }
-			set
+			get => m_interruptTime;
+			private set
 			{
 				InterruptAction = GameLoop.GameLoopTime;
 				m_interruptTime = value;
 			}
 		}
 
-		protected long m_interruptAction = 0;
-		public virtual long InterruptAction
+		private long m_interruptAction = 0;
+		public long InterruptAction
 		{
-			get { return m_interruptAction; }
-			set { m_interruptAction = value; }
+			get => m_interruptAction;
+			private set => m_interruptAction = value;
 		}
 
 		/// <summary>
 		/// Yields true if interrupt action is running on this living.
 		/// </summary>
-		public virtual bool IsBeingInterrupted
-		{
-			get { return (m_interruptTime > GameLoop.GameLoopTime); }
-		}
+		public virtual bool IsBeingInterrupted => m_interruptTime > GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// Base chance this living can be interrupted
 		/// </summary>
-		public virtual int BaseInterruptChance
-		{
-			get { return 95; }
-		}
+		public virtual int BaseInterruptChance => 95;
 
 		/// <summary>
 		/// How long does an interrupt last?
 		/// </summary>
-		public virtual int SpellInterruptDuration
-		{
-			get { return ServerProperties.Properties.SPELL_INTERRUPT_DURATION; }
-		}
+		public virtual int SpellInterruptDuration => ServerProperties.Properties.SPELL_INTERRUPT_DURATION;
 
 		/// <summary>
 		/// Additional interrupt time if interrupted again
 		/// </summary>
-		public virtual int SpellInterruptRecastAgain
-		{
-			get { return ServerProperties.Properties.SPELL_INTERRUPT_AGAIN; }
-		}
+		public virtual int SpellInterruptRecastAgain => ServerProperties.Properties.SPELL_INTERRUPT_AGAIN;
 
 		public virtual bool InterruptChance(GameLiving attacker)
 		{
@@ -2012,8 +2000,8 @@ namespace DOL.GS
 			if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
 			{
 				if (attackType is not eAttackType.MeleeOneHand
-                    and not eAttackType.MeleeTwoHand
-                    and not eAttackType.MeleeDualWield)
+					and not eAttackType.MeleeTwoHand
+					and not eAttackType.MeleeDualWield)
 					return false;
 			}
 

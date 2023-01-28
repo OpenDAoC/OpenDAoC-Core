@@ -21,7 +21,7 @@ namespace DOL.GS
             GameObject attacker = _playerOwner.attackComponent.Attackers.Last();
 
             // Don't interrupt aiming if we haven't received an interrupt timer.
-            if (_playerOwner.InterruptTime <= GameLoop.GameLoopTime)
+            if (!_playerOwner.IsBeingInterrupted)
                 return false;
 
             _playerOwner.attackComponent.StopAttack();

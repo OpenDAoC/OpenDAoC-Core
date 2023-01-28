@@ -1681,7 +1681,7 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+						if (Caster.InterruptAction > 0 && Caster.IsBeingInterrupted)
 							CastState = eCastState.Interrupted;
 						else
 							CastState = eCastState.Cleanup;

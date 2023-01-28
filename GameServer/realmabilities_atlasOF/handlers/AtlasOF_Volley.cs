@@ -171,7 +171,7 @@ namespace DOL.GS.RealmAbilities
                 }
             }
 
-            if (m_player.attackComponent.Attackers.Count > 0 && m_player.InterruptTime > GameLoop.GameLoopTime)
+            if (m_player.attackComponent.Attackers.Count > 0 && m_player.IsBeingInterrupted)
             {
                 string attackTypeMsg;
                 GameObject attacker = m_player.attackComponent.Attackers.Last();
