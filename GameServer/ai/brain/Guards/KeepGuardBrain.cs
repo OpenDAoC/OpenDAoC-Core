@@ -38,7 +38,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body is GuardArcher or GuardStaticArcher or GuardLord)
 			{
-                GameObject target = Body.TargetObject;
+				GameObject target = Body.TargetObject;
 
 				// Ranged guards check LoS constantly
 				if (target != null)
@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range
 				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
 				{
-                    FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
 					if (target is GameLiving livingTarget && livingTarget != null)
 						RemoveFromAggroList(livingTarget);
@@ -68,9 +68,9 @@ namespace DOL.AI.Brain
 			}
 
 			// Eden - Portal Keeps Guards max distance
-            if (Body.Level > 200 && !Body.IsWithinRadius(Body.SpawnPoint, 2000))
+			if (Body.Level > 200 && !Body.IsWithinRadius(Body.SpawnPoint, 2000))
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-            else if (!Body.InCombat && !Body.IsWithinRadius(Body.SpawnPoint, 6000))
+			else if (!Body.InCombat && !Body.IsWithinRadius(Body.SpawnPoint, 6000))
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
 			return base.CheckProximityAggro();
@@ -85,7 +85,7 @@ namespace DOL.AI.Brain
 				if (Body is not GuardStealther && player.IsStealthed)
 					continue;
 
-                WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
+				WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
 				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
@@ -102,14 +102,14 @@ namespace DOL.AI.Brain
 				if (npc is GameKeepGuard || npc.Brain == null || npc.Brain is not IControlledBrain)
 					continue;
 
-                GamePlayer player = (npc.Brain as IControlledBrain).GetPlayerOwner();
+				GamePlayer player = (npc.Brain as IControlledBrain).GetPlayerOwner();
 				
 				if (player == null)
 					continue;
 				if (!CanAggroTarget(npc))
 					continue;
 
-                WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
+				WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
 				player.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
@@ -131,6 +131,23 @@ namespace DOL.AI.Brain
 				return false;
 
 			return true;
+		}
+
+		private void LosCheckInCombatCallback(GamePlayer player, ushort response, ushort targetOID)
+		{
+			if (targetOID == 0)
+				return;
+
+			if ((response & 0x100) != 0x100)
+			{
+				GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
+
+				if (gameObject is GameLiving gameLiving)
+				{
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					RemoveFromAggroList(gameLiving);
+				}
+			}
 		}
 	}
 }

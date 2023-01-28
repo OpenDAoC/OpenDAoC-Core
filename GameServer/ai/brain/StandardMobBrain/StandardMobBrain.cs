@@ -504,23 +504,6 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected virtual void LosCheckInCombatCallback(GamePlayer player, ushort response, ushort targetOID)
-        {
-            if (targetOID == 0)
-                return;
-
-            if ((response & 0x100) != 0x100)
-            {
-                GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
-
-                if (gameObject is GameLiving gameLiving)
-                {
-                    FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                    RemoveFromAggroList(gameLiving);
-                }
-            }
-        }
-
         /// <summary>
         /// Returns whether or not 'living' is still a valid target.
         /// </summary>
