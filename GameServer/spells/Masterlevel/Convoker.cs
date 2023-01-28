@@ -784,11 +784,6 @@ namespace DOL.AI.Brain
 		{
 		}
 
-		public override int ThinkInterval
-		{
-			get { return 2000; }
-		}
-
 		public GameLiving Target
 		{
 			get { return m_target; }

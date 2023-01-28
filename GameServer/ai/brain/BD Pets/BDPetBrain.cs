@@ -213,15 +213,10 @@ namespace DOL.AI.Brain
 			FollowOwner();
 		}
 
-        /// <summary>
-        /// The interval for thinking, 1.5 seconds
-        /// </summary>
-        public override int ThinkInterval => 1500;
-
-        /// <summary>
-        /// Standard think method for all the pets
-        /// </summary>
-        public override void Think()
+		/// <summary>
+		/// Standard think method for all the pets
+		/// </summary>
+		public override void Think()
 		{
 			CheckAbilities();
 			CheckSpells(eCheckSpellType.Defensive);
