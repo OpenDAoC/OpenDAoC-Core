@@ -685,7 +685,7 @@ namespace DOL.GS.Spells
 		{
 			// [StephenxPimentel] Check if the necro has MoC effect before interrupting.
 			if (Caster is NecromancerPet necroPet && necroPet.Owner is GamePlayer necroOwner)
-            {
+			{
 				if (necroOwner.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 					return false;
 			}
@@ -711,7 +711,7 @@ namespace DOL.GS.Spells
 					playerCaster.LastInterruptMessage = $"{attacker.GetName(0, true)} attacks you and your spell is interrupted!";
 					MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
 				}
-												
+
 				InterruptCasting(); // Always interrupt at the moment.
 				return true;
 			}
@@ -1924,7 +1924,6 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void InterruptCasting()
 		{
-			//castState = eCastState.Interrupted;
 			if (m_interrupted || !IsCasting)
 				return;
 
@@ -1938,22 +1937,21 @@ namespace DOL.GS.Spells
 				});
 			}
 			
-			if(m_caster is GamePlayer p && p.castingComponent != null)
-            {
+			if (m_caster is GamePlayer p && p.castingComponent != null)
+			{
 				p.castingComponent.spellHandler = null;
 				p.castingComponent.queuedSpellHandler = null;
-            }
+			}
 
 			if (m_castTimer != null)
 			{
 				m_castTimer.Stop();
 				m_castTimer = null;
 
-				if (m_caster is GamePlayer)
-				{
-					((GamePlayer)m_caster).ClearSpellQueue();
-				}
+				if (m_caster is GamePlayer playerCaster)
+					playerCaster.ClearSpellQueue();
 			}
+
 			CastState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 			OnAfterSpellCastSequence();

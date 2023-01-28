@@ -16,206 +16,48 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.Events;
 using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-	public class TheurgistPetBrain : StandardMobBrain, IControlledBrain
+	public class TheurgistPetBrain : ControlledNpcBrain
 	{
-		private GameLiving m_owner;
-		private GameLiving m_target;
-		private bool m_active = true;
-		public bool Melee { get; set; } = false;
-		public static readonly short MIN_ENEMY_FOLLOW_DIST = 90;
-		public static readonly short MAX_ENEMY_FOLLOW_DIST = 5000;
+		private GameObject m_target;
 
-		public TheurgistPetBrain(GameLiving owner)
+		public TheurgistPetBrain(GameLiving owner) : base(owner)
 		{
-			if (owner != null)
-				m_owner = owner;
-
-			AggroLevel = 100;
 			IsMainPet = false;
 		}
 
-		public virtual GameNPC GetNPCOwner()
-		{
-		    return null;
-		}
-
-		public virtual GameLiving GetLivingOwner()
-		{
-		    GamePlayer player = GetPlayerOwner();
-		    if (player != null)
-				return player;
-
-		    GameNPC npc = GetNPCOwner();
-		    if (npc != null)
-				return npc;
-
-		    return null;
-		}
-
-		public override int ThinkInterval => 1500;
-
 		public override void Think()
 		{
-			AttackMostWanted();
-		}
+			m_target = Body.TargetObject;
 
-		public void SetAggressionState(eAggressionState state) { }
-
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
-		{
-			if (!IsActive || Melee || !m_active)
-				return;
-
-			if (args as AttackFinishedEventArgs != null)
+			if (m_target == null || m_target.HealthPercent <= 0)
 			{
-				Melee = true;
-
-				GameLiving target = m_target;
-				if (target != null)
-					Body.StartAttack(target);
-
+				Body.Die(null);
 				return;
 			}
-			if (e == GameLivingEvent.CastFailed)
-			{
-				GameLiving target = m_target;
-				if (target != null)
-					Body.StartAttack(target);
 
-				return;
+			if (Body.CurrentFollowTarget != m_target)
+			{
+				Body.StopFollowing();
+				Body.Follow(m_target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
 			}
+
+			if (!CheckSpells(eCheckSpellType.Offensive))
+				Body.StartAttack(m_target);
 		}
 
-		public override void AttackMostWanted()
-		{
-			if (!IsActive || !m_active)
-				return;
-
-			if (Body.attackComponent == null)
-				Body.attackComponent = new AttackComponent(Body);
-
-			EntityManager.AddComponent(typeof(AttackComponent), Body);
-
-			if (Body.castingComponent == null)
-				Body.castingComponent = new CastingComponent(Body);
-
-			EntityManager.AddComponent(typeof(CastingComponent), Body);
-
-			if (m_target == null)
-				m_target = (GameLiving)Body.TempProperties.getProperty<object>("target", null);
-			
-			if (m_target == null || !m_target.IsAlive)
-				Body.Die(Body);
-			else
-			{
-				GameLiving target = m_target;
-				Body.TargetObject = target;
-				if (Body.IsWithinRadius(target, Body.AttackRange) || Melee)
-				{
-					Body.StartAttack(target);
-					if (Body.Name.Contains("air"))
-						CheckSpells(eCheckSpellType.Offensive);
-				}
-				else if (!CheckSpells(eCheckSpellType.Offensive))
-				{
-					if (Body.IsWithinRadius(target,Body.attackComponent.AttackRange))
-						Body.StartAttack(target);
-					//Get closer to the target
-					else
-					{
-						if(Body.CurrentFollowTarget!=target)
-						{
-							Body.StopFollowing();
-							Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
-						}
-					}
-				}
-			}
-		}
-
-		public override bool CheckSpells(eCheckSpellType type)
-		{
-			if (Body == null || Body.Spells == null || Body.Spells.Count < 1 || Melee)
-				return false;
-
-			if (Body.IsCasting)
-				return true;
-
-			bool casted = false;
-
-			if (type == eCheckSpellType.Defensive)
-			{
-				foreach (Spell spell in Body.Spells)
-				{
-					if (!Body.IsBeingInterrupted && Body.GetSkillDisabledDuration(spell) == 0 && CheckDefensiveSpells(spell))
-					{
-						casted = true;
-						break;
-					}
-				}
-			}
-			else
-			{
-				//Check Offensive Instant Casts
-				if (Body.CanCastInstantHarmfulSpells)
-				{
-					foreach (Spell spell in Body.InstantHarmfulSpells)
-					{
-						if (Body.GetSkillDisabledDuration(spell) == 0)
-						{
-							if (Body.Name.Contains("air"))
-							{
-								if (Util.Chance(25))
-								{
-									if (CheckInstantSpells(spell))
-										break;
-								}
-							}
-							else
-							{
-								if (CheckInstantSpells(spell))
-									break;
-							}
-						}
-					}
-				}
-				//Check Offensive Casts
-				if (Body.CanCastHarmfulSpells)
-				{
-					foreach (Spell spell in Body.HarmfulSpells)
-					{
-						if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spell))
-						{
-							casted = true;
-							break;
-						}
-					}
-				}
-			}
-
-			return casted || Body.IsCasting;
-		}
-
-		#region IControlledBrain Members
-		public eWalkState WalkState => eWalkState.Stay;
-		public eAggressionState AggressionState { get => eAggressionState.Aggressive; set { } }
-		public GameLiving Owner => m_owner;
-		public void Attack(GameObject target) { }
-		public void Disengage() { }
-		public void Follow(GameObject target) { }
-		public void FollowOwner() { }
-		public void Stay() { }
-		public void ComeHere() { }
-		public void Goto(GameObject target) { }
-		public void UpdatePetWindow() { }
-		public GamePlayer GetPlayerOwner() { return m_owner as GamePlayer; }
-		public bool IsMainPet { get => false; set { } }
-		#endregion
+		public override eWalkState WalkState { get => eWalkState.Stay; set { } }
+		public override eAggressionState AggressionState { get => eAggressionState.Aggressive; set { } }
+		public override void Attack(GameObject target) { }
+		public override void Disengage() { }
+		public override void Follow(GameObject target) { }
+		public override void FollowOwner() { }
+		public override void Stay() { }
+		public override void ComeHere() { }
+		public override void Goto(GameObject target) { }
+		public override void UpdatePetWindow() { }
 	}
 }

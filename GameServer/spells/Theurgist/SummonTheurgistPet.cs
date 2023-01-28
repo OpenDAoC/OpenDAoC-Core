@@ -33,8 +33,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Check whether it's possible to summon a pet.
 		/// </summary>
-		/// <param name="selectedTarget"></param>
-		/// <returns></returns>
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
 			if (Caster.PetCount >= ServerProperties.Properties.THEURGIST_PET_CAP)
@@ -49,24 +47,20 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Summon the pet.
 		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
 			base.ApplyEffectOnTarget(target, effectiveness);
 
-            m_pet.TempProperties.setProperty("target", target);
-            (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
+			m_pet.TargetObject = target;
+			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			m_pet.Brain.Think();
 
 			Caster.PetCount++;
 		}
 
 		/// <summary>
-		/// Despawn pet.
+		/// Despawn the pet.
 		/// </summary>
-		/// <param name="effect"></param>
-		/// <param name="noMessages"></param>
 		/// <returns>Immunity timer (in milliseconds).</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{

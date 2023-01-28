@@ -488,41 +488,62 @@ namespace DOL.AI.Brain
 			{
 				// Check instant spells, but only cast one of each type to prevent spamming
 				if (Body.CanCastInstantHealSpells)
+				{
 					foreach (Spell spell in Body.InstantHealSpells)
+					{
 						if (CheckDefensiveSpells(spell))
 							break;
+					}
+				}
 
 				if (Body.CanCastInstantMiscSpells)
+				{
 					foreach (Spell spell in Body.InstantMiscSpells)
+					{
 						if (CheckDefensiveSpells(spell))
 							break;
+					}
+				}
 
 				// Check spell lists, prioritizing healing
 				if (Body.CanCastHealSpells)
+				{
 					foreach (Spell spell in Body.HealSpells)
+					{
 						if (CheckDefensiveSpells(spell))
 						{
 							casted = true;
 							break;
 						}
+					}
+				}
 
 				if (!casted && Body.CanCastMiscSpells)
+				{
 					foreach (Spell spell in Body.MiscSpells)
+					{
 						if (CheckDefensiveSpells(spell))
 						{
 							casted = true;
 							break;
 						}
+					}
+				}
 			}
 			else if (Body.TargetObject is GameLiving living && living.IsAlive)
 			{
 				// Check instant spells, but only cast one to prevent spamming
 				if (Body.CanCastInstantHarmfulSpells)
+				{
 					foreach (Spell spell in Body.InstantHarmfulSpells)
+					{
 						if (CheckOffensiveSpells(spell))
 							break;
+					}
+				}
 
 				if (Body.CanCastHarmfulSpells)
+				{
 					foreach (Spell spell in Body.HarmfulSpells)
 					{
 						if (CheckOffensiveSpells(spell))
@@ -531,6 +552,7 @@ namespace DOL.AI.Brain
 							break;
 						}
 					}
+				}
 			}
 
 			return casted || Body.IsCasting;
