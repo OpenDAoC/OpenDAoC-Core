@@ -931,7 +931,7 @@ namespace DOL.GS
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
-                if (weaponAction?.AttackFinished != true)
+                if (weaponAction != null && weaponAction.AttackFinished != true)
                 {
                     foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         player.Out.SendInterruptAnimation(owner);

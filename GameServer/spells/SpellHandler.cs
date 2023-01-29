@@ -672,7 +672,7 @@ namespace DOL.GS.Spells
 			}
 
 			// Stop our melee attack. NPC brains will resume it automatically.
-			if (!Spell.IsInstantCast && !m_caster.CanCastWhileAttacking())
+			if (!Spell.IsInstantCast && m_caster.attackComponent.AttackState && !m_caster.CanCastWhileAttacking())
 				m_caster.attackComponent.StopAttack();
 
 			// Check interrupt timer.
