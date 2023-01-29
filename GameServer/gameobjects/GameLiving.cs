@@ -1939,7 +1939,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		private long m_interruptTime = 0;
+		protected long m_interruptTime = 0;
 		public long InterruptTime
 		{
 			get => m_interruptTime;
@@ -1950,7 +1950,7 @@ namespace DOL.GS
 			}
 		}
 
-		private long m_interruptAction = 0;
+		protected long m_interruptAction = 0;
 		public long InterruptAction
 		{
 			get => m_interruptAction;
