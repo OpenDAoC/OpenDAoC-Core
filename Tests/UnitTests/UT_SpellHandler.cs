@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using System;
 using DOL.GS;
 using DOL.GS.Spells;
-using DOL.Events;
-using System;
 using DOL.Database;
+using DOL.Events;
+using NUnit.Framework;
 
 namespace DOL.Tests.Unit.Gameserver
 {
@@ -25,7 +25,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             var spellHandler = new SpellHandler(caster, spell, null);
 
-            bool isCastSpellSuccessful = spellHandler.CastSpell(target);
+            bool isCastSpellSuccessful = spellHandler.StartSpell(target);
 
             Assert.IsTrue(isCastSpellSuccessful);
         }
@@ -38,7 +38,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             var spellHandler = new SpellHandler(caster, spell, null);
 
-            spellHandler.CastSpell(target);
+            spellHandler.StartSpell(target);
 
             var actual = caster.lastNotifiedEvent;
             var expected = GameLivingEvent.CastStarting;
@@ -59,7 +59,7 @@ namespace DOL.Tests.Unit.Gameserver
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
             UtilChanceIsHundredPercent.Enable();
 
-            spellHandler.CastSpell(target);
+            spellHandler.StartSpell(target);
 
             var eventNumberOnCaster = gameEventMgrSpy.GameObjectEventCollection[caster].Count;
             var eventNumberOnTarget = gameEventMgrSpy.GameObjectEventCollection[target].Count;
@@ -80,7 +80,7 @@ namespace DOL.Tests.Unit.Gameserver
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
             UtilChanceIsHundredPercent.Enable();
 
-            spellHandler.CastSpell(target);
+            spellHandler.StartSpell(target);
             caster.OnPlayerMove();
 
             var eventNumberOnCaster = gameEventMgrSpy.GameObjectEventCollection[caster].Count;
@@ -104,7 +104,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
 
-            Assert.IsTrue(spellHandler.CastSpell(target));
+            Assert.IsTrue(spellHandler.StartSpell(target));
             target.fakeRegion.fakeElapsedTime = 2;
             spellHandler.StartSpell(target); //tick
             caster.OnPlayerMove();

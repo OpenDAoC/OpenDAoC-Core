@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -25,9 +24,6 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	[SpellHandlerAttribute("Chamber")]
 	public class ChamberSpellHandler : SpellHandler
 	{
@@ -101,7 +97,11 @@ namespace DOL.GS.Spells
 		{
 			base.InterruptCasting();
 		}
-		public override bool CastSpell()
+
+		// Likely to be broken. It used to override 'CastSpell', but it no longer exists in 'SpellHanlder'.
+		// 'StartSpell' takes a target but we're not even using it.
+		// Can't be tested since Warlocks aren't functional.
+		public override bool StartSpell(GameLiving target)
 		{
 			GamePlayer caster = (GamePlayer)m_caster;
 			Target = caster.TargetObject as GameLiving;
@@ -210,13 +210,13 @@ namespace DOL.GS.Spells
 					MessageToCaster("That target isn't attackable at this time!", eChatType.CT_System);
 					return false;
 				}
-				spellhandler.CastSpell();
+				spellhandler.StartSpell(Target);
 				#endregion
 
 				if (chamber.SecondarySpell != null)
 				{
 					spellhandler2 = ScriptMgr.CreateSpellHandler(caster, chamber.SecondarySpell, chamber.SecondarySpellLine);
-					spellhandler2.CastSpell();
+					spellhandler2.StartSpell(Target);
 				}
 				effect.Cancel(false);
 
@@ -233,7 +233,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				base.CastSpell ();
+				base.StartSpell(Target);
 				int duration = caster.GetSkillDisabledDuration(m_spell);
 				if(Caster is GamePlayer && duration == 0)
 					((GamePlayer)Caster).Out.SendMessage("Select the first spell for your " + Spell.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);

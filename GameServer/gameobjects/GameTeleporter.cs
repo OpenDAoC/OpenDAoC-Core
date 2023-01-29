@@ -18,17 +18,12 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections;
-using DOL.AI.Brain;
-using DOL.Language;
 using DOL.GS.PacketHandler;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.Spells;
-using log4net;
-using System.Reflection;
 
 namespace DOL.GS
 {
@@ -307,9 +302,8 @@ namespace DOL.GS
 
 			if (spell != null)
 			{
-				TargetObject = player;
 				UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
-				portalHandler.CastSpell();
+				portalHandler.StartSpell(player);
 				return;
 			}
 

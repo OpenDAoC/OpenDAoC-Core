@@ -5036,48 +5036,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Callback after spell execution finished and next spell can be processed
-		/// </summary>
-		/// <param name="handler"></param>
-		public override void OnAfterSpellCastSequence(ISpellHandler handler)
-		{
-			/*
-			if (SpellTimer != null)
-			{
-				if (this == null || this.ObjectState != eObjectState.Active || !this.IsAlive || this.TargetObject == null || (this.TargetObject is GameLiving && this.TargetObject.ObjectState != eObjectState.Active || !(this.TargetObject as GameLiving).IsAlive))
-					SpellTimer.Stop();
-				else
-				{
-					int interval = 1500;
-
-					if (Brain != null)
-					{
-						interval = Math.Min(interval, Brain.ThinkInterval);
-					}
-
-					SpellTimer.Start(interval);
-				}
-			}
-			*/
-			
-
-			if (CurrentSpellHandler != null)
-			{
-				//prevent from relaunch
-				base.OnAfterSpellCastSequence(handler);
-			}
-
-			if(TargetObject == null)
-            {
-				TargetObject = CachedTarget;
-            }
-
-			// Notify Brain of Cast Finishing.
-			if (Brain != null)
-				Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
-		}
-
-		/// <summary>
 		/// The spell action of this living
 		/// </summary>
 		public class SpellAction : RegionECSAction

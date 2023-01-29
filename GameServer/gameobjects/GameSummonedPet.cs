@@ -240,20 +240,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Called when spell has finished casting.
-		/// </summary>
-		public override void OnAfterSpellCastSequence(ISpellHandler handler)
-		{
-			if(castingComponent.queuedSpellHandler != null)
-			{
-				castingComponent.spellHandler = castingComponent.queuedSpellHandler;
-				castingComponent.queuedSpellHandler = null;
-			}
-			base.OnAfterSpellCastSequence(handler);
-			Brain.Notify(GameNPCEvent.CastFinished, this, new CastingEventArgs(handler));
-		}
-
-		/// <summary>
 		/// Scale the passed spell according to PET_SCALE_SPELL_MAX_LEVEL
 		/// </summary>
 		/// <param name="spell">The spell to scale</param>

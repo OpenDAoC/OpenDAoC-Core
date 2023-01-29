@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Spells;
-using DOL.GS.Effects;
 using DOL.AI.Brain;
+using DOL.Database;
+using DOL.GS.Effects;
 using DOL.GS.Housing;
-
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
@@ -215,15 +213,8 @@ namespace DOL.GS.Scripts
                     assi.CastEffect();
                 }
             }
-            OnAfterSpellCastSequence(null);
-            return 0;
-        }
 
-        public override void OnAfterSpellCastSequence(ISpellHandler handler)
-        {
-            //base.OnAfterSpellCastSequence(handler);
-
-            InventoryItem medallion = null;
+            InventoryItem medallion;
 
             foreach (GamePlayer player in GetPlayersInRadius(500).OfType<GamePlayer>().ToList())
             {
@@ -715,6 +706,8 @@ namespace DOL.GS.Scripts
                     player.MoveTo(PortLocation);
                 }
             }
+
+            return 0;
         }
 
         public override bool AddToWorld()

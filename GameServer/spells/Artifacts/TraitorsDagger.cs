@@ -107,7 +107,7 @@ namespace DOL.GS.Spells
             }
             if(Util.Chance(50))
             {
-                _trap.CastSpell(args.AttackData.Target);
+                _trap.StartSpell(args.AttackData.Target);
             }
         }
 

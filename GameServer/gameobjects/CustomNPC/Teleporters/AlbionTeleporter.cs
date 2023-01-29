@@ -148,9 +148,8 @@ namespace DOL.GS
 
             if (spell != null)
             {
-                TargetObject = player;
                 UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
-                portalHandler.CastSpell();
+                portalHandler.StartSpell(player);
                 return;
             }
 

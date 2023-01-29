@@ -19,10 +19,9 @@
 
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
 using System.Collections.Generic;
+using DOL.Database;
+using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -96,7 +95,7 @@ namespace DOL.GS.RealmAbilities
 						
 						SpellHandler handler = new SpellHandler(player, new Spell(db, 0), SkillBase.GetSpellLine("Savagery"));
                         if(handler!=null)
-                            handler.CastSpell();
+                            handler.StartSpell(player);
 					}
 					catch (Exception e)
 					{

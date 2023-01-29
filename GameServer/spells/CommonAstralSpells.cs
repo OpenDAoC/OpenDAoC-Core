@@ -17,18 +17,12 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
 
 namespace DOL.GS.Spells
 {
@@ -199,7 +193,7 @@ namespace DOL.GS.Spells
             }
             if (Util.Chance(99))
             {
-                _trap.CastSpell(args.AttackData.Target);
+                _trap.StartSpell(args.AttackData.Target);
             }
         }
         // Creates the trap(spell)

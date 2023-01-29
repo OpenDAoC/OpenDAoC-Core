@@ -22,21 +22,11 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public interface ISpellHandler
 	{
 		eCastState CastState { get; set; }
 		GameLiving Target { get; set; }
 		void CreateECSEffect(ECSGameEffectInitParams initParams);
-		/// <summary>
-		/// Called when a spell is casted
-		/// </summary>
-		bool CastSpell();
-		bool CastSpell(InventoryItem item);
-		bool CastSpell(GameLiving target);
-		bool CastSpell(GameLiving target, InventoryItem item);
 
 		/// <summary>
 		/// Starts the spell, without displaying cast message etc.
@@ -65,7 +55,6 @@ namespace DOL.GS.Spells
 		/// Special Use case when Amnesia is casted against caster.
 		/// </summary>
 		void AmnesiaInterruptCasting();
-
 
 		/// <summary>
 		/// Has to be called when the caster moves
@@ -248,11 +237,6 @@ namespace DOL.GS.Spells
 		/// Current depth of delve info
 		/// </summary>
 		byte DelveInfoDepth { get; set; }
-
-		/// <summary>
-		/// Event raised when casting sequence is completed and execution of spell can start
-		/// </summary>
-		event CastingCompleteCallback CastingCompleteEvent;
 
 		PlayerXEffect GetSavedEffect(GameSpellEffect e);
 		void OnEffectRestored(GameSpellEffect effect, int[] RestoreVars);

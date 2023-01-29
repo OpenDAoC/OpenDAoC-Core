@@ -7048,15 +7048,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Callback after spell casting is complete and next spell can be processed
-		/// </summary>
-		/// <param name="handler"></param>
-		public virtual void OnAfterSpellCastSequence(ISpellHandler handler)
-		{
-			CurrentSpellHandler.CastingCompleteEvent -= new CastingCompleteCallback(OnAfterSpellCastSequence);
-		}
-
-		/// <summary>
 		/// Immediately stops currently casting spell
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
@@ -7092,17 +7083,13 @@ namespace DOL.GS
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)
 		{
 			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, ab.Spell, ab.SpellLine);
+
 			if (spellhandler != null)
 			{
-				// Instant cast abilities should not interfere with the spell queue
-				if (spellhandler.Spell.CastTime > 0)
-				{
-					CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
-				}
-
 				spellhandler.Ability = ab;
-				return spellhandler.CastSpell();
+				return spellhandler.StartSpell(this);
 			}
+
 			return false;
 		}
 

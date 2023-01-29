@@ -17,9 +17,6 @@
  *
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.Spells;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.Events;
@@ -35,34 +32,6 @@ namespace DOL.GS.Spells
 	[SpellHandler("PetSpell")]
 	class PetSpellHandler : SpellHandler
 	{
-		/// <summary>
-		/// Cast the spell.
-		/// </summary>
-		public override bool CastSpell()
-		{
-			Target = Caster.TargetObject as GameLiving;
-			bool casted = true;
-
-			if (GameServer.ServerRules.IsAllowedToCastSpell(Caster, Target, Spell, SpellLine) && CheckBeginCast(Target))
-            {
-                if (Spell.CastTime > 0)
-                {
-					StartCastTimer(Target);
-                }
-                else
-                {
-					FinishSpellCast(Target);
-                }
-            }
-            else 
-				casted = false;
-
-            if (!IsCasting)
-                OnAfterSpellCastSequence();
-
-            return casted;
-		}
-
 		/// <summary>
 		/// Calculate casting time based on delve and dexterity stat bonus.
 		/// Necromancers do not benefit from TrialsOfAtlantis Casting Speed Bonuses.
