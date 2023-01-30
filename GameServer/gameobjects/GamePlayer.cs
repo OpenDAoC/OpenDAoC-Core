@@ -7944,16 +7944,18 @@ namespace DOL.GS
         /// <summary>
         /// Calculates armor absorb level
         /// </summary>
-        /// <param name="slot"></param>
-        /// <returns></returns>
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
-            if (slot == eArmorSlot.NOTSET) return 0;
+            if (slot == eArmorSlot.NOTSET)
+                return 0;
+
             InventoryItem item = Inventory.GetItem((eInventorySlot)slot);
-            if (item == null) return 0;
-            // vampiir random armor debuff change ~
-            double eaf = (item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01;
-            return eaf;
+
+            if (item == null)
+                return 0;
+
+            // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
+            return Math.Max(0, (item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01);
         }
 
         /// <summary>
