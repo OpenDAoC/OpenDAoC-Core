@@ -377,7 +377,7 @@ namespace DOL.GS
         {
             if (!effect.IsDisabled)
                 return;
-            
+
             effect.IsDisabled = false;
             effect.RenewEffect = true;
             HandlePropertyModification(effect);
@@ -387,13 +387,19 @@ namespace DOL.GS
         {
             if (e != null)
             {
-                if (e.SpellHandler.Spell.IsPulsing && e.Owner != e.SpellHandler.Caster && e.SpellHandler.HasPositiveEffect && 
-                    e.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageShield)
-                    return;
+                ISpellHandler spellHandler = e.SpellHandler;
+                Spell spell = spellHandler.Spell;
+                GameLiving target;
+
+                // Focus damage shield. Need to figure out why this is needed.
+                if (spell.IsPulsing && spell.SpellType == (byte)eSpellType.DamageShield)
+                    target = spellHandler.Target;
+                else
+                    target = e.Owner;
 
                 Parallel.ForEach(e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
                 {
-                    player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 1);
+                    player.Out.SendSpellEffectAnimation(spellHandler.Caster, target, spell.ClientEffect, 0, false, 1);
                 });
             }
         }
