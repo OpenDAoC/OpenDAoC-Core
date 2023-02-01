@@ -145,7 +145,7 @@ namespace DOL.GS
                 e.OnStartEffect();
 
             UpdateEffectIcons(e);
-        }      
+        }
 
         private static void UpdateEffectIcons(ECSGameEffect e)
         {
@@ -213,7 +213,7 @@ namespace DOL.GS
                         lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
                         {
                             if (spellEffect is ECSPulseEffect)
-                            {                               
+                            {
                                 for (int i = 0; i < spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects.Count; i++)
                                 {
                                     if (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects[i] is ECSPulseEffect)
@@ -936,7 +936,7 @@ namespace DOL.GS
         public static void SaveAllEffects(GamePlayer p)
         {
             GamePlayer player = p;
-			
+
             if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
                 return;
             
@@ -957,17 +957,17 @@ namespace DOL.GS
                             if (gse.SpellHandler?.Spell?.Concentration > 0 && gse.SpellHandler.Caster != player)
                                 continue;
                         }
-						
+
                         PlayerXEffect effx = eff.getSavedEffect();
-						
+
                         if (effx == null)
                             continue;
-	
+
                         if (effx.SpellLine == GlobalSpellsLines.Reserved_Spells)
                             continue;
-	
+
                         effx.ChardID = player.ObjectId;
-						
+
                         GameServer.Database.AddObject(effx);
                     }
                     catch (Exception e)

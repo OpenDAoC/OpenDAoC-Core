@@ -54,7 +54,7 @@ namespace DOL.GS
                         effects.AddRange(currentEffects[i]);
                     }
                 }
-                    
+
                 for (int j = 0; j < effects.Count; j++)
                 {
                     var e = effects[j];
@@ -209,14 +209,14 @@ namespace DOL.GS
                                         EffectService.RequestDisableEffect(enabled);
                                     }
                                 }
-                     
                             }
+
                             effect.NextTick = GameLoop.GameLoopTime + effect.PulseFreq;
                         }
                     }
                 }
                 
-            }           
+            }
         }
 
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
@@ -226,7 +226,7 @@ namespace DOL.GS
             lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out effects);
-            
+
                 if (effects != null && spellType == eSpellType.Null)
                     return effects.FirstOrDefault();
                 else if (effects != null)

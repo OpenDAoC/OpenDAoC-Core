@@ -2405,20 +2405,17 @@ namespace DOL.GS.Spells
 		/// Tries to start a spell attached to an item (/use with at least 1 charge)
 		/// Override this to do a CheckBeginCast if needed, otherwise spell will always cast and item will be used.
 		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="item"></param>
 		public virtual bool StartSpell(GameLiving target, InventoryItem item)
 		{
 			m_spellItem = item;
 			return StartSpell(target);
 		}
 
-
 		/// <summary>
 		/// Called when spell effect has to be started and applied to targets
 		/// This is typically called after calling CheckBeginCast
 		/// </summary>
-		/// <param name="target">The current target object</param>
+		/// <param name="target">The current target object, only used if 'SpellHandler.Target' is null.</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
 			if (Caster.IsMezzed || Caster.IsStunned)
@@ -2427,7 +2424,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || Spell.IsPBAoE))
+			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
 			else if (Target == null)
 			{
