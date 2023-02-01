@@ -74,6 +74,9 @@ namespace DOL.AI.Brain
 
         protected override bool CheckDefensiveSpells(Spell spell)
         {
+            if (Body.IsCasting)
+                return false;
+
             switch ((eSpellType)spell.SpellType)
             {
                 case eSpellType.HeatColdMatterBuff:
@@ -99,6 +102,7 @@ namespace DOL.AI.Brain
                     TrustCast(spell, eCheckSpellType.Offensive);
                     return true;
             }
+
             return false;
         }
 
@@ -178,7 +182,7 @@ namespace DOL.AI.Brain
 
                 if (LivingHasEffect(npc, spell))
                 {
-                    if(ListDefensiveTarget.Contains(npc))
+                    if (ListDefensiveTarget.Contains(npc))
                         ListDefensiveTarget.Remove(npc);
 
                     continue;
