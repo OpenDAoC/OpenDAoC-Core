@@ -258,7 +258,7 @@ namespace DOL.AI.Brain
                 }
                 if (Util.Chance(15))
                 {
-                    if (OGDS.TargetHasEffect(Body) == false)
+                    if (LivingHasEffect(Body.TargetObject as GameLiving, OGDS) == false)
                     {
                         Body.CastSpell(OGDS, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                     }

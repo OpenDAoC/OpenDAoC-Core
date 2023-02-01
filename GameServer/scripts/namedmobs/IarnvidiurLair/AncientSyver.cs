@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
 					}
 					if (Util.Chance(15))
 					{
-						if (Syver_Str_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+						if (LivingHasEffect(Body.TargetObject as GameLiving, Syver_Str_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStrengthDebuff), 1000);
 						}

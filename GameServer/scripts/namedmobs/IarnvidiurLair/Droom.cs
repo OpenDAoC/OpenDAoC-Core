@@ -127,21 +127,21 @@ namespace DOL.AI.Brain
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (Droom_SC_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+					if (LivingHasEffect(Body.TargetObject as GameLiving, Droom_SC_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (Droom_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+					if (LivingHasEffect(Body.TargetObject as GameLiving, Droom_Haste_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
-					if (DroomDisease.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+					if (LivingHasEffect(Body.TargetObject as GameLiving, DroomDisease) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 3000);
 					}

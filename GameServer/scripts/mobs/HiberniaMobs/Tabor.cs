@@ -85,9 +85,9 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
-				if(!Tabor_Dot.TargetHasEffect(target) && Util.Chance(15) && !Body.IsCasting)
+				if(!LivingHasEffect(target, Tabor_Dot) && Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (!Tabor_Dot2.TargetHasEffect(target) && Util.Chance(15) && !Body.IsCasting)
+				if (!LivingHasEffect(target, Tabor_Dot2) && Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_Dot2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -299,9 +299,9 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				if (!Tabor_Dot.TargetHasEffect(target) && Util.Chance(15) && !Body.IsCasting)
+				if (!LivingHasEffect(target, Tabor_Dot) && Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (!Tabor_Dot2.TargetHasEffect(target) && Util.Chance(15) && !Body.IsCasting)
+				if (!LivingHasEffect(target, Tabor_Dot2) && Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_Dot2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				if (Util.Chance(15) && !Body.IsCasting)
 					Body.CastSpell(Tabor_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));

@@ -560,19 +560,9 @@ namespace DOL.GS
 		}
 
 		#region Spell Helpers
-		
-		/// <summary>
-		/// Check if a target has this spell's effect already
-		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		public bool TargetHasEffect(GameObject target)
-		{
-			return Duration > 0 && StandardMobBrain.LivingHasEffect(target as GameLiving, this);
-		}
 
 		public bool IsPoison
-        {
+		{
 			get
 			{
 				switch (ID)
@@ -593,7 +583,7 @@ namespace DOL.GS
 						return false;
 				}
 			}
-        }
+		}
 		
 		public bool IsPoisonEffect
 		{

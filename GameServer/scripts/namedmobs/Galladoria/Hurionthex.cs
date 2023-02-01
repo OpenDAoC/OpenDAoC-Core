@@ -572,7 +572,7 @@ namespace DOL.AI.Brain
                 {
                     if (Util.Chance(100) && Body.TargetObject != null)
                     {
-                        if (BlackPlague.TargetHasEffect(Body.TargetObject) == false &&
+                        if (LivingHasEffect(Body.TargetObject as GameLiving, BlackPlague) == false &&
                             Body.TargetObject.IsVisibleTo(Body))
                         {
                             if (cast_disease == false)

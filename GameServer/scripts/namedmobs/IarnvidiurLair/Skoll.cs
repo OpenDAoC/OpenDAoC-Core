@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
 					}
 					if (Util.Chance(15))
 					{
-						if (Skoll_Haste_Debuff.TargetHasEffect(Body.TargetObject) == false && Body.TargetObject.IsVisibleTo(Body))
+						if (LivingHasEffect(Body.TargetObject as GameLiving, Skoll_Haste_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 1000);
 						}

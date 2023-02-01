@@ -782,7 +782,7 @@ namespace DOL.AI.Brain
 
 					if (spellTarget == "SELF")
 					{
-						if (bodyPercent < healThreshold && !spell.TargetHasEffect(Body))
+						if (bodyPercent < healThreshold && !LivingHasEffect(Body, spell))
 							Body.TargetObject = Body;
 
 						break;
@@ -794,7 +794,7 @@ namespace DOL.AI.Brain
 					//Heal owner
 					owner = (this as IControlledBrain).Owner;
 					int ownerPercent = owner.HealthPercent;
-					if (ownerPercent < emergencyThreshold && !spell.TargetHasEffect(owner) && Body.IsWithinRadius(owner, spell.Range))
+					if (ownerPercent < emergencyThreshold && !LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
 					{
 						Body.TargetObject = owner;
 						break;
@@ -802,7 +802,7 @@ namespace DOL.AI.Brain
 
 					//Heal self
 					if (bodyPercent < emergencyThreshold
-						&& !spell.TargetHasEffect(Body))
+						&& !LivingHasEffect(Body, spell))
 					{
 						Body.TargetObject = Body;
 						break;
@@ -817,7 +817,7 @@ namespace DOL.AI.Brain
 
 						foreach (GamePlayer p in playerGroup)
 						{
-							if (p.HealthPercent < emergencyThreshold && !spell.TargetHasEffect(p)
+							if (p.HealthPercent < emergencyThreshold && !LivingHasEffect(p, spell)
 								&& Body.IsWithinRadius(p, spell.Range))
 							{
 								Body.TargetObject = p;
@@ -832,7 +832,7 @@ namespace DOL.AI.Brain
 					{
 						// if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
 						if (bodyPercent < healThreshold
-							&& !spell.TargetHasEffect(Body))
+							&& !LivingHasEffect(Body, spell))
 						{
 							Body.TargetObject = Body;
 						}
@@ -842,7 +842,7 @@ namespace DOL.AI.Brain
 					//Heal owner
 					owner = (this as IControlledBrain).Owner;
 					if (ownerPercent < healThreshold
-						&& !spell.TargetHasEffect(owner) && Body.IsWithinRadius(owner, spell.Range))
+						&& !LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
 					{
 						Body.TargetObject = owner;
 						break;
@@ -850,7 +850,7 @@ namespace DOL.AI.Brain
 
 					//Heal self
 					if (bodyPercent < healThreshold
-						&& !spell.TargetHasEffect(Body))
+						&& !LivingHasEffect(Body, spell))
 					{
 						Body.TargetObject = Body;
 						break;
@@ -862,7 +862,7 @@ namespace DOL.AI.Brain
 						foreach (GamePlayer p in playerGroup)
 						{
 							if (p.HealthPercent < healThreshold
-								&& !spell.TargetHasEffect(p) && Body.IsWithinRadius(p, spell.Range))
+								&& !LivingHasEffect(p, spell) && Body.IsWithinRadius(p, spell.Range))
 							{
 								Body.TargetObject = p;
 								break;
