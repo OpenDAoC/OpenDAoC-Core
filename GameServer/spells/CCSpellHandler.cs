@@ -18,11 +18,9 @@
  */
 using System;
 using DOL.AI.Brain;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Events;
-using DOL.GS.RealmAbilities;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -264,7 +262,7 @@ namespace DOL.GS.Spells
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
 						EffectService.RequestImmediateCancelEffect(effect);
-						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
+						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster, Spell));
                         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;
@@ -360,7 +358,7 @@ namespace DOL.GS.Spells
 						//effect.Cancel(false);//call OnEffectExpires
 						//CancelPulsingSpell(Caster, this.Spell.SpellType);
 						EffectService.RequestImmediateCancelEffect(effect);
-						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster));
+						EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster, Spell));
 						MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
                     }
                     return;

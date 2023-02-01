@@ -18,13 +18,9 @@
  */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -58,7 +54,7 @@ namespace DOL.GS.Spells
 
 				if (selectedTarget is GamePlayer)
 				{
-					Spell currentSpell = Caster.LastPulseCast;
+					Caster.ActivePulseSpells.TryGetValue(m_spell.SpellType, out Spell currentSpell);
 
 					if (currentSpell != null && currentSpell == Spell)
 					{

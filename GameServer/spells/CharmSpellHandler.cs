@@ -18,13 +18,13 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Events;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Language;
-using System.Linq;
-using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
 {
@@ -471,7 +471,7 @@ namespace DOL.GS.Spells
                 // Make sure the pet is in the same zone
                 if (target.CurrentRegion != Caster.CurrentRegion)
                 {
-	                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster as GamePlayer);
+	                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster as GamePlayer, Spell);
 	                if (song != null && song.SpellHandler.Spell.InstrumentRequirement == 0 && song.SpellHandler.Spell.CastTime == 0)
 	                {
 		                EffectService.RequestImmediateCancelConcEffect(song);

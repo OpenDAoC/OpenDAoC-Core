@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
+﻿using System.Linq;
+using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
-using System.Linq;
 using DOL.Language;
 
 namespace DOL.GS
@@ -158,7 +158,7 @@ namespace DOL.GS
                     }
                 }
             }
-            ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer);
+            ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer, SpellHandler.Spell);
             if (charmMob != null && song != null)
             {
                 EffectService.RequestImmediateCancelConcEffect(song);

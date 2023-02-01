@@ -6377,35 +6377,14 @@ namespace DOL.GS
                 StopCurrentSpellcast();
             }
 
-            ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(this);
-            if (song != null && song.SpellHandler.Spell.InstrumentRequirement != 0)
+            foreach (Spell spell in ActivePulseSpells.Values)
             {
-				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				EffectService.RequestImmediateCancelConcEffect(song);
-			}
-
-            switch (slot)
-            {
-                //case eActiveWeaponSlot.Standard:
-                //	// remove endurance remove handler
-                //	if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                //		GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-                //	break;
-
-                //case eActiveWeaponSlot.TwoHanded:
-                //	// remove endurance remove handler
-                //	if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                //		GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-                //	break;
-
-                //case eActiveWeaponSlot.Distance:
-                //	// add endurance remove handler
-                //	if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                //		GameEventMgr.AddHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(RangeAttackHandler));
-                //	break;
+                if (spell.InstrumentRequirement != 0)
+                {
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(this, spell));
+                }
             }
-
-
 
             InventoryItem[] oldActiveSlots = new InventoryItem[4];
             InventoryItem[] newActiveSlots = new InventoryItem[4];
@@ -6423,11 +6402,11 @@ namespace DOL.GS
                 case 2: oldActiveSlots[2] = twoHandSlot; break;
                 case 3: oldActiveSlots[3] = distanceSlot; break;
             }
-            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10) oldActiveSlots[1] = leftHandSlot;
 
+            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10)
+                oldActiveSlots[1] = leftHandSlot;
 
             base.SwitchWeapon(slot);
-
 
             // save new active slots
             switch (VisibleActiveWeaponSlots & 0x0F)
@@ -6436,7 +6415,9 @@ namespace DOL.GS
                 case 2: newActiveSlots[2] = twoHandSlot; break;
                 case 3: newActiveSlots[3] = distanceSlot; break;
             }
-            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10) newActiveSlots[1] = leftHandSlot;
+
+            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10)
+                newActiveSlots[1] = leftHandSlot;
 
             // unequip changed items
             for (int i = 0; i < 4; i++)

@@ -6,8 +6,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    //Component for holding persistent Effects on the player//
-    
+    // Component for holding persistent effects on the player.
     public class EffectListComponent
     {
         private int _lastUpdateEffectsCount;
@@ -66,7 +65,7 @@ namespace DOL.GS
 
                                 // Console.WriteLine($"Effect found! Name: {existingEffect.Name}, Effectiveness: {existingEffect.Effectiveness}, Poison: {existingSpell.IsPoisonEffect}, ID: {existingSpell.ID}, EffectGroup: {existingSpell.EffectGroup}");
 
-                                if ((existingSpell.IsPulsing && newSpellHandler.Caster.LastPulseCast == newSpell && existingSpell.ID == newSpell.ID)
+                                if ((existingSpell.IsPulsing && effect.SpellHandler.Caster.ActivePulseSpells.ContainsKey(effect.SpellHandler.Spell.SpellType) && existingSpell.ID == newSpell.ID)
                                     || (existingSpell.IsConcentration && existingEffect == newSpellEffect)
                                     || existingSpell.ID == newSpell.ID)
                                 {
@@ -197,7 +196,10 @@ namespace DOL.GS
                             if (addEffect)
                             {
                                 Effects[newSpellEffect.EffectType].Add(newSpellEffect);
-                                EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
+
+                                if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
+                                    EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
+
                                 return true;
                             }
                         }
@@ -205,24 +207,23 @@ namespace DOL.GS
                         return false;
                     }
                     else if (Effects.ContainsKey(effect.EffectType))
-                    {
                         Effects[effect.EffectType].Add(effect);
-                    }
                     else
                     {
                         Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
+
                         if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
-                            EffectIdToEffect.Add(effect.Icon, effect);
+                            EffectIdToEffect.TryAdd(effect.Icon, effect);
                     }
+
                     return true;
                 }
-                catch
+                catch (Exception e)
                 {
-                    //Console.WriteLine($"Error adding an Effect {e}");
+                    Console.WriteLine($"Error adding an Effect {e}");
                     return false;
-                }               
+                }
             }
-            
         }
 
         public List<ECSGameEffect> GetAllEffects()
@@ -413,6 +414,5 @@ namespace DOL.GS
                 }
             }
         }
-
     }
 }

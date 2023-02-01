@@ -1,6 +1,7 @@
-using DOL.Language;
-using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 using DOL.Events;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -18,7 +19,7 @@ namespace DOL.GS
         public override bool HasPositiveEffect { get { return true; } }
 
         public override void OnStartEffect()
-        {           
+        {
             OwnerPlayer.StartStealthUncoverAction();
 
             if (OwnerPlayer.ObjectState == GameObject.eObjectState.Active)
@@ -32,11 +33,12 @@ namespace DOL.GS
                     EffectService.RequestDisableEffect(speedBuff);
                 }
             }
-            // Cancel pulse effect
-            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
-            {
-                EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(OwnerPlayer));
-            }
+
+            // Cancel pulse effects.
+            List<ECSPulseEffect> effects = OwnerPlayer.effectListComponent.GetAllPulseEffects();
+
+            for (int i = 0; i < effects.Count; i++)
+                EffectService.RequestImmediateCancelConcEffect(effects[i]);
 
             OwnerPlayer.Sprint(false);
 

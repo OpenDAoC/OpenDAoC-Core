@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -49,18 +50,19 @@ namespace DOL.GS
 		public int id;
 		public AttackComponent attackComponent;
 		public CraftComponent craftComponent;
-        public RangeAttackComponent rangeAttackComponent;
-        public StyleComponent styleComponent;
-        public Spell LastPulseCast;
+		public RangeAttackComponent rangeAttackComponent;
+		public StyleComponent styleComponent;
 		public int UsedConcentration;
 
-        #region Combat
-        /// <summary>
-        /// Holds the AttackData object of last attack
-        /// </summary>
-        public const string LAST_ATTACK_DATA = "LastAttackData";
-        
-        public bool isDeadOrDying = false;
+		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; set; } = new();
+
+		#region Combat
+		/// <summary>
+		/// Holds the AttackData object of last attack
+		/// </summary>
+		public const string LAST_ATTACK_DATA = "LastAttackData";
+
+		public bool isDeadOrDying = false;
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -79,111 +81,6 @@ namespace DOL.GS
 		/// </summary>
 		public const string LAST_ENEMY_ATTACK_RESULT = "LastEnemyAttackResult";
 
-
-        #region enums
-
-        
-
-        ///// <summary>
-        ///// The possible states for a ranged attack
-        ///// </summary>
-        //public enum eRangedAttackState : byte
-        //{
-        //	/// <summary>
-        //	/// No ranged attack active
-        //	/// </summary>
-        //	None = 0,
-        //	/// <summary>
-        //	/// Ranged attack in aim-state
-        //	/// </summary>
-        //	Aim,
-        //	/// <summary>
-        //	/// Player wants to fire the shot/throw NOW!
-        //	/// </summary>
-        //	Fire,
-        //	/// <summary>
-        //	/// Ranged attack will fire when ready
-        //	/// </summary>
-        //	AimFire,
-        //	/// <summary>
-        //	/// Ranged attack will fire and reload when ready
-        //	/// </summary>
-        //	AimFireReload,
-        //	/// <summary>
-        //	/// Ranged attack is ready to be fired
-        //	/// </summary>
-        //	ReadyToFire,
-        //}
-
-        ///// <summary>
-        ///// The type of range attack
-        ///// </summary>
-        //public enum eRangedAttackType : byte
-        //{
-        //	/// <summary>
-        //	/// A normal ranged attack
-        //	/// </summary>
-        //	Normal = 0,
-        //	/// <summary>
-        //	/// A critical shot is attempted
-        //	/// </summary>
-        //	Critical,
-        //	/// <summary>
-        //	/// A longshot is attempted
-        //	/// </summary>
-        //	Long,
-        //	/// <summary>
-        //	/// A volley shot is attempted
-        //	/// </summary>
-        //	Volley,
-        //	/// <summary>
-        //	/// A sure shot is attempted
-        //	/// </summary>
-        //	SureShot,
-        //	/// <summary>
-        //	/// A rapid shot is attempted
-        //	/// </summary>
-        //	RapidFire,
-        //}
-
-
-
-        
-       
-		
-		
-
-		///// <summary>
-		///// Holds the possible activeQuiverSlot values
-		///// </summary>
-		//public enum eActiveQuiverSlot : byte
-		//{
-		//	/// <summary>
-		//	/// No quiver slot active
-		//	/// </summary>
-		//	None = 0x00,
-		//	/// <summary>
-		//	/// First quiver slot
-		//	/// </summary>
-		//	First = 0x10,
-		//	/// <summary>
-		//	/// Second quiver slot
-		//	/// </summary>
-		//	Second = 0x20,
-		//	/// <summary>
-		//	/// Third quiver slot
-		//	/// </summary>
-		//	Third = 0x40,
-		//	/// <summary>
-		//	/// Fourth quiver slot
-		//	/// </summary>
-		//	Fourth = 0x80,
-		//}
-
-		
-
-		#endregion
-
 		/// <summary>
 		/// Can this living accept any item regardless of tradable or droppable?
 		/// </summary>
@@ -191,7 +88,6 @@ namespace DOL.GS
 		{
 			get { return false; }
 		}
-
 
 		/// <summary>
 		/// Chance to fumble an attack.
