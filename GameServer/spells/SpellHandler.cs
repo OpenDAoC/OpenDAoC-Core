@@ -580,9 +580,9 @@ namespace DOL.GS.Spells
 
 					return false;
 				}
-
-				m_caster.CancelFocusSpell();
 			}
+
+			m_caster.CancelFocusSpell();
 
 			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
 
