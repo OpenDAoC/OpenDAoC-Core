@@ -145,7 +145,7 @@ namespace DOL.GS
                 e.OnStartEffect();
 
             UpdateEffectIcons(e);
-        }      
+        }
 
         private static void UpdateEffectIcons(ECSGameEffect e)
         {
@@ -213,7 +213,7 @@ namespace DOL.GS
                         lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
                         {
                             if (spellEffect is ECSPulseEffect)
-                            {                               
+                            {
                                 for (int i = 0; i < spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects.Count; i++)
                                 {
                                     if (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects[i] is ECSPulseEffect)
@@ -297,10 +297,11 @@ namespace DOL.GS
         public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             ECSGameSpellEffect effect = concEffect as ECSGameSpellEffect;
+
             if (effect != null)
             {
                 if (effect.SpellHandler.Spell.IsPulsing)
-                    effect.Owner.LastPulseCast = null;
+                    effect.Owner.ActivePulseSpells.TryRemove(effect.SpellHandler.Spell.SpellType, out Spell _);
 
                 RequestCancelEffect(effect, playerCanceled);
             }
@@ -338,12 +339,13 @@ namespace DOL.GS
         public static void RequestImmediateCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             ECSGameSpellEffect effect = concEffect as ECSGameSpellEffect;
+
             if (effect != null)
             {
                 RequestImmediateCancelEffect(effect, playerCanceled);
 
                 if (effect.SpellHandler.Spell.IsPulsing)
-                    effect.Owner.LastPulseCast = null;
+                    effect.Owner.ActivePulseSpells.TryRemove(effect.SpellHandler.Spell.SpellType, out Spell _);
             }
         }
 

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 using ECS.Debug;
 using log4net;
 
@@ -36,7 +36,7 @@ namespace DOL.GS
                     log.Warn($"Long EffectListService.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
             });
             
-            Diagnostics.StopPerfCounter(ServiceName);               
+            Diagnostics.StopPerfCounter(ServiceName);
         }
 
         private static void HandleEffects(long tick, GameLiving living)
@@ -44,7 +44,7 @@ namespace DOL.GS
             if (living?.effectListComponent?.Effects.Count > 0)
             {
                 var effects = new List<ECSGameEffect>(10);
-                
+
                 lock (living.effectListComponent.EffectsLock)
                 {
                     var currentEffects = living.effectListComponent.Effects.Values.ToList();
@@ -54,10 +54,11 @@ namespace DOL.GS
                         effects.AddRange(currentEffects[i]);
                     }
                 }
-                    
+
                 for (int j = 0; j < effects.Count; j++)
                 {
                     var e = effects[j];
+
                     if (e is null)
                         continue;
 
@@ -73,15 +74,17 @@ namespace DOL.GS
                     {
                         if (e.NextTick != 0 && tick > e.NextTick)
                             e.OnEffectPulse();
+
                         if (e.Duration > 0 && tick > e.ExpireTick)
                             EffectService.RequestCancelEffect(e);
+
                         continue;
                     }
                     else if (e is ECSGameSpellEffect effect)
                     {
                         if (tick > effect.ExpireTick && (!effect.IsConcentrationEffect() || effect.SpellHandler.Spell.IsFocus))
                         {
-                            if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell)
+                            if (effect.EffectType == eEffect.Pulse && effect.SpellHandler.Caster.ActivePulseSpells.ContainsKey(effect.SpellHandler.Spell.SpellType))
                             {
                                 if (effect.SpellHandler.Spell.PulsePower > 0)
                                 {
@@ -112,7 +115,7 @@ namespace DOL.GS
                             }
                             else
                             {
-                                if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.LastPulseCast == effect.SpellHandler.Spell &&
+                                if (effect.SpellHandler.Spell.IsPulsing && effect.SpellHandler.Caster.ActivePulseSpells.ContainsKey(effect.SpellHandler.Spell.SpellType) &&
                                     effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                                 {
                                     //Add time to effect to make sure the spell refreshes instead of cancels
@@ -120,19 +123,20 @@ namespace DOL.GS
                                     effect.LastTick = GameLoop.GameLoopTime;
                                 }
                                 else
-                                {
                                     EffectService.RequestCancelEffect(effect);
-                                }
                             }
                         }
 
-                        if (!(effect is ECSImmunityEffect) && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                        if (effect is not ECSImmunityEffect && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
                         {
                             if (tick > effect.NextTick)
                             {
                                 double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
-                                if (factor < 0) factor = 0;
-                                else if (factor > 1) factor = 1;
+
+                                if (factor < 0)
+                                    factor = 0;
+                                else if (factor > 1)
+                                    factor = 1;
 
                                 //effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler.Spell.ID, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
                                 effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
@@ -145,9 +149,8 @@ namespace DOL.GS
                         }
 
                         if (effect.NextTick != 0 && tick >= effect.NextTick && tick < effect.ExpireTick)
-                        {
                             effect.OnEffectPulse();
-                        }
+
                         if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                         {
                             //Check if player is too far away from Caster for Concentration buff.
@@ -172,9 +175,9 @@ namespace DOL.GS
                             {
                                 //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                                 ECSGameSpellEffect enabled = null;
-                                List<ECSGameEffect> sameEffectTypeEffects;
-                                effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out sameEffectTypeEffects);
+                                effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> sameEffectTypeEffects);
                                 bool isBest = false;
+
                                 if (sameEffectTypeEffects.Count == 1)
                                     isBest = true;
                                 else if (sameEffectTypeEffects.Count > 1)
@@ -187,15 +190,7 @@ namespace DOL.GS
                                             if (!eff.IsDisabled)
                                             {
                                                 enabled = eff;
-                                                if (effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value)
-                                                {
-                                                    isBest = true;
-                                                    //break;
-                                                }
-                                                else
-                                                {
-                                                    isBest = false;
-                                                }
+                                                isBest = effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value;
                                             }
                                         }
                                     }
@@ -204,33 +199,29 @@ namespace DOL.GS
                                 if (isBest)
                                 {
                                     EffectService.RequestEnableEffect(effect);
+
                                     if (enabled != null)
-                                    {
                                         EffectService.RequestDisableEffect(enabled);
-                                    }
                                 }
-                     
                             }
+
                             effect.NextTick = GameLoop.GameLoopTime + effect.PulseFreq;
                         }
                     }
                 }
-                
-            }           
+            }
         }
 
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
         {
-            List<ECSGameEffect> effects;
-
             lock (target.effectListComponent.EffectsLock)
             {
-                target.effectListComponent.Effects.TryGetValue(effectType, out effects);
-            
+                target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
+
                 if (effects != null && spellType == eSpellType.Null)
                     return effects.FirstOrDefault();
                 else if (effects != null)
-                    return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == (byte)spellType).FirstOrDefault();
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == (byte) spellType).FirstOrDefault();
                 else
                     return null;
             }
@@ -238,15 +229,15 @@ namespace DOL.GS
 
         public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
         {
-            if (target == null) return null;
-            List<ECSGameEffect> effects;
+            if (target == null)
+                return null;
 
             lock (target.effectListComponent.EffectsLock)
             {
-                target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+                target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return effects.OfType<ECSGameSpellEffect>().Where(e => e is ECSGameSpellEffect && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte)spellType)).FirstOrDefault();
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e != null && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte) spellType)).FirstOrDefault();
                 else
                     return null;
             }
@@ -254,14 +245,12 @@ namespace DOL.GS
 
         public static ECSGameAbilityEffect GetAbilityEffectOnTarget(GameLiving target, eEffect effectType)
         {
-            List<ECSGameEffect> effects;
-
             lock (target.effectListComponent.EffectsLock)
             {
-                target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+                target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return (ECSGameAbilityEffect)effects.Where(e => e is ECSGameAbilityEffect).FirstOrDefault();
+                    return (ECSGameAbilityEffect) effects.Where(e => e is ECSGameAbilityEffect).FirstOrDefault();
                 else
                     return null;
             }
@@ -269,29 +258,25 @@ namespace DOL.GS
 
         public static ECSImmunityEffect GetImmunityEffectOnTarget(GameLiving target, eEffect effectType)
         {
-            List<ECSGameEffect> effects;
-
             lock (target.effectListComponent.EffectsLock)
             {
-                target.effectListComponent.Effects.TryGetValue(effectType, out effects);
+                target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return (ECSImmunityEffect)effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
+                    return (ECSImmunityEffect) effects.Where(e => e is ECSImmunityEffect).FirstOrDefault();
                 else
                     return null;
             }
         }
 
-        public static ECSPulseEffect GetPulseEffectOnTarget(GameLiving target)
+        public static ECSPulseEffect GetPulseEffectOnTarget(GameLiving target, Spell spell)
         {
-            List<ECSGameEffect> effects;
-
             lock (target.effectListComponent.EffectsLock)
             {
-                target.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out effects);
+                target.effectListComponent.Effects.TryGetValue(eEffect.Pulse, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return (ECSPulseEffect)effects.Where(e => e is ECSPulseEffect).FirstOrDefault();
+                    return (ECSPulseEffect) effects.Where(e => e is ECSPulseEffect && e.SpellHandler.Spell == spell).FirstOrDefault();
                 else
                     return null;
             }

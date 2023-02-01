@@ -31,7 +31,6 @@ using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Spells
 {
@@ -41,15 +40,15 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public class SpellHandler : ISpellHandler
 	{
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		// Maximum number of sub-spells to get delve info for.
+		protected const byte MAX_DELVE_RECURSION = 5;
 
-		// Max number of Concentration spells that a single caster is allowed to cast.
-		public const int MAX_CONC_SPELLS = 20;
+		// Maximum number of Concentration spells that a single caster is allowed to cast.
+		private const int MAX_CONC_SPELLS = 20;
 
-		/// <summary>
-		/// Maximum number of sub-spells to get delve info for.
-		/// </summary>
-		protected static readonly byte MAX_DELVE_RECURSION = 5;
+		// Array of pulse spell groups allowed to exist with others.
+		// Used to allow players to have more than one pulse spell refreshing itself automatically.
+		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = Array.Empty<int>();
 
 		public eCastState CastState { get; set; }
 
@@ -368,14 +367,6 @@ namespace DOL.GS.Spells
             return false;
 		}
 
-		public static void CancelAllPulsingSpells(GameLiving living)
-		{ 		
-			var effects = living.effectListComponent.GetAllPulseEffects();//.ConcentrationEffects.Where(e => e is ECSPulseEffect).ToArray();
-			for (int i = 0; i < effects.Count(); i++)
-			{
-				EffectService.RequestImmediateCancelConcEffect(effects[i]);
-			}
-        }
 		/// <summary>
 		/// Cancels all pulsing spells
 		/// </summary>
@@ -575,22 +566,17 @@ namespace DOL.GS.Spells
 					npcOwner.TurnTo(Target);
 			}
 
-			if (m_caster.LastPulseCast != null)
+			if (m_spell.IsPulsing && m_spell.Frequency > 0)
 			{
-				if (m_caster.LastPulseCast.Equals(Spell) && m_spell.IsPulsing && m_spell.Pulse != 0 && m_spell.Frequency > 0)
+				if (m_caster.ActivePulseSpells.TryRemove(m_spell.SpellType, out Spell _))
 				{
-					if (Spell.InstrumentRequirement == 0)
+					ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
+					EffectService.RequestImmediateCancelConcEffect(effect);
+
+					if (m_spell.InstrumentRequirement == 0)
 						MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
 					else
 						MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
-
-					ECSGameSpellEffect cancelEffect = Caster.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(effect => effect.SpellHandler.Spell.Equals(Spell)).FirstOrDefault();
-
-					if (cancelEffect != null)
-					{
-						EffectService.RequestImmediateCancelConcEffect(cancelEffect);
-						Caster.LastPulseCast = null;
-					}
 
 					return false;
 				}
@@ -1627,10 +1613,10 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void SendCastAnimation()
 		{
-            if (Spell.CastTime == 0)
-                SendCastAnimation(0);
-            else
-                SendCastAnimation((ushort)(CalculateCastingTime() / 100));
+			if (Spell.CastTime == 0)
+				SendCastAnimation(0);
+			else
+				SendCastAnimation((ushort)(CalculateCastingTime() / 100));
 		}
 
 		/// <summary>
@@ -1640,9 +1626,9 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation(ushort castTime)
 		{
 			_calculatedCastTime = castTime * 100;
-            //Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
+			//Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 
-            Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
 			{
 				if (player == null)
 					return;
@@ -1739,23 +1725,27 @@ namespace DOL.GS.Spells
 				}
 			}
 
-            if (Spell.IsPulsing)
-            {
-				CancelAllPulsingSpells(Caster);
+			if (m_spell.IsPulsing)
+			{
+				// Cancel existing pulse effects, using 'SpellGroupsCancellingOtherPulseSpells'.
+				IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
+
+				foreach (ECSPulseEffect effect in effects)
+					EffectService.RequestImmediateCancelConcEffect(effect);
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
 					CreateECSPulseEffect(Caster, Caster.Effectiveness);
-					Caster.LastPulseCast = Spell;
+					Caster.ActivePulseSpells.AddOrUpdate(m_spell.SpellType, m_spell, (x, y) => m_spell);
 				}
 			}
 
-          	if (playerWeapon != null)
+			if (playerWeapon != null)
 				StartSpell(target, playerWeapon);
 			else
 				StartSpell(target);
 
-            /*
+			/*
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
 			if (m_spell.SpellType != (byte)eSpellType.Powerless && m_spell.SpellType != (byte)eSpellType.Range && m_spell.SpellType != (byte)eSpellType.Uninterruptable)
@@ -3102,29 +3092,30 @@ namespace DOL.GS.Spells
 			}
 		}
 
-        /// <summary>
-        /// Hold events for focus spells
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public virtual void FocusSpellAction(bool moving = false)
-        {
-            CastState = eCastState.Cleanup;
-            Caster.LastPulseCast = null;
-			            
-            MessageToCaster($"You lose your focus on your {Spell.Name} spell.", eChatType.CT_SpellExpires);
+		/// <summary>
+		/// Hold events for focus spells
+		/// </summary>
+		/// <param name="e"></param>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
+		public virtual void FocusSpellAction(bool moving = false)
+		{
+			CastState = eCastState.Cleanup;
 
-            if (moving)
-                MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
-        }
+			Caster.ActivePulseSpells.TryRemove(m_spell.SpellType, out Spell _);
 
-        #endregion
+			if (moving)
+				MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
+			else
+				MessageToCaster($"You lose your focus on your {Spell.Name} spell.", eChatType.CT_SpellExpires);
+		}
 
-        /// <summary>
-        /// Ability to cast a spell
-        /// </summary>
-        public ISpellCastingAbilityHandler Ability
+		#endregion
+
+		/// <summary>
+		/// Ability to cast a spell
+		/// </summary>
+		public ISpellCastingAbilityHandler Ability
 		{
 			get { return m_ability; }
 			set { m_ability = value; }
