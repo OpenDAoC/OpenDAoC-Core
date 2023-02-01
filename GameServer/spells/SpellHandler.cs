@@ -1725,13 +1725,16 @@ namespace DOL.GS.Spells
 				}
 			}
 
+			// Cancel existing pulse effects, using 'SpellGroupsCancellingOtherPulseSpells'.
 			if (m_spell.IsPulsing)
 			{
-				// Cancel existing pulse effects, using 'SpellGroupsCancellingOtherPulseSpells'.
-				IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
+				if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(m_spell.Group))
+				{
+					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
-				foreach (ECSPulseEffect effect in effects)
-					EffectService.RequestImmediateCancelConcEffect(effect);
+					foreach (ECSPulseEffect effect in effects)
+						EffectService.RequestImmediateCancelConcEffect(effect);
+				}
 
 				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
 				{
