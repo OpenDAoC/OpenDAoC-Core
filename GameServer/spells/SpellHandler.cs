@@ -439,7 +439,6 @@ namespace DOL.GS.Spells
 
 		public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
-
 			int freq = Spell != null ? Spell.Frequency : 0;
 
 			new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
@@ -458,10 +457,12 @@ namespace DOL.GS.Spells
 				return;
 
 			if (Caster is GamePlayer)
+			{
 				if (CastState != eCastState.Focusing)
 					(Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				else
 					Caster.CancelFocusSpell(true);
+			}
 
 			InterruptCasting();
 		}
@@ -1261,8 +1262,8 @@ namespace DOL.GS.Spells
 			switch (CastState)
 			{
 				case eCastState.Precast:
-					if (Spell.Target == "Self")
-						// Self spells should ignore whatever we actually have selected.
+					if (Spell.Target is "Self" or "Group")
+						// Self and group spells should ignore whatever we actually have selected.
 						Target = Caster;
 					else if (Spell.Target == "Pet")
 					{ 
