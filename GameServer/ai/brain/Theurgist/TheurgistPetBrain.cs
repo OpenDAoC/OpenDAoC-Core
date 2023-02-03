@@ -33,7 +33,7 @@ namespace DOL.AI.Brain
 		{
 			m_target = Body.TargetObject;
 
-			if (m_target == null || m_target.HealthPercent <= 0)
+			if (m_target == null || m_target.Health <= 0)
 			{
 				Body.Die(null);
 				return;
