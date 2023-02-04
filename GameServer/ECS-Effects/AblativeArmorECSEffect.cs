@@ -11,8 +11,6 @@
 
         public override void OnStartEffect()
         {
-            RemainingValue = (int)SpellHandler.Spell.Value;
-
             // "A crystal shield covers you."
             // "A crystal shield covers {0}'s skin."
             OnEffectStartsMsg(Owner, true, false, true);

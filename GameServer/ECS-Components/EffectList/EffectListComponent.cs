@@ -82,9 +82,8 @@ namespace DOL.GS
                                         // If the effectiveness changed (for example after resurrection illness expired), we need to stop the effect.
                                         // It will be restarted in 'EffectService.HandlePropertyModification()'.
                                         // Also needed for movement speed debuffs' since their effect decrease over time.
-                                        // Ablative buffs also need to have their remaining value updated, which is stored in their effect.
-                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness
-                                            || existingSpell.SpellType is (byte)eSpellType.SpeedDecrease or (byte)eSpellType.UnbreakableSpeedDecrease)
+                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness ||
+                                            existingSpell.SpellType is (byte)eSpellType.SpeedDecrease or (byte)eSpellType.UnbreakableSpeedDecrease)
                                             existingEffect.OnStopEffect();
 
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;
