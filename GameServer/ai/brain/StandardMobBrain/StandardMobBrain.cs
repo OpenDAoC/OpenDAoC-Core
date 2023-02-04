@@ -579,10 +579,10 @@ namespace DOL.AI.Brain
             List<KeyValuePair<GameLiving, long>> aggroList = OrderAggroListByModifiedAggroAmount(FilterOutInvalidLivingsFromAggroList());
 
             // We keep shades in aggro lists so that mobs attack them after their pet dies, but we must never return one.
-            KeyValuePair<GameLiving, long> nextTarget = aggroList.Find(x => EffectListService.GetEffectOnTarget(x.Key, eEffect.Shade) == null);
+            GameLiving nextTarget = aggroList.Find(x => EffectListService.GetEffectOnTarget(x.Key, eEffect.Shade) == null).Key;
 
-            if (nextTarget.Key != null)
-                return nextTarget.Key;
+            if (nextTarget != null)
+                return nextTarget;
 
             // The list is either empty or full of shades.
             // If it's empty, return null.
