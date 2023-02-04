@@ -575,7 +575,21 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual GameLiving CalculateNextAttackTarget()
         {
-            return OrderAggroListByModifiedAggroAmount(FilterOutInvalidLivingsFromAggroList()).FirstOrDefault().Key;
+            // Filter out invalid entities (updates the list), then order the returned copy by (modified) aggro amount.
+            List<KeyValuePair<GameLiving, long>> aggroList = OrderAggroListByModifiedAggroAmount(FilterOutInvalidLivingsFromAggroList());
+
+            // We keep shades in aggro lists so that mobs attack them after their pet dies, but we must never return one.
+            KeyValuePair<GameLiving, long> nextTarget = aggroList.Find(x => EffectListService.GetEffectOnTarget(x.Key, eEffect.Shade) == null);
+
+            if (nextTarget.Key != null)
+                return nextTarget.Key;
+
+            // The list is either empty or full of shades.
+            // If it's empty, return null.
+            // If we found a shade, return the pet instead (if there's one). Ideally this should never happen.
+            // If it does, it means we added the shade to the aggro list instead of the pet.
+            // Which is currently the case due to the way 'AddToAggroList' propagates aggro to group members, and maybe other places.
+            return aggroList.FirstOrDefault().Key?.ControlledBrain?.Body;
         }
 
         public virtual bool CanAggroTarget(GameLiving target)
