@@ -923,15 +923,10 @@ namespace DOL.GS
 
         public void StopAttack()
         {
-            AttackState = false;
-            owner.CancelEngageEffect();
-            owner.styleComponent.NextCombatStyle = null;
-            owner.styleComponent.NextCombatBackupStyle = null;
-
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
-                if (weaponAction != null && weaponAction.AttackFinished != true)
+                if (AttackState && weaponAction?.AttackFinished != true)
                 {
                     foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         player.Out.SendInterruptAnimation(owner);
@@ -940,6 +935,11 @@ namespace DOL.GS
                 owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                 owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             }
+
+            AttackState = false;
+            owner.CancelEngageEffect();
+            owner.styleComponent.NextCombatStyle = null;
+            owner.styleComponent.NextCombatBackupStyle = null;
 
             if (owner is GamePlayer playerOwner && playerOwner.IsAlive)
                 playerOwner.Out.SendAttackMode(AttackState);
