@@ -6948,8 +6948,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			if (CurrentSpellHandler != null)
-				CurrentSpellHandler.InterruptCasting();
+			castingComponent.spellHandler?.InterruptCasting();
+			castingComponent.queuedSpellHandler = null;
 		}
 
 		public virtual bool CastSpell(Spell spell, SpellLine line)
