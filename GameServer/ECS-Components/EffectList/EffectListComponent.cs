@@ -79,9 +79,10 @@ namespace DOL.GS
                                         if (newSpell.IsPulsing)
                                             newSpellEffect.RenewEffect = true;
 
-                                        // Stopping the effect allows the spell to update its effectiveness (i.e. after resurrection illness).
+                                        // If the effectiveness changed (for example after resurrection illness expired), we need to stop the effect.
+                                        // It will be restarted in 'EffectService.HandlePropertyModification()'.
                                         // Also needed for movement speed debuffs' since their effect decrease over time.
-                                        // OnStartEffect() should be called in EffectService.HandlePropertyModification()
+                                        // Ablative buffs also need to have their remaining value updated, which is stored in their effect.
                                         if (existingEffect.Effectiveness != newSpellEffect.Effectiveness
                                             || existingSpell.SpellType is (byte)eSpellType.SpeedDecrease or (byte)eSpellType.UnbreakableSpeedDecrease)
                                             existingEffect.OnStopEffect();
@@ -92,6 +93,7 @@ namespace DOL.GS
                                         Effects[newSpellEffect.EffectType][i] = newSpellEffect;
                                         EffectIdToEffect[newSpellEffect.Icon] = newSpellEffect;
                                     }
+
                                     return true;
                                 }
                             }
@@ -132,7 +134,7 @@ namespace DOL.GS
                             bool addEffect = false;
                             // foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
                             bool foundIsOverwriteableEffect = false;
-                            // Check to see if we can add new Effect
+
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
                                 ECSGameSpellEffect existingEffect = existingEffects[i];
@@ -143,10 +145,39 @@ namespace DOL.GS
                                 if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
                                     foundIsOverwriteableEffect = true;
-                                    if (effect.EffectType != eEffect.Bladeturn)
+
+                                    if (effect.EffectType == eEffect.Bladeturn)
+                                    {
+                                        // PBT should only replace itself.
+                                        if (!newSpell.IsPulsing)
+                                        {
+                                            // Self cast Bladeturns should never be overwritten
+                                            if (existingSpell.Target.ToLower() != "self")
+                                            {
+                                                EffectService.RequestCancelEffect(existingEffect);
+                                                addEffect = true;
+                                            }
+                                        }
+                                    }
+                                    else
                                     {
                                         if (existingEffect.IsDisabled)
                                             continue;
+
+                                        // Special handling for ablative effects.
+                                        // We use the remaining amount instead of the spell value. They also can't be added as disabled effects.
+                                        // Note: This ignores subclasses of 'AblativeArmorSpellHandler', so right know we only allow one ablative buff regardless of its type.
+                                        if (effect.EffectType == eEffect.AblativeArmor &&
+                                            existingEffect is AblativeArmorECSGameEffect existingAblativeEffect)
+                                        {
+                                            if (newSpell.Value > existingAblativeEffect.RemainingValue)
+                                            {
+                                                EffectService.RequestCancelEffect(existingEffect);
+                                                addEffect = true;
+                                            }
+
+                                            break;
+                                        }
 
                                         // New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
                                         if (newSpell.Value > existingSpell.Value || newSpell.Damage > existingSpell.Damage)
@@ -157,6 +188,7 @@ namespace DOL.GS
                                                 EffectService.RequestDisableEffect(existingEffect);
                                             else
                                                 EffectService.RequestCancelEffect(existingEffect);
+
                                             addEffect = true;
                                             break;
                                         }
@@ -170,19 +202,6 @@ namespace DOL.GS
                                                 addEffect = true;
                                                 newSpellEffect.IsDisabled = true;
                                                 break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // PBT should only replace itself
-                                        if (!newSpell.IsPulsing)
-                                        {
-                                            // Self cast Bladeturns should never be overwritten
-                                            if (existingSpell.Target.ToLower() != "self")
-                                            {
-                                                EffectService.RequestCancelEffect(existingEffect);
-                                                addEffect = true;
                                             }
                                         }
                                     }

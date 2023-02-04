@@ -4068,12 +4068,12 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public virtual void OnAttackedByEnemy(AttackData ad)
 		{
-            //Console.WriteLine(string.Format("OnAttackedByEnemy called on {0}", this.Name));
+			//Console.WriteLine(string.Format("OnAttackedByEnemy called on {0}", this.Name));
 
-            // Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
-            // i.e. missed melee swings and resisted spells still trigger this.
+			// Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
+			// i.e. missed melee swings and resisted spells still trigger this.
 
-            if (ad == null)
+			if (ad == null)
 				return;
 
 			// Must be above the IsHit/Combat check below since things like subsequent DoT ticks don't cause combat but should still break CC.
@@ -4084,14 +4084,14 @@ namespace DOL.GS
 				//Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
 				HandleMovementSpeedEffectsOnAttacked(ad);
 
-				if (this is GameNPC && ActiveWeaponSlot == eActiveWeaponSlot.Distance && this.IsWithinRadius(ad.Attacker, 150))
-					((GameNPC)this).SwitchToMelee(ad.Attacker);
+				if (this is GameNPC gameNpc && ActiveWeaponSlot == eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
+					gameNpc.SwitchToMelee(ad.Attacker);
 
 				attackComponent.AddAttacker( ad.Attacker );
 
-				if (ad.SpellHandler == null ||(ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
+				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
-					if (ad.Attacker.Realm == 0 || this.Realm == 0)
+					if (ad.Attacker.Realm == 0 || Realm == 0)
 					{
 						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
 						ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
@@ -4102,33 +4102,43 @@ namespace DOL.GS
 						ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
 					}
 				}
-				
 
 				// Melee Attack that actually caused damage.
 				if (ad.IsMeleeAttack && ad.Damage > 0)
-				{					
-					// Handle Ablatives
-					var effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+				{
+					// Handle Ablatives.
+					List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+
 					for (int i = 0; i < effects.Count; i++)
 					{
-						var effect = effects[i] as ECSGameSpellEffect;
-						if (effect is null)
+						AblativeArmorECSGameEffect effect = effects[i] as AblativeArmorECSGameEffect;
+
+						if (effect == null)
 							continue;
 
-						if (!(effect.SpellHandler as AblativeArmorSpellHandler).MatchingDamageType(ref ad)) return;
+						AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
 
-						int ablativehp = effect.Owner.TempProperties.getProperty<int>(AblativeArmorSpellHandler.ABLATIVE_HP);
+						if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
+							continue;
+
+						int ablativeHp = effect.RemainingValue;
 						double absorbPercent = 25;
+
 						if (effect.SpellHandler.Spell.Damage > 0)
 							absorbPercent = effect.SpellHandler.Spell.Damage;
-						//because albatives can reach 100%
+
+						// Because albatives can absorb more than 100%.
 						if (absorbPercent > 100)
 							absorbPercent = 100;
+
 						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
-						if (damageAbsorbed > ablativehp)
-							damageAbsorbed = ablativehp;
-						ablativehp -= damageAbsorbed;
+
+						if (damageAbsorbed > ablativeHp)
+							damageAbsorbed = ablativeHp;
+
+						ablativeHp -= damageAbsorbed;
 						ad.Damage -= damageAbsorbed;
+
 						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
 
 						if (ad.Target is GamePlayer)
@@ -4137,33 +4147,24 @@ namespace DOL.GS
 						if (ad.Attacker is GamePlayer)
 							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-						if (ablativehp <= 0)
-						{
+						if (ablativeHp <= 0)
 							EffectService.RequestImmediateCancelEffect(effect);
-						}
 						else
-						{
-							effect.Owner.TempProperties.setProperty(AblativeArmorSpellHandler.ABLATIVE_HP, ablativehp);
-						}
+							effect.RemainingValue = ablativeHp;
 					}
 				}
 
-				var dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
-                // Handle DefensiveProcs
-                if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
-                {
-                    for (int i = 0; i < dProcEffects.Count; i++)
-                    {
-                        var dProcEffect = dProcEffects[i];
+				// Handle DefensiveProcs.
+				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
 
-                        (dProcEffect.SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
-                    }
-                }
-            }
+				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != eAttackType.Spell)
+				{
+					for (int i = 0; i < dProcEffects.Count; i++)
+						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+				}
+			}
 			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
-            {
 				npc.CancelWalkToSpawn();
-            }
 		}
 
 		public void HandleDamageShields(AttackData ad)
