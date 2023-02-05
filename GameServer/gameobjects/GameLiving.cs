@@ -4122,15 +4122,7 @@ namespace DOL.GS
 							continue;
 
 						int ablativeHp = effect.RemainingValue;
-						double absorbPercent = 25;
-
-						if (effect.SpellHandler.Spell.Damage > 0)
-							absorbPercent = effect.SpellHandler.Spell.Damage;
-
-						// Because albatives can absorb more than 100%.
-						if (absorbPercent > 100)
-							absorbPercent = 100;
-
+						double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
 						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 
 						if (damageAbsorbed > ablativeHp)

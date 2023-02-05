@@ -169,7 +169,9 @@ namespace DOL.GS
                                         if (effect.EffectType == eEffect.AblativeArmor &&
                                             existingEffect is AblativeArmorECSGameEffect existingAblativeEffect)
                                         {
-                                            if (newSpell.Value > existingAblativeEffect.RemainingValue)
+                                            // 'Damage' represents the absorption% per hit.
+                                            if (newSpell.Value * AblativeArmorSpellHandler.ValidateSpellDamage((int)newSpell.Damage) >
+                                                existingAblativeEffect.RemainingValue *  AblativeArmorSpellHandler.ValidateSpellDamage((int)existingSpell.Damage))
                                             {
                                                 EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;

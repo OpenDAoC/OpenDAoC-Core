@@ -29,6 +29,12 @@ namespace DOL.GS.Spells
 	{
 		public AblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
+		// Spell damage represent the absorb% of the ablative buff, but can't be superior to 100 and 0 must default to 25.
+		public static int ValidateSpellDamage(int spellDamage)
+		{
+			return spellDamage > 100 ? 100 : spellDamage < 1 ? 25 : spellDamage;
+		}
+
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			new AblativeArmorECSGameEffect(initParams);
@@ -66,9 +72,7 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		public virtual void OnDamageAbsorbed(AttackData ad, int DamageAmount)
-		{
-		}
+		public virtual void OnDamageAbsorbed(AttackData ad, int DamageAmount) { }
 		
 		public override PlayerXEffect GetSavedEffect(GameSpellEffect e)
 		{
