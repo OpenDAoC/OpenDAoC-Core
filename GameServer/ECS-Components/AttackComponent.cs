@@ -1306,7 +1306,8 @@ namespace DOL.GS
             // Strafing miss.
             if (owner is GamePlayer playerOwner && playerOwner.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
             {
-                // Used to tell the difference between a normal miss a a strafing miss. Ugly, but we shouldn't add a new field to 'AttackData' just for that purpose.
+                // Used to tell the difference between a normal miss and a strafing miss.
+                // Ugly, but we shouldn't add a new field to 'AttackData' just for that purpose.
                 ad.MissRate = 0;
                 ad.AttackResult = eAttackResult.Missed;
             }
