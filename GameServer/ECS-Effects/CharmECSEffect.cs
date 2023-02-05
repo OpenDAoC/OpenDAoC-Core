@@ -74,50 +74,49 @@ namespace DOL.GS
         {
             GamePlayer casterPlayer = SpellHandler.Caster as GamePlayer;
             GameNPC charmMob = Owner as GameNPC;
+            CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
 
             if (casterPlayer != null && charmMob != null)
             {
-                GameEventMgr.RemoveHandler(charmMob, GameLivingEvent.PetReleased, (((CharmSpellHandler) SpellHandler).ReleaseEventHandler));
+                GameEventMgr.RemoveHandler(charmMob, GameLivingEvent.PetReleased, charmSpellHandler.ReleaseEventHandler);
                 ControlledNpcBrain oldBrain = (ControlledNpcBrain)casterPlayer.ControlledBrain;
                 casterPlayer.SetControlledBrain(null);
-                
-                // Message: You lose control of {0}!
-                //((CharmSpellHandler) SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.SpellEnd.YouLoseControl", charmMob.GetName(0, false)), eChatType.CT_SpellExpires);
 
                 lock (charmMob.BrainSync)
                 {
                     var immunityEffects = charmMob.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
+
                     for (int i = 0; i < immunityEffects.Length; i++)
-                    {
                         EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
-                    }
 
                     charmMob.StopAttack();
                     charmMob.StopCurrentSpellcast();
                     charmMob.RemoveBrain(oldBrain);
 
-                    charmMob.AddBrain(new StandardMobBrain());
-                    ((CharmSpellHandler) SpellHandler).m_isBrainSet = false;
+                    StandardMobBrain newBrain = new();
+                    charmMob.AddBrain(newBrain);
 
-                    if (charmMob.Brain != null && charmMob.Brain is IOldAggressiveBrain)
+                    charmSpellHandler.m_isBrainSet = false;
+
+                    if (newBrain is IOldAggressiveBrain)
                     {
-                        ((IOldAggressiveBrain)charmMob.Brain).ClearAggroList();
+                        newBrain.ClearAggroList();
 
-                        if (SpellHandler.Spell.Pulse != 0 && SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active && SpellHandler.Caster.IsAlive
-                        && !SpellHandler.Caster.IsStealthed)
+                        if (SpellHandler.Spell.Pulse != 0 &&
+                            SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active &&
+                            SpellHandler.Caster.IsAlive &&
+                            !SpellHandler.Caster.IsStealthed)
                         {
-                            ((IOldAggressiveBrain)charmMob.Brain).AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
+                            newBrain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+                            newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                             charmMob.StartAttack(SpellHandler.Caster);
                             charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                         }
                         else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
-                        {
                             charmMob.WalkToSpawn();
-                        }
                         else
                         {
-                            charmMob.Brain.Stop();
-                            //casterPlayer.Notify(GameNPCEvent.PetLost);
+                            newBrain.Stop();
                             charmMob.Die(null);
                         }
                     }
@@ -125,25 +124,22 @@ namespace DOL.GS
 
                 // remove NPC with new brain from all attackers aggro list
                 lock (charmMob.attackComponent.Attackers)
+                {
                     foreach (GameObject attacker in charmMob.attackComponent.Attackers)
                     {
-                        if (attacker == null || !(attacker is GameNPC))
-                            continue;
-
-                        if (((GameNPC)attacker).Brain != null && ((GameNPC)attacker).Brain is IOldAggressiveBrain)
+                        if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IOldAggressiveBrain aggressiveBrain)
                         {
-                            ((IOldAggressiveBrain) ((GameNPC) attacker).Brain).RemoveFromAggroList(charmMob);
-                            ((IOldAggressiveBrain) ((GameNPC) attacker).Brain).AddToAggroList(casterPlayer, casterPlayer.Level * 10);
-                            ((GameNPC) attacker).StartAttack(casterPlayer);
-                            ((GameNPC) attacker).LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                            aggressiveBrain.RemoveFromAggroList(charmMob);
+                            aggressiveBrain.AddToAggroList(casterPlayer, casterPlayer.Level * 10);
+                            npcAttacker.StartAttack(casterPlayer);
+                            npcAttacker.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                         }
                     }
+                }
 
-                ((CharmSpellHandler) SpellHandler)?.m_controlledBrain?.ClearAggroList();
+                charmSpellHandler.m_controlledBrain?.ClearAggroList();
                 charmMob.StopFollowing();
-
                 charmMob.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
-
 
                 foreach (GamePlayer ply in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
@@ -158,12 +154,13 @@ namespace DOL.GS
                     }
                 }
             }
+
             ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer, SpellHandler.Spell);
+
             if (charmMob != null && song != null)
-            {
                 EffectService.RequestImmediateCancelConcEffect(song);
-            }
-            ((CharmSpellHandler) SpellHandler).m_controlledBrain = null;
+
+            charmSpellHandler.m_controlledBrain = null;
         }
     }
 }

@@ -3889,12 +3889,12 @@ namespace DOL.GS
         {
             attackComponent.RequestStartAttack(target);
 
-			if (CurrentFollowTarget!=target)
-			{
-				StopFollowing();
-				Follow(target, m_followMinDist, m_followMaxDist);
-			}
-            
+            if (CurrentFollowTarget != target)
+            {
+                StopFollowing();
+                Follow(target, m_followMinDist, m_followMaxDist);
+            }
+
             FireAmbientSentence(eAmbientTrigger.fighting, target);
         }
 
