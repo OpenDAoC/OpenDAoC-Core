@@ -37,8 +37,6 @@ namespace DOL.GS
             set => _startTime = value + GameLoop.GameLoopTime;
         }
 
-        public long TimeUntilStart => StartTime - GameLoop.GameLoopTime;
-
         protected AttackAction(GameLiving owner)
         {
             _owner = owner;

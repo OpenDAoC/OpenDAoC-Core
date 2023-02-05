@@ -884,8 +884,6 @@ namespace DOL.GS
                     attackAction.StartTime = owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, speed / 2) : speed;
                 }
             }
-            else if (attackAction.TimeUntilStart is > 0 and < 100)
-                attackAction.StartTime = 100;
 
             return true;
         }

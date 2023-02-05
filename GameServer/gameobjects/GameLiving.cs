@@ -536,14 +536,6 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Gets the swing time left
-		/// </summary>
-		public virtual int SwingTimeLeft
-		{
-            get { return attackComponent.attackAction != null ? (int)attackComponent.attackAction.TimeUntilStart : 0; }
-		}
-
         /// <summary>
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>

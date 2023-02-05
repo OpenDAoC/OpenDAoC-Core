@@ -2,8 +2,8 @@
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.Styles;
 using DOL.GS;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -190,7 +190,9 @@ namespace DOL.AI.Brain
 					}
 					if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
 					{
-						if (CanWalk == false && Body.SwingTimeLeft <= 800)
+						AttackAction attackAction = Body.attackComponent.attackAction;
+
+						if (attackAction != null && attackAction.StartTime - GameLoop.GameLoopTime <= 800 && CanWalk == false)
 						{
 							Body.styleComponent.NextCombatStyle = null;
 							Body.styleComponent.NextCombatBackupStyle = null;

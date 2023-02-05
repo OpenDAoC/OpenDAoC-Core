@@ -18,17 +18,14 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler.Client.v168;
-using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -297,7 +294,7 @@ namespace DOL.GS.Commands
 						if(target.attackComponent.attackAction != null)
 						{
 							info.Add("AttackAction StartTime " + target.attackComponent.attackAction.StartTime);
-							info.Add("AttackAction TimeUntilStart " + target.attackComponent.attackAction.TimeUntilStart);
+							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.StartTime - GameLoop.GameLoopTime));
 						}
 					}
 

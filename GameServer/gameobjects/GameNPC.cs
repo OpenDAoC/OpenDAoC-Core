@@ -4532,46 +4532,6 @@ namespace DOL.GS
 			return GetModified(eProperty.CriticalMeleeHitChance);
 		}
 
-		/// <summary>
-		/// Stop attacking and following, but stay in attack mode (e.g. in
-		/// order to cast a spell instead).
-		/// </summary>
-		public virtual void HoldAttack()
-		{
-			//if (m_attackAction != null)
-			//	m_attackAction.Stop();
-            if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanUp();
-			StopFollowing();
-		}
-
-		/// <summary>
-		/// Continue a previously started attack.
-		/// </summary>
-		public virtual void ContinueAttack(GameObject target)
-		{
-			//if (m_attackAction != null && target != null)
-            if (attackComponent.attackAction != null && target != null)
-            {
-			    Follow(target, STICKMINIMUMRANGE, MaxDistance);
-			    //m_attackAction.Start(1);
-                attackComponent.attackAction.StartTime = 1;
-			}
-		}
-
-        ///// <summary>
-        ///// Stops all attack actions, including following target
-        ///// </summary>
-        //public override void StopAttack()
-        //{
-        //	base.StopAttack();
-        //	StopFollowing();
-
-        //	// Tolakram: If npc has a distance weapon it needs to be made active after attack is stopped
-        //	if (Inventory != null && Inventory.GetItem(eInventorySlot.DistanceWeapon) != null && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-        //		SwitchWeapon(eActiveWeaponSlot.Distance);
-        //}
-
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			if (Brain is StandardMobBrain standardMobBrain)
