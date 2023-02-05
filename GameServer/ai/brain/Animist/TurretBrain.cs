@@ -18,20 +18,21 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS;
 
 namespace DOL.AI.Brain
 {
     public class TurretBrain : ControlledNpcBrain
     {
-        protected readonly List<GameLiving> m_listDefensiveTarget;
+        protected readonly List<GameLiving> m_defensiveSpellTargets;
 
         public TurretBrain(GameLiving owner) : base(owner)
         {
-            m_listDefensiveTarget = new();
+            m_defensiveSpellTargets = new();
         }
 
-        public List<GameLiving> ListDefensiveTarget => m_listDefensiveTarget;
+        public List<GameLiving> DefensiveSpellTargets => m_defensiveSpellTargets;
         public override int AggroRange => ((TurretPet) Body).TurretSpell.Range;
 
         public override void Think()
@@ -147,60 +148,49 @@ namespace DOL.AI.Brain
 
         public GameLiving GetDefensiveTarget(Spell spell)
         {
+            // Clear the current list of invalid or already buffed targets before checking nearby players and NPCs.
+            if (DefensiveSpellTargets.Any())
+            {
+                for (int i = DefensiveSpellTargets.Count - 1; i >= 0; i--)
+                {
+                    GameLiving living = DefensiveSpellTargets[i];
+
+                    if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) || !living.IsAlive || LivingHasEffect(living, spell) || !Body.IsWithinRadius(living, (ushort)spell.Range))
+                        DefensiveSpellTargets.RemoveAt(i);
+                }
+            }
+
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
             {
-                if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
+                if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true) || !player.IsAlive || LivingHasEffect(player, spell))
                     continue;
-
-                if (!player.IsAlive)
-                    continue;
-
-                if (LivingHasEffect(player, spell))
-                {
-                    if (ListDefensiveTarget.Contains(player))
-                        ListDefensiveTarget.Remove(player);
-
-                    continue;
-                }
 
                 if (player == GetPlayerOwner())
                     return player;
 
-                ListDefensiveTarget.Add(player);
+                if (!DefensiveSpellTargets.Contains(player))
+                    DefensiveSpellTargets.Add(player);
             }
 
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
             {
-                if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
+                if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true) || !npc.IsAlive || LivingHasEffect(npc, spell))
                     continue;
 
-                if (!npc.IsAlive)
-                    continue;
-
-                if (LivingHasEffect(npc, spell))
-                {
-                    if (ListDefensiveTarget.Contains(npc))
-                        ListDefensiveTarget.Remove(npc);
-
-                    continue;
-                }
-
-                if (npc == Body)
-                    return Body;
-
-                if (npc == GetLivingOwner())
+                if (npc == Body || npc == GetLivingOwner())
                     return npc;
 
-                ListDefensiveTarget.Add(npc);
+                if (!DefensiveSpellTargets.Contains(npc))
+                    DefensiveSpellTargets.Add(npc);
             }
-            
-            return ListDefensiveTarget.Count > 0 ? ListDefensiveTarget[Util.Random(ListDefensiveTarget.Count - 1)] : null;
+
+            return DefensiveSpellTargets.Count > 0 ? DefensiveSpellTargets[Util.Random(DefensiveSpellTargets.Count - 1)] : null;
         }
 
         public override bool Stop()
         {
             ClearAggroList();
-            ListDefensiveTarget.Clear();
+            DefensiveSpellTargets.Clear();
             return base.Stop();
         }
 

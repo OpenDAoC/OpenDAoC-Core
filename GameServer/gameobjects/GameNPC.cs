@@ -32,11 +32,10 @@ using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using DOL.GS.Spells;
+using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
-using DOL.GS.ServerProperties;
 using ECS.Debug;
 
 namespace DOL.GS
