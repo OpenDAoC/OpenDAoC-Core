@@ -26,6 +26,7 @@ using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.SkillHandler;
+using DOL.GS.Spells;
 using DOL.Language;
 
 namespace DOL.AI.Brain
@@ -1266,11 +1267,10 @@ namespace DOL.AI.Brain
         protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
 
         /// <summary>
-        /// Checks if the living target has a spell effect
+        /// Checks if the living target has a spell effect.
+        /// Only to be used for spell casting purposes.
         /// </summary>
-        /// <param name="target">The target living object</param>
-        /// <param name="spell">The spell to check</param>
-        /// <returns>True if the living has the effect</returns>
+        /// <returns>True if the living has the effect of will receive it by our current spell.</returns>
         public bool LivingHasEffect(GameLiving target, Spell spell)
         {
             if (target == null)
@@ -1291,11 +1291,15 @@ namespace DOL.AI.Brain
                 }
             }*/
 
-            // If we're currently casting 'spell' on 'target', assume it already has the effect. This allows spell queuing while preventing casting on the same target more than once.
-            if (Body.IsCasting && Body.CurrentSpellHandler.Spell.ID == spell.ID && Body.CurrentSpellHandler.Target == target)
+            ISpellHandler spellHandler = Body.castingComponent.spellHandler;
+
+            // If we're currently casting 'spell' on 'target', assume it already has the effect.
+            // This allows spell queuing while preventing casting on the same target more than once.
+            if (spellHandler != null && spellHandler.Spell.ID == spell.ID && spellHandler.Target == target)
                 return true;
+
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
-            else if (spell.SpellType is (byte)eSpellType.OffensiveProc or (byte)eSpellType.DefensiveProc)
+            if (spell.SpellType is (byte)eSpellType.OffensiveProc or (byte)eSpellType.DefensiveProc)
             {
                 if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<ECSGameEffect> existingEffects))
                 {

@@ -6945,12 +6945,12 @@ namespace DOL.GS
 				return false;
 			}
 
-			return castingComponent.StartCastSpell(spell, line);
+			return castingComponent.StartCastSpell(spell, line, null, TargetObject as GameLiving);
 		}
 
 		// Should only be used when the target of the spell is different than the currenctly selected one.
 		// Which can happen during LoS checks, since we're not waiting for the check to complete to perform other actions.
-		protected bool CastSpellWithTarget(Spell spell, SpellLine line, GameLiving target)
+		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target)
 		{
 			if (IsStunned || IsMezzed)
 			{

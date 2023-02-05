@@ -149,15 +149,12 @@ namespace DOL.AI.Brain
         public GameLiving GetDefensiveTarget(Spell spell)
         {
             // Clear the current list of invalid or already buffed targets before checking nearby players and NPCs.
-            if (DefensiveSpellTargets.Any())
+            for (int i = DefensiveSpellTargets.Count - 1; i >= 0; i--)
             {
-                for (int i = DefensiveSpellTargets.Count - 1; i >= 0; i--)
-                {
-                    GameLiving living = DefensiveSpellTargets[i];
+                GameLiving living = DefensiveSpellTargets[i];
 
-                    if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) || !living.IsAlive || LivingHasEffect(living, spell) || !Body.IsWithinRadius(living, (ushort)spell.Range))
-                        DefensiveSpellTargets.RemoveAt(i);
-                }
+                if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) || !living.IsAlive || LivingHasEffect(living, spell) || !Body.IsWithinRadius(living, (ushort)spell.Range))
+                    DefensiveSpellTargets.RemoveAt(i);
             }
 
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
@@ -184,7 +181,7 @@ namespace DOL.AI.Brain
                     DefensiveSpellTargets.Add(npc);
             }
 
-            return DefensiveSpellTargets.Count > 0 ? DefensiveSpellTargets[Util.Random(DefensiveSpellTargets.Count - 1)] : null;
+            return DefensiveSpellTargets.Any() ? DefensiveSpellTargets[Util.Random(DefensiveSpellTargets.Count - 1)] : null;
         }
 
         public override bool Stop()

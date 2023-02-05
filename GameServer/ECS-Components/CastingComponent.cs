@@ -52,8 +52,8 @@ namespace DOL.GS
 
             ISpellHandler m_newSpellHandler = ScriptMgr.CreateSpellHandler(owner, spell, line);
 
-            // Use the passed down target instead of whatever 'GameLiving.TargetObject' will return.
-            // This is because it may not match the real target of the spell, due to LoS check delays (affects NPCs only).
+            // 'GameLiving.TargetObject' is used by 'SpellHandler.Tick()' but is likely to change during LoS checks or for queued spells (affects NPCs only).
+            // So we pre-initialize 'SpellHandler.Target' with the passed down target, if there's any.
             if (target != null)
                 m_newSpellHandler.Target = target;
 
@@ -61,8 +61,6 @@ namespace DOL.GS
             m_newSpellHandler.Ability = spellCastingAbilityHandler;
 
             // Performing the first tick here since 'SpellHandler' relies on the owner's target, which may get cleared before 'Tick()' is called by the casting service.
-            // Eventually, the target should instead be passed to 'ScriptMgr.CreateSpellHandler()', and SpellHandler.Tick() use it instead of 'GameLiving.TargetObject'.
-            // Update: May no longer be necessary since 'GameLiving.CastSpellWithTarget()' can now be used to create a spell handler with a different target than GameLiving.TargetObject'.
             if (spellHandler != null)
             {
                 if (spellHandler.Spell != null && spellHandler.Spell.IsFocus)

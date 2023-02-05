@@ -5174,7 +5174,7 @@ namespace DOL.GS
 						livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
 						target = livingTarget.ControlledBrain?.Body;
 
-					CastSpellWithTarget(spell, line, target as GameLiving);
+					CastSpell(spell, line, target as GameLiving);
 				}
 				else
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
