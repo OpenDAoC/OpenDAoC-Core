@@ -16,10 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*
- * [Ganrod] Nidel 2008-07-08
- * - Corrections for Bomber actions.
- */
+
 using System;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -30,12 +27,15 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Bomber")]
     public class BomberSpellHandler : SummonSpellHandler
     {
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		const string BOMBERTARGET = "bombertarget";
-        const string BOMBERSPAWNTICK = "bomberspawntick";
+        private const string BOMBER_TARGET = "bombertarget";
+        private const string BOMBER_SPAWN_TICK = "bomberspawntick";
 
-		public BomberSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { m_isSilent = true; }
+        public BomberSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
+        {
+            m_isSilent = true;
+        }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
@@ -48,38 +48,21 @@ namespace DOL.GS.Spells
             return base.CheckBeginCast(selectedTarget);
         }
 
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-            if (Spell.Target.ToLower() == "pet")
-            {
-                Spell subspell = SkillBase.GetSpellByID(m_spell.SubSpellID);
-
-                if (subspell != null && subspell.IsHealing && Caster?.TargetObject is TurretPet)
-                    target = (GameLiving)Caster.TargetObject;
-                else
-                    target = Caster?.ControlledBrain?.Body;
-
-                if (target is null || !target.IsWithinRadius(Caster, subspell.Range))
-                    return;
-            }
-
             base.ApplyEffectOnTarget(target, effectiveness);
+
             if (m_pet is not null)
-            {   
-                m_pet.Level = m_pet.Owner?.Level ?? (byte)1; // No bomber class to override SetPetLevel() in, so set level here
-                m_pet.TempProperties.setProperty(BOMBERTARGET, target);
-                m_pet.TempProperties.setProperty(BOMBERSPAWNTICK, GameLoop.GameLoopTime);
+            {
+                m_pet.Level = m_pet.Owner?.Level ?? 1; // No bomber class to override SetPetLevel() in, so set level here.
+                m_pet.TempProperties.setProperty(BOMBER_TARGET, target);
+                m_pet.TempProperties.setProperty(BOMBER_SPAWN_TICK, GameLoop.GameLoopTime);
                 m_pet.Name = Spell.Name;
                 m_pet.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
                 m_pet.Flags ^= GameNPC.eFlags.PEACE;
                 m_pet.FixedSpeed = true;
                 m_pet.MaxSpeedBase = 350;
-                m_pet.Follow(target, 5, Spell.Range * 5); // with Toa bonus, if the bomber was fired > Spell.Range base, it didnt move..
+                m_pet.Follow(target, 5, Spell.Range * 5);
             }
         }
 
@@ -97,56 +80,43 @@ namespace DOL.GS.Spells
         {
             return new BomberBrain(owner);
         }
-        protected override void SetBrainToOwner(IControlledBrain brain)
-        {
-        }
-        protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
-        {
-        }
 
-        /// <summary>
-        /// Called when the Bomber reaches his target
-        /// </summary>
+        protected override void SetBrainToOwner(IControlledBrain brain) { }
+
+        protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments) { }
+
         private void BomberArriveAtTarget(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC bomber = sender as GameNPC;
 
-            //[Ganrod] Nidel: Prevent NPE
             if (bomber == null || m_pet == null || bomber != m_pet)
                 return;
 
-            //[Ganrod] Nidel: Abort and delete bomber if Spell or Target is NULL
-            Spell subspell = SkillBase.GetSpellByID(m_spell.SubSpellID);
-            GameLiving living = m_pet.TempProperties.getProperty<object>(BOMBERTARGET, null) as GameLiving;
+            Spell subSpell = SkillBase.GetSpellByID(m_spell.SubSpellID);
+            GameLiving living = m_pet.TempProperties.getProperty<object>(BOMBER_TARGET, null) as GameLiving;
 
-            if (subspell == null || living == null)
+            if (subSpell == null || living == null)
             {
-                if (log.IsErrorEnabled && subspell == null)
+                if (log.IsErrorEnabled && subSpell == null)
                     log.Error("Bomber SubspellID for Bomber SpellID: " + m_spell.ID + " is not implemented yet");
+
                 bomber.Health = 0;
                 bomber.Delete();
                 return;
             }
 
-            //Andraste
-            subspell.Level = m_spell.Level;
+            subSpell.Level = m_spell.Level;
+
             if (living.IsWithinRadius(bomber, 350))
             {
-				ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(Caster, subspell, SkillBase.GetSpellLine(SpellLine.KeyName));
-                spellhandler.StartSpell(living);
+                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(Caster, subSpell, SkillBase.GetSpellLine(SpellLine.KeyName));
+                spellHandler.StartSpell(living);
             }
 
-            //[Ganrod] Nidel: Delete Bomber after all actions.
             bomber.Health = 0;
             bomber.Delete();
         }
-		
-		/// <summary>
-		/// Do not trigger SubSpells
-		/// </summary>
-		/// <param name="target"></param>
-		public override void CastSubSpells(GameLiving target)
-		{
-		}
+
+        public override void CastSubSpells(GameLiving target) { }
     }
 }
