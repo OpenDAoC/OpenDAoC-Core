@@ -709,11 +709,14 @@ namespace DOL.GS.Spells
 			string targetType = m_spell.Target.ToLower();
 
 			if (targetType == "pet")
-			{ 
-				if (selectedTarget == null || !Caster.IsControlledNPC(selectedTarget as GameNPC) || (selectedTarget != null && selectedTarget != Caster.ControlledBrain?.Body))
+			{
+				if (selectedTarget == null ||
+					!Caster.IsControlledNPC(selectedTarget as GameNPC) ||
+					(selectedTarget != null && selectedTarget != Caster.ControlledBrain?.Body && this is not TurretsReleaseSpellHandler))
 				{
 					if (!quiet)
 						MessageToCaster("You must cast this spell on a creature you are controlling.", eChatType.CT_System);
+
 					return false;
 				}
 			}
