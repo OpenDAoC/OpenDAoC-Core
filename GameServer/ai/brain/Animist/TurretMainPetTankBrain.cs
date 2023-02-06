@@ -24,18 +24,19 @@ namespace DOL.AI.Brain
     {
         public TurretMainPetTankBrain(GameLiving owner) : base(owner) { }
 
-        public override bool CheckSpells(eCheckSpellType type)
+        protected override bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target)
         {
-            // Tank turret doesn't check for spells if its target is close, and attacks instead.
-            if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange))
+            // Tank turrets don't check for spells if their target is close, but attack in melee instead.
+            if (Body.IsWithinRadius(target, Body.attackComponent.AttackRange))
             {
-                Body.StartAttack(Body.TargetObject);
+                Body.StopCurrentSpellcast();
+                Body.StartAttack(target);
                 return true;
             }
             else
             {
                 Body.StopAttack();
-                return base.CheckSpells(type) || Body.IsCasting;
+                return base.TrustCast(spell, type, target);
             }
         }
     }
