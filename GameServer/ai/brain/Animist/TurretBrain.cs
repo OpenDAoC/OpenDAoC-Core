@@ -117,16 +117,8 @@ namespace DOL.AI.Brain
                 Body.StopAttack();
                 return Body.CastSpell(spell, m_mobSpellLine, false);
             }
-            else
-            {
-                if (Body.IsAttacking)
-                    Body.StopAttack();
 
-                if (Body.SpellTimer != null && Body.SpellTimer.IsAlive)
-                    Body.SpellTimer.Stop();
-
-                return false;
-            }
+            return false;
         }
 
         private GameLiving GetDefensiveTarget(Spell spell)

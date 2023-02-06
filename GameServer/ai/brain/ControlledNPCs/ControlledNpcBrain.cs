@@ -1048,9 +1048,6 @@ namespace DOL.AI.Brain
 				if (Body.IsAttacking)
 					Body.StopAttack();
 
-				if (Body.SpellTimer != null && Body.SpellTimer.IsAlive)
-					Body.SpellTimer.Stop();
-
 				if (WalkState == eWalkState.Follow)
 					FollowOwner();
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)

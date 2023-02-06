@@ -3928,18 +3928,6 @@ namespace DOL.GS
 				m_lastAttackTickPvP = GameLoop.GameLoopTime;
 		}
 
-		public void StartMeleeAttackTimer()
-		{
-			if (attackComponent.Attackers.Count == 0)
-			{
-				if (SpellTimer == null)
-					SpellTimer = new SpellAction(this);
-
-				if (!SpellTimer.IsAlive)
-					SpellTimer.Start(1);
-			}
-		}
-
 		/// <summary>
 		/// Returns the Damage this NPC does on an attack, adding 2H damage bonus if appropriate
 		/// </summary>
@@ -4796,7 +4784,6 @@ namespace DOL.GS
 		#region Spell
 
 		private List<Spell> m_spells = new List<Spell>(0);
-		private SpellAction m_spellaction = null;
 		private ConcurrentDictionary<GameObject, Tuple<Spell, SpellLine, long>> m_spellTargetLosChecks = new();
 
 		/// <summary>
@@ -4983,76 +4970,6 @@ namespace DOL.GS
 			} // foreach
 
 			//SortedSpells = true;
-		}
-
-		/// <summary>
-		/// The timer that controls an npc's spell casting
-		/// </summary>
-		public SpellAction SpellTimer
-		{
-			get { return m_spellaction; }
-			set { m_spellaction = value; }
-		}
-
-		/// <summary>
-		/// The spell action of this living
-		/// </summary>
-		public class SpellAction : RegionECSAction
-		{
-			/// <summary>
-			/// Constructs a new attack action
-			/// </summary>
-			/// <param name="owner">The action source</param>
-			public SpellAction(GameLiving owner)
-				: base(owner)
-			{
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameNPC owner = null;
-				if (m_actionSource != null && m_actionSource is GameNPC)
-					owner = (GameNPC)m_actionSource;
-				else
-				{
-					Stop();
-					return 0;
-				}
-
-				if (owner.TargetObject == null || !owner.attackComponent.AttackState)
-				{
-					Stop();
-					return 0;
-				}
-
-				//If we started casting a spell, stop the timer and wait for
-				//GameNPC.OnAfterSpellSequenceCast to start again
-				if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
-				{
-					Stop();
-					return 0;
-				}
-				else
-				{
-					//If we aren't a distance NPC, lets make sure we are in range to attack the target!
-					if (owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance && !owner.IsWithinRadius(owner.TargetObject, STICKMINIMUMRANGE))
-						((GameNPC)owner).Follow(owner.TargetObject, STICKMINIMUMRANGE, STICKMAXIMUMRANGE);
-				}
-
-				if (owner.Brain != null)
-				{
-					Interval = Math.Min(1500, owner.Brain.CastInterval);
-				}
-				else
-				{
-					Interval = 1500;
-				}
-
-				return Interval;
-			}
 		}
 
 		/// <summary>

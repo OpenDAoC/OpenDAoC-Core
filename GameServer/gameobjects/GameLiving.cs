@@ -6842,7 +6842,6 @@ namespace DOL.GS
 
 			//if (m_attackAction != null) m_attackAction.Stop();
             if (attackComponent.attackAction != null) attackComponent.attackAction.CleanUp();
-			if (this is GameNPC && ((GameNPC)this).SpellTimer != null) ((GameNPC)this).SpellTimer.Stop();
 			if (m_healthRegenerationTimer != null) m_healthRegenerationTimer.Stop();
 			if (m_powerRegenerationTimer != null) m_powerRegenerationTimer.Stop();
 			if (m_enduRegenerationTimer != null) m_enduRegenerationTimer.Stop();

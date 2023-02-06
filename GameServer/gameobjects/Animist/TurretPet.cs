@@ -77,18 +77,11 @@ namespace DOL.GS
             }
 
             TargetObject = attackTarget;
+
             if (TargetObject.Realm == 0 || Realm == 0)
                 m_lastAttackTickPvE = GameLoop.GameLoopTime;
             else
                 m_lastAttackTickPvP = GameLoop.GameLoopTime;
-
-            if (attackComponent.Attackers.Count == 0)
-            {
-                if (SpellTimer == null)
-                    SpellTimer = new SpellAction(this);
-                if (!SpellTimer.IsAlive)
-                    SpellTimer.Start(1);
-            }
 
             if (Brain is TurretMainPetTankBrain)
             {
