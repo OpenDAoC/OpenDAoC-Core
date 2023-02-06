@@ -1938,37 +1938,39 @@ namespace DOL.GS.Spells
 					#region Pet
 				case "pet":
 					{
-						//Start-- [Ganrod] Nidel: Can cast Pet spell on our Minion/Turret pet without ControlledNpc
-						// awesome, Pbaoe with target pet spell ?^_^
+						// PBAE spells.
 						if (modifiedRadius > 0 && Spell.Range == 0)
 						{
-							foreach (GameNPC pet in Caster.GetNPCsInRadius(modifiedRadius))
+							foreach (GameNPC npcInRadius in Caster.GetNPCsInRadius(modifiedRadius))
 							{
-								if (Caster.IsControlledNPC(pet))
-									list.Add(pet);
+								if (Caster.IsControlledNPC(npcInRadius))
+									list.Add(npcInRadius);
 							}
+
 							return list;
 						}
+
 						if (target == null)
 							break;
 
-						var petBody = target as GameNPC;
-						// check target
-						if (petBody != null && Caster.IsWithinRadius(petBody, Spell.Range))
+						GameNPC pet = target as GameNPC;
+
+						if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
 						{
-							if (Caster.IsControlledNPC(petBody))
-								list.Add(petBody);
+							if (Caster.IsControlledNPC(pet))
+								list.Add(pet);
 						}
-						//check controllednpc if target isn't pet (our pet)
-						if (list.Count < 1 && Caster.ControlledBrain != null)
+
+						// Check 'ControlledBrain' if 'target' isn't a valid target.
+						if (!list.Any() && Caster.ControlledBrain != null)
 						{
 							if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
 							{
-								foreach (var pet in player.GetNPCsInRadius((ushort) Spell.Range))
+								foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
 								{
-									if (pet is CommanderPet commander && commander.Owner == player)
+									if (npcInRadius is CommanderPet commander && commander.Owner == player)
 										list.Add(commander);
-									else if (pet is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
+									else if (npcInRadius is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
 									{
 										if (!Spell.IsHealing)
 											list.Add(subpet);
@@ -1977,30 +1979,29 @@ namespace DOL.GS.Spells
 							}
 							else
 							{
-								petBody = Caster.ControlledBrain.Body;
-								if (petBody != null && Caster.IsWithinRadius(petBody, Spell.Range))
-									list.Add(petBody);
+								pet = Caster.ControlledBrain.Body;
+
+								if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+									list.Add(pet);
 							}
 						}
 
-						//Single spell buff/heal...
 						if (Spell.Radius == 0)
-						{
 							return list;
-						}
-						//Our buff affects every pet in the area of targetted pet (our pets)
-						if (Spell.Radius > 0 && petBody != null)
+
+						// Buffs affect every pet around the targetted pet (same owner).
+						if (pet != null)
 						{
-							foreach (GameNPC pet in petBody.GetNPCsInRadius(modifiedRadius))
+							foreach (GameNPC npcInRadius in pet.GetNPCsInRadius(modifiedRadius))
 							{
-								//ignore target or our main pet already added
-								if (pet == petBody || !Caster.IsControlledNPC(pet))
+								if (npcInRadius == pet || !Caster.IsControlledNPC(npcInRadius) || npcInRadius.Brain is BomberBrain)
 									continue;
-								list.Add(pet);
+
+								list.Add(npcInRadius);
 							}
 						}
 					}
-					//End-- [Ganrod] Nidel: Can cast Pet spell on our Minion/Turret pet without ControlledNpc
+
 					break;
 				case "bdsubpet":
 					{ 
