@@ -2601,51 +2601,31 @@ namespace DOL.GS
                 return eAttackResult.Fumbled;
 
             ad.MissRate = missrate;
-            //Console.WriteLine($"Final missrate {missrate}");
-            double rando = 0;
-            bool skipDeckUsage = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+            double rand;
+
             if (missrate > 0)
             {
-                if (ad.Attacker is GamePlayer atkkr && !skipDeckUsage)
-                {
-                    rando = atkkr.RandomNumberDeck.GetPseudoDouble();
-                }
-                else
-                {
-                    rando = Util.CryptoNextDouble();
-                }
+                rand = !Properties.OVERRIDE_DECK_RNG && ad.Attacker is GamePlayer playerAttacker ? playerAttacker.RandomNumberDeck.GetPseudoDouble() : Util.CryptoNextDouble();
 
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
-                    misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {(rando * 100).ToString("0.##")}", eChatType.CT_DamageAdd,
-                        eChatLoc.CL_SystemWindow);
-                    misser.Out.SendMessage($"Your chance to fumble: {(100 * ad.Attacker.ChanceToFumble).ToString("0.##")}% rand: {(100 * rando).ToString("0.##")}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"miss rate on target: {missrate}% rand: {rand * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * rand:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                
                 if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
-                    missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {(rando * 100).ToString("0.##")}", eChatType.CT_DamageAdd,
-                        eChatLoc.CL_SystemWindow);
+                    missee.Out.SendMessage($"chance to be missed: {missrate}% rand: {rand * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                //check for normal fumbles
-                //NOTE: fumbles are a subset of misses, and a player can only fumble if the attack would have
-                //been a miss anyways
-                if (ad.Attacker.ChanceToFumble > rando)
-                    return eAttackResult.Fumbled;
-
-                if (missrate > rando * 100)
+                // Check for normal fumbles.
+                // NOTE: fumbles are a subset of misses, and a player can only fumble if the attack would have been a miss anyways.
+                if (missrate > rand * 100)
                 {
+                    if (ad.Attacker.ChanceToFumble > rand)
+                        return eAttackResult.Fumbled;
+
                     return eAttackResult.Missed;
                 }
             }
-
-            /*
-            if (ad.IsRandomFumble)
-                return eAttackResult.Fumbled;
-
-            if (ad.IsRandomMiss)
-                return eAttackResult.Missed;*/
-
 
             // Bladeturn
             // TODO: high level mob attackers penetrate bt, players are tested and do not penetrate (lv30 vs lv20)
