@@ -1653,6 +1653,9 @@ namespace DOL.GS
                 case eAttackResult.Evaded:
                     message = string.Format("{0} attacks {1} and is evaded!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
                     break;
+                case eAttackResult.Fumbled:
+                    message = string.Format("{0} fumbled!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    break;
                 case eAttackResult.Missed:
                     message = string.Format("{0} attacks {1} and misses!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
                     if (ad.MissRate > 0)
