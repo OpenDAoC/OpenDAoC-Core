@@ -1658,8 +1658,6 @@ namespace DOL.GS
                     break;
                 case eAttackResult.Missed:
                     message = string.Format("{0} attacks {1} and misses!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
-                    if (ad.MissRate > 0)
-                        message += $" ({ad.MissRate}%)";
                     break;
                 case eAttackResult.Blocked:
                 {
@@ -1825,42 +1823,50 @@ namespace DOL.GS
             if (ad.Attacker is GameNPC)
             {
                 IControlledBrain brain = ((GameNPC) ad.Attacker).Brain as IControlledBrain;
+
                 if (brain != null)
                 {
                     GamePlayer owner = brain.GetPlayerOwner();
+
                     if (owner != null)
                     {
                         excludes.Add(owner);
+
                         switch (ad.AttackResult)
                         {
                             case eAttackResult.HitStyle:
                             case eAttackResult.HitUnstyled:
                             {
                                 string modmessage = "";
-                                if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                                if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
-                                string attackTypeMsg = "attacks";
-                                if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                                {
-                                    attackTypeMsg = "shoots";
-                                }
 
-                                owner.Out.SendMessage(
-                                    string.Format(
-                                        LanguageMgr.GetTranslation(owner.Client.Account.Language,
-                                            "GameLiving.AttackData.YourHits"), ad.Attacker.Name, attackTypeMsg,
-                                        ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit,
-                                    eChatLoc.CL_SystemWindow);
+                                if (ad.Modifier > 0)
+                                    modmessage = $" (+{ad.Modifier})";
+                                else if (ad.Modifier < 0)
+                                    modmessage = $" ({ad.Modifier})";
+
+                                string attackTypeMsg;
+
+                                if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                                    attackTypeMsg = "shoots";
+                                else
+                                    attackTypeMsg = "attacks";
+
+                                owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourHits"),
+                                    ad.Attacker.Name, attackTypeMsg, ad.Target.GetName(0, false), ad.Damage, modmessage),
+                                    eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+
                                 if (ad.CriticalDamage > 0)
                                 {
-                                    owner.Out.SendMessage(
-                                        string.Format(
-                                            LanguageMgr.GetTranslation(owner.Client.Account.Language,
-                                                "GameLiving.AttackData.YourCriticallyHits"), ad.Attacker.Name,
-                                            ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(null, ad.Weapon)}%)", eChatType.CT_YouHit,
-                                        eChatLoc.CL_SystemWindow);
+                                    owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourCriticallyHits"),
+                                        ad.Attacker.Name, ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(null, ad.Weapon)}%)",
+                                        eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
                                 }
 
+                                break;
+                            }
+                            case eAttackResult.Missed:
+                            {
+                                owner.Out.SendMessage(message + $" ({ad.MissRate}%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                                 break;
                             }
                             default:
