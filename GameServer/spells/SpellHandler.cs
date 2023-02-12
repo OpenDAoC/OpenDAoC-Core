@@ -1248,8 +1248,8 @@ namespace DOL.GS.Spells
 			switch (CastState)
 			{
 				case eCastState.Precast:
-					if (Spell.Target is "Self" or "Group")
-						// Self and group spells should ignore whatever we actually have selected.
+					if (Spell.Target == "Self")
+						// Self spells should ignore whatever we actually have selected.
 						Target = Caster;
 					else if (Spell.Target == "Pet")
 					{ 
