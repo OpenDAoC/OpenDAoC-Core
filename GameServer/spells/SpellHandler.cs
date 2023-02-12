@@ -2408,23 +2408,21 @@ namespace DOL.GS.Spells
 			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
 			else if (Target == null)
-			{
-				if (target == null)
-					return false;
-
 				Target = target;
-			}
 
-			if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.Range)))
+			if (Target != null)
 			{
-				Caster.CancelFocusSpell();
-				return false;
-			}
+				if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.Range)))
+				{
+					Caster.CancelFocusSpell();
+					return false;
+				}
 
-			if (HasPositiveEffect && Target is GamePlayer p && Caster is GamePlayer c && Target != Caster && p.NoHelp)
-			{
-				c.Out.SendMessage(Target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				return false;
+				if (HasPositiveEffect && Target is GamePlayer p && Caster is GamePlayer c && Target != Caster && p.NoHelp)
+				{
+					c.Out.SendMessage(Target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					return false;
+				}
 			}
 
 			IList<GameLiving> targets;
