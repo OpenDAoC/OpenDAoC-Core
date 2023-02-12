@@ -2496,8 +2496,8 @@ namespace DOL.GS.Spells
 					if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
 						spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-					if (Target is GamePlayer spellTarg && spellTarg.UseDetailedCombatLog)
-						spellTarg.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					if (t is GamePlayer spellTarget && spellTarget.UseDetailedCombatLog)
+						spellTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 					if (spellResistChance > randNum)
 					{
