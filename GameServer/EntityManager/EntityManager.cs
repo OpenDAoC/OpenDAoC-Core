@@ -7,13 +7,10 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
-        private static int maxEntities = ServerProperties.Properties.MAX_ENTITIES;
-        private static int maxPlayers = ServerProperties.Properties.MAX_PLAYERS;
-        
-        private static List<GamePlayer> _players = new(maxPlayers);
+        private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
         private static object _playersLock = new();
 
-        private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
+        private static GameLiving[] _npcsArray = new GameLiving[ServerProperties.Properties.MAX_ENTITIES];
         private static SortedSet<int> _deletedNpcIndexes = new();
 
         private static List<ECSGameEffect> _effects = new(50000);
