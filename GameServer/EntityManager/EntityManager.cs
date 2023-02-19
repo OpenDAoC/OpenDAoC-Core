@@ -24,7 +24,7 @@ namespace DOL.GS
 
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
 
-        public static int LastNonNullNpcIndex { get; private set; }
+        public static int LastNonNullNpcIndex { get; private set; } = -1;
 
         public static void AddService(Type t)
         {

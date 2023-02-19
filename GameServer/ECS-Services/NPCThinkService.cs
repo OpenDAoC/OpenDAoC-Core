@@ -1,16 +1,11 @@
-﻿using DOL.AI.Brain;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ECS.Debug;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Diagnostics;
-using System.Buffers;
-using log4net;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using DOL.AI.Brain;
+using ECS.Debug;
+using log4net;
 
 namespace DOL.GS
 {
@@ -67,8 +62,10 @@ namespace DOL.GS
                 NumNullSlots = 0;
             }
 
-            Parallel.ForEach(arr, npc =>
+            Parallel.For(0, EntityManager.LastNonNullNpcIndex + 1, i =>
             {
+                GameLiving npc = arr[i];
+
                 try
                 {
                     if (npc == null)
