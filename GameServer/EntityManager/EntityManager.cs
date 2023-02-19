@@ -10,8 +10,9 @@ namespace DOL.GS
         private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
         private static object _playersLock = new();
 
-        private static GameLiving[] _npcsArray = new GameLiving[ServerProperties.Properties.MAX_ENTITIES];
+        private static GameLiving[] _npcs = new GameLiving[ServerProperties.Properties.MAX_ENTITIES];
         private static SortedSet<int> _deletedNpcIndexes = new();
+        private static object _npcsArrayLock = new();
 
         private static List<ECSGameEffect> _effects = new(50000);
         private static object _effectsLock = new();
@@ -94,18 +95,18 @@ namespace DOL.GS
 
         public static GameLiving[] GetAllNpcs()
         {
-            return _npcsArray;
+            return _npcs;
         }
 
         public static int AddNpc(GameLiving o)
         {
-            lock (_npcsArray)
+            lock (_npcs)
             {
                 if (_deletedNpcIndexes.Any())
                 {
                     int index = _deletedNpcIndexes.Min;
                     _deletedNpcIndexes.Remove(index);
-                    _npcsArray[index] = o;
+                    _npcs[index] = o;
 
                     if (index > LastNonNullNpcIndex)
                         LastNonNullNpcIndex = index;
@@ -115,7 +116,7 @@ namespace DOL.GS
                 else
                 {
                     LastNonNullNpcIndex++;
-                    _npcsArray[LastNonNullNpcIndex] = o;
+                    _npcs[LastNonNullNpcIndex] = o;
                     return LastNonNullNpcIndex;
                 }
             }
@@ -123,9 +124,9 @@ namespace DOL.GS
 
         public static void RemoveNpc(GameLiving o)
         {
-            lock (_npcsArray)
+            lock (_npcs)
             {
-                _npcsArray[o.id] = null;
+                _npcs[o.id] = null;
 
                 if (o.id == LastNonNullNpcIndex)
                 {
