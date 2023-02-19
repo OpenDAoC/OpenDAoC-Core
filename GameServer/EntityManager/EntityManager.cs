@@ -95,12 +95,9 @@ namespace DOL.GS
             }
         }
 
-        public static ref GameLiving[] GetAllNpcsArrayRef()
+        public static GameLiving[] GetAllNpcs()
         {
-            lock (_npcsArray)
-            {
-                return ref _npcsArray;
-            }
+            return _npcsArray;
         }
 
         public static int AddNpc(GameLiving o)

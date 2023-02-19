@@ -53,7 +53,7 @@ namespace DOL.GS
 
             Diagnostics.StartPerfCounter(ServiceName);
 
-            GameLiving[] arr = EntityManager.GetAllNpcsArrayRef();
+            GameLiving[] arr = EntityManager.GetAllNpcs();
             
             if (thinkTimer)
             {
