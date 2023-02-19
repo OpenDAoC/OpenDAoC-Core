@@ -14,7 +14,7 @@ namespace DOL.GS
         private static object _playersLock = new();
 
         private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
-        private static int? _npcsLastDeleted = null;
+        private static SortedSet<int> _deletedNpcIndexes = new();
 
         private static List<ECSGameEffect> _effects = new(50000);
         private static object _effectsLock = new();
@@ -107,18 +107,22 @@ namespace DOL.GS
         {
             lock (_npcsArray)
             {
-                if (_npcsLastDeleted == null)
+                if (_deletedNpcIndexes.Any())
+                {
+                    int index = _deletedNpcIndexes.Min;
+                    _deletedNpcIndexes.Remove(index);
+                    _npcsArray[index] = o;
+
+                    if (index > LastNonNullNpcIndex)
+                        LastNonNullNpcIndex = index;
+
+                    return index;
+                }
+                else
                 {
                     LastNonNullNpcIndex++;
                     _npcsArray[LastNonNullNpcIndex] = o;
                     return LastNonNullNpcIndex;
-                }
-                else
-                {
-                    int last_id = (int)_npcsLastDeleted;
-                    _npcsArray[(int)_npcsLastDeleted] = o;
-                    _npcsLastDeleted = null;
-                    return last_id;
                 }
             }
         }
@@ -128,7 +132,16 @@ namespace DOL.GS
             lock (_npcsArray)
             {
                 _npcsArray[o.id] = null;
-                _npcsLastDeleted = o.id;
+
+                if (o.id == LastNonNullNpcIndex)
+                {
+                    if (_deletedNpcIndexes.Any())
+                        LastNonNullNpcIndex = _deletedNpcIndexes.Min - 1;
+                    else
+                        LastNonNullNpcIndex--;
+                }
+                else
+                    _deletedNpcIndexes.Add(o.id);
             }
         }
 
