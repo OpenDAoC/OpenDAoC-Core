@@ -5748,7 +5748,7 @@ namespace DOL.GS
 				m_ownBrain.Body = this;
 			}
 
-			id = EntityManager.AddNpc(this);
+			EntityManagerId = EntityManager.AddNpc(this);
 		}
 
 		/// <summary>

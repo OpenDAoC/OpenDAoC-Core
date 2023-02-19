@@ -45,16 +45,16 @@ namespace DOL.GS
 	/// </summary>
 	public abstract class GameLiving : GameObject
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public int id;
 		public AttackComponent attackComponent;
 		public CraftComponent craftComponent;
 		public RangeAttackComponent rangeAttackComponent;
 		public StyleComponent styleComponent;
 		public int UsedConcentration;
 
-		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; set; } = new();
+		public int EntityManagerId { get; protected set; }
+		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; private set; } = new();
 
 		#region Combat
 		/// <summary>

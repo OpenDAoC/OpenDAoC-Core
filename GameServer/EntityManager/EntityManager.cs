@@ -126,9 +126,9 @@ namespace DOL.GS
         {
             lock (_npcsLock)
             {
-                _npcs[o.id] = null;
+                _npcs[o.EntityManagerId] = null;
 
-                if (o.id == LastNonNullNpcIndex)
+                if (o.EntityManagerId == LastNonNullNpcIndex)
                 {
                     if (_deletedNpcIndexes.Any())
                         LastNonNullNpcIndex = _deletedNpcIndexes.Min - 1;
@@ -136,7 +136,7 @@ namespace DOL.GS
                         LastNonNullNpcIndex--;
                 }
                 else
-                    _deletedNpcIndexes.Add(o.id);
+                    _deletedNpcIndexes.Add(o.EntityManagerId);
             }
         }
 
