@@ -53,7 +53,7 @@ namespace DOL.GS
 
             Diagnostics.StartPerfCounter(ServiceName);
 
-            GameLiving[] arr = EntityManager.GetAllNpcs();
+            GameNPC[] arr = EntityManager.GetAllNpcs();
             
             if (thinkTimer)
             {
@@ -64,7 +64,7 @@ namespace DOL.GS
 
             Parallel.For(0, EntityManager.LastNonNullNpcIndex + 1, i =>
             {
-                GameLiving npc = arr[i];
+                GameNPC npc = arr[i];
 
                 try
                 {
@@ -81,11 +81,10 @@ namespace DOL.GS
                         Interlocked.Increment(ref NumOfNPCs);
                     }
                     
-                    
-                    if (npc is GameNPC && (npc as GameNPC).Brain != null)
-                    {
-                        var brain = (npc as GameNPC).Brain;
+                    var brain = npc.Brain;
 
+                    if (brain != null)
+                    {
                         if (brain.IsActive && brain.LastThinkTick + brain.ThinkInterval < tick)
                         {
                             if (thinkTimer)
