@@ -7,15 +7,14 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
-        public static int maxEntities = ServerProperties.Properties.MAX_ENTITIES;
-        public static int maxPlayers = ServerProperties.Properties.MAX_PLAYERS;
+        private static int maxEntities = ServerProperties.Properties.MAX_ENTITIES;
+        private static int maxPlayers = ServerProperties.Properties.MAX_PLAYERS;
         
         private static List<GamePlayer> _players = new(maxPlayers);
         private static object _playersLock = new();
 
         private static GameLiving[] _npcsArray = new GameLiving[maxEntities];
         private static int? _npcsLastDeleted = null;
-        private static int _npcsCount = 0;
 
         private static List<ECSGameEffect> _effects = new(50000);
         private static object _effectsLock = new();
@@ -24,6 +23,8 @@ namespace DOL.GS
         private static object _servicesLock = new();
 
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
+
+        public static int LastNonNullNpcIndex { get; private set; }
 
         public static void AddService(Type t)
         {
@@ -108,9 +109,9 @@ namespace DOL.GS
             {
                 if (_npcsLastDeleted == null)
                 {
-                    _npcsArray[_npcsCount] = o;
-                    _npcsCount++;
-                    return (_npcsCount - 1);
+                    LastNonNullNpcIndex++;
+                    _npcsArray[LastNonNullNpcIndex] = o;
+                    return LastNonNullNpcIndex;
                 }
                 else
                 {
