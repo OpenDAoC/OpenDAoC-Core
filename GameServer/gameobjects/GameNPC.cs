@@ -4131,9 +4131,7 @@ namespace DOL.GS
 
 				Delete();
 				TempProperties.removeAllProperties();
-
-				if (this is not GameSummonedPet and not SINeckBoss)
-					StartRespawn();
+				StartRespawn();
 			}
 			finally
 			{
@@ -4400,9 +4398,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartRespawn()
 		{
-			if (IsAlive) return;
-
-			if (this.Brain is IControlledBrain)
+			if (IsAlive)
 				return;
 
 			if (m_healthRegenerationTimer != null)
