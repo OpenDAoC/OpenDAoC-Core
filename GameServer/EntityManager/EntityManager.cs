@@ -11,7 +11,7 @@ namespace DOL.GS
         private static object _playersLock = new();
 
         private static GameNPC[] _npcs = new GameNPC[ServerProperties.Properties.MAX_ENTITIES];
-        private static SortedSet<int> _deletedNpcIndexes = new();
+        private static SortedSet<int> _deletedNpcIndexes = new(Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0)); // Reverse order.
         private static object _npcsLock = new();
 
         private static List<ECSGameEffect> _effects = new(50000);
@@ -104,7 +104,7 @@ namespace DOL.GS
             {
                 if (_deletedNpcIndexes.Any())
                 {
-                    int index = _deletedNpcIndexes.Min;
+                    int index = _deletedNpcIndexes.Max;
                     _deletedNpcIndexes.Remove(index);
                     _npcs[index] = o;
 
@@ -127,16 +127,28 @@ namespace DOL.GS
             lock (_npcsLock)
             {
                 _npcs[o.EntityManagerId] = null;
+                _deletedNpcIndexes.Add(o.EntityManagerId);
 
                 if (o.EntityManagerId == LastNonNullNpcIndex)
                 {
                     if (_deletedNpcIndexes.Any())
-                        LastNonNullNpcIndex = _deletedNpcIndexes.Min - 1;
+                    {
+                        int lastIndex = _deletedNpcIndexes.Min;
+						
+                        // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
+                        foreach (int index in _deletedNpcIndexes)
+                        {
+                            if (lastIndex - index > 0)
+                                break;
+
+                            lastIndex--;
+                        }
+
+                        LastNonNullNpcIndex = lastIndex;
+                    }
                     else
                         LastNonNullNpcIndex--;
                 }
-                else
-                    _deletedNpcIndexes.Add(o.EntityManagerId);
             }
         }
 
