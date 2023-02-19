@@ -3217,6 +3217,9 @@ namespace DOL.GS
 				m_teleporterIndicator = null;
 			}
 
+			if (m_respawnInterval < 0)
+				EntityManager.RemoveNpc(this);
+
 			return true;
 		}
 
