@@ -4320,7 +4320,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The time to wait before each mob respawn
 		/// </summary>
-		protected int m_respawnInterval;
+		protected int m_respawnInterval = -1;
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
