@@ -10,9 +10,9 @@ namespace DOL.GS
         private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
         private static object _playersLock = new();
 
-        private static GameLiving[] _npcs = new GameLiving[ServerProperties.Properties.MAX_ENTITIES];
+        private static GameNPC[] _npcs = new GameNPC[ServerProperties.Properties.MAX_ENTITIES];
         private static SortedSet<int> _deletedNpcIndexes = new();
-        private static object _npcsArrayLock = new();
+        private static object _npcsLock = new();
 
         private static List<ECSGameEffect> _effects = new(50000);
         private static object _effectsLock = new();
@@ -93,14 +93,14 @@ namespace DOL.GS
             }
         }
 
-        public static GameLiving[] GetAllNpcs()
+        public static GameNPC[] GetAllNpcs()
         {
             return _npcs;
         }
 
-        public static int AddNpc(GameLiving o)
+        public static int AddNpc(GameNPC o)
         {
-            lock (_npcs)
+            lock (_npcsLock)
             {
                 if (_deletedNpcIndexes.Any())
                 {
@@ -122,9 +122,9 @@ namespace DOL.GS
             }
         }
 
-        public static void RemoveNpc(GameLiving o)
+        public static void RemoveNpc(GameNPC o)
         {
-            lock (_npcs)
+            lock (_npcsLock)
             {
                 _npcs[o.id] = null;
 

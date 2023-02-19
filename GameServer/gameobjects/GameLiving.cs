@@ -7174,7 +7174,6 @@ namespace DOL.GS
 
             healthComponent = new HealthComponent(this);
 			// damageComponent = new DamageComponent(this);
-			id = EntityManager.AddNpc(this);
 		}
 	}
 }
