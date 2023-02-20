@@ -31,6 +31,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
+			// This actually prevents 1124 from entering the game. Should it be > instead of >=?
 			if (client.Version >= GameClient.eClientVersion.Version1124) // 1124 support
 			{
 				_HandlePacket1124(client, packet);
