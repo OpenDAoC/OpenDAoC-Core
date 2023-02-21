@@ -1,6 +1,4 @@
-using System;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS

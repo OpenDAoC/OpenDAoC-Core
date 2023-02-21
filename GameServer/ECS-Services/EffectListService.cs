@@ -118,7 +118,7 @@ namespace DOL.GS
                                 {
                                     //Add time to effect to make sure the spell refreshes instead of cancels
                                     effect.ExpireTick += GameLoop.TickRate;
-                                    effect.LastTick = GameLoop.GameLoopTime;
+                                    effect.LastTick = tick;
                                 }
                                 else
                                     EffectService.RequestCancelEffect(effect);
@@ -140,9 +140,9 @@ namespace DOL.GS
                                 effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
                                 UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
-                                effect.NextTick = GameLoop.GameLoopTime + effect.TickInterval;
+                                effect.NextTick = tick + effect.TickInterval;
                                 if (factor <= 0)
-                                    effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                                    effect.ExpireTick = tick - 1;
                             }
                         }
 
@@ -203,7 +203,7 @@ namespace DOL.GS
                                 }
                             }
 
-                            effect.NextTick = GameLoop.GameLoopTime + effect.PulseFreq;
+                            effect.NextTick = tick + effect.PulseFreq;
                         }
                     }
                 }

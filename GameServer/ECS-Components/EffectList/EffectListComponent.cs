@@ -12,7 +12,7 @@ namespace DOL.GS
         private int _lastUpdateEffectsCount;
 
         public GameLiving Owner { get; private set; }
-        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
+        public int EntityManagerId { get; private set; } = EntityManager.UNSET_ID;
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
         public object EffectsLock { get; private set; } = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
