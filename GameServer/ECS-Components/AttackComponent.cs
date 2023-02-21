@@ -24,7 +24,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
-        public int EntityManagerId { get; set; } = -1;
+        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
 
         /// <summary>
         /// The objects currently attacking this living
@@ -108,7 +108,7 @@ namespace DOL.GS
                 weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-                EntityManager.Remove(EntityManager.EntityType.AttackComponent, EntityManagerId);
+                EntityManagerId = EntityManager.Remove(EntityManager.EntityType.AttackComponent, EntityManagerId);
         }
 
         /// <summary>

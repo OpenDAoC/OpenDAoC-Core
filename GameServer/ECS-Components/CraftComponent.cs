@@ -7,7 +7,7 @@ namespace DOL.GS
         public GameLiving owner;
         public GamePlayer ownerPlayer;
         public CraftAction craftAction;
-        public int EntityManagerId { get; set; } = -1;
+        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
 
         /// <summary>
         /// The objects currently being crafted by this living

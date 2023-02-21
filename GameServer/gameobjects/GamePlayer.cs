@@ -1253,7 +1253,7 @@ namespace DOL.GS
                 Notify(GamePlayerEvent.Quit, this);
                 AuditMgr.AddAuditEntry(Client, AuditType.Character, AuditSubtype.CharacterLogout, "", Name);
                 Delete();
-                EntityManager.Remove(EntityManager.EntityType.Player, this.EntityManagerId);
+                EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Player, EntityManagerId);
             }
 
             return true;

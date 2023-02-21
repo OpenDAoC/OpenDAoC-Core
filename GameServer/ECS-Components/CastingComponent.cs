@@ -10,7 +10,7 @@ namespace DOL.GS
     {
         //entity casting the spell
         public GameLiving owner;
-        public int EntityManagerId { get; set; } = -1;
+        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
 
         public  bool IsCasting
         {

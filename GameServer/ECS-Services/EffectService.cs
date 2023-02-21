@@ -50,7 +50,7 @@ namespace DOL.GS
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {
-            EntityManager.Remove(EntityManager.EntityType.Effect, e.EntityManagerId);
+            EntityManager.Remove(EntityManager.EntityType.Effect, ref e.EntityManagerId);
 
             if (e.Owner == null)
             {
@@ -190,7 +190,7 @@ namespace DOL.GS
 
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            EntityManager.Remove(EntityManager.EntityType.Effect, e.EntityManagerId);
+            EntityManager.Remove(EntityManager.EntityType.Effect, ref e.EntityManagerId);
 
             if (!e.Owner.effectListComponent.RemoveEffect(e))
                 return;

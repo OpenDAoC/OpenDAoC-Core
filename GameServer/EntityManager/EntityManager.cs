@@ -9,6 +9,7 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
+        public const int UNSET_ID = -1;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public enum EntityType
@@ -40,9 +41,10 @@ namespace DOL.GS
             return Entities[type].Add(entity);
         }
 
-        public static void Remove(EntityType type, int id)
+        public static int Remove(EntityType type, int id)
         {
             Entities[type].Remove(id);
+            return UNSET_ID;
         }
 
         public static T[] GetAll<T>(EntityType type)

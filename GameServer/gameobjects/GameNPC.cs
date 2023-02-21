@@ -3218,7 +3218,7 @@ namespace DOL.GS
 			}
 
 			if (m_respawnInterval < 0)
-				EntityManager.Remove(EntityManager.EntityType.Npc, this.EntityManagerId);
+				EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Npc, EntityManagerId);
 
 			return true;
 		}

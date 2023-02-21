@@ -44,7 +44,7 @@ namespace DOL.GS
         public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
-        public int EntityManagerId = -1;
+        public int EntityManagerId { get; set; }= EntityManager.UNSET_ID;
         public ISpellHandler SpellHandler { get; protected set; }
 
         /// <summary>
