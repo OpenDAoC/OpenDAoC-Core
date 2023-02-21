@@ -124,17 +124,22 @@ namespace DOL.GS
 
         public static void RemoveNpc(GameNPC o)
         {
+            int id = o.EntityManagerId;
+
+            if (id == -1)
+                return;
+
             lock (_npcsLock)
             {
-                _npcs[o.EntityManagerId] = null;
-                _deletedNpcIndexes.Add(o.EntityManagerId);
+                _npcs[id] = null;
+                _deletedNpcIndexes.Add(id);
 
-                if (o.EntityManagerId == LastNonNullNpcIndex)
+                if (id == LastNonNullNpcIndex)
                 {
                     if (_deletedNpcIndexes.Any())
                     {
                         int lastIndex = _deletedNpcIndexes.Min;
-						
+
                         // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
                         foreach (int index in _deletedNpcIndexes)
                         {

@@ -53,7 +53,7 @@ namespace DOL.GS
 		public StyleComponent styleComponent;
 		public int UsedConcentration;
 
-		public int EntityManagerId { get; protected set; }
+		public int EntityManagerId { get; protected set; } = -1;
 		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; private set; } = new();
 
 		#region Combat
