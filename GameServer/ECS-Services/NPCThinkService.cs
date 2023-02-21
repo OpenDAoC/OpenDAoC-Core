@@ -26,14 +26,14 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            GameNPC[] arr = EntityManager.GetAll<GameNPC>(EntityManager.EntityType.Npc);
-
             if (Debug)
             {
                 _debugRemainingTicks = 0;
                 _npcCount = 0;
                 _nullNpcCount = 0;
             }
+
+            GameNPC[] arr = EntityManager.GetAll<GameNPC>(EntityManager.EntityType.Npc);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Npc) + 1, i =>
             {

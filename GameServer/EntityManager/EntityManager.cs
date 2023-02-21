@@ -15,14 +15,22 @@ namespace DOL.GS
         {
             Player,
             Npc,
-            Effect
+            Effect,
+            AttackComponent,
+            CastingComponent,
+            EffectListComponent,
+            CraftComponent
         }
 
         private static Dictionary<EntityType, dynamic> Entities = new()
         {
             { EntityType.Player, new EntityArrayWrapper<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) }
+            { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) },
+            { EntityType.AttackComponent, new EntityArrayWrapper<AttackComponent>(1000) },
+            { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1000) },
+            { EntityType.EffectListComponent, new EntityArrayWrapper<EffectListComponent>(10000) },
+            { EntityType.CraftComponent, new EntityArrayWrapper<CraftComponent>(250) }
         };
 
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
@@ -45,43 +53,6 @@ namespace DOL.GS
         public static int GetLastNonNullIndex(EntityType type)
         {
             return Entities[type].LastNonNullIndex;
-        }
-
-        public static void AddComponent(Type t, GameLiving n)
-        {
-            if (_components.TryGetValue(t, out var p))
-            {
-                lock(p)
-                {
-                    p.Add(n);
-                }
-            }
-            else
-                _components.TryAdd(t, new HashSet<GameLiving> { n });
-        }
-
-        public static GameLiving[] GetLivingByComponent(Type t)
-        {
-            if (_components.TryGetValue(t, out var p))
-            {
-                lock(p)
-                {
-                    return p.ToArray();
-                }
-            }
-            else
-                return Array.Empty<GameLiving>();
-        }
-
-        public static void RemoveComponent(Type t, GameLiving n)
-        {
-            if (_components.TryGetValue(t, out var p))
-            {
-                lock(p)
-                {
-                    p.Remove(n);
-                }
-            }
         }
 
         private class EntityArrayWrapper<T> where T : class

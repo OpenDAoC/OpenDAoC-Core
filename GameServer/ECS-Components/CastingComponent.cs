@@ -10,6 +10,7 @@ namespace DOL.GS
     {
         //entity casting the spell
         public GameLiving owner;
+        public int EntityManagerId { get; set; } = -1;
 
         public  bool IsCasting
         {
@@ -37,7 +38,8 @@ namespace DOL.GS
 
         public bool StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
-            EntityManager.AddComponent(typeof(CastingComponent), owner);
+            if (EntityManagerId == -1)
+                EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
 
             //Check for Conditions to Cast
             if (owner is GamePlayer playerOwner)

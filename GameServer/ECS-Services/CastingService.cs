@@ -14,21 +14,24 @@ namespace DOL.GS
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(CastingComponent));
 
-            Parallel.ForEach(arr, p =>
+            CastingComponent[] arr = EntityManager.GetAll<CastingComponent>(EntityManager.EntityType.CastingComponent);
+
+            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.CastingComponent) + 1, i =>
             {
                 try
                 {
-                    if (p?.castingComponent == null)
+                    CastingComponent c = arr[i];
+
+                    if (c == null)
                         return;
 
                     long startTick = GameTimer.GetTickCount();
-                    p.castingComponent.Tick(tick);
+                    c.Tick(tick);
                     long stopTick = GameTimer.GetTickCount();
 
                     if ((stopTick - startTick) > 25)
-                        log.Warn($"Long CastingComponent.Tick for: {p.Name}({p.ObjectID}) Spell: {p.castingComponent?.spellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+                        log.Warn($"Long CastingComponent.Tick for: {c.owner.Name}({c.owner.ObjectID}) Spell: {c.spellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {

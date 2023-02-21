@@ -12,6 +12,7 @@ namespace DOL.GS
         private int _lastUpdateEffectsCount;
 
         public GameLiving Owner { get; private set; }
+        public int EntityManagerId { get; set; } = -1;
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
         public object EffectsLock { get; private set; } = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
@@ -34,7 +35,8 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
-                    EntityManager.AddComponent(typeof(EffectListComponent), Owner);
+                    if (EntityManagerId == -1)
+                        EntityManagerId = EntityManager.Add(EntityManager.EntityType.EffectListComponent, this);
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
@@ -394,7 +396,7 @@ namespace DOL.GS
                             }
 
                             if (Effects.Count == 0)
-                                EntityManager.RemoveComponent(typeof(EffectListComponent), Owner);
+                                EntityManager.Remove(EntityManager.EntityType.EffectListComponent, EntityManagerId);
                         }
                         return true;
                     }

@@ -11,14 +11,11 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(CraftComponent));
-            Parallel.ForEach(arr, p =>
+            CraftComponent[] arr = EntityManager.GetAll<CraftComponent>(EntityManager.EntityType.CraftComponent);
+
+            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.CraftComponent) + 1, i =>
             {
-                if (p == null || p.craftComponent == null)
-                {
-                    return;
-                }
-                p.craftComponent.Tick(tick);
+                arr[i]?.Tick(tick);
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

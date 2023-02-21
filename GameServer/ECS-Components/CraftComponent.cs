@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
 
 namespace DOL.GS
 {
     public class CraftComponent
     {
         public GameLiving owner;
-        public CraftAction craftAction;
-
         public GamePlayer ownerPlayer;
-
+        public CraftAction craftAction;
+        public int EntityManagerId { get; set; } = -1;
 
         /// <summary>
         /// The objects currently being crafted by this living
-        /// 
         /// </summary>
         protected List<Recipe> m_recipes;
-
 
         /// <summary>
         /// Returns the list of recipes
@@ -28,10 +22,6 @@ namespace DOL.GS
             get { return m_recipes; }
         }
 
-        /// <summary>
-        /// Adds an attacker to the attackerlist
-        /// </summary>
-        /// <param name="attacker">the attacker to add</param>
         public void AddRecipe(Recipe recipe)
         {
             lock (Recipes)
@@ -40,15 +30,11 @@ namespace DOL.GS
                 if (m_recipes.Contains(recipe)) return;
                 m_recipes.Add(recipe);
 
-                if (m_recipes.Count() > 0)
-                    EntityManager.AddComponent(typeof(CraftComponent), owner);
+                if (m_recipes.Count > 0 && EntityManagerId == -1)
+                    EntityManagerId = EntityManager.Add(EntityManager.EntityType.CraftComponent, this);
             }
         }
 
-        /// <summary>
-        /// Removes an attacker from the list
-        /// </summary>
-        /// <param name="attacker">the attacker to remove</param>
         public void RemoveRecipe(Recipe recipe)
         {
             //			log.Warn(Name + ": RemoveAttacker "+attacker.Name);
@@ -64,8 +50,8 @@ namespace DOL.GS
             this.owner = owner;
             ownerPlayer = owner as GamePlayer;
             m_recipes = new List<Recipe>();
-            
-            EntityManager.AddComponent(typeof(CraftComponent), owner);
+
+            EntityManagerId = EntityManager.Add(EntityManager.EntityType.CraftComponent, this);
         }
 
         public void Tick(long time)

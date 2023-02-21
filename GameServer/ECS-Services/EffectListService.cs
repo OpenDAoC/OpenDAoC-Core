@@ -18,15 +18,20 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(EffectListComponent));
+            EffectListComponent[] arr = EntityManager.GetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent);
 
-            Parallel.ForEach(arr, p =>
+            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.EffectListComponent) + 1, i =>
             {
+                EffectListComponent e = arr[i];
+
+                if (e == null)
+                    return;
+
                 long startTick = GameTimer.GetTickCount();
-                HandleEffects(tick,p);
+                HandleEffects(tick, e.Owner);
                 long stopTick = GameTimer.GetTickCount();
                 if((stopTick - startTick)  > 25 )
-                    log.Warn($"Long EffectListService.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long EffectListService.Tick for {e.Owner.Name}({e.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

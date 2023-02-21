@@ -49,7 +49,7 @@ namespace DOL.GS
 
                 GamePlayer[] players = EntityManager.GetAll<GamePlayer>(EntityManager.EntityType.Player);
 
-                for (int i = 0; i < EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Player); i++)
+                for (int i = 0; i < EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Player) + 1; i++)
                 {
                     GamePlayer player = players[i];
 
