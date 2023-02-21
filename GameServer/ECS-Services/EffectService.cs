@@ -33,8 +33,10 @@ namespace DOL.GS
 
             ECSGameEffect[] arr = EntityManager.GetAllEffects();
 
-            Parallel.ForEach(arr, effect =>
+            Parallel.For(0, EntityManager.LastNonNullEffectIndex + 1, i =>
             {
+                ECSGameEffect effect = arr[i];
+
                 if (effect == null)
                     return;
 
@@ -288,7 +290,7 @@ namespace DOL.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.AddEffect(effect);
+            effect.EntityManagerId = EntityManager.AddEffect(effect);
         }
 
         /// <summary>
@@ -881,7 +883,7 @@ namespace DOL.GS
         public static void RestoreAllEffects(GamePlayer p)
         {
             GamePlayer player = p;
-			
+            
             if (player == null || player.DBCharacter == null || GameServer.Database == null)
                 return;
 
@@ -982,14 +984,14 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Method used to apply bonuses
-		/// </summary>
-		/// <param name="owner"></param>
-		/// <param name="BonusCat"></param>
-		/// <param name="Property"></param>
-		/// <param name="Value"></param>
-		/// <param name="IsSubstracted"></param>
-		private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+        /// Method used to apply bonuses
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="BonusCat"></param>
+        /// <param name="Property"></param>
+        /// <param name="Value"></param>
+        /// <param name="IsSubstracted"></param>
+        private static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
         {
             int effectiveValue = (int)(Value * Effectiveness);
 

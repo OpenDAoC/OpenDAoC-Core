@@ -50,11 +50,10 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
-
             Diagnostics.StartPerfCounter(ServiceName);
 
             GameNPC[] arr = EntityManager.GetAllNpcs();
-            
+
             if (thinkTimer)
             {
                 ActiveThinkTimerTickCount = 0;

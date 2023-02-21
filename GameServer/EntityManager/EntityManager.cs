@@ -14,7 +14,8 @@ namespace DOL.GS
         private static SortedSet<int> _deletedNpcIndexes = new(Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0)); // Reverse order.
         private static object _npcsLock = new();
 
-        private static List<ECSGameEffect> _effects = new(50000);
+        private static ECSGameEffect[] _effects = new ECSGameEffect[50000];
+        private static SortedSet<int> _deletedEffectIndexes = new(Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0)); // Reverse order.
         private static object _effectsLock = new();
 
         private static List<Type> _services = new(100);
@@ -23,6 +24,7 @@ namespace DOL.GS
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
 
         public static int LastNonNullNpcIndex { get; private set; } = -1;
+        public static int LastNonNullEffectIndex { get; private set; } = -1;
 
         public static void AddService(Type t)
         {
@@ -159,25 +161,65 @@ namespace DOL.GS
 
         public static ECSGameEffect[] GetAllEffects()
         {
-            lock (_effectsLock)
-            {
-                return _effects.ToArray();
-            }
+            return _effects;
         }
 
-        public static void AddEffect(ECSGameEffect e)
+        public static int AddEffect(ECSGameEffect e)
         {
             lock (_effectsLock)
             {
-                _effects.Add(e);
+                if (_deletedEffectIndexes.Any())
+                {
+                    int index = _deletedEffectIndexes.Max;
+                    _deletedEffectIndexes.Remove(index);
+                    _effects[index] = e;
+
+                    if (index > LastNonNullEffectIndex)
+                        LastNonNullEffectIndex = index;
+
+                    return index;
+                }
+                else
+                {
+                    LastNonNullEffectIndex++;
+                    _effects[LastNonNullEffectIndex] = e;
+                    return LastNonNullEffectIndex;
+                }
             }
         }
 
         public static void RemoveEffect(ECSGameEffect e)
         {
+            int id = e.EntityManagerId;
+
+            if (id == -1)
+                return;
+
             lock (_effectsLock)
             {
-                _effects.Remove(e);
+                _effects[id] = null;
+                _deletedEffectIndexes.Add(id);
+
+                if (id == LastNonNullEffectIndex)
+                {
+                    if (_deletedEffectIndexes.Any())
+                    {
+                        int lastIndex = _deletedEffectIndexes.Min;
+
+                        // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
+                        foreach (int index in _deletedEffectIndexes)
+                        {
+                            if (lastIndex - index > 0)
+                                break;
+
+                            lastIndex--;
+                        }
+
+                        LastNonNullEffectIndex = lastIndex;
+                    }
+                    else
+                        LastNonNullEffectIndex--;
+                }
             }
         }
     }
