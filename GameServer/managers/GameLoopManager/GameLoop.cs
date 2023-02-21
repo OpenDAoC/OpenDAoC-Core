@@ -60,7 +60,7 @@ namespace DOL.GS
             currentServiceTick = "CastingService";
             CastingService.Tick(GameLoopTime);
             currentServiceTick = "EffectService";
-            EffectService.Tick(GameLoopTime);
+            EffectService.Tick();
             currentServiceTick = "EffectListService";
             EffectListService.Tick(GameLoopTime);
             currentServiceTick = "CraftingService";
