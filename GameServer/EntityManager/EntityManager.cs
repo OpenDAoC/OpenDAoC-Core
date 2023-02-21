@@ -9,18 +9,17 @@ namespace DOL.GS
     {
         public enum EntityType
         {
+            Player,
             Npc,
             Effect
         }
 
         private static Dictionary<EntityType, dynamic> Entities = new()
         {
+            { EntityType.Player, new EntityArrayWrapper<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
             { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) }
         };
-
-        private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
-        private static object _playersLock = new();
 
         private static List<Type> _services = new(100);
         private static object _servicesLock = new();
@@ -89,30 +88,6 @@ namespace DOL.GS
                 {
                     p.Remove(n);
                 }
-            }
-        }
-
-        public static GamePlayer[] GetAllPlayers()
-        {
-            lock (_players)
-            {
-                return _players.ToArray();
-            }
-        }
-
-        public static void AddPlayer(GamePlayer p)
-        {
-            lock (_playersLock)
-            {
-                _players.Add(p);
-            }
-        }
-
-        public static void RemovePlayer(GamePlayer p)
-        {
-            lock (_playersLock)
-            {
-                _players.Remove(p);
             }
         }
 

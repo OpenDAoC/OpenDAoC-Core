@@ -1,96 +1,93 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Quests;
 using ECS.Debug;
 
-namespace DOL.GS;
-
-public class DailyQuestService
+namespace DOL.GS
 {
-    private static DateTime lastDailyRollover;
-
-
-    private const string ServiceName = "DailyQuestService";
-    private const string DailyIntervalKey = "DAILY";
-
-
-    static DailyQuestService()
+    public class DailyQuestService
     {
-        EntityManager.AddService(typeof(DailyQuestService));
+        private const string SERVICE_NAME = "DailyQuestService";
+        private const string DAILY_INTERVAL_KEY = "DAILY";
+        private static DateTime lastDailyRollover;
 
-        //var loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DailyIntervalKey));
-        var loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
-
-        foreach (var interval in loadQuestsProp)
+        static DailyQuestService()
         {
-            if (interval.RolloverInterval.Equals(DailyIntervalKey))
-                lastDailyRollover = interval.LastRollover;
+            EntityManager.AddService(typeof(DailyQuestService));
+
+            IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
+
+            foreach (TaskRefreshIntervals interval in loadQuestsProp)
+            {
+                if (interval.RolloverInterval.Equals(DAILY_INTERVAL_KEY))
+                    lastDailyRollover = interval.LastRollover;
+            }
         }
-        
-        if(lastDailyRollover == null)
-            lastDailyRollover = DateTime.UnixEpoch;
-    }
 
-    public static void Tick(long tick)
-    {
-        Diagnostics.StartPerfCounter(ServiceName);
-        //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
-
-        if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
+        public static void Tick()
         {
-            lastDailyRollover = DateTime.Now;
-            
-            //update db
-            var loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DailyIntervalKey));
-            //update the one we've got, otherwise...
-            if (loadQuestsProp != null)
-            {
-                loadQuestsProp.LastRollover = DateTime.Now;
-                GameServer.Database.SaveObject(loadQuestsProp);
-            }
-            else
-            {
-                //make a new one
-                TaskRefreshIntervals newTime = new TaskRefreshIntervals();
-                newTime.LastRollover = DateTime.Now;
-                newTime.RolloverInterval = DailyIntervalKey;
-                GameServer.Database.AddObject(newTime);
-            }
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
 
-            foreach (var player in EntityManager.GetAllPlayers())
+            if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
             {
-                List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
-                foreach (var quest in player.QuestListFinished)
+                lastDailyRollover = DateTime.Now;
+                TaskRefreshIntervals loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DAILY_INTERVAL_KEY));
+
+                // Update the one we've got, or make a new one.
+                if (loadQuestsProp != null)
                 {
-                    if (quest is Quests.DailyQuest)
+                    loadQuestsProp.LastRollover = DateTime.Now;
+                    GameServer.Database.SaveObject(loadQuestsProp);
+                }
+                else
+                {
+                    TaskRefreshIntervals newTime = new();
+                    newTime.LastRollover = DateTime.Now;
+                    newTime.RolloverInterval = DAILY_INTERVAL_KEY;
+                    GameServer.Database.AddObject(newTime);
+                }
+
+                GamePlayer[] players = EntityManager.GetAll<GamePlayer>(EntityManager.EntityType.Player);
+
+                for (int i = 0; i < EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Player); i++)
+                {
+                    GamePlayer player = players[i];
+
+                    if (player == null)
+                        continue;
+
+                    List<AbstractQuest> questsToRemove = new();
+
+                    foreach (AbstractQuest quest in player.QuestListFinished)
                     {
-                        quest.AbortQuest();
-                        questsToRemove.Add(quest);    
+                        if (quest is Quests.DailyQuest)
+                        {
+                            quest.AbortQuest();
+                            questsToRemove.Add(quest);
+                        }
+                    }
+
+                    foreach (AbstractQuest quest in questsToRemove)
+                    {
+                        player.QuestList.Remove(quest);
+                        player.QuestListFinished.Remove(quest);
                     }
                 }
 
-                foreach (var quest in questsToRemove)
+                IList<DBQuest> existingDailyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%DailyQuest%"));
+
+                foreach (DBQuest existingDailyQuest in existingDailyQuests)
                 {
-                    player.QuestList.Remove(quest);
-                    player.QuestListFinished.Remove(quest);
+                    if (existingDailyQuest.Step <= -1)
+                        GameServer.Database.DeleteObject(existingDailyQuest);
                 }
-            }
-            
-            var existingDailyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%DailyQuest%"));
 
-            foreach (var existingDailyQuest in existingDailyQuests)
-            {
-                if(existingDailyQuest.Step <= -1)
-                    GameServer.Database.DeleteObject(existingDailyQuest);
+                //Console.WriteLine($"Daily refresh");
             }
-            
-            
-            //Console.WriteLine($"Daily refresh");
+
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
-
-        Diagnostics.StopPerfCounter(ServiceName);
     }
 }

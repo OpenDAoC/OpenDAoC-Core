@@ -1250,18 +1250,12 @@ namespace DOL.GS
             }
             else
             {
-                //Notify our event handlers (if any)
                 Notify(GamePlayerEvent.Quit, this);
-
-                // log quit
                 AuditMgr.AddAuditEntry(Client, AuditType.Character, AuditSubtype.CharacterLogout, "", Name);
-
-                //Cleanup stuff
                 Delete();
-				
-                //Remove from EntityManager
-                EntityManager.RemovePlayer(this);
+                EntityManager.Remove(EntityManager.EntityType.Player, this.EntityManagerId);
             }
+
             return true;
         }
 
@@ -16795,13 +16789,10 @@ namespace DOL.GS
         /// </summary>
         /// <param name="client">The GameClient for this player</param>
         /// <param name="dbChar">The character for this player</param>
-        public GamePlayer(GameClient client, DOLCharacters dbChar)
-            : base()
+        public GamePlayer(GameClient client, DOLCharacters dbChar) : base()
         {
             IsJumping = false;
             m_steed = new WeakRef(null);
-            //m_rangeAttackAmmo = new WeakRef(null);
-            //m_rangeAttackTarget = new WeakRef(null);
             m_client = client;
             m_dbCharacter = dbChar;
             m_controlledHorse = new ControlledHorse(this);
@@ -16825,22 +16816,10 @@ namespace DOL.GS
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;
             m_saveInDB = true;
+
             LoadFromDatabase(dbChar);
-			
-            //Component Initialization
-            //castingComponent = new CastingComponent(this);
-
-            //         attackComponent = new AttackComponent(this);
-
-            //         healthComponent = new HealthComponent(this);
-            //         damageComponent = new DamageComponent(this);
-			
-
-
             CreateStatistics();
-			
-            //Add to EntityManager
-            EntityManager.AddPlayer(this);
+            EntityManagerId = EntityManager.Add(EntityManager.EntityType.Player, this);
         }
 
         /// <summary>

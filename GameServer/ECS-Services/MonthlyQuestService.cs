@@ -1,91 +1,92 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Quests;
 using ECS.Debug;
 
-namespace DOL.GS;
-
-public class MonthlyQuestService
+namespace DOL.GS
 {
-    private static DateTime lastMonthlyRollover;
-
-    private const string ServiceName = "MonthlyQuestService";
-    private const string MonthlyIntervalKey = "MONTHLY";
-
-    static MonthlyQuestService()
+    public class MonthlyQuestService
     {
-        EntityManager.AddService(typeof(MonthlyQuestService));
-        
-        var loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
+        private const string SERVICE_NAME = "MonthlyQuestService";
+        private const string MONTHLY_INTERVAL_KEY = "MONTHLY";
+        private static DateTime lastMonthlyRollover;
 
-        foreach (var interval in loadQuestsProp)
+        static MonthlyQuestService()
         {
-            if (interval.RolloverInterval.Equals(MonthlyIntervalKey))
-                lastMonthlyRollover = interval.LastRollover;
+            EntityManager.AddService(typeof(MonthlyQuestService));
+
+            IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
+
+            foreach (TaskRefreshIntervals interval in loadQuestsProp)
+            {
+                if (interval.RolloverInterval.Equals(MONTHLY_INTERVAL_KEY))
+                    lastMonthlyRollover = interval.LastRollover;
+            }
         }
-        
-        if(lastMonthlyRollover == null)
-            lastMonthlyRollover = DateTime.UnixEpoch;
-    }
 
-    public static void Tick(long tick)
-    {
-        Diagnostics.StartPerfCounter(ServiceName);
-        //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
-
-        //this is where the weekly check will go once testing is finished
-        if (lastMonthlyRollover.Date.Month < DateTime.Now.Date.Month || lastMonthlyRollover.Year < DateTime.Now.Year)
+        public static void Tick()
         {
-            lastMonthlyRollover = DateTime.Now;
-            
-            //update db
-            var loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(MonthlyIntervalKey));
-            //update the one we've got, otherwise...
-            if (loadQuestsProp != null)
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
+
+            // This is where the weekly check will go once testing is finished.
+            if (lastMonthlyRollover.Date.Month < DateTime.Now.Date.Month || lastMonthlyRollover.Year < DateTime.Now.Year)
             {
-                loadQuestsProp.LastRollover = DateTime.Now;
-                GameServer.Database.SaveObject(loadQuestsProp);
-            }
-            else
-            {
-                //make a new one
-                TaskRefreshIntervals newTime = new TaskRefreshIntervals();
-                newTime.LastRollover = DateTime.Now;
-                newTime.RolloverInterval = MonthlyIntervalKey;
-                GameServer.Database.AddObject(newTime);
-            }
-            
-            foreach (var player in EntityManager.GetAllPlayers())
-            {
-                List<AbstractQuest> questsToRemove = new List<AbstractQuest>();
-                foreach (var quest in player.QuestListFinished)
+                lastMonthlyRollover = DateTime.Now;
+                TaskRefreshIntervals loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(MONTHLY_INTERVAL_KEY));
+
+                // Update the one we've got, or make a new one.
+                if (loadQuestsProp != null)
                 {
-                    if (quest is Quests.MonthlyQuest)
+                    loadQuestsProp.LastRollover = DateTime.Now;
+                    GameServer.Database.SaveObject(loadQuestsProp);
+                }
+                else
+                {
+                    TaskRefreshIntervals newTime = new();
+                    newTime.LastRollover = DateTime.Now;
+                    newTime.RolloverInterval = MONTHLY_INTERVAL_KEY;
+                    GameServer.Database.AddObject(newTime);
+                }
+
+                GamePlayer[] players = EntityManager.GetAll<GamePlayer>(EntityManager.EntityType.Player);
+
+                for (int i = 0; i < EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Player); i++)
+                {
+                    GamePlayer player = players[i];
+
+                    if (player == null)
+                        continue;
+
+                    List<AbstractQuest> questsToRemove = new();
+
+                    foreach (AbstractQuest quest in player.QuestListFinished)
                     {
-                        quest.AbortQuest();
-                        questsToRemove.Add(quest);    
+                        if (quest is Quests.MonthlyQuest)
+                        {
+                            quest.AbortQuest();
+                            questsToRemove.Add(quest);
+                        }
+                    }
+
+                    foreach (AbstractQuest quest in questsToRemove)
+                    {
+                        player.QuestList.Remove(quest);
+                        player.QuestListFinished.Remove(quest);
                     }
                 }
 
-                foreach (var quest in questsToRemove)
+                IList<DBQuest> existingMonthlyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%MonthlyQuest%"));
+
+                foreach (DBQuest existingMonthlyQuest in existingMonthlyQuests)
                 {
-                    player.QuestList.Remove(quest);
-                    player.QuestListFinished.Remove(quest);
+                    if (existingMonthlyQuest.Step <= -1)
+                        GameServer.Database.DeleteObject(existingMonthlyQuest);
                 }
             }
-            
-            var existingMonthlyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%MonthlyQuest%"));
 
-            foreach (var existingMonthlyQuest in existingMonthlyQuests)
-            {
-                if(existingMonthlyQuest.Step <= -1)
-                    GameServer.Database.DeleteObject(existingMonthlyQuest);
-            }
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
-
-        Diagnostics.StopPerfCounter(ServiceName);
     }
 }

@@ -68,9 +68,9 @@ namespace DOL.GS
             currentServiceTick = "TimerService";
             TimerService.Tick(GameLoopTime);
             currentServiceTick = "DailQuestService";
-            DailyQuestService.Tick(GameLoopTime);
+            DailyQuestService.Tick();
             currentServiceTick = "WeeklyQuestService";
-            WeeklyQuestService.Tick(GameLoopTime);
+            WeeklyQuestService.Tick();
             currentServiceTick = "ConquestService";
             ConquestService.Tick(GameLoopTime);
             currentServiceTick = "BountyService";
