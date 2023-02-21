@@ -14,8 +14,6 @@ namespace DOL.GS
 
         static MonthlyQuestService()
         {
-            EntityManager.AddService(typeof(MonthlyQuestService));
-
             IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
 
             foreach (TaskRefreshIntervals interval in loadQuestsProp)

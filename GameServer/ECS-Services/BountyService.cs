@@ -1,34 +1,29 @@
 using ECS.Debug;
 
-namespace DOL.GS;
-
-public class BountyService
+namespace DOL.GS
 {
-    private const string ServiceName = "Bounty Service";
-
-    private static BountyManager BountyManager;
-
-    // private static long _updateInterval = 10000; // 10secs
-    private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
-
-    private static long _lastUpdate;
-
-    static BountyService()
+    public class BountyService
     {
-        EntityManager.AddService(typeof(BountyService));
-        BountyManager = new BountyManager();
-    }
+        private const string SERVICE_NAME = "Bounty Service";
 
-    public static void Tick(long tick)
-    {
-        Diagnostics.StartPerfCounter(ServiceName);
+        private static BountyManager BountyManager = new();
 
-        if (tick - _lastUpdate > _updateInterval)
+        // private static long _updateInterval = 10000; // 10secs
+        private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
+
+        private static long _lastUpdate;
+
+        public static void Tick(long tick)
         {
-            _lastUpdate = tick;
-            BountyManager.CheckExpiringBounty(tick);
-        }
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        Diagnostics.StopPerfCounter(ServiceName);
+            if (tick - _lastUpdate > _updateInterval)
+            {
+                _lastUpdate = tick;
+                BountyManager.CheckExpiringBounty(tick);
+            }
+
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
     }
 }

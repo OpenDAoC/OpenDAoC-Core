@@ -27,7 +27,6 @@ namespace DOL.GS
 
         static TimerService()
         {
-            EntityManager.AddService(typeof(TimerService));
             _activeTimers = new HashSet<ECSGameTimer>();
             _timerToAdd = new Stack<ECSGameTimer>();
             _timerToRemove = new Stack<ECSGameTimer>();

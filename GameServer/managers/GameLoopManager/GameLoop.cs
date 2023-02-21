@@ -1,8 +1,6 @@
-using DOL.GS.Scripts;
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using static DOL.GS.WeeklyQuestService;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -49,7 +47,7 @@ namespace DOL.GS
         private static void Tick(object obj)
         {
             ECS.Debug.Diagnostics.StartPerfCounter(PerfCounterName);
-            
+
             //Make sure the tick < gameLoopTick
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -72,13 +70,13 @@ namespace DOL.GS
             currentServiceTick = "WeeklyQuestService";
             WeeklyQuestService.Tick();
             currentServiceTick = "ConquestService";
-            ConquestService.Tick(GameLoopTime);
+            ConquestService.Tick();
             currentServiceTick = "BountyService";
             BountyService.Tick(GameLoopTime);
             currentServiceTick = "PredatorService";
             PredatorService.Tick(GameLoopTime);
             currentServiceTick = "ReaperService";
-            ReaperService.Tick(GameLoopTime);
+            ReaperService.Tick();
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;

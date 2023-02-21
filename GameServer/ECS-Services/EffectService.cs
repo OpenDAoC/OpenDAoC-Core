@@ -19,12 +19,6 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = "EffectService";
 
-        static EffectService()
-        {
-            // This should technically be the world manager.
-            EntityManager.AddService(typeof(EffectService));
-        }
-
         public static void Tick()
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);

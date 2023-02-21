@@ -9,16 +9,11 @@ namespace DOL.GS
     public static class CastingService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string ServiceName = "CastingService";
-
-        static CastingService()
-        {
-            EntityManager.AddService(typeof(CastingService));
-        }
+        private const string SERVICE_NAME = "CastingService";
 
         public static void Tick(long tick)
         {
-            Diagnostics.StartPerfCounter(ServiceName);
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
             GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(CastingComponent));
 
             Parallel.ForEach(arr, p =>
@@ -41,7 +36,7 @@ namespace DOL.GS
                 }
             });
 
-            Diagnostics.StopPerfCounter(ServiceName);
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
     }
 }

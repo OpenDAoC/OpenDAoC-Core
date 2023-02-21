@@ -21,9 +21,6 @@ namespace DOL.GS
             { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) }
         };
 
-        private static List<Type> _services = new(100);
-        private static object _servicesLock = new();
-
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
 
         public static int Add<T>(EntityType type, T entity)
@@ -44,14 +41,6 @@ namespace DOL.GS
         public static int GetLastNonNullIndex(EntityType type)
         {
             return Entities[type].LastNonNullIndex;
-        }
-
-        public static void AddService(Type t)
-        {
-            lock (_servicesLock)
-            {
-                _services.Add(t);
-            }
         }
 
         public static void AddComponent(Type t, GameLiving n)

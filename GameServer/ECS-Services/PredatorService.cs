@@ -1,31 +1,24 @@
-using System;
 using System.Linq;
 using DOL.GS.PacketHandler;
 using ECS.Debug;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DOL.GS;
 
 public class PredatorService
 {
-    private const string ServiceName = "Predator Service";
+    private const string SERVICE_NAME = "Predator Service";
 
-     private static long _updateInterval = 3000; // 3secs
-     private static long _messageBroadcastInterval = 15000; // 15secs
+    private static long _updateInterval = 3000; // 3secs
+    private static long _messageBroadcastInterval = 15000; // 15secs
     private static long _insertInterval = ServerProperties.Properties.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
 
     private static long _lastUpdate;
     private static long _lastInsert;
     private static long _lastMessage;
 
-    static PredatorService()
-    {
-        EntityManager.AddService(typeof(PredatorService));
-    }
-
     public static void Tick(long tick)
     {
-        Diagnostics.StartPerfCounter(ServiceName);
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (tick - _lastUpdate > _updateInterval)
         {
@@ -85,6 +78,6 @@ public class PredatorService
             //Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
         }
 
-        Diagnostics.StopPerfCounter(ServiceName);
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 }

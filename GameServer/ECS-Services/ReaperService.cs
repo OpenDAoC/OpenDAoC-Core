@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ECS.Debug;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DOL.GS;
 
 public class ReaperService
 {
-    private const string ServiceName = "Reaper Service";
-    
+    private const string SERVICE_NAME = "Reaper Service";
+
     //primary key is living that needs to die, value is the object that killed it.
     //THIS SHOULD ONLY BE OPERATED ON BY THE TICK() FUNCTION! This keeps it thread safe
     private static Dictionary<GameLiving, GameObject> KilledToKillerDict;
@@ -21,34 +19,33 @@ public class ReaperService
 
     static ReaperService()
     {
-        EntityManager.AddService(typeof(ReaperService));
         KilledToKillerDict = new Dictionary<GameLiving, GameObject>();
         KillsToAdd = new Dictionary<GameLiving, GameObject>();
     }
 
-    public static void Tick(long tick)
+    public static void Tick()
     {
-        Diagnostics.StartPerfCounter(ServiceName);
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         //cant modify the KilledToKillerDict while iteration is in progress, so
         //make a list to store all the dead livings to remove afterwards
         List<GameLiving> DeadLivings = new List<GameLiving>();
-        
-        
+
         if (KillsToAdd != null && KillsToAdd.Count > 0)
         {
             lock (NewKillLock)
             {
                 lock (KillerDictLock)
                 {
-                    Diagnostics.StartPerfCounter(ServiceName+"-KillsToAdd");
+                    Diagnostics.StartPerfCounter(SERVICE_NAME+"-KillsToAdd");
                     foreach (var newDeath in KillsToAdd)
                     {
                         if (!KilledToKillerDict.ContainsKey(newDeath.Key))
                             KilledToKillerDict.Add(newDeath.Key, newDeath.Value);
                     }
+
                     KillsToAdd.Clear();
-                    Diagnostics.StopPerfCounter(ServiceName+"-KillsToAdd");
+                    Diagnostics.StopPerfCounter(SERVICE_NAME+"-KillsToAdd");
                 }
             }
         }
@@ -56,7 +53,7 @@ public class ReaperService
         if (KilledToKillerDict.Keys.Count > 0)
         {
             int killsToProcess = KilledToKillerDict.Keys.Count;
-            Diagnostics.StartPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
+            Diagnostics.StartPerfCounter(SERVICE_NAME+"-ProcessDeaths("+killsToProcess+")");
             //kill everything on multiple threads
             Parallel.ForEach(KilledToKillerDict, killed =>
             {
@@ -64,9 +61,9 @@ public class ReaperService
                 //Console.WriteLine($"Dead or Dying set to {killed.Key.isDeadOrDying} for {killed.Key.Name} in reaper");
             });
 
-            Diagnostics.StopPerfCounter(ServiceName+"-ProcessDeaths("+killsToProcess+")");
-            Diagnostics.StartPerfCounter(ServiceName+"-RemoveKills");
-            
+            Diagnostics.StopPerfCounter(SERVICE_NAME+"-ProcessDeaths("+killsToProcess+")");
+            Diagnostics.StartPerfCounter(SERVICE_NAME+"-RemoveKills");
+
             lock (KillerDictLock)
             {
                 //remove everything we killed
@@ -75,10 +72,10 @@ public class ReaperService
                     KilledToKillerDict.Remove(deadLiving);
                 }
             }
-            Diagnostics.StopPerfCounter(ServiceName+"-RemoveKills");
+            Diagnostics.StopPerfCounter(SERVICE_NAME+"-RemoveKills");
         }
 
-        Diagnostics.StopPerfCounter(ServiceName);
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 
     public static object KillerDictLock = new object();

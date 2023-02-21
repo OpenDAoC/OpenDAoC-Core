@@ -12,18 +12,11 @@ namespace DOL.GS
     public static class EffectListService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private const string ServiceName = "EffectListService";
-
-        static EffectListService()
-        {
-            //This should technically be the world manager
-            EntityManager.AddService(typeof(EffectListService));
-        }
+        private const string SERVICE_NAME = "EffectListService";
 
         public static void Tick(long tick)
         {
-            Diagnostics.StartPerfCounter(ServiceName);
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(EffectListComponent));
 
@@ -35,8 +28,8 @@ namespace DOL.GS
                 if((stopTick - startTick)  > 25 )
                     log.Warn($"Long EffectListService.Tick for {p.Name}({p.ObjectID}) Time: {stopTick - startTick}ms");
             });
-            
-            Diagnostics.StopPerfCounter(ServiceName);
+
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
         private static void HandleEffects(long tick, GameLiving living)

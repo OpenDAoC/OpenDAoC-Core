@@ -14,8 +14,6 @@ namespace DOL.GS
 
         static DailyQuestService()
         {
-            EntityManager.AddService(typeof(DailyQuestService));
-
             IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
 
             foreach (TaskRefreshIntervals interval in loadQuestsProp)

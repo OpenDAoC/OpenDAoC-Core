@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class CraftingService
     {
-        private const string ServiceName = "CraftingService";
-
-        static CraftingService()
-        {
-            EntityManager.AddService(typeof(CraftingService));
-        }
+        private const string SERVICE_NAME = "CraftingService";
 
         public static void Tick(long tick)
         {
-            Diagnostics.StartPerfCounter(ServiceName);
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             GameLiving[] arr = EntityManager.GetLivingByComponent(typeof(CraftComponent));
             Parallel.ForEach(arr, p =>
@@ -31,8 +21,7 @@ namespace DOL.GS
                 p.craftComponent.Tick(tick);
             });
 
-            Diagnostics.StopPerfCounter(ServiceName);
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
-
     }
 }

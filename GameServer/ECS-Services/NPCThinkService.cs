@@ -22,11 +22,6 @@ namespace DOL.GS
 
         private static bool Debug => DebugTickCount > 0;
 
-        static NPCThinkService()
-        {
-            EntityManager.AddService(typeof(NPCThinkService));
-        }
-
         public static void Tick(long tick)
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
