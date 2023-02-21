@@ -1,39 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using ECS.Debug;
-using log4net;
-using log4net.Core;
 
 namespace ECS.Debug
 {
     public static class Diagnostics
     {
-        private static readonly ILog log = LogManager.GetLogger("Performance");
-
-        //Create FileStream and append to it as needed
         private static StreamWriter _perfStreamWriter;
         private static bool _streamWriterInitialized = false;
-
-        private static object _GameEventMgrNotifyLock = new object();
+        private static object _GameEventMgrNotifyLock = new();
         private static bool PerfCountersEnabled = false;
         private static bool stateMachineDebugEnabled = false;
         private static bool aggroDebugEnabled = false;
-        private static Dictionary<string, System.Diagnostics.Stopwatch> PerfCounters = new Dictionary<string, System.Diagnostics.Stopwatch>();
-
-        private static object _PerfCountersLock = new object();
-
+        private static Dictionary<string, Stopwatch> PerfCounters = new();
+        private static object _PerfCountersLock = new();
         private static bool GameEventMgrNotifyProfilingEnabled = false;
         private static int GameEventMgrNotifyTimerInterval = 0;
         private static long GameEventMgrNotifyTimerStartTick = 0;
-        private static System.Diagnostics.Stopwatch GameEventMgrNotifyStopwatch;
-        private static Dictionary<string, List<double>> GameEventMgrNotifyTimes = new Dictionary<string, List<double>>();
+        private static Stopwatch GameEventMgrNotifyStopwatch;
+        private static Dictionary<string, List<double>> GameEventMgrNotifyTimes = new();
 
         public static bool StateMachineDebugEnabled { get => stateMachineDebugEnabled; private set => stateMachineDebugEnabled = value; }
         public static bool AggroDebugEnabled { get => aggroDebugEnabled; private set => aggroDebugEnabled = value; }
@@ -45,8 +35,8 @@ namespace ECS.Debug
                 _perfStreamWriter.Close();
                 _streamWriterInitialized = false;
             }
-            PerfCountersEnabled = enabled;
 
+            PerfCountersEnabled = enabled;
         }
 
         public static void ToggleStateMachineDebug(bool enabled)
@@ -59,17 +49,14 @@ namespace ECS.Debug
             AggroDebugEnabled = enabled;
         }
 
-
         public static void Tick()
         {
             ReportPerfCounters();
 
             if (GameEventMgrNotifyProfilingEnabled)
             {
-                if ((DOL.GS.GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
-                {
+                if ((GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
                     ReportGameEventMgrNotifyTimes();
-                }
             }
         }
 
@@ -79,7 +66,7 @@ namespace ECS.Debug
                 return;
             else
             {
-                var _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PerfLog" + DateTime.Now.ToFileTime());
+                string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PerfLog" + DateTime.Now.ToFileTime());
                 _perfStreamWriter = new StreamWriter(_filePath, false);
                 _streamWriterInitialized = true;
             }
@@ -91,7 +78,7 @@ namespace ECS.Debug
                 return;
 
             InitializeStreamWriter();
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             lock(_PerfCountersLock)
             {
                 PerfCounters.TryAdd(uniqueID, stopwatch);
@@ -103,13 +90,10 @@ namespace ECS.Debug
             if (!PerfCountersEnabled)
                 return;
 
-            System.Diagnostics.Stopwatch stopwatch;
-            lock(_PerfCountersLock)
+            lock (_PerfCountersLock)
             {
-                if (PerfCounters.TryGetValue(uniqueID, out stopwatch))
-                {
+                if (PerfCounters.TryGetValue(uniqueID, out Stopwatch stopwatch))
                     stopwatch.Stop();
-                }
             }
         }
 
@@ -127,15 +111,13 @@ namespace ECS.Debug
 
                     foreach (var counter in PerfCounters)
                     {
-                        var counterName = counter.Key;
-                        var elapsed = (float)counter.Value.Elapsed.TotalMilliseconds;
+                        string counterName = counter.Key;
+                        float elapsed = (float)counter.Value.Elapsed.TotalMilliseconds;
                         string elapsedString = elapsed.ToString();
-                        elapsedString = DOL.GS.Util.TruncateString(elapsedString, 4);
-                        logString += ($"{counterName} {elapsedString}ms | ");
+                        elapsedString = Util.TruncateString(elapsedString, 4);
+                        logString += $"{counterName} {elapsedString}ms | ";
                     }
-                    //Console.WriteLine(logString);
-                    //log.Logger.Log(typeof(Diagnostics), Level.Info, logString, null);
-                    //log.Info(logString);
+
                     _perfStreamWriter.WriteLine(logString);
                     PerfCounters.Clear();
                 }
@@ -147,7 +129,7 @@ namespace ECS.Debug
             if (!GameEventMgrNotifyProfilingEnabled)
                 return;
 
-            GameEventMgrNotifyStopwatch = System.Diagnostics.Stopwatch.StartNew();
+            GameEventMgrNotifyStopwatch = Stopwatch.StartNew();
         }
 
         public static void EndGameEventMgrNotify(DOLEvent e)
@@ -159,14 +141,11 @@ namespace ECS.Debug
 
             lock (_GameEventMgrNotifyLock)
             {
-                List<double> EventTimeValues;
-                if (GameEventMgrNotifyTimes.TryGetValue(e.Name, out EventTimeValues))
-                {
+                if (GameEventMgrNotifyTimes.TryGetValue(e.Name, out List<double> EventTimeValues))
                     EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
-                }
                 else
                 {
-                    EventTimeValues = new List<double>();
+                    EventTimeValues = new();
                     EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
                     GameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
                 }
@@ -180,7 +159,7 @@ namespace ECS.Debug
 
             GameEventMgrNotifyProfilingEnabled = true;
             GameEventMgrNotifyTimerInterval = IntervalMilliseconds;
-            GameEventMgrNotifyTimerStartTick = DOL.GS.GameTimer.GetTickCount();
+            GameEventMgrNotifyTimerStartTick = GameTimer.GetTickCount();
         }
 
         public static void StopGameEventMgrNotifyTimeReporting()
@@ -194,8 +173,7 @@ namespace ECS.Debug
 
         private static void ReportGameEventMgrNotifyTimes()
         {
-            string ActualInterval = DOL.GS.Util.TruncateString((DOL.GS.GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
-
+            string ActualInterval = Util.TruncateString((GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
             Console.WriteLine($"==== GameEventMgr Notify() Costs (Requested Interval: {GameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
 
             lock (_GameEventMgrNotifyLock)
@@ -203,13 +181,12 @@ namespace ECS.Debug
                 foreach (var NotifyData in GameEventMgrNotifyTimes)
                 {
                     List<double> EventTimeValues = NotifyData.Value;
-
                     string EventNameString = NotifyData.Key.PadRight(30);
                     double TotalCost = 0;
                     double MinCost = 0;
                     double MaxCost = 0;
 
-                    foreach (var time in EventTimeValues)
+                    foreach (double time in EventTimeValues)
                     {
                         TotalCost += time;
 
@@ -222,18 +199,16 @@ namespace ECS.Debug
 
                     int NumValues = EventTimeValues.Count;
                     double AvgCost = TotalCost / NumValues;
-
                     string NumValuesString = NumValues.ToString().PadRight(4);
-                    string TotalCostString = DOL.GS.Util.TruncateString(TotalCost.ToString(), 5);
-                    string MinCostString = DOL.GS.Util.TruncateString(MinCost.ToString(), 5);
-                    string MaxCostString = DOL.GS.Util.TruncateString(MaxCost.ToString(), 5);
-                    string AvgCostString = DOL.GS.Util.TruncateString(AvgCost.ToString(), 5);
-
+                    string TotalCostString = Util.TruncateString(TotalCost.ToString(), 5);
+                    string MinCostString = Util.TruncateString(MinCost.ToString(), 5);
+                    string MaxCostString = Util.TruncateString(MaxCost.ToString(), 5);
+                    string AvgCostString = Util.TruncateString(AvgCost.ToString(), 5);
                     Console.WriteLine($"{EventNameString} - # Calls: {NumValuesString} | Total: {TotalCostString}ms | Avg: {AvgCostString}ms | Min: {MinCostString}ms | Max: {MaxCostString}ms");
                 }
 
                 GameEventMgrNotifyTimes.Clear();
-                GameEventMgrNotifyTimerStartTick = DOL.GS.GameTimer.GetTickCount();
+                GameEventMgrNotifyTimerStartTick = GameTimer.GetTickCount();
                 Console.WriteLine("---------------------------------------------------------------------------");
             }
         }
@@ -256,16 +231,11 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             if (client == null || client.Player == null)
-            {
                 return;
-            }
 
             if (IsSpammingCommand(client.Player, "Diag"))
-            {
                 return;
-            }
 
-            // extra check to disallow all but server GM's
             if (client.Account.PrivLevel < 2)
                 return;
 
@@ -291,12 +261,12 @@ namespace DOL.GS.Commands
             {
                 if (args[2].ToLower().Equals("on"))
                 {
-                    ECS.Debug.Diagnostics.TogglePerfCounters(true);
+                    Diagnostics.TogglePerfCounters(true);
                     DisplayMessage(client, "Performance diagnostics logging turned on. WARNING: This will spam the server logs.");
                 }
                 else if (args[2].ToLower().Equals("off"))
                 {
-                    ECS.Debug.Diagnostics.TogglePerfCounters(false);
+                    Diagnostics.TogglePerfCounters(false);
                     DisplayMessage(client, "Performance diagnostics logging turned off.");
                 }
             }
@@ -305,48 +275,46 @@ namespace DOL.GS.Commands
             {
                 if (args[2].ToLower().Equals("on"))
                 {
-                    int interval = Int32.Parse(args[3]);
+                    int interval = int.Parse(args[3]);
                     if (interval <= 0)
                     {
                         DisplayMessage(client, "Invalid interval argument. Please specify a value in milliseconds.");
                         return;
                     }
 
-                    ECS.Debug.Diagnostics.StartGameEventMgrNotifyTimeReporting(interval);
+                    Diagnostics.StartGameEventMgrNotifyTimeReporting(interval);
                     DisplayMessage(client, "GameEventMgr Notify() logging turned on. WARNING: This will spam the server logs.");
                 }
                 else if (args[2].ToLower().Equals("off"))
                 {
-                    ECS.Debug.Diagnostics.StopGameEventMgrNotifyTimeReporting();
+                    Diagnostics.StopGameEventMgrNotifyTimeReporting();
                     DisplayMessage(client, "GameEventMgr Notify() logging turned off.");
                 }
             }
 
             if (args[1].ToLower().Equals("timer"))
             {
-                int tickcount = Int32.Parse(args[2]);
+                int tickcount = int.Parse(args[2]);
                 if (tickcount <= 0)
                 {
                     DisplayMessage(client, "Invalid tickcount argument. Please specify a positive integer value.");
                     return;
                 }
 
-                TimerService.debugTimer = true;
-                TimerService.debugTimerTickCount = tickcount;
+                TimerService.DebugTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " TimerService tick(s)");
             }
             
             if (args[1].ToLower().Equals("think"))
             {
-                int tickcount = Int32.Parse(args[2]);
+                int tickcount = int.Parse(args[2]);
                 if (tickcount <= 0)
                 {
                     DisplayMessage(client, "Invalid tickcount argument. Please specify a positive integer value.");
                     return;
                 }
 
-                NPCThinkService.thinkTimer = true;
-                NPCThinkService.debugTimerTickCount = tickcount;
+                NPCThinkService.DebugTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " NPCThinkService tick(s)");
             }
         }
@@ -361,21 +329,16 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            var messages = new List<string>();
+            List<string> messages = new();
             string header = "Hidden Character Stats";
-
             GamePlayer player = client.Player;
+            InventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
-            InventoryItem lefthand = null;
-            lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-
-            // Block Chance
+            // Block chance.
             if (player.HasAbility(Abilities.Shield))
             {
                 if (lefthand == null)
-                {
                     messages.Add($"Block Chance: No Shield Equipped!");
-                }
                 else
                 {
                     double blockChance = player.GetBlockChance();
@@ -383,37 +346,37 @@ namespace DOL.GS.Commands
                 }
             }
 
-            // Parry Chance
+            // Parry chance.
             if (player.HasSpecialization(Specs.Parry))
             {
                 double parryChance = player.GetParryChance();
                 messages.Add($"Parry Chance: {parryChance}%");
             }
 
-            // Evade Chance
+            // Evade chance.
             if (player.HasAbility(Abilities.Evade))
             {
                 double evadeChance = player.GetEvadeChance();
                 messages.Add($"Evade Chance: {evadeChance}%");
             }
 
-            // Melee Crit Chance
+            // Melee crit chance.
             int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
             messages.Add($"Melee Crit Chance: {meleeCritChance}%");
 
-            // Spell Crit Chance
+            // Spell crit chance
             int spellCritChance = player.GetModified(eProperty.CriticalSpellHitChance);
             messages.Add($"Spell Crit Chance: {spellCritChance}");
 
-            // Spell Casting Speed Bonus
+            // Spell casting speed bonus.
             int spellCastSpeed = player.GetModified(eProperty.CastingSpeed);
             messages.Add($"Spell Casting Speed Bonus: {spellCastSpeed}%");
 
-            // Heal Crit Chance
+            // Heal crit chance.
             int healCritChance = player.GetModified(eProperty.CriticalHealHitChance);
             messages.Add($"Heal Crit Chance: {healCritChance}%");
 
-            // Archery Crit Chance
+            // Archery crit chance.
             if (player.HasSpecialization(Specs.Archery)
                 || player.HasSpecialization(Specs.CompositeBow)
                 || player.HasSpecialization(Specs.RecurveBow)
@@ -425,7 +388,7 @@ namespace DOL.GS.Commands
                 messages.Add($"Archery Crit Chance: {archeryCritChance}%");
             }
 
-            // Finalize
+            // Finalize.
             player.Out.SendCustomTextWindow(header, messages);
         }
     }
@@ -440,16 +403,11 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             if (client == null || client.Player == null)
-            {
                 return;
-            }
 
             if (IsSpammingCommand(client.Player, "fsm"))
-            {
                 return;
-            }
 
-            // extra check to disallow all but server GM's
             if (client.Account.PrivLevel < 2)
                 return;
 
@@ -463,12 +421,12 @@ namespace DOL.GS.Commands
             {
                 if (args[2].ToLower().Equals("on"))
                 {
-                    ECS.Debug.Diagnostics.ToggleStateMachineDebug(true);
+                    Diagnostics.ToggleStateMachineDebug(true);
                     DisplayMessage(client, "Mob state logging turned on.");
                 }
                 else if (args[2].ToLower().Equals("off"))
                 {
-                    ECS.Debug.Diagnostics.ToggleStateMachineDebug(false);
+                    Diagnostics.ToggleStateMachineDebug(false);
                     DisplayMessage(client, "Mob state logging turned off.");
                 }
             }
@@ -485,16 +443,11 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             if (client == null || client.Player == null)
-            {
                 return;
-            }
 
             if (IsSpammingCommand(client.Player, "aggro"))
-            {
                 return;
-            }
 
-            // extra check to disallow all but server GM's
             if (client.Account.PrivLevel < 2)
                 return;
 
@@ -508,12 +461,12 @@ namespace DOL.GS.Commands
             {
                 if (args[2].ToLower().Equals("on"))
                 {
-                    ECS.Debug.Diagnostics.ToggleAggroDebug(true);
+                    Diagnostics.ToggleAggroDebug(true);
                     DisplayMessage(client, "Mob aggro logging turned on.");
                 }
                 else if (args[2].ToLower().Equals("off"))
                 {
-                    ECS.Debug.Diagnostics.ToggleAggroDebug(false);
+                    Diagnostics.ToggleAggroDebug(false);
                     DisplayMessage(client, "Mob aggro logging turned off.");
                 }
             }

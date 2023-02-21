@@ -7,24 +7,31 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
+        public static int LastNonNullNpcIndex { get; private set; } = -1;
+        public static int LastNonNullEffectIndex { get; private set; } = -1;
+
+        private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
+
+        // Players.
         private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
         private static object _playersLock = new();
 
+        // NPCs.
         private static GameNPC[] _npcs = new GameNPC[ServerProperties.Properties.MAX_ENTITIES];
-        private static SortedSet<int> _deletedNpcIndexes = new(Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0)); // Reverse order.
+        private static SortedSet<int> _deletedNpcIndexes = new(_descendingOrder);
         private static object _npcsLock = new();
 
+        // Effects.
         private static ECSGameEffect[] _effects = new ECSGameEffect[50000];
-        private static SortedSet<int> _deletedEffectIndexes = new(Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0)); // Reverse order.
+        private static SortedSet<int> _deletedEffectIndexes = new(_descendingOrder);
         private static object _effectsLock = new();
 
+        // Services.
         private static List<Type> _services = new(100);
         private static object _servicesLock = new();
 
+        // Components.
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
-
-        public static int LastNonNullNpcIndex { get; private set; } = -1;
-        public static int LastNonNullEffectIndex { get; private set; } = -1;
 
         public static void AddService(Type t)
         {
