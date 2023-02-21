@@ -1,8 +1,6 @@
-using DOL.GS.Scripts;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
 using log4net;
 
 namespace DOL.GS

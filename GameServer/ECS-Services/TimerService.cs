@@ -36,13 +36,13 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            //debug variables
+            // Debug variables.
             Dictionary<string, int> timerToRemoveCallbacks = null;
             Dictionary<string, int> timerToAddCallbacks = null;
             int timerToRemoveCount = 0;
             int timerToAddCount = 0;
 
-            //check if need to debug, then setup vars.
+            // Check if need to debug, then setup vars.
             if (Debug && DebugTickCount > 0)
             {
                 timerToRemoveCount = _timerToRemove.Count;
@@ -52,6 +52,7 @@ namespace DOL.GS
             }
 
             long addRemoveStartTick = GameTimer.GetTickCount();
+
             lock (_removeTimerLockObject)
             {
                 while (_timerToRemove.Count > 0)
@@ -71,11 +72,14 @@ namespace DOL.GS
                         _timerToRemove.Pop();
                 }
             }
+
             long addRemoveStopTick = GameTimer.GetTickCount();
+
             if ((addRemoveStopTick - addRemoveStartTick) > 25)
                 log.Warn($"Long TimerService Remove Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
 
             addRemoveStartTick = GameTimer.GetTickCount();
+
             lock (_addTimerLockObject)
             {
                 while (_timerToAdd.Count > 0)
@@ -97,6 +101,7 @@ namespace DOL.GS
             }
 
             addRemoveStopTick = GameTimer.GetTickCount();
+
             if ((addRemoveStopTick - addRemoveStartTick) > 25)
                 log.Warn($"Long TimerService Add Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
 
@@ -127,7 +132,7 @@ namespace DOL.GS
                 }
             });
 
-            //Output Debug info
+            // Output Debug info.
             if (Debug && timerToRemoveCallbacks != null && timerToAddCallbacks != null)
             {
                 log.Debug($"==== TimerService Debug - Total ActiveTimers: {_activeTimers.Count} ====");
@@ -235,7 +240,7 @@ namespace DOL.GS
         public void Start()
         {
             if (Interval <= 0)
-                Start(500); //use half-second intervals by default
+                Start(500); // Use half-second intervals by default.
             else
                 Start(Interval);
         }
