@@ -2,11 +2,15 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using log4net;
 
 namespace DOL.GS
 {
     public static class EntityManager
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public enum EntityType
         {
             Player,
@@ -88,9 +92,9 @@ namespace DOL.GS
             private SortedSet<int> _deletedIndexes = new(_descendingOrder);
             private object _lock = new();
 
-            public EntityArrayWrapper(int count)
+            public EntityArrayWrapper(int size)
             {
-                Elements = new T[count];
+                Elements = new T[size];
             }
 
             public int Add(T element)
@@ -111,6 +115,19 @@ namespace DOL.GS
                     else
                     {
                         LastNonNullIndex++;
+
+                        // Increase the size of the array in the unlikely event that it's too small. This is a costly operation.
+                        if (LastNonNullIndex >= Elements.Length)
+                        {
+                            int newSize = Elements.Length + 100;
+
+                            log.Warn($"{Elements.GetType()} {nameof(Elements)} is too short. Resizing it to {newSize}.");
+
+                            T[] newArray = new T[newSize];
+                            Elements.CopyTo(newArray, 0);
+                            Elements = newArray;
+                        }
+
                         Elements[LastNonNullIndex] = element;
                         return LastNonNullIndex;
                     }
