@@ -7,31 +7,45 @@ namespace DOL.GS
 {
     public static class EntityManager
     {
-        public static int LastNonNullNpcIndex { get; private set; } = -1;
-        public static int LastNonNullEffectIndex { get; private set; } = -1;
+        public enum EntityType
+        {
+            Npc,
+            Effect
+        }
 
-        private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
+        private static Dictionary<EntityType, dynamic> Entities = new()
+        {
+            { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) }
+        };
 
-        // Players.
         private static List<GamePlayer> _players = new(ServerProperties.Properties.MAX_PLAYERS);
         private static object _playersLock = new();
 
-        // NPCs.
-        private static GameNPC[] _npcs = new GameNPC[ServerProperties.Properties.MAX_ENTITIES];
-        private static SortedSet<int> _deletedNpcIndexes = new(_descendingOrder);
-        private static object _npcsLock = new();
-
-        // Effects.
-        private static ECSGameEffect[] _effects = new ECSGameEffect[50000];
-        private static SortedSet<int> _deletedEffectIndexes = new(_descendingOrder);
-        private static object _effectsLock = new();
-
-        // Services.
         private static List<Type> _services = new(100);
         private static object _servicesLock = new();
 
-        // Components.
         private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
+
+        public static int Add<T>(EntityType type, T entity)
+        {
+            return Entities[type].Add(entity);
+        }
+
+        public static void Remove(EntityType type, int id)
+        {
+            Entities[type].Remove(id);
+        }
+
+        public static T[] GetAll<T>(EntityType type)
+        {
+            return Entities[type].Elements;
+        }
+
+        public static int GetLastNonNullIndex(EntityType type)
+        {
+            return Entities[type].LastNonNullIndex;
+        }
 
         public static void AddService(Type t)
         {
@@ -102,130 +116,73 @@ namespace DOL.GS
             }
         }
 
-        public static GameNPC[] GetAllNpcs()
+        private class EntityArrayWrapper<T> where T : class
         {
-            return _npcs;
-        }
+            private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
+            public T[] Elements { get; private set; }
+            public int LastNonNullIndex { get; private set; } = -1;
+            private SortedSet<int> _deletedIndexes = new(_descendingOrder);
+            private object _lock = new();
 
-        public static int AddNpc(GameNPC o)
-        {
-            lock (_npcsLock)
+            public EntityArrayWrapper(int count)
             {
-                if (_deletedNpcIndexes.Any())
-                {
-                    int index = _deletedNpcIndexes.Max;
-                    _deletedNpcIndexes.Remove(index);
-                    _npcs[index] = o;
-
-                    if (index > LastNonNullNpcIndex)
-                        LastNonNullNpcIndex = index;
-
-                    return index;
-                }
-                else
-                {
-                    LastNonNullNpcIndex++;
-                    _npcs[LastNonNullNpcIndex] = o;
-                    return LastNonNullNpcIndex;
-                }
+                Elements = new T[count];
             }
-        }
 
-        public static void RemoveNpc(GameNPC o)
-        {
-            int id = o.EntityManagerId;
-
-            if (id == -1)
-                return;
-
-            lock (_npcsLock)
+            public int Add(T element)
             {
-                _npcs[id] = null;
-                _deletedNpcIndexes.Add(id);
-
-                if (id == LastNonNullNpcIndex)
+                lock (_lock)
                 {
-                    if (_deletedNpcIndexes.Any())
+                    if (_deletedIndexes.Any())
                     {
-                        int lastIndex = _deletedNpcIndexes.Min;
+                        int index = _deletedIndexes.Max;
+                        _deletedIndexes.Remove(index);
+                        Elements[index] = element;
 
-                        // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
-                        foreach (int index in _deletedNpcIndexes)
-                        {
-                            if (lastIndex - index > 0)
-                                break;
+                        if (index > LastNonNullIndex)
+                            LastNonNullIndex = index;
 
-                            lastIndex--;
-                        }
-
-                        LastNonNullNpcIndex = lastIndex;
+                        return index;
                     }
                     else
-                        LastNonNullNpcIndex--;
-                }
-            }
-        }
-
-        public static ECSGameEffect[] GetAllEffects()
-        {
-            return _effects;
-        }
-
-        public static int AddEffect(ECSGameEffect e)
-        {
-            lock (_effectsLock)
-            {
-                if (_deletedEffectIndexes.Any())
-                {
-                    int index = _deletedEffectIndexes.Max;
-                    _deletedEffectIndexes.Remove(index);
-                    _effects[index] = e;
-
-                    if (index > LastNonNullEffectIndex)
-                        LastNonNullEffectIndex = index;
-
-                    return index;
-                }
-                else
-                {
-                    LastNonNullEffectIndex++;
-                    _effects[LastNonNullEffectIndex] = e;
-                    return LastNonNullEffectIndex;
-                }
-            }
-        }
-
-        public static void RemoveEffect(ECSGameEffect e)
-        {
-            int id = e.EntityManagerId;
-
-            if (id == -1)
-                return;
-
-            lock (_effectsLock)
-            {
-                _effects[id] = null;
-                _deletedEffectIndexes.Add(id);
-
-                if (id == LastNonNullEffectIndex)
-                {
-                    if (_deletedEffectIndexes.Any())
                     {
-                        int lastIndex = _deletedEffectIndexes.Min;
-
-                        // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
-                        foreach (int index in _deletedEffectIndexes)
-                        {
-                            if (lastIndex - index > 0)
-                                break;
-
-                            lastIndex--;
-                        }
-
-                        LastNonNullEffectIndex = lastIndex;
+                        LastNonNullIndex++;
+                        Elements[LastNonNullIndex] = element;
+                        return LastNonNullIndex;
                     }
-                    else
-                        LastNonNullEffectIndex--;
+                }
+            }
+
+            public void Remove(int id)
+            {
+                if (id == -1)
+                    return;
+
+                lock (_lock)
+                {
+                    Elements[id] = null;
+                    _deletedIndexes.Add(id);
+
+                    if (id == LastNonNullIndex)
+                    {
+                        if (_deletedIndexes.Any())
+                        {
+                            int lastIndex = _deletedIndexes.Min;
+
+                            // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
+                            foreach (int index in _deletedIndexes)
+                            {
+                                if (lastIndex - index > 0)
+                                    break;
+
+                                lastIndex--;
+                            }
+
+                            LastNonNullIndex = lastIndex;
+                        }
+                        else
+                            LastNonNullIndex--;
+                    }
                 }
             }
         }

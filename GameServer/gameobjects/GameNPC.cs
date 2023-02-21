@@ -3218,7 +3218,7 @@ namespace DOL.GS
 			}
 
 			if (m_respawnInterval < 0)
-				EntityManager.RemoveNpc(this);
+				EntityManager.Remove(EntityManager.EntityType.Npc, this.EntityManagerId);
 
 			return true;
 		}
@@ -5747,7 +5747,7 @@ namespace DOL.GS
 				m_ownBrain.Body = this;
 			}
 
-			EntityManagerId = EntityManager.AddNpc(this);
+			EntityManagerId = EntityManager.Add(EntityManager.EntityType.Npc, this);
 		}
 
 		/// <summary>
