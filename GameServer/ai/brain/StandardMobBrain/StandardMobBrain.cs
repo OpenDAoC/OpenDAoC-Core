@@ -1291,7 +1291,7 @@ namespace DOL.AI.Brain
                 }
             }*/
 
-            ISpellHandler spellHandler = Body.castingComponent.spellHandler;
+            ISpellHandler spellHandler = Body.castingComponent.SpellHandler;
 
             // If we're currently casting 'spell' on 'target', assume it already has the effect.
             // This allows spell queuing while preventing casting on the same target more than once.

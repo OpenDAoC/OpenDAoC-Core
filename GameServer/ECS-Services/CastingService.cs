@@ -31,7 +31,7 @@ namespace DOL.GS
                     long stopTick = GameTimer.GetTickCount();
 
                     if ((stopTick - startTick) > 25)
-                        log.Warn($"Long CastingComponent.Tick for: {c.owner.Name}({c.owner.ObjectID}) Spell: {c.spellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+                        log.Warn($"Long CastingComponent.Tick for: {c.Owner.Name}({c.Owner.ObjectID}) Spell: {c.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {

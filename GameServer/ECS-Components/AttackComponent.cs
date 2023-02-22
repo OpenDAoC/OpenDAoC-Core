@@ -46,12 +46,13 @@ namespace DOL.GS
         {
             lock (Attackers)
             {
-                if (attacker == owner) return;
-                if (m_attackers.Contains(attacker)) return;
-                m_attackers.Add(attacker);
+                if (attacker == owner)
+                    return;
 
-                if (m_attackers.Count > 0 && EntityManagerId == -1)
-                    EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
+                if (m_attackers.Contains(attacker))
+                    return;
+
+                m_attackers.Add(attacker);
             }
         }
 
@@ -796,7 +797,7 @@ namespace DOL.GS
                 }*/
                 if (LivingStartAttack())
                 {
-                    if (player.IsCasting && !player.castingComponent.spellHandler.Spell.Uninterruptible)
+                    if (player.IsCasting && !player.castingComponent.SpellHandler.Spell.Uninterruptible)
                     {
                         player.StopCurrentSpellcast();
                         player.Out.SendMessage(

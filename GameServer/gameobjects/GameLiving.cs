@@ -1806,8 +1806,8 @@ namespace DOL.GS
 
 			InterruptTime = GameLoop.GameLoopTime + duration;
 
-			if (castingComponent?.spellHandler != null)
-				castingComponent.spellHandler.CasterIsAttacked(attacker);
+			if (castingComponent?.SpellHandler != null)
+				castingComponent.SpellHandler.CasterIsAttacked(attacker);
 			else if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 			{
 				if (attackComponent.AttackState)
@@ -6867,7 +6867,7 @@ namespace DOL.GS
 
 		public virtual bool IsCasting
 		{
-			get { return castingComponent != null && castingComponent.spellHandler != null && castingComponent.spellHandler.IsCasting; }
+			get { return castingComponent != null && castingComponent.SpellHandler != null && castingComponent.SpellHandler.IsCasting; }
 		}
 
 		/// <summary>
@@ -6923,7 +6923,7 @@ namespace DOL.GS
 		public ISpellHandler CurrentSpellHandler
 		{
 			// change for warlock
-			get { return castingComponent.spellHandler; }
+			get { return castingComponent.SpellHandler; }
 			//set { CurrentSpellHandler = value; }
 		}
 
@@ -6932,8 +6932,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			castingComponent.spellHandler?.InterruptCasting();
-			castingComponent.queuedSpellHandler = null;
+			castingComponent.SpellHandler?.InterruptCasting();
+			castingComponent.QueuedSpellHandler = null;
 		}
 
 		public virtual bool CastSpell(Spell spell, SpellLine line)

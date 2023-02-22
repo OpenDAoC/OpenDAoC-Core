@@ -12,12 +12,11 @@ namespace DOL.GS
         private int _lastUpdateEffectsCount;
 
         public GameLiving Owner { get; private set; }
-        public int EntityManagerId { get; private set; } = EntityManager.UNSET_ID;
+        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
         public object EffectsLock { get; private set; } = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
         public object ConcentrationEffectsLock { get; private set; } = new();
-
         private readonly Dictionary<int, ECSGameEffect> EffectIdToEffect = new();
 
         public EffectListComponent(GameLiving owner)
@@ -261,6 +260,7 @@ namespace DOL.GS
                             temp.Add(effects[j]);
                     }
                 }
+
                 return temp.OrderBy(e => e.StartTick).ToList();
             }
         }
@@ -278,6 +278,7 @@ namespace DOL.GS
                             temp.Add((ECSPulseEffect)effects[j]);
                     }
                 }
+
                 return temp;
             }
         }
@@ -300,6 +301,7 @@ namespace DOL.GS
                         }
                     }
                 }
+
                 return temp;
             }
         }
@@ -351,6 +353,7 @@ namespace DOL.GS
                             temp.Add(effects[j] as ECSGameAbilityEffect);
                     }
                 }
+
                 return temp.OrderBy(e => e.StartTick).ToList();
             }
         }
@@ -382,22 +385,19 @@ namespace DOL.GS
                         if (effect.CancelEffect)
                         {
                             List<ECSGameEffect> existingEffects = Effects[effect.EffectType];
-                            
                             // Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
                             ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
-                            Effects[effect.EffectType].Remove(effectToRemove);
 
+                            Effects[effect.EffectType].Remove(effectToRemove);
                             EffectIdToEffect.Remove(effect.Icon);
-                            
+
                             if (Effects[effect.EffectType].Count == 0)
                             {
                                 EffectIdToEffect.Remove(effect.Icon);
                                 Effects.Remove(effect.EffectType);
                             }
-
-                            if (Effects.Count == 0)
-                                EntityManagerId = EntityManager.Remove(EntityManager.EntityType.EffectListComponent, EntityManagerId);
                         }
+
                         return true;
                     }
                 }
@@ -406,7 +406,6 @@ namespace DOL.GS
                     Console.WriteLine($"Error removing an Effect from {effect.Owner}'s EffectList {e}");
                     return false;
                 }
-
             }
         }
 
@@ -431,9 +430,7 @@ namespace DOL.GS
             foreach (var effects in Effects.Values.ToList())
             {
                 for (int j = 0; j < effects.Count; j++)
-                {
                     EffectService.RequestCancelEffect(effects[j]);
-                }
             }
         }
     }

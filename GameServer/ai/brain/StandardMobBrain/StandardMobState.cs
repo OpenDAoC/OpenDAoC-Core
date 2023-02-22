@@ -156,16 +156,10 @@ public class StandardMobState_AGGRO : StandardMobState
     public override void Enter()
     {
         if (_brain.Body.attackComponent == null)
-        {
             _brain.Body.attackComponent = new(_brain.Body);
-            _brain.Body.attackComponent.EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, _brain.Body.attackComponent);
-        }
 
         if (_brain.Body.castingComponent == null)
-        {
             _brain.Body.castingComponent = new(_brain.Body);
-            _brain.Body.castingComponent.EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, _brain.Body.castingComponent);
-        }
 
         if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
         {

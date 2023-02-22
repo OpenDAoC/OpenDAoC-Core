@@ -1374,16 +1374,14 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.CastTime > 0)
 				{
-					if (p.castingComponent.queuedSpellHandler != null && p.SpellQueue)
+					if (p.castingComponent.QueuedSpellHandler != null && p.SpellQueue)
 					{
-						p.castingComponent.spellHandler = p.castingComponent.queuedSpellHandler;
-						p.castingComponent.queuedSpellHandler = null;
+						p.castingComponent.SpellHandler = p.castingComponent.QueuedSpellHandler;
+						p.castingComponent.QueuedSpellHandler = null;
 					}
 					else
-						p.castingComponent.spellHandler = null;
+						p.castingComponent.SpellHandler = null;
 				}
-				else
-					p.castingComponent.instantSpellHandler = null;
 			}
 			else if (Caster is NecromancerPet nPet)
 			{
@@ -1396,13 +1394,13 @@ namespace DOL.GS.Spells
 						if (!Caster.attackComponent.AttackState)
 							necroBrain.CheckAttackSpellQueue();
 
-						if (Caster.castingComponent.queuedSpellHandler != null)
+						if (Caster.castingComponent.QueuedSpellHandler != null)
 						{
-							Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
-							Caster.castingComponent.queuedSpellHandler = null;
+							Caster.castingComponent.SpellHandler = Caster.castingComponent.QueuedSpellHandler;
+							Caster.castingComponent.QueuedSpellHandler = null;
 						}
 						else
-							Caster.castingComponent.spellHandler = null;
+							Caster.castingComponent.SpellHandler = null;
 
 						if (necroBrain.SpellsQueued)
 							necroBrain.CheckSpellQueue();
@@ -1411,20 +1409,18 @@ namespace DOL.GS.Spells
 					{
 						if (nPet.attackComponent.AttackState)
 							necroBrain.RemoveSpellFromAttackQueue();
-
-						Caster.castingComponent.instantSpellHandler = null;
 					}
 				}
 			}
 			else
 			{
-				if (Caster.castingComponent.queuedSpellHandler != null)
+				if (Caster.castingComponent.QueuedSpellHandler != null)
 				{
-					Caster.castingComponent.spellHandler = Caster.castingComponent.queuedSpellHandler;
-					Caster.castingComponent.queuedSpellHandler = null;
+					Caster.castingComponent.SpellHandler = Caster.castingComponent.QueuedSpellHandler;
+					Caster.castingComponent.QueuedSpellHandler = null;
 				}
 				else
-					Caster.castingComponent.spellHandler = null;
+					Caster.castingComponent.SpellHandler = null;
 			}
 		}
 
@@ -1559,8 +1555,8 @@ namespace DOL.GS.Spells
 			
 			if (m_caster is GamePlayer p && p.castingComponent != null)
 			{
-				p.castingComponent.spellHandler = null;
-				p.castingComponent.queuedSpellHandler = null;
+				p.castingComponent.SpellHandler = null;
+				p.castingComponent.QueuedSpellHandler = null;
 			}
 
 			CastState = eCastState.Interrupted;
@@ -1577,7 +1573,7 @@ namespace DOL.GS.Spells
 			
 			if (m_caster is GamePlayer p && p.castingComponent != null)
 			{
-				p.castingComponent.spellHandler = null;
+				p.castingComponent.SpellHandler = null;
 			}
 
 			m_startReuseTimer = false;
