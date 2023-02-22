@@ -39,6 +39,8 @@ namespace DOL.GS
                 else
                     HandlePropertyModification(effect);
 
+                effect.EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Effect, effect.EntityManagerId);
+
                 long stopTick = GameTimer.GetTickCount();
 
                 if ((stopTick - startTick) > 25 )
@@ -50,8 +52,6 @@ namespace DOL.GS
 
         private static void HandlePropertyModification(ECSGameEffect e)
         {
-            e.EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Effect, e.EntityManagerId);
-
             if (e.Owner == null)
             {
                 //Console.WriteLine($"Invalid target for Effect {e}");
@@ -190,8 +190,6 @@ namespace DOL.GS
 
         private static void HandleCancelEffect(ECSGameEffect e)
         {
-            e.EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Effect, e.EntityManagerId);
-
             if (!e.Owner.effectListComponent.RemoveEffect(e))
                 return;
 
@@ -280,7 +278,9 @@ namespace DOL.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            effect.EntityManagerId = EntityManager.Add(EntityManager.EntityType.Effect, effect);
+
+            if (effect.EntityManagerId == -1)
+                effect.EntityManagerId = EntityManager.Add(EntityManager.EntityType.Effect, effect);
         }
 
         /// <summary>
