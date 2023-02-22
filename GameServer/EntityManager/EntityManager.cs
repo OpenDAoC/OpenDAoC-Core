@@ -27,14 +27,12 @@ namespace DOL.GS
         {
             { EntityType.Player, new EntityArrayWrapper<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(50000) },
-            { EntityType.AttackComponent, new EntityArrayWrapper<AttackComponent>(1000) },
-            { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1000) },
-            { EntityType.EffectListComponent, new EntityArrayWrapper<EffectListComponent>(10000) },
+            { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(250) },
+            { EntityType.AttackComponent, new EntityArrayWrapper<AttackComponent>(1250) },
+            { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1250) },
+            { EntityType.EffectListComponent, new EntityArrayWrapper<EffectListComponent>(3000) },
             { EntityType.CraftComponent, new EntityArrayWrapper<CraftComponent>(250) }
         };
-
-        private static ConcurrentDictionary<Type, HashSet<GameLiving>> _components = new();
 
         public static int Add<T>(EntityType type, T entity)
         {
