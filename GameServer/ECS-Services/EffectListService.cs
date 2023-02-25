@@ -18,11 +18,11 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            EffectListComponent[] arr = EntityManager.GetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent);
+            List<EffectListComponent> list = EntityManager.GetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.EffectListComponent) + 1, i =>
             {
-                EffectListComponent e = arr[i];
+                EffectListComponent e = list[i];
 
                 if (e == null)
                     return;

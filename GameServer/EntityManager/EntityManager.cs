@@ -43,7 +43,7 @@ namespace DOL.GS
             return UNSET_ID;
         }
 
-        public static T[] GetAll<T>(EntityType type)
+        public static List<T> GetAll<T>(EntityType type)
         {
             return Entities[type].Elements;
         }
@@ -56,14 +56,14 @@ namespace DOL.GS
         private class EntityArrayWrapper<T> where T : class
         {
             private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
-            public T[] Elements { get; private set; }
+            public List<T> Elements { get; private set; }
             public int LastNonNullIndex { get; private set; } = -1;
             private SortedSet<int> _deletedIndexes = new(_descendingOrder);
             private object _lock = new();
 
-            public EntityArrayWrapper(int size)
+            public EntityArrayWrapper(int capacity)
             {
-                Elements = new T[size];
+                Elements = new List<T>(capacity);
             }
 
             public int Add(T element)
@@ -85,19 +85,16 @@ namespace DOL.GS
                     {
                         LastNonNullIndex++;
 
-                        // Increase the size of the array in the unlikely event that it's too small. This is a costly operation.
-                        if (LastNonNullIndex >= Elements.Length)
+                        // Increase the capacity of the list in the event that it's too small. This is a costly operation.
+                        // 'Add' already does it, but we want to know when it happens and control by how much it grows (instead of doubling it).
+                        if (LastNonNullIndex >= Elements.Capacity)
                         {
-                            int newSize = Elements.Length + 100;
-
-                            log.Warn($"{Elements.GetType()} {nameof(Elements)} is too short. Resizing it to {newSize}.");
-
-                            T[] newArray = new T[newSize];
-                            Elements.CopyTo(newArray, 0);
-                            Elements = newArray;
+                            int newCapacity = Elements.Capacity + 100;
+                            log.Warn($"{typeof(T)} {nameof(Elements)} is too short. Resizing it to {newCapacity}.");
+                            ListExtras.Resize(Elements, newCapacity);
                         }
 
-                        Elements[LastNonNullIndex] = element;
+                        Elements.Add(element);
                         return LastNonNullIndex;
                     }
                 }
@@ -134,6 +131,29 @@ namespace DOL.GS
                             LastNonNullIndex--;
                     }
                 }
+            }
+        }
+    }
+
+    // Extension methods for 'List<T>' that could be moved elsewhere.
+    public static class ListExtras
+    {
+        public static void Resize<T>(this List<T> list, int size, bool fill = false, T element = default)
+        {
+            int count = list.Count;
+
+            if (size < count)
+            {
+                list.RemoveRange(size, count - size);
+                list.TrimExcess();
+            }
+            else if (size > count)
+            {
+                if (size > list.Capacity)
+                    list.Capacity = size; // Creates a new internal array.
+
+                if (fill)
+                    list.AddRange(Enumerable.Repeat(element, size - count));
             }
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using ECS.Debug;
@@ -15,13 +16,13 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            CastingComponent[] arr = EntityManager.GetAll<CastingComponent>(EntityManager.EntityType.CastingComponent);
+            List<CastingComponent> list = EntityManager.GetAll<CastingComponent>(EntityManager.EntityType.CastingComponent);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.CastingComponent) + 1, i =>
             {
                 try
                 {
-                    CastingComponent c = arr[i];
+                    CastingComponent c = list[i];
 
                     if (c == null)
                         return;

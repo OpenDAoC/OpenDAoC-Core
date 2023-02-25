@@ -23,11 +23,11 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            ECSGameEffect[] arr = EntityManager.GetAll<ECSGameEffect>(EntityManager.EntityType.Effect);
+            List<ECSGameEffect> list = EntityManager.GetAll<ECSGameEffect>(EntityManager.EntityType.Effect);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Effect) + 1, i =>
             {
-                ECSGameEffect effect = arr[i];
+                ECSGameEffect effect = list[i];
 
                 if (effect == null)
                     return;

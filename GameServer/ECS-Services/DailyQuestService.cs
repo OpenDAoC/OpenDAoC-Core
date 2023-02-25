@@ -47,7 +47,7 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newTime);
                 }
 
-                GamePlayer[] players = EntityManager.GetAll<GamePlayer>(EntityManager.EntityType.Player);
+                List<GamePlayer> players = EntityManager.GetAll<GamePlayer>(EntityManager.EntityType.Player);
 
                 for (int i = 0; i < EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Player) + 1; i++)
                 {

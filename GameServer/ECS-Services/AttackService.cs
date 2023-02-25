@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using ECS.Debug;
 using log4net;
 
@@ -15,13 +16,13 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            AttackComponent[] arr = EntityManager.GetAll<AttackComponent>(EntityManager.EntityType.AttackComponent);
+            List<AttackComponent> list = EntityManager.GetAll<AttackComponent>(EntityManager.EntityType.AttackComponent);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.AttackComponent) + 1, i =>
             {
                 try
                 {
-                    AttackComponent a = arr[i];
+                    AttackComponent a = list[i];
 
                     if (a == null)
                         return;

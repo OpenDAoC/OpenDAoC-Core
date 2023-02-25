@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -11,11 +12,11 @@ namespace DOL.GS
         {
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            CraftComponent[] arr = EntityManager.GetAll<CraftComponent>(EntityManager.EntityType.CraftComponent);
+            List<CraftComponent> list = EntityManager.GetAll<CraftComponent>(EntityManager.EntityType.CraftComponent);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.CraftComponent) + 1, i =>
             {
-                arr[i]?.Tick(tick);
+                list[i]?.Tick(tick);
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

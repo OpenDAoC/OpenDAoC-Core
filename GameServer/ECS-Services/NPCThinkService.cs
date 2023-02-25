@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,11 +34,11 @@ namespace DOL.GS
                 _nullNpcCount = 0;
             }
 
-            GameNPC[] arr = EntityManager.GetAll<GameNPC>(EntityManager.EntityType.Npc);
+            List<GameNPC> list = EntityManager.GetAll<GameNPC>(EntityManager.EntityType.Npc);
 
             Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Npc) + 1, i =>
             {
-                GameNPC npc = arr[i];
+                GameNPC npc = list[i];
 
                 try
                 {
@@ -90,7 +91,7 @@ namespace DOL.GS
             if (Debug && _debugRemainingTicks > 0)
             {
                 log.Debug($"==== NPCThink Debug - Total ActiveThinkTimers: {_debugRemainingTicks} ====");
-                log.Debug($"==== Non-Null NPCs in EntityManager Array: {_npcCount} | Null NPCs: {_nullNpcCount} |  Total Size: {arr.Length}====");
+                log.Debug($"==== Non-Null NPCs in EntityManager Array: {_npcCount} | Null NPCs: {_nullNpcCount} |  Total Size: {list.Count}====");
                 log.Debug("---------------------------------------------------------------------------");
 
                 if (_debugRemainingTicks > 1)
