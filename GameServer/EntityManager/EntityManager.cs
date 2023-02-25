@@ -50,14 +50,14 @@ namespace DOL.GS
 
         public static int GetLastNonNullIndex(EntityType type)
         {
-            return Entities[type].LastNonNullIndex;
+            return Entities[type].GetLastNonNullIndex();
         }
 
         private class EntityArrayWrapper<T> where T : class
         {
             private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
             public List<T> Elements { get; private set; }
-            public int LastNonNullIndex { get; private set; } = -1;
+            private int _lastNonNullIndex = -1;
             private SortedSet<int> _deletedIndexes = new(_descendingOrder);
             private object _lock = new();
 
@@ -76,18 +76,18 @@ namespace DOL.GS
                         _deletedIndexes.Remove(index);
                         Elements[index] = element;
 
-                        if (index > LastNonNullIndex)
-                            LastNonNullIndex = index;
+                        if (index > _lastNonNullIndex)
+                            _lastNonNullIndex = index;
 
                         return index;
                     }
                     else
                     {
-                        LastNonNullIndex++;
+                        _lastNonNullIndex++;
 
                         // Increase the capacity of the list in the event that it's too small. This is a costly operation.
                         // 'Add' already does it, but we want to know when it happens and control by how much it grows (instead of doubling it).
-                        if (LastNonNullIndex >= Elements.Capacity)
+                        if (_lastNonNullIndex >= Elements.Capacity)
                         {
                             int newCapacity = Elements.Capacity + 100;
                             log.Warn($"{typeof(T)} {nameof(Elements)} is too short. Resizing it to {newCapacity}.");
@@ -95,7 +95,7 @@ namespace DOL.GS
                         }
 
                         Elements.Add(element);
-                        return LastNonNullIndex;
+                        return _lastNonNullIndex;
                     }
                 }
             }
@@ -110,7 +110,7 @@ namespace DOL.GS
                     Elements[id] = null;
                     _deletedIndexes.Add(id);
 
-                    if (id == LastNonNullIndex)
+                    if (id == _lastNonNullIndex)
                     {
                         if (_deletedIndexes.Any())
                         {
@@ -125,11 +125,19 @@ namespace DOL.GS
                                 lastIndex--;
                             }
 
-                            LastNonNullIndex = lastIndex;
+                            _lastNonNullIndex = lastIndex;
                         }
                         else
-                            LastNonNullIndex--;
+                            _lastNonNullIndex--;
                     }
+                }
+            }
+
+            public int GetLastNonNullIndex()
+            {
+                lock (_lock)
+                {
+                    return _lastNonNullIndex;
                 }
             }
         }
