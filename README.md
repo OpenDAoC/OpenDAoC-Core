@@ -1,6 +1,10 @@
-Atlas Freeshard - Core
+# Docker
 
-# Setting Up an Atlas Dev Environment
+The easiest way to get started with OpenDAoC is to use Docker. This will allow you to run a server without having to install any dependencies on your machine.
+
+A Docker image is available on [Docker Hub](https://hub.docker.com/r/claitz/opendaoc).
+
+# Setting Up an OpenDAoC Dev Environment
 
 The following instructions should act as a guide for properly setting up an Ubuntu environment to fetch and push file changes with Github as well as build and run a server successfully.
 
@@ -8,7 +12,7 @@ Instructions currently exist regarding setups for both [Ubuntu](#setting-up-on-u
 
 **IMPORTANT:** Check the [Before You Start](#before-you-start) section first as you will not be able to complete certain sections without the proper resources or privileges.
 
-The following sections outline the process of preparing your environment to build an Atlas server:
+The following sections outline the process of preparing your environment to build an OpenDAoC server:
 
 1. [Environment Requirements](#environment-requirements)
    1.[Considerations for IDEs](#considerations-for-ides)
@@ -26,7 +30,7 @@ The following sections outline the process of preparing your environment to buil
          3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
          4. [Adding the SSH Key to Github](#adding-the-ssh-key-to-github-ubuntu)
    4. [Installing Git](#installing-git-ubuntu)
-   5. [Cloning Atlas' Repos](#cloning-the-repository-ubuntu)
+   5. [Cloning OpenDAoC' Repos](#cloning-the-repository-ubuntu)
    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 3. [Setting Up on Windows](#setting-up-on-windows)
    1. [Installing .NET 6.0](#installing-net-60-win)
@@ -42,7 +46,7 @@ The following sections outline the process of preparing your environment to buil
          3. [Creating an SSH Key](#creating-an-ssh-key-win)
          4. [Adding the SSH Key to Github](#adding-the-ssh-key-to-github-win)
    4. [Installing Git](#installing-git-win)
-   5. [Cloning Atlas' Repos](#cloning-the-repository-win)
+   5. [Cloning OpenDAoC' Repos](#cloning-the-repository-win)
    6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
 4. [Building Your DoL Server Locally](#building-your-dol-server-locally)
 5. [Accessing Local Servers](#accessing-local-servers)
@@ -62,7 +66,7 @@ The following are main OS, tool, and version requirements to consider when setti
 
 ### Considerations for IDEs
 
-Atlas team members are not required to use the same developer tools when working on any DoL-related projects. If you already have access to or prefer a certain tool, we encourage you to use what you're most familiar with. However, we would like to recommend the following tools:
+OpenDAoC team members are not required to use the same developer tools when working on any DoL-related projects. If you already have access to or prefer a certain tool, we encourage you to use what you're most familiar with. However, we would like to recommend the following tools:
 
 * [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/): Free.
 * [Jetbrains Rider](https://www.jetbrains.com/rider/): Free with a student email account.
@@ -88,12 +92,12 @@ If you've' already completed a step previously, we recommend that you quickly re
       3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
       4. [Adding the SSH Key to Github](#adding-the-ssh-key-to-github-ubuntu)
    3. [Installing Git](#installing-git-ubuntu)
-      1. [Cloning Atlas' repos](#cloning-the-repository-ubuntu)
+      1. [Cloning OpenDAoC' repos](#cloning-the-repository-ubuntu)
       2. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 
 ### Installing .NET 6.0 (Ubuntu)
 
-.NET is an open-source developer platform used for building applications. Atlas uses .NET 6.0.X specifically.
+.NET is an open-source developer platform used for building applications. OpenDAoC uses .NET 6.0.X specifically.
 
 Perform the following steps from the Terminal:
 
@@ -107,7 +111,7 @@ Perform the following steps from the Terminal:
 
 ### Installing MariaDB 10.5 (Ubuntu)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically utilizes v10.5.
+MariaDB is an open-source relational database management system (RDBMS). OpenDAoC specifically utilizes v10.5.
 
 Perform the following steps from the Terminal:
 
@@ -119,7 +123,7 @@ Perform the following steps from the Terminal:
 6. `sudo apt install mariadb-server mariadb-client`
 7. Type `y` to accept.
 
-The RDBMS is installed, but needs a user and database for Atlas to access and use.
+The RDBMS is installed, but needs a user and database for OpenDAoC to access and use.
 
 #### Preparing Your Database (Ubuntu)
 
@@ -186,7 +190,7 @@ Github requires encrypted communication between your repository and client machi
 
 #### Setting Up a Personal Access Token (Ubuntu)
 
-Creating and using a Personal Access Token is the easiest method of gaining access to Atlas' repositories.
+Creating and using a Personal Access Token is the easiest method of gaining access to OpenDAoC' repositories.
 
  1. Navigate to [Github](https://github.com) and sign in.
  2. Click on your profile picture at the top-right corner of the screen and then **Edit profile**.
@@ -276,7 +280,7 @@ With Git ready, it's time to clone the `AtlasCore` repository.
 
 ### Altering `serverconfig.xml` (Ubuntu)
 
-With the repo on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
+With the repo on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building OpenDAoC locally.
 
 1. Copy the file `/AtlasCore/DOLServer/config/serverconfig.example.xml` to `/AtlasCore/DOLServer/config/serverconfig.xml`.
 2. Open the `serverconfig.xml` file.
@@ -285,7 +289,7 @@ With the repo on your local hard drive, you need to alter the `serverconfig.xml`
    2. To test over LAN, enter your machine's IP address (use the Terminal command `ip a`, and it should start with `192`).
    3. To test outside your network, [enter your public IP address](https://api.ipify.org).
    
-Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
+Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
 
 
 ## Setting Up on Windows
@@ -307,19 +311,19 @@ If you've already completed a step previously, we recommend that you quickly rev
       3. [Creating an SSH Key](#creating-an-ssh-key-win)
       4. [Adding the SSH Key to Github](#adding-the-ssh-key-to-github-win)
 4. [Installing Git](#installing-git-win)
-5. [Cloning Atlas' Repos](#cloning-the-repository-win)
+5. [Cloning OpenDAoC' Repos](#cloning-the-repository-win)
 6. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
 
 ### Installing .NET 6.0 (Win)
 
-.NET is an open-source developer platform used for building applications. Atlas uses .NET 6.0.X specifically, which is supported on all recent versions of Windows.
+.NET is an open-source developer platform used for building applications. OpenDAoC uses .NET 6.0.X specifically, which is supported on all recent versions of Windows.
 
 1. Download the [.NET 6.0 installer](https://dotnet.microsoft.com/download/dotnet/6.0).
 2. Install the tool and make any configurations as needed.
 
 ### Installing MariaDB 10.5 (Win)
 
-MariaDB is an open-source relational database management system (RDBMS). Atlas specifically uses v10.5.
+MariaDB is an open-source relational database management system (RDBMS). OpenDAoC specifically uses v10.5.
 
 1. Download MariaDB:
    1. [32-bit](https://downloads.mariadb.org/interstitial/mariadb-10.5.4/win32-packages/mariadb-10.5.4-win32.zip/from/https%3A//archive.mariadb.org/)
@@ -328,7 +332,7 @@ MariaDB is an open-source relational database management system (RDBMS). Atlas s
 3. Enable **Use UTF8 as default server's character set**. Make any changes to the following dialog windows as desired.
 4. Complete the installation by clicking **Install** and then **Finish**.
 
-The RDBMS is installed, but needs a user and database for Atlas to access and use.
+The RDBMS is installed, but needs a user and database for OpenDAoC to access and use.
 
 #### Preparing Your Database (Win)
 
@@ -369,7 +373,7 @@ lower_case_table_names=1
 
 #### Adding `DummyDB.sql` (Win)
 
-Prior to accomplishing this step, you will need a recent copy of the `DummyDB.sql` file. Without it, you cannot successfully build a local Atlas server. After installing MariaDB, you should also notice a program called HeidiSQL, which you'll need to use for this section.
+Prior to accomplishing this step, you will need a recent copy of the `DummyDB.sql` file. Without it, you cannot successfully build a local OpenDAoC server. After installing MariaDB, you should also notice a program called HeidiSQL, which you'll need to use for this section.
 
 1. Launch the HeidiSQL app.
 2. At the bottom-left corner. click **New > Session in root folder**.
@@ -392,7 +396,7 @@ Github requires encrypted communication between the repository and client machin
 
 #### Setting Up a Personal Access Token (Win)
 
-Creating and using a Personal Access Token is the easiest method of gaining access to Atlas' repositories.
+Creating and using a Personal Access Token is the easiest method of gaining access to OpenDAoC' repositories.
 
 1. Navigate to [Github](https://github.com) and sign in.
 2. Click on your profile picture at the top-right corner of the screen and then **Edit profile**.
@@ -488,7 +492,7 @@ With Git ready, it's time to clone the `AtlasCore` repositories.
 
 ### Altering `serverconfig.xml` (Win)
 
-With the repos on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building Atlas locally.
+With the repos on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building OpenDAoC locally.
 
 1. Copy the file `/AtlasCore/DOLServer/config/serverconfig.example.xml` to `/AtlasCore/DOLServer/config/serverconfig.xml`.
 2. Open the `serverconfig.xml` file.
@@ -497,7 +501,7 @@ With the repos on your local hard drive, you need to alter the `serverconfig.xml
    2. To test over LAN, enter your machine's IP address (use the Terminal command `ipconfig`, and it should start with `192`).
    3. To test outside your network, [enter your public IP address](https://api.ipify.org).
 
-Now you're ready to [run your own instance of Atlas](#building-your-dol-server-locally)!
+Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
 
 ## Building Your DoL Server Locally
 
@@ -506,15 +510,15 @@ This section provides the commands necessary for both building and running a DoL
 1. Launch the Terminal or PowerShell, navigate to `/AtlasCore/` and type `dotnet build DOLdotnetLinux.sln`. This builds the DoL server on your machine. <!-- This may take around 1-2 minutes to complete. Don't panic if you see multiple warnings and errors. -->
 2. Enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
-Congratulations! You're now running an instance of Atlas on your machine.
+Congratulations! You're now running an instance of OpenDAoC on your machine.
 
 ## Preparing the DAoC Client
 
-The best way to connect to your local instance, is to use the latest Atlas DAoC client:
+The best way to connect to your local instance, is to use the latest OpenDAoC DAoC client:
 
 1. Download the installer and follow the instructions available on [Atlas Website](https://www.atlasfreeshard.com/how-to-connect).
 
-The client is ready for all Atlas servers.
+The client is ready for all OpenDAoC servers.
 
 ## Accessing Local Servers
 
@@ -530,7 +534,7 @@ The client is ready for all Atlas servers.
 
 ### Using DAoC Portal
 
-Once you've built your Atlas server and it's running locally, you can now access it using the DAoC client and DAoCPortal.
+Once you've built your OpenDAoC server and it's running locally, you can now access it using the DAoC client and DAoCPortal.
 
 1. Launch DAoCPortal.
 2. Navigate to the _Custom Shards_ tab.
@@ -551,7 +555,7 @@ The DAoC client launches and creates a new account based on the credentials you 
 
 ### In-Game Testing
 
-When testing Atlas in-game, special attention should be paid when utilizing the `/plvl` GM command. Changing this setting for an account is currently **permanent** in Atlas.
+When testing OpenDAoC in-game, special attention should be paid when utilizing the `/plvl` GM command. Changing this setting for an account is currently **permanent** in OpenDAoC.
 
 Also, testing components such as combat (PvP or PvE) cannot be done as a _Gamemaster_ or _Admin_ (creatures and players cannot attack these player types). You must have an account with `/plvl 1` status.
 
