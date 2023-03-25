@@ -17,7 +17,7 @@ The following sections outline the process of preparing your environment to buil
    2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
       1. [Preparing Your Database](#preparing-your-database-ubuntu)
       2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
-      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
+      3. [Adding `DummyDB.sql`](#adding-dummydbsql-ubuntu)
    3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
       1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
       2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
@@ -33,7 +33,7 @@ The following sections outline the process of preparing your environment to buil
    2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
       1. [Preparing Your Database](#preparing-your-database-win)
       2. [Configuring `My.ini`](#configuring-myini-win)
-      3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
+      3. [Adding `DummyDB.sql`](#adding-dummydbsql-win)
    3. [Encrypting File Transfers](#encrypting-file-transfers-win)
       1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
       2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
@@ -79,7 +79,7 @@ If you've' already completed a step previously, we recommend that you quickly re
 2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
    1. [Preparing Your Database](#preparing-your-database-ubuntu)
    2. [Configuring `My.cnf`](#configuring-mycnf-ubuntu)
-   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-ubuntu)
+   3. [Adding `DummyDB.sql`](#adding-dummydbsql-ubuntu)
 3. [Encrypting File Transfers](#encrypting-file-transfers-ubuntu)
    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-ubuntu)
    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-ubuntu)
@@ -164,13 +164,13 @@ We recommend that you also make some changes to the `my.cnf` file to avoid poten
 
 3. Save and exit the file, but **do not change the file name**.
 
-#### Adding `atlasDB.sql` (Ubuntu)
+#### Adding `DummyDB.sql` (Ubuntu)
 
-The most recent version of the required `atlasDB.sql` file is available in `\AtlasCore\DOLDatabase\DummyDB`. 
+The most recent version of the required `DummyDB.sql` file is available as archive at `\AtlasCore\DummyDB.zip`. 
 Without it, you cannot successfully build a local Atlas server. 
 After installing MariaDB, you should also notice it installed a program called HeidiSQL, which you'll need to use for this section.
 
-1. Launch the Terminal and type `sudo mysql -u root atlas < ~/path/to/atlasDB.sql`. This copies the file's contents to the `atlas` database.
+1. Launch the Terminal and type `sudo mysql -u root atlas < ~/path/to/DummyDB.sql`. This copies the file's contents to the `atlas` database.
 2. To check that the import was successful, enter `sudo mysql -u root`. This launches the MariaDB Client.
 3. `use atlas;`
 4. `show tables`
@@ -298,7 +298,7 @@ If you've already completed a step previously, we recommend that you quickly rev
 2. [Installing MariaDB 10.5](#installing-mariadb-105-win)
    1. [Preparing Your Database](#preparing-your-database-win)
    2. [Configuring `My.ini`](#configuring-myini-win)
-   3. [Adding `atlasDB.sql`](#adding-atlasdbsql-win)
+   3. [Adding `DummyDB.sql`](#adding-dummydbsql-win)
 3. [Encrypting File Transfers](#encrypting-file-transfers-win)
    1. [Adding a Personal Access Token](#setting-up-a-personal-access-token-win)
    2. [Setting Up SSH Tunneling](#setting-up-ssh-tunneling-win)
@@ -367,9 +367,9 @@ lower_case_table_names=1
 
 3. Save and exit the file, but **do not change the file name**.
 
-#### Adding `atlasDB.sql` (Win)
+#### Adding `DummyDB.sql` (Win)
 
-Prior to accomplishing this step, you will need a recent copy of the `atlasDB.sql` file. Without it, you cannot successfully build a local Atlas server. After installing MariaDB, you should also notice a program called HeidiSQL, which you'll need to use for this section.
+Prior to accomplishing this step, you will need a recent copy of the `DummyDB.sql` file. Without it, you cannot successfully build a local Atlas server. After installing MariaDB, you should also notice a program called HeidiSQL, which you'll need to use for this section.
 
 1. Launch the HeidiSQL app.
 2. At the bottom-left corner. click **New > Session in root folder**.
@@ -378,7 +378,7 @@ Prior to accomplishing this step, you will need a recent copy of the `atlasDB.sq
 5. Now click **Open** to start a connection with MariaDB.
 6. Select the `atlas` database you created previously.
 7. Click **File > Load SQL file**.
-8. Navigate to the `atlasDB.sql` file and click **Open**.
+8. Navigate to the `DummyDB.sql` file and click **Open**.
 9. Select the **Run file(s) directly** option as loading the file will cause HeidiSQL to crash.
 
 The application will process the entire SQL file. Once done, you should now see tables and data populating the `atlas` database.

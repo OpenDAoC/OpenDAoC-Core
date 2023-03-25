@@ -21,7 +21,7 @@
         <GMActionLoggerName>gmactions</GMActionLoggerName>
         <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
         <DBType>MYSQL</DBType>
-        <DBConnectionString>server=localhost;port=3306;database=DBNAME;user id=USERNAME;password=PASSWORD;treattinyasboolean=false</DBConnectionString>
+        <DBConnectionString>server=localhost;port=3306;database=DBNAME;userid=USERNAME;password=PASSWORD;treattinyasboolean=false</DBConnectionString>
         <DBAutosave>True</DBAutosave>
         <DBAutosaveInterval>10</DBAutosaveInterval>
         <CpuUse>8</CpuUse>
