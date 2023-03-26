@@ -1,4 +1,6 @@
 # Docker
+[![Build and Push Docker Image](https://github.com/AtlasFreeshard/AtlasCore/actions/workflows/build-docker-image.yml/badge.svg?branch=master)](https://github.com/AtlasFreeshard/AtlasCore/actions/workflows/build-docker-image.yml)
+
 
 The easiest way to get started with OpenDAoC is to use Docker. This will allow you to run a server without having to install any dependencies on your machine.
 
