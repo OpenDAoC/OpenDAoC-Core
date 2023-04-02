@@ -664,14 +664,21 @@ namespace DOL.AI.Brain
 				damage = controlledBrain.ModifyDamageWithTaunt(damage);
 
 				// Aggro is split between the owner (15%) and their pet (85%).
-				// We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat mob could attack the owner when their pet engages it.
-				// This is one relatively fast way of doing it, and should (?) work as long as the split isn't 50 / 50.
 				int aggroForOwner = (int)(damage * 0.15);
-
-				if (aggroForOwner > 0)
+				
+				// We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat mob could attack the owner when their pet engages it.
+				// The owner must also always generate at least 1 aggro.
+				// This works as long as the split isn't 50 / 50.
+				if (aggroForOwner == 0)
+				{
+					AddToAggroList(controlledBrain.Owner, 1);
+					AddToAggroList(NpcAttacker, Math.Max(2, damage));
+				}
+				else
+				{
 					AddToAggroList(controlledBrain.Owner, aggroForOwner);
-
-				AddToAggroList(NpcAttacker, damage - aggroForOwner);
+					AddToAggroList(NpcAttacker, damage - aggroForOwner);
+				}
 			}
 			else
 				AddToAggroList(attacker, damage);
