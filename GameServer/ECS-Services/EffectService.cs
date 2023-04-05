@@ -21,6 +21,7 @@ namespace DOL.GS
 
         public static void Tick()
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             List<ECSGameEffect> list = EntityManager.GetAll<ECSGameEffect>(EntityManager.EntityType.Effect);

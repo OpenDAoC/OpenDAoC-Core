@@ -7,7 +7,7 @@ namespace DOL.GS;
 
 public class ReaperService
 {
-    private const string SERVICE_NAME = "Reaper Service";
+    private const string SERVICE_NAME = "ReaperService";
 
     //primary key is living that needs to die, value is the object that killed it.
     //THIS SHOULD ONLY BE OPERATED ON BY THE TICK() FUNCTION! This keeps it thread safe
@@ -25,6 +25,7 @@ public class ReaperService
 
     public static void Tick()
     {
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         //cant modify the KilledToKillerDict while iteration is in progress, so

@@ -51,7 +51,7 @@ namespace DOL.GS.Commands
 					info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Midgard).Count);
 					info.Add(" None: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.None).Count);
 					info.Add(" ");
-					info.Add(string.Format(" Objects in zone: {0}, Total allowed for region: {1}", client.Player.CurrentZone.TotalNumberOfObjects, ServerProperties.Properties.REGION_MAX_OBJECTS));
+					info.Add(string.Format(" Objects in zone: {0}, Total allowed for region: {1}", client.Player.CurrentZone.ObjectCount, ServerProperties.Properties.REGION_MAX_OBJECTS));
 					info.Add(" ");
 					info.Add(" Zone Description: " + client.Player.CurrentZone.Description);
 					info.Add(" Zone Realm: " + GlobalConstants.RealmToName(client.Player.CurrentZone.Realm));

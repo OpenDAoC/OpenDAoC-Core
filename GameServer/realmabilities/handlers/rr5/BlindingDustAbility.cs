@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
 			SendCasterSpellEffectAndCastMessage(living, 7040, true);
 
 			bool deactivate = false;
-			foreach (GamePlayer player in living.GetPlayersInRadius(false, 350))
+			foreach (GamePlayer player in living.GetPlayersInRadius(350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(living, player, true))
 				{
@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			foreach (GameNPC npc in living.GetNPCsInRadius(false, 350))
+			foreach (GameNPC npc in living.GetNPCsInRadius(350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(living, npc, true))
 				{

@@ -25,6 +25,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             if (Debug)
@@ -86,8 +87,8 @@ namespace DOL.GS
                     log.Error($"Critical error encountered in NPC Think: {e}");
                 }
             });
-            
-            //Output Debug info
+
+            // Output debug info.
             if (Debug && _debugRemainingTicks > 0)
             {
                 log.Debug($"==== NPCThink Debug - Total ActiveThinkTimers: {_debugRemainingTicks} ====");

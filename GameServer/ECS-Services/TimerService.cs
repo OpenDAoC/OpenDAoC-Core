@@ -12,7 +12,7 @@ namespace DOL.GS
     public class TimerService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "Timer Service";
+        private const string SERVICE_NAME = "TimerService";
 
         // Will print active brain count/array size info for debug purposes if superior to 0.
         public static int DebugTickCount;
@@ -34,6 +34,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             // Debug variables.

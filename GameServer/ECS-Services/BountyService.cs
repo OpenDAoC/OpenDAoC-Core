@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class BountyService
     {
-        private const string SERVICE_NAME = "Bounty Service";
+        private const string SERVICE_NAME = "BountyService";
 
         private static BountyManager BountyManager = new();
 
@@ -15,6 +15,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             if (tick - _lastUpdate > _updateInterval)

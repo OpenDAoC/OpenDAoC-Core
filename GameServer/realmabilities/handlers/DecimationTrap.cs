@@ -185,7 +185,7 @@ namespace DOL.GS.RealmAbilities
 					targetPlayer.Stealth(false);
 			}
 
-			foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				p.Out.SendSpellEffectAnimation(owner, target, 7026, 0, false, 1);
 				p.Out.SendCombatAnimation(owner, target, 0, 0, 0, 0, 0x14, target.HealthPercent);

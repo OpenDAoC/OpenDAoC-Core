@@ -10,6 +10,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             List<CraftComponent> list = EntityManager.GetAll<CraftComponent>(EntityManager.EntityType.CraftComponent);

@@ -187,14 +187,14 @@ namespace DOL.GS.Spells
 			//if (target == null || Spell.Range == 0)
 			//	target = Caster;
 
-			foreach (GamePlayer player in target.GetPlayersInRadius(false, (ushort)Spell.Radius))
+			foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 				{
 					list.Add(player);
 				}
 			}
-			foreach (GameNPC npc in target.GetNPCsInRadius(false, (ushort)Spell.Radius))
+			foreach (GameNPC npc in target.GetNPCsInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 				{
@@ -224,14 +224,14 @@ namespace DOL.GS.Spells
 			if (target == null || Spell.Range == 0)
 				target = Caster;
 
-			foreach (GamePlayer player in target.GetPlayersInRadius(false, (ushort)Spell.Radius))
+			foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 				{
 					list.Add(player);
 				}
 			}
-			foreach (GameNPC npc in target.GetNPCsInRadius(false, (ushort)Spell.Radius))
+			foreach (GameNPC npc in target.GetNPCsInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 				{

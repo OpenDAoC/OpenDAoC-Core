@@ -14,6 +14,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             List<AttackComponent> list = EntityManager.GetAll<AttackComponent>(EntityManager.EntityType.AttackComponent);

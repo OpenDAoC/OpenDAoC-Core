@@ -17,22 +17,16 @@
  *
  */
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using DOL.Database;
 using DOL.Events;
-using DOL.Language;
-using DOL.GS.Quests;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
-using DOL.GS.Utils;
-
-using log4net;
+using DOL.GS.Quests;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -788,26 +782,20 @@ namespace DOL.GS
 		/// <returns>true if object was created</returns>
 		public virtual bool AddToWorld()
 		{
-			/****** MODIFIED BY KONIK & WITCHKING *******/
 			Zone currentZone = CurrentZone;
-			// CurrentZone checks for null Region.
-			// Should it be the case, currentZone will be null as well.
 			if (currentZone == null || m_ObjectState == eObjectState.Active)
 				return false;
 
 			if (!m_CurrentRegion.AddObject(this))
 				return false;
+
+			CurrentZone?.AddObjectToZone(this);
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
-
-			CurrentZone?.ObjectEnterZone(this);
-			/*********** END OF MODIFICATION ***********/
-
 			m_spawnTick = GameLoop.GameLoopTime;
 
 			if (m_isDataQuestsLoaded == false)
 			{
-				// for optimization just load these once
 				LoadDataQuests();
 				m_isDataQuestsLoaded = true;
 			}
@@ -1156,231 +1144,86 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		/// <summary>
-		/// Gets all players close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public virtual IEnumerable GetPlayersInRadius(ushort radiusToCheck)
-		{
-			return GetPlayersInRadius(false, radiusToCheck, false, false);
-		}
-
-		public int GetPlayersInRadiusCount(ushort radiusToCheck)
-		{
-		var enumerable = GetPlayersInRadius(false, radiusToCheck, false, false);
-			var count = 0;
-            foreach (var item in enumerable)
-            {
-				count++;
-            }
-			return count;
-		}
-
-		public IEnumerable GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ)
-		{
-			return GetPlayersInRadius(false, radiusToCheck, false, ignoreZ);
-		}
-
-		public IEnumerable GetPlayersInRadius(bool useCache, ushort radiusToCheck)
-		{
-			return GetPlayersInRadius(useCache, radiusToCheck, false, false);
-		}
-
-		/// <summary>
-		/// Gets all players close to this object inside a certain radius
-		/// </summary>
-		/// <param name="useCache">true may return a cached result, false not.</param>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetPlayersInRadius(bool useCache, ushort radiusToCheck, bool ignoreZ)
-		{
-			return GetPlayersInRadius(useCache, radiusToCheck, false, ignoreZ);
-		}
-
-
-
-		/// <summary>
-		/// Gets all players close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <param name="withDistance">if the objects are to be returned with distance</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetPlayersInRadius(ushort radiusToCheck, bool withDistance, bool ignoreZ)
-		{
-			return GetPlayersInRadius(true, radiusToCheck, withDistance, ignoreZ);
-		}
-
-		/// <summary>
-		/// Gets all players close to this object inside a certain radius
-		/// </summary>
-		/// <param name="useCache">true may return a cached result, false not.</param>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <param name="withDistance">if the objects are to be returned with distance</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetPlayersInRadius(bool useCache, ushort radiusToCheck, bool withDistance, bool ignoreZ)
+		public HashSet<GamePlayer> GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ = false)
 		{
 			if (CurrentRegion != null)
 			{
-				//Eden - avoid server freeze
+				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer && (this as GamePlayer).Client.Account.PrivLevel < 3 && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
 					{
-						GamePlayer player = this as GamePlayer;
 						player.TempProperties.setProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
 				else
-				{
-					return CurrentRegion?.GetPlayersInRadius(X, Y, Z, radiusToCheck, withDistance, ignoreZ);
-				}
+					return CurrentRegion.GetPlayersInRadius(X, Y, Z, radiusToCheck, ignoreZ);
 			}
-			return new Region.EmptyEnumerator();
-		}
-				
-		/// <summary>
-		/// Gets all npcs close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetNPCsInRadius(ushort radiusToCheck)
-		{
-			return GetNPCsInRadius(true, radiusToCheck, false, false);
+
+			return new();
 		}
 
-		public IEnumerable GetNPCsInRadius(ushort radiusToCheck, bool ignoreZ)
-		{
-			return GetNPCsInRadius(true, radiusToCheck, false, ignoreZ);
-		}
-
-		/// <summary>
-		/// Gets all npcs close to this object inside a certain radius
-		/// </summary>
-		/// <param name="useCache">use the cache</param>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetNPCsInRadius(bool useCache, ushort radiusToCheck)
-		{
-			return GetNPCsInRadius(useCache, radiusToCheck, false, false);
-		}
-
-		public IEnumerable GetNPCsInRadius(bool useCache, ushort radiusToCheck, bool ignoreZ)
-		{
-			return GetNPCsInRadius(useCache, radiusToCheck, false, ignoreZ);
-		}
-
-		/// <summary>
-		/// Gets all npcs close to this object inside a certain radius
-		/// </summary>
-		/// <param name="useCache">use the cache</param>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <param name="withDistance">if the objects are to be returned with distance</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetNPCsInRadius(bool useCache, ushort radiusToCheck, bool withDistance, bool ignoreZ)
+		public HashSet<GameNPC> GetNPCsInRadius(ushort radiusToCheck, bool ignoreZ = false)
 		{
 			if (CurrentRegion != null)
 			{
-				//Eden - avoid server freeze
+				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
 					{
-						GamePlayer player = this as GamePlayer;
 						player.TempProperties.setProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
 				else
-				{
-					IEnumerable result = CurrentRegion.GetNPCsInRadius(X, Y, Z, radiusToCheck, withDistance, ignoreZ);
-					return result;
-				}
+					return CurrentRegion.GetNPCsInRadius(X, Y, Z, radiusToCheck, ignoreZ);
 			}
 
-			return new Region.EmptyEnumerator();
+			return new();
 		}
 
-		/// <summary>
-		/// Gets all items close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetItemsInRadius(ushort radiusToCheck)
+		public HashSet<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
-			/******* MODIFIED BY KONIK & WITCHKING FOR NEW ZONE SYSTEM *********/
-			return GetItemsInRadius(radiusToCheck, false);
-			/***************************************************************/
-		}
-
-		/// <summary>
-		/// Gets all items close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <param name="withDistance">if the objects are to be returned with distance</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetItemsInRadius(ushort radiusToCheck, bool withDistance)
-		{
-			/******* MODIFIED BY KONIK & WITCHKING FOR NEW ZONE SYSTEM *********/
 			if (CurrentRegion != null)
 			{
-				//Eden - avoid server freeze
+				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
 					{
-						GamePlayer player = this as GamePlayer;
 						player.TempProperties.setProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
 				else
-				{
-					return CurrentRegion.GetItemsInRadius(X, Y, Z, radiusToCheck, withDistance);
-				}
+					return CurrentRegion.GetItemsInRadius(X, Y, Z, radiusToCheck);
 			}
-			return new Region.EmptyEnumerator();
-			/***************************************************************/
+
+			return new();
 		}
 
-		/// <summary>
-		/// Gets all doors close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetDoorsInRadius(ushort radiusToCheck)
-		{
-			return GetDoorsInRadius(radiusToCheck, false);
-		}
-
-		/// <summary>
-		/// Gets all doors close to this object inside a certain radius
-		/// </summary>
-		/// <param name="radiusToCheck">the radius to check</param>
-		/// <param name="withDistance">if the objects are to be returned with distance</param>
-		/// <returns>An enumerator</returns>
-		public IEnumerable GetDoorsInRadius(ushort radiusToCheck, bool withDistance)
+		public HashSet<GameDoor> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			if (CurrentRegion != null)
 			{
-				//Eden : avoid server freeze
+				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
 					{
-						GamePlayer player = this as GamePlayer;
 						player.TempProperties.setProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
 				else
-				{
-					return CurrentRegion.GetDoorsInRadius(X, Y, Z, radiusToCheck, withDistance);
-				}
+					return CurrentRegion.GetDoorsInRadius(X, Y, Z, radiusToCheck);
 			}
-			return new Region.EmptyEnumerator();
+
+			return new();
 		}
+
 		#endregion
 
 		#region Item/Money

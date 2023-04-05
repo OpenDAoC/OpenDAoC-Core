@@ -131,7 +131,7 @@ namespace DOL.GS
 
                 if (DebugTickCount > 1)
                     DebugTickCount--;
-                else;
+                else
                     DebugTickCount = 0;
             }
 

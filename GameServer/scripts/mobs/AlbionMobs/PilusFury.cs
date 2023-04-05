@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
 			ad.Damage = Util.Random(100,250);
 			ad.CausesCombat = true;
 
-			foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				p.Out.SendSpellEffectAnimation(caster, target, 5700, 0, false, 1);
 				p.Out.SendCombatAnimation(caster, target, 0, 0, 0, 0, 0x14, target.HealthPercent);

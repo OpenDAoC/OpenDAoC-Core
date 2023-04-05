@@ -18,30 +18,28 @@
  */
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO.Enumeration;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS.Keeps;
-using DOL.GS.Utils;
 using DOL.GS.ServerProperties;
+using DOL.GS.Utils;
 using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class represents a region in DAOC. A region is everything where you
-	/// need a loadingscreen to go there. Eg. whole Albion is one Region, Midgard and
-	/// Hibernia are just one region too. Darkness Falls is a region. Each dungeon, city
-	/// is a region ... you get the clue. Each Region can hold an arbitary number of
-	/// Zones! Camelot Hills is one Zone, Tir na Nog is one Zone (and one Region)...
-	/// </summary>
+    /// <summary>
+    /// This class represents a region in DAOC. A region is everything where you
+    /// need a loadingscreen to go there. Eg. whole Albion is one Region, Midgard and
+    /// Hibernia are just one region too. Darkness Falls is a region. Each dungeon, city
+    /// is a region ... you get the clue. Each Region can hold an arbitary number of
+    /// Zones! Camelot Hills is one Zone, Tir na Nog is one Zone (and one Region)...
+    /// </summary>
     public class Region
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -139,11 +137,6 @@ namespace DOL.GS
         /// Contains the # of players in the region
         /// </summary>
         protected int m_numPlayer = 0;
-
-        /// <summary>
-        /// last relocation time
-        /// </summary>
-        private long m_lastRelocationTime = 0;
 
         /// <summary>
         /// The region time manager
@@ -520,14 +513,6 @@ namespace DOL.GS
         public virtual bool UseHousingManager
         {
             get { return HousingEnabled; }
-        }
-
-        /// <summary>
-        /// Gets last relocation time
-        /// </summary>
-        public long LastRelocationTime
-        {
-            get { return m_lastRelocationTime; }
         }
 
         /// <summary>
@@ -1485,80 +1470,35 @@ namespace DOL.GS
 
         #endregion
 
-        #region Object in Radius (Added by Konik & WitchKing)
+        #region Get in radius
 
-        #region New Get in radius
-
-        /// <summary>
-        /// Gets objects in a radius around a point
-        /// </summary>
-        /// <param name="type">OBJECT_TYPE (0=item, 1=npc, 2=player)</param>
-        /// <param name="x">origin X</param>
-        /// <param name="y">origin Y</param>
-        /// <param name="z">origin Z</param>
-        /// <param name="radius">radius around origin</param>
-        /// <param name="withDistance">Get an ObjectDistance enumerator</param>
-        /// <returns>IEnumerable to be used with foreach</returns>
-        protected IEnumerable GetInRadius(Zone.eGameObjectType type, int x, int y, int z, ushort radius, bool withDistance, bool ignoreZ)
+        protected HashSet<T> GetInRadius<T>(Zone.eGameObjectType type, int x, int y, int z, ushort radius, bool ignoreZ) where T : GameObject
         {
-            // check if we are around borders of a zone
+            // Check if we are around borders of a zone.
             Zone startingZone = GetZone(x, y);
 
             if (startingZone != null)
             {
-                ArrayList res = startingZone.GetObjectsInRadius(type, x, y, z, radius, new ArrayList(), ignoreZ);
-
+                HashSet<T> list = new();
+                startingZone.GetObjectsInRadius(type, x, y, z, radius, list, ignoreZ);
                 uint sqRadius = (uint)radius * radius;
 
-                foreach (var currentZone in m_zones)
+                foreach (Zone currentZone in m_zones)
                 {
-                    if ((currentZone != startingZone)
-                        && (currentZone.TotalNumberOfObjects > 0)
-                        && CheckShortestDistance(currentZone, x, y, sqRadius))
-                    {
-                        res = currentZone.GetObjectsInRadius(type, x, y, z, radius, res, ignoreZ);
-                    }
+                    if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, x, y, sqRadius))
+                        currentZone.GetObjectsInRadius(type, x, y, z, radius, list, ignoreZ);
                 }
 
-                //Return required enumerator
-                IEnumerable tmp = null;
-                if (withDistance)
-                {
-                    switch (type)
-                    {
-                        case Zone.eGameObjectType.ITEM:
-                            tmp = new ItemDistanceEnumerator(x, y, z, res);
-                            break;
-                        case Zone.eGameObjectType.NPC:
-                            tmp = new NPCDistanceEnumerator(x, y, z, res);
-                            break;
-                        case Zone.eGameObjectType.PLAYER:
-                            tmp = new PlayerDistanceEnumerator(x, y, z, res);
-                            break;
-                        case Zone.eGameObjectType.DOOR:
-                            tmp = new DoorDistanceEnumerator(x, y, z, res);
-                            break;
-                        default:
-                            tmp = new EmptyEnumerator();
-                            break;
-                    }
-                }
-                else
-                {
-                    tmp = new ObjectEnumerator(res);
-                }
-                return tmp;
+                return list;
             }
             else
             {
                 if (log.IsDebugEnabled)
-                {
                     log.Error("GetInRadius starting zone is null for (" + type + ", " + x + ", " + y + ", " + z + ", " + radius + ") in Region ID=" + ID);
-                }
-                return new EmptyEnumerator();
+
+                return new();
             }
         }
-
 
         /// <summary>
         /// get the shortest distance from a point to a zone
@@ -1600,313 +1540,29 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
-        /// <summary>
-        /// Gets Items in a radius around a spot
-        /// </summary>
-        /// <param name="x">origin X</param>
-        /// <param name="y">origin Y</param>
-        /// <param name="z">origin Z</param>
-        /// <param name="radius">radius around origin</param>
-        /// <param name="withDistance">Get an ObjectDistance enumerator</param>
-        /// <returns>IEnumerable to be used with foreach</returns>
-        public IEnumerable GetItemsInRadius(int x, int y, int z, ushort radius, bool withDistance)
+        public HashSet<GameStaticItem> GetItemsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius(Zone.eGameObjectType.ITEM, x, y, z, radius, withDistance, false);
+            return GetInRadius<GameStaticItem>(Zone.eGameObjectType.ITEM, x, y, z, radius, ignoreZ);
         }
 
-        /// <summary>
-        /// Gets NPCs in a radius around a spot
-        /// </summary>
-        /// <param name="x">origin X</param>
-        /// <param name="y">origin Y</param>
-        /// <param name="z">origin Z</param>
-        /// <param name="radius">radius around origin</param>
-        /// <param name="withDistance">Get an ObjectDistance enumerator</param>
-        /// <returns>IEnumerable to be used with foreach</returns>
-        public IEnumerable GetNPCsInRadius(int x, int y, int z, ushort radius, bool withDistance, bool ignoreZ)
+        public HashSet<GameNPC> GetNPCsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius(Zone.eGameObjectType.NPC, x, y, z, radius, withDistance, ignoreZ);
+            return GetInRadius<GameNPC>(Zone.eGameObjectType.NPC, x, y, z, radius, ignoreZ);
         }
 
-        /// <summary>
-        /// Gets Players in a radius around a spot
-        /// </summary>
-        /// <param name="x">origin X</param>
-        /// <param name="y">origin Y</param>
-        /// <param name="z">origin Z</param>
-        /// <param name="radius">radius around origin</param>
-        /// <param name="withDistance">Get an ObjectDistance enumerator</param>
-        /// <returns>IEnumerable to be used with foreach</returns>
-        public IEnumerable GetPlayersInRadius(int x, int y, int z, ushort radius, bool withDistance, bool ignoreZ)
+        public HashSet<GamePlayer> GetPlayersInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius(Zone.eGameObjectType.PLAYER, x, y, z, radius, withDistance, ignoreZ);
+            return GetInRadius<GamePlayer>(Zone.eGameObjectType.PLAYER, x, y, z, radius, ignoreZ);
         }
 
-        /// <summary>
-        /// Gets Doors in a radius around a spot
-        /// </summary>
-        /// <param name="x">origin X</param>
-        /// <param name="y">origin Y</param>
-        /// <param name="z">origin Z</param>
-        /// <param name="radius">radius around origin</param>
-        /// <param name="withDistance">Get an ObjectDistance enumerator</param>
-        /// <returns>IEnumerable to be used with foreach</returns>
-        public virtual IEnumerable GetDoorsInRadius(int x, int y, int z, ushort radius, bool withDistance)
+        public HashSet<GameDoor> GetDoorsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius(Zone.eGameObjectType.DOOR, x, y, z, radius, withDistance, false);
+            return GetInRadius<GameDoor>(Zone.eGameObjectType.DOOR, x, y, z, radius, ignoreZ);
         }
 
         #endregion
-
-        #region Enumerators
-
-        #region EmptyEnumerator
-
-        /// <summary>
-        /// An empty enumerator returned when no objects are found
-        /// close to a certain range
-        /// </summary>
-        public class EmptyEnumerator : IEnumerator, IEnumerable
-        {
-            /// <summary>
-            /// Implementation of the IEnumerable interface
-            /// </summary>
-            /// <returns>An Enumeration Interface of this class</returns>
-            public IEnumerator GetEnumerator()
-            {
-                return this;
-            }
-
-            /// <summary>
-            /// Implementation of the IEnumerator interface
-            /// </summary>
-            /// <returns>Always false to prevent Current</returns>
-            public bool MoveNext()
-            {
-                return false;
-            }
-
-            /// <summary>
-            /// Implementation of the IEnumerator interface,
-            /// always returns null because it shouldn't be
-            /// called at all.
-            /// </summary>
-            public object Current
-            {
-                get { return null; }
-            }
-
-            /// <summary>
-            /// Implementation of the IEnumerator interface
-            /// </summary>
-            public void Reset()
-            {
-            }
-        }
-
-        #endregion
-
-        #region ObjectEnumerator
-
-        /// <summary>
-        /// An enumerator over GameObjects. Used to enumerate over
-        /// certain objects and do some testing before returning an
-        /// object.
-        /// </summary>
-        public class ObjectEnumerator : IEnumerator, IEnumerable
-        {
-            /// <summary>
-            /// Counter to the current object
-            /// </summary>
-            protected int m_current = -1;
-
-            protected GameObject[] elements = null;
-            //protected ArrayList elements = null;
-
-            protected object m_currentObj = null;
-
-            protected int m_count;
-
-            public IEnumerator GetEnumerator()
-            {
-                return this;
-            }
-
-            public ObjectEnumerator(ArrayList objectSet)
-            {
-                //objectSet.DumpInfo();
-                elements = new GameObject[objectSet.Count];
-                objectSet.CopyTo(elements);
-                m_count = elements.Length;
-            }
-
-
-            /// <summary>
-            /// Get the next GameObjcte from the zone subset created in constructor
-            /// and by restrictuing according distance
-            /// </summary>
-            /// <returns>The Next GameObject of this Enumerator</returns>
-            public virtual bool MoveNext()
-            {
-                /*********NEW GET IN RADIUS SYSTEM ADDED BY KONIK**********/
-                m_currentObj = null;
-                bool found = false;
-                do
-                {
-                    m_current++;
-                    // break if no more object
-                    if (m_current < m_count)
-                    {
-                        // get the object
-                        //GameObject obj = (GameObject) elements[m_current];
-                        GameObject obj = elements[m_current];
-                        if (found = ((obj != null && ((int)obj.ObjectState) == (int)GameObject.eObjectState.Active)))
-                        {
-                            m_currentObj = obj;
-                        }
-                    }
-                } while (m_current < m_count && !found);
-                return found;
-            }
-
-            /// <summary>
-            /// Returns the current Object in the Enumerator
-            /// </summary>
-            public virtual object Current
-            {
-                get { return m_currentObj; }
-            }
-
-            /// <summary>
-            /// Resets the Enumerator
-            /// </summary>
-            public void Reset()
-            {
-                m_currentObj = null;
-                m_current = -1;
-            }
-        }
-
-        #endregion
-
-        #region XXXDistanceEnumerator
-
-        public abstract class DistanceEnumerator : ObjectEnumerator
-        {
-            protected int m_X;
-            protected int m_Y;
-            protected int m_Z;
-
-            public DistanceEnumerator(int x, int y, int z, ArrayList elements)
-                : base(elements)
-            {
-                m_X = x;
-                m_Y = y;
-                m_Z = z;
-            }
-        }
-
-        /// <summary>
-        /// This enumerator returns the object and the distance towards the object
-        /// </summary>
-        public class PlayerDistanceEnumerator : DistanceEnumerator
-        {
-            public PlayerDistanceEnumerator(int x, int y, int z, ArrayList elements)
-                : base(x, y, z, elements)
-            {
-            }
-
-            public override object Current
-            {
-                get
-                {
-                    GamePlayer obj = (GamePlayer)m_currentObj;
-                    return new PlayerDistEntry(obj, obj.GetDistanceTo(new Point3D(m_X, m_Y, m_Z)));
-                }
-            }
-        }
-
-        /// <summary>
-        /// This enumerator returns the object and the distance towards the object
-        /// </summary>
-        public class NPCDistanceEnumerator : DistanceEnumerator
-        {
-            public NPCDistanceEnumerator(int x, int y, int z, ArrayList elements)
-                : base(x, y, z, elements)
-            {
-            }
-
-            public override object Current
-            {
-                get
-                {
-                    GameNPC obj = (GameNPC)m_currentObj;
-                    return new NPCDistEntry(obj, obj.GetDistanceTo(new Point3D(m_X, m_Y, m_Z)));
-                }
-            }
-        }
-
-        /// <summary>
-        /// This enumerator returns the object and the distance towards the object
-        /// </summary>
-        public class ItemDistanceEnumerator : DistanceEnumerator
-        {
-            public ItemDistanceEnumerator(int x, int y, int z, ArrayList elements)
-                : base(x, y, z, elements)
-            {
-            }
-
-            public override object Current
-            {
-                get
-                {
-                    GameStaticItem obj = (GameStaticItem)m_currentObj;
-                    return new ItemDistEntry(obj, obj.GetDistanceTo(new Point3D(m_X, m_Y, m_Z)));
-                }
-            }
-        }
-
-        /// <summary>
-        /// This enumerator returns the object and the distance towards the object
-        /// </summary>
-        public class DoorDistanceEnumerator : DistanceEnumerator
-        {
-            public DoorDistanceEnumerator(int x, int y, int z, ArrayList elements)
-                : base(x, y, z, elements)
-            {
-            }
-
-            public override object Current
-            {
-                get
-                {
-                    IDoor obj = (IDoor)m_currentObj;
-                    return new DoorDistEntry(obj, obj.GetDistance(new Point3D(m_X, m_Y, m_Z)));
-                }
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Automatic relocation
-
-        public void Relocate()
-        {
-        	foreach (var zone in m_zones)
-        	{
-        		zone.Relocate(null);
-        	}
-        	
-        	m_lastRelocationTime = DateTime.Now.Ticks / (10 * 1000);
-        }
-
-        #endregion
-
-        #endregion
-
     }
+
 	#region Helpers classes
 
 	/// <summary>

@@ -355,7 +355,7 @@ namespace DOL.GS
 			}
    
 			//let's check if we are trying to move too close to a door, if we are, don't move
-			foreach (IDoor door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget.X, Owner.GroundTarget.Y, Owner.GroundTarget.Z, (ushort)(AttackRange - 50), false))
+			foreach (IDoor door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget.X, Owner.GroundTarget.Y, Owner.GroundTarget.Z, (ushort)(AttackRange - 50)))
 			{
 				if (door is GameKeepDoor)
 				{

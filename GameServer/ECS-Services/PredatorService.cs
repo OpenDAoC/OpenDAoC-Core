@@ -6,7 +6,7 @@ namespace DOL.GS;
 
 public class PredatorService
 {
-    private const string SERVICE_NAME = "Predator Service";
+    private const string SERVICE_NAME = "PredatorService";
 
     private static long _updateInterval = 3000; // 3secs
     private static long _messageBroadcastInterval = 15000; // 15secs
@@ -18,6 +18,7 @@ public class PredatorService
 
     public static void Tick(long tick)
     {
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (tick - _lastUpdate > _updateInterval)
