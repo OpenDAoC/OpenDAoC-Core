@@ -11,6 +11,7 @@ namespace ECS.Debug
 {
     public static class Diagnostics
     {
+        private const string SERVICE_NAME = "Diagnostics";
         private static StreamWriter _perfStreamWriter;
         private static bool _streamWriterInitialized = false;
         private static object _GameEventMgrNotifyLock = new();
@@ -51,6 +52,7 @@ namespace ECS.Debug
 
         public static void Tick()
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             ReportPerfCounters();
 
             if (GameEventMgrNotifyProfilingEnabled)
@@ -247,7 +249,7 @@ namespace DOL.GS.Commands
 
             if (args[1].ToLower().Equals("currentservicetick"))
             {
-                DisplayMessage(client, "Gameloop CurrentService Tick: " + GameLoop.currentServiceTick);
+                DisplayMessage(client, "Gameloop CurrentService Tick: " + GameLoop.CurrentServiceTick);
                 return;
             }
 

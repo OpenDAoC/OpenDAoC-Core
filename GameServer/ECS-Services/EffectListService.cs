@@ -16,6 +16,7 @@ namespace DOL.GS
 
         public static void Tick(long tick)
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             List<EffectListComponent> list = EntityManager.GetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent);
@@ -120,7 +121,7 @@ namespace DOL.GS
                                 effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                             {
                                 //Add time to effect to make sure the spell refreshes instead of cancels
-                                effect.ExpireTick += GameLoop.TickRate;
+                                effect.ExpireTick += GameLoop.TICK_RATE;
                                 effect.LastTick = tick;
                             }
                             else

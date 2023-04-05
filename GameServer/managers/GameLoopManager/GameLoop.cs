@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using System.Threading;
 using DOL.GS.Scripts;
 
@@ -6,37 +6,31 @@ namespace DOL.GS
 {
     public static class GameLoop
     {
-        public static long GameLoopTime=0;
-        private const string PerfCounterName = "GameLoop";
-        private static Thread m_GameLoopThread;
-
-        //GameLoop tick timer -> will adjust based on the performance
-        private static long _tickDueTime = 50;
+        public const long TICK_RATE = 50; // GameLoop tick timer. Will adjust based on the performance.
+        private const string THREAD_NAME = "GameLoop";
+        public static long GameLoopTime;
+        public static string CurrentServiceTick;
+        private static Thread _gameLoopThread;
         private static Timer _timerRef;
-        
-        //Max player count is 4000
-        public static GamePlayer[] players = new GamePlayer[4000];
-        private static int _lastPlayerIndex = 0;
-
-        public static String currentServiceTick;
-
-        public static long TickRate { get { return _tickDueTime; } }
+        private static Stopwatch _stopwatch = new();
 
         public static bool Init()
         {
-            m_GameLoopThread = new Thread(new ThreadStart(GameLoopThreadStart));
-            m_GameLoopThread.Priority = ThreadPriority.AboveNormal;
-            m_GameLoopThread.Name = "GameLoop";
-            m_GameLoopThread.IsBackground = true;
-            m_GameLoopThread.Start();
-            
+            _gameLoopThread = new Thread(new ThreadStart(GameLoopThreadStart))
+            {
+                Priority = ThreadPriority.AboveNormal,
+                Name = THREAD_NAME,
+                IsBackground = true
+            };
+            _gameLoopThread.Start();
+
             return true;
         }
 
         public static void Exit()
         {
-            m_GameLoopThread.Interrupt();
-            m_GameLoopThread = null;
+            _gameLoopThread.Interrupt();
+            _gameLoopThread = null;
         }
 
         private static void GameLoopThreadStart()
@@ -46,60 +40,41 @@ namespace DOL.GS
 
         private static void Tick(object obj)
         {
-            ECS.Debug.Diagnostics.StartPerfCounter(PerfCounterName);
+            _stopwatch.Restart();
+            ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
 
-            //Make sure the tick < gameLoopTick
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-            currentServiceTick = "NPCThinkService";
             NPCThinkService.Tick(GameLoopTime);
-            currentServiceTick = "AttackService";
             AttackService.Tick(GameLoopTime);
-            currentServiceTick = "CastingService";
             CastingService.Tick(GameLoopTime);
-            currentServiceTick = "EffectService";
             EffectService.Tick();
-            currentServiceTick = "EffectListService";
             EffectListService.Tick(GameLoopTime);
-            currentServiceTick = "CraftingService";
+            ZoneService.Tick();
             CraftingService.Tick(GameLoopTime);
-            currentServiceTick = "TimerService";
             TimerService.Tick(GameLoopTime);
-            currentServiceTick = "DailQuestService";
-            DailyQuestService.Tick();
-            currentServiceTick = "WeeklyQuestService";
-            WeeklyQuestService.Tick();
-            currentServiceTick = "ConquestService";
-            ConquestService.Tick();
-            currentServiceTick = "BountyService";
-            BountyService.Tick(GameLoopTime);
-            currentServiceTick = "PredatorService";
-            PredatorService.Tick(GameLoopTime);
-            currentServiceTick = "ReaperService";
             ReaperService.Tick();
+            DailyQuestService.Tick();
+            WeeklyQuestService.Tick();
+            ConquestService.Tick();
+            BountyService.Tick(GameLoopTime);
+            PredatorService.Tick(GameLoopTime);
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;
             if (ZoneBonusRotator._lastRvRChangeTick == 0)
                 ZoneBonusRotator._lastRvRChangeTick = GameLoopTime;
 
-            //Always tick last!
-            currentServiceTick = "Diagnostics";
             ECS.Debug.Diagnostics.Tick();
-            currentServiceTick = "";
-
-            ECS.Debug.Diagnostics.StopPerfCounter(PerfCounterName);
-
+            CurrentServiceTick = "";
+            ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             GameLoopTime = GameTimer.GetTickCount();
+            _stopwatch.Stop();
 
-            stopwatch.Stop();
-            var elapsed = (float)stopwatch.Elapsed.TotalMilliseconds;
+            float elapsed = (float)_stopwatch.Elapsed.TotalMilliseconds;
+            // We need to delay our next threading time to the default tick time. If this is > 0, we delay the next tick until its met to maintain consistent tick rate.
+            int diff = (int)(TICK_RATE - elapsed);
 
-            //We need to delay our next threading time to the default tick time. If this is > 0, we delay the next tick until its met to maintain consistent tick rate
-            var diff = (int) (_tickDueTime - elapsed);
             if (diff <= 0)
             {
-                //Console.WriteLine($"Tick rate unable to keep up with load! Elapsed: {elapsed}");
                 _timerRef.Change(0, Timeout.Infinite);
                 return;
             }

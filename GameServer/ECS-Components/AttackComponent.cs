@@ -1086,7 +1086,7 @@ namespace DOL.GS
                             {
                                 if (style.ID != 600) // Not Shield Swipe
                                 {
-                                    foreach (GamePlayer pl in p.GetPlayersInRadius(false, (ushort) AttackRange))
+                                    foreach (GamePlayer pl in p.GetPlayersInRadius((ushort) AttackRange))
                                     {
                                         if (pl == null) continue;
                                         if (GameServer.ServerRules.IsAllowedToAttack(p, pl, true))
@@ -1095,7 +1095,7 @@ namespace DOL.GS
                                         }
                                     }
 
-                                    foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort) AttackRange))
+                                    foreach (GameNPC npc in p.GetNPCsInRadius((ushort) AttackRange))
                                     {
                                         if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
                                         {
@@ -1129,7 +1129,7 @@ namespace DOL.GS
                                 }
                                 else // shield swipe
                                 {
-                                    foreach (GameNPC npc in p.GetNPCsInRadius(false, (ushort) AttackRange))
+                                    foreach (GameNPC npc in p.GetNPCsInRadius((ushort) AttackRange))
                                     {
                                         if (GameServer.ServerRules.IsAllowedToAttack(p, npc, true))
                                         {

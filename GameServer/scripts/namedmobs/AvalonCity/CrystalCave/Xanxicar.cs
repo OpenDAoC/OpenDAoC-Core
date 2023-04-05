@@ -138,7 +138,7 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			int numPlayers = GetPlayersInRadiusCount(WorldMgr.VISIBILITY_DISTANCE);
+			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
 			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 

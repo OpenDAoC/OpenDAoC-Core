@@ -17,24 +17,16 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using Timer=System.Threading.Timer;
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Utils;
-using DOL.Config;
-using DOL.GS.Housing;
-
 using log4net;
-using DOLDatabase.Tables;
+using Timer = System.Threading.Timer;
 
 namespace DOL.GS
 {
@@ -304,11 +296,6 @@ namespace DOL.GS
 		private const string ENTRY_ZONE_LAVA = "IsLava";
 
 		/// <summary>
-		/// Relocation threads for relocation of zones
-		/// </summary>
-		private static Thread m_relocationThread;
-
-		/// <summary>
 		/// Holds all region timers
 		/// </summary>
 		private static GameTimer.TimeManager[] m_regionTimeManagers;
@@ -552,11 +539,6 @@ namespace DOL.GS
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
 
 				m_pingCheckTimer = new Timer(new TimerCallback(PingCheck), null, 10 * 1000, 0); // every 10s a check
-
-				m_relocationThread = new Thread(new ThreadStart(RelocateRegions));
-				m_relocationThread.Name = "RelocateReg";
-				m_relocationThread.IsBackground = true;
-				m_relocationThread.Start();
 			}
 			catch (Exception e)
 			{
@@ -637,50 +619,6 @@ namespace DOL.GS
 			return Util.GetThreadStack(m_relocationThread);
 		}
 #endif
-
-		public static string GetFormattedRelocateRegionsStackTrace()
-        {
-			return Util.GetFormattedStackTraceFrom(m_relocationThread);
-        }
-
-		private static void RelocateRegions()
-		{
-			log.InfoFormat("started RelocateRegions() thread ID:{0}", Thread.CurrentThread.ManagedThreadId);
-			while (m_relocationThread != null && m_relocationThread.IsAlive)
-			{
-				try
-				{
-					Thread.Sleep(200); // check every 200ms for needed relocs
-					long start = GameTimer.GetTickCount();
-
-					var regionsClone = m_regions.Values;
-
-					foreach (Region region in regionsClone)
-					{
-						if (region.NumPlayers > 0 && (region.LastRelocationTime + Zone.MAX_REFRESH_INTERVAL) * 10 * 1000 < DateTime.Now.Ticks)
-						{
-							region.Relocate();
-						}
-					}
-					long took = GameTimer.GetTickCount() - start;
-					if (took > 500)
-					{
-						if (log.IsWarnEnabled)
-							log.WarnFormat("RelocateRegions() took {0}ms", took);
-					}
-				}
-				catch (ThreadInterruptedException)
-				{
-					//On Thread interrupt exit!
-					return;
-				}
-				catch (Exception e)
-				{
-					log.Error(e.ToString());
-				}
-			}
-			log.InfoFormat("stopped RelocateRegions() thread ID:{0}", Thread.CurrentThread.ManagedThreadId);
-		}
 
 		/// <summary>
 		/// This timer callback resets the day on all clients
@@ -821,11 +759,6 @@ namespace DOL.GS
 				{
 					m_WorldUpdateThread.Interrupt();
 					m_WorldUpdateThread = null;
-				}
-				if (m_relocationThread != null)
-				{
-					m_relocationThread.Interrupt();
-					m_relocationThread = null;
 				}
 
 				//Stop all mobMgrs
@@ -1702,15 +1635,15 @@ namespace DOL.GS
 		/// <param name="x">X inside region</param>
 		/// <param name="y">Y inside region</param>
 		/// <param name="z">Z inside region</param>
-		/// <param name="withDistance">Wether or not to return the objects with distance</param>
 		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		/// <returns>IEnumerator that can be used to go through all players</returns>
-		public static IEnumerable GetPlayersCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck, bool withDistance)
+		public static HashSet<GamePlayer> GetPlayersCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
+
 			if (reg == null)
-				return new Region.EmptyEnumerator();
-			return reg.GetPlayersInRadius(x, y, z, radiusToCheck, withDistance, false);
+				return new();
+
+			return reg.GetPlayersInRadius(x, y, z, radiusToCheck);
 		}
 
 		/// <summary>
@@ -1719,10 +1652,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="location">the game location to search from</param>
 		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		/// <returns>IEnumerator that can be used to go through all players</returns>
-		public static IEnumerable GetPlayersCloseToSpot(IGameLocation location, ushort radiusToCheck)
+		public static HashSet<GamePlayer> GetPlayersCloseToSpot(IGameLocation location, ushort radiusToCheck)
 		{
-			return GetPlayersCloseToSpot(location.RegionID, location.X, location.Y, location.Z, radiusToCheck, false);
+			return GetPlayersCloseToSpot(location.RegionID, location.X, location.Y, location.Z, radiusToCheck);
 		}
 
 		/// <summary>
@@ -1732,25 +1664,9 @@ namespace DOL.GS
 		/// <param name="regionid">Region to search</param>
 		/// <param name="point">the 3D point to search from</param>
 		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		/// <returns>IEnumerator that can be used to go through all players</returns>
-		public static IEnumerable GetPlayersCloseToSpot(ushort regionid, IPoint3D point, ushort radiusToCheck)
+		public static HashSet<GamePlayer> GetPlayersCloseToSpot(ushort regionid, IPoint3D point, ushort radiusToCheck)
 		{
-			return GetPlayersCloseToSpot(regionid, point.X, point.Y, point.Z, radiusToCheck, false);
-		}
-
-		/// <summary>
-		/// Returns an IEnumerator of GamePlayers that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="x">X inside region</param>
-		/// <param name="y">Y inside region</param>
-		/// <param name="z">Z inside region</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		/// <returns>IEnumerator that can be used to go through all players</returns>
-		public static IEnumerable GetPlayersCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
-		{
-			return GetPlayersCloseToSpot(regionid, x, y, z, radiusToCheck, false);
+			return GetPlayersCloseToSpot(regionid, point.X, point.Y, point.Z, radiusToCheck);
 		}
 
 		/// <summary>
@@ -1762,29 +1678,14 @@ namespace DOL.GS
 		/// <param name="y">Y inside region</param>
 		/// <param name="z">Z inside region</param>
 		/// <param name="radiusToCheck">Radius to sarch for GameNPCs</param>
-		/// <param name="withDistance">Wether or not to return the objects with distance</param>
-		/// <returns>IEnumerator that can be used to go through all NPCs</returns>
-		public static IEnumerable GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck, bool withDistance)
+		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
-			if (reg == null)
-				return new Region.EmptyEnumerator();
-			return reg.GetNPCsInRadius(x, y, z, radiusToCheck, withDistance, false);
-		}
 
-		/// <summary>
-		/// Returns an IEnumerator of GameNPCs that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="x">X inside region</param>
-		/// <param name="y">Y inside region</param>
-		/// <param name="z">Z inside region</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameNPCs</param>
-		/// <returns>IEnumerator that can be used to go through all NPCs</returns>
-		public static IEnumerable GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
-		{
-			return GetNPCsCloseToSpot(regionid, x, y, z, radiusToCheck, false);
+			if (reg == null)
+				return new();
+
+			return reg.GetNPCsInRadius(x, y, z, radiusToCheck);
 		}
 
 		/// <summary>
@@ -1796,15 +1697,14 @@ namespace DOL.GS
 		/// <param name="y">Y inside region</param>
 		/// <param name="z">Z inside region</param>
 		/// <param name="radiusToCheck">Radius to sarch for GameItems</param>
-		/// <param name="withDistance">Wether or not to return the objects with distance</param>
-		/// <returns>IEnumerator that can be used to go through all items</returns>
-		public static IEnumerable GetItemsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck, bool withDistance)
+		public static HashSet<GameStaticItem> GetItemsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
-			if (reg == null)
-				return new Region.EmptyEnumerator();
 
-			return reg.GetItemsInRadius(x, y, z, radiusToCheck, withDistance);
+			if (reg == null)
+				return new();
+
+			return reg.GetItemsInRadius(x, y, z, radiusToCheck);
 		}
 
 		/// <summary>

@@ -206,7 +206,7 @@ public class SubObjective
     
     public int GetNearbyPlayerCount()
     {
-        return FlagObject.GetPlayersInRadiusCount(750);
+        return FlagObject.GetPlayersInRadius(750).Count;
     }
 
     public String GetOwnerRealmName()

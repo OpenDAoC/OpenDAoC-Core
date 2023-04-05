@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
 			SendCasterSpellEffectAndCastMessage(living, 7043, true);
 
 			bool deactivate = false;
-			foreach (GamePlayer player in living.GetPlayersInRadius(false, 350))
+			foreach (GamePlayer player in living.GetPlayersInRadius(350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(living, player, true))
 				{
@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			foreach (GameNPC npc in living.GetNPCsInRadius(false, 350))
+			foreach (GameNPC npc in living.GetNPCsInRadius(350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(living, npc, true))
 				{
@@ -61,7 +61,7 @@ namespace DOL.GS.RealmAbilities
 					targetPlayer.Stealth(false);
 			}
 
-			foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				p.Out.SendSpellEffectAnimation(caster, target, 7043, 0, false, 1);
 				p.Out.SendCombatAnimation(caster, target, 0, 0, 0, 0, 0x14, target.HealthPercent);

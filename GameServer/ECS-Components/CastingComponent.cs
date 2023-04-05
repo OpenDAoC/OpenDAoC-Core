@@ -162,7 +162,7 @@ namespace DOL.GS
         {
             if (SpellHandler?.IsCasting == true)
             {
-                Parallel.ForEach(Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+                Parallel.ForEach(Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
                 {
                     player.Out.SendInterruptAnimation(Owner);
                 });

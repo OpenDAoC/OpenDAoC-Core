@@ -1513,7 +1513,7 @@ namespace DOL.GS.Spells
 			_calculatedCastTime = castTime * 100;
 			//Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 
-			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				if (player == null)
 					return;
@@ -1537,7 +1537,7 @@ namespace DOL.GS.Spells
 			//{
 			//	player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, boltDuration, noSound, success);
 			//}
-			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, boltDuration, noSound, success);
 			});
@@ -1548,7 +1548,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void SendInterruptCastAnimation()
 		{
-			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				player.Out.SendInterruptAnimation(m_caster);
 			});
@@ -1559,7 +1559,7 @@ namespace DOL.GS.Spells
 			if (target == null)
 				target = m_caster;
 
-			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				player.Out.SendSpellEffectAnimation(m_caster, target, clientEffect, boltDuration, noSound, success);
 			});
@@ -1789,7 +1789,7 @@ namespace DOL.GS.Spells
 					else if (modifiedRadius > 0)
 					{
 						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius).Cast<GamePlayer>(), player =>
+						Parallel.ForEach(WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius), player =>
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 							{
@@ -1813,7 +1813,7 @@ namespace DOL.GS.Spells
 						list.AddRange(aoePlayers);
 
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius).Cast<GameNPC>(), npc =>
+						Parallel.ForEach(WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius), npc =>
 						{
 							if (npc is GameStorm)
 								aoeMobs.Add(npc);
@@ -1935,7 +1935,7 @@ namespace DOL.GS.Spells
 							return null;
 
 						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius).Cast<GamePlayer>(), player =>
+						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 							{
@@ -1958,7 +1958,7 @@ namespace DOL.GS.Spells
 						list.AddRange(aoePlayers);
 
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius).Cast<GameNPC>(), npc =>
+						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
@@ -2004,7 +2004,7 @@ namespace DOL.GS.Spells
 							target = Caster;
 
 						ConcurrentBag<GameLiving> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius).Cast<GamePlayer>(), player =>
+						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
@@ -2022,7 +2022,7 @@ namespace DOL.GS.Spells
 						list.AddRange(aoePlayers);
 
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius).Cast<GameNPC>(), npc =>
+						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, npc, true))
 							{
@@ -2061,7 +2061,7 @@ namespace DOL.GS.Spells
 								target = Caster;
 
 							ConcurrentBag<GamePlayer> aoePlayers = new();
-							Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius).Cast<GamePlayer>(), player =>
+							Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
 							{
 								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
 									aoePlayers.Add(player);
@@ -2069,7 +2069,7 @@ namespace DOL.GS.Spells
 							list.AddRange(aoePlayers);
 
 							ConcurrentBag<GameNPC> aoeMobs = new();
-							Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius).Cast<GameNPC>(), npc =>
+							Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
 							{
 								if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) == false)
 									aoeMobs.Add(npc);
@@ -2183,7 +2183,7 @@ namespace DOL.GS.Spells
 						target = Caster;
 
 						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius((ushort)Spell.Range).Cast<GamePlayer>(), player =>
+						Parallel.ForEach(target.GetPlayersInRadius((ushort)Spell.Range), player =>
 						{
 							if (player == Caster)
 								return;
@@ -2199,7 +2199,7 @@ namespace DOL.GS.Spells
 						list.AddRange(aoePlayers);
 
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius((ushort)Spell.Range).Cast<GameNPC>(), npc =>
+						Parallel.ForEach(target.GetNPCsInRadius((ushort)Spell.Range), npc =>
 						{
 							if (npc == Caster)
 								return;
@@ -3851,7 +3851,7 @@ namespace DOL.GS.Spells
 
 			if (ad.Damage > 0)
 			{
-				Parallel.ForEach(ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
+				Parallel.ForEach(ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 				{
 					player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, (byte) attackResult, ad.Target.HealthPercent);
 				});

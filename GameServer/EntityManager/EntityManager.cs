@@ -18,10 +18,11 @@ namespace DOL.GS
             AttackComponent,
             CastingComponent,
             EffectListComponent,
-            CraftComponent
+            CraftComponent,
+            ObjectChangingSubZone
         }
 
-        private static Dictionary<EntityType, dynamic> Entities = new()
+        private static Dictionary<EntityType, dynamic> _entityArrays = new()
         {
             { EntityType.Player, new EntityArrayWrapper<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
@@ -29,44 +30,45 @@ namespace DOL.GS
             { EntityType.AttackComponent, new EntityArrayWrapper<AttackComponent>(1250) },
             { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1250) },
             { EntityType.EffectListComponent, new EntityArrayWrapper<EffectListComponent>(3000) },
-            { EntityType.CraftComponent, new EntityArrayWrapper<CraftComponent>(250) }
+            { EntityType.CraftComponent, new EntityArrayWrapper<CraftComponent>(250) },
+            { EntityType.ObjectChangingSubZone, new EntityArrayWrapper<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) }
         };
 
         public static int Add<T>(EntityType type, T entity)
         {
-            return Entities[type].Add(entity);
+            return _entityArrays[type].Add(entity);
         }
 
         public static int Remove(EntityType type, int id)
         {
-            Entities[type].Remove(id);
+            _entityArrays[type].Remove(id);
             return UNSET_ID;
         }
 
         public static List<T> GetAll<T>(EntityType type)
         {
-            return Entities[type].Elements;
+            return _entityArrays[type].Entities;
         }
 
         public static int GetLastNonNullIndex(EntityType type)
         {
-            return Entities[type].GetLastNonNullIndex();
+            return _entityArrays[type].GetLastNonNullIndex();
         }
 
         private class EntityArrayWrapper<T> where T : class
         {
             private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
-            public List<T> Elements { get; private set; }
+            public List<T> Entities { get; private set; }
             private int _lastNonNullIndex = -1;
             private SortedSet<int> _deletedIndexes = new(_descendingOrder);
             private object _lock = new();
 
             public EntityArrayWrapper(int capacity)
             {
-                Elements = new List<T>(capacity);
+                Entities = new List<T>(capacity);
             }
 
-            public int Add(T element)
+            public int Add(T entity)
             {
                 lock (_lock)
                 {
@@ -74,7 +76,7 @@ namespace DOL.GS
                     {
                         int index = _deletedIndexes.Max;
                         _deletedIndexes.Remove(index);
-                        Elements[index] = element;
+                        Entities[index] = entity;
 
                         if (index > _lastNonNullIndex)
                             _lastNonNullIndex = index;
@@ -83,18 +85,16 @@ namespace DOL.GS
                     }
                     else
                     {
-                        _lastNonNullIndex++;
-
                         // Increase the capacity of the list in the event that it's too small. This is a costly operation.
                         // 'Add' already does it, but we want to know when it happens and control by how much it grows (instead of doubling it).
-                        if (_lastNonNullIndex >= Elements.Capacity)
+                        if (++_lastNonNullIndex >= Entities.Capacity)
                         {
-                            int newCapacity = Elements.Capacity + 100;
-                            log.Warn($"{typeof(T)} {nameof(Elements)} is too short. Resizing it to {newCapacity}.");
-                            ListExtras.Resize(Elements, newCapacity);
+                            int newCapacity = Entities.Capacity + 100;
+                            log.Warn($"{typeof(T)} {nameof(Entities)} is too short. Resizing it to {newCapacity}.");
+                            ListExtras.Resize(Entities, newCapacity);
                         }
 
-                        Elements.Add(element);
+                        Entities.Add(entity);
                         return _lastNonNullIndex;
                     }
                 }
@@ -107,7 +107,7 @@ namespace DOL.GS
 
                 lock (_lock)
                 {
-                    Elements[id] = null;
+                    Entities[id] = null;
                     _deletedIndexes.Add(id);
 
                     if (id == _lastNonNullIndex)

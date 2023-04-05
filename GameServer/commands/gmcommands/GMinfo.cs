@@ -838,7 +838,7 @@ namespace DOL.GS.Commands
                     info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Midgard).Count);
                     info.Add(" None : " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.None).Count);
                     info.Add(" ");
-					info.Add(" Total objects in zone: " + client.Player.CurrentZone.TotalNumberOfObjects);
+					info.Add(" Total objects in zone: " + client.Player.CurrentZone.ObjectCount);
 					info.Add(" ");
 					info.Add(" Zone Description: "+ client.Player.CurrentZone.Description);
 					info.Add(" Zone Realm: "+ realm);

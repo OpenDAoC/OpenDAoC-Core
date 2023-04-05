@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class ConquestService
     {
-        private const string SERVICE_NAME = "Conquest Service";
+        private const string SERVICE_NAME = "ConquestService";
 
         public static ConquestManager ConquestManager;
         private static long lastCheckTick;
@@ -17,6 +17,7 @@ namespace DOL.GS
 
         public static void Tick()
         {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL

@@ -69,12 +69,6 @@ namespace DOL.Tests.Unit.Gameserver
         public override void StartHealthRegeneration() { }
         public override void StartEnduranceRegeneration() { }
         public override void MessageToSelf(string message, DOL.GS.PacketHandler.eChatType chatType) { }
-
-        public override System.Collections.IEnumerable GetPlayersInRadius(ushort radiusToCheck)
-        {
-            return new System.Collections.Generic.List<int>();
-        }
-
         protected override void ResetInCombatTimer() { }
 
         public override bool TargetInView { get; set; } = true;
@@ -106,10 +100,6 @@ namespace DOL.Tests.Unit.Gameserver
                 default:
                     return base.GetModified(property);
             }
-        }
-        public override System.Collections.IEnumerable GetPlayersInRadius(ushort radiusToCheck)
-        {
-            return new System.Collections.Generic.List<int>();
         }
     }
 
