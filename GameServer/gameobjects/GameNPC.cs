@@ -5057,16 +5057,11 @@ namespace DOL.GS
 
 			if (LosChecker == null)
 				return base.CastSpell(spellToCast, line);
-			else
-			{
-				if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
-				{
-					LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLos));
-					return true;
-				}
-				
-				return false;
-			}
+
+			if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
+				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLos));
+
+			return false;
 		}
 
 		public void StartSpellAttackCheckLos(GamePlayer player, ushort response, ushort targetOID)
@@ -5086,8 +5081,7 @@ namespace DOL.GS
 
 				if ((response & 0x100) == 0x100 && line != null && spell != null)
 				{
-					if (target is GameLiving livingTarget &&
-						livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+					if (target is GameLiving livingTarget && livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
 						target = livingTarget.ControlledBrain?.Body;
 
 					CastSpell(spell, line, target as GameLiving);

@@ -890,7 +890,7 @@ namespace DOL.AI.Brain
 				return false;
 
 			// Make sure we're currently able to cast the spell
-			if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible )
+			if (spell.CastTime > 0 && Body.IsBeingInterrupted && !spell.Uninterruptible)
 				return false;
 
 			// Make sure the spell isn't disabled
