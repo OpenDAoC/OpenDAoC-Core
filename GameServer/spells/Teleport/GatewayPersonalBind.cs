@@ -23,11 +23,11 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// The spell used for the Personal Bind Recall Stone.
-	/// </summary>
-	/// <author>Aredhel</author>
-	[SpellHandlerAttribute("GatewayPersonalBind")]
+    /// <summary>
+    /// The spell used for the Personal Bind Recall Stone.
+    /// </summary>
+    /// <author>Aredhel</author>
+    [SpellHandlerAttribute("GatewayPersonalBind")]
 	public class GatewayPersonalBind : SpellHandler
 	{
 		public GatewayPersonalBind(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
@@ -97,7 +97,6 @@ namespace DOL.GS.Spells
 			effect.Start(player);
 			player.MoveTo((ushort)player.BindRegion, player.BindXpos, player.BindYpos, player.BindZpos, (ushort)player.BindHeading);
 		}
-
 
 		public override void CasterMoves()
 		{
