@@ -21,7 +21,6 @@ namespace DOL.GS
         protected StyleComponent _styleComponent;
         protected GameObject _target;
         protected double _effectiveness;
-        protected int _rangeBonus;
         protected int _ticksToTarget;
         protected int _interruptDuration;
         protected int _interval;
@@ -175,11 +174,6 @@ namespace DOL.GS
             // Damage is doubled on sitting players, but only with melee weapons; arrows and magic does normal damage.
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
-
-            Spell proc = _combatStyle?.Procs?.FirstOrDefault()?.Item1;
-
-            if (proc != null)
-                _rangeBonus = proc.SpellType == (byte)eSpellType.StyleRange ? (int)proc.Value - _attackComponent.AttackRange : 0;
 
             _interruptDuration = mainHandAttackSpeed;
 

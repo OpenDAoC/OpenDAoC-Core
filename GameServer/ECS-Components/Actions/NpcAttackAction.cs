@@ -70,7 +70,7 @@ namespace DOL.GS
                 _npcOwner.Brain is not IControlledBrain &&
                 _npcOwner.Brain is StandardMobBrain npcBrain &&
                 npcBrain.AggroTable.Count > 0 &&
-                !_npcOwner.IsWithinRadius(_target, _attackComponent.AttackRange + _rangeBonus))
+                !_npcOwner.IsWithinRadius(_target, _attackComponent.AttackRange))
             {
                 GameLiving possibleTarget = null;
                 long maxaggro = 0;
