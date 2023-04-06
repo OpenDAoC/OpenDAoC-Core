@@ -19,13 +19,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.IO;
 using System.Reflection;
-using DOL.Database;
-using DOL.Language;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.Behaviour;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
@@ -36,12 +35,12 @@ using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using DOL.Language;
 using log4net;
-using System.Drawing;
 
 namespace DOL.GS.PacketHandler
 {
-	[PacketLib(1124, GameClient.eClientVersion.Version1124)]
+    [PacketLib(1124, GameClient.eClientVersion.Version1124)]
 	public class PacketLib1124 : AbstractPacketLib, IPacketLib
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -3921,21 +3920,19 @@ namespace DOL.GS.PacketHandler
 					if (m_gameClient.CanSendTooltip(28, t.InternalID))
 						SendDelveInfo(DetailDisplayHandler.DelveAbility(m_gameClient, t.InternalID));
 				}
-				else if (t is Style)
+				else if (t is Style style)
 				{
-                    Style s = (Style)t;
-                    if (m_gameClient.CanSendTooltip(25, t.InternalID))
-                    {
-                        if (s.Procs != null && s.Procs.Count > 0)
-                        {
-                            foreach (Tuple<Spell, int, int> proc in s.Procs)
-                            {
-                                SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, proc.Item1));
-                            }
-                        }
-                        SendDelveInfo(DetailDisplayHandler.DelveStyle(m_gameClient, t.InternalID));
-                    }
-                }
+					if (m_gameClient.CanSendTooltip(25, t.InternalID))
+					{
+						if (style.Procs != null && style.Procs.Count > 0)
+						{
+							foreach ((Spell, int, int) proc in style.Procs)
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, proc.Item1));
+						}
+
+						SendDelveInfo(DetailDisplayHandler.DelveStyle(m_gameClient, t.InternalID));
+					}
+				}
 				else if (t is Spell spell)
 				{
 					if (spell is Song || spell.NeedInstrument)
@@ -3947,15 +3944,15 @@ namespace DOL.GS.PacketHandler
 					if (m_gameClient.CanSendTooltip(24, spell.InternalID))
 					{
 						SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, spell));
+
 						if (spell.HasSubSpell)
 						{
 							if (m_gameClient.CanSendTooltip(24, SkillBase.GetSpellByID(spell.SubSpellID).InternalID))
 								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
-
 						}
+
 						if (spell.SpellType == (byte)eSpellType.DefensiveProc || spell.SpellType == (byte)eSpellType.OffensiveProc)
 							SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID((int)spell.Value)));
-						
 					}
 				}
 			}

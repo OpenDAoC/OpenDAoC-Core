@@ -17,14 +17,11 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Linq;
 using System.Threading;
-
 using DOL.Database;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Styles;
@@ -33,10 +30,10 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	///
-	/// </summary>
-	public class SkillBase
+    /// <summary>
+    ///
+    /// </summary>
+    public class SkillBase
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -48,59 +45,54 @@ namespace DOL.GS
 		/// </summary>
 		private static bool m_loaded = false;
 
-		private static ReaderWriterLockSlim m_syncLockUpdates = new ReaderWriterLockSlim();
-		private static object m_loadingLock = new object();
+		private static ReaderWriterLockSlim m_syncLockUpdates = new();
+		private static object m_loadingLock = new();
 		
 		#region caches and static indexes
 		
 		// Career Dictionary, Spec Attached to Character class ID, auto loaded on char creation !!
-		protected static readonly Dictionary<int, IDictionary<string, int>> m_specsByClass = new Dictionary<int, IDictionary<string, int>>();
-		
+		protected static readonly Dictionary<int, IDictionary<string, int>> m_specsByClass = new();
 
 		// Specialization dict KeyName => Spec Tuple to instanciate.
-		protected static readonly Dictionary<string, Tuple<Type, string, ushort, int>> m_specsByName = new Dictionary<string, Tuple<Type, string, ushort, int>>();
+		protected static readonly Dictionary<string, Tuple<Type, string, ushort, int>> m_specsByName = new();
 		
 		// Specialization X SpellLines Dict<"string spec keyname", "List<"Tuple<"SpellLine line", "int classid"> line constraint"> list of lines">
-		protected static readonly Dictionary<string, IList<Tuple<SpellLine, int>>> m_specsSpellLines = new Dictionary<string, IList<Tuple<SpellLine, int>>>();
+		protected static readonly Dictionary<string, IList<Tuple<SpellLine, int>>> m_specsSpellLines = new();
 		
 		// global table for spec => List of styles, Dict <"string spec keyname", "Dict <"int classid", "List<"Tuple<"Style style", "byte requiredLevel"> Style Constraint" StyleByClass">
-		protected static readonly Dictionary<string, IDictionary<int, List<Tuple<Style, byte>>>> m_specsStyles = new Dictionary<string, IDictionary<int, List<Tuple<Style, byte>>>>();
+		protected static readonly Dictionary<string, IDictionary<int, List<Tuple<Style, byte>>>> m_specsStyles = new();
 		
 		// Specialization X Ability Cache Dict<"string spec keyname", "List<"Tuple<"string abilitykey", "byte speclevel", "int ab Level", "int class hint"> ab constraint"> list ab's>">
-		protected static readonly Dictionary<string, List<Tuple<string, byte, int, int>>> m_specsAbilities = new Dictionary<string, List<Tuple<string, byte, int, int>>>();
+		protected static readonly Dictionary<string, List<Tuple<string, byte, int, int>>> m_specsAbilities = new();
 
-		
 		// Ability Cache Dict KeyName => DBAbility Object (to instanciate)
-		protected static readonly Dictionary<string, DBAbility> m_abilityIndex = new Dictionary<string, DBAbility>();
+		protected static readonly Dictionary<string, DBAbility> m_abilityIndex = new();
 		
 		// class id => realm abilitykey list
-		protected static readonly Dictionary<int, IList<string>> m_classRealmAbilities = new Dictionary<int, IList<string>>();
+		protected static readonly Dictionary<int, IList<string>> m_classRealmAbilities = new();
 
-		
 		// SpellLine Cache Dict KeyName => SpellLine Object
-		protected static readonly Dictionary<string, SpellLine> m_spellLineIndex = new Dictionary<string, SpellLine>();
+		protected static readonly Dictionary<string, SpellLine> m_spellLineIndex = new();
 
 		// SpellLine X Spells Dict<"string spellline", "IList<"Spell spell"> spell list">
-		protected static readonly Dictionary<string, List<Spell>> m_lineSpells = new Dictionary<string, List<Spell>>();
+		protected static readonly Dictionary<string, List<Spell>> m_lineSpells = new();
 		
 		// Spells Cache Dict SpellID => Spell
-		protected static readonly Dictionary<int, Spell> m_spellIndex = new Dictionary<int, Spell>();
+		protected static readonly Dictionary<int, Spell> m_spellIndex = new();
 		// Spells Tooltip Dict ToolTipID => SpellID
-		protected static readonly Dictionary<ushort, int> m_spellToolTipIndex = new Dictionary<ushort, int>();
+		protected static readonly Dictionary<ushort, int> m_spellToolTipIndex = new();
 
-		
 		// lookup table for styles, faster access when invoking a char styleID with classID
-		protected static readonly Dictionary<KeyValuePair<int, int>, Style> m_styleIndex = new Dictionary<KeyValuePair<int, int>, Style>();
+		protected static readonly Dictionary<KeyValuePair<int, int>, Style> m_styleIndex = new();
 		
-		// Style X Spell Cache (Procs) Dict<"int StyleID", "Dict<"int classID", "Tuple<"Spell spell", "int Chance"> Proc Constraints"> list of procs">
-		protected static readonly Dictionary<int, IDictionary<int, Tuple<Spell, int>>> m_stylesProcs = new Dictionary<int, IDictionary<int, Tuple<Spell, int>>>();
+		// Style X Spell Cache (Procs) Dict<"int StyleID", "List<"("Spell spell", "int classID", "int Chance")"> Proc Constraints"> list of procs">
+		protected static readonly Dictionary<int, List<(Spell, int, int)>> m_stylesProcs = new();
 
-		
 		// Ability Action Handler Dictionary Index, typename to instanciate ondemande
-		protected static readonly Dictionary<string, Type> m_abilityActionHandler = new Dictionary<string, Type>();
+		protected static readonly Dictionary<string, Type> m_abilityActionHandler = new();
 		
 		// Spec Action Handler Dictionary Index, typename to instanciate ondemande
-		protected static readonly Dictionary<string, Type> m_specActionHandler = new Dictionary<string, Type>();
+		protected static readonly Dictionary<string, Type> m_specActionHandler = new();
 
 		#endregion
 
@@ -566,7 +558,7 @@ namespace DOL.GS
 	
 					foreach (DBSpecialization spec in specs)
 					{
-						StringBuilder str = new StringBuilder("Specialization ");
+						StringBuilder str = new("Specialization ");
 						str.AppendFormat("{0} - ", spec.KeyName);
 						
 						Specialization gameSpec = null;
@@ -582,7 +574,7 @@ namespace DOL.GS
 						if (log.IsDebugEnabled)
 							log.DebugFormat("Specialization {0} successfuly instanciated from {1} (expected {2})", spec.KeyName, gameSpec.GetType().FullName, spec.Implementation);
 						
-						Tuple<Type, string, ushort, int> entry = new Tuple<Type, string, ushort, int>(gameSpec.GetType(), spec.Name, spec.Icon, spec.SpecializationID);
+						Tuple<Type, string, ushort, int> entry = new(gameSpec.GetType(), spec.Name, spec.Icon, spec.SpecializationID);
 						
 						// Now we have an instanciated Specialization, Cache their properties in Skillbase to prevent using too much memory
 						// As most skill objects are duplicated for every game object use...
@@ -658,13 +650,13 @@ namespace DOL.GS
 									m_specsStyles[spec.KeyName].Add(specStyle.ClassId, new List<Tuple<Style, byte>>());
 								}
 								
-								Style newStyle = new Style(specStyle);
+								Style newStyle = new(specStyle);
 								
 								m_specsStyles[spec.KeyName][specStyle.ClassId].Add(new Tuple<Style, byte>(newStyle, (byte)specStyle.SpecLevelRequirement));
 								
 								// Update Style Index.
 								
-								KeyValuePair<int, int> styleKey = new KeyValuePair<int, int>(newStyle.ID, specStyle.ClassId);
+								KeyValuePair<int, int> styleKey = new(newStyle.ID, specStyle.ClassId);
 								
 								if (!m_styleIndex.ContainsKey(styleKey))
 								{
@@ -677,7 +669,7 @@ namespace DOL.GS
 										log.WarnFormat("Specialization {0} - Duplicate Style Key, StyleID {1} : ClassID {2}, Ignored...", spec.KeyName, newStyle.ID, specStyle.ClassId);
 								}
 								
-								// load Procs
+								// Load Procs.
 								if (specStyle.AttachedProcs != null)
 								{
 									foreach (DBStyleXSpell styleProc in specStyle.AttachedProcs)
@@ -685,16 +677,12 @@ namespace DOL.GS
 										if (m_spellIndex.ContainsKey(styleProc.SpellID))
 										{
 											if (!m_stylesProcs.ContainsKey(specStyle.ID))
-											{
-												m_stylesProcs.Add(specStyle.ID, new Dictionary<int, Tuple<Spell, int>>());
-											}
+												m_stylesProcs.Add(specStyle.ID, new List<(Spell, int, int)>());
 											
-											if (!m_stylesProcs[specStyle.ID].ContainsKey(styleProc.ClassID))
-												m_stylesProcs[specStyle.ID].Add(styleProc.ClassID, new Tuple<Spell, int>(m_spellIndex[styleProc.SpellID], styleProc.Chance));
+											m_stylesProcs[specStyle.ID].Add((m_spellIndex[styleProc.SpellID], styleProc.ClassID, styleProc.Chance));
 										}
 									}
 								}
-								
 							}
 						}
 	
@@ -752,7 +740,7 @@ namespace DOL.GS
 				
 				//Retrieve from DB
 				IList<ClassXSpecialization> dbo = GameServer.Database.SelectAllObjects<ClassXSpecialization>();
-				Dictionary<int, StringBuilder> summary = new Dictionary<int, StringBuilder>();
+				Dictionary<int, StringBuilder> summary = new();
 				
 				if (dbo != null)
 				{
@@ -992,17 +980,17 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds object type to spec convertion table
 		/// </summary>
-		protected static readonly Dictionary<eObjectType, string> m_objectTypeToSpec = new Dictionary<eObjectType, string>();
+		protected static readonly Dictionary<eObjectType, string> m_objectTypeToSpec = new();
 
 		/// <summary>
 		/// Holds spec to skill table
 		/// </summary>
-		protected static readonly Dictionary<string, eProperty> m_specToSkill = new Dictionary<string, eProperty>();
+		protected static readonly Dictionary<string, eProperty> m_specToSkill = new();
 
 		/// <summary>
 		/// Holds spec to focus table
 		/// </summary>
-		protected static readonly Dictionary<string, eProperty> m_specToFocus = new Dictionary<string, eProperty>();
+		protected static readonly Dictionary<string, eProperty> m_specToFocus = new();
 
 		/// <summary>
 		/// Holds all property types
@@ -1012,12 +1000,12 @@ namespace DOL.GS
 		/// <summary>
 		/// table for property names
 		/// </summary>
-		protected static readonly Dictionary<eProperty, string> m_propertyNames = new Dictionary<eProperty, string>();
+		protected static readonly Dictionary<eProperty, string> m_propertyNames = new();
 
 		/// <summary>
 		/// Table to hold the race resists
 		/// </summary>
-		protected static readonly Dictionary<int, int[]> m_raceResists = new Dictionary<int, int[]>();
+		protected static readonly Dictionary<int, int[]> m_raceResists = new();
 
 		/// <summary>
 		/// Initialize the object type hashtable
@@ -2211,11 +2199,11 @@ namespace DOL.GS
 				if (!m_specsStyles[spec.KeyName].ContainsKey(style.ClassId))
 					m_specsStyles[spec.KeyName].Add(style.ClassId, new List<Tuple<Style, byte>>());
 			
-				Style st = new Style(style);
+				Style st = new(style);
 				
 				m_specsStyles[spec.KeyName][style.ClassId].Add(new Tuple<Style, byte>(st, (byte)style.SpecLevelRequirement));
 	
-				KeyValuePair<int, int> styleKey = new KeyValuePair<int, int>(st.ID, style.ClassId);
+				KeyValuePair<int, int> styleKey = new(st.ID, style.ClassId);
 				if (!m_styleIndex.ContainsKey(styleKey))
 					m_styleIndex.Add(styleKey, st);
 	
@@ -2237,7 +2225,7 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterWriteLock();
 			try
 			{
-				Tuple<Type, string, ushort, int> entry = new Tuple<Type, string, ushort, int>(spec.GetType(), spec.Name, spec.Icon, spec.ID);
+				Tuple<Type, string, ushort, int> entry = new(spec.GetType(), spec.Name, spec.Icon, spec.ID);
 				
 				if (m_specsByName.ContainsKey(spec.KeyName))
 					m_specsByName[spec.KeyName] = entry;
@@ -2275,7 +2263,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static List<RealmAbility> GetClassRealmAbilities(int classID)
 		{
-			List<DBAbility> ras = new List<DBAbility>();
+			List<DBAbility> ras = new();
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
@@ -2414,7 +2402,7 @@ namespace DOL.GS
 		/// <returns>list of spells, never null</returns>
 		public static List<Spell> GetSpellList(string spellLineID)
 		{
-			List<Spell> spellList = new List<Spell>();
+			List<Spell> spellList = new();
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
@@ -2447,7 +2435,7 @@ namespace DOL.GS
 	
 				if (dbSpell != null)
 				{
-					Spell spell = new Spell(dbSpell, 1);
+					Spell spell = new(dbSpell, 1);
 	
 					if (m_spellIndex.ContainsKey(spellID))
 					{
@@ -2783,7 +2771,7 @@ namespace DOL.GS
 		/// <returns>Dictionary of Specialization with their Level Requirement (including ClassId 0 for game wide specs)</returns>
 		public static IDictionary<Specialization, int> GetSpecializationCareer(int classID)
 		{
-			Dictionary<Specialization, int> dictRes = new Dictionary<Specialization, int>();
+			Dictionary<Specialization, int> dictRes = new();
 			m_syncLockUpdates.EnterReadLock();
 			IDictionary<string, int> entries = new Dictionary<string, int>();
 			try
@@ -2852,7 +2840,7 @@ namespace DOL.GS
 		public static List<Style> GetStyleList(string specID, int classId)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			List<Tuple<Style, byte>> entries = new List<Tuple<Style, byte>>();
+			List<Tuple<Style, byte>> entries = new();
 			try
 			{
 				if(m_specsStyles.ContainsKey(specID) && m_specsStyles[specID].ContainsKey(classId))
@@ -2865,7 +2853,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 			
-			List<Style> styleRes = new List<Style>();
+			List<Style> styleRes = new();
 				
 			foreach(Tuple<Style, byte> constraint in entries)
 				styleRes.Add((Style)constraint.Item1.Clone());
@@ -2881,7 +2869,7 @@ namespace DOL.GS
 		public static List<Ability> GetSpecAbilityList(string specID, int classID)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			List<Tuple<string, byte, int, int>> entries = new List<Tuple<string, byte, int, int>>();
+			List<Tuple<string, byte, int, int>> entries = new();
 			try
 			{
 				if (m_specsAbilities.ContainsKey(specID))
@@ -2894,7 +2882,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 			
-			List<Ability> abRes = new List<Ability>();
+			List<Ability> abRes = new();
 			foreach (Tuple<string, byte, int, int> constraint in entries)
 			{
 				if (constraint.Item4 != 0 && constraint.Item4 != classID)
@@ -2941,7 +2929,7 @@ namespace DOL.GS
 		/// <returns>style or null if not found</returns>
 		public static Style GetStyleByID(int styleID, int classId)
 		{
-			KeyValuePair<int, int> styleKey = new KeyValuePair<int, int>(styleID, classId);
+			KeyValuePair<int, int> styleKey = new(styleID, classId);
 			Style style;
 			m_syncLockUpdates.EnterReadLock();
 			try
@@ -2964,27 +2952,22 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="style"></param>
 		/// <returns></returns>
-		public static IList<Tuple<Spell, int, int>> GetStyleProcsByID(Style style)
+		public static IList<(Spell, int, int)> GetStyleProcsByID(Style style)
 		{
-			List<Tuple<Spell, int, int>> procres = new List<Tuple<Spell, int, int>>();
 			m_syncLockUpdates.EnterReadLock();
-			Dictionary<int, Tuple<Spell, int>> entries = new Dictionary<int, Tuple<Spell, int>>();
+			List<(Spell, int, int)> entries = new();
+
 			try
 			{
 				if (m_stylesProcs.ContainsKey(style.ID))
-				{
-					entries = new Dictionary<int, Tuple<Spell, int>>(m_stylesProcs[style.ID]);
-				}
+					entries = new List<(Spell, int, int)>(m_stylesProcs[style.ID]);
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
 			
-			foreach(KeyValuePair<int, Tuple<Spell, int>> item in entries)
-				procres.Add(new Tuple<Spell, int, int>(item.Value.Item1, item.Key, item.Value.Item2));
-			
-			return procres;
+			return entries;
 		}
 		
 		/// <summary>

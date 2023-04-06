@@ -140,15 +140,15 @@ namespace DOL.GS.Styles
 			baseStyle = style;
 		}
 
-        public int ClassID
-        {
-            get { return baseStyle.ClassId; }
-        }
+		public int ClassID
+		{
+			get { return baseStyle.ClassId; }
+		}
 
 		/// <summary>
 		/// (readonly)(procs) The list of procs available for this style
 		/// </summary>
-		public IList<Tuple<Spell, int, int>> Procs
+		public IList<(Spell, int, int)> Procs
 		{
 			get { return SkillBase.GetStyleProcsByID(this); }
 		}

@@ -19,22 +19,20 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.Database;
-using DOL.Language;
+using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
-using DOL.GS.Effects;
-
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS.Styles
 {
-	/// <summary>
-	/// Processes styles and style related stuff.
-	/// </summary>
-	public class StyleProcessor
+    /// <summary>
+    /// Processes styles and style related stuff.
+    /// </summary>
+    public class StyleProcessor
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -509,10 +507,10 @@ namespace DOL.GS.Styles
 						// the class-specific proc instead of the ClassID=0 proc
 						if (!attackData.Style.RandomProc)
 						{
-							List<Tuple<Spell, int, int>> procsToExecute = new List<Tuple<Spell, int, int>>();
+							List<(Spell, int, int)> procsToExecute = new();
 							bool onlyExecuteClassSpecific = false;
 
-							foreach (Tuple<Spell, int, int> proc in attackData.Style.Procs)
+							foreach ((Spell, int, int) proc in attackData.Style.Procs)
 							{
 								if (player != null && proc.Item2 == player.CharacterClass.ID)
 								{
@@ -525,7 +523,7 @@ namespace DOL.GS.Styles
 								}
 							}
 
-							foreach (Tuple<Spell, int, int> procToExecute in procsToExecute)
+							foreach ((Spell, int, int) procToExecute in procsToExecute)
 							{
 								if (onlyExecuteClassSpecific && procToExecute.Item2 == 0)
 									continue;
@@ -935,7 +933,7 @@ namespace DOL.GS.Styles
 				{
 					/*check if there is a class specific style proc*/
 					bool hasClassSpecificProc = false;
-					foreach (Tuple<Spell, int, int> proc in style.Procs)
+					foreach ((Spell, int, int) proc in style.Procs)
 					{
 						if (proc.Item2 == player.CharacterClass.ID)
 						{
@@ -944,7 +942,7 @@ namespace DOL.GS.Styles
 						}
 					}
 
-					foreach (Tuple<Spell, int, int> proc in style.Procs)
+					foreach ((Spell, int, int) proc in style.Procs)
 					{
 						// RR4: we added all the procs to the style, now it's time to check for class ID
 						if (hasClassSpecificProc && proc.Item2 != player.CharacterClass.ID) continue;
@@ -1005,7 +1003,7 @@ namespace DOL.GS.Styles
 					delveInfo.Add(" ");
 
 					string procs = "";
-					foreach (Tuple<Spell, int, int> spell in style.Procs)
+					foreach ((Spell, int, int) spell in style.Procs)
 					{
 						if (procs != "")
 							procs += ", ";

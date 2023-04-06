@@ -1196,9 +1196,8 @@ namespace DOL.GS
             ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
 
             // Asp style range add.
-            int addRange = style?.Procs?.FirstOrDefault()?.Item1.SpellType == (byte) eSpellType.StyleRange
-                ? (int) style?.Procs?.FirstOrDefault()?.Item1.Value - AttackRange
-                : 0;
+            IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == (byte) eSpellType.StyleRange);
+            int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
             if (dualWield && (ad.Attacker is GamePlayer gPlayer) &&
                 gPlayer.CharacterClass.ID != (int) eCharacterClass.Savage)

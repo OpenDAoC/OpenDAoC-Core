@@ -17,13 +17,10 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
@@ -33,10 +30,10 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	/// <summary>
-	/// delve button shift+i = detail of spell object...
-	/// </summary>
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DetailRequest, "Handles detail display", eClientStatus.PlayerInGame)]
+    /// <summary>
+    /// delve button shift+i = detail of spell object...
+    /// </summary>
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DetailRequest, "Handles detail display", eClientStatus.PlayerInGame)]
 	public class DetailDisplayHandler : IPacketHandler
 	{
 		/// <summary>
@@ -2147,17 +2144,17 @@ namespace DOL.GS.PacketHandler.Client.v168
                 //.Value("FollowupStyle",style.DelveFollowUpStyles,!string.IsNullOrEmpty(style.DelveFollowUpStyles))
                 if (style.Procs != null && style.Procs.Count > 0)
                 {
-                    foreach (Tuple<Spell, int, int> proc in style.Procs)
+                    foreach ((Spell, int, int) proc in style.Procs)
                     {
                         if (clt.Player.CharacterClass.ID == proc.Item2)
                         {
                             dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
-                            dw.AddKeyValuePair("SpecialType", 1);                            
+                            dw.AddKeyValuePair("SpecialType", 1);
                         }
                         else if (proc.Item2 == 0 && !dw.Values.ContainsKey("SpecialNumber"))
                         {
                             dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
-                            dw.AddKeyValuePair("SpecialType", 1);                            
+                            dw.AddKeyValuePair("SpecialType", 1);
                         }
                     }
                 }
