@@ -162,6 +162,9 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Mesmerize")]
     public class MesmerizeSpellHandler : AbstractCCSpellHandler
     {
+        public const int FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL = 2000;
+        public long FluteMezLastEndOfCastMessage { get; set; } // Flute mez should probably have its own spell handler.
+
         public override void CreateECSEffect(ECSGameEffectInitParams initParams)
         {
             new MezECSGameEffect(initParams);
@@ -342,7 +345,7 @@ namespace DOL.GS.Spells
             return (int)duration;
         }
 
-        public MesmerizeSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+        public MesmerizeSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
     /// <summary>

@@ -994,7 +994,19 @@ namespace DOL.GS.Spells
 							// We don't give a radius to IsObjectInFront. A check is already done in TargetInView
 							if (target.IsStealthed || !Caster.TargetInView || !Caster.IsObjectInFront(target, 180, 0))
 							{
+								// Avoid flute mez's chat log spam.
+								if (m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize)
+								{
+									MesmerizeSpellHandler mesmerizeSpellHandler = this as MesmerizeSpellHandler;
+
+									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpellHandler.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
+										return false;
+
+									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoop.GameLoopTime;
+								}
+								
 								MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+
 								return false;
 							}
 						}
