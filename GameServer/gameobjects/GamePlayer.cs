@@ -2076,7 +2076,7 @@ namespace DOL.GS
                         if (rvrsick == null) return;
                         Spell rvrillness = SkillBase.FindSpell(8181, rvrsick);
                         //player.CastSpell(rvrillness, rvrsick);
-                        castingComponent.StartCastSpell(rvrillness, rvrsick);
+                        castingComponent.RequestStartCastSpell(rvrillness, rvrsick);
                         break;
                     case eDeathType.PvP: //PvP sickness is the same as PvE sickness - Curable
                     case eDeathType.PvE:
@@ -2084,10 +2084,10 @@ namespace DOL.GS
                         if (pvesick == null) return;
                         Spell pveillness = SkillBase.FindSpell(2435, pvesick);
                         //player.CastSpell(pveillness, pvesick);
-                        castingComponent.StartCastSpell(pveillness, pvesick);
+                        castingComponent.RequestStartCastSpell(pveillness, pvesick);
                         break;
                 }
-			
+
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
             LastDeathPvP = false;
@@ -10041,7 +10041,7 @@ namespace DOL.GS
 
                     if (spellHandler != null && spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
-                        castingComponent.StartCastSpell(spell, itemSpellLine);
+                        castingComponent.RequestStartCastSpell(spell, itemSpellLine);
                         TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
                         //CurrentSpellHandler = spellHandler;
                         //CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);

@@ -17,18 +17,17 @@
  *
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using log4net;
 using DOL.GS.Commands;
+using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	/// <summary>
-	/// Handles spell cast requests from client
-	/// </summary>
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
+    /// <summary>
+    /// Handles spell cast requests from client
+    /// </summary>
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
 	public class UseSpellHandler : AbstractCommandHandler, IPacketHandler
 	{
 		/// <summary>
@@ -108,10 +107,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			// is spelline in index ?
 			if (spellLineIndex < snap.Count)
 			{
-				int index = snap[spellLineIndex].Item2.FindIndex(s => s is Spell ? 
-				                                                   s.Level == spellLevel 
-				                                                   : (s is Styles.Style ? ((Styles.Style)s).SpecLevelRequirement == spellLevel
-				                                                      : (s is Ability ? ((Ability)s).SpecLevelRequirement == spellLevel : false)));
+				int index = snap[spellLineIndex].Item2.FindIndex(s => s is Spell ? s.Level == spellLevel :
+																(s is Styles.Style style ? style.SpecLevelRequirement == spellLevel :
+																(s is Ability ability ? ability.SpecLevelRequirement == spellLevel :
+																false)));
 				
 				if (index > -1)
 				{
@@ -127,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					//todo How to attach a spell to a player? Casting Service should in theory create spellHandler and add to the player -- not the component
 					//player.CastSpell((Spell)sk, sl);
-					player.castingComponent.StartCastSpell((Spell)sk, sl);
+					player.castingComponent.RequestStartCastSpell((Spell)sk, sl);
 				}
 
 				player.TempProperties.setProperty(sk.Name, 75);
@@ -227,9 +226,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (m_spellLineIndex < snap.Count)
 				{
 					int index = snap[m_spellLineIndex].Item2.FindIndex(s => s is Spell ? 
-					                                                   s.Level == m_spellLevel 
-					                                                   : (s is Styles.Style ? ((Styles.Style)s).SpecLevelRequirement == m_spellLevel
-					                                                      : (s is Ability ? ((Ability)s).SpecLevelRequirement == m_spellLevel : false)));
+																	   s.Level == m_spellLevel 
+																	   : (s is Styles.Style ? ((Styles.Style)s).SpecLevelRequirement == m_spellLevel
+																		  : (s is Ability ? ((Ability)s).SpecLevelRequirement == m_spellLevel : false)));
 					
 					if (index > -1)
 					{

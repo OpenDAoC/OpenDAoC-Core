@@ -72,13 +72,11 @@ namespace DOL.GS.Spells
 				((GamePlayer)target).styleComponent.NextCombatStyle = null;
 				((GamePlayer)target).styleComponent.NextCombatBackupStyle = null;
 			}
-			
+
 			//Amnesia only affects normal spells and not song activation (still affects pulses from songs though)
-			if(target.CurrentSpellHandler != null && target.CurrentSpellHandler.Spell.InstrumentRequirement == 0)
-			{
-				target.CurrentSpellHandler?.AmnesiaInterruptCasting(); //stop even if MoC or QC
-			}
-			
+			if (target.CurrentSpellHandler?.Spell.InstrumentRequirement == 0)
+				target.castingComponent.OnAmnesia(); //stop even if MoC or QC
+
 			target.rangeAttackComponent.Target = null;
 			//if(target is GamePlayer)
 				//target.TargetObject = null;

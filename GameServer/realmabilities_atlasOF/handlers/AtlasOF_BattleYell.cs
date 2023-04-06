@@ -1,31 +1,30 @@
-using DOL.GS.Spells;
 using DOL.Database;
+using DOL.GS.Spells;
+
 namespace DOL.GS.RealmAbilities
 {
-	public class AtlasOF_BattleYell : TimedRealmAbility, ISpellCastingAbilityHandler
+    public class AtlasOF_BattleYell : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-		public AtlasOF_BattleYell(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_BattleYell(DBAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
         public SpellLine SpellLine { get { return m_spellline; } }
         public Ability Ability { get { return this; } }
 
-        
-		private const int m_range = 0; // pbaoe
+        private const int m_range = 0; // pbaoe
         private const int m_radius = 500; //
         private const eDamageType m_damageType = eDamageType.Natural;
 
-		private DBSpell m_dbspell;
+        private DBSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private int m_tauntValue = 0;
 
         public override int MaxLevel { get { return 1; } }
-		public override int CostForUpgrade(int level) { return 14; }
-		public override int GetReUseDelay(int level) { return 900; } // 15 mins
-		
-		public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugConLevel(player) >= 3; }
+        public override int CostForUpgrade(int level) { return 14; }
+        public override int GetReUseDelay(int level) { return 900; } // 15 mins
+        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugConLevel(player) >= 3; }
 
         private void CreateSpell(GamePlayer caster)
         {
@@ -34,10 +33,10 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Icon = 4231;
             m_dbspell.ClientEffect = 7276;
             m_dbspell.Damage = 0;
-			m_dbspell.DamageType = (int)m_damageType;
+            m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-			m_dbspell.Type = eSpellType.Taunt.ToString();
+            m_dbspell.Type = eSpellType.Taunt.ToString();
             m_dbspell.Value = m_tauntValue;
             m_dbspell.Duration = 0;
             m_dbspell.Pulse = 0;
@@ -49,44 +48,44 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Range = m_range;
             m_dbspell.Description = "Taunt all enemies in a " 
                                                + m_radius + " unit radius.";
-			m_spell = new Spell(m_dbspell, caster.Level);
+            m_spell = new Spell(m_dbspell, caster.Level);
             m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
         }
 
         public override void Execute(GameLiving living)
-		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-			var caster = living as GamePlayer;
-			if (caster == null)
-				return;
-			m_tauntValue = GetTauntValue();
+        {
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
+                return;
 
-			CreateSpell(caster);
-			
-			caster.castingComponent.StartCastSpell(m_spell, m_spellline, this);
+            if (living is not GamePlayer caster)
+                return;
 
-			// We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
+            m_tauntValue = GetTauntValue();
+            CreateSpell(caster);
+            caster.castingComponent.RequestStartCastSpell(m_spell, m_spellline, this);
+
+            // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
-		}
+        }
 
         private int GetTauntValue()
         {
-	        switch (Level)
-	        {
-		        case 1: return 100;
-		        case 2: return 200;
-		        case 3: return 300;
-		        default: return 100;
-	        }
+            switch (Level)
+            {
+                case 1: return 100;
+                case 2: return 200;
+                case 3: return 300;
+                default: return 100;
+            }
         }
         
         public void CastSpellOn(GameLiving target, GamePlayer caster)
         {
-	        if (target.IsAlive && m_spell != null)
-	        {
-		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
-		        dd.StartSpell(target);
-	        }
+            if (target.IsAlive && m_spell != null)
+            {
+                ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
+                dd.StartSpell(target);
+            }
         }
-	}
+    }
 }

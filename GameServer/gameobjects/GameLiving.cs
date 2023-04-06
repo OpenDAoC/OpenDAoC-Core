@@ -39,11 +39,11 @@ using static DOL.GS.AttackData;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class holds all information that each
-	/// living object in the world uses
-	/// </summary>
-	public abstract class GameLiving : GameObject
+    /// <summary>
+    /// This class holds all information that each
+    /// living object in the world uses
+    /// </summary>
+    public abstract class GameLiving : GameObject
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -6914,50 +6914,28 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Holds the currently running spell handler
+		/// Active spellhandler or null
 		/// </summary>
-		//protected ISpellHandler CurrentSpellHandler;
-		/// <summary>
-		/// active spellhandler (casting phase) or null
-		/// </summary>
-		public ISpellHandler CurrentSpellHandler
-		{
-			// change for warlock
-			get { return castingComponent.SpellHandler; }
-			//set { CurrentSpellHandler = value; }
-		}
+		public ISpellHandler CurrentSpellHandler => castingComponent.SpellHandler;
 
 		/// <summary>
 		/// Immediately stops currently casting spell
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			castingComponent.SpellHandler?.InterruptCasting();
-			castingComponent.QueuedSpellHandler = null;
+			castingComponent.InterruptCasting();
 		}
 
 		public virtual bool CastSpell(Spell spell, SpellLine line)
 		{
-			if (IsStunned || IsMezzed)
-			{
-				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
-				return false;
-			}
-
-			return castingComponent.StartCastSpell(spell, line, null, TargetObject as GameLiving);
+			return castingComponent.RequestStartCastSpell(spell, line, null, TargetObject as GameLiving);
 		}
 
 		// Should only be used when the target of the spell is different than the currenctly selected one.
 		// Which can happen during LoS checks, since we're not waiting for the check to complete to perform other actions.
 		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target)
 		{
-			if (IsStunned || IsMezzed)
-			{
-				Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
-				return false;
-			}
-
-			return castingComponent.StartCastSpell(spell, line, null, target);
+			return castingComponent.RequestStartCastSpell(spell, line, null, target);
 		}
 
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)

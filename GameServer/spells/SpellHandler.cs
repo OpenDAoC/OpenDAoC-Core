@@ -1073,7 +1073,7 @@ namespace DOL.GS.Spells
 			if (m_interrupted)
 				return false;
 
-			if (m_caster.ObjectState != GameLiving.eObjectState.Active)
+			if (m_caster.ObjectState != GameObject.eObjectState.Active)
 				return false;
 
 			if (!m_caster.IsAlive)
@@ -1354,63 +1354,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (CastState == eCastState.Cleanup)
-				CleanupSpellCast();
-		}
-
-		public void CleanupSpellCast()
-		{
-			if (Caster is GamePlayer p)
-			{
-				if (Spell.CastTime > 0)
-				{
-					if (p.castingComponent.QueuedSpellHandler != null && p.SpellQueue)
-					{
-						p.castingComponent.SpellHandler = p.castingComponent.QueuedSpellHandler;
-						p.castingComponent.QueuedSpellHandler = null;
-					}
-					else
-						p.castingComponent.SpellHandler = null;
-				}
-			}
-			else if (Caster is NecromancerPet nPet)
-			{
-				if (nPet.Brain is NecromancerPetBrain necroBrain)
-				{
-					if (Spell.CastTime > 0)
-					{
-						necroBrain.RemoveSpellFromQueue();
-
-						if (!Caster.attackComponent.AttackState)
-							necroBrain.CheckAttackSpellQueue();
-
-						if (Caster.castingComponent.QueuedSpellHandler != null)
-						{
-							Caster.castingComponent.SpellHandler = Caster.castingComponent.QueuedSpellHandler;
-							Caster.castingComponent.QueuedSpellHandler = null;
-						}
-						else
-							Caster.castingComponent.SpellHandler = null;
-
-						if (necroBrain.SpellsQueued)
-							necroBrain.CheckSpellQueue();
-					}
-					else
-					{
-						if (nPet.attackComponent.AttackState)
-							necroBrain.RemoveSpellFromAttackQueue();
-					}
-				}
-			}
-			else
-			{
-				if (Caster.castingComponent.QueuedSpellHandler != null)
-				{
-					Caster.castingComponent.SpellHandler = Caster.castingComponent.QueuedSpellHandler;
-					Caster.castingComponent.QueuedSpellHandler = null;
-				}
-				else
-					Caster.castingComponent.SpellHandler = null;
-			}
+				Caster.castingComponent.CleanupSpellCast();
 		}
 
 		/// <summary>
@@ -1533,34 +1477,8 @@ namespace DOL.GS.Spells
 				return;
 
 			m_interrupted = true;
-
-			if (IsCasting)
-			{
-				Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
-				{
-					player.Out.SendInterruptAnimation(m_caster);
-				});
-			}
-			
-			m_caster.castingComponent.SpellHandler = null;
-			m_caster.castingComponent.QueuedSpellHandler = null;
+			Caster.castingComponent.InterruptCasting();
 			CastState = eCastState.Interrupted;
-			m_startReuseTimer = false;
-		}
-
-		/// <summary>
-		/// Special use case for when Amnesia isued used against the caster
-		/// </summary>
-		public virtual void AmnesiaInterruptCasting()
-		{
-			if (m_interrupted || !IsCasting)
-				return;
-			
-			if (m_caster is GamePlayer p && p.castingComponent != null)
-			{
-				p.castingComponent.SpellHandler = null;
-			}
-
 			m_startReuseTimer = false;
 		}
 

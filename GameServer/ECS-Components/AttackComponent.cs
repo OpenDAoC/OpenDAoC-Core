@@ -98,9 +98,8 @@ namespace DOL.GS
         {
             if (StartAttackRequested)
             {
-                StartAttack();
-                m_startAttackTarget = null;
                 StartAttackRequested = false;
+                StartAttack();
             }
 
             attackAction?.Tick(time);
@@ -577,11 +576,11 @@ namespace DOL.GS
         {
             if (!StartAttackRequested)
             {
-                StartAttackRequested = true;
-                m_startAttackTarget = attackTarget;
-
                 if (EntityManagerId == -1)
                     EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
+
+                m_startAttackTarget = attackTarget;
+                StartAttackRequested = true;
             }
         }
 

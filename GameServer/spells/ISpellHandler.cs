@@ -52,11 +52,6 @@ namespace DOL.GS.Spells
 		void InterruptCasting();
 
 		/// <summary>
-		/// Special Use case when Amnesia is casted against caster.
-		/// </summary>
-		void AmnesiaInterruptCasting();
-
-		/// <summary>
 		/// Has to be called when the caster moves
 		/// </summary>
 		void CasterMoves();
