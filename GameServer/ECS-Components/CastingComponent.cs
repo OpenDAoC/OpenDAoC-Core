@@ -160,16 +160,16 @@ namespace DOL.GS
                 });
             }
 
+            ClearUpSpellHandlers();
+        }
+
+        public void ClearUpSpellHandlers()
+        {
             SpellHandler = null;
             QueuedSpellHandler = null;
         }
 
-        public void OnAmnesia()
-        {
-            SpellHandler = null;
-        }
-
-        public void CleanupSpellCast()
+        public void CleanUpSpellHandler()
         {
             if (Owner is GamePlayer player)
             {

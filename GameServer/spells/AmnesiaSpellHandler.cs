@@ -75,7 +75,7 @@ namespace DOL.GS.Spells
 
 			//Amnesia only affects normal spells and not song activation (still affects pulses from songs though)
 			if (target.CurrentSpellHandler?.Spell.InstrumentRequirement == 0)
-				target.castingComponent.OnAmnesia(); //stop even if MoC or QC
+				target.castingComponent.ClearUpSpellHandlers(); //stop even if MoC or QC
 
 			target.rangeAttackComponent.Target = null;
 			//if(target is GamePlayer)
