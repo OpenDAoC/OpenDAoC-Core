@@ -1359,7 +1359,7 @@ namespace DOL.GS.Spells
 
 						//.SetCooldown();
 					}
-				}			
+				}
 				else
 					CastState = eCastState.Cleanup;
 			}
@@ -1540,7 +1540,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void InterruptCasting()
 		{
-			if (m_interrupted || !IsCasting)
+			if (m_interrupted)
 				return;
 
 			m_interrupted = true;
@@ -1553,12 +1553,8 @@ namespace DOL.GS.Spells
 				});
 			}
 			
-			if (m_caster is GamePlayer p && p.castingComponent != null)
-			{
-				p.castingComponent.SpellHandler = null;
-				p.castingComponent.QueuedSpellHandler = null;
-			}
-
+			m_caster.castingComponent.SpellHandler = null;
+			m_caster.castingComponent.QueuedSpellHandler = null;
 			CastState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 		}
@@ -1587,7 +1583,6 @@ namespace DOL.GS.Spells
 		{
 			return m_caster.CalculateCastingTime(m_spellLine, m_spell);
 		}
-
 
 		#region animations
 

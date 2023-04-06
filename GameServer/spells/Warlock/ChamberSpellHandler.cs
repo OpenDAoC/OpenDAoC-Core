@@ -92,11 +92,6 @@ namespace DOL.GS.Spells
 				m_effectslot = value;
 			}
 		}
-		
-		public override void InterruptCasting()
-		{
-			base.InterruptCasting();
-		}
 
 		// Likely to be broken. It used to override 'CastSpell', but it no longer exists in 'SpellHanlder'.
 		// 'StartSpell' takes a target but we're not even using it.
