@@ -65,14 +65,15 @@ namespace DOL.GS
                     return false;
             }
 
-            if (EntityManagerId == -1)
-                EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
-
             _startCastSpellSpell = spell;
             _startCastSpellSpellLine = line;
             _startCastSpellSpellCastingAbilityHandler = spellCastingAbilityHandler;
             _startCastSpellTarget = target;
             StartCastSpellRequested = true;
+
+            if (EntityManagerId == -1)
+                EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
+
             return true;
         }
 

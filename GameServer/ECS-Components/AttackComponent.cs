@@ -576,11 +576,11 @@ namespace DOL.GS
         {
             if (!StartAttackRequested)
             {
-                if (EntityManagerId == -1)
-                    EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
-
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
+
+                if (EntityManagerId == -1)
+                    EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
             }
         }
 
