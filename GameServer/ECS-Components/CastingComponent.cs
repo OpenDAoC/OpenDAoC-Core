@@ -1,6 +1,5 @@
-using System;
+using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -13,24 +12,27 @@ namespace DOL.GS
     // This component will hold all data related to casting spells.
     public class CastingComponent
     {
+        private class StartCastSpellRequest
+        {
+            public Spell Spell { get; private set; }
+            public SpellLine SpellLine { get; private set ; }
+            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
+            public GameLiving Target { get; private set; }
+
+            public StartCastSpellRequest(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target)
+            {
+                Spell = spell;
+                SpellLine = spellLine;
+                SpellCastingAbilityHandler = spellCastingAbilityHandler;
+                Target = target;
+            }
+        }
+
         public ISpellHandler SpellHandler { get; private set; }
         public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
         public int EntityManagerId { get; private set; } = EntityManager.UNSET_ID;
-
-        private Spell _startCastSpellSpell;
-        private SpellLine _startCastSpellSpellLine;
-        private ISpellCastingAbilityHandler _startCastSpellSpellCastingAbilityHandler;
-        private GameLiving _startCastSpellTarget;
-
-        // Used as a boolean to tell if 'StartCastSpell' is currently being called.
-        private long _startCastSpellRequested;
-
-        private bool StartCastSpellRequested
-        {
-            get => Interlocked.Read(ref _startCastSpellRequested) == 1;
-            set => Interlocked.Exchange(ref _startCastSpellRequested, Convert.ToInt64(value));
-        }
+        private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
 
         public CastingComponent(GameLiving owner)
         {
@@ -39,19 +41,33 @@ namespace DOL.GS
 
         public void Tick(long time)
         {
-            if (StartCastSpellRequested)
+            StartCastSpellRequest startCastSpellRequest = null;
+
+            // Retrieve the first spell that was requested if we don't have a currently active spell handler, otherwise take the last one and discard the others.
+            if (SpellHandler == null)
+                _startCastSpellRequests.TryDequeue(out startCastSpellRequest);
+            else
             {
-                StartCastSpellRequested = false;
-                StartCastSpell(_startCastSpellSpell, _startCastSpellSpellLine, _startCastSpellSpellCastingAbilityHandler, _startCastSpellTarget);
+                while (_startCastSpellRequests.TryDequeue(out StartCastSpellRequest result))
+                {
+                    if (result != null)
+                        startCastSpellRequest = result;
+                }
             }
+
+            if (startCastSpellRequest != null)
+                StartCastSpell(startCastSpellRequest);
 
             SpellHandler?.Tick(time);
 
             if (SpellHandler == null && QueuedSpellHandler == null)
+            {
+                _startCastSpellRequests.Clear();
                 EntityManagerId = EntityManager.Remove(EntityManager.EntityType.CastingComponent, EntityManagerId);
+            }
         }
 
-        public bool RequestStartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        public bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (Owner.IsStunned || Owner.IsMezzed)
             {
@@ -65,11 +81,7 @@ namespace DOL.GS
                     return false;
             }
 
-            _startCastSpellSpell = spell;
-            _startCastSpellSpellLine = line;
-            _startCastSpellSpellCastingAbilityHandler = spellCastingAbilityHandler;
-            _startCastSpellTarget = target;
-            StartCastSpellRequested = true;
+            _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
 
             if (EntityManagerId == -1)
                 EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
@@ -77,7 +89,7 @@ namespace DOL.GS
             return true;
         }
 
-        private void StartCastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        private void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
         {
             if (Owner is GamePlayer playerOwner)
             {
@@ -86,15 +98,15 @@ namespace DOL.GS
                     playerOwner.Stealth(false);
             }
 
-            ISpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(Owner, spell, line);
+            ISpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(Owner, startCastSpellRequest.Spell, startCastSpellRequest.SpellLine);
 
             // 'GameLiving.TargetObject' is used by 'SpellHandler.Tick()' but is likely to change during LoS checks or for queued spells (affects NPCs only).
             // So we pre-initialize 'SpellHandler.Target' with the passed down target, if there's any.
-            if (target != null)
-                newSpellHandler.Target = target;
+            if (startCastSpellRequest.Target != null)
+                newSpellHandler.Target = startCastSpellRequest.Target;
 
             // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
-            newSpellHandler.Ability = spellCastingAbilityHandler;
+            newSpellHandler.Ability = startCastSpellRequest.SpellCastingAbilityHandler;
 
             // Performing the first tick here since 'SpellHandler' relies on 'GameLiving.TargetObject' (when 'target' is null), which may get cleared before 'Tick()' is called by the casting service.
             // It should also make casting very slightly more responsive.
@@ -113,11 +125,11 @@ namespace DOL.GS
                 {
                     if (Owner is GamePlayer player)
                     {
-                        if (spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && spell.SpellType != (byte)eSpellType.Chamber)
+                        if (startCastSpellRequest.Spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && startCastSpellRequest.Spell.SpellType != (byte)eSpellType.Chamber)
                         {
                             if (SpellHandler.Spell.InstrumentRequirement != 0)
                             {
-                                if (spell.InstrumentRequirement != 0)
+                                if (startCastSpellRequest.Spell.InstrumentRequirement != 0)
                                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                                 else
                                     player.Out.SendMessage("You must wait " + ((SpellHandler.CastStartTick + SpellHandler.Spell.CastTime - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
