@@ -170,11 +170,11 @@ namespace DOL.GS
             QueuedSpellHandler = null;
         }
 
-        public void CleanUpSpellHandler()
+        public void OnSpellHandlerCleanUp(Spell currentSpell)
         {
             if (Owner is GamePlayer player)
             {
-                if (SpellHandler?.Spell.CastTime > 0)
+                if (currentSpell.CastTime > 0)
                 {
                     if (QueuedSpellHandler != null && player.SpellQueue)
                     {
@@ -189,7 +189,7 @@ namespace DOL.GS
             {
                 if (necroPet.Brain is NecromancerPetBrain necroBrain)
                 {
-                    if (SpellHandler?.Spell.CastTime > 0)
+                    if (currentSpell.CastTime > 0)
                     {
                         necroBrain.RemoveSpellFromQueue();
 

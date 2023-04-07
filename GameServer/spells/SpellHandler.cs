@@ -1354,7 +1354,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (CastState == eCastState.Cleanup)
-				Caster.castingComponent.CleanUpSpellHandler();
+				Caster.castingComponent.OnSpellHandlerCleanUp(Spell);
 		}
 
 		/// <summary>
