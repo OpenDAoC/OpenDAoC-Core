@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
         {
             SpellLine RAspellLine = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
             Spell ForestheartAmbusher = SkillBase.GetSpellByID(90802);
-            
+
             if (ForestheartAmbusher != null)
                 Owner.CastSpell(ForestheartAmbusher, RAspellLine);
 
@@ -31,7 +31,7 @@ namespace DOL.GS.Effects
             PetSpellHander.Pet.TakeDamage(null, eDamageType.Natural, 9999, 0);
             base.OnStopEffect();
         }
-        
+
         public void Cancel(bool playerCancel)
         {
             EffectService.RequestImmediateCancelEffect(this, playerCancel);

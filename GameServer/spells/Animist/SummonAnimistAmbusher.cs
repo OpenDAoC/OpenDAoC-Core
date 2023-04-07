@@ -5,20 +5,21 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("SummonAnimistAmbusher")]
+    [SpellHandler("SummonAnimistAmbusher")]
 	public class SummonAnimistAmbusher : SummonSpellHandler
 	{
 		public SummonAnimistAmbusher(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		
 		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
 		{
+			// The order is important. The pet must not be allowed to be killed before we set 'PetSpellHander'.
+			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(target, eEffect.ForestheartAmbusher);
+			effect.PetSpellHander = this;
+
 			base.ApplyEffectOnTarget(target, effectiveness);
 
 			m_pet.Brain.Think();
 			((ControlledNpcBrain)m_pet.Brain).Stay();
-
-			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(target, eEffect.ForestheartAmbusher);
-			effect.PetSpellHander = this;
 		}
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)
