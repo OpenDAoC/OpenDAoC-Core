@@ -251,22 +251,20 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds disease counter
 		/// </summary>
-		protected volatile byte m_diseasedCount;
+		protected int m_diseasedCount;
+
 		/// <summary>
 		/// Sets disease state
 		/// </summary>
 		/// <param name="add">true if disease counter should be increased</param>
 		public virtual void Disease(bool active)
 		{
-			if (active) m_diseasedCount++;
-			else m_diseasedCount--;
-
-			if (m_diseasedCount < 0)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("m_diseasedCount is less than zero.\n" + Environment.StackTrace);
-			}
+			if (active)
+				Interlocked.Increment(ref m_diseasedCount);
+			else
+				Interlocked.Decrement(ref m_diseasedCount);
 		}
+
 		/// <summary>
 		/// Gets diseased state
 		/// </summary>
