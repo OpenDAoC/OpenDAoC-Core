@@ -108,8 +108,6 @@ namespace DOL.GS
             // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
             newSpellHandler.Ability = startCastSpellRequest.SpellCastingAbilityHandler;
 
-            // Performing the first tick here since 'SpellHandler' relies on 'GameLiving.TargetObject' (when 'target' is null), which may get cleared before 'Tick()' is called by the casting service.
-            // It should also make casting very slightly more responsive.
             if (SpellHandler != null)
             {
                 if (SpellHandler.Spell?.IsFocus == true)
@@ -117,7 +115,7 @@ namespace DOL.GS
                     if (newSpellHandler.Spell.IsInstantCast)
                         newSpellHandler.Tick(GameLoop.GameLoopTime);
                     else
-                        TickThenReplaceSpellHandler(newSpellHandler);
+                        SpellHandler = newSpellHandler;
                 }
                 else if (newSpellHandler.Spell.IsInstantCast)
                     newSpellHandler.Tick(GameLoop.GameLoopTime);
@@ -155,7 +153,7 @@ namespace DOL.GS
                 if (newSpellHandler.Spell.IsInstantCast)
                     newSpellHandler.Tick(GameLoop.GameLoopTime);
                 else
-                    TickThenReplaceSpellHandler(newSpellHandler);
+                    SpellHandler = newSpellHandler;
 
                 // Why?
                 if (SpellHandler is SummonNecromancerPet necroPetHandler)
@@ -236,12 +234,6 @@ namespace DOL.GS
                 else
                     SpellHandler = null;
             }
-        }
-
-        private void TickThenReplaceSpellHandler(ISpellHandler newSpellHandler)
-        {
-            newSpellHandler.Tick(GameLoop.GameLoopTime);
-            SpellHandler = newSpellHandler;
         }
 
         private static bool CanCastSpell(GameLiving living)
