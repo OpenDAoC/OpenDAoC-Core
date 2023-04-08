@@ -28,7 +28,8 @@ namespace DOL.GS.Effects
 
         public override void OnStopEffect()
         {
-            PetSpellHander.Pet.TakeDamage(null, eDamageType.Natural, 9999, 0);
+            // The effect can be cancelled before the spell if fired by the casting service, in which case both PetSpellHander can be null.
+            PetSpellHander?.Pet.TakeDamage(null, eDamageType.Natural, 9999, 0);
             base.OnStopEffect();
         }
 
