@@ -18,11 +18,11 @@
  */
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.AI.Brain
@@ -72,7 +72,7 @@ namespace DOL.AI.Brain
                 PetSpellEventArgs petSpell = (PetSpellEventArgs)args;
                 bool hadQueuedSpells = false;
 
-                if (SpellsQueued)
+                if (!m_spellQueue.IsEmpty)
                 {
                     MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
                     hadQueuedSpells = true;
@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
                     RemoveSpellFromQueue();
                     AttackMostWanted();
 
-                    if (SpellsQueued)
+                    if (!m_spellQueue.IsEmpty)
                     {
                         DebugMessageToOwner("+ Cast finished, more spells to cast");
                         CheckSpellQueue();
@@ -173,8 +173,7 @@ namespace DOL.AI.Brain
                     MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), eChatType.CT_System, Owner as GamePlayer);
                 }
             }
-            else if (e == GameNPCEvent.SwitchedTarget && sender == Body.TargetObject &&
-                sender is GameNPC && !(sender as GameNPC).IsCrowdControlled)
+            else if (e == GameNPCEvent.SwitchedTarget && sender == Body.TargetObject && sender is GameNPC && !(sender as GameNPC).IsCrowdControlled)
             {
                 // Target has started attacking someone else.
                 if (Body.EffectList.GetOfType<TauntEffect>() != null)
@@ -222,11 +221,9 @@ namespace DOL.AI.Brain
 
             if (entry != null)
             {
+                // If the spell can be cast, remove it from the queue.
                 if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
-                {
-                    // If the spell can be cast, remove it from the queue.
                     RemoveSpellFromQueue();
-                }
             }
         }
 
@@ -253,11 +250,9 @@ namespace DOL.AI.Brain
 
                 if (entry != null)
                 {
+                    // If the spell can be cast, remove it from the queue.
                     if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
-                    {
-                        // If the spell can be cast, remove it from the queue.
                         RemoveSpellFromAttackQueue();
-                    }
                 }
             }
         }
@@ -308,23 +303,33 @@ namespace DOL.AI.Brain
             public SpellQueueEntry(SpellQueueEntry entry) : this(entry.Spell, entry.SpellLine, entry.Target) { }
         }
 
-        private Queue<SpellQueueEntry> m_spellQueue = new(2);
-        private Queue<SpellQueueEntry> m_attackSpellQueue = new(2);
+        private ConcurrentQueue<SpellQueueEntry> m_spellQueue = new();
+        private ConcurrentQueue<SpellQueueEntry> m_attackSpellQueue = new();
 
         public void ClearSpellQueue()
         {
-            lock (m_spellQueue)
-            {
-                m_spellQueue.Clear();
-            }
+            m_spellQueue.Clear();
         }
 
         public void ClearAttackSpellQueue()
         {
-            lock (m_attackSpellQueue)
-            {
-                m_attackSpellQueue.Clear();
-            }
+            m_attackSpellQueue.Clear();
+        }
+
+        /// <summary>
+        /// Whether or not any spells are queued.
+        /// </summary>
+        public bool HasSpellsQueued()
+        {
+            return !m_spellQueue.IsEmpty;
+        }
+
+        /// <summary>
+        /// Whether or not any spells are queued.
+        /// </summary>
+        public bool HasAttackSpellsQueued()
+        {
+            return !m_attackSpellQueue.IsEmpty;
         }
 
         /// <summary>
@@ -333,16 +338,12 @@ namespace DOL.AI.Brain
         /// <returns>The next spell or null, if no spell is in the queue.</returns>
         private SpellQueueEntry GetSpellFromQueue()
         {
-            lock (m_spellQueue)
-            {
-                if (m_spellQueue.Count > 0)
-                {
-                    DebugMessageToOwner(String.Format("Grabbing spell '{0}' from the start of the queue in order to cast it", m_spellQueue.Peek().Spell.Name));
-                    return m_spellQueue.Peek();
-                }
-            }
+            m_spellQueue.TryPeek(out SpellQueueEntry spellQueueEntry);
 
-            return null;
+            if (!m_spellQueue.IsEmpty)
+                DebugMessageToOwner(string.Format("Grabbing spell '{0}' from the start of the queue in order to cast it", spellQueueEntry.Spell.Name));
+
+            return spellQueueEntry;
         }
 
         /// <summary>
@@ -351,44 +352,12 @@ namespace DOL.AI.Brain
         /// <returns>The next spell or null, if no spell is in the queue.</returns>
         private SpellQueueEntry GetSpellFromAttackQueue()
         {
-            lock (m_attackSpellQueue)
-            {
-                if (m_attackSpellQueue.Count > 0)
-                {
-                    DebugMessageToOwner(String.Format("Grabbing spell '{0}' from the start of the queue in order to cast it", m_attackSpellQueue.Peek().Spell.Name));
-                    return m_attackSpellQueue.Peek();
-                }
-            }
+            m_attackSpellQueue.TryPeek(out SpellQueueEntry spellQueueEntry);
 
-            return null;
-        }
+            if (spellQueueEntry != null)
+                DebugMessageToOwner(string.Format("Grabbing spell '{0}' from the start of the queue in order to cast it", spellQueueEntry.Spell.Name));
 
-        /// <summary>
-        /// Whether or not any spells are queued.
-        /// </summary>
-        public bool SpellsQueued
-        {
-            get
-            {
-                lock (m_spellQueue)
-                {
-                    return m_spellQueue.Count > 0;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not any spells are queued.
-        /// </summary>
-        public bool AttackSpellsQueued
-        {
-            get
-            {
-                lock (m_attackSpellQueue)
-                {
-                    return m_attackSpellQueue.Count > 0;
-                }
-            }
+            return spellQueueEntry;
         }
 
         /// <summary>
@@ -396,15 +365,10 @@ namespace DOL.AI.Brain
         /// </summary>
         public void RemoveSpellFromQueue()
         {
-            lock (m_spellQueue)
-            {
-                if (m_spellQueue.Count > 0)
-                {
-                    DebugMessageToOwner(string.Format("Removing spell '{0}' from the start of the queue", m_spellQueue.Peek().Spell.Name));
+            m_spellQueue.TryDequeue(out SpellQueueEntry spellQueueEntry);
 
-                    m_spellQueue.Dequeue();
-                }
-            }
+            if (spellQueueEntry != null)
+                DebugMessageToOwner(string.Format("Removing spell '{0}' from the start of the queue", spellQueueEntry.Spell.Name));
         }
 
         /// <summary>
@@ -412,15 +376,10 @@ namespace DOL.AI.Brain
         /// </summary>
         public void RemoveSpellFromAttackQueue()
         {
-            lock (m_attackSpellQueue)
-            {
-                if (m_attackSpellQueue.Count > 0)
-                {
-                    DebugMessageToOwner(string.Format("Removing spell '{0}' from the start of the queue", m_attackSpellQueue.Peek().Spell.Name));
+            m_attackSpellQueue.TryDequeue(out SpellQueueEntry spellQueueEntry);
 
-                    m_attackSpellQueue.Dequeue();
-                }
-            }
+            if (spellQueueEntry != null)
+                DebugMessageToOwner(string.Format("Removing spell '{0}' from the start of the queue", spellQueueEntry.Spell.Name));
         }
 
         /// <summary>
@@ -432,17 +391,16 @@ namespace DOL.AI.Brain
         /// <param name="target">The target to cast the spell on.</param>
         private void AddToSpellQueue(Spell spell, SpellLine spellLine, GameLiving target)
         {
-            lock (m_spellQueue)
-            {
-                if (m_spellQueue.Count >= 2)
-                    MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                        "AI.Brain.Necromancer.SpellNoLongerInQueue", 
-                        m_spellQueue.Dequeue().Spell.Name, Body.Name), 
-                        eChatType.CT_Spell, Owner as GamePlayer);
+            SpellQueueEntry spellQueueEntry = null;
 
-                DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
-                m_spellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
-            }
+            while (m_spellQueue.Count >= 2)
+                m_spellQueue.TryDequeue(out spellQueueEntry);
+
+            if (spellQueueEntry != null)
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+
+            DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
+            m_spellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
         }
 
         /// <summary>
@@ -454,32 +412,29 @@ namespace DOL.AI.Brain
         /// <param name="target">The target to cast the spell on.</param>
         private void AddToAttackSpellQueue(Spell spell, SpellLine spellLine, GameLiving target)
         {
-            lock (m_attackSpellQueue)
-            {
-                if (m_attackSpellQueue.Count >= 2)
-                    MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                        "AI.Brain.Necromancer.SpellNoLongerInQueue",
-                        m_attackSpellQueue.Dequeue().Spell.Name, Body.Name),
-                        eChatType.CT_Spell, Owner as GamePlayer);
+            SpellQueueEntry spellQueueEntry = null;
 
-                DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
-                m_attackSpellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
-            }
+            while (m_attackSpellQueue.Count >= 2)
+                m_attackSpellQueue.TryDequeue(out spellQueueEntry);
+
+            if (spellQueueEntry != null)
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+
+            DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
+            m_attackSpellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
         }
 
         #endregion
 
         #region Tether
 
-        private const int m_softTether = 750;    // TODO: Check on Pendragon
+        private const int m_softTether = 750; // TODO: Check on Pendragon
         private const int m_hardTether = 2000;
         private TetherTimer m_tetherTimer = null;
 
         private void CheckTether()
         {
-            // Check if pet is past hard tether range, if so, despawn it
-            // right away.
-
+            // Check if pet is past hard tether range, if so, despawn it right away.
             if (!Body.IsWithinRadius(Owner, m_hardTether))
             {
                 m_tetherTimer?.Stop();
@@ -488,7 +443,6 @@ namespace DOL.AI.Brain
             }
 
             // Check if pet is out of soft tether range.
-
             if (!Body.IsWithinRadius(Owner, m_softTether))
             {
                 if (m_tetherTimer == null)
@@ -566,8 +520,7 @@ namespace DOL.AI.Brain
 
         private void OutOfTetherCheck(int secondsRemaining)
         {
-            // Pet past its tether, update effect icon (remaining time) and send 
-            // warnings to owner at t = 10 seconds and t = 5 seconds.
+            // Pet past its tether, update effect icon (remaining time) and send warnings to owner at t = 10 seconds and t = 5 seconds.
             SetTetherTimer(secondsRemaining);
 
             if (secondsRemaining == 10)

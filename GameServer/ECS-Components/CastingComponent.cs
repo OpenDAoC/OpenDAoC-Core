@@ -211,7 +211,7 @@ namespace DOL.GS
                         else
                             SpellHandler = null;
 
-                        if (necroBrain.SpellsQueued)
+                        if (necroBrain.HasSpellsQueued())
                             necroBrain.CheckSpellQueue();
                     }
                     else

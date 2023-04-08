@@ -26,7 +26,7 @@ public class NecromancerPetState_DEFENSIVE : ControlledNPCState_DEFENSIVE
         NecromancerPetBrain brain = _brain as NecromancerPetBrain;
 
         // If spells are queued then handle them first.
-        if (brain.SpellsQueued)
+        if (brain.HasSpellsQueued())
             brain.CheckSpellQueue();
 
         base.Think();
@@ -45,7 +45,7 @@ public class NecromancerPetState_AGGRO : ControlledNPCState_AGGRO
         NecromancerPetBrain brain = _brain as NecromancerPetBrain;
 
         // If spells are queued then handle them first.
-        if (brain.SpellsQueued)
+        if (brain.HasSpellsQueued())
             brain.CheckSpellQueue();
 
         base.Think();
@@ -64,7 +64,7 @@ public class NecromancerPetState_PASSIVE : ControlledNPCState_PASSIVE
         NecromancerPetBrain brain = _brain as NecromancerPetBrain;
 
         // If spells are queued then handle them first.
-        if (brain.SpellsQueued)
+        if (brain.HasSpellsQueued())
             brain.CheckSpellQueue();
 
         base.Think();
