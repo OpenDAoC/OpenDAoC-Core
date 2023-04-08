@@ -222,9 +222,9 @@ namespace DOL.AI.Brain
 
             if (entry != null)
             {
-                if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
+                if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
                 {
-                    // If the spell can't be cast, remove it from the queue.
+                    // If the spell can be cast, remove it from the queue.
                     RemoveSpellFromQueue();
                 }
             }
@@ -253,9 +253,9 @@ namespace DOL.AI.Brain
 
                 if (entry != null)
                 {
-                    if (!CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
+                    if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
                     {
-                        // If the spell can't be cast, remove it from the queue.
+                        // If the spell can be cast, remove it from the queue.
                         RemoveSpellFromAttackQueue();
                     }
                 }
@@ -277,8 +277,10 @@ namespace DOL.AI.Brain
                     Body.attackComponent.StopAttack();
 
                 Body.TargetObject = spellTarget;
+                Body.CastSpell(spell, line, checkLos);
 
-                return !Body.CastSpell(spell, line, checkLos);
+                // Assume that the spell can always be casted, otherwise the same spell will be queued in the casting component if LoS checks are enabled.
+                return true;
             }
             else
             {

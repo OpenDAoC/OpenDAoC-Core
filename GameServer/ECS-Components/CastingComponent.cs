@@ -60,11 +60,8 @@ namespace DOL.GS
 
             SpellHandler?.Tick(time);
 
-            if (SpellHandler == null && QueuedSpellHandler == null)
-            {
-                _startCastSpellRequests.Clear();
+            if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.Count == 0)
                 EntityManagerId = EntityManager.Remove(EntityManager.EntityType.CastingComponent, EntityManagerId);
-            }
         }
 
         public bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
