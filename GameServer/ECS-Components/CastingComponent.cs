@@ -198,8 +198,6 @@ namespace DOL.GS
                 {
                     if (currentSpell.CastTime > 0)
                     {
-                        necroBrain.RemoveSpellFromQueue();
-
                         if (!Owner.attackComponent.AttackState)
                             necroBrain.CheckAttackSpellQueue();
 
@@ -213,11 +211,6 @@ namespace DOL.GS
 
                         if (necroBrain.HasSpellsQueued())
                             necroBrain.CheckSpellQueue();
-                    }
-                    else
-                    {
-                        if (necroPet.attackComponent.AttackState)
-                            necroBrain.RemoveSpellFromAttackQueue();
                     }
                 }
             }
