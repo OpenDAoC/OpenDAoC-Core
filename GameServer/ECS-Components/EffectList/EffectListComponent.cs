@@ -51,6 +51,12 @@ namespace DOL.GS
                     {
                         ISpellHandler newSpellHandler = newSpellEffect.SpellHandler;
                         Spell newSpell = newSpellHandler.Spell;
+
+                        // RAs use spells with an ID of 0. Differentiating them is tricky and requires some rewriting.
+                        // So for now let's prevent overwriting / coexistence altogether.
+                        if (newSpell.ID == 0)
+                            return false;
+
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
                         // Effects contains this effect already so refresh it
@@ -104,7 +110,7 @@ namespace DOL.GS
                             {
                                 for (int i = 0; i < existingEffects.Count; i++)
                                 {
-                                    // Better Effect so disable the current Effect
+                                    // Better Effect so disable the current Effect.
                                     if (newSpellEffect.SpellHandler.Spell.Value >
                                         existingEffects[i].SpellHandler.Spell.Value)
                                     {
@@ -119,7 +125,7 @@ namespace DOL.GS
                                     }
                                 }
                             }
-                            // Player doesn't have this buff yet
+                            // Player doesn't have this buff yet.
                             else if (!existingEffects.Where(e => e.SpellHandler.Spell.SpellType == newSpellEffect.SpellHandler.Spell.SpellType).Any())
                             {
                                 Effects[newSpellEffect.EffectType].Add(newSpellEffect);
@@ -141,7 +147,7 @@ namespace DOL.GS
                                 ISpellHandler existingSpellHandler = existingEffect.SpellHandler;
                                 Spell existingSpell = existingSpellHandler.Spell;
 
-                                // Check if existingEffect is overwritable by new effect
+                                // Check if existingEffect is overwritable by new effect.
                                 if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == eEffect.MovementSpeedDebuff)
                                 {
                                     foundIsOverwriteableEffect = true;
@@ -151,7 +157,7 @@ namespace DOL.GS
                                         // PBT should only replace itself.
                                         if (!newSpell.IsPulsing)
                                         {
-                                            // Self cast Bladeturns should never be overwritten
+                                            // Self cast Bladeturns should never be overwritten.
                                             if (existingSpell.Target.ToLower() != "self")
                                             {
                                                 EffectService.RequestCancelEffect(existingEffect);
