@@ -40,11 +40,11 @@ using ECS.Debug;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// This class is the baseclass for all Non Player Characters like
-    /// Monsters, Merchants, Guards, Steeds ...
-    /// </summary>
-    public class GameNPC : GameLiving, ITranslatableObject
+	/// <summary>
+	/// This class is the baseclass for all Non Player Characters like
+	/// Monsters, Merchants, Guards, Steeds ...
+	/// </summary>
+	public class GameNPC : GameLiving, ITranslatableObject
 	{
 		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -946,13 +946,7 @@ namespace DOL.GS
 		}
 
 		bool m_wasStealthed = false;
-		public bool WasStealthed
-        {
-			get
-            {
-				return m_wasStealthed;
-            }
-        }
+		public bool WasStealthed => m_wasStealthed;
 
 		protected int m_maxdistance;
 		/// <summary>
@@ -1099,10 +1093,10 @@ namespace DOL.GS
 		private GameObject m_cachedTarget;
 
 		public GameObject CachedTarget
-        {
-			get {  return m_cachedTarget; }
-			set {  m_cachedTarget = value; }
-        }
+		{
+			get => m_cachedTarget;
+			set => m_cachedTarget = value;
+		}
 
 		public void ResetHeading()
 		{
@@ -1491,9 +1485,8 @@ namespace DOL.GS
 		}
 
 		public bool IsNearSpawn()
-        {
+		{
 			return IsWithinRadius(SpawnPoint, CONST_WALKTOTOLERANCE);
-
 		}
 
 		/// <summary>
@@ -1640,7 +1633,7 @@ namespace DOL.GS
 				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange && attackComponent.attackAction != null)
 				{
 					//m_attackAction.Start(1);// schedule for next tick
-                    attackComponent.attackAction.StartTime = 1;
+					attackComponent.attackAction.StartTime = 1;
 				}
 			}
 			//sirru
@@ -2133,7 +2126,7 @@ namespace DOL.GS
 				MeleeDamageType = eDamageType.Slash;
 			}
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;
-            rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
+			rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
 
 			m_faction = FactionMgr.GetFactionByID(dbMob.FactionID);
 			LoadEquipmentTemplateFromDatabase(dbMob.EquipmentTemplateID);
@@ -2529,7 +2522,7 @@ namespace DOL.GS
 					if (this.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
 						this.SwitchWeapon(eActiveWeaponSlot.Distance);
 					else
-                    {
+					{
 						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
@@ -3878,27 +3871,27 @@ namespace DOL.GS
 		/// </summary>
 		public const int CHARMED_NOEXP_TIMEOUT = 60000;
 
-        public virtual void StopAttack()
-        {
-            attackComponent.StopAttack();
-        }
+		public virtual void StopAttack()
+		{
+			attackComponent.StopAttack();
+		}
 
-        /// <summary>
-        /// Starts a melee attack on a target
-        /// </summary>
-        /// <param name="target">The object to attack</param>
-        public virtual void StartAttack(GameObject target)
-        {
-            attackComponent.RequestStartAttack(target);
+		/// <summary>
+		/// Starts a melee attack on a target
+		/// </summary>
+		/// <param name="target">The object to attack</param>
+		public virtual void StartAttack(GameObject target)
+		{
+			attackComponent.RequestStartAttack(target);
 
-            if (CurrentFollowTarget != target)
-            {
-                StopFollowing();
-                Follow(target, m_followMinDist, m_followMaxDist);
-            }
+			if (CurrentFollowTarget != target)
+			{
+				StopFollowing();
+				Follow(target, m_followMinDist, m_followMaxDist);
+			}
 
-            FireAmbientSentence(eAmbientTrigger.fighting, target);
-        }
+			FireAmbientSentence(eAmbientTrigger.fighting, target);
+		}
 
 		private int scalingFactor = Properties.GAMENPC_SCALING;
 		private int orbsReward = 0;
@@ -3921,7 +3914,7 @@ namespace DOL.GS
 				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); //weaponskill buffs
   
 			return weaponskill;
-        }
+		}
 
 		public void SetLastMeleeAttackTick()
 		{
@@ -4242,8 +4235,8 @@ namespace DOL.GS
 		/// </summary>
 		public bool CanUseLefthandedWeapon
 		{
-			get { return m_leftHandSwingChance > 0; }
-            set { CanUseLefthandedWeapon =  value; }
+			get => m_leftHandSwingChance > 0;
+			set => CanUseLefthandedWeapon = value;
 		}
 
 		/// <summary>
@@ -4254,7 +4247,7 @@ namespace DOL.GS
 		{
 			// Tolakram: Order is important here.  First StopAttack, then switch weapon
 			StopFollowing();
-            attackComponent.StopAttack();
+			attackComponent.StopAttack();
 
 			InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 			InventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
@@ -4529,11 +4522,11 @@ namespace DOL.GS
 			base.OnAttackedByEnemy(ad);
 		}
 
-        /// <summary>
-        /// This method is called to drop loot after this mob dies
-        /// </summary>
-        /// <param name="killer">The killer</param>
-        public virtual void DropLoot(GameObject killer)
+		/// <summary>
+		/// This method is called to drop loot after this mob dies
+		/// </summary>
+		/// <param name="killer">The killer</param>
+		public virtual void DropLoot(GameObject killer)
 		{
 			// TODO: mobs drop "a small chest" sometimes
 			ArrayList droplist = new ArrayList();
@@ -4652,14 +4645,14 @@ namespace DOL.GS
 				GamePlayer playerAttacker = null;
 				BattleGroup activeBG = null;
 				if (killer is GamePlayer playerKiller &&
-				    playerKiller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+					playerKiller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
 					activeBG = playerKiller.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
 					//if a battlegroup killed the mob, filter out any non BG players
 					if (activeBG != null && gainer is GamePlayer p &&
-					    p.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						p.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
 						continue;
 					
 					if (gainer is GamePlayer)
@@ -4774,8 +4767,52 @@ namespace DOL.GS
 					}
 				}
 			}
-			
+
 			//DealDamage needs to be called after addxpgainer!
+		}
+
+		public override long LastAttackTickPvE
+		{
+			set
+			{
+				base.LastAttackTickPvE = value;
+
+				if (Brain is IControlledBrain controlledBrain)
+					controlledBrain.Owner.LastAttackTickPvE = value;
+			}
+		}
+
+		public override long LastAttackTickPvP
+		{
+			set
+			{
+				base.LastAttackTickPvP = value;
+
+				if (Brain is IControlledBrain controlledBrain)
+					controlledBrain.Owner.LastAttackTickPvP = value;
+			}
+		}
+
+		public override long LastAttackedByEnemyTickPvE
+		{
+			set
+			{
+				base.LastAttackedByEnemyTickPvE = value;
+
+				if (Brain is IControlledBrain controlledBrain)
+					controlledBrain.Owner.LastAttackedByEnemyTickPvE = value;
+			}
+		}
+
+		public override long LastAttackedByEnemyTickPvP
+		{
+			set
+			{
+				base.LastAttackedByEnemyTickPvP = value;
+
+				if (Brain is IControlledBrain controlledBrain)
+					controlledBrain.Owner.LastAttackedByEnemyTickPvP = value;
+			}
 		}
 
 		#endregion
@@ -5005,7 +5042,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Cast a spell with LOS check to a player
 		/// </summary>
- 		/// <returns>Whether the spellcast started successfully</returns>
+		/// <returns>Whether the spellcast started successfully</returns>
 		public override bool CastSpell(Spell spell, SpellLine line)
 		{
 			// Good opportunity to clean up our 'm_spellTargetLosChecks'.
@@ -5541,10 +5578,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsFriend(GameNPC npc)
 		{
-            if (Faction == null || npc.Faction == null)
-                return false;
-            return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
-        }
+			if (Faction == null || npc.Faction == null)
+				return false;
+			return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
+		}
 
 		/// <summary>
 		/// Broadcast loot to the raid.
@@ -5572,7 +5609,6 @@ namespace DOL.GS
 			}
 		}
 
-
 		/// <summary>
 		/// Gender of this NPC.
 		/// </summary>
@@ -5582,7 +5618,6 @@ namespace DOL.GS
 		{
 			return Copy(null);
 		}
-
 
 		/// <summary>
 		/// Create a copy of the GameNPC
@@ -5782,8 +5817,8 @@ namespace DOL.GS
 			}
 		}
 
-        public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
-        
-        public int OrbsReward { get => orbsReward; set => orbsReward = value; }
-    }
+		public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+		
+		public int OrbsReward { get => orbsReward; set => orbsReward = value; }
+	}
 }

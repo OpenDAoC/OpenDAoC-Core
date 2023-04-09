@@ -373,7 +373,6 @@ namespace DOL.GS
 		{
 		}
 
-
 		/// <summary>
 		/// last attack tick in either pve or pvp
 		/// </summary>
@@ -396,18 +395,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual long LastAttackTickPvE
 		{
-			get { return m_lastAttackTickPvE; }
-			set
-			{
-				m_lastAttackTickPvE = value;
-				if (this is GameNPC)
-				{
-					if ((this as GameNPC).Brain is IControlledBrain)
-					{
-						((this as GameNPC).Brain as IControlledBrain).Owner.LastAttackTickPvE = value;
-					}
-				}
-			}
+			get => m_lastAttackTickPvE;
+			set => m_lastAttackTickPvE = value;
 		}
 
 		/// <summary>
@@ -419,18 +408,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual long LastAttackTickPvP
 		{
-			get { return m_lastAttackTickPvP; }
-			set
-			{
-				m_lastAttackTickPvP = value;
-				if (this is GameNPC)
-				{
-					if ((this as GameNPC).Brain is IControlledBrain)
-					{
-						((this as GameNPC).Brain as IControlledBrain).Owner.LastAttackTickPvP = value;
-					}
-				}
-			}
+			get => m_lastAttackTickPvP;
+			set => m_lastAttackTickPvP = value;
 		}
 
 		/// <summary>
@@ -481,18 +460,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual long LastAttackedByEnemyTickPvE
 		{
-			get { return m_lastAttackedByEnemyTickPvE; }
-			set
-			{
-				m_lastAttackedByEnemyTickPvE = value;
-				if (this is GameNPC)
-				{
-					if ((this as GameNPC).Brain is IControlledBrain)
-					{
-						((this as GameNPC).Brain as IControlledBrain).Owner.LastAttackedByEnemyTickPvE = value;
-					}
-				}
-			}
+			get => m_lastAttackedByEnemyTickPvE;
+			set => m_lastAttackedByEnemyTickPvE = value;
 		}
 
 		/// <summary>
@@ -504,18 +473,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual long LastAttackedByEnemyTickPvP
 		{
-			get { return m_lastAttackedByEnemyTickPvP; }
-			set
-			{
-				m_lastAttackedByEnemyTickPvP = value;
-				if (this is GameNPC)
-				{
-					if ((this as GameNPC).Brain is IControlledBrain)
-					{
-						((this as GameNPC).Brain as IControlledBrain).Owner.LastAttackedByEnemyTickPvP = value;
-					}
-				}
-			}
+			get => m_lastAttackedByEnemyTickPvP;
+			set => m_lastAttackedByEnemyTickPvP = value;
 		}
 
 		/// <summary>
