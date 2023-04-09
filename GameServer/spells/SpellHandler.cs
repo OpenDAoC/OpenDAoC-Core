@@ -3539,45 +3539,20 @@ namespace DOL.GS.Spells
 		/// <returns>chance that the spell lands on target</returns>
 		public virtual int CalculateToHitChance(GameLiving target)
 		{
-			int spellLevel = Spell.Level;
+			int spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
 
-			GameLiving caster = null;
-			if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledNpcBrain)
-			{
-				caster = ((ControlledNpcBrain)((GameNPC)m_caster).Brain).Owner;
-			}
-			else
-			{
-				caster = m_caster;
-			}
-
-			int spellbonus = caster.GetModified(eProperty.SpellLevel);
-			spellLevel += spellbonus;
-
-			GamePlayer playerCaster = caster as GamePlayer;
-
-			if (playerCaster != null)
+			if (m_caster is GamePlayer playerCaster)
 			{
 				if (spellLevel > playerCaster.MaxLevel)
-				{
 					spellLevel = playerCaster.MaxLevel;
+
+				if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+				{
+					AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
+					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
 				}
 			}
 
-			if (playerCaster != null && (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith)))
-			{
-				AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
-				spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
-			}
-			//Console.WriteLine($"Spell level {spellLevel}");
-
-			int bonustohit = m_caster.GetModified(eProperty.ToHitBonus);
-
-			//Piercing Magic affects to-hit bonus too
-			/*GameSpellEffect resPierce = SpellHandler.FindEffectOnTarget(m_caster, "PenetrateResists");
-			if (resPierce != null)
-				bonustohit += (int)resPierce.Spell.Value;
-			*/
 			/*
 			http://www.camelotherald.com/news/news_article.php?storyid=704
 
@@ -3596,41 +3571,40 @@ namespace DOL.GS.Spells
 			- Tolakram
 			 */
 
-			int hitchance = 88 + ((spellLevel - target.Level) / 2) + bonustohit;
+			int hitChance = m_caster.GetModified(eProperty.ToHitBonus);
 
-			if (!(caster is GamePlayer && target is GamePlayer))
+			if (m_caster is GameNPC)
+				hitChance += (int)(87.5 - (target.Level - m_caster.Level));
+			else
 			{
-				double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
-				hitchance -= (int)(mobScalar * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
-				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				if (target is GameNPC)
+				{
+					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
+					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
+					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				}
+				else
+					hitChance += 88 + (spellLevel - target.Level) / 2;
 			}
 
-			if (Caster is GameNPC)
-            {
-				hitchance = (int)(87.5 - (target.Level - Caster.Level));
-            }
-			
 			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
 			{
-				var ecsSpell = m_caster.effectListComponent.GetSpellEffects()
-					.FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
-				
-				if (ecsSpell != null)
-					hitchance += (int)ecsSpell.SpellHandler.Spell.Value;
-			}
+				ECSGameEffect effect = m_caster.effectListComponent.GetSpellEffects().FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
 
-			//check for active RAs
-			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
-			{
-				var effect = Caster.effectListComponent
-					.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
 				if (effect != null)
-				{
-					hitchance += (int)effect.Effectiveness * 5;
-				}
+					hitChance += (int)effect.SpellHandler.Spell.Value;
 			}
 
-			return hitchance;
+			// Check for active RAs.
+			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
+			{
+				ECSGameEffect effect = m_caster.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+
+				if (effect != null)
+					hitChance += (int)effect.Effectiveness * 5;
+			}
+
+			return hitChance;
 		}
 
 		/// <summary>
