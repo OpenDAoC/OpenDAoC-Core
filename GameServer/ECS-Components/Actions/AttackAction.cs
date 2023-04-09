@@ -364,7 +364,7 @@ namespace DOL.GS
                     _interval = Math.Max(1500, _interval /= 2);
                 }
                 if (EffectListService.GetAbilityEffectOnTarget(_owner, eEffect.TrueShot) != null)
-                    _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;                            
+                    _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
 
             Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>

@@ -158,6 +158,10 @@ namespace DOL.GS
         public override void CleanUp()
         {
             _petLosCheckInterval = 0;
+
+            if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
+                necromancerPetBrain.ClearAttackSpellQueue();
+
             base.CleanUp();
         }
 
