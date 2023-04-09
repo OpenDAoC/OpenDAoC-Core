@@ -7,12 +7,12 @@ namespace DOL.GS
     {
         public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler spellHandler = null)
         {
-            
             Target = target;
             Duration = duration;
             Effectiveness = effectiveness;
             SpellHandler = spellHandler;
         }
+
         public GameLiving Target { get; set; }
         public int Duration { get; set; }
         public double Effectiveness { get; set; }

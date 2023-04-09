@@ -1,5 +1,3 @@
-
-
 namespace DOL.GS
 {
     /// <summary>
