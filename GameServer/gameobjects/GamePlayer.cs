@@ -7645,28 +7645,25 @@ namespace DOL.GS
                 return;
 
             base.DisableSkill(skill, duration);
-			
-            var disables = new List<Tuple<Skill, int>>();
+            List<Tuple<Skill, int>> disables = new();
             disables.Add(new Tuple<Skill, int>(skill, duration));
-
             Out.SendDisableSkill(disables);
         }
-		
+
         /// <summary>
         /// Grey out collection of skills on client for specified duration
         /// </summary>
         /// <param name="skill">the skill to disable</param>
         /// <param name="duration">duration of disable in milliseconds</param>
-        public override void DisableSkill(ICollection<Tuple<Skill, int>> skills)
+        public override void DisableSkills(ICollection<Tuple<Skill, int>> skills)
         {
             if (this.Client.Account.PrivLevel > 1)
                 return;
 
-            base.DisableSkill(skills);
-			
+            base.DisableSkills(skills);
             Out.SendDisableSkill(skills);
         }
-		
+
         /// <summary>
         /// The next spell
         /// </summary>

@@ -30,10 +30,10 @@ using log4net;
 
 namespace DOL.GS
 {
-    /// <summary>
-    ///
-    /// </summary>
-    public class SkillBase
+	/// <summary>
+	///
+	/// </summary>
+	public class SkillBase
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -650,7 +650,7 @@ namespace DOL.GS
 									m_specsStyles[spec.KeyName].Add(specStyle.ClassId, new List<Tuple<Style, byte>>());
 								}
 								
-								Style newStyle = new(specStyle);
+								Style newStyle = new(specStyle, null);
 								
 								m_specsStyles[spec.KeyName][specStyle.ClassId].Add(new Tuple<Style, byte>(newStyle, (byte)specStyle.SpecLevelRequirement));
 								
@@ -2199,7 +2199,7 @@ namespace DOL.GS
 				if (!m_specsStyles[spec.KeyName].ContainsKey(style.ClassId))
 					m_specsStyles[spec.KeyName].Add(style.ClassId, new List<Tuple<Style, byte>>());
 			
-				Style st = new(style);
+				Style st = new(style, null);
 				
 				m_specsStyles[spec.KeyName][style.ClassId].Add(new Tuple<Style, byte>(st, (byte)style.SpecLevelRequirement));
 	

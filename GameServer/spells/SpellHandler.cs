@@ -34,11 +34,11 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    /// <summary>
-    /// Default class for spell handler
-    /// should be used as a base class for spell handler
-    /// </summary>
-    public class SpellHandler : ISpellHandler
+	/// <summary>
+	/// Default class for spell handler
+	/// should be used as a base class for spell handler
+	/// </summary>
+	public class SpellHandler : ISpellHandler
 	{
 		// Maximum number of sub-spells to get delve info for.
 		protected const byte MAX_DELVE_RECURSION = 5;
@@ -1685,7 +1685,7 @@ namespace DOL.GS.Spells
 							    ( ((Spell)sp).ID == m_spell.ID || ( ((Spell)sp).SharedTimerGroup != 0 && ( ((Spell)sp).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
 							toDisable.Add(new Tuple<Skill, int>((Spell)sp, m_spell.RecastDelay));
 					
-					m_caster.DisableSkill(toDisable);
+					m_caster.DisableSkills(toDisable);
 				}
 				else if (m_caster is GameNPC)
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);

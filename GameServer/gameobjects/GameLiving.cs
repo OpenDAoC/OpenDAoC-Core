@@ -39,11 +39,11 @@ using static DOL.GS.AttackData;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// This class holds all information that each
-    /// living object in the world uses
-    /// </summary>
-    public abstract class GameLiving : GameObject
+	/// <summary>
+	/// This class holds all information that each
+	/// living object in the world uses
+	/// </summary>
+	public abstract class GameLiving : GameObject
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -6701,24 +6701,21 @@ namespace DOL.GS
 		{
 			lock ((m_disabledSkills as ICollection).SyncRoot)
 			{
-				KeyValuePair<int, Type> key = new KeyValuePair<int, Type>(skill.ID, skill.GetType());
+				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+
 				if (duration > 0)
-				{
 					m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
-				}
 				else
-				{
 					m_disabledSkills.Remove(key);
-				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Grey out collection of skills on client for specified duration
 		/// </summary>
 		/// <param name="skill">the skill to disable</param>
 		/// <param name="duration">duration of disable in milliseconds</param>
-		public virtual void DisableSkill(ICollection<Tuple<Skill, int>> skills)
+		public virtual void DisableSkills(ICollection<Tuple<Skill, int>> skills)
 		{
 			lock ((m_disabledSkills as ICollection).SyncRoot)
 			{
@@ -6727,19 +6724,15 @@ namespace DOL.GS
 					Skill skill = tuple.Item1;
 					int duration = tuple.Item2;
 					
-					KeyValuePair<int, Type> key = new KeyValuePair<int, Type>(skill.ID, skill.GetType());
+					KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+
 					if (duration > 0)
-					{
 						m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
-					}
 					else
-					{
 						m_disabledSkills.Remove(key);
-					}
 				}
 			}
 		}
-		
 
 		/// <summary>
 		/// Removes Greyed out skills

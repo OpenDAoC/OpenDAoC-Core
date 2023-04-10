@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
@@ -184,7 +183,7 @@ namespace DOL.GS.RealmAbilities
 			}
 		}
 
-		public void DisableSkill(GameLiving living)
+		public virtual void DisableSkill(GameLiving living)
 		{
 			living.DisableSkill(this, GetReUseDelay(Level) * 1000);
 		}
@@ -392,24 +391,28 @@ namespace DOL.GS.RealmAbilities
 		
 		public override int GetReUseDelay(int level) { return 600; } // 10 mins
 
-		protected abstract Style CreateStyle();
+		public override void DisableSkill(GameLiving living)
+		{
+			StyleComponent styleComponent = living.styleComponent;
+
+			// Remove RA styles from the backup slot so that it doesn't fire twice.
+			if (styleComponent.NextCombatBackupStyle == StyleToUse)
+				styleComponent.NextCombatBackupStyle = null;
+
+			base.DisableSkill(living);
+		}
 
 		public override void Execute(GameLiving living)
 		{
-			if (StyleToUse != null)
-			{
-				StyleProcessor.TryToUseStyle(living, StyleToUse);
-				AttackData lastAD = living.TempProperties.getProperty<AttackData>("LastAttackData", null);
-				if(lastAD != null && lastAD.IsHit) DisableSkill(living);
-			}
+			StyleProcessor.TryToUseStyle(living, StyleToUse);
 			base.Execute(living);
 		}
-	}
 
+		protected abstract Style CreateStyle();
+	}
 
 	public class L5RealmAbility : RealmAbility
 	{
-
 		public L5RealmAbility(DBAbility ability, int level) : base(ability, level) { }
 
 		public override int CostForUpgrade(int level)
