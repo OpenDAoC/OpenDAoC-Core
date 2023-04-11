@@ -82,14 +82,14 @@ namespace DOL.GS
                     break;
                 case (int)eObjectType.Crossbow:
                     m_ammo = GetAmmoFromInventory(eObjectType.Bolt);
-                    m_isAmmoCompatible = m_ammo.Object_Type == (int)eObjectType.Bolt;
+                    m_isAmmoCompatible = m_ammo?.Object_Type == (int)eObjectType.Bolt;
                     break;
                 case (int)eObjectType.Longbow:
                 case (int)eObjectType.CompositeBow:
                 case (int)eObjectType.RecurvedBow:
                 case (int)eObjectType.Fired:
                     m_ammo = GetAmmoFromInventory(eObjectType.Arrow);
-                    m_isAmmoCompatible = m_ammo.Object_Type == (int)eObjectType.Arrow;
+                    m_isAmmoCompatible = m_ammo?.Object_Type == (int)eObjectType.Arrow;
                     break;
             }
 
