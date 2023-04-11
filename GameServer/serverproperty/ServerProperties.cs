@@ -2473,7 +2473,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Should we allow archers to be able to use arrows from their quiver?
 		/// </summary>
-		[ServerProperty("classes", "allow_old_archery", "Should we allow archers to be able to use arrows from their quiver?", false)]
+		[ServerProperty("classes", "allow_old_archery", "Should we allow archers to be able to use arrows from their quiver?", true)]
 		public static bool ALLOW_OLD_ARCHERY;
 
 		/// <summary>

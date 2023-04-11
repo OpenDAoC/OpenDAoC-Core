@@ -2,9 +2,9 @@
 using System.Linq;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
-using DOL.GS.PacketHandler;
 using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
