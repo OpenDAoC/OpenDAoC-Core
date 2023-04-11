@@ -17,6 +17,34 @@ namespace DOL.GS.RealmAbilities
 
         private GamePlayer _player;
 
+        public static int GetMinAttackRange(eRealm realm)
+        {
+            double minAttackRange = 2000;
+
+            if (realm == eRealm.Albion)
+                minAttackRange = 2200;
+            if (realm == eRealm.Hibernia)
+                minAttackRange = 2100;
+            if (realm == eRealm.Midgard)
+                minAttackRange = 2000;
+
+            return (int) (minAttackRange * 0.66);
+        }
+
+        public static int GetMaxAttackRange(eRealm realm)
+        {
+            double maxAttackRange = 4000;
+
+            if (realm == eRealm.Albion)
+                maxAttackRange = 4400;
+            if (realm == eRealm.Hibernia)
+                maxAttackRange = 4300;
+            if (realm == eRealm.Midgard)
+                maxAttackRange = 4200;
+
+            return (int) maxAttackRange;
+        }
+
         public override int CostForUpgrade(int level)
         {
             return 8;
@@ -38,25 +66,6 @@ namespace DOL.GS.RealmAbilities
 
             if (_player == null)
                 return;
-
-            double MinAttackRange = 2000 * 0.66;
-            double MaxAttackRange = 4000;
-
-            if (_player.Realm == eRealm.Albion)
-            {
-                MinAttackRange = 2200 * 0.66;
-                MaxAttackRange = 4400;
-            }
-            else if (_player.Realm == eRealm.Hibernia)
-            {
-                MinAttackRange = 2100 * 0.66;
-                MaxAttackRange = 4300;
-            }
-            else if (_player.Realm == eRealm.Midgard)
-            {
-                MinAttackRange = 2000 * 0.66;
-                MaxAttackRange = 4200;
-            }
 
             if (CheckPreconditions(_player, DEAD | SITTING | MEZZED | STUNNED))
                 return;
@@ -87,13 +96,13 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            if (_player.IsWithinRadius(_player.GroundTarget, (int) MinAttackRange))
+            if (_player.IsWithinRadius(_player.GroundTarget, GetMinAttackRange(_player.Realm)))
             {
                 _player.Out.SendMessage("You ground target is too close to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            if (!_player.IsWithinRadius(_player.GroundTarget, (int) MaxAttackRange))
+            if (!_player.IsWithinRadius(_player.GroundTarget, GetMaxAttackRange(_player.Realm)))
             {
                 _player.Out.SendMessage("You ground target is too far away to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -110,9 +119,7 @@ namespace DOL.GS.RealmAbilities
             AtlasOF_VolleyECSEffect Volley = (AtlasOF_VolleyECSEffect)_player.EffectList.GetOfType(typeof(AtlasOF_VolleyECSEffect));
 
             if (Volley != null)
-            {
                return;
-            }
 
             TrueshotEffect trueShot = (TrueshotEffect)_player.EffectList.GetOfType(typeof(TrueshotEffect));
 

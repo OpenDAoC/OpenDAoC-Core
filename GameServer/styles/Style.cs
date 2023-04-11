@@ -28,7 +28,7 @@ namespace DOL.GS.Styles
     /// </summary>
     public class Style : Skill
     {
-        public delegate void StyleExecutedCallBack(GameLiving living);
+        public delegate void StyleExecutedCallback(GameLiving living);
 
         /// <summary>
         /// The opening type of a style
@@ -132,7 +132,7 @@ namespace DOL.GS.Styles
         /// Constructs a new Style object based on a database Style object
         /// </summary>
         /// <param name="style">The database style object this object is based on</param>
-        public Style(DBStyle style, StyleExecutedCallBack callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
+        public Style(DBStyle style, StyleExecutedCallback callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
         {
             baseStyle = style;
             OnStyleExecuted = callback;
@@ -234,7 +234,7 @@ namespace DOL.GS.Styles
 
         public eArmorSlot ArmorHitLocation => (eArmorSlot) baseStyle.ArmorHitLocation;
 
-        public StyleExecutedCallBack OnStyleExecuted { get; private set; }
+        public StyleExecutedCallback OnStyleExecuted { get; private set; }
 
         /// <summary>
         /// Gets name of required weapon type

@@ -25,6 +25,7 @@ namespace DOL.GS
         public eRangedAttackType RangedAttackType => m_RangedAttackType;
 
         public bool AttackFinished { get; set; }
+        public eActiveWeaponSlot ActiveWeaponSlot { get; private set; }
 
         public WeaponAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, InventoryItem leftWeapon, double effectiveness, int interruptDuration, Style combatStyle)
         {
@@ -35,7 +36,18 @@ namespace DOL.GS
             m_effectiveness = effectiveness;
             m_interruptDuration = interruptDuration;
             m_combatStyle = combatStyle;
-            m_RangedAttackType = owner.rangeAttackComponent.RangedAttackType;
+            ActiveWeaponSlot = owner.ActiveWeaponSlot;
+        }
+
+        public WeaponAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, double effectiveness, int interruptDuration, eRangedAttackType rangedAttackType)
+        {
+            m_owner = owner;
+            m_target = target;
+            m_attackWeapon = attackWeapon;
+            m_effectiveness = effectiveness;
+            m_interruptDuration = interruptDuration;
+            m_RangedAttackType = rangedAttackType;
+            ActiveWeaponSlot = owner.ActiveWeaponSlot;
         }
 
         public void Execute()

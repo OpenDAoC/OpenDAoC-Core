@@ -16,9 +16,11 @@ namespace DOL.GS
         }
 
         internal const string RANGED_ATTACK_START = "RangedAttackStart";
-        public const int RANGE_ATTACK_ENDURANCE = 5;
-        public const int CRITICAL_SHOT_ENDURANCE = 10;
+        public const int DEFAULT_ENDURANCE_COST = 5;
+        public const int CRITICAL_SHOT_ENDURANCE_COST = 10;
+        public const int VOLLEY_ENDURANCE_COST = 15;
         public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
+        public const int MAX_DRAW_DURATION = 15000;
         protected eRangedAttackState m_rangedAttackState;
         protected eRangedAttackType m_rangedAttackType;
         protected eActiveQuiverSlot m_activeQuiverSlot;
@@ -131,7 +133,7 @@ namespace DOL.GS
                     playerOwner.TempProperties.setProperty(RANGED_ATTACK_START, attackStart);
                 }
 
-                if ((GameLoop.GameLoopTime - attackStart) > 15000 && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop;
@@ -234,11 +236,13 @@ namespace DOL.GS
                 m_owner.Inventory.RemoveCountFromStack(m_ammo, 1);
 
             if (RangedAttackType == eRangedAttackType.Critical)
-                m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE;
+                m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE_COST;
             else if (RangedAttackType == eRangedAttackType.RapidFire && m_owner.GetAbilityLevel(Abilities.RapidFire) == 2)
-                m_owner.Endurance -= (int)Math.Ceiling(RANGE_ATTACK_ENDURANCE / 2.0);
+                m_owner.Endurance -= (int)Math.Ceiling(DEFAULT_ENDURANCE_COST / 2.0);
+            else if (RangedAttackType == eRangedAttackType.Volley)
+                m_owner.Endurance -= VOLLEY_ENDURANCE_COST;
             else
-                m_owner.Endurance -= RANGE_ATTACK_ENDURANCE;
+                m_owner.Endurance -= DEFAULT_ENDURANCE_COST;
         }
     }
 }

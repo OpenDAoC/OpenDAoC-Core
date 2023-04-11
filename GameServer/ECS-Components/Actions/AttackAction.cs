@@ -83,7 +83,7 @@ namespace DOL.GS
             }
             else
             {
-                // Must be done here because RangeAttackTarget is changed in CheckRangeAttackState.
+                // Must be done here because 'RangeAttackTarget' is changed in 'CheckRangeAttackState'.
                 _target = _owner.rangeAttackComponent.Target;
 
                 if (PrepareRangedAttack())
@@ -218,7 +218,7 @@ namespace DOL.GS
                 // 1 means roughly 350ms (the lowest time possible), then each increment adds about 75ms (needs testing).
                 // Using ticksToTarget, we can make the arrow take more time to reach its target the farther it is.
                 player.Out.SendCombatAnimation(_owner, _target, (ushort)model, 0x00, player.Out.BowShoot, flightDuration, 0x00, ((GameLiving)_target).HealthPercent);
-            });            
+            });
 
             switch (_owner.rangeAttackComponent.RangedAttackType)
             {
@@ -287,18 +287,14 @@ namespace DOL.GS
         protected virtual void PerformMeleeAttack()
         {
             _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _interruptDuration, _combatStyle);
-
             _attackComponent.weaponAction.Execute();
-
             _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
         }
 
         protected virtual void PerformRangedAttack()
         {
-            _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, null, _effectiveness, _interruptDuration, null);
+            _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _interruptDuration, _owner.rangeAttackComponent.RangedAttackType);
 
-            // Order is important. 'WeaponAction()' creates a snapshot of 'RangedAttackType' that will be used for damage calculation.
-            // We then reset it for the next interval calculation.
             if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 

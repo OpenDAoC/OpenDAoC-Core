@@ -89,7 +89,7 @@ namespace DOL.GS
 
             if (_playerOwner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
                 stopAttack = true;
-            else if (_playerOwner.Endurance < RangeAttackComponent.RANGE_ATTACK_ENDURANCE)
+            else if (_playerOwner.Endurance < RangeAttackComponent.DEFAULT_ENDURANCE_COST)
             {
                 stopAttack = true;
                 _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.TiredUse", _weapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
