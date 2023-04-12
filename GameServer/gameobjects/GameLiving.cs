@@ -1761,7 +1761,9 @@ namespace DOL.GS
 			if (!interrupt)
 				return;
 
-			InterruptTime = GameLoop.GameLoopTime + duration;
+			// Dont't replace the current interrut with a shorter one.
+			// Otherwise a slow melee hit's interrupt duration will be made shorter by a proc for example.
+			InterruptTime = Math.Max(InterruptTime, GameLoop.GameLoopTime + duration);
 
 			if (castingComponent?.SpellHandler != null)
 				castingComponent.SpellHandler.CasterIsAttacked(attacker);
