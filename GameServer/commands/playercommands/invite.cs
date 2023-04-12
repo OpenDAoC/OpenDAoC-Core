@@ -111,13 +111,6 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP &&
-				target.IsStealthed)
-			{
-				client.Out.SendMessage("You can't find the player around here.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
 			if (client.Account.PrivLevel > target.Client.Account.PrivLevel)
 			{
 				// you have no choice!
