@@ -3577,14 +3577,14 @@ namespace DOL.GS.Spells
 				hitChance += (int)(87.5 - (target.Level - m_caster.Level));
 			else
 			{
+				hitChance += 88 + (spellLevel - target.Level) / 2;
+
 				if (target is GameNPC)
 				{
 					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
 					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
 					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 				}
-				else
-					hitChance += 88 + (spellLevel - target.Level) / 2;
 			}
 
 			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
