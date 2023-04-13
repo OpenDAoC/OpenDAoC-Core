@@ -800,12 +800,6 @@ namespace DOL.GS.ServerProperties
 		public static string ALLOW_PERSONNAL_MOUNT_IN_REGIONS;
 
 		/// <summary>
-		/// Immunity Timer length when a player logs into game or zones into a new region, in seconds
-		/// </summary>
-		[ServerProperty("world", "timer_player_init", "Immunity Timer length when a player logs into game or zones into a new region, in seconds", 15)]
-		public static int TIMER_PLAYER_INIT;
-
-		/// <summary>
 		/// Display the zonepoint with a choosen model
 		/// </summary>
 		[ServerProperty("world", "zonepoint_npctemplate", "Display the zonepoint with the following npctemplate. 0 for no display", 0)]

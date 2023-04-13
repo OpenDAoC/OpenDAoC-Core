@@ -14284,17 +14284,19 @@ namespace DOL.GS
 
             if (duration < 1)
             {
-                //throw new ArgumentOutOfRangeException("duration", duration, "Immunity duration cannot be less than 1ms"); This causes problems down the road, just log it instead.
                 if (log.IsWarnEnabled)
                     log.Warn("GamePlayer.StartInvulnerabilityTimer(): Immunity duration cannot be less than 1ms");
+
                 return false;
             }
 
             long newTick = CurrentRegion.Time + duration;
+
             if (newTick < m_invulnerabilityTick)
                 return false;
 
             m_invulnerabilityTick = newTick;
+
             if (m_invulnerabilityTimer != null)
                 m_invulnerabilityTimer.Stop();
 
@@ -14304,9 +14306,7 @@ namespace DOL.GS
                 m_invulnerabilityTimer.Start(duration);
             }
             else
-            {
                 m_invulnerabilityTimer = null;
-            }
 
             return true;
         }
