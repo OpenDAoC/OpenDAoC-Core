@@ -1406,18 +1406,6 @@ namespace DOL.GS.ServerProperties
 		public static bool PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC;
 
 		/// <summary>
-		/// What level to start increasing mob damage
-		/// </summary>
-		[ServerProperty("npc", "mob_damage_increase_startlevel", "What level to start increasing mob damage.", 30)]
-		public static int MOB_DAMAGE_INCREASE_STARTLEVEL;
-
-		/// <summary>
-		/// How much damage to increase per level
-		/// </summary>
-		[ServerProperty("npc", "mob_damage_increase_perlevel", "How much damage to increase per level", 0.0)]
-		public static double MOB_DAMAGE_INCREASE_PERLEVEL;
-
-		/// <summary>
 		/// Minimum respawn time for npc's without a set respawninterval
 		/// </summary>
 		[ServerProperty("npc", "npc_min_respawn_interval", "Minimum respawn time, in minutes, for npc's without a set respawninterval", 5)]

@@ -1318,16 +1318,6 @@ namespace DOL.GS
             if (ad.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
             {
                 double damage = AttackDamage(weapon) * effectiveness;
-
-                if (owner.Level > Properties.MOB_DAMAGE_INCREASE_STARTLEVEL &&
-                    Properties.MOB_DAMAGE_INCREASE_PERLEVEL > 0 &&
-                    damage > 0 &&
-                    owner is GameNPC && (owner as GameNPC).Brain is IControlledBrain == false)
-                {
-                    double modifiedDamage = Properties.MOB_DAMAGE_INCREASE_PERLEVEL * (owner.Level - Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
-                    damage += modifiedDamage * effectiveness;
-                }
-
                 InventoryItem armor = null;
 
                 if (ad.Target.Inventory != null)
@@ -1341,26 +1331,17 @@ namespace DOL.GS
                     weaponTypeToUse.Object_Type = weapon.Object_Type;
                     weaponTypeToUse.SlotPosition = weapon.SlotPosition;
 
-                    if ((owner is GamePlayer) && owner.Realm == eRealm.Albion
-                                              && (GameServer.ServerRules.IsObjectTypesEqual(
-                                                      (eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon)
-                                                  || GameServer.ServerRules.IsObjectTypesEqual(
-                                                      (eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon))
-                                              && ServerProperties.Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC)
+                    if (owner is GamePlayer && owner.Realm == eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
+                        (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
+                        GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
                     {
-                        // Albion dual spec penalty, which sets minimum damage to the base damage spec
+                        // Albion dual spec penalty, which sets minimum damage to the base damage spec.
                         if (weapon.Type_Damage == (int) eDamageType.Crush)
-                        {
                             weaponTypeToUse.Object_Type = (int) eObjectType.CrushingWeapon;
-                        }
                         else if (weapon.Type_Damage == (int) eDamageType.Slash)
-                        {
                             weaponTypeToUse.Object_Type = (int) eObjectType.SlashingWeapon;
-                        }
                         else
-                        {
                             weaponTypeToUse.Object_Type = (int) eObjectType.ThrustWeapon;
-                        }
                     }
                 }
 
