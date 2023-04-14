@@ -1927,7 +1927,7 @@ namespace DOL.GS
                     AFLevelScalar += 20 - target.Level;
 
                 double baseAF = target.Level * AFLevelScalar / 50.0;
-                armorMod = (baseAF + target.GetArmorAF(armorSlot)) * (1 + target.GetArmorAbsorb(armorSlot));
+                armorMod = (baseAF + target.GetArmorAF(armorSlot)) / (1 - target.GetArmorAbsorb(armorSlot));
             }
 
             if (armorMod <= 0)
