@@ -1534,14 +1534,9 @@ namespace DOL.GS
                 damage += resist;
                 damage += resistModifier;
                 ad.Modifier += resist;
-                
-                    
+
                 damage += ad.Modifier;
                 ad.Damage = (int) damage;
-
-                // apply total damage cap
-                //Console.WriteLine($"uncapped {ad.UncappedDamage} calcUncap {UnstyledDamageCap(weapon)} ");
-                ad.UncappedDamage = ad.Damage;
 
                 if (action?.RangedAttackType == eRangedAttackType.Critical)
                     ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));

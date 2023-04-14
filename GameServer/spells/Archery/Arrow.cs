@@ -290,9 +290,9 @@ namespace DOL.GS.Spells
 						}
 					}
 
-					if (ad.Damage < 0) ad.Damage = 0;
+					if (ad.Damage < 0)
+						ad.Damage = 0;
 
-					ad.UncappedDamage = ad.Damage;
 					ad.Damage = (int)Math.Min(ad.Damage, m_handler.DamageCap(effectiveness));
 
 					if (ad.CriticalDamage > 0)

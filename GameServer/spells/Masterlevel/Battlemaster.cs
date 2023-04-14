@@ -602,7 +602,6 @@ namespace DOL.GS.Spells
                 damage += resistModifier;
                 ad.Modifier += resist;
                 ad.Damage = (int)damage;
-                ad.UncappedDamage = ad.Damage;
                 ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0) ad.AttackResult = DOL.GS.eAttackResult.Missed;

@@ -36,7 +36,6 @@ namespace DOL.GS
 		private eArmorSlot m_hitArmorSlot = eArmorSlot.NOTSET;
 		private int m_damage = 0;
 		private int m_critdamage = 0;
-		private int m_uncappeddamage = 0;
 		private int m_styledamage = 0;
 		private int m_modifier = 0;
 		private eDamageType m_damageType = 0;
@@ -140,15 +139,6 @@ namespace DOL.GS
 		{
 			get { return m_damage; }
 			set { m_damage = value; }
-		}
-
-		/// <summary>
-		/// Sets or gets the uncapped damage
-		/// </summary>
-		public int UncappedDamage
-		{
-			get { return m_uncappeddamage; }
-			set { m_uncappeddamage = value; }
 		}
 
 		/// <summary>

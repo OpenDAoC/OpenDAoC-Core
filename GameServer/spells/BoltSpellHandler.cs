@@ -316,10 +316,7 @@ namespace DOL.GS.Spells
 				}
 
 				if (m_handler is SiegeArrow == false)
-				{
-					ad.UncappedDamage = ad.Damage;
 					ad.Damage = (int)Math.Min(ad.Damage, m_handler.DamageCap(effectiveness));
-				}
 
 				ad.Damage = (int)(ad.Damage * caster.Effectiveness);
 
