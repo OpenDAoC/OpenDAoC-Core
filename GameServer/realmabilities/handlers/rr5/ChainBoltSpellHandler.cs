@@ -16,12 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.GS.SkillHandler;
 
 namespace DOL.GS.Spells
 {
@@ -31,56 +25,54 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("ChainBolt")]
     public class ChainBoltSpellHandler : BoltSpellHandler
     {
-
         public ChainBoltSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
-        
-
-        protected GameLiving m_currentSource;
-        protected int m_maxTick;
-        protected int m_currentTick;
-        protected double m_effetiveness = 1.0;
-
+        protected GameLiving _currentSource;
+        protected int _maxTick;
+        protected int _currentTick;
+        protected double _effetiveness = 1.0;
 
         /// <summary>
         /// called when spell effect has to be started and applied to targets
         /// </summary>
         public override bool StartSpell(GameLiving target)
         {
-            if (target == null) return false;
+            if (target == null)
+                return false;
 
-            if (m_maxTick >= 0)
+            if (_maxTick >= 0)
             {
-                m_maxTick = (Spell.Pulse>1)?Spell.Pulse:1;
-                m_currentTick = 1;
-                m_currentSource = target;
+                _maxTick = (Spell.Pulse > 1) ? Spell.Pulse : 1;
+                _currentTick = 1;
+                _currentSource = target;
             }
 
-            int ticksToTarget = m_currentSource.GetDistanceTo(target) * 100 / 85; // 85 units per 1/10s
+            int ticksToTarget = _currentSource.GetDistanceTo(target) * 1000 / 850; // 850 units per second.
             int delay = 1 + ticksToTarget / 100;
-            foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                player.Out.SendSpellEffectAnimation(m_currentSource, target, m_spell.ClientEffect, (ushort)(delay), false, 1);
-            }
-            BoltOnTargetAction bolt = new BoltOnTargetAction(Caster, target, this);
-            bolt.Start(1 + ticksToTarget);
-            m_currentSource = target;
-            m_currentTick++;
 
-			return true;
-		}
+            foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                player.Out.SendSpellEffectAnimation(_currentSource, target, m_spell.ClientEffect, (ushort) delay, false, 1);
+
+            new BoltOnTargetTimer(target, this, ticksToTarget);
+            _currentSource = target;
+            _currentTick++;
+
+            return true;
+        }
 
         public override void DamageTarget(AttackData ad, bool showEffectAnimation)
         {
-            ad.Damage = (int)(ad.Damage * m_effetiveness);
+            ad.Damage = (int) (ad.Damage * _effetiveness);
             base.DamageTarget(ad, showEffectAnimation);
-            if (m_currentTick < m_maxTick)
+
+            if (_currentTick < _maxTick)
             {
-                m_effetiveness -= 0.1;   
-                //fetch next target
-                foreach (GamePlayer pl in m_currentSource.GetPlayersInRadius(500))
+                _effetiveness -= 0.1;
+
+                foreach (GamePlayer pl in _currentSource.GetPlayersInRadius(500))
                 {
-                    if (GameServer.ServerRules.IsAllowedToAttack(Caster,pl,true)){
+                    if (GameServer.ServerRules.IsAllowedToAttack(Caster, pl, true))
+                    {
                         StartSpell(pl);
                         break;
                     }

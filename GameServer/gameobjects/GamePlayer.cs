@@ -6918,23 +6918,13 @@ namespace DOL.GS
         /// <summary>
         /// Gets the weaponskill of weapon
         /// </summary>
-        /// <param name="weapon"></param>
         public override double GetWeaponSkill(InventoryItem weapon)
         {
             if (weapon == null)
-            {
                 return 0;
-            }
-            double classbase =
-                (weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon
-                    ? CharacterClass.WeaponSkillRangedBase
-                    : CharacterClass.WeaponSkillBase);
 
-            //added for WS Poisons
-            //double preBuff = ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * Effectiveness);
-            double preBuff = Level * classbase / 200 * (1 + (.01 * GetWeaponStat(weapon)/2)) * Effectiveness;
-            
-            //return ((Level * classbase * 0.02 * (1 + (GetWeaponStat(weapon) - 50) * 0.005)) * PlayerEffectiveness);
+            int classBaseWeaponSkill = weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
+            double preBuff = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
             return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 

@@ -341,14 +341,14 @@ namespace DOL.GS.Spells
 			//}
 
 			lock (living.effectListComponent.EffectsLock)
-            {
+			{
 				var effects = living.effectListComponent.GetAllPulseEffects();
 
 				for (int i = 0; i < effects.Count; i++)
-                {
-                    ECSPulseEffect effect = effects[i];
-                    if (effect == null)
-                        continue;
+				{
+					ECSPulseEffect effect = effects[i];
+					if (effect == null)
+						continue;
 
 					if (effect == null)
 						continue;
@@ -357,9 +357,9 @@ namespace DOL.GS.Spells
 						EffectService.RequestCancelConcEffect(effect);
 						return true;
 					}
-                }
-            }
-            return false;
+				}
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -732,7 +732,7 @@ namespace DOL.GS.Spells
 
 					return false;
 				}
-            }
+			}
 			else if (targetType != "self" && targetType != "group" && targetType != "cone" && m_spell.Range > 0)
 			{
 				// All spells that need a target.
@@ -1676,13 +1676,13 @@ namespace DOL.GS.Spells
 					GamePlayer gp_caster = m_caster as GamePlayer;
 					foreach (var skills in gp_caster.GetAllUsableSkills())
 						if (skills.Item1 is Spell &&
-						    (((Spell)skills.Item1).ID == m_spell.ID || ( ((Spell)skills.Item1).SharedTimerGroup != 0 && ( ((Spell)skills.Item1).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
+							(((Spell)skills.Item1).ID == m_spell.ID || ( ((Spell)skills.Item1).SharedTimerGroup != 0 && ( ((Spell)skills.Item1).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
 							toDisable.Add(new Tuple<Skill, int>((Spell)skills.Item1, m_spell.RecastDelay));
 					
 					foreach (var sl in gp_caster.GetAllUsableListSpells())
 						foreach(var sp in sl.Item2)
 							if (sp is Spell &&
-							    ( ((Spell)sp).ID == m_spell.ID || ( ((Spell)sp).SharedTimerGroup != 0 && ( ((Spell)sp).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
+								( ((Spell)sp).ID == m_spell.ID || ( ((Spell)sp).SharedTimerGroup != 0 && ( ((Spell)sp).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
 							toDisable.Add(new Tuple<Skill, int>((Spell)sp, m_spell.RecastDelay));
 					
 					m_caster.DisableSkills(toDisable);
@@ -1692,9 +1692,9 @@ namespace DOL.GS.Spells
 			}
 
 			/*if(Caster is GamePlayer && target != null)
-            {
+			{
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
-            }*/
+			}*/
 			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing && Caster is GamePlayer {CharacterClass: not ClassSavage})
 				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
 
@@ -1750,7 +1750,7 @@ namespace DOL.GS.Spells
 							break;
 						case 3: // Apply on buff
 							if (m_spell.Target.ToLower() == "group"
-							    && m_spell.Pulse != 0)
+								&& m_spell.Pulse != 0)
 							{
 								modifiedTarget = "realm";
 								modifiedRadius = (ushort)m_spell.Range;
@@ -1912,7 +1912,7 @@ namespace DOL.GS.Spells
 							foreach (var pet in petBody.GetNPCsInRadius(modifiedRadius))
 							{
 								if (pet is not BDSubPet {Brain: IControlledBrain brain} subpet ||
-								    brain.GetPlayerOwner() != player) continue;
+									brain.GetPlayerOwner() != player) continue;
 								if (!Spell.IsHealing)
 									list.Add(subpet);
 							}
@@ -2243,13 +2243,13 @@ namespace DOL.GS.Spells
 						pet.ScalePetSpell(spell);
 
 					ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-                    spellhandler.StartSpell(target);
+					spellhandler.StartSpell(target);
 				}
 			}
 		}
 
 		public virtual List<GameLiving> GetGroupAndPets(Spell spell)
-        {
+		{
 			List<GameLiving> livingsInRange = new();
 			ICollection<GameLiving> groupMembers = Caster.Group?.GetMembersInTheGroup() ?? (Caster as NecromancerPet)?.Owner.Group?.GetMembersInTheGroup();
 
@@ -2381,26 +2381,8 @@ namespace DOL.GS.Spells
 				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy" && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
 					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
 
-				int spellResistChance = CalculateSpellResistChance(t);
-				int randNum = 0;
-				bool UseRNGOverride = Properties.OVERRIDE_DECK_RNG;
-
-				if (spellResistChance > 0)
-				{
-					randNum = Caster is GamePlayer caster && !UseRNGOverride ? caster.RandomNumberDeck.GetInt() : Util.CryptoNextInt(100);
-
-					if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
-						spellCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-					if (t is GamePlayer spellTarget && spellTarget.UseDetailedCombatLog)
-						spellTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-					if (spellResistChance > randNum)
-					{
-						OnSpellResisted(t);
-						return;
-					}
-				}
+				if (CheckSpellResist(t))
+					return;
 
 				if (Spell.Radius == 0 || HasPositiveEffect)
 					ApplyEffectOnTarget(t, effectiveness);
@@ -2552,9 +2534,9 @@ namespace DOL.GS.Spells
 
 
 			if (Spell.Radius == 0 &&
-			    (m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
-			    m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
-			    && effectiveness < 1)
+				(m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
+				m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
+				&& effectiveness < 1)
 			{
 				effectiveness = 1.0;
 			}
@@ -2562,8 +2544,8 @@ namespace DOL.GS.Spells
 			if (effectiveness <= 0)
 				return; // no effect
 
-            // Apply effect for Duration Spell.
-            if ((Spell.Duration > 0 && Spell.Target.ToLower() != "area") || Spell.Concentration > 0)
+			// Apply effect for Duration Spell.
+			if ((Spell.Duration > 0 && Spell.Target.ToLower() != "area") || Spell.Concentration > 0)
 			{
 				OnDurationEffectApply(target, effectiveness);
 			}
@@ -2587,8 +2569,8 @@ namespace DOL.GS.Spells
 				m_lastAttackData = ad;
 				Caster.OnAttackEnemy(ad);
 
-                // Treat non-damaging effects as attacks to trigger an immediate response and BAF
-                if (ad.Damage == 0 && ad.Target is GameNPC)
+				// Treat non-damaging effects as attacks to trigger an immediate response and BAF
+				if (ad.Damage == 0 && ad.Target is GameNPC)
 				{
 					IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
@@ -2599,7 +2581,7 @@ namespace DOL.GS.Spells
 				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
 				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
 				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageOverTime)
-                {
+				{
 					target.OnAttackedByEnemy(ad);
 				}
 			}
@@ -2671,8 +2653,8 @@ namespace DOL.GS.Spells
 			if (compare.SpellHandler != null)
 			{
 				if ((compare.SpellHandler.AllowCoexisting || AllowCoexisting)
-				    && (!compare.SpellHandler.SpellLine.KeyName.Equals(SpellLine.KeyName, StringComparison.OrdinalIgnoreCase)
-				        || compare.SpellHandler.Spell.IsInstantCast != Spell.IsInstantCast))
+					&& (!compare.SpellHandler.SpellLine.KeyName.Equals(SpellLine.KeyName, StringComparison.OrdinalIgnoreCase)
+						|| compare.SpellHandler.Spell.IsInstantCast != Spell.IsInstantCast))
 					return true;
 			}
 			return false;
@@ -2796,6 +2778,82 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
+		/// Calculates the chance that the spell lands on target
+		/// can be negative or above 100%
+		/// </summary>
+		/// <param name="target">spell target</param>
+		/// <returns>chance that the spell lands on target</returns>
+		public virtual int CalculateToHitChance(GameLiving target)
+		{
+			int spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
+
+			if (m_caster is GamePlayer playerCaster)
+			{
+				if (spellLevel > playerCaster.MaxLevel)
+					spellLevel = playerCaster.MaxLevel;
+
+				if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+				{
+					AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
+					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
+				}
+			}
+
+			/*
+			http://www.camelotherald.com/news/news_article.php?storyid=704
+
+			Q: Spell resists. Can you give me more details as to how the system works?
+
+			A: Here's the answer, straight from the desk of the spell designer:
+
+			"Spells have a factor of (spell level / 2) added to their chance to hit. (Spell level defined as the level the spell is awarded, chance to hit defined as
+			the chance of avoiding the "Your target resists the spell!" message.) Subtracted from the modified to-hit chance is the target's (level / 2).
+			So a L50 caster casting a L30 spell at a L50 monster or player, they have a base chance of 85% to hit, plus 15%, minus 25% for a net chance to hit of 75%.
+			If the chance to hit goes over 100% damage or duration is increased, and if it goes below 55%, you still have a 55% chance to hit but your damage
+			or duration is penalized. If the chance to hit goes below 0, you cannot hit at all. Once the spell hits, damage and duration are further modified
+			by resistances.
+
+			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.  The code below is very close to live like.
+			- Tolakram
+			 */
+
+			int hitChance = m_caster.GetModified(eProperty.ToHitBonus);
+
+			if (m_caster is GameNPC)
+				hitChance += (int)(87.5 - (target.Level - m_caster.Level));
+			else
+			{
+				hitChance += 88 + (spellLevel - target.Level) / 2;
+
+				if (target is GameNPC)
+				{
+					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
+					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
+					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				}
+			}
+
+			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
+			{
+				ECSGameEffect effect = m_caster.effectListComponent.GetSpellEffects().FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
+
+				if (effect != null)
+					hitChance += (int)effect.SpellHandler.Spell.Value;
+			}
+
+			// Check for active RAs.
+			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
+			{
+				ECSGameEffect effect = m_caster.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+
+				if (effect != null)
+					hitChance += (int)effect.Effectiveness * 5;
+			}
+
+			return hitChance;
+		}
+
+		/// <summary>
 		/// Calculates chance of spell getting resisted
 		/// </summary>
 		/// <param name="target">the target of the spell</param>
@@ -2803,21 +2861,43 @@ namespace DOL.GS.Spells
 		public virtual int CalculateSpellResistChance(GameLiving target)
 		{
 			if (HasPositiveEffect)
-			{
 				return 0;
-			}
 
 			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects && m_spellItem != null)
 			{
-				GamePlayer playerCaster = Caster as GamePlayer;
-				if (playerCaster != null)
+				if (Caster is GamePlayer playerCaster)
 				{
 					int itemSpellLevel = m_spellItem.Template.LevelRequirement > 0 ? m_spellItem.Template.LevelRequirement : Math.Min(playerCaster.MaxLevel, m_spellItem.Level);
-					return 100 - (85 + ((itemSpellLevel - target.Level) / 2));
+					return 100 - (85 + (itemSpellLevel - target.Level) / 2);
 				}
 			}
 
 			return 100 - CalculateToHitChance(target);
+		}
+
+		public virtual bool CheckSpellResist(GameLiving target)
+		{
+			int spellResistChance = CalculateSpellResistChance(target);
+			bool UseRNGOverride = Properties.OVERRIDE_DECK_RNG;
+
+			if (spellResistChance > 0)
+			{
+				int randNum = Caster is GamePlayer caster && !UseRNGOverride ? caster.RandomNumberDeck.GetInt() : Util.CryptoNextInt(100);
+
+				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
+					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
+					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+				if (spellResistChance > randNum)
+				{
+					OnSpellResisted(target);
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -2854,7 +2934,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Send Spell Resisted Animation
 		/// </summary>
-		/// <param name="target"></param>
 		public virtual void SendSpellResistAnimation(GameLiving target)
 		{
 			if (Spell.Pulse == 0 || !HasPositiveEffect)
@@ -2864,27 +2943,21 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Send Spell Resist Messages to Caster and Target
 		/// </summary>
-		/// <param name="target"></param>
 		public virtual void SendSpellResistMessages(GameLiving target)
 		{
-			// Deliver message to the target, if the target is a pet, to its
-			// owner instead.
-			if (target is GameNPC)
+			// Deliver message to the target, if the target is a pet, to its owner instead.
+			if (target is GameNPC npcTarget)
 			{
-				IControlledBrain brain = ((GameNPC)target).Brain as IControlledBrain;
-				if (brain != null)
+				if (npcTarget.Brain is IControlledBrain npcTargetBrain)
 				{
-					GamePlayer owner = brain.GetPlayerOwner();
+					GamePlayer owner = npcTargetBrain.GetPlayerOwner();
+
 					if (owner != null)
-					{
 						this.MessageToLiving(owner, eChatType.CT_SpellResisted, "Your {0} resists the effect!", target.Name);
-					}
 				}
 			}
 			else
-			{
 				MessageToLiving(target, "You resist the effect!", eChatType.CT_SpellResisted);
-			}
 
 			// Deliver message to the caster as well.
 			this.MessageToCaster(eChatType.CT_SpellResisted, "{0} resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", target.GetName(0, true));
@@ -2893,7 +2966,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Send Spell Attack Data Notification to Target when Spell is Resisted
 		/// </summary>
-		/// <param name="target"></param>
 		public virtual void SendSpellResistNotification(GameLiving target)
 		{
 			// Report resisted spell attack data to any type of living object, no need
@@ -2913,7 +2985,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Start Spell Interrupt Timer when Spell is Resisted
 		/// </summary>
-		/// <param name="target"></param>
 		public virtual void StartSpellResistInterruptTimer(GameLiving target)
 		{
 			// Spells that would have caused damage or are not instant will still
@@ -2925,7 +2996,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Start Last Attack Timer when Spell is Resisted
 		/// </summary>
-		/// <param name="target"></param>
 		public virtual void StartSpellResistLastAttackTimer(GameLiving target)
 		{
 			if (target.Realm == 0 || Caster.Realm == 0)
@@ -2947,14 +3017,12 @@ namespace DOL.GS.Spells
 		/// creature, to the player instead (only spell hit and resisted
 		/// messages).
 		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="type"></param>
 		public void MessageToCaster(string message, eChatType type)
 		{
 			if (Caster is GamePlayer playerCaster)
 				playerCaster.MessageToSelf(message, type);
 			else if (Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain
-			         && (type is eChatType.CT_YouHit or eChatType.CT_SpellResisted or eChatType.CT_Spell))
+					 && (type is eChatType.CT_YouHit or eChatType.CT_SpellResisted or eChatType.CT_Spell))
 			{
 				GamePlayer playerOwner = npcCasterBrain.GetPlayerOwner();
 				if (npcCasterBrain.GetPlayerOwner() != null)
@@ -2965,9 +3033,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// sends a message to a living
 		/// </summary>
-		/// <param name="living"></param>
-		/// <param name="message"></param>
-		/// <param name="type"></param>
 		public void MessageToLiving(GameLiving living, string message, eChatType type)
 		{
 			if (message != null && message.Length > 0)
@@ -2979,9 +3044,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Hold events for focus spells
 		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="args"></param>
 		public virtual void FocusSpellAction(bool moving = false)
 		{
 			CastState = eCastState.Cleanup;
@@ -3478,39 +3540,39 @@ namespace DOL.GS.Spells
 						
 					
 					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
-					               pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
+								   pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
 				}
 				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
 				{
 					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.ActiveWeapon)) /
-					                           (1 + .005 * player.GetWeaponStat(player.ActiveWeapon));
+											   (1 + .005 * player.GetWeaponStat(player.ActiveWeapon));
 					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponskillScalar /3 + 100) / 200;
 				}
 				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
-				    && SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
-				    && m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
-				    && SpellLine.KeyName != GlobalSpellsLines.Item_Effects
-				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerAlb
-				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerMid
-				    && player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
-				    && player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
+					&& SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
+					&& m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
+					&& SpellLine.KeyName != GlobalSpellsLines.Item_Effects
+					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerAlb
+					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerMid
+					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
+					&& player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
 				{
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
 					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
 					spellDamage *= ((manaStatValue - player.Level) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
-					               player.GetBaseSpecLevel(m_spellLine.Spec);
+								   player.GetBaseSpecLevel(m_spellLine.Spec);
 					spellDamage *= 1 + (modSkill * .005);
 
 					//list casters get a little extra sauce
 					if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Wizard
-					    or eCharacterClass.Theurgist
-					    or eCharacterClass.Cabalist or eCharacterClass.Sorcerer or eCharacterClass.Necromancer
-					    or eCharacterClass.Eldritch or eCharacterClass.Enchanter or eCharacterClass.Mentalist
-					    or eCharacterClass.Animist or eCharacterClass.Valewalker
-					    or eCharacterClass.Runemaster or eCharacterClass.Spiritmaster or eCharacterClass.Bonedancer)
+						or eCharacterClass.Theurgist
+						or eCharacterClass.Cabalist or eCharacterClass.Sorcerer or eCharacterClass.Necromancer
+						or eCharacterClass.Eldritch or eCharacterClass.Enchanter or eCharacterClass.Mentalist
+						or eCharacterClass.Animist or eCharacterClass.Valewalker
+						or eCharacterClass.Runemaster or eCharacterClass.Spiritmaster or eCharacterClass.Bonedancer)
 					{
 						spellDamage *= 1.10;
 					}
@@ -3532,82 +3594,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// Calculates the chance that the spell lands on target
-		/// can be negative or above 100%
-		/// </summary>
-		/// <param name="target">spell target</param>
-		/// <returns>chance that the spell lands on target</returns>
-		public virtual int CalculateToHitChance(GameLiving target)
-		{
-			int spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
-
-			if (m_caster is GamePlayer playerCaster)
-			{
-				if (spellLevel > playerCaster.MaxLevel)
-					spellLevel = playerCaster.MaxLevel;
-
-				if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
-				{
-					AttackData lastAD = playerCaster.TempProperties.getProperty<AttackData>("LastAttackData", null);
-					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
-				}
-			}
-
-			/*
-			http://www.camelotherald.com/news/news_article.php?storyid=704
-
-			Q: Spell resists. Can you give me more details as to how the system works?
-
-			A: Here's the answer, straight from the desk of the spell designer:
-
-			"Spells have a factor of (spell level / 2) added to their chance to hit. (Spell level defined as the level the spell is awarded, chance to hit defined as
-			the chance of avoiding the "Your target resists the spell!" message.) Subtracted from the modified to-hit chance is the target's (level / 2).
-			So a L50 caster casting a L30 spell at a L50 monster or player, they have a base chance of 85% to hit, plus 15%, minus 25% for a net chance to hit of 75%.
-			If the chance to hit goes over 100% damage or duration is increased, and if it goes below 55%, you still have a 55% chance to hit but your damage
-			or duration is penalized. If the chance to hit goes below 0, you cannot hit at all. Once the spell hits, damage and duration are further modified
-			by resistances.
-
-			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.  The code below is very close to live like.
-			- Tolakram
-			 */
-
-			int hitChance = m_caster.GetModified(eProperty.ToHitBonus);
-
-			if (m_caster is GameNPC)
-				hitChance += (int)(87.5 - (target.Level - m_caster.Level));
-			else
-			{
-				hitChance += 88 + (spellLevel - target.Level) / 2;
-
-				if (target is GameNPC)
-				{
-					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
-					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
-					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
-				}
-			}
-
-			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
-			{
-				ECSGameEffect effect = m_caster.effectListComponent.GetSpellEffects().FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
-
-				if (effect != null)
-					hitChance += (int)effect.SpellHandler.Spell.Value;
-			}
-
-			// Check for active RAs.
-			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
-			{
-				ECSGameEffect effect = m_caster.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
-
-				if (effect != null)
-					hitChance += (int)effect.Effectiveness * 5;
-			}
-
-			return hitChance;
-		}
-
-		/// <summary>
 		/// Calculates damage to target with resist chance and stores it in ad
 		/// </summary>
 		/// <param name="target">spell target</param>
@@ -3616,7 +3602,6 @@ namespace DOL.GS.Spells
 		{
 			return CalculateDamageToTarget(target, 1);
 		}
-
 
 		/// <summary>
 		/// Adjust damage based on chance to hit.
@@ -3629,162 +3614,105 @@ namespace DOL.GS.Spells
 			int adjustedDamage = damage;
 
 			if (hitChance < 55)
-			{
-				adjustedDamage += (int)(adjustedDamage * (hitChance - 55) * ServerProperties.Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01);
-			}
+				adjustedDamage += (int) (adjustedDamage * (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01);
 
 			return Math.Max(adjustedDamage, 1);
 		}
-
 
 		/// <summary>
 		/// Calculates damage to target with resist chance and stores it in ad
 		/// </summary>
 		/// <param name="target">spell target</param>
 		/// <param name="effectiveness">value from 0..1 to modify damage</param>
-		/// <returns>attack data</returns>
 		public virtual AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
 		{
-			AttackData ad = new AttackData();
-			ad.Attacker = m_caster;
-			ad.Target = target;
-			ad.AttackType = AttackData.eAttackType.Spell;
-			ad.SpellHandler = this;
-			ad.AttackResult = eAttackResult.HitUnstyled;
-
-			double minVariance;
-			double maxVariance;
-			
-			CalculateDamageVariance(target, out minVariance, out maxVariance);
-			double spellDamage = CalculateDamageBase(target);
-
-			if (m_caster is GamePlayer or GameSummonedPet)
+			AttackData ad = new()
 			{
-				var caster = m_caster;
-				if (m_caster is GameSummonedPet p) caster = p.Owner;
-				effectiveness += caster.GetModified(eProperty.SpellDamage) * 0.01;
+				Attacker = m_caster,
+				Target = target,
+				AttackType = AttackData.eAttackType.Spell,
+				SpellHandler = this,
+				AttackResult = eAttackResult.HitUnstyled
+			};
+
+			CalculateDamageVariance(target, out double minVariance, out double maxVariance);
+			double spellDamage = CalculateDamageBase(target);
+			GamePlayer playerCaster = m_caster is GameSummonedPet pet ? pet.Owner as GamePlayer : m_caster as GamePlayer;
+
+			if (playerCaster != null)
+			{
+				effectiveness += playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
 
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
-				spellDamage *= (1.0 + RelicMgr.GetRelicBonusModifier(caster.Realm, eRelicType.Magic));
+				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, eRelicType.Magic);
 
-				/*
-				eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
-				if (skillProp != eProperty.Undefined)
-				{
-					var level = m_caster.GetModifiedFromItems(skillProp);
-					spellDamage *= (1 + level / 200.0);
-				}*/
+				//eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
+				//if (skillProp != eProperty.Undefined)
+				//{
+				//	int level = m_caster.GetModifiedFromItems(skillProp);
+				//	spellDamage *= (1 + level / 200.0);
+				//}
 			}
 
-			// Apply casters effectiveness
+			// Apply caster's effectiveness.
 			spellDamage *= m_caster.Effectiveness;
 
 			int finalDamage = Util.Random((int)(minVariance * spellDamage), (int)(maxVariance * spellDamage));
 
-			// Live testing done Summer 2009 by Bluraven, Tolakram  Levels 40, 45, 50, 55, 60, 65, 70
-			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100
+			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
+			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100.
 			int hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
 
-			// apply spell effectiveness
+			// Apply spell's effectiveness.
 			finalDamage = (int)(finalDamage * effectiveness);
 
-			if ((m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0)))
+			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))
 			{
 				if (target is GamePlayer)
-					finalDamage = (int)((double)finalDamage * ServerProperties.Properties.PVP_SPELL_DAMAGE);
+					finalDamage = (int) (finalDamage * Properties.PVP_SPELL_DAMAGE);
 				else if (target is GameNPC)
-					finalDamage = (int)((double)finalDamage * ServerProperties.Properties.PVE_SPELL_DAMAGE);
+					finalDamage = (int) (finalDamage * Properties.PVE_SPELL_DAMAGE);
 			}
 
-			int cdamage = 0;
+			int critDamage = 0;
+
 			if (finalDamage < 0)
 				finalDamage = 0;
+			else
+				finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 
-			eDamageType damageType = DetermineSpellDamageType();
-
-			#region Resists
-			eProperty property = target.GetResistTypeForDamage(damageType);
-			// The Daoc resistsystem is since 1.65 a 2category system.
-			// - First category are Item/Race/Buff/RvrBanners resists that are displayed in the characteroverview.
-			// - Second category are resists that are given through RAs like avoidance of magic, brilliance aura of deflection.
-			//   Those resist affect ONLY the spelldamage. Not the duration, not the effectiveness of debuffs.
-			// so calculation is (finaldamage * Category1Modification) * Category2Modification
-			// -> Remark for the future: VampirResistBuff is Category2 too.
-			// - avi
-
-			#region Primary Resists
-			int primaryResistModifier = ad.Target.GetResist(damageType);
-
-			/* Resist Pierce
-			 * Resipierce is a special bonus which has been introduced with TrialsOfAtlantis.
-			 * At the calculation of SpellDamage, it reduces the resistance that the victim recives
-			 * through ITEMBONUSES for the specified percentage.
-			 * http://de.daocpedia.eu/index.php/Resistenz_durchdringen (translated)
-			 */
-			int resiPierce = Caster.GetModified(eProperty.ResistPierce);
-			GamePlayer ply = Caster as GamePlayer;
-			if (resiPierce > 0 && Spell.SpellType != (byte)eSpellType.Archery)
-			{
-				//substract max ItemBonus of property of target, but atleast 0.
-				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int)property], resiPierce));
-			}
-			#endregion
-
-			#region Secondary Resists
-			//Using the resist BuffBonusCategory2 - its unused in ResistCalculator
-			int secondaryResistModifier = target.SpecBuffBonusCategory[(int)property];
-
-			if (secondaryResistModifier > 80)
-				secondaryResistModifier = 80;
-			#endregion
-
-			int resistModifier = 0;
-			//primary resists
-			resistModifier += (int)(finalDamage * (double)primaryResistModifier * -0.01);
-			//secondary resists
-			resistModifier += (int)((finalDamage + (double)resistModifier) * (double)secondaryResistModifier * -0.01);
-			//apply resists
-			finalDamage += resistModifier;
-
-			#endregion
-
-			// Apply damage cap (this can be raised by effectiveness)
+			// Apply damage cap (this can be raised by effectiveness).
 			if (finalDamage > DamageCap(effectiveness))
-			{
 				finalDamage = (int)DamageCap(effectiveness);
-			}
 
 			if (finalDamage < 0)
 				finalDamage = 0;
 
 			int criticalchance;
 
-			if (this is DoTSpellHandler dot)
-            {
-				criticalchance = 0; //atlas - DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly
-				cdamage = 0;
-            }
-            else
-            {
+			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
+			if (this is not DoTSpellHandler)
 				criticalchance = m_caster.SpellCriticalChance;
-            }			
-
-			int randNum = Util.CryptoNextInt(1, 100); //grab our random number
-			int critCap = Math.Min(50, criticalchance); //crit chance can be at most  50%
-
-			if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
+			else
 			{
-				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				criticalchance = 0;
+				critDamage = 0;
 			}
 
-			if (critCap > randNum && (finalDamage >= 1))
+			int randNum = Util.CryptoNextInt(1, 100);
+			int critCap = Math.Min(50, criticalchance);
+
+			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
+				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+			if (critCap > randNum && finalDamage >= 1)
 			{
 				int critmax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
-				cdamage = Util.Random(finalDamage / 10, critmax); //think min crit is 10% of damage
+				critDamage = Util.Random(finalDamage / 10, critmax);
 			}
-			//Andraste
-			if(ad.Target is GamePlayer && ad.Target.GetModified(eProperty.Conversion)>0)
+
+			if (ad.Target is GamePlayer && ad.Target.GetModified(eProperty.Conversion) > 0)
 			{
 				int manaconversion=(int)Math.Round(((double)ad.Damage+(double)ad.CriticalDamage)*(double)ad.Target.GetModified(eProperty.Conversion)/200);
 				//int enduconversion=(int)Math.Round((double)manaconversion*(double)ad.Target.MaxEndurance/(double)ad.Target.MaxMana);
@@ -3800,15 +3728,48 @@ namespace DOL.GS.Spells
 			}
 
 			ad.Damage = finalDamage;
-			ad.CriticalDamage = cdamage;
-			ad.DamageType = damageType;
-			ad.Modifier = resistModifier;
+			ad.CriticalDamage = critDamage;
 
-			// Attacked living may modify the attack data.  Primarily used for keep doors and components.
+			// Attacked living may modify the attack data. Primarily used for keep doors and components.
 			ad.Target.ModifyAttack(ad);
 
 			m_lastAttackData = ad;
 			return ad;
+		}
+
+		public virtual int ModifyDamageWithTargetResist(AttackData ad, int damage)
+		{
+			// Since 1.65 there are different categories of resist.
+			// - First category contains Item / Race/ Buff / RvrBanners resists.
+			// - Second category contains resists that are obtained from RAs such as Avoidance of Magic and Brilliant Aura of Deflection.
+			// However the second category affects ONLY the spell damage. Not the duration, not the effectiveness of debuffs.
+			// For spell damage, the calculation is 'finaldamage * firstCategory * secondCategory'.
+			// -> Remark for the future: VampirResistBuff is Category2 too.
+
+			eDamageType damageType = DetermineSpellDamageType();
+			eProperty property = ad.Target.GetResistTypeForDamage(damageType);
+			int primaryResistModifier = ad.Target.GetResist(damageType);
+			int secondaryResistModifier = Math.Min(80, ad.Target.SpecBuffBonusCategory[(int) property]);
+
+			// Resist Pierce is a special bonus which has been introduced with ToA.
+			// It reduces the resistance that the victim receives through items by the specified percentage.
+			// http://de.daocpedia.eu/index.php/Resistenz_durchdringen (translated)
+			int resitPierce = Caster.GetModified(eProperty.ResistPierce);
+
+			// Substract max ItemBonus of property of target, but at least 0.
+			if (resitPierce > 0 && Spell.SpellType != (byte) eSpellType.Archery)
+				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int) property], resitPierce));
+
+			int resistModifier = 0;
+			resistModifier += (int)(damage * (double) primaryResistModifier * -0.01);
+			resistModifier += (int)((damage + (double) resistModifier) * secondaryResistModifier * -0.01);
+			damage += resistModifier;
+
+			// Update AttackData.
+			ad.Modifier = resistModifier;
+			ad.DamageType = damageType;
+
+			return damage;
 		}
 
 		public virtual double DamageCap(double effectiveness)
@@ -3831,36 +3792,31 @@ namespace DOL.GS.Spells
 		/// <param name="ad"></param>
 		public virtual void SendDamageMessages(AttackData ad)
 		{
-            string modmessage = "";
-            if (ad.Modifier > 0)
-                modmessage = " (+" + ad.Modifier + ")";
-            if (ad.Modifier < 0)
-                modmessage = " (" + ad.Modifier + ")";
-            if (Caster is GamePlayer || Caster is NecromancerPet)
-                MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
-            else if (Caster is GameNPC)
-                MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
-                                              ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
-            if (ad.CriticalDamage > 0)
-                MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
-        }
-
-		/// <summary>
-		/// Make damage to target and send spell effect but no messages
-		/// </summary>
-		/// <param name="ad"></param>
-		/// <param name="showEffectAnimation"></param>
-		public virtual void DamageTarget(AttackData ad, bool showEffectAnimation)
-		{
-			DamageTarget(ad, showEffectAnimation, 0x14); //spell damage attack result
+			string modmessage = "";
+			if (ad.Modifier > 0)
+				modmessage = " (+" + ad.Modifier + ")";
+			if (ad.Modifier < 0)
+				modmessage = " (" + ad.Modifier + ")";
+			if (Caster is GamePlayer || Caster is NecromancerPet)
+				MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+			else if (Caster is GameNPC)
+				MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
+											  ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+			if (ad.CriticalDamage > 0)
+				MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
 		}
 
 		/// <summary>
 		/// Make damage to target and send spell effect but no messages
 		/// </summary>
-		/// <param name="ad"></param>
-		/// <param name="showEffectAnimation"></param>
-		/// <param name="attackResult"></param>
+		public virtual void DamageTarget(AttackData ad, bool showEffectAnimation)
+		{
+			DamageTarget(ad, showEffectAnimation, 0x14); // Spell damage attack result.
+		}
+
+		/// <summary>
+		/// Make damage to target and send spell effect but no messages
+		/// </summary>
 		public virtual void DamageTarget(AttackData ad, bool showEffectAnimation, int attackResult)
 		{
 			ad.AttackResult = eAttackResult.HitUnstyled;
@@ -3897,7 +3853,7 @@ namespace DOL.GS.Spells
 			{
 				Parallel.ForEach(ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GamePlayer>(), player =>
 				{
-					player.Out.SendCombatAnimation(ad.Attacker, ad.Target, 0, 0, 0, 0, (byte)attackResult, ad.Target.HealthPercent);
+					player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, (byte) attackResult, ad.Target.HealthPercent);
 				});
 			}
 
@@ -4172,10 +4128,10 @@ namespace DOL.GS.Spells
 					return "light";
 
 			}
-        }
+		}
 
 		private void WriteBonus(ref MiniDelveWriter dw)
-        {
+		{
 			switch ((eSpellType)Spell.SpellType)
 			{
 				case eSpellType.AblativeArmor:

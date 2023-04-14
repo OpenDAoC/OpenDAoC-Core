@@ -666,8 +666,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual double GetWeaponSkill(InventoryItem weapon)
 		{
-			const double bs = 128.0 / 50.0;	// base factor (not 400)
-			return (int)((Level + 1) * bs * (1 + (GetWeaponStat(weapon) - 50) * 0.005) * Level * 2 / 50);
+			// Needs to be overriden.
+			return 0;
 		}
 
 		private (InventoryItem item, long time) m_cachedActiveWeapon;
@@ -3581,10 +3581,10 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
+		public virtual double TryBlock(AttackData ad, double attackerConLevel, int attackerCount)
 		{
 			// Block
-      
+
 			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
 			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
 			//3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02

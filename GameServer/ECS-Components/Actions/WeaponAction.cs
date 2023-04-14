@@ -462,7 +462,6 @@ namespace DOL.GS
                     case eAttackResult.HitStyle:
                         resultByte = 11;
                         break;
-
                     case eAttackResult.Parried:
                         resultByte = 1;
 
@@ -470,7 +469,6 @@ namespace DOL.GS
                             defendersWeapon = defender.ActiveWeapon.Model;
 
                         break;
-
                     case eAttackResult.Blocked:
                         resultByte = 2;
 
