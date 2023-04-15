@@ -56,7 +56,7 @@ namespace DOL.GS.PacketHandler
 		private byte WarlockChamberEffectId(GameSpellEffect effect)
 		{
 			return 0; // ??
-		}
+		} 
 
 		/// <summary>
 		/// Property to enable "forced" Tooltip send when Update are made to player skills, or player effects.
@@ -2227,10 +2227,10 @@ namespace DOL.GS.PacketHandler
 				}
 				pak.WritePascalString(name.Length > 48 ? name.Substring(0, 48) : name);
 
-				if (obj is IDoor)
+				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
-					pak.WriteInt((uint)(obj as IDoor).DoorID);
+					pak.WriteInt((uint) door.DoorID);
 				}
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -5922,7 +5922,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendDoorState(Region region, IDoor door)
+		public virtual void SendDoorState(Region region, GameDoorBase door)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DoorState)))
 			{

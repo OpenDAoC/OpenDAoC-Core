@@ -16,10 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS;
 
 namespace DOL.GS.Relics
 {
@@ -27,7 +23,7 @@ namespace DOL.GS.Relics
 	/// Class representing a relic pillar.
 	/// </summary>
 	/// <author>Aredhel</author>
-	public class RelicPillar : GameObject, IDoor
+	public class RelicPillar : GameDoorBase
 	{
 		/// <summary>
 		/// Creates a new relic pillar.
@@ -43,14 +39,12 @@ namespace DOL.GS.Relics
 		/// </summary>
 		private object m_syncPillar = new object();
 
-		#region IDoor Implementation
-
 		private int m_pillarID;
 
 		/// <summary>
 		/// ID for this pillar.
 		/// </summary>
-		public int DoorID
+		public override int DoorID
 		{
 			get { return m_pillarID; }
 			set { m_pillarID = value; }
@@ -59,7 +53,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// Get the ZoneID of this door
 		/// </summary>
-		public ushort ZoneID
+		public override ushort ZoneID
 		{
 			get { return (ushort)(DoorID / 1000000); }
 		}
@@ -67,7 +61,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// Pillars behave like regular doors.
 		/// </summary>
-		public uint Flag
+		public override uint Flag
 		{
 			get { return 0; }
 		}
@@ -77,7 +71,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// State of this pillar (up == closed, down == open).
 		/// </summary>
-		public eDoorState State
+		public override eDoorState State
 		{
 			get { return m_pillarState; }
 			set
@@ -100,7 +94,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// Make the pillar start moving down.
 		/// </summary>
-		public void Open(GameLiving opener = null)
+		public override void Open(GameLiving opener = null)
 		{
 			State = eDoorState.Open;
 		}
@@ -108,7 +102,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// Reset pillar.
 		/// </summary>
-		public void Close(GameLiving closer = null)
+		public override void Close(GameLiving closer = null)
 		{
 			State = eDoorState.Closed;
 		}
@@ -118,10 +112,8 @@ namespace DOL.GS.Relics
 		/// </summary>
 		/// <param name="npc"></param>
 		/// <param name="open"></param>
-		public void NPCManipulateDoorRequest(GameNPC npc, bool open)
+		public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
 		{
 		}
-
-		#endregion
 	}
 }

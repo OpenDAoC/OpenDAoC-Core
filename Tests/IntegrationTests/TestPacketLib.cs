@@ -433,8 +433,8 @@ namespace DOL.Tests
 		{
 			if (SendInventoryItemsUpdateDictMethod != null) SendInventoryItemsUpdateDictMethod(this, updateItems, windowType);
 		}
-		public Action<TestPacketLib, Region, IDoor> SendDoorStateMethod { get; set; }
-		public void SendDoorState(Region region, IDoor door)
+		public Action<TestPacketLib, Region, GameDoorBase> SendDoorStateMethod { get; set; }
+		public void SendDoorState(Region region, GameDoorBase door)
 		{
 			if (SendDoorStateMethod != null) SendDoorStateMethod(this, region, door);
 		}

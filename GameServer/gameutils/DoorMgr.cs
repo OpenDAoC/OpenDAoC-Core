@@ -36,7 +36,7 @@ namespace DOL.GS
 
         private static readonly object Lock = new object();
 
-		private static Dictionary<int, List<IDoor>> m_doors = new Dictionary<int, List<IDoor>>();
+		private static Dictionary<int, List<GameDoorBase>> m_doors = new Dictionary<int, List<GameDoorBase>>();
 
 		public const string WANT_TO_ADD_DOORS = "WantToAddDoors";
 
@@ -65,9 +65,9 @@ namespace DOL.GS
 			{
 				lock (Lock)
 				{
-					foreach (List<IDoor> doorList in m_doors.Values)
+					foreach (List<GameDoorBase> doorList in m_doors.Values)
 					{
-						foreach (IDoor door in doorList)
+						foreach (GameDoorBase door in doorList)
 						{
 							if (door is GameKeepDoor keepDoor && keepDoor.IsAttackableDoor)
 								keepDoor.SaveIntoDatabase();
@@ -84,7 +84,7 @@ namespace DOL.GS
 
 		public static bool LoadDoor(DBDoor door)
 		{
-			IDoor mydoor = null;
+			GameDoorBase mydoor = null;
 			ushort zone = (ushort)(door.InternalID / 1000000);
 
 			Zone currentZone = WorldMgr.GetZone(zone);
@@ -117,17 +117,17 @@ namespace DOL.GS
 			return true;
 		}
 
-	    public static void RegisterDoor(IDoor door)
+	    public static void RegisterDoor(GameDoorBase door)
 	    {
 	        lock (Lock)
 	        {
 	            if (!m_doors.ContainsKey(door.DoorID))
 	            {
-	                List<IDoor> createDoorList = new List<IDoor>();
+	                List<GameDoorBase> createDoorList = new List<GameDoorBase>();
 	                m_doors.Add(door.DoorID, createDoorList);
 	            }
 
-	            List<IDoor> addDoorList = m_doors[door.DoorID];
+	            List<GameDoorBase> addDoorList = m_doors[door.DoorID];
 	            addDoorList.Add(door);
 	        }
 	    }
@@ -144,7 +144,7 @@ namespace DOL.GS
 		/// This function get the door object by door index
 		/// </summary>
 		/// <returns>return the door with the index</returns>
-		public static List<IDoor> getDoorByID(int id)
+		public static List<GameDoorBase> getDoorByID(int id)
 		{
 			if (m_doors.ContainsKey(id))
 			{
@@ -152,7 +152,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				return new List<IDoor>();
+				return new List<GameDoorBase>();
 			}
 		}
 	}

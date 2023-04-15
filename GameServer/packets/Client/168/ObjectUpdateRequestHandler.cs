@@ -36,7 +36,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			foreach (GameStaticItem item in client.Player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 				client.Out.SendObjectCreate(item);
 
-			foreach (IDoor door in client.Player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+			foreach (GameDoorBase door in client.Player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 				client.Player.SendDoorUpdate(door);
 
 			//housing

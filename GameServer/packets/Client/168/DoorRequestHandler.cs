@@ -245,12 +245,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				var player = (GamePlayer) m_actionSource;
-				List<IDoor> doorList = DoorMgr.getDoorByID(m_doorId);
+				List<GameDoorBase> doorList = DoorMgr.getDoorByID(m_doorId);
 
 				if (doorList.Count > 0)
 				{
 					bool success = false;
-					foreach (IDoor mydoor in doorList)
+					foreach (GameDoorBase mydoor in doorList)
 					{
 						if (success)
 							break;

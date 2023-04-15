@@ -364,7 +364,7 @@ namespace DOL.GS
 					var objKey = objEntry.Key;
 					GameObject obj = WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2);
 					// We have a Door in cache that is not in vincinity
-					if (obj is IDoor && !doors.Contains(obj) && (nowTicks - objEntry.Value) >= GetPlayerItemUpdateInterval)
+					if (obj is GameDoorBase && !doors.Contains(obj) && (nowTicks - objEntry.Value) >= GetPlayerItemUpdateInterval)
 					{
 						long dummy;
 						player.Client.GameObjectUpdateArray.TryRemove(objKey, out dummy);
@@ -380,13 +380,11 @@ namespace DOL.GS
 			try
 			{
 				// Now Send remaining doors
-				foreach (IDoor ldoor in doors)
+				foreach (GameDoorBase door in doors)
 				{
-					IDoor door = ldoor;
-
 					// Get last update time
 					long lastUpdate;
-					if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(((GameObject)door).CurrentRegionID, (ushort)door.ObjectID), out lastUpdate))
+					if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(door.CurrentRegionID, (ushort)door.ObjectID), out lastUpdate))
 					{
 						// This Door Needs Update
 						if ((nowTicks - lastUpdate) >= GetPlayerItemUpdateInterval)

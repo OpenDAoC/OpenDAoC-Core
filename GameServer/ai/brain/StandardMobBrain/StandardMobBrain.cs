@@ -1381,7 +1381,7 @@ namespace DOL.AI.Brain
         {
             ushort range = (ushort)((ThinkInterval / 800) * Body.CurrentWayPoint.MaxSpeed);
 
-            foreach (IDoor door in Body.CurrentRegion.GetDoorsInRadius(Body.X, Body.Y, Body.Z, range, false))
+            foreach (GameDoorBase door in Body.CurrentRegion.GetDoorsInRadius(Body.X, Body.Y, Body.Z, range, false))
             {
                 if (door is GameKeepDoor)
                 {

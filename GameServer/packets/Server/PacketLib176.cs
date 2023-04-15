@@ -156,10 +156,10 @@ namespace DOL.GS.PacketHandler
 	            }
 	            pak.WritePascalString(name.Length > 48 ? name.Substring(0, 48) : name);
 	
-				if (obj is IDoor)
+				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
-					pak.WriteInt((uint)(obj as IDoor).DoorID);
+					pak.WriteInt((uint) door.DoorID);
 				}
 				else pak.WriteByte(0x00);
 				SendTCP(pak);

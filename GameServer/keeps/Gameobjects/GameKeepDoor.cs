@@ -18,13 +18,11 @@
  */
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using System.Linq;
-
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
-
 using log4net;
 
 namespace DOL.GS.Keeps
@@ -32,7 +30,7 @@ namespace DOL.GS.Keeps
 	/// <summary>
 	/// keep door in world
 	/// </summary>
-	public class GameKeepDoor : GameLiving, IDoor, IKeepItem
+	public class GameKeepDoor : GameDoorBase, IKeepItem
 	{
 		private const int DOOR_CLOSE_THRESHOLD = 15;
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -51,7 +49,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// The door index which is unique
 		/// </summary>
-		public int DoorID
+		public override int DoorID
 		{
 			get { return m_doorID; }
 			set { m_doorID = value; }
@@ -60,7 +58,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Get the ZoneID of this door
 		/// </summary>
-		public ushort ZoneID
+		public override ushort ZoneID
 		{
 			get { return (ushort)(DoorID / 1000000); }
 		}
@@ -93,7 +91,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// This flag is send in packet(keep door = 4, regular door = 0)
 		/// </summary>
-		public uint Flag
+		public override uint Flag
 		{
 			get
 			{
@@ -126,7 +124,7 @@ namespace DOL.GS.Keeps
 		/// door state (open or closed)
 		/// call the broadcast of state in area
 		/// </summary>
-		public eDoorState State
+		public override eDoorState State
 		{
 			get { return m_state; }
 			set
@@ -798,14 +796,14 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// call when player try to open door
 		/// </summary>
-		public void Open(GameLiving opener = null)
+		public override void Open(GameLiving opener = null)
 		{
 			//do nothing because gamekeep must be destroyed to be open
 		}
 		/// <summary>
 		/// call when player try to close door
 		/// </summary>
-		public void Close(GameLiving closer = null)
+		public override void Close(GameLiving closer = null)
 		{
 			//do nothing because gamekeep must be destroyed to be open
 		}
@@ -932,6 +930,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
+		public override void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
 	}
 }

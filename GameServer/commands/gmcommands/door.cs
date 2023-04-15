@@ -273,7 +273,7 @@ namespace DOL.GS.Commands
 				if (args.Length > 2)
 				{
 					doorSound = Convert.ToUInt16(args[2]);
-					targetDoor.Flag = doorSound;
+					targetDoor.SetFlag(doorSound);
 					targetDoor.SaveIntoDatabase();
 					client.Out.SendMessage("You set the door sound to " + doorSound, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}

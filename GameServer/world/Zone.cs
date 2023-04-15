@@ -335,7 +335,7 @@ namespace DOL.GS
                 objectType = eGameObjectType.NPC;
             else if (gameObject is GameStaticItem)
                 objectType = eGameObjectType.ITEM;
-            else if (gameObject is IDoor)
+            else if (gameObject is GameDoorBase)
                 objectType = eGameObjectType.DOOR;
             else
                 return;

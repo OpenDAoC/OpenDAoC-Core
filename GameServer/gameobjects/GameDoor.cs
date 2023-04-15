@@ -16,32 +16,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using DOL.GS.Utils;
-using DOL.GS.Quests;
-using System.Threading;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PropertyCalc;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.GS.PacketHandler.Client.v168;
 
 namespace DOL.GS
 {
 	/// <summary>
 	/// GameDoor is class for regular door
 	/// </summary>
-	public class GameDoor : GameLiving, IDoor
+	public class GameDoor : GameDoorBase
 	{
 		private bool m_openDead = false;
 		private static Timer m_timer;
@@ -155,7 +140,7 @@ namespace DOL.GS
 		/// <summary>
 		/// door index which is unique
 		/// </summary>
-		public virtual int DoorID
+		public override int DoorID
 		{
 			get { return m_doorID; }
 			set { m_doorID = value; }
@@ -172,7 +157,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the ZoneID of this door
 		/// </summary>
-		public virtual ushort ZoneID
+		public override ushort ZoneID
 		{
 			get { return (ushort)(DoorID / 1000000); }
 		}
@@ -190,10 +175,14 @@ namespace DOL.GS
 		/// <summary>
 		/// This is used to identify what sound a door makes when open / close
 		/// </summary>
-		public virtual uint Flag
+		public override uint Flag
 		{
 			get { return m_flags; }
-			set { m_flags = value; }
+		}
+
+		public void SetFlag(uint flag)
+		{
+			m_flags = flag;
 		}
 
 		/// <summary>
@@ -204,7 +193,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The state of door (open or close)
 		/// </summary>
-		public virtual eDoorState State
+		public override eDoorState State
 		{
 			get { return m_state; }
 			set
@@ -228,7 +217,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Call this function to open the door
 		/// </summary>
-		public virtual void Open(GameLiving opener = null)
+		public override void Open(GameLiving opener = null)
 		{
 			if (Locked == 0)
 				this.State = eDoorState.Open;
@@ -258,7 +247,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Call this function to close the door
 		/// </summary>
-		public virtual void Close(GameLiving closer = null)
+		public override void Close(GameLiving closer = null)
 		{
 			if (!m_openDead)
 				this.State = eDoorState.Closed;
@@ -271,7 +260,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="npc"></param>
 		/// <param name="open"></param>
-		public virtual void NPCManipulateDoorRequest(GameNPC npc, bool open)
+		public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
 		{
 			npc.TurnTo(this.X, this.Y);
 			if (open && m_state != eDoorState.Open)

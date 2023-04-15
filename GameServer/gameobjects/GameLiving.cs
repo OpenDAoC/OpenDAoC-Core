@@ -6171,7 +6171,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (IDoor door in GetDoorsInRadius(150))
+			foreach (GameDoorBase door in GetDoorsInRadius(150))
 			{
 				if (door is GameKeepDoor && (str.Contains("enter") || str.Contains("exit")))
 				{

@@ -383,9 +383,9 @@ namespace DOL.GS
         /// </summary>
         /// <param name="door">the door</param>
         /// <param name="forceUpdate">force a send of the door state regardless of status</param>
-        public void SendDoorUpdate(IDoor door, bool forceUpdate = false)
+        public void SendDoorUpdate(GameDoorBase door, bool forceUpdate = false)
         {
-            Out.SendObjectCreate(door as GameObject);
+            Out.SendObjectCreate(door);
 
             if (m_doorUpdateList == null || m_doorUpdateRegionID != CurrentRegionID)
             {
@@ -400,7 +400,7 @@ namespace DOL.GS
                 m_doorUpdateList[door.ObjectID] = door.State;
             }
 
-            Out.SendObjectUpdate(door as GameObject);
+            Out.SendObjectUpdate(door);
         }
         #endregion
 		

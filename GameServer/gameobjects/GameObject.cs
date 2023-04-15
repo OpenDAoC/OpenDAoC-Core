@@ -1204,7 +1204,7 @@ namespace DOL.GS
 			return new();
 		}
 
-		public HashSet<GameDoor> GetDoorsInRadius(ushort radiusToCheck)
+		public HashSet<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			if (CurrentRegion != null)
 			{

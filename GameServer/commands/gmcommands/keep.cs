@@ -2146,9 +2146,9 @@ namespace DOL.GS.Commands
 						if (radius > 0)
 							k.Area.ChangeRadius(radius);
 
-						foreach (IDoor door in client.Player.GetDoorsInRadius(3000))
+						foreach (GameDoorBase door in client.Player.GetDoorsInRadius(3000))
 						{
-							(door as GameObject).RemoveFromWorld();
+							door.RemoveFromWorld();
 							GameKeepDoor d = new GameKeepDoor();
 							d.CurrentRegionID = (ushort)keep.Region;
 							d.Name = door.Name;

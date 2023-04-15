@@ -182,7 +182,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (IDoor door in this.CurrentRegion.GetDoorsInRadius(GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius, false))
+			foreach (GameDoorBase door in this.CurrentRegion.GetDoorsInRadius(GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius, false))
 			{
 				if (Owner != null && door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(Owner, (GameKeepDoor)door, true))
 				{

@@ -1555,9 +1555,9 @@ namespace DOL.GS
             return GetInRadius<GamePlayer>(Zone.eGameObjectType.PLAYER, x, y, z, radius, ignoreZ);
         }
 
-        public HashSet<GameDoor> GetDoorsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
+        public HashSet<GameDoorBase> GetDoorsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameDoor>(Zone.eGameObjectType.DOOR, x, y, z, radius, ignoreZ);
+            return GetInRadius<GameDoorBase>(Zone.eGameObjectType.DOOR, x, y, z, radius, ignoreZ);
         }
 
         #endregion
@@ -1615,13 +1615,13 @@ namespace DOL.GS
 	/// </summary>
 	public class DoorDistEntry
 	{
-		public DoorDistEntry(IDoor d, int distance)
+		public DoorDistEntry(GameDoorBase d, int distance)
 		{
 			Door = d;
 			Distance = distance;
 		}
 
-		public IDoor Door;
+		public GameDoorBase Door;
 		public int Distance;
 	}
 
