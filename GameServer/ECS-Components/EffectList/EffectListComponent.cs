@@ -34,7 +34,7 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
-                    if (EntityManagerId == -1)
+                    if (EntityManagerId == EntityManager.UNSET_ID)
                         EntityManagerId = EntityManager.Add(EntityManager.EntityType.EffectListComponent, this);
 
                     // Check to prevent crash from holding sprint button down.

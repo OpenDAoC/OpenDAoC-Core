@@ -29,9 +29,8 @@ namespace DOL.AI
 	/// </summary>
 	public abstract class ABrain
 	{
-		private readonly object m_LockObject = new object(); // dummy object for locking - Mannen. // use this object for locking, instead of locking on 'this'
-
 		public FSM FSM { get; set; }
+		public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
 		public virtual GameNPC Body { get; set; }
 		public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
 		public virtual int ThinkInterval { get; set; } = 2500;
@@ -58,15 +57,9 @@ namespace DOL.AI
 		/// <returns>true if started</returns>
 		public virtual bool Start()
 		{
-			//Do not start brain if we are dead or inactive
-			if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
-				return false;
-			
-			lock (m_LockObject)
-			{
-				if (IsActive)
-					return false;
-			}
+			if (EntityManagerId == EntityManager.UNSET_ID)
+				EntityManagerId = EntityManager.Add(EntityManager.EntityType.Brain, this);
+
 			return true;
 		}
 
@@ -76,11 +69,9 @@ namespace DOL.AI
 		/// <returns>true if stopped</returns>
 		public virtual bool Stop()
 		{
-			lock (m_LockObject)
-			{
-				if (!IsActive)
-					return false;
-			}
+			if (EntityManagerId != EntityManager.UNSET_ID)
+				EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Brain, EntityManagerId);
+
 			return true;
 		}
 

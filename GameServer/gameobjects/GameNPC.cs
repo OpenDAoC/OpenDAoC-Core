@@ -56,6 +56,7 @@ namespace DOL.GS
 		/// Tested - min distance for mob sticking within combat range to player is 25 (Edit Navelator, 25 stops them too early, 20 keeps them in range)
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 20;
+		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
 
 		private int m_databaseLevel;
 
@@ -717,13 +718,9 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The last time this NPC sent the 0x09 update packet
-		/// </summary>
-		protected volatile uint m_lastUpdateTickCount = uint.MinValue;
-		/// <summary>
 		/// The last time this NPC was actually updated to at least one player
-		/// </summary>
-		protected volatile uint m_lastVisibleToPlayerTick = uint.MinValue;
+		/// </summary> 
+		protected long m_lastVisibleToPlayerTick = -VISIBLE_TO_PLAYER_SPAN; // Prevents 'IsVisibleToPlayers' from returning true during the first server tick.
 
 		/// <summary>
 		/// Gets or Sets the flags of this npc
@@ -764,7 +761,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsVisibleToPlayers
 		{
-			get { return (uint)GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < 60000; }
+			get { return GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
 		}
 
 		/// <summary>
@@ -1303,14 +1300,6 @@ namespace DOL.GS
 
 				return 0;
 			}
-		}
-
-		/// <summary>
-		/// Gets the last time this mob was updated
-		/// </summary>
-		public uint LastUpdateTickCount
-		{
-			get { return m_lastUpdateTickCount; }
 		}
 
 		/// <summary>
@@ -3038,64 +3027,58 @@ namespace DOL.GS
 		#region Add/Remove/Create/Remove/Update
 
 		/// <summary>
-		/// Broadcasts the NPC Update to all players around
-		/// </summary>
-		public override void BroadcastUpdate()
-		{
-			base.BroadcastUpdate();
-
-			m_lastUpdateTickCount = (uint)GameLoop.GameLoopTime;
-		}
-
-		/// <summary>
 		/// callback that npc was updated to the world
 		/// so it must be visible to at least one player
 		/// </summary>
 		public void NPCUpdatedCallback()
 		{
-			m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
+			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
+
 			lock (BrainSync)
 			{
-				ABrain brain = Brain;
-				if (brain != null)
-					brain.Start();
+				Brain?.Start();
 			}
 		}
+
 		/// <summary>
 		/// Adds the npc to the world
 		/// </summary>
 		/// <returns>true if the npc has been successfully added</returns>
 		public override bool AddToWorld()
 		{
-			if (!base.AddToWorld()) return false;
+			if (!base.AddToWorld())
+				return false;
 
 			if (MAX_PASSENGERS > 0)
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
 			bool anyPlayer = false;
+
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				if (player == null) continue;
+				if (player == null)
+					continue;
+
 				player.Out.SendNPCCreate(this);
+
 				if (m_inventory != null)
 					player.Out.SendLivingEquipmentUpdate(this);
 
-				// If any player was initialized, update last visible tick to enable brain
+				// If any player was initialized, update last visible tick to enable brain.
 				anyPlayer = true;
 			}
 
 			if (anyPlayer)
-				m_lastVisibleToPlayerTick = (uint)GameLoop.GameLoopTime;
+				m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
 
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
 			m_spawnPoint.Z = Z;
 			m_spawnHeading = Heading;
+
 			lock (BrainSync)
 			{
-				ABrain brain = Brain;
-				if (brain != null)
-					brain.Start();
+				Brain?.Start();
 			}
 
 			if (Mana <= 0 && MaxMana > 0)
@@ -3161,6 +3144,7 @@ namespace DOL.GS
 
 			if (Flags.HasFlag(eFlags.STEALTH))
 				m_wasStealthed = true;
+
 			return true;
 		}
 
@@ -3182,12 +3166,11 @@ namespace DOL.GS
 		{
 			if (IsMovingOnPath)
 				StopMovingOnPath();
+
 			if (MAX_PASSENGERS > 0)
 			{
 				foreach (GamePlayer player in CurrentRiders)
-				{
 					player.DismountSteed(true);
-				}
 			}
 
 			if (ObjectState == eObjectState.Active)
@@ -3195,13 +3178,15 @@ namespace DOL.GS
 				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					player.Out.SendObjectRemove(this);
 			}
-			if (!base.RemoveFromWorld()) return false;
+
+			if (!base.RemoveFromWorld())
+				return false;
 
 			lock (BrainSync)
 			{
-				ABrain brain = Brain;
-				brain.Stop();
+				Brain.Stop();
 			}
+
 			EffectList.CancelAll();
 
 			if (ShowTeleporterIndicator && m_teleporterIndicator != null)
@@ -3209,9 +3194,6 @@ namespace DOL.GS
 				m_teleporterIndicator.RemoveFromWorld();
 				m_teleporterIndicator = null;
 			}
-
-			if (m_respawnInterval < 0)
-				EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Npc, EntityManagerId);
 
 			return true;
 		}
@@ -3318,11 +3300,12 @@ namespace DOL.GS
 					m_respawnTimer = null;
 				}
 			}
+
 			lock (BrainSync)
 			{
-				ABrain brain = Brain;
-				brain.Stop();
+				Brain.Stop();
 			}
+
 			StopFollowing();
 			TempProperties.removeProperty(CHARMED_TICK_PROP);
 			base.Delete();
@@ -5775,8 +5758,6 @@ namespace DOL.GS
 				m_ownBrain = defaultBrain;
 				m_ownBrain.Body = this;
 			}
-
-			EntityManagerId = EntityManager.Add(EntityManager.EntityType.Npc, this);
 		}
 
 		/// <summary>

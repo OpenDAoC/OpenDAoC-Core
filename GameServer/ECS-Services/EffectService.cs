@@ -280,7 +280,7 @@ namespace DOL.GS
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
 
-            if (effect.EntityManagerId == -1)
+            if (effect.EntityManagerId == EntityManager.UNSET_ID)
                 effect.EntityManagerId = EntityManager.Add(EntityManager.EntityType.Effect, effect);
         }
 

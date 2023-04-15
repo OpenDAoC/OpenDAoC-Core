@@ -80,7 +80,7 @@ namespace DOL.GS
 
             _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
 
-            if (EntityManagerId == -1)
+            if (EntityManagerId == EntityManager.UNSET_ID)
                 EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
 
             return true;

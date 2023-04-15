@@ -68,6 +68,7 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
+        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
         
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer

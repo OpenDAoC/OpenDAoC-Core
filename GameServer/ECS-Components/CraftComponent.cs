@@ -53,7 +53,7 @@ namespace DOL.GS
             {
                 CraftAction = new CraftAction(_owner, craftingTime, recipe, skill);
 
-                if (EntityManagerId == -1)
+                if (EntityManagerId == EntityManager.UNSET_ID)
                     EntityManagerId = EntityManager.Add(EntityManager.EntityType.CraftComponent, this);
             }
         }

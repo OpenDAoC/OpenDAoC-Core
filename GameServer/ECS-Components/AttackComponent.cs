@@ -579,7 +579,7 @@ namespace DOL.GS
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
 
-                if (EntityManagerId == -1)
+                if (EntityManagerId == EntityManager.UNSET_ID)
                     EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
             }
         }

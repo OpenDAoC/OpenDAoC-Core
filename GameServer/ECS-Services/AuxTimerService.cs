@@ -129,10 +129,7 @@ namespace DOL.GS
 
                 log.Debug("---------------------------------------------------------------------------");
 
-                if (DebugTickCount > 1)
-                    DebugTickCount--;
-                else
-                    DebugTickCount = 0;
+                DebugTickCount--;
             }
 
             // Diagnostics.StopPerfCounter(SERVICE_NAME);

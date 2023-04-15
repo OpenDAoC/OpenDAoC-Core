@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DOL.AI;
 using log4net;
 
 namespace DOL.GS
@@ -13,7 +14,7 @@ namespace DOL.GS
         public enum EntityType
         {
             Player,
-            Npc,
+            Brain,
             Effect,
             AttackComponent,
             CastingComponent,
@@ -25,7 +26,7 @@ namespace DOL.GS
         private static Dictionary<EntityType, dynamic> _entityArrays = new()
         {
             { EntityType.Player, new EntityArrayWrapper<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
-            { EntityType.Npc, new EntityArrayWrapper<GameNPC>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EntityType.Brain, new EntityArrayWrapper<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
             { EntityType.Effect, new EntityArrayWrapper<ECSGameEffect>(250) },
             { EntityType.AttackComponent, new EntityArrayWrapper<AttackComponent>(1250) },
             { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1250) },
