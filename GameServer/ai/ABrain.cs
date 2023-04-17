@@ -34,7 +34,6 @@ namespace DOL.AI
 		public virtual GameNPC Body { get; set; }
 		public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
 		public virtual int ThinkInterval { get; set; } = 2500;
-		public virtual int CastInterval { get; set; } = 2500;
 		public virtual long LastThinkTick { get; set; }
 
 		/// <summary>
@@ -43,7 +42,7 @@ namespace DOL.AI
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return new StringBuilder(32)
+			return new StringBuilder()
 				.Append("body name='").Append(Body==null?"(null)":Body.Name)
 				.Append("' (id=").Append(Body==null?"(null)":Body.ObjectID.ToString())
 				.Append("), active=").Append(IsActive)
@@ -88,6 +87,6 @@ namespace DOL.AI
 		/// </summary>
 		public abstract void Think();
 
-		public abstract void KillFSM();       
-    }
+		public abstract void KillFSM();
+	}
 }

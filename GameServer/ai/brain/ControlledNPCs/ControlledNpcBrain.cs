@@ -17,9 +17,9 @@
  *
  */
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
@@ -110,15 +110,6 @@ namespace DOL.AI.Brain
 		{
 			get { return m_isMainPet; }
 			set { m_isMainPet = value; }
-		}
-
-		/// <summary>
-		/// The number of seconds/10 this brain will stay active even when no player is close
-		/// Overriden. Returns int.MaxValue
-		/// </summary>
-		protected override int NoPlayersStopDelay
-		{
-			get { return int.MaxValue; }
 		}
 
 		/// <summary>

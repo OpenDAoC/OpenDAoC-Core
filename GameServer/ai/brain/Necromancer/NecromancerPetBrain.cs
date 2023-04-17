@@ -47,7 +47,6 @@ namespace DOL.AI.Brain
         }
 
         public override int ThinkInterval => 500;
-        public override int CastInterval => 500;
 
         /// <summary>
         /// Brain main loop.
