@@ -1348,7 +1348,7 @@ namespace DOL.GS
                 double specModifier = CalculateSpecModifier(ad.Target, weaponForSpecModifier);
                 double modifiedWeaponSkill = CalculateModifiedWeaponSkill(ad.Target, weapon, specModifier);
                 double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation);
-                double damageMod = Math.Min(3.0, modifiedWeaponSkill / armorMod) * specModifier;
+                double damageMod = Math.Min(3.0, modifiedWeaponSkill / armorMod);
 
                 if (owner is GamePlayer playerOwner2)
                 {
