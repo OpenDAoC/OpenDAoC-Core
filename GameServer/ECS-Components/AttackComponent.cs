@@ -1352,6 +1352,8 @@ namespace DOL.GS
 
                 if (owner is GamePlayer playerOwner2)
                 {
+                    damage *= damageMod;
+
                     if (playerOwner2.UseDetailedCombatLog)
                     {
                         playerOwner2.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}",
