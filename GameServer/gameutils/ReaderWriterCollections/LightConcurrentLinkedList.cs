@@ -165,7 +165,7 @@ namespace DOL.GS
 
             public void Dispose()
             {
-                _lock.ExitRead();
+                _lock?.ExitRead();
             }
 
             private void Lock(INode node)
