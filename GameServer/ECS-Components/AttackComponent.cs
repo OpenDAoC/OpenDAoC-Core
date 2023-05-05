@@ -2750,7 +2750,10 @@ namespace DOL.GS
         /// <returns>The amount of critical damage</returns>
         public int GetMeleeCriticalDamage(AttackData ad, WeaponAction action, InventoryItem weapon)
         {
-            if (owner is GamePlayer && Util.Chance(AttackCriticalChance(action, weapon)))
+            if (!Util.Chance(AttackCriticalChance(action, weapon)))
+                return 0;
+
+            if (owner is GamePlayer)
             {
                 // triple wield prevents critical hits
                 if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null)
@@ -2787,7 +2790,7 @@ namespace DOL.GS
                 critMax = Math.Max(critMin, critMax);
                 return Util.Random(critMin, critMax);
             }
-            else if (Util.Chance(AttackCriticalChance(action, weapon)))
+            else
             {
                 int maxCriticalDamage = (ad.Target is GamePlayer) ? ad.Damage / 2 : ad.Damage;
                 int minCriticalDamage = (int) (ad.Damage * MinMeleeCriticalDamage);
@@ -2797,8 +2800,6 @@ namespace DOL.GS
 
                 return Util.Random(minCriticalDamage, maxCriticalDamage);
             }
-
-            return 0;
         }
 
         public int GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, InventoryItem weapon)
