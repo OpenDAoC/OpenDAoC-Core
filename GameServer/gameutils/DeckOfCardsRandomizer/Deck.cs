@@ -1,12 +1,7 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.Json.Serialization;
-using DOL.GS;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace DOL.GS.Utils;
 
@@ -46,7 +41,7 @@ public class PlayerDeck
                     //add a "bonus deck" of high numbers X-99
                     _cards.Push(j);
                 }
-            }            
+            }
         }
     }
 
@@ -67,7 +62,7 @@ public class PlayerDeck
         int[] preshuffle = null;
         lock (_cardLock)
         {
-            preshuffle = _cards.ToArray();    
+            preshuffle = _cards.ToArray();
         }
 
         //Fisher-Yates shuffle algorithm
@@ -89,7 +84,7 @@ public class PlayerDeck
             foreach (var i in preshuffle)
             {
                 _cards.Push(i);
-            }    
+            }
         }
     }
 
@@ -98,9 +93,8 @@ public class PlayerDeck
         if (_cards.Count < 2)
             ResetDeck();
 
-        int output = 0;
-        _cards.TryPop(out output);
-        return output != 0 ? output : Util.Random(99);
+        _cards.TryPop(out int output);
+        return output;
     }
 
     public double GetPseudoDouble()
@@ -110,23 +104,22 @@ public class PlayerDeck
             ResetDeck();
             Shuffle(); //shuffle it for fun
         }
-        
+
         //we append two ints together to simulate more accuracy on the double
         //subtract 1 to only generate values 0-99
         //useful to get outputs of 0-9999 instead of 11-100100
-        int first = 0;
-        _cards.TryPop(out first);
-        if (first == 0) first = Util.CryptoNextInt(99);
-        int second = Util.CryptoNextInt(99); //just use a simple random for the .XX values
+
+        _cards.TryPop(out int first);
+        first--;
+        int second = Util.CryptoNextInt(100); //just use a simple random for the .XX values
 
         //append our ints together
         //if we are unable to parse numbers for any reason, use a 0
-        int append;
-        if (!int.TryParse(first.ToString() + second.ToString("D2"), out append)) append = 0;
-            
-        
+        if (!int.TryParse(first.ToString() + second.ToString("D2"), out int append))
+            append = 0;
+
         //divide by max possible value to simulate 0-1 output of doubles
-        double pseudoDouble = append / (double)9999;
+        double pseudoDouble = append / 9999.0;
         return pseudoDouble;
     }
 
