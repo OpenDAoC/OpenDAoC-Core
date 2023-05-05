@@ -23,7 +23,6 @@ using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
-using DOL.GS.Styles;
 using DOL.Language;
 
 namespace DOL.GS
@@ -383,12 +382,6 @@ namespace DOL.GS
 			}
 
 			base.OnAttackedByEnemy(ad);
-		}
-
-		public AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
-		{
-			((NecromancerPetBrain)Brain).CheckAttackSpellQueue();
-			return attackComponent.LivingMakeAttack(null, target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 		}
 
 		public override void ModifyAttack(AttackData attackData)

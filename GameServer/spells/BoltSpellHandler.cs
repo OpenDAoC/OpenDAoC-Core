@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
             // Resources indicate that resistances aren't applied on the physical part of the damage.
             damage = base.ModifyDamageWithTargetResist(ad, damage / 2);
 
-            if (!ad.Target.attackComponent.CheckBlock(null, ad, null, 0.0) || ad.Target.attackComponent.CheckGuard(ad, false, 0.0))
+            if (!ad.Target.attackComponent.CheckBlock(ad, 0.0) || ad.Target.attackComponent.CheckGuard(ad, false, 0.0))
             {
                 // This is normally set in 'AttackComponent.CalculateEnemyAttackResult', but we don't call it.
                 if (ad.Target is GamePlayer playerTarget)

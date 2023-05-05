@@ -605,7 +605,7 @@ namespace DOL.GS.Spells
                 ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0) ad.AttackResult = DOL.GS.eAttackResult.Missed;
-                ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, weapon);
+                ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, null, weapon);
             }
             else
             {
