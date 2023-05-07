@@ -713,9 +713,7 @@ namespace DOL.GS.Spells
 
 			if (targetType == "pet")
 			{
-				if (selectedTarget == null ||
-					!Caster.IsControlledNPC(selectedTarget as GameNPC) ||
-					(selectedTarget != null && selectedTarget != Caster.ControlledBrain?.Body && this is not TurretsReleaseSpellHandler))
+				if (selectedTarget == null || ((selectedTarget as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
 				{
 					if (!quiet)
 						MessageToCaster("You must cast this spell on a creature you are controlling.", eChatType.CT_System);
@@ -723,7 +721,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 			}
-			if (targetType == "area")
+			else if (targetType == "area")
 			{
 				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 				{
@@ -1241,13 +1239,14 @@ namespace DOL.GS.Spells
 						// Self spells should ignore whatever we actually have selected.
 						Target = Caster;
 					else if (Spell.Target == "Pet")
-					{ 
-						// Pet spells are automatically casted on the controlled NPC.
-						if (Target == null ||!Caster.IsControlledNPC(Target as GameNPC) || (Target != null && Target != Caster.ControlledBrain?.Body))
-						{
-							if (Caster.ControlledBrain != null && Caster.ControlledBrain.Body != null)
-								Target = Caster.ControlledBrain.Body;
-						}
+					{
+						// Get the current target if we don't have one already.
+						if (Target == null)
+							Target = Caster?.TargetObject as GameLiving;
+
+						// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
+						if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
+							Target = Caster.ControlledBrain.Body;
 					}
 					else
 					{
@@ -1708,73 +1707,13 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual IList<GameLiving> SelectTargets(GameObject castTarget)
 		{
-			var list = new List<GameLiving>(8);
+			List<GameLiving> list = new(8);
 			GameLiving target = castTarget as GameLiving;
 			string modifiedTarget = Spell.Target.ToLower();
-			ushort modifiedRadius = (ushort)Spell.Radius;
-
-			/*
-			GameSpellEffect TargetMod = SpellHandler.FindEffectOnTarget(m_caster, "TargetModifier");
-			if (TargetMod != null)
-			{
-				if (modifiedTarget == "enemy" || modifiedTarget == "realm" || modifiedTarget == "group")
-				{
-					newtarget = (int)TargetMod.Spell.Value;
-
-					switch (newtarget)
-					{
-						case 0: // Apply on heal single
-							if (m_spell.SpellType == (byte)eSpellType.Heal && modifiedTarget == "realm")
-							{
-								modifiedTarget = "group";
-								targetchanged = true;
-							}
-							break;
-						case 1: // Apply on heal group
-							if (m_spell.SpellType == (byte)eSpellType.Heal && modifiedTarget == "group")
-							{
-								modifiedTarget = "realm";
-								modifiedRadius = (ushort)m_spell.Range;
-								targetchanged = true;
-							}
-							break;
-						case 2: // apply on enemy
-							if (modifiedTarget == "enemy")
-							{
-								if (m_spell.Radius == 0)
-									modifiedRadius = 450;
-								if (m_spell.Radius != 0)
-									modifiedRadius += 300;
-								targetchanged = true;
-							}
-							break;
-						case 3: // Apply on buff
-							if (m_spell.Target.ToLower() == "group"
-								&& m_spell.Pulse != 0)
-							{
-								modifiedTarget = "realm";
-								modifiedRadius = (ushort)m_spell.Range;
-								targetchanged = true;
-							}
-							break;
-					}
-				}
-				if (targetchanged)
-				{
-					if (TargetMod.Duration < 65535)
-						TargetMod.Cancel(false);
-				}
-			}*/
+			ushort modifiedRadius = (ushort) Spell.Radius;
 
 			if (modifiedTarget == "pet" && !HasPositiveEffect)
-			{
 				modifiedTarget = "enemy";
-				//[Ganrod] Nidel: can cast TurretPBAoE on selected Pet/Turret
-				if (Spell.SpellType != (byte)eSpellType.TurretPBAoE)
-				{
-					target = Caster.ControlledBrain.Body;
-				}
-			}
 
 			#region Process the targets
 			switch (modifiedTarget)
@@ -2219,6 +2158,7 @@ namespace DOL.GS.Spells
 					#endregion
 			}
 			#endregion
+
 			return list;
 		}
 
@@ -3820,20 +3760,19 @@ namespace DOL.GS.Spells
 		public virtual void DamageTarget(AttackData ad, bool showEffectAnimation, int attackResult)
 		{
 			ad.AttackResult = eAttackResult.HitUnstyled;
-			if (showEffectAnimation)
-			{
-				SendEffectAnimation(ad.Target, 0, false, 1);
-			}
 
-			// send animation before dealing damage else dead livings show no animation
+			// Send animation before dealing damage else dying livings show no animation
+			if (showEffectAnimation)
+				SendEffectAnimation(ad.Target, 0, false, 1);
+
 			ad.Target.OnAttackedByEnemy(ad);
 			ad.Attacker.DealDamage(ad);
-			if (ad.Damage == 0 && ad.Target is GameNPC)
+
+			if (ad.Damage == 0 && ad.Target is GameNPC targetNpc)
 			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-				
+				if (targetNpc.Brain is IOldAggressiveBrain aggroBrain)
+					aggroBrain.AddToAggroList(Caster, 0);
+
 				if (this is not DoTSpellHandler and not StyleBleeding)
 				{
 					if (Caster.Realm == 0 || ad.Target.Realm == 0)

@@ -16,87 +16,32 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Summary description for TurretPBAoESpellHandler.
-	/// </summary>
-	[SpellHandler("TurretPBAoE")]
-	public class PetPBAoE : DirectDamageSpellHandler
-	{
-		public PetPBAoE(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
-		{
-		}
+    /// <summary>
+    /// Summary description for TurretPBAoESpellHandler.
+    /// </summary>
+    [SpellHandler("TurretPBAoE")]
+    public class PetPBAoE : DirectDamageSpellHandler
+    {
+        public PetPBAoE(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
-		public override bool HasPositiveEffect {
-			get { return false; }
-		}
-		
-		public override bool CheckBeginCast(GameLiving selectedTarget)
-		{
-			if(!(Caster is GamePlayer))
-			{
-				return false;
-			}
-			/*
-			 * [Ganrod]Nidel: Like 1.90 EU off servers
-			 * -Need Main Turret under our controle before casting.
-			 * -Select automatically Main controlled Turret if player don't have target or Turret target.
-			 * -Cast only on our turrets.
-			 */
-            if (Caster.ControlledBrain == null || Caster.ControlledBrain.Body == null)
-            {
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "PetPBAOE.CheckBeginCast.NoPet"), eChatType.CT_System);
-                return false;
-            }
-			TurretPet target = selectedTarget as TurretPet;
+        public override bool HasPositiveEffect => false;
 
-			if(target == null || !Caster.IsControlledNPC(target))
-			{
-				target = Caster.ControlledBrain.Body as TurretPet;
-				Target = target;
-			}
-			return base.CheckBeginCast(target);
-		}
+        public override bool CheckBeginCast(GameLiving selectedTarget)
+        {
+            // Allow the PBAoE to be casted on the main turret only.
+            Target = Caster.ControlledBrain?.Body;
+            return base.CheckBeginCast(Target);
+        }
 
-		public override void DamageTarget(AttackData ad, bool showEffectAnimation)
-		{
-			if(ad.Damage > 0 && ad.Target is GameNPC)
-			{
-				if(!(Caster is GamePlayer)) return;
-				IOldAggressiveBrain aggroBrain = ((GameNPC) ad.Target).Brain as IOldAggressiveBrain;
-				if(aggroBrain != null)
-				{
-					TurretPet turret = null;
-					if(Caster.TargetObject == null || !Caster.IsControlledNPC(Caster.TargetObject as TurretPet))
-					{
-						if(Caster.ControlledBrain != null && Caster.ControlledBrain.Body != null)
-						{
-							turret = Caster.ControlledBrain.Body as TurretPet;
-						}
-					}
-					else if(Caster.IsControlledNPC(Caster.TargetObject as TurretPet))
-					{
-						turret = Caster.TargetObject as TurretPet;
-					}
-
-					if(turret != null)
-					{
-						//pet will take aggro
-						AttackData turretAd = ad;
-						turretAd.Attacker = turret;
-						ad.Target.OnAttackedByEnemy(turretAd);
-
-						aggroBrain.AddToAggroList(turret, (ad.Damage + ad.CriticalDamage)*3);
-					}
-					aggroBrain.AddToAggroList(Caster, ad.Damage);
-				}
-			}
-			base.DamageTarget(ad, showEffectAnimation);
-		}
-	}
+        public override void DamageTarget(AttackData ad, bool showEffectAnimation)
+        {
+            // Set the turret as the attacker so that aggro is split properly (damage should already be calculated at this point).
+            // This may cause some issues if something else relies on 'ad.Attacker', but is better than calculating aggro here.
+            ad.Attacker = Caster.ControlledBrain?.Body;
+            base.DamageTarget(ad, showEffectAnimation);
+        }
+    }
 }
