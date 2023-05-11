@@ -1,6 +1,9 @@
 ﻿# Gamemaster Commands
 GMCommands.Error:							Error: {0}
 
+## Command List
+GMCommands.CmdList.Team.Description:                '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
+
 ## /addbind
 GMCommands.AddBind.Description:				Adds a bindpoint to the game.
 GMCommands.AddBind.Usage:					/addbind [radius=750]
@@ -380,9 +383,9 @@ GMCommands.Mute.Err.NoSpeakChannel:                   You have been muted by Atl
 GMCommands.Mute.Err.NoUseCommand:                     You have been muted by Atlas staff and are not allowed to use this command.
 
 ## /team or /te
-GMCommands.Header.Command.Team:                         <----- '/team' Commands (plvl 2) ----->
+GMCommands.Team.Description:                            Broadcasts a message to all server team members with a privilege level of 2 or higher.
 GMCommands.Team.Syntax.Team:                            '/team <message>' or '/te <message>'
-GMCommands.Team.Usage.Team:                             Broadcasts a message to all server team members with a privilege level of 2 or higher.
+GMCommands.Team.Usage.Team:                             Broadcasts a message to the [TEAM] channel.
 
 ## /viewreports
 Scripts.Player.ViewReport.Usage: 			Usage:

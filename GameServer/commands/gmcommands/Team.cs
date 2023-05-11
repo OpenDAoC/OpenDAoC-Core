@@ -54,13 +54,13 @@ namespace DOL.GS.Commands
 		// Enter '/team' to see command syntax messages
 		"&team",
 		new [] { "&te" },
-		// Message: '/team' or '/te' - Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+		// Message: '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 		"GMCommands.CmdList.Team.Description",
 		// Message: <----- '/{0}' Command {1}----->
 		"AllCommands.Header.General.Commands",
 		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
-		// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+		// Message: Broadcasts a message to all server team members with a privilege level of 2 or higher.
 		"GMCommands.Team.Description",
 		// Syntax: '/team <message>' or '/te <message>'
 		"GMCommands.Team.Syntax.Team",
@@ -75,11 +75,11 @@ namespace DOL.GS.Commands
 			// Lists all '/team' command syntax
 			if (args.Length < 2)
 			{
-				// Lists the '/account create' command's full syntax
-				// Syntax: <----- '/{0}{1}' Subcommand {2}----->
+				// Lists the '/team' command's full syntax
+				// Syntax: <----- '/{0}' Command {1}----->
 				// Message: Use the following syntax for this command:
 				// Syntax: '/team <message>' or '/te <message>'
-				// Message: Broadcasts a message to all server team members with a privilege level of 2 or higher.
+				// Message: Broadcasts a message to the [TEAM] channel.
 				DisplayHeadSyntax(client, "team", "", "", 2, false, "GMCommands.Team.Syntax.Team", "GMCommands.Team.Usage.Team");
 				return;
 			}
