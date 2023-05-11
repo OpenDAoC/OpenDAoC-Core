@@ -13,16 +13,18 @@ AdminCommands.Header.Syntax.Reload:                     <----- '/reload' Command
 AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverproperties' Command (plvl 3) ----->
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
+## Command List
+AdminCommands.Account.CmdList.Description:                      '/account' - Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
+
 ## '/account' Commands
-AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
-AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
+AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for OpenDAoC accounts. We recommend editing the database directly where possible to perform many of these same functions. Otherwise, use the following syntax:
+AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' slash command, please direct all inquiries to the OpenDAoC Discord channel.
 AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
 AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
 AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
 AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
 AdminCommands.Account.Syntax.Comm:                      /account command
-AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' command type.
+AdminCommands.Account.Usage.Comm:			            Provides syntax information regarding all '/account' subcommands in a dialog.
 AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
 AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
 AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
@@ -45,7 +47,7 @@ AdminCommands.Account.Msg.AccountUnbanned:              You have successfully re
 AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
 AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
 AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit the database directly or use the '/player realm' command on the desired character to resolve this issue.
 AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
 AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
 AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
