@@ -7,13 +7,13 @@ A Docker image is available on [Docker Hub](https://hub.docker.com/r/claitz/open
 
 # Setting Up an OpenDAoC Dev Environment
 
-The following instructions should act as a guide for properly setting up an Ubuntu environment to fetch and push file changes with Github as well as build and run a server successfully.
+The following instructions should act as a guide for properly setting up a development environment to fetch and push file changes with GitHub as well as build and run a DAoC server successfully.
 
-Instructions currently exist regarding setups for both [Ubuntu](#setting-up-on-ubuntu) and [Windows](#setting-up-on-windows) operating systems.
+Instructions currently exist regarding setups for both [Ubuntu](#setting-up-on-ubuntu) and [Windows](#setting-up-on-windows) operating systems. These configurations may be likewise performed and a local server run on macOS, with some minor alterations--though you'll need either a Windows or an emulation setup to run the DAoC client.
 
-**IMPORTANT:** Check the [Before You Start](#before-you-start) section first as you will not be able to complete certain sections without the proper resources or privileges.
+**IMPORTANT:** Check the [Environment Requirements](#environment-requirements) section first as you will not be able to complete certain sections without the proper resources or privileges.
 
-The following sections outline the process of preparing your environment to build an OpenDAoC server:
+The following sections outline the process of preparing your machine to develop, build, and run an OpenDAoC server:
 
 1. [Environment Requirements](#environment-requirements)
 2. [Setting Up on Ubuntu](#setting-up-on-ubuntu)
@@ -21,7 +21,7 @@ The following sections outline the process of preparing your environment to buil
    2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
       1. [Preparing Your Database](#preparing-your-database-ubuntu)
       2. [Adding `DummyDB.sql`](#adding-dummydbsql-ubuntu)
-      3. [Cloning OpenDAoC' Repos](#cloning-the-repository-ubuntu)
+      3. [Cloning OpenDAoC's Repos](#cloning-the-repository-ubuntu)
       4. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 3. [Setting Up on Windows](#setting-up-on-windows)
    1. [Installing .NET 6.0](#installing-net-60-win)
@@ -29,9 +29,9 @@ The following sections outline the process of preparing your environment to buil
       1. [Preparing Your Database](#preparing-your-database-win)
       2. [Configuring `My.ini`](#configuring-myini-win)
       3. [Adding `DummyDB.sql`](#adding-dummydbsql-win)
-      4. [Cloning OpenDAoC' Repos](#cloning-the-repository-win)
+      4. [Cloning OpenDAoC's Repos](#cloning-the-repository-win)
       5. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
-4. [Building Your DoL Server Locally](#building-your-dol-server-locally)
+4. [Building Your OpenDAoC Server Locally](#building-your-dol-server-locally)
 5. [Accessing Local Servers](#accessing-local-servers)
 6. [Testing](#testing)
    1. [In-Game Testing](#in-game-testing)
@@ -41,18 +41,19 @@ The following sections outline the process of preparing your environment to buil
 
 ## Environment Requirements
 
-The following are main OS, tool, and version requirements to consider when setting up an environment:
+The following are the main OS, tool, and version requirements to consider when setting up an environment:
 
-* **Operating System:** Ubuntu or Windows
-* **Source-Code Editor:** .NET IDE that supports C#, such as [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) or [Jetbrain Rider](https://www.jetbrains.com/rider/) (if you have a student email address)
-* **Source Control:** Git is recommended for tracking file changes, and [Github](http://Github.com) is the current file repository
-* **RDBMS:** [MariaDB v.10.5.X](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
+* **Operating System:** Ubuntu or Windows (macOS usable as a server, but cannot run the DAoC game client without third-party apps)
+* **Source-Code Editor:** .NET IDE that supports C#, such as [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/) or [Jetbrains Rider](https://www.jetbrains.com/rider/) (if you have a student email address)
+* **Source Control:** Git is recommended for tracking file changes, and [GitHub](http://github.com) is the current source control service
+* **RDBMS:** [MariaDB v.10.5.X+](https://mariadb.com/kb/en/changes-improvements-in-mariadb-105/)
+* **.NET SDK Framework:** 6.0+ required
 
 ## Setting Up on Ubuntu
 
-This process assumes you do not already have a fully-configured environment with the specific tools or software installed previously. 
+This process assumes you do not already have a fully-configured environment with the specific tools or software installed previously.
 
-If you've' already completed a step previously, we recommend that you quickly review the steps outlined to ensure no special configurations are missed.
+If you've already completed a step previously, we recommend that you quickly review the steps again to ensure no special configurations are missed.
 
 1. [Installing .NET 6.0](#installing-net-60-ubuntu)
 2. [Installing MariaDB 10.5](#installing-mariadb-105-ubuntu)
@@ -65,9 +66,9 @@ If you've' already completed a step previously, we recommend that you quickly re
       1. [Enabling SSH](#enabling-ssh-ubuntu)
       2. [Configuring Your Router](#configuring-your-router-ubuntu)
       3. [Creating an SSH Key](#creating-an-ssh-key-ubuntu)
-      4. [Adding the SSH Key to Github](#adding-the-ssh-key-to-github-ubuntu)
+      4. [Adding the SSH Key to GitHub](#adding-the-ssh-key-to-github-ubuntu)
    3. [Installing Git](#installing-git-ubuntu)
-      1. [Cloning OpenDAoC' repos](#cloning-the-repository-ubuntu)
+      1. [Cloning OpenDAoC's Repos](#cloning-the-repository-ubuntu)
       2. [Altering `serverconfig.xml`](#altering-serverconfigxml-ubuntu)
 
 ### Installing .NET 6.0 (Ubuntu)
@@ -111,13 +112,14 @@ If you're already familiar with the process and wish to skip it, in the followin
 * The `opendaoc` user must have sufficient privileges.
 * A database must exist called `opendaoc`.
 
-_**NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, the build will fail.
+**NOTE:** If you set values (user ID, user password, and database name) contrary to those specified here, the build will fail.
+
 1. `sudo mysql -u root` <!-- This allows you to access the MariaDB client-->
 2. `CREATE DATABASE opendaoc;` <!-- The DB **MUST** be named "opendaoc" -->
 3. `SHOW DATABASES;`</li> <!-- Verify that the DB exists -->
 4. `CREATE USER 'opendaoc'@localhost IDENTIFIED BY 'opendaoc';` <!-- Both username and password must be "opendaoc" -->
 5. `SELECT User FROM mysql.user;` <!-- This lists all existing users -->
-6. To grant all privileges **for all databases** to the _opendaoc_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'opendaoc'@localhost IDENTIFIED BY 'opendaoc';` <!-- The 'opendaoc' user may exercise ALL privileges on ALL of your databases [RISKY] -->
+6. To grant all privileges **for all databases** to the _opendaoc_ user, use the following command: `GRANT ALL PRIVILEGES ON *.* TO 'opendaoc'@localhost;` <!-- The 'opendaoc' user may exercise ALL privileges on ALL of your databases [RISKY] -->
 7. To grant all privileges **only to the _opendaoc_ DB**, use this command: `GRANT ALL PRIVILEGES ON opendaoc.* TO 'opendaoc'@localhost;` <!-- The 'opendaoc' user may only modify the 'opendaoc' DB -->
 8. `FLUSH PRIVILEGES;` <!-- Refreshes the privilege changes -->
 9. `SHOW GRANTS FOR 'opendaoc'@localhost;` <!-- This lists all privileges granted to the `opendaoc` user -->
@@ -129,9 +131,9 @@ Without it, you cannot successfully build a local OpenDAoC server.
 After installing MariaDB, you should also notice it installed a program called HeidiSQL, which you'll need to use for this section.
 
 1. Launch the Terminal and type `sudo mysql -u root opendaoc < ~/path/to/DummyDB.sql`. This copies the file's contents to the `opendaoc` database.
-2. To check that the import was successful, enter `sudo mysql -u root`. This launches the MariaDB Client.
-3. `use opendaoc;`
-4. `show tables`
+2. To check that the import was successful, enter `sudo mysql -u root -p`. This launches the MariaDB Client.
+3. `USE opendaoc;`
+4. `SHOW TABLES;`
 
 This should list multiple tables, which indicates the import was successful.
 
@@ -140,7 +142,7 @@ This should list multiple tables, which indicates the import was successful.
 With Git ready, it's time to clone the `OpenDAoC-Core` repository.
 
 1. From the Terminal, navigate to the desired directory to house the repos.
-2. In a browser, navigate to [Github](https://www.github.com) and open the desired repo.
+2. In a browser, navigate to [GitHub](https://www.github.com) and open the desired repo.
 3. Click the **Clone** button at the top-right corner.
 4. Copy the clone address.
 5. Returning to the Terminal, (and from your desired directory) type `git clone (PASTE THE ADDRESS)`. Enter your credentials when prompted, or the SSH key passphrase.
@@ -158,7 +160,6 @@ With the repo on your local hard drive, you need to alter the `serverconfig.xml`
 4. Configure the database access as per your own configuration.
    
 Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
-
 
 ## Setting Up on Windows
 
@@ -238,7 +239,7 @@ The application will process the entire SQL file. Once done, you should now see 
 With Git ready, it's time to clone the `OpenDAoC-Core` repositories.
 
 1. From Windows PowerShell, navigate to the desired directory to house the repos.
-2. In a browser, navigate to [Github](https://www.Github.com) and open the desired repo.
+2. In a browser, navigate to [GitHub](https://www.github.com) and open the desired repo.
 3. Click the **Clone** button at the top-right corner.
 4. Copy the clone address.
 5. Returning to the Terminal, (and from your desired directory) type `git clone (PASTE THE ADDRESS)`. Enter your credentials if prompted, or the SSH key passphrase.
@@ -262,8 +263,8 @@ Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-serve
 
 This section provides the commands necessary for both building and running a DoL server locally.
 
-1. Launch the Terminal or PowerShell, navigate to `/OpenDAoC-Core/` and type `dotnet build DOLLinux.sln`. This builds the DoL server on your machine. <!-- This may take several minutes to complete. -->
-2. Enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
+1. Launch the Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the DoL server on your machine. <!-- This may take several minutes to complete. -->
+2. If the build was successful, now enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
 Congratulations! You're now running an instance of OpenDAoC on your machine.
 
@@ -318,7 +319,7 @@ If you're using [Visual Studio](https://visualstudio.microsoft.com/vs/community/
 
 * [.NET Core Test Explorer](https://marketplace.visualstudio.com/items?itemName=formulahendry.dotnet-test-explorer)
 
-If you're using Jetbrain Rider, [explore plugins currently available](https://plugins.jetbrains.com/rider).
+If you're using Jetbrains Rider, [explore plugins currently available](https://plugins.jetbrains.com/rider).
 
 Should you have any tools or plugins you'd like to recommend, please let us know and we'll include them here.
 
