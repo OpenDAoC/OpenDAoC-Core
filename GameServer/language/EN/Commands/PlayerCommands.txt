@@ -4,6 +4,22 @@
 AllCommands.Error.NoCommand:                        No such command ({0}).
 
 ## General
+AllCommands.Header.Basic.Commands:                              <----- '/{0}' Command ----->
+AllCommands.Header.General.Commands:                            <----- '/{0}' Command {1}----->
+AllCommands.Header.General.Subcommand:                          <----- '/{0}{1}' Subcommand {2}----->
+AllCommands.Header.General.2Subcommand:                         <----- '/{0}{1}{2}' Subcommand {3}----->
+AllCommands.Header.Player.Subcommand:                           <----- '/{0}{1}' Subcommand {2}----->
+AllCommands.Text.General.UseSyntax:                             Use the following syntax for this command:
+AllCommands.Text.General.SyntaxDB:                              It is recommended that you perform actions associated with this command directly from the database. Otherwise, use the following syntax:
+AllCommands.Command.Err.NoAccount:                              No account exists with the name '{0}'.
+AllCommands.Command.Err.NoOnlineChar:                           No character is online with the name '{0}'.
+AllCommands.Command.Err.NoExistPlayer:                          No character exists with the name '{0}'.
+AllCommands.Command.Err.NoAccountExists:                        No account exists with the name '{0}'.
+AllCommands.Command.Err.SpecifyName:                            You must specify a player name for this command.
+AllCommands.Command.Spam.SlowDown:                              Slow down, you're typing too fast--make the moment last.
+AllCommands.Command.Err.YouMustWaitToUse:                       You must wait {0} more seconds before you may use this command again!
+
+## General
 AllCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
 
 ## Notes

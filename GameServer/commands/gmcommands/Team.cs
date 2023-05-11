@@ -75,14 +75,12 @@ namespace DOL.GS.Commands
 			// Lists all '/team' command syntax
 			if (args.Length < 2)
 			{
-				// Message: <----- '/team' Commands (plvl 2) ----->
-				ChatUtil.SendHeaderMessage(client, "GMCommands.Header.Command.Team", null);
+				// Lists the '/account create' command's full syntax
+				// Syntax: <----- '/{0}{1}' Subcommand {2}----->
 				// Message: Use the following syntax for this command:
-				ChatUtil.SendCommMessage(client, "AllCommands.Command.SyntaxDesc", null);
 				// Syntax: '/team <message>' or '/te <message>'
-				ChatUtil.SendSyntaxMessage(client, "GMCommands.Team.Syntax.Team", null);
-				// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
-				ChatUtil.SendCommMessage(client, "GMCommands.Team.Usage.Team", null);	
+				// Message: Broadcasts a message to all server team members with a privilege level of 2 or higher.
+				DisplayHeadSyntax(client, "team", "", "", 2, false, "GMCommands.Team.Syntax.Team", "GMCommands.Team.Usage.Team");
 				return;
 			}
 
@@ -95,7 +93,7 @@ namespace DOL.GS.Commands
 				if (player.Account.PrivLevel > 1)
 				{
 					// Message: [TEAM] {0}: {1}
-					ChatUtil.SendTeamMessage(player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
+					ChatUtil.SendTypeMessage((int)eMsg.Team, player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
 				}
 			}
 		}

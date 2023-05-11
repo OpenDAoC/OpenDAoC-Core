@@ -382,7 +382,7 @@ GMCommands.Mute.Err.NoUseCommand:                     You have been muted by Atl
 ## /team or /te
 GMCommands.Header.Command.Team:                         <----- '/team' Commands (plvl 2) ----->
 GMCommands.Team.Syntax.Team:                            '/team <message>' or '/te <message>'
-GMCommands.Team.Usage.Team:                             Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+GMCommands.Team.Usage.Team:                             Broadcasts a message to all server team members with a privilege level of 2 or higher.
 
 ## /viewreports
 Scripts.Player.ViewReport.Usage: 			Usage:
