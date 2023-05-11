@@ -1,8 +1,8 @@
 ﻿# Admin (plvl 3) Commands
 AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
-AdminCommands.Command.SyntaxCRUD:                           If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:
+AdminCommands.Command.SyntaxDB:                             If you are unable to perform database queries to accomplish this action, use the following syntax:
 
-# Admin Command Headers/Dividers
+## Admin Command Headers/Dividers
 AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
 AdminCommands.Header.Syntax.Benchmark:                  <----- '/benchmark' Commands (plvl 3) ----->
 AdminCommands.Header.Syntax.Code:                       <----- '/code' Commands (plvl 3) ----->
@@ -13,7 +13,7 @@ AdminCommands.Header.Syntax.Reload:                     <----- '/reload' Command
 AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverproperties' Command (plvl 3) ----->
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
-# '/account' Commands
+## '/account' Commands
 AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
 AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
 AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
@@ -54,7 +54,7 @@ AdminCommands.Account.Msg.SetStatus:                    You have changed the sta
 AdminCommands.Account.Err.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
 AdminCommands.Account.Err.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
 
-# '/benchmark' Commands
+## '/benchmark' Commands
 AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
 AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
 AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
@@ -63,17 +63,17 @@ AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount o
 AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
 AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
 
-# '/code' Commands
+## '/code' Commands
 
-# Old /code Command
+## Old /code Command
 AdminCommands.Code.Description:						Executes custom code!
 AdminCommands.Code.Usage:							/code <codesnippet>
 AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
 AdminCommands.Code.CodeExecuted:					Code executed...
 
-# '/freeze' Commands
+## '/freeze' Commands
 
-# '/plvl' Commands
+## '/plvl' Commands
 AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
 AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
@@ -113,19 +113,19 @@ AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found 
 AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
 AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
-# '/refresh' Commands
+## '/refresh' Commands
 
-# '/reload' Commands
+## '/reload' Commands
 
-# '/serverproperties' Commands
+## '/serverproperties' Commands
 
-# Old /serverproperties Command
+## Old /serverproperties Command
 AdminCommands.ServerProperties.Description:			Reloads server properties from the database
 AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
 
-# '/shutdown' Commands
+## '/shutdown' Commands
 AdminCommands.Shutdown.Msg.CountdownHours:          A server reboot is scheduled to occur in {0} hours!
 AdminCommands.Shutdown.Msg.CountdownHrMn:           A server reboot is scheduled to occur in {0} hours and {1} minutes!
 AdminCommands.Shutdown.Msg.CountdownMins:           A server reboot will occur in {0} minutes!
