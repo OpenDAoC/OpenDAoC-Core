@@ -2,7 +2,7 @@
 GMCommands.Error:							Error: {0}
 
 ## Command List
-GMCommands.CmdList.Team.Description:                '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
+GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 
 ## /addbind
 GMCommands.AddBind.Description:				Adds a bindpoint to the game.
