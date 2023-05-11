@@ -48,21 +48,25 @@ namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute(
-		// Enter '/benchmark' to list all commands
+		// Enter '/benchmark' to list all associated subcommands
 		"&benchmark",
-		// Message: <----- '/benchmark' Commands (plvl 3) ----->
-		"AdminCommands.Header.Syntax.Benchmark",
+		// Message: '/benchmark' - Performs a system benchmark of the specified type. This is used to gauge overall system performance.
+		"AdminCommands.Benchmark.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.Admin,
-		// Message: "Performs a system benchmark of the specified type. This is used to gauge overall system performance."
+		// Message: Performs a system benchmark of the specified type. This is used to gauge overall system performance.
 		"AdminCommands.Benchmark.Description",
 		// Syntax: /benchmark listskills
 		"AdminCommands.Benchmark.Syntax.Listskills",
-		// Message: "Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations."
+		// Message: Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
 		"AdminCommands.Benchmark.Usage.Listskills",
 		// Syntax: /benchmark listspells
 		"AdminCommands.Benchmark.Syntax.Listspells",
-		// Message: "Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells."
-		"AdminCommands.Benchmark.Usage.Listspells")]
+		// Message: Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells.
+		"AdminCommands.Benchmark.Usage.Listspells"
+	)]
 	public class BenchmarkCommand : AbstractCommandHandler, ICommandHandler
 	{		
 		public void OnCommand(GameClient client, string[] args)

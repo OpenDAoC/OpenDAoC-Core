@@ -55,29 +55,35 @@ namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute(
-		// Enter '/shutdown' to list all commands of this type
+		// Enter '/shutdown' to list all associated subcommands
 		"&shutdown",
+		// Message: '/shutdown' - Initiates a manual reboot of the Atlas server. This does not push live any recent changes or commits made to the master branch.
+		"AdminCommands.Shutdown.CmdList.Description",
 		// Message: <----- '/shutdown' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Shutdown",
+		// Required minimum privilege level to use the command
 		ePrivLevel.Admin,
-		// Message: "Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite."
+		// Message: Initiates a total shutdown of the Atlas server. This does not push live any recent changes or commits made to the master branch.
 		"AdminCommands.Shutdown.Description",
 		// Syntax: /shutdown command
 		"AdminCommands.Shutdown.Syntax.Comm",
-		// Message: "Provides additional information regarding the '/shutdown' command type."
+		// Message: Provides additional information regarding the '/shutdown' command type.
 		"AdminCommands.Shutdown.Usage.Comm",
 		// Syntax: /shutdown <seconds>
 		"AdminCommands.Shutdown.Syntax.Secs",
-		// Message: "Schedules a manual shutdown of the server, counting down from the specified number of seconds."
+		// Message: Schedules a manual shutdown of the server, counting down from the specified number of seconds.
 		"AdminCommands.Shutdown.Usage.Secs",
 		// Syntax: /shutdown on <HH>:<MM>
 		"AdminCommands.Shutdown.Syntax.HrMin",
-		// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT."
+		// Message: Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT.
 		"AdminCommands.Shutdown.Usage.HrMin",
+		// Syntax: /shutdown cancel
+		"AdminCommands.Shutdown.Syntax.Cancel",
 		// Syntax: /shutdown stop
 		"AdminCommands.Shutdown.Syntax.Stop",
-		// Message: "Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again."
-		"AdminCommands.Shutdown.Usage.Stop")]
+		// Message: Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.
+		"AdminCommands.Shutdown.Usage.Stop"
+	)]
 	public class ShutdownCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

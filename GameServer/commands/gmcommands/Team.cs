@@ -51,17 +51,22 @@ namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute( 
-	// Enter '/team' to see command syntax messages
-	"&team",
-	new [] { "&te" },
-	// Message: <----- '/team' Commands (plvl 2) ----->
-	"GMCommands.Header.Command.Team",
-   ePrivLevel.GM,
-	"Broadcasts a message to all Atlas server team members (i.e., plvl 2+).",
-	// Syntax: '/team <message>' or '/te <message>'
-	"GMCommands.Team.Syntax.Team",
-	// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
-	"GMCommands.Team.Usage.Team")]
+		// Enter '/team' to see command syntax messages
+		"&team",
+		new [] { "&te" },
+		// Message: '/team' or '/te' - Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+		"GMCommands.CmdList.Team.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
+		ePrivLevel.GM,
+		// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+		"GMCommands.Team.Description",
+		// Syntax: '/team <message>' or '/te <message>'
+		"GMCommands.Team.Syntax.Team",
+		// Message: Broadcasts a message to the [TEAM] channel.
+		"GMCommands.Team.Usage.Team"
+	)]
 
 	public class TeamCommandHandler : AbstractCommandHandler, ICommandHandler
 	{

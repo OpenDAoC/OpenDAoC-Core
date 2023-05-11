@@ -48,24 +48,26 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		// Enter '/alert' to list all commands of this type
 		"&alert",
+		// Message: '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
+		"AdminCommands.Shutdown.CmdList.Description",
 		// Message: <----- '/alert' Commands (plvl 2) ----->
 		"GMCommands.Header.Syntax.Alert",
 		ePrivLevel.GM,
-		// Message: "Controls whether sound alerts are triggered when receiving Player messages and appeals."
+		// Message: Controls whether sound alerts are triggered when receiving Player messages and appeals.
 		"GMCommands.Alert.Description",
 		// Syntax: /alert all < on | off >
 		"GMCommands.Alert.Syntax.All",
-		// Message: "Activates/Deactivates sound alerts for all alert types."
+		// Message: Activates/Deactivates sound alerts for all alert types.
 		"GMCommands.Alert.Usage.All",
 		// Syntax: /alert send < on | off >
 		"GMCommands.Alert.Syntax.Send",
-		// Message: "Activates/Deactivates a sound alert each time a '/send' message is received from a Player."
+		// Message: Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
 		"GMCommands.Alert.Usage.Send",
 		// Syntax: /alert appeal < on | off >
 		"GMCommands.Alert.Syntax.Appeal",
-		// Message: "Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance."
+		// Message: Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
 		"GMCommands.Alert.Usage.Appeal"
-		)]
+	)]
 	public class AlertCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 

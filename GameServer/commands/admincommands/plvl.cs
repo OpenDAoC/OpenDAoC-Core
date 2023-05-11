@@ -50,37 +50,41 @@ namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute(
-		// Enter '/plvl' to list all commands of this type
+		// Enter '/plvl' to list all associated subcommands
 		"&plvl",
+		// Message: '/plvl' - Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl.
+		"AdminCommands.Plvl.CmdList.Description",
 		// Message: <----- '/plvl' Commands (plvl 3) ----->
-		"AdminCommands.Header.Syntax.Plvl",
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.Admin,
-		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts."
+		// Message: Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
 		"AdminCommands.Plvl.Description",
 		// Syntax: /plvl command
 		"AdminCommands.Plvl.Syntax.Comm",
-		// Message: "Provides additional information regarding the '/plvl' command type."
+		// Message: Provides additional information regarding the '/plvl' command type.
 		"AdminCommands.Plvl.Usage.Comm",
 		// Syntax: /plvl <newPlvl> <playerName>
 		"AdminCommands.Plvl.Syntax.Plvl",
-		// Message: "Sets the privilege level for a targeted player's account. The player will then have access to all commands associated with that privilege level. Use '/plvl single' or '/plvl singleaccount' to grant access to specific commands as a Player."
+		// Message: Sets the privilege level for a targeted player's account. The player will then have access to all commands associated with that privilege level. Use '/plvl single' or '/plvl singleaccount' to grant access to specific commands as a Player.
 		"AdminCommands.Plvl.Usage.Plvl",
 		// Syntax: /plvl remove <commandType> <playerName>
 		"AdminCommands.Plvl.Syntax.Remove",
-		// Message: "Removes a specific permission previously granted to a player using the '/plvl single' command."
+		// Message: Removes a specific permission previously granted to a player using the '/plvl single' command.
 		"AdminCommands.Plvl.Usage.Remove",
 		// Syntax: /plvl removeaccount <commandType> <playerName>
 		"AdminCommands.Plvl.Syntax.AcctRemove",
-		// Message: "Removes a specific permission previously granted to a player's account using the '/plvl singleaccount' command."
+		// Message: Removes a specific permission previously granted to a player's account using the '/plvl singleaccount' command.
 		"AdminCommands.Plvl.Usage.AcctRemove",
 		// Syntax: /plvl single <commandType> <playerName>
 		"AdminCommands.Plvl.Syntax.Single",
-		// Message: "Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.)."
+		// Message: Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
 		"AdminCommands.Plvl.Usage.Single",
 		// Syntax: /plvl singleaccount <commandType> <playerName>
 		"AdminCommands.Plvl.Syntax.AcctSingle",
-		// Message: "Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.)."
-		"AdminCommands.Plvl.Usage.AcctSingle")]
+		// Message: Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+		"AdminCommands.Plvl.Usage.AcctSingle"
+	)]
 	public class PlvlCommand : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
