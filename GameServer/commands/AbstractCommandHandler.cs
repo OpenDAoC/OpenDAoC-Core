@@ -118,7 +118,7 @@ namespace DOL.GS.Commands
 			}
 			
 			// Include main command type description below the header
-			// Example: Creates new, manages existing, and controls character assignment for HavenDAoC accounts.
+			// Example: Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
 			ChatUtil.SendTypeMessage((int)eMsg.CmdDesc, client, attrib[0].Description, null);
 			// Line break
 			ChatUtil.SendTypeMessage((int)eMsg.Command, client, " ");
