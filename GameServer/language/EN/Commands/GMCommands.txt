@@ -2,7 +2,26 @@
 GMCommands.Error:							Error: {0}
 
 ## Command List
+GMCommands.CmdList.Achievement.Description:                     '/achievement' - Grants boss kill credit to an individual player, group, or battlegroup.
 GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
+
+## '/achievement' Commands
+GMCommands.Achievement.Description:                             Allows server staff to manually grant kill credit for an individual boss mob to a player, group, or battlegroup.
+GMCommands.Achievement.Syntax.SingleAdd:                        /achievement add <mobName>
+GMCommands.Achievement.Usage.SingleAdd:                         Grants kill credit to the player you are presently targeting.
+GMCommands.Achievement.Syntax.GroupAdd:                         /achievement addgroup <mobName>
+GMCommands.Achievement.Usage.GroupAdd:                          Grants kill credit to all members of the group you're in.
+GMCommands.Achievement.Syntax.BGAdd:                            /achievement addbg <mobName>
+GMCommands.Achievement.Usage.BGAdd:                             Grants kill credit to all members of the battlegroup you're in.
+GMCommands.Achievement.Err.TargetPlayer:                        You need to target a player to add an achievement.
+GMCommands.Achievement.Err.JoinBG:                              You must join a battlegroup to add an achievement for its members.
+GMCommands.Achievement.Err.JoinGroup:                           You must join a group to add an achievement for its members.
+GMCommands.Achievement.Err.ErrorTempProp:                       An error occurred while loading TempProperties!
+GMCommands.Achievement.Msg.YouAddAchievement:                   You have given {0} credit for {1}!
+GMCommands.Achievement.Msg.YouGotAchievement:                   {0} has given you achievement credit for {1}!
+GMCommands.Achievement.Msg.AchievementAdded:                    An achievement for {0} has been added to the selected player(s)!
+GMCommands.Achievement.Msg.AchievementAborted:                  Achievement credit aborted. Use the command again if you change your mind.
+
 
 ## /addbind
 GMCommands.AddBind.Description:				Adds a bindpoint to the game.

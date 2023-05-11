@@ -6,11 +6,28 @@ using log4net;
 namespace DOL.GS.Commands
 {
     [Cmd(
+        // Enter '/achievement' to list all associated subcommands
         "&achievement",
+        // Message: '/achievement' - Grants boss kill credit to an individual player, group, or battlegroup.
+        "GMCommands.CmdList.Achievement.Description",
+        // Message: <----- '/{0}' Command {1}----->
+        "AllCommands.Header.General.Commands",
+        // Required minimum privilege level to use the command
         ePrivLevel.Admin,
-        "/achievement add <MobName> ie: /achievement add Organic-Energy Mechanism",
-        "/achievement addbg <MobName> ie: /achievement addbg Olcasgean",
-        "/achievement addgroup <MobName> ie: /achievement addgroup Cuuldurach the Glimmer King")]
+        // Message: Allows server staff to manually grant kill credit for an individual boss mob to a player, group, or battlegroup.
+        "GMCommands.Achievement.Description",
+        // Message: /achievement add <mobName>
+        "GMCommands.Achievement.Syntax.SingleAdd",
+        // Message: Grants kill credit to the player you are presently targeting.
+        "GMCommands.Achievement.Usage.SingleAdd",
+        // Message: /achievement addbg <mobName>
+        "GMCommands.Achievement.Syntax.BGAdd",
+        // Message: Grants kill credit to all members of the battlegroup you're in.
+        "GMCommands.Achievement.Usage.BGAdd",
+        // Message: /achievement addgroup <mobName>
+        "GMCommands.Achievement.Syntax.GroupAdd",
+        // Message: Grants kill credit to all members of the group you're in.
+        "GMCommands.Achievement.Usage.GroupAdd")]
     public class AddAchievementCommandHandler : AbstractCommandHandler, ICommandHandler
     {        
         protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -20,6 +37,7 @@ namespace DOL.GS.Commands
             
             if (IsSpammingCommand(client.Player, "addachievement"))
                 return;
+            
             if (args.Length < 3)
             {
                 DisplaySyntax(client);
@@ -53,14 +71,18 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.TargetObject == null)
                 {
-                    client.Player.Out.SendMessage("You need a target to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: You need to target a player to add an achievement.
+                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.TargetPlayer", null);
                     return;
                 }
+                
                 if (client.Player.TargetObject is not GamePlayer targetPlayer)
                 {
-                    client.Player.Out.SendMessage("You need a player target to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: You need to target a player to add an achievement.
+                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.TargetPlayer", null);
                     return;
                 }
+                
                 targetPlayers.Add(targetPlayer);
                 count++;
             } 
@@ -70,7 +92,8 @@ namespace DOL.GS.Commands
 
                 if (bg == null)
                 {
-                    client.Player.Out.SendMessage("You need to join the target battlegroup to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: You must join a battlegroup to add an achievement for its members.
+                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.JoinBG", null);
                     return;
                 }
 
@@ -87,7 +110,8 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.Group == null)
                 {
-                    client.Player.Out.SendMessage("You need to join the target group to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: You must join a group to add an achievement for its members.
+                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.JoinGroup", null);
                     return;
                 }
                 
@@ -97,6 +121,7 @@ namespace DOL.GS.Commands
                 {
                     if (gP.Name == client.Player.Name) continue; // skipping the command user
                     if (gP.Client.Account.PrivLevel > 1) continue; // skipping GMs
+                    
                     targetPlayers.Add(gP);
                     count++;
                 }
@@ -123,25 +148,33 @@ namespace DOL.GS.Commands
 
                 if (targetPlayers == null || achievementName == null)
                 {
-                    player.Out.SendMessage("Error loading the temp properties", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: An error occurred while loading TempProperties!
+                    ChatUtil.SendTypeMessage((int)eMsg.Debug, player, "GMCommands.Achievement.Err.ErrorTempProp", null);
                     return;
                 }
 
                 foreach (var p in targetPlayers)
                 {
                     var hascredit = AchievementUtils.CheckPlayerCredit(achievementName, p, (int) p.Realm);
+                    
                     if (hascredit) continue;
 
                     var credit = achievementName + "-Credit";
                     p.Achieve(credit);
-                    log.Warn($"ACHIEVEMENT: Manually added credit for {achievementName} to player {p.Name} ({player.Name})");
+                    
+                    // Message: {0} has given you achievement credit for {1}!
+                    ChatUtil.SendTypeMessage((int)eMsg.Staff, p, "GMCommands.Achievement.Msg.YouGotAchievement", player.Name, achievementName);
+                    
+                    log.Warn($"[SUCCESS] - ACHIEVEMENT: Manually granted credit for {achievementName} to player {p.Name} ({player.Name}).");
                 }
                 
-                player.Out.SendMessage($"Achievement {achievementName} added to the selected player(s)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                // Message: An achievement for {0} has been added to the selected player(s)!
+                ChatUtil.SendTypeMessage((int)eMsg.Important, player, "GMCommands.Achievement.Msg.AchievementAdded", achievementName);
             }
             else
             {
-                player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                // Message: Achievement credit aborted. Use the command again if you change your mind.
+                ChatUtil.SendTypeMessage((int)eMsg.Debug, player, "GMCommands.Achievement.Msg.AchievementAborted", null);
             }
             
             player.TempProperties.removeProperty("AchievementName");
