@@ -66,12 +66,12 @@ AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark too
 AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
 
 ## '/code' Commands
-
-## Old /code Command
-AdminCommands.Code.Description:						Executes custom code!
-AdminCommands.Code.Usage:							/code <codesnippet>
-AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
-AdminCommands.Code.CodeExecuted:					Code executed...
+AdminCommands.Code.CmdList.Description:                 '/code' - Manually executes a custom script in-game.
+AdminCommands.Code.Description:                         Manually executes a custom code.
+AdminCommands.Code.Syntax.Code:                         /code <className>
+AdminCommands.Code.Usage.Code:                          Triggers the system compiler for the specified script.
+AdminCommands.Code.Err.Compiling:                       Error(s) occurred while compiling the specified code:
+AdminCommands.Code.Msg.CodeExecuted:                    The specified code executed successfully!
 
 ## '/freeze' Commands
 

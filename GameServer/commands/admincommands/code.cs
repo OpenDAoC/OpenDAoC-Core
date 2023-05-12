@@ -18,20 +18,31 @@
  */
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-	[Cmd(
-		"&code",
-		ePrivLevel.Admin,
-		"AdminCommands.Code.Description",
-		"AdminCommands.Code.Usage")]
+    /// <summary>
+    /// Handles all user-based interaction for the '/code' command
+    /// </summary>
+	[CmdAttribute(
+        // Enter '/code' to list all associated subcommands
+        "&code",
+        // Message: '/code' - Manually executes a custom script in-game.
+        "AdminCommands.Code.CmdList.Description",
+        // Message: <----- '/{0}' Command {1}----->
+        "AllCommands.Header.General.Commands",
+        // Required minimum privilege level to use the command
+        ePrivLevel.Admin,
+        // Message: Manually executes a custom script in-game.
+        "AdminCommands.Code.Description",
+        // Syntax: /code <className>
+        "AdminCommands.Code.Syntax.Code",
+        // Message: Triggers the system compiler for the specified script.
+        "AdminCommands.Code.Usage.Code"
+    )]
 	public class DynCodeCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 
@@ -47,14 +58,16 @@ namespace DOL.GS.Commands
             {
                 if (client.Player != null)
                 {
-                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.ErrorCompiling"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    // Message: Error(s) occurred while compiling the specified code:
+                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Code.Err.Compiling", null);
 
+                    // Send each error message that occurs
                     foreach (var errorMessage in errorMessages)
-                        client.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, errorMessage);
                 }
                 else
                 {
-                    log.Debug("Error compiling code.");
+                    log.Debug("[FAILED] - An error occurred while compiling for the '/code' command.");
                 }
                 return;
             }
@@ -67,11 +80,12 @@ namespace DOL.GS.Commands
 
                 if (client.Player != null)
                 {
-                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.CodeExecuted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    // Message: The specified code executed successfully!
+                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Code.Msg.CodeExecuted", null);
                 }
                 else
                 {
-                    log.Debug("Code Executed.");
+                    log.Debug("[SUCCESS] - Code executed using the '/code' command.");
                 }
 
             }
@@ -81,11 +95,11 @@ namespace DOL.GS.Commands
                 {
                     string[] errors = ex.ToString().Split('\n');
                     foreach (string error in errors)
-                        client.Out.SendMessage(error, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, error, null);
                 }
                 else
                 {
-                    log.Debug("Error during execution.");
+                    log.Debug("[FAILED] - An unexpected error occurred while attempting to execute the '/code' command.");
                 }
             }
         }
@@ -116,7 +130,7 @@ namespace DOL.GS.Commands
             text.Append("public static GameClient Client = null;\n");
             text.Append("public static void print(object obj) {\n");
             text.Append("	string str = (obj==null)?\"(null)\":obj.ToString();\n");
-            text.Append("	if (Client==null || Client.Player==null) Log.Debug(str);\n	else Client.Out.SendMessage(str, eChatType.CT_System, eChatLoc.CL_SystemWindow);\n}\n");
+            text.Append("	if (Client==null || Client.Player==null) Log.Debug(str);\n	else ChatUtil.SendTypeMessage((int)eMsg.Error, client, str);\n}\n");
             text.Append("public static void DynMethod(GameObject target, GamePlayer player) {\nif (player!=null) Client = player.Client;\n");
             text.Append("GameNPC targetNpc = target as GameNPC;");
             text.Append(methodBody);
