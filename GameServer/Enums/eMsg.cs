@@ -228,5 +228,9 @@ public enum eMsg : int
     /// <summary>
     /// Use for messages that appear when a player is struck by an attacker
     /// </summary>
-    YouWereHit = 55
+    YouWereHit = 55,
+    /// <summary>
+    /// Use for messages that appear when a player is struck by an attacker
+    /// </summary>
+    DialogWarn = 56
 }

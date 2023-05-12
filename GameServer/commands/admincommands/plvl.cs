@@ -85,13 +85,14 @@ namespace DOL.GS.Commands
 		// Message: Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
 		"AdminCommands.Plvl.Usage.AcctSingle"
 	)]
+	
 	public class PlvlCommand : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
 			if (args.Length < 2)
 			{
-				// Lists '/plvl' commands' syntax (see '&plvl' section above)
+				// Lists '/plvl' commands' syntax (see section above)
 				DisplaySyntax(client);
 				return;
 			}
@@ -104,7 +105,6 @@ namespace DOL.GS.Commands
 
 				// Grants a single command type to the specified player that may be used no matter their privilege level
 				// Syntax: /plvl single <commandType> <playerName>
-				// Args:   /plvl args[1] args[2]      args[3]
 				// See the comments above 'using' about SendMessage translation IDs
 				case "single":
 				{
@@ -113,21 +113,18 @@ namespace DOL.GS.Commands
 						// Display syntax for '/plvl single'
 						case 2:
 						{
-							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "Use the following syntax for this command:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
+							// Message: <----- '/{0}{1}' Subcommand {2}----->
+							// Message: Use the following syntax for this command:
 							// Syntax: /plvl single <commandType> <playerName>
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.Single", null);
-							// Message: "Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.)."
-							ChatUtil.SendCommMessage(client, "AdminCommands.Plvl.Usage.Single", null);
+							// Message: Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+							DisplayHeadSyntax(client, "plvl", "single", "", 3, false, "AdminCommands.Plvl.Syntax.Single", "AdminCommands.Plvl.Usage.Single");
 							return;
 						}
 						// Player is not specified
 						case 3:
 						{
-							// Message: "You must specify a player name for '/plvl' commands!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerName", null);
+							// Message: You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// Player name specified
@@ -137,8 +134,8 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null)
 							{
-								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
+								// Message:  No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -147,18 +144,17 @@ namespace DOL.GS.Commands
 
 							// Adds the command type to the 'singlepermission' table
 							SinglePermission.setPermission(targetClient.Player, args[2]);
-							// Message: "You've granted {0} access to the '/{1}' command!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
+							// Message: You've granted {0} access to the '/{1}' command!
+							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
 
 							if (target != client.Player)
 							{
-								// Message: "{0} has given you access to the '/{1}' command! Type '/{1}' to view the command list."
-								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.GaveSinglePerm", client.Player.Name, args[2]);
+								// Message: {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
+								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveSinglePerm", client.Player.Name, args[2]);
 							}
 							return;
 						}
 					}
-
 					return;
 				}
 
@@ -167,7 +163,6 @@ namespace DOL.GS.Commands
 				#region Single Account
 				// Grants a command type to all existing characters on the specified player's account
 				// Syntax: /plvl singleaccount <commandType> <playerName>
-				// Args:   /plvl args[1]       args[2]       args[3]
 				// See the comments above 'using' about SendMessage translation IDs
 				case "singleaccount":
 				{
@@ -176,21 +171,18 @@ namespace DOL.GS.Commands
 						// If only '/plvl singleaccount' is entered
 						case 2:
 						{
-							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "Use the following syntax for this command:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
+							// Message: <----- '/{0}{1}' Subcommand {2}----->
+							// Message: Use the following syntax for this command:
 							// Syntax: /plvl singleaccount <commandType> <playerName>
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.AcctSingle", null);
-							// Message: "Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.)."
-							ChatUtil.SendCommMessage(client, "AdminCommands.Plvl.Usage.AcctSingle", null);
+							// Message: Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+							DisplayHeadSyntax(client, "plvl", "singleaccount", "", 3, false, "AdminCommands.Plvl.Syntax.AcctSingle", "AdminCommands.Plvl.Usage.AcctSingle");
 							return;
 						}
 						// If only '/plvl singleaccount <commandName>' is entered
 						case 3:
 						{
-							// Message: "You must specify a player name for '/plvl' commands!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerName", null);
+							// Message: You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -200,22 +192,22 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null)
 							{
-								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
+								// Message: No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", null);
 								return;
 							}
 
 							target = targetClient.Player;
 
 							SinglePermission.setPermissionAccount(target, args[2]);
-							// Message: "You have granted {0}'s account access to the '/{1}' command!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.AddAcct", target.Name, args[2]);
+							// Message: You have granted {0}'s account access to the '/{1}' command!
+							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddAcct", target.Name, args[2]);
 
 							// Sends message to target
 							if (target != client.Player)
 							{
-								// Message: "{0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list."
-								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.GaveAcct", client.Player.Name, args[2]);
+								// Message: {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
+								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveAcct", client.Player.Name, args[2]);
 							}
 							return;
 						}
@@ -227,7 +219,6 @@ namespace DOL.GS.Commands
 				#region Remove
 				// Revokes a command type from the specified character
 				// Syntax: /plvl remove <commandType> <playerName>
-				// Args:   /plvl args[1] args[2]      args[3]
 				// See the comments above 'using' about SendMessage translation IDs
 				case "remove":
 				{
@@ -236,21 +227,18 @@ namespace DOL.GS.Commands
 						// If only '/plvl remove' is entered
 						case 2:
 						{
-							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "Use the following syntax for this command:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
+							// Message: <----- '/{0}{1}' Subcommand {2}----->
+							// Message: Use the following syntax for this command:
 							// Syntax: /plvl remove <commandType> <playerName>
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.Remove", null);
-							// Message: "Removes a specific command type previously granted to a player using '/plvl single'."
-							ChatUtil.SendCommMessage(client, "AdminCommands.Plvl.Usage.Remove", null);
+							// Message: Removes a specific command type previously granted to a player using '/plvl single'.
+							DisplayHeadSyntax(client, "plvl", "remove", "", 3, false, "AdminCommands.Plvl.Syntax.Remove", "AdminCommands.Plvl.Usage.Remove");
 							return;
 						}
 						// If only '/plvl remove <commandType>' is entered
 						case 3:
 						{
-							// Message: "You must specify a player name for '/plvl' commands!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerName", null);
+							// Message: You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -261,8 +249,8 @@ namespace DOL.GS.Commands
 							// If the account doesn't exist
 							if (targetClient == null)
 							{
-								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
+								// Message: No character is online with the name '{0}'..
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -278,21 +266,20 @@ namespace DOL.GS.Commands
 							// If player doesn't have permission
 							else
 							{
-								// Message: "No permission has been granted to {0} for the '/{1}' command."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPermFound",
+								// Message: No permission has been granted to {0} for the '/{1}' command.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoPermFound",
 									target.Name, args[2]);
 								return;
 							}
 
-							// Message: "You have revoked {0}'s access to the '/{1}' command!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.RevokeSinglePerm", target.Name, args[2]);
+							// Message: You have revoked {0}'s access to the '/{1}' command!
+							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeSinglePerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
 							if (target != client.Player)
 							{
-								// Message: "{0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level."
-								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.DelSinglePerm",
-									client.Player.Name, args[2]);
+								// Message: {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
+								ChatUtil.SendTypeMessage((int)eMsg.Staff, target, "AdminCommands.Plvl.Msg.DelSinglePerm", client.Player.Name, args[2]);
 								return;
 							}
 						}
@@ -306,7 +293,6 @@ namespace DOL.GS.Commands
 				#region Remove Account
 				// Revokes a command type from the specified character's account
 				// Syntax: /plvl removeaccount <commandType> <playerName>
-				// Args:   /plvl args[1]       args[2]       args[3]
 				// See the comments above 'using' about SendMessage translation IDs
                 case "removeaccount":
                 {
@@ -315,21 +301,18 @@ namespace DOL.GS.Commands
 						// If '/plvl removeaccount' is entered
 						case 2:
 						{
-							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "Use the following syntax for this command:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
+							// Message: <----- '/{0}{1}' Subcommand {2}----->
+							// Message: Use the following syntax for this command:
 							// Syntax: /plvl removeaccount <commandType> <playerName>
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.AcctRemove", null);
-							// Message: "Removes a specific permission previously granted to a player's account using '/plvl singleaccount'."
-							ChatUtil.SendCommMessage(client, "AdminCommands.Plvl.Usage.AcctRemove", null);
+							// Message: Removes a specific permission previously granted to a player's account using '/plvl singleaccount'.
+							DisplayHeadSyntax(client, "plvl", "removeaccount", "", 3, false, "AdminCommands.Plvl.Syntax.AcctRemove", "AdminCommands.Plvl.Usage.AcctRemove");
 							return;
 						}
 						// If '/plvl removeaccount <commandType>' is entered
 						case 3:
 						{
-							// Message: "You must specify a player name for '/plvl' commands!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerName", null);
+							// Message: You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -340,8 +323,8 @@ namespace DOL.GS.Commands
 							// If the account doesn't exist
 							if (targetClient == null)
 							{
-								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
+								// Message: No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -356,19 +339,19 @@ namespace DOL.GS.Commands
 							// If player's account doesn't have permission
 							else
 							{
-								// Message: "No permission was found for {0}'s account and the '/{1}" command!"
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoAcctPermFound", target.Name, args[2]);
+								// Message: No permission was found for {0}'s account and the '/{1}" command!
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoAcctPermFound", target.Name, args[2]);
 								return;
 							}
 
-							// Message: "You have revoked {0}'s account access to the '/{1}' command!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.RevokeAcctPerm", target.Name, args[2]);
+							// Message: You have revoked {0}'s account access to the '/{1}' command!
+							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeAcctPerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
 							if (target != client.Player)
 							{
-								// Message: "{0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level."
-								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.DelAcctPerm", client.Player.Name, args[2]);
+								// Message: {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
+								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.DelAcctPerm", client.Player.Name, args[2]);
 								return;
 							}
 						}
@@ -381,7 +364,6 @@ namespace DOL.GS.Commands
 				#region Plvl
 				// Sets the privilege level for a player's account
 				// Syntax: /plvl <newPlvl> <playerName>
-				// Args:   /plvl args[1]   args[2]
 				// See the comments above 'using' about SendMessage translation IDs
 				default:
 					{
@@ -390,14 +372,11 @@ namespace DOL.GS.Commands
 						// If an unsupported value is entered in place of '<newPlvl>'
 						if (!uint.TryParse(args[1], out plvl))
 						{
-							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
+							// Message: <----- '/{0}' Command {1}----->
+							// Message: Use the following syntax for this command:
 							// Syntax: /plvl <newPlvl> <playerName>
-							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.Plvl", null);
-							// Message: "Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player."
-							ChatUtil.SendCommMessage(client, "AdminCommands.Plvl.Usage.Plvl", null);
+							// Message: Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player.
+							DisplayHeadSyntax(client, "plvl", "", "", 3, true, "AdminCommands.Plvl.Syntax.Plvl", "AdminCommands.Plvl.Usage.Plvl");
 							return;
 						}
 						// If a player name is specified
@@ -407,8 +386,8 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null) 
 							{
-								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
-								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[2]);
+								// Message: No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[2]);
 								return;
 							}
 							
@@ -420,8 +399,8 @@ namespace DOL.GS.Commands
 							// If player's account doesn't have 'plvl' permission
 							if (SinglePermission.HasPermission(client.Player, "plvl") == false)
 							{
-								// Message: "You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player."
-								client.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(client, "AdminCommands.Plvl.Err.NoPlvlPerm", null));
+								// Message: You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
+								ChatUtil.SendTypeMessage((int)eMsg.DialogWarn, client, "AdminCommands.Plvl.Err.NoPlvlPerm", null);
 								return;
 							}
 						}
@@ -436,15 +415,12 @@ namespace DOL.GS.Commands
 							// Refresh equipment for player so they don't appear naked after changing plvl
 							client.Player.UpdateEquipmentAppearance();
 
-							// Message: "You have changed {0}'s account privilege level to {1}!"
-							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name,
-								plvl.ToString());
+							// Message: You have changed {0}'s account privilege level to {1}!
+							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name, plvl.ToString());
 
 							if (target != client.Player)
-								// Message: "{0} has changed your account's privilege level to {1}!"
-								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.YourPlvlSet",
-									client.Player.Name, plvl.ToString());
-							return;
+								// Message: {0} has changed your account's privilege level to {1}!
+								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.YourPlvlSet", client.Player.Name, plvl.ToString());
 						}
 						break;
 					}
@@ -453,54 +429,80 @@ namespace DOL.GS.Commands
 				#region Command
 				// Provides additional information regarding the '/plvl' command type
 				// Syntax: /plvl command
-				// Args:   /plvl args[1]
 				// See the comments above 'using' about SendMessage translation IDs
 				case "command":
 					{
-						// Displays dialog with information
-						var info = new List<string>();
-						info.Add(" ");
-						// Message: "----- Privilege Levels -----"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.PrivLevels"));
-						info.Add(" ");
-						// Message: "The '/plvl' command type allows you to control an account's privilege level and the command types its characters may access when they are a Player. The values used for each plvl are:"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Intro"));
-						info.Add(" ");
-						// Message: "1 = Player"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.1"));
-						// Message: "You can be attacked by mobs or other players and take falling damage. Players only have access to basic slash commands (such as '/bg', '/gc', '/cg', etc.)."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Usage1"));
-						// Message: "2 = Gamemaster (GM)"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.2"));
-						// Message: "You cannot be attacked by mobs or other players or take falling damage. GMs have access to MOST special slash commands (except those requiring ePrivLevel.Admin--such as '/plvl', '/account', '/shutdown', etc.)."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Usage2"));
-						// Message: "3 = Admin"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.3"));
-						// Message: "You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM)."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Usage3"));
-						info.Add(" ");
-						// Message: "These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.UseSingleAcct"));
-						info.Add(" ");
-						// Message: "--- NOTE: ---"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AllCommands.Header.Note.Divider"));
-						// Message: "To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Note.PlvlSingle"));
-						// Message: "--------------"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AllCommands.Header.Note.Dashes"));
-						info.Add(" ");
-						// Message: "----- Additional Info -----"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
-						info.Add(" ");
-						// Message: "For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Desc"));
-						info.Add(" ");
-						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/post-4379"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Plvl"));
-						info.Add(" ");
-			
-						client.Out.SendCustomTextWindow("Using the '/plvl' Command Type", info);
-						
+						ChatUtil.SendWindowMessage((int)eWindow.Text, client, "Using the '/plvl' Command",
+							" ", 
+							// Message: ----- Privilege Levels -----
+							"Dialog.Header.Content.PrivLevels", 
+							" ", 
+							" ", 
+							// Message: The '/plvl' command type allows you to control an account's privilege level and the command types its characters may access when they are a Player. The values used for each plvl are:
+							"AdminCommands.Plvl.Comm.Intro", 
+							" ", 
+							// Message: 1 = Player
+							"AdminCommands.Plvl.Comm.1", 
+							// Message: You can be attacked by mobs or other players and take falling damage. Players only have access to basic slash commands (such as '/bg', '/gc', '/cg', etc.).
+							"AdminCommands.Plvl.Comm.Usage1", 
+							" ", 
+							// Message: 2 = Gamemaster (GM)
+							"AdminCommands.Plvl.Comm.2", 
+							// Message: You cannot be attacked by mobs or other players or take falling damage. GMs have access to MOST special slash commands (except those requiring ePrivLevel.Admin--such as '/plvl', '/account', '/shutdown', etc.).
+							"AdminCommands.Plvl.Comm.Usage2",
+							" ", 
+							// Message: 3 = Admin
+							"AdminCommands.Plvl.Comm.3", 
+							// Message: You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
+							"AdminCommands.Plvl.Comm.Usage3", 
+							" ", 
+							// Message: These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
+							"AdminCommands.Plvl.Comm.UseSingleAcct", 
+							" ",
+							" ",
+							// Message: ----- NOTE -----
+							"AllCommands.Header.Note.Divider",
+							" ",
+							// Message: To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
+							"AdminCommands.Plvl.Note.PlvlSingle", 
+							" ",
+							" ",
+							// Message: ----- '/plvl' Commands (plvl 3) -----
+							"AdminCommands.Header.Syntax.Plvl", 
+							" ", 
+							// Message: Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
+							"AdminCommands.Plvl.Description",
+							" ",
+							// Message: /plvl command
+							"AdminCommands.Plvl.Syntax.Comm",
+							// Message: Provides additional information regarding the '/plvl' command type.
+							"AdminCommands.Plvl.Usage.Comm",
+							" ",
+							// Message: /plvl <newPlvl> <playerName>
+							"AdminCommands.Plvl.Syntax.Plvl",
+							// Message: Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player.
+							"AdminCommands.Plvl.Usage.Plvl",
+							" ",
+							// Message: /plvl remove <commandType> <playerName>
+							"AdminCommands.Plvl.Syntax.Remove",
+							// Message: Removes a specific command type previously granted to a player using '/plvl single'.
+							"AdminCommands.Plvl.Usage.Remove",
+							" ",
+							// Message: /plvl removeaccount <commandType> <playerName>
+							"AdminCommands.Plvl.Syntax.AcctRemove",
+							// Message: Removes a specific command type previously granted to a player's account using '/plvl singleaccount'.
+							"AdminCommands.Plvl.Usage.AcctRemove",
+							" ",
+							// Message: /plvl single <commandType> <playerName>
+							"AdminCommands.Plvl.Syntax.Single",
+							// Message: Grants a character the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+							"AdminCommands.Plvl.Usage.Single",
+							" ",
+							// Message: /plvl singleaccount <commandType> <playerName>
+							"AdminCommands.Plvl.Syntax.AcctSingle",
+							// Message: Grants all characters on a player's account the ability to perform a specific command type regardless of their current privilege level. For '<commandType>', enter only the command identifier (e.g., 'player' for '/player' commands, 'plvl' for '/plvl' commands, etc.).
+							"AdminCommands.Plvl.Usage.AcctSingle",
+							" ");
 						return;
 					}
 				#endregion Command

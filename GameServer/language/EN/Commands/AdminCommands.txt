@@ -82,7 +82,7 @@ AdminCommands.Freeze.Msg.Freezing:                      The region time will now
 AdminCommands.Freeze.Err.Freeze:                        The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
 
 ## '/plvl' Commands
-AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
+AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
 AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
 AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
@@ -103,7 +103,6 @@ AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked b
 AdminCommands.Plvl.Comm.3:                              3 = Admin
 AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
 AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
-AdminCommands.Plvl.Comm.Desc:                           For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum.
 AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
 AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
