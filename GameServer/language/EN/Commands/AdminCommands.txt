@@ -74,6 +74,12 @@ AdminCommands.Code.Err.Compiling:                       Error(s) occurred while 
 AdminCommands.Code.Msg.CodeExecuted:                    The specified code executed successfully!
 
 ## '/freeze' Commands
+AdminCommands.Freeze.CmdList.Description:               '/freeze' - Triggers a brief pause in the region time for testing purposes.
+AdminCommands.Freeze.Description:                       Triggers a brief pause in the region time for testing purposes.
+AdminCommands.Freeze.Syntax.Freeze:                     /freeze <seconds>
+AdminCommands.Freeze.Usage.Freeze:                      Freezes the region time for the specified number of seconds.
+AdminCommands.Freeze.Msg.Freezing:                      The region time will now stop for {0} seconds. Please stand by...
+AdminCommands.Freeze.Err.Freeze:                        The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
 
 ## '/plvl' Commands
 AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
