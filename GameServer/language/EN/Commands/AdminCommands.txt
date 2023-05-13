@@ -142,7 +142,7 @@ AdminCommands.Refresh.Syntax.RefreshModule:             /refresh <className>.<me
 AdminCommands.Refresh.Usage.RefreshModule:              Refreshes a specific module's static cache.
 AdminCommands.Refresh.Syntax.RefreshList:               /refresh list
 AdminCommands.Refresh.Usage.RefreshList:                Returns a list of all available modules that with static caches that may be refreshed.
-AdminCommands.Refresh.Err.WrongModule:                  The module specified does not exist. Try '/refresh list' to see available modules.
+AdminCommands.Refresh.Err.WrongModule:                  An incorrect module was specified. Use '/refresh list' to see available options.
 AdminCommands.Refresh.Msg.RefreshingModules:            [START] Refreshing the module static cache for: {0}
 AdminCommands.Refresh.Msg.ReturnedValue:                [RETURN] Module returned value: {0}
 AdminCommands.Refresh.Err.ErrorStaticCache:             [ERROR] An unexpected issue occurred: {0}, {1}
