@@ -17,31 +17,6 @@
  *
  */
 
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using DOL.Language;
