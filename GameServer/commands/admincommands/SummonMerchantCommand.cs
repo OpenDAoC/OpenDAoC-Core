@@ -7,8 +7,19 @@ namespace DOL.GS.Commands
 {
     [Cmd(
         "&summonmerchant",
-        ePrivLevel.Admin, // Set to player.
-        "/summonmerchant - summon a merchant at the cost of 10g")]
+        // Message: '/summonmerchant' - Summons a merchant for a short period of time.
+        "AdminCommands.SummonMerchant.CmdList.Description",
+        // Message: <----- '/{0}' Command {1}----->
+        "AllCommands.Header.General.Commands",
+        // Required minimum privilege level to use the command
+        ePrivLevel.Admin,
+        // Message: Summons a merchant for a short period of time.
+        "AdminCommands.SummonMerchant.Description",
+        // Message: /summonmerchant
+        "AdminCommands.SummonMerchant.Syntax.Summon",
+        // Message: Summons a merchant at the client's present location.
+        "AdminCommands.SummonMerchant.Usage.Summon"
+    )]
     public class SummonMerchantCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         [ScriptLoadedEvent]
@@ -27,31 +38,28 @@ namespace DOL.GS.Commands
             var player = client.Player;
             var merchTick = player.TempProperties.getProperty(SummonMerch, 0L);
             var changeTime = GameLoop.GameLoopTime - merchTick;
+            
             if (changeTime < 30000)
             {
-                player.Out.SendMessage(
-                    "You must wait " + ((30000 - changeTime)/1000) + " more second to attempt to use this command!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                // Message: You must wait {0} more seconds before you can use this command again!
+                ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.SummonMerchant.Err.WaitSeconds", ((30000 - changeTime)/1000));
                 return;
             }
-            player.TempProperties.setProperty(SummonMerch, GameLoop.GameLoopTime);
-
-            #endregion Command timer
             
-            #region Command spell Loader             
+            player.TempProperties.setProperty(SummonMerch, GameLoop.GameLoopTime);
 
             var line = new SpellLine("MerchantCast", "Merchant Cast", "unknown", false);
             var spellHandler = ScriptMgr.CreateSpellHandler(client.Player, MerchantSpell, line);
+            
             if (spellHandler != null)
                 spellHandler.StartSpell(client.Player);
-            client.Player.Out.SendMessage("You have summoned a merchant!", eChatType.CT_Important,
-                eChatLoc.CL_SystemWindow);
-
-            #endregion command spell loader
+            
+            // Message: You have summoned a merchant!
+            ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.SummonMerchant.Msg.SummonedMerchant", null);
         }
+        #endregion Command Timer
 
         #region Spell
-
         protected static Spell MMerchantSpell;
 
         public static Spell MerchantSpell
@@ -61,7 +69,7 @@ namespace DOL.GS.Commands
                 if (MMerchantSpell == null)
                 {
                     var spell = new DBSpell {CastTime = 0, ClientEffect = 0, Duration = 15};
-                    spell.Description = "Summons a merchant to your location for " + spell.Duration + " seconds.";
+                    spell.Description = "Summons a merchant at your location for " + spell.Duration + " seconds.";
                     spell.Name = "Merchant Spell";
                     spell.Type = "SummonMerchant";
                     spell.Range = 0;
@@ -74,11 +82,9 @@ namespace DOL.GS.Commands
                 return MMerchantSpell;
             }
         }
+        #endregion Spell
 
-        #endregion
-
-        #region Npc
-
+        #region Merchant
         protected static NpcTemplate MMerchantTemplate;
 
         public static NpcTemplate MerchantTemplate
@@ -98,7 +104,6 @@ namespace DOL.GS.Commands
                 return MMerchantTemplate;
             }
         }
-
-        #endregion
+        #endregion Merchant
     }
 }

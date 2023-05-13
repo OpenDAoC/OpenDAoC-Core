@@ -15,6 +15,7 @@ AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Comma
 
 ## Command List
 AdminCommands.Account.CmdList.Description:                      '/account' - Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
+AdminCommands.SummonMerchant.CmdList.Description:               '/summonmerchant' - Summons a merchant for a short period of time.
 
 ## '/account' Commands
 AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for OpenDAoC accounts. We recommend editing the database directly where possible to perform many of these same functions. Otherwise, use the following syntax:
@@ -229,3 +230,10 @@ AdminCommands.Shutdown.Usage.HrMin:                             Schedules a manu
 AdminCommands.Shutdown.Syntax.Stop:                             /shutdown stop
 AdminCommands.Shutdown.Usage.Stop:                              Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.
 AdminCommands.Shutdown.Msg.AutomatedRestart:                    An automated server restart/backup has been triggered. The server will shut down temporarily in {0} minutes.
+
+## '/summonmerchant' Commands
+AdminCommands.SummonMerchant.Description:                       Summons a merchant for a short period of time.
+AdminCommands.SummonMerchant.Syntax.Summon:                     /summonmerchant
+AdminCommands.SummonMerchant.Usage.Summon:                      Summons a merchant at the client's present location.
+AdminCommands.SummonMerchant.Err.WaitSeconds:                   You must wait {0} more seconds before you can use this command again!
+AdminCommands.SummonMerchant.Msg.SummonedMerchant:              You have summoned a merchant!
