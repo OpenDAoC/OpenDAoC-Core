@@ -232,5 +232,9 @@ public enum eMsg : int
     /// <summary>
     /// Use for messages that appear when a player is struck by an attacker
     /// </summary>
-    DialogWarn = 56
+    DialogWarn = 56,
+    /// <summary>
+    /// Use for messages that display to all players on a server
+    /// </summary>
+    Server = 56
 }

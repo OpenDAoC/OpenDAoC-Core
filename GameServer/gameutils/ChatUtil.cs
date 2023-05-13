@@ -174,6 +174,10 @@ namespace DOL.GS
                 case (int)eMsg.Send: // Private messages
                     target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
                     break;
+                case (int)eMsg.Server: // Server-wide alerts
+	                target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+	                target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	                break;
                 case (int)eMsg.Skill: // Skill
                     target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                     break;
@@ -360,6 +364,10 @@ namespace DOL.GS
                 case (int)eMsg.Send: // Private messages
                     target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
                     break;
+                case (int)eMsg.Server: // Server-wide alerts
+	                target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+	                target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	                break;
                 case (int)eMsg.Skill: // Skill
                     target.Out.SendMessage(translatedMsg, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                     break;
@@ -542,6 +550,10 @@ namespace DOL.GS
                 case (int)eMsg.Send: // Private messages
                     target.Client.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
                     break;
+                case (int)eMsg.Server: // Server-wide alerts
+	                target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+	                target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	                break;
                 case (int)eMsg.Skill: // Skill
                     target.Client.Out.SendMessage(message, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                     break;
@@ -721,6 +733,10 @@ namespace DOL.GS
                 case (int)eMsg.Send: // Private messages
                     target.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
                     break;
+                case (int)eMsg.Server: // Server-wide alerts
+	                target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+	                target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	                break;
                 case (int)eMsg.Skill: // Skill
                     target.Out.SendMessage(message, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                     break;
