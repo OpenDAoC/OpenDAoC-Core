@@ -286,6 +286,13 @@ GMCommands.Jump.PushedTotal:				({0} total)
 GMCommands.Jump.PopInstructions:			type '/jump pop' to return to it.
 GMCommands.Jump.NothingPushed:				No locations in stack - you need to use '/jump push' first.
 
+## '/message' Commands
+GMCommands.Message.CmdList.Description:                     '/message' - Tests the output of various message types used for the implementation of the SendMessageType standardization method.
+GMCommands.Message.Description:                             Tests the output of various message types used for the implementation of the SendMessageType standardization method.
+GMCommands.Message.Syntax.Message:                          /message <all|none|advice|alliance|announce|battlegroup|bgleader|broadcast|centersys|chat|command|cmddesc|cmdheader|cmdsyntax|cmdusage|damageaddsh|damaged|debug|emote|emotesysothers|error|expires|failed|group|guild|help|important|killedbyalb|killedbyhib|killedbymid|lfg|loot|merchant|message|missed|officer|otherscombat|playerdied|playerdiedothers|pulse|resisted|say|screencenter|send|skill|spell|staff|success|sysarea|sysothers|system|team|trade|yell|youdied|youhit|youwerehit|dialogwarn>
+GMCommands.Message.Usage.Message:                           Triggers a message of the specified type to test outputs.
+GMCommands.Message.Msg.TestMessage:                         This is a test of the {0} message type.
+
 ## /offlinejump
 GMCommands.Offlinejump.Description:         Teleports a character to a specific location while offline
 GMCommands.Offlinejump.Usage.Jail:			'/offlinejump <PlayerName> to jail' - Teleports a player to jail
