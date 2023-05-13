@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Linq;
 using DOL.GS.PacketHandler;
@@ -24,10 +25,23 @@ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&heal",
-		ePrivLevel.GM,
+		// Message:
+		"AdminCommands.DoorTeleport.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
+		ePrivLevel.Admin,
+		// Message: Restores a target's HP, endurance, and power to full, as well as removing any negative effects.
 		"GMCommands.Heal.Description",
-		"GMCommands.Heal.Usage",
-		"/heal me - heals self")]
+		// Message: /heal
+		"GMCommands.Heal.Syntax.Heal",
+		// Message: Heals the target's HP, endurance, and power.
+		"GMCommands.Heal.Usage.Heal",
+		// Message: /heal me
+		"GMCommands.Heal.Syntax.MeHeal",
+		// Message: Restores the stats of the client executing the command.
+		"GMCommands.Heal.Usage.MeHeal"
+	)]
 	public class HealCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -41,6 +55,7 @@ namespace DOL.GS.Commands
 
 				target.Health = target.MaxHealth;
 				target.Endurance = target.MaxEndurance;
+				// TODO: Refactor references of "Mana" to "Power"
 				target.Mana = target.MaxMana;
 
 				if (target.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
@@ -51,6 +66,15 @@ namespace DOL.GS.Commands
 				if (target.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
 				{
 					EffectService.RequestCancelEffect(target.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.RvrResurrectionIllness));
+				}
+
+				if (target is GamePlayer targetPlayer)
+				{
+					// Message: You feel refreshed and cured of all maladies!
+					ChatUtil.SendTypeMessage((int)eMsg.Spell, targetPlayer, "GMCommands.Heal.Msg.YouFeelCured", null);
+
+					// Force an update of the target's status so that the heal is registered in the UI more quickly
+					targetPlayer.UpdatePlayerStatus();
 				}
 			}
 			catch (Exception)

@@ -188,9 +188,13 @@ GMCommands.Harm.Description:				Harms your target (health)
 GMCommands.Harm.Usage:						/harm <amount>
 GMCommands.Harm.InvalidTarget:				You have not selected a valid target
 
-## /heal
-GMCommands.Heal.Description:				Heals your target (health, endu, mana)
-GMCommands.Heal.Usage:						/heal
+## '/heal' Commands
+GMCommands.Heal.Description:				                    Restores a target's HP, endurance, and power to full, as well as removing any negative effects.
+GMCommands.Heal.Syntax.Heal:						            /heal
+GMCommands.Heal.Usage.Heal:                                     Heals the target's HP, endurance, and power.
+GMCommands.Heal.Syntax.MeHeal:                                  /heal me
+GMCommands.Heal.Usage.MeHeal:                                   Restores the stats of the client executing the command.
+GMCommands.Heal.Msg.YouFeelCured:                               You feel refreshed and cured of all maladies!
 
 ## /item
 GMCommands.Item.Description:				Various Item commands!
