@@ -20,6 +20,7 @@ using System;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
+/* Moved to the '/reload' command
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
@@ -41,3 +42,4 @@ namespace DOL.GS.Commands
 		}
 	}
 }
+*/
