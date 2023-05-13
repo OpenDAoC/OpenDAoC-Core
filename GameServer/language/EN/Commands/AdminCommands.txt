@@ -15,6 +15,14 @@ AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Comma
 
 ## Command List
 AdminCommands.Account.CmdList.Description:                      '/account' - Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
+AdminCommands.Benchmark.CmdList.Description:                    '/benchmark' - Performs a system benchmark of the specified type. This is used to gauge overall system performance.
+AdminCommands.Code.CmdList.Description:                         '/code' - Manually executes a custom script in-game.
+AdminCommands.Freeze.CmdList.Description:                       '/freeze' - Triggers a brief pause in the region time for testing purposes.
+AdminCommands.DoorTeleport.CmdList.Description:                 '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
+AdminCommands.Plvl.CmdList.Description:                         '/plvl' - Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl.
+AdminCommands.Refresh.CmdList.Description:                      '/refresh' - Refreshes specific static data caches stored via scripts and other objects.
+AdminCommands.Reload.CmdList.Description:                       '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Shutdown.CmdList.Description:                     '/shutdown' - Initiates a manual reboot of the server. This does not push live any recent changes or commits made to the master branch.
 AdminCommands.SummonMerchant.CmdList.Description:               '/summonmerchant' - Summons a merchant for a short period of time.
 
 ## '/account' Commands
