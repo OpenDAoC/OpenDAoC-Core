@@ -25,7 +25,7 @@ using DOL.GS.Keeps;
 namespace DOL.GS.Commands
 {
     /// <summary>
-    /// A command to manage keep door teleport destinations.
+    /// Manages keep door teleport destinations.
     /// </summary>
     /// <author>Shursan</author>
     [CmdAttribute(
