@@ -81,6 +81,21 @@ AdminCommands.Freeze.Usage.Freeze:                      Freezes the region time 
 AdminCommands.Freeze.Msg.Freezing:                      The region time will now stop for {0} seconds. Please stand by...
 AdminCommands.Freeze.Err.Freeze:                        The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
 
+## '/keepdoorteleport' Commands
+AdminCommands.DoorTeleport.CmdList.Description:         '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
+AdminCommands.DoorTeleport.Description:                 Manages teleport locations for keep door gatekeepers.
+AdminCommands.DoorTeleport.Syntax.Add:                  /keepdoorteleport add <enter|exit> <in|out>
+AdminCommands.DoorTeleport.Usage.Add:                   Adds a keep door teleport location for entering or exiting a keep.
+AdminCommands.DoorTeleport.Syntax.Reload:               /keepdoorteleport reload
+AdminCommands.DoorTeleport.Usage.Reload:                Loads any new changes from the database into the server's cache.
+AdminCommands.DoorTeleport.Err.TeleportString:          You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.ValidStrings:            The string value entered is not supported. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.TeleportType:            You must specify a teleport type. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.ValidTypes:              The teleport type entered is not supported. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.KeepArea:                You must be inside a keep area to execute this command.
+AdminCommands.DoorTeleport.Err.SameParameter:           A teleport ID with the same parameter(s) already exists!
+AdminCommands.DoorTeleport.Msg.TeleportAdded:           You have successfully added a keep door teleport location (ID {0})!
+
 ## '/plvl' Commands
 AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
@@ -121,6 +136,18 @@ AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/pl
 AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
 ## '/refresh' Commands
+AdminCommands.Refresh.CmdList.Description:              '/refresh' - Refreshes specific static data caches stored via scripts and other objects.
+AdminCommands.Refresh.Description:                      Refreshes specific static data caches stored using scripts and other objects.
+AdminCommands.Refresh.Syntax.RefreshModule:             /refresh <className>.<methodName>
+AdminCommands.Refresh.Usage.RefreshModule:              Refreshes a specific module's static cache.
+AdminCommands.Refresh.Syntax.RefreshList:               /refresh list
+AdminCommands.Refresh.Usage.RefreshList:                Returns a list of all available modules that with static caches that may be refreshed.
+AdminCommands.Refresh.Err.WrongModule:                  The module specified does not exist. Try '/refresh list' to see available modules.
+AdminCommands.Refresh.Msg.RefreshingModules:            [START] Refreshing the module static cache for: {0}
+AdminCommands.Refresh.Msg.ReturnedValue:                [RETURN] Module returned value: {0}
+AdminCommands.Refresh.Err.ErrorStaticCache:             [ERROR] An unexpected issue occurred: {0}, {1}
+AdminCommands.Refresh.Msg.StaticCacheFinished:          [DONE] Refreshed the static cache for: {0}
+AdminCommands.Refresh.Msg.AvailableModules:             <----- '/refresh' Modules ----->
 
 ## '/reload' Commands
 AdminCommands.Reload.CmdList.Description:               '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
@@ -179,7 +206,7 @@ AdminCommands.Shutdown.Msg.CountdownSecs:           A server reboot will occur i
 AdminCommands.Shutdown.Msg.CountdownMnSc:           A server reboot will occur in {0} minutes and {1} seconds!
 AdminCommands.Shutdown.Msg.CountdownLogoutSecs:     Server reboot in {0} seconds! Log out now to avoid any loss of progress!
 AdminCommands.Shutdown.Msg.ScheduledShutdown:       A server reboot has been scheduled to occur at {0}. The Atlas server will then be unavailable temporarily for maintenance.
-AdminCommands.Account.Msg.ServerClosed:             The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!
+AdminCommands.Account.Msg.ServerClosed:             The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 AdminCommands.Shutdown.Msg.PlanLogout:              It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
 AdminCommands.Shutdown.Comm.Desc1:                  The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all DOL-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
 AdminCommands.Shutdown.Comm.Desc2:                  Rebooting Atlas is a team effort. Bringing the server back online is performed manually by Clait, Fen, or Suite. Please make sure someone is prepared to run the server once the shutdown is complete. Do not use these commands unless instructed.

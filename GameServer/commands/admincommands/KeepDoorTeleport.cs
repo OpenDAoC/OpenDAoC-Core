@@ -25,15 +25,28 @@ using DOL.GS.Keeps;
 namespace DOL.GS.Commands
 {
     /// <summary>
-    /// A command to manage teleport destinations.
+    /// A command to manage keep door teleport destinations.
     /// </summary>
     /// <author>Shursan</author>
     [CmdAttribute(
         "&keepdoorteleport",
+        // Message: '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
+        "AdminCommands.DoorTeleport.CmdList.Description",
+        // Message: <----- '/{0}' Command {1}----->
+        "AllCommands.Header.General.Commands",
+        // Required minimum privilege level to use the command
         ePrivLevel.Admin,
-        "Manage keepdoor teleport destinations",
-        "'/keepdoorteleport add <enter|exit> <in|out> add a teleport destination"/*,
-        "'/keepdoorteleport reload' reload all teleport locations from the db"*/)]
+        // Message: Manages teleport locations for keep door gatekeepers.
+        "AdminCommands.DoorTeleport.Description",
+        // Message: /keepdoorteleport add <enter|exit> <in|out>
+        "AdminCommands.DoorTeleport.Syntax.Add",
+        // Message: Adds a keep door teleport location for entering or exiting a keep.
+        "AdminCommands.DoorTeleport.Usage.Add",
+        // Message: /keepdoorteleport reload
+        "AdminCommands.DoorTeleport.Syntax.Reload",
+        // Message: Loads any new changes from the database into the server's cache.
+        "AdminCommands.DoorTeleport.Usage.Reload"
+    )]
     public class KeepDoorTeleportCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -58,25 +71,29 @@ namespace DOL.GS.Commands
                         var npcString = args[2];
                         if (npcString == "")
                         {
-                            client.Out.SendMessage("You must specify a teleport string to whisper the npc.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Message: You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
+                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportString", null);
                             return;
                         }
                         
                         if (npcString != "enter" || npcString != "exit")
                         {
-                            client.Out.SendMessage("Valid strings are \"enter\" and \"exit\"", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Message: The string value entered is not supported. Accepted values include "enter" or "exit".
+                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidStrings", null);
                             return;
                         }
                         
                         if (args[3] == "")
                         {
-                            client.Out.SendMessage("You must specify the teleport type", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Message: You must specify a teleport type. Accepted values include "in" or "out".
+                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportType", null);
                             return;
                         }
 
                         if (args[3] != "in" || args[3] != "out")
                         {
-                            client.Out.SendMessage("Valid types are \"in\" and \"out\"", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Message: The teleport type entered is not supported. Accepted values include "in" or "out".
+                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidTypes", null);
                             return;
                         }
 
@@ -93,7 +110,8 @@ namespace DOL.GS.Commands
                         var keep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, WorldMgr.VISIBILITY_DISTANCE);
                         if (keep == null)
                         {
-                            client.Out.SendMessage("You need to be inside a keep area.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Message: You must be inside a keep area to execute this command.
+                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.KeepArea", null);
                             return;
                         }
 
@@ -105,7 +123,8 @@ namespace DOL.GS.Commands
                     
                     var results = WorldMgr.LoadTeleports();
                     log.Info(results);
-                    client.Out.SendMessage(results, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, results);
                     
                     break;
 
@@ -127,11 +146,14 @@ namespace DOL.GS.Commands
             GamePlayer player = client.Player;
 
             var verification = GameServer.Database.SelectObject<DBKeepDoorTeleport>(DB.Column("KeepID").IsEqualTo(keep.KeepID).And(DB.Column("Text").IsEqualTo(Text).And(DB.Column("Type").IsEqualTo(teleportType))));
+            
             if (verification != null)
             {
-                client.Out.SendMessage(String.Format("Teleport ID with same parameter already exists!"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                // Message: A teleport ID with the same parameter(s) already exists!
+                ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.SameParameter", null);
                 return;
             }
+            
             DBKeepDoorTeleport teleport = new DBKeepDoorTeleport();
             teleport.Text = Text;
             teleport.Region = player.CurrentRegion.ID;
@@ -144,8 +166,9 @@ namespace DOL.GS.Commands
             teleport.TeleportType = teleportType;
 
             GameServer.Database.AddObject(teleport);
-            client.Out.SendMessage(String.Format("KeepDoor Teleport ID [{0}] successfully added.", Text),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            
+            // Message: You have successfully added a keep door teleport location (ID {0})!
+            ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.DoorTeleport.Msg.TeleportAdded", null);
         }
     }
 }
