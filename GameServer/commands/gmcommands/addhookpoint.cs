@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -26,9 +27,19 @@ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		 "&addhookpoint",
+		 // Message: '/addhookpoint' - Adds a hook point to a selected keep component.
+		 "GMCommands.AddHook.CmdList.Description",
+		 // Message: <----- '/{0}' Command {1}----->
+		 "AllCommands.Header.General.Commands",
+		 // Required minimum privilege level to use the command
 		 ePrivLevel.GM,
-		 "GMCommands.HookPoint.Description",
-		 "GMCommands.HookPoint.Usage")]
+		 // Message: Adds a hook point to a selected GameKeepComponent.
+		 "GMCommands.AddHook.Description",
+		 // Message: /addhookpoint <skin> <id>
+		 "GMCommands.AddHook.Syntax.Add",
+		 // Message: Adds a hook point.
+		 "GMCommands.AddHook.Usage.Add"
+	)]
 	public class HookPointCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -45,9 +56,11 @@ namespace DOL.GS.Commands
 				GameKeepComponent comp = client.Player.TargetObject as GameKeepComponent;
 				if (comp == null)
 				{
-					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.HookPoint.NoGKCTarget"));
+					// Message: [ERROR] You are not targeting a keep component!
+					ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.HookPoint.NoGKCTarget", null);
 					return;
 				}
+				
 				skin = Convert.ToInt32(args[1]);
 				id = Convert.ToInt32(args[2]);
 				DBKeepHookPoint dbkeephp = new DBKeepHookPoint();
@@ -57,11 +70,13 @@ namespace DOL.GS.Commands
 				dbkeephp.Y = client.Player.Y - comp.Y;
 				dbkeephp.Z = client.Player.Z - comp.Z;
 				dbkeephp.Heading = client.Player.Heading - comp.Heading;
+				
 				GameServer.Database.AddObject(dbkeephp);
 			}
 			catch (Exception e)
 			{
-				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Error", e.Message));
+				// Message: [Error] {0}
+				ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Error", e.Message);
 			}
 		}
 	}

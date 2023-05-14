@@ -36,7 +36,8 @@ namespace DOL.GS.Commands
 		// Message: /addbind <radius>
 		"GMCommands.AddBind.Syntax.Add",
 		// Message: Creates a new bind point in-game.
-		"GMCommands.AddBind.Usage.Add")]
+		"GMCommands.AddBind.Usage.Add"
+	)]
 	public class AddBindCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -50,7 +51,7 @@ namespace DOL.GS.Commands
 				}
 				catch (Exception e)
 				{
-					// Message: [Error] - {0}
+					// Message: [Error] {0}
 					ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Error", null);
 					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Error", e.Message));
 					return;
@@ -66,7 +67,7 @@ namespace DOL.GS.Commands
 			GameServer.Database.AddObject(bp);
 			client.Player.CurrentRegion.AddArea(new Area.BindArea("bind point", bp));
 			
-			// Message: [SUCCESS] - Bindpoint added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
+			// Message: [SUCCESS] Bind point added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
 			ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.AddBind.BindPointAdded", bp.X, bp.Y, bp.Z, bp.Radius, bp.Region);
 		}
 	}
