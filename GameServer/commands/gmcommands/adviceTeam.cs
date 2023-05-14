@@ -7,9 +7,19 @@ namespace DOL.GS.Commands
 	[Cmd(
 		"&adviceteam",
 		 new [] { "&advt" },
+		// Message: '/advt <message>' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
+		"GMCommands.AdviceTeam.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
-		// Displays next to the command when '/cmd' is entered
-		"Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel as Atlas.")]
+		// Message: Allows server staff to send messages to the Advice channel behind a universal name/tag.
+		"GMCommands.AdviceTeam.Description",
+		// Message: /advt <message>
+		"GMCommands.AdviceTeam.Syntax.Message",
+		// Message: Sends a message as server staff to the Advice channel.
+		"GMCommands.AdviceTeam.Usage.Message"
+	)]
 	public class AdviceTeamCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -29,15 +39,16 @@ namespace DOL.GS.Commands
 			foreach (GameClient playerClient in WorldMgr.GetAllClients())
 			{
 				if (playerClient.Player == null) continue;
-				if ((playerClient.Player.Realm == client.Player.Realm ||
-				     playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
+				
+				if (playerClient.Player.Realm == client.Player.Realm && playerClient.Account.PrivLevel > 1)
 				{
-					var name = "Atlas";
-					// Message: [ADVICE {0}] {1}: {2}
-					ChatUtil.SendAdviceMessage(playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), name, msg);
-				}
+					var name = "OpenDAoC";
 
+					// Message: [ADVICE {0}] {1}: {2}
+					ChatUtil.SendTypeMessage((int)eMsg.Advice, client, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), name, msg);
+				}
 			}
+			
 			if (Properties.DISCORD_ACTIVE) WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
 
 		}
