@@ -30,7 +30,7 @@ namespace DOL.GS.Commands
 		// Message: <----- '/{0}' Command {1}----->
 		"AllCommands.Header.General.Commands",
 		// Required minimum privilege level to use the command
-		ePrivLevel.Admin,
+		ePrivLevel.GM,
 		// Message: Restores a target's HP, endurance, and power to full, as well as removing any negative effects.
 		"GMCommands.Heal.Description",
 		// Message: /heal
