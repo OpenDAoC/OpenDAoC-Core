@@ -27,10 +27,19 @@ namespace DOL.GS.Commands
 {
     [CmdAttribute(
         "&gmstealth",
+        // Message: '/gmstealth <on|off>' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
+        "GMCommands.AddBind.CmdList.Description",
+        // Message: <----- '/{0}' Command {1}----->
+        "AllCommands.Header.General.Commands",
+        // Required minimum privilege level to use the command
         ePrivLevel.GM,
-        "Grants the ability to stealth to a gm/admin character",
-        "/gmstealth on : turns the command on",
-        "/gmstealth off : turns the command off")]
+        // Message: Controls a GM/Admin's visibility to Players. Does not make a character invisible to clients with a privilege level of 2+.
+        "GMCommands.GMStealth.Description",
+        // Message: /gmstealth <on|off>
+        "GMCommands.GMStealth.Syntax.OnOff",
+        // Message: Activates/Deactivates a GM/Admin's visibility to Players.
+        "GMCommands.GMStealth.Usage.OnOff"
+    )]
     public class GMStealthCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -44,11 +53,17 @@ namespace DOL.GS.Commands
                 {
                    client.Player.Stealth(true);
                    client.Player.CurrentSpeed = 191;
+
+                   // Message: You are now invisible to all clients with a privilege level of 1!
+                   ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOn", null);
                 }
         	}
             else if (args[1].ToLower().Equals("off"))
             {
                     client.Player.Stealth(false);
+
+                    // Message: You are no longer invisible to Players!
+                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOff", null);
             }
         }
     }

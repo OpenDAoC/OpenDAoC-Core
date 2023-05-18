@@ -117,6 +117,13 @@ GMCommands.Debug.Usage:						/debug <on/off>
 GMCommands.Debug.ModeON:					Debug mode ON
 GMCommands.Debug.ModeOFF:					Debug mode OFF
 
+## '/gmstealth' Commands
+GMCommands.GMStealth.Description:                               Controls a GM/Admin's visibility to Players. Does not make a character invisible to clients with a privilege level of 2+.
+GMCommands.GMStealth.Syntax.OnOff:                              /gmstealth <on|off>
+GMCommands.GMStealth.Usage.OnOff:                               Activates/Deactivates a GM/Admin's visibility to Players.
+GMCommands.GMStealth.Msg.InvisibleOn:                           You are now invisible to all clients with a privilege level of 1!
+GMCommands.GMStealth.Msg.InvisibleOff:                          You are no longer invisible to Players!
+
 ## /hascredit
 GMCommands.HasCredit.Description:			Checks if a player has a mob kill credit
 GMCommands.HasCredit.Usage:					/hascredit <mobname>
