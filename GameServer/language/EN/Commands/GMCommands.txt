@@ -6,6 +6,7 @@ GMCommands.CmdList.Achievement.Description:                     '/achievement' -
 GMCommands.AddBind.CmdList.Description:                         '/addbind' - Adds a new bind point based on the client's current in-game position.
 GMCommands.AddHook.CmdList.Description:                         '/addhookpoint' - Adds a hook point to a selected keep component.
 GMCommands.AdviceTeam.CmdList.Description:                      '/adviceteam' or '/advt' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
+GMCommands.Alert.CmdList.Description:                           '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
 GMCommands.AddBind.CmdList.Description:                         '/gmstealth' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
 GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 
@@ -120,7 +121,7 @@ GMCommands.Debug.ModeOFF:					Debug mode OFF
 
 ## '/gmstealth' Commands
 GMCommands.GMStealth.Description:                               Controls a GM/Admin's visibility to Players. Does not make a character invisible to clients with a privilege level of 2+.
-GMCommands.GMStealth.Syntax.OnOff:                              /gmstealth <on|off>
+GMCommands.GMStealth.Syntax.OnOff:                              /gmstealth < on | off >
 GMCommands.GMStealth.Usage.OnOff:                               Activates/Deactivates a GM/Admin's visibility to Players.
 GMCommands.GMStealth.Msg.InvisibleOn:                           You are now invisible to all clients with a privilege level of 1!
 GMCommands.GMStealth.Msg.InvisibleOff:                          You are no longer invisible to Players!

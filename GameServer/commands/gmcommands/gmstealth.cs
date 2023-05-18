@@ -35,7 +35,7 @@ namespace DOL.GS.Commands
         ePrivLevel.GM,
         // Message: Controls a GM/Admin's visibility to Players. Does not make a character invisible to clients with a privilege level of 2+.
         "GMCommands.GMStealth.Description",
-        // Message: /gmstealth <on|off>
+        // Message: /gmstealth < on | off >
         "GMCommands.GMStealth.Syntax.OnOff",
         // Message: Activates/Deactivates a GM/Admin's visibility to Players.
         "GMCommands.GMStealth.Usage.OnOff"
