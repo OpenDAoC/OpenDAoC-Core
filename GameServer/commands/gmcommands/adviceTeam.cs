@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 	[Cmd(
 		"&adviceteam",
 		 new [] { "&advt" },
-		// Message: '/advt <message>' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
+		// Message: '/adviceteam' or '/advt' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
 		"GMCommands.AdviceTeam.CmdList.Description",
 		// Message: <----- '/{0}' Command {1}----->
 		"AllCommands.Header.General.Commands",

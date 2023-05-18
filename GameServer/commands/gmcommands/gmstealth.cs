@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
 {
     [CmdAttribute(
         "&gmstealth",
-        // Message: '/gmstealth <on|off>' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
+        // Message: '/gmstealth' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
         "GMCommands.AddBind.CmdList.Description",
         // Message: <----- '/{0}' Command {1}----->
         "AllCommands.Header.General.Commands",
