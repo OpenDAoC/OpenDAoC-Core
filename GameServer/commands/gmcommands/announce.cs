@@ -28,10 +28,37 @@ using DOL.Language;
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
+		// Enter '/announce' to list all commands of this type
 		"&announce",
+		// Message: '/announce' - Sends a message server-wide (to all players) using the specified delivery method.
+		"GMCommands.Announce.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
-	    "GMCommands.Announce.Description",
-	    "GMCommands.Announce.Usage")]
+		// Message: Sends a message server-wide (to all online players) using the specified delivery method.
+		"GMCommands.Announce.Description",
+		// Syntax: /announce center <message>
+		"GMCommands.Announce.Syntax.Center",
+		// Message: Sends a message to all players which displays in the center of their screen.
+		"GMCommands.Announce.Usage.Center",
+		// Syntax: /announce confirm <message>
+		"GMCommands.Announce.Syntax.Confirm",
+		// Message: Sends a dialog to all players which requires them to click 'OK' to confirm.
+		"GMCommands.Announce.Usage.Confirm",
+		// Syntax: /announce log <message>
+		"GMCommands.Announce.Syntax.Log",
+		// Message: Sends a message to all players which displays as Important in their System window.
+		"GMCommands.Announce.Usage.Log",
+		// Syntax: /announce send <message>
+		"GMCommands.Announce.Syntax.Send",
+		// Message: Sends a message to all players which displays as a Send message in their Chat window.
+		"GMCommands.Announce.Usage.Send",
+		// Syntax: /announce window <message>
+		"GMCommands.Announce.Syntax.Window",
+		// Message: Sends a text window to all players which displays the specified message.
+		"GMCommands.Announce.Usage.Window"
+	)]
 	public class AnnounceCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -53,7 +80,8 @@ namespace DOL.GS.Commands
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
-							    clients.Out.SendMessage(LanguageMgr.GetTranslation(clients, "GMCommands.Announce.LogAnnounce", message), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+	                            // Message: [Announce]: {0}
+	                            ChatUtil.SendTypeMessage((int)eMsg.Important, clients, "GMCommands.Announce.LogAnnounce", message);
 						break;
 					}
 				#endregion Log
@@ -65,7 +93,8 @@ namespace DOL.GS.Commands
 
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
-							    clients.Player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(clients, "GMCommands.Announce.WindowAnnounce", client.Player.Name), messages);
+	                            // Message: Announce from {0}
+	                            ChatUtil.SendWindowMessage((int)eWindow.Text, clients, "GMCommands.Announce.WindowAnnounce", messages);
 						break;
 					}
 				#endregion Window
@@ -73,8 +102,9 @@ namespace DOL.GS.Commands
 				case "send":
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
-                            if(clients != null)
-							    clients.Out.SendMessage(LanguageMgr.GetTranslation(clients, "GMCommands.Announce.SendAnnounce", message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+							if(clients != null)
+	                            // Message: [Announce]: {0}
+	                            ChatUtil.SendTypeMessage((int)eMsg.Send, clients, "GMCommands.Announce.SendAnnounce", message);
 						break;
 					}
 				#endregion Send
@@ -83,7 +113,7 @@ namespace DOL.GS.Commands
 					{
                         foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if (clients != null)
-							    clients.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+	                            ChatUtil.SendTypeMessage((int)eMsg.ScreenCenter, client, message);
 						break;
 					}
 				#endregion Center
@@ -92,7 +122,8 @@ namespace DOL.GS.Commands
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
-							    clients.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(clients, "GMCommands.Announce.ConfirmAnnounce", client.Player.Name, message));
+	                            // Message: Announce from {0}: {1}
+	                            ChatUtil.SendTypeMessage((int)eMsg.DialogWarn, client, "GMCommands.Announce.ConfirmAnnounce", message);
 						break;
 					}
 				#endregion Confirm
