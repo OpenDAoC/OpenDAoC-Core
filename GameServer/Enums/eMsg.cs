@@ -236,5 +236,5 @@ public enum eMsg : int
     /// <summary>
     /// Use for messages that display to all players on a server
     /// </summary>
-    Server = 56
+    Server = 57
 }

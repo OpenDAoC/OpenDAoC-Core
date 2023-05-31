@@ -56,7 +56,7 @@ namespace DOL.GS.Commands
         /// <param name="args">The arguments associated with the command.</param>
         public void OnCommand(GameClient client, string[] args)
         {
-            if (args.Length < 4)
+            if (args.Length < 1)
             {
                 DisplaySyntax(client);
                 return;

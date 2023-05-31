@@ -235,6 +235,7 @@ AdminCommands.Shutdown.Syntax.Secs:                             /shutdown <secon
 AdminCommands.Shutdown.Usage.Secs:                              Schedules a manual shutdown of the server, counting down from the specified number of seconds.
 AdminCommands.Shutdown.Syntax.HrMin:                            /shutdown on <HH>:<MM>
 AdminCommands.Shutdown.Usage.HrMin:                             Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format).
+AdminCommands.Shutdown.Syntax.Cancel:                           /shutdown cancel
 AdminCommands.Shutdown.Syntax.Stop:                             /shutdown stop
 AdminCommands.Shutdown.Usage.Stop:                              Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.
 AdminCommands.Shutdown.Msg.AutomatedRestart:                    An automated server restart/backup has been triggered. The server will shut down temporarily in {0} minutes.

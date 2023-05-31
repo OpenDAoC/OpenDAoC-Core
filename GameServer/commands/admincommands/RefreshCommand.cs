@@ -128,7 +128,7 @@ namespace DOL.GS.Commands
 		private void DisplayAvailableModules(GameClient client)
 		{
 			// Message: <----- '/refresh' Modules ----->
-			ChatUtil.SendTypeMessage((int)eMsg.System, client, "AdminCommands.Refresh.Msg.AvailableModules", null);
+			ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AdminCommands.Refresh.Msg.AvailableModules", null);
 			
 			foreach(var mods in m_refreshCommandCache.Keys)
 				ChatUtil.SendTypeMessage((int)eMsg.System, client, mods);
