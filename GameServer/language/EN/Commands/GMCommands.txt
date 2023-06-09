@@ -8,6 +8,7 @@ GMCommands.AddHook.CmdList.Description:                         '/addhookpoint' 
 GMCommands.AdviceTeam.CmdList.Description:                      '/adviceteam' or '/advt' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
 GMCommands.Alert.CmdList.Description:                           '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
 GMCommands.Announce.CmdList.Description:                        '/announce' - Sends a message server-wide (to all players) using the specified delivery method.
+GMCommands.Area.CmdList.Description:                            '/area' - Creates areas and displays area information in-game.
 GMCommands.AddBind.CmdList.Description:                         '/gmstealth' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
 GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 
@@ -79,10 +80,19 @@ GMCommands.Announce.WindowAnnounce:			                    Announce from {0}
 GMCommands.Announce.SendAnnounce:			                    [Announce]: {0}
 GMCommands.Announce.ConfirmAnnounce:		                    Announce from {0}: {1}
 
-## /area
-GMCommands.Area.Description:				Various commands to help you with areas
-GMCommands.Area.Usage.Create:				/area create <name> <type(circle|square|safe|bind)> <radius> <broadcast(y|n)> <soundid>
-GMCommands.Area.AreaCreated:				Area created - Description: {0}, X={1}, Y={2}, Z={3}, Radius={4}, Broadcast={5}, Sound={6}.
+## '/area' Commands
+GMCommands.Area.Description:				                    Allows for the management of areas and area information.
+GMCommands.Area.Syntax.Create:                                  /area create <name> < circle | square | safe | bind > <radius> <broadcast ( y | n )> <soundID>
+GMCommands.Area.Usage.Create:                                   Creates an area of the specified type/shape and radius.
+GMCommands.Area.Syntax.Info:                                    /area info
+GMCommands.Area.Usage.Info:                                     Displays relevant information regarding the areas in which the client are located.
+GMCommands.Area.Msg.AreaCreated:                                [SUCCESS] You have created a new area!
+GMCommands.Area.Msg.AreaDesc:				                    [INFO] Description:
+GMCommands.Area.Msg.AreaName:                                   --- Name: {0}
+GMCommands.Area.Msg.AreaLoc:                                    --- X: {0}, Y: {1}, Z: {2}, Region: {3}
+GMCommands.Area.Msg.AreaRadius:                                 --- Radius: {0}
+GMCommands.Area.Msg.AreaBroad:                                  --- Broadcast: {0}
+GMCommands.Area.Msg.AreaSound:                                  --- Sound: {0}
 
 ## /ban
 GMCommands.Ban.Description:					Usage of /ban command: 
