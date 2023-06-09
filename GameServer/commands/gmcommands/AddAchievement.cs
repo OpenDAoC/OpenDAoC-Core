@@ -71,14 +71,14 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.TargetObject == null)
                 {
-                    // Message: You need to target a player to add an achievement.
+                    // Message: [ERROR] You need to target a player to add an achievement.
                     ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.TargetPlayer", null);
                     return;
                 }
                 
                 if (client.Player.TargetObject is not GamePlayer targetPlayer)
                 {
-                    // Message: You need to target a player to add an achievement.
+                    // Message: [ERROR] You need to target a player to add an achievement.
                     ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.TargetPlayer", null);
                     return;
                 }
@@ -92,7 +92,7 @@ namespace DOL.GS.Commands
 
                 if (bg == null)
                 {
-                    // Message: You must join a battlegroup to add an achievement for its members.
+                    // Message: [ERROR] You must join a battlegroup to add an achievement for its members.
                     ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.JoinBG", null);
                     return;
                 }
@@ -110,7 +110,7 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.Group == null)
                 {
-                    // Message: You must join a group to add an achievement for its members.
+                    // Message: [ERROR] You must join a group to add an achievement for its members.
                     ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Achievement.Err.JoinGroup", null);
                     return;
                 }
@@ -148,7 +148,7 @@ namespace DOL.GS.Commands
 
                 if (targetPlayers == null || achievementName == null)
                 {
-                    // Message: An error occurred while loading TempProperties!
+                    // Message: [ERROR] An error occurred while loading TempProperties!
                     ChatUtil.SendTypeMessage((int)eMsg.Debug, player, "GMCommands.Achievement.Err.ErrorTempProp", null);
                     return;
                 }
@@ -168,12 +168,12 @@ namespace DOL.GS.Commands
                     log.Warn($"[SUCCESS] - ACHIEVEMENT: Manually granted credit for {achievementName} to player {p.Name} ({player.Name}).");
                 }
                 
-                // Message: An achievement for {0} has been added to the selected player(s)!
+                // Message: [SUCCESS] An achievement for {0} has been added to the selected player(s)!
                 ChatUtil.SendTypeMessage((int)eMsg.Important, player, "GMCommands.Achievement.Msg.AchievementAdded", achievementName);
             }
             else
             {
-                // Message: Achievement credit aborted. Use the command again if you change your mind.
+                // Message: [INFO] Achievement credit aborted. Use the command again if you change your mind.
                 ChatUtil.SendTypeMessage((int)eMsg.Debug, player, "GMCommands.Achievement.Msg.AchievementAborted", null);
             }
             
