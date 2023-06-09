@@ -1,6 +1,8 @@
 ﻿# Admin (plvl 3) Commands
 AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
 AdminCommands.Command.SyntaxDB:                             If you are unable to perform database queries to accomplish this action, use the following syntax:
+AdminCommands.Command.Err.SpecifyName:                          [ERROR] You must specify a player name for this command.
+AdminCommands.Command.Err.NoOnlineChar:                         [ERROR] No character is online with the name '{0}'.
 
 ## Admin Command Headers/Dividers
 AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
@@ -46,24 +48,24 @@ AdminCommands.Account.Syntax.Status:                    /account status <account
 AdminCommands.Account.Usage.Status:					    Sets an account's status (between '0' and '255'), which is used to define custom behaviors.
 AdminCommands.Account.Syntax.Unban:                     /account unban <accountName>
 AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip'), but will remove '/ban both' and '/ban account' records.
-AdminCommands.Account.Msg.AccNameForChar:				{0} is associated with the account '{1}'.
-AdminCommands.Account.Err.AccountBanNotFound:			The account '{0}' is not currently banned!
-AdminCommands.Account.Msg.AccountCreated:				You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
-AdminCommands.Account.Msg.AccountDeleted:				You have successfully deleted the account '{0}'!
-AdminCommands.Account.Err.AlreadyRegistered:            An account already exists with the name '{0}'! Try again with a different value.
-AdminCommands.Account.Err.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-AdminCommands.Account.Msg.AccountUnbanned:              You have successfully removed the ban from the account '{0}'!
-AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
-AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
-AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit the database directly or use the '/player realm' command on the desired character to resolve this issue.
-AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
-AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
-AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
-AdminCommands.Account.Err.PasswordChars:                A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
-AdminCommands.Account.Msg.SetStatus:                    You have changed the status for account '{0}' from {1} to {2}!
-AdminCommands.Account.Err.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
-AdminCommands.Account.Err.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
+AdminCommands.Account.Msg.AccNameForChar:				[INFO] {0} is associated with the account '{1}'.
+AdminCommands.Account.Err.AccountBanNotFound:			[ERROR] The account '{0}' is not currently banned!
+AdminCommands.Account.Msg.AccountCreated:				[SUCCESS] You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
+AdminCommands.Account.Msg.AccountDeleted:				[SUCCESS] You have successfully deleted the account '{0}'!
+AdminCommands.Account.Err.AlreadyRegistered:            [ERROR] An account already exists with the name '{0}'! Try again with a different value.
+AdminCommands.Account.Err.AccountNotFound:				[ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
+AdminCommands.Account.Msg.AccountUnbanned:              [SUCCESS] You have removed the ban from the account '{0}'!
+AdminCommands.Account.Msg.CharacterDeleted:				[SUCCESS] You have successfully deleted the character {0}!
+AdminCommands.Account.Msg.CharacterMovedToAccount:		[SUCCESS] You have transferred ownership of {0} to account '{1}'!
+AdminCommands.Account.Err.CharacterNotFound:			[ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
+AdminCommands.Account.Err.CharNotFromValidRealm:		[ERROR] {0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit this character from the database or use the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.InvalidNamePass:              [ERROR] A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
+AdminCommands.Account.Err.NoFreeSlots:                  [FAILED] The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
+AdminCommands.Account.Msg.PasswordChanged:              [SUCCESS] You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
+AdminCommands.Account.Err.PasswordChars:                [ERROR] A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
+AdminCommands.Account.Msg.SetStatus:                    [SUCCESS] You have changed the status for account '{0}' from {1} to {2}!
+AdminCommands.Account.Err.SpecialChars:                 [ERROR] A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
+AdminCommands.Account.Err.StatusValueReq:               [ERROR] The value you entered was not expected. Please provide a number between '0' and '255'.
 
 ## '/benchmark' Commands
 AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
@@ -71,24 +73,24 @@ AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
 AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
 AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
 AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells.
-AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
-AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
+AdminCommands.Benchmark.Msg.SkillsIterations:           [SUCCESS] The skills benchmark took {0}ms to list {1} usable skills.
+AdminCommands.Benchmark.Msg.SpellsIterations:           [SUCCESS] The spells benchmark took {0}ms to list {1} usable spells.
 
 ## '/code' Commands
 AdminCommands.Code.CmdList.Description:                 '/code' - Manually executes a custom script in-game.
 AdminCommands.Code.Description:                         Manually executes a custom code.
 AdminCommands.Code.Syntax.Code:                         /code <className>
 AdminCommands.Code.Usage.Code:                          Triggers the system compiler for the specified script.
-AdminCommands.Code.Err.Compiling:                       Error(s) occurred while compiling the specified code:
-AdminCommands.Code.Msg.CodeExecuted:                    The specified code executed successfully!
+AdminCommands.Code.Err.Compiling:                       [ERROR] Issue(s) occurred while compiling the specified code:
+AdminCommands.Code.Msg.CodeExecuted:                    [SUCCESS] The specified code has been executed!
 
 ## '/freeze' Commands
 AdminCommands.Freeze.CmdList.Description:               '/freeze' - Triggers a brief pause in the region time for testing purposes.
 AdminCommands.Freeze.Description:                       Triggers a brief pause in the region time for testing purposes.
 AdminCommands.Freeze.Syntax.Freeze:                     /freeze <seconds>
 AdminCommands.Freeze.Usage.Freeze:                      Freezes the region time for the specified number of seconds.
-AdminCommands.Freeze.Msg.Freezing:                      The region time will now stop for {0} seconds. Please stand by...
-AdminCommands.Freeze.Err.Freeze:                        The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
+AdminCommands.Freeze.Msg.Freezing:                      [INFO] The region time will now stop for {0} seconds. Please stand by...
+AdminCommands.Freeze.Err.Freeze:                        [ERROR] The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
 
 ## '/keepdoorteleport' Commands
 AdminCommands.DoorTeleport.CmdList.Description:         '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
@@ -97,13 +99,13 @@ AdminCommands.DoorTeleport.Syntax.Add:                  /keepdoorteleport add <e
 AdminCommands.DoorTeleport.Usage.Add:                   Adds a keep door teleport location for entering or exiting a keep.
 AdminCommands.DoorTeleport.Syntax.Reload:               /keepdoorteleport reload
 AdminCommands.DoorTeleport.Usage.Reload:                Loads any new changes from the database into the server's cache.
-AdminCommands.DoorTeleport.Err.TeleportString:          You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
-AdminCommands.DoorTeleport.Err.ValidStrings:            The string value entered is not supported. Accepted values include "enter" or "exit".
-AdminCommands.DoorTeleport.Err.TeleportType:            You must specify a teleport type. Accepted values include "in" or "out".
-AdminCommands.DoorTeleport.Err.ValidTypes:              The teleport type entered is not supported. Accepted values include "in" or "out".
-AdminCommands.DoorTeleport.Err.KeepArea:                You must be inside a keep area to execute this command.
-AdminCommands.DoorTeleport.Err.SameParameter:           A teleport ID with the same parameter(s) already exists!
-AdminCommands.DoorTeleport.Msg.TeleportAdded:           You have successfully added a keep door teleport location (ID {0})!
+AdminCommands.DoorTeleport.Err.TeleportString:          [ERROR] You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.ValidStrings:            [ERROR] The string value entered is not supported. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.TeleportType:            [ERROR] You must specify a teleport type. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.ValidTypes:              [ERROR] The teleport type entered is not supported. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.KeepArea:                [ERROR] You must be inside a keep area to execute this command.
+AdminCommands.DoorTeleport.Err.SameParameter:           [ERROR] A teleport ID with the same parameter(s) already exists!
+AdminCommands.DoorTeleport.Msg.TeleportAdded:           [SUCCESS] You have added a keep door teleport location (ID {0})!
 
 ## '/plvl' Commands
 AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
@@ -127,20 +129,20 @@ AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked b
 AdminCommands.Plvl.Comm.3:                              3 = Admin
 AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
 AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
-AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
+AdminCommands.Plvl.Msg.AddSinglePerm:                   [SUCCESS] You have granted {0} access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
-AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
+AdminCommands.Plvl.Msg.RevokeSinglePerm:                [SUCCESS] You have revoked {0}'s access to the '/{1}' command!
 AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
-AdminCommands.Plvl.Msg.AddAcct:                         You have granted {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.AddAcct:                         [SUCCESS] You have granted {0}'s account access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveAcct:                        {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
-AdminCommands.Plvl.Msg.RevokeAcctPerm:                  You have revoked {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.RevokeAcctPerm:                  [SUCCESS] You have revoked {0}'s account access to the '/{1}' command!
 AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
 AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your account's privilege level to {1}!
-AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s account privilege level to {1}!
+AdminCommands.Plvl.Msg.PlvlSet:                         [SUCCESS] You have changed {0}'s account privilege level to {1}!
 AdminCommands.Plvl.Err.NoPlayerExists:                  No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online.
 AdminCommands.Plvl.Err.NoPlayerName:                    You must specify a player name for '/plvl' commands!
-AdminCommands.Plvl.Err.NoPermFound:                     No permission has been granted to {0} for the '/{1}' command.
-AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
+AdminCommands.Plvl.Err.NoPermFound:                     [ERROR] No permission has been granted to {0} for the '/{1}' command.
+AdminCommands.Plvl.Err.NoAcctPermFound:                 [ERROR] No permission was found for {0}'s account and the '/{1}" command!
 AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
 AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
@@ -215,17 +217,17 @@ AdminCommands.Shutdown.Msg.CountdownSecs:                       A server reboot 
 AdminCommands.Shutdown.Msg.CountdownMnSc:                       A server reboot will occur in {0} minutes and {1} seconds!
 AdminCommands.Shutdown.Msg.CountdownLogoutSecs:                 Server reboot in {0} seconds! Log out now to avoid any loss of progress!
 AdminCommands.Shutdown.Msg.ScheduledShutdown:                   A server reboot has been scheduled to occur at {0}. The server will then be unavailable temporarily for maintenance.
-AdminCommands.Account.Msg.ServerClosed:                         The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+AdminCommands.Account.Msg.ServerClosed:                         [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 AdminCommands.Shutdown.Msg.PlanLogout:                          It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
 AdminCommands.Shutdown.Comm.Desc1:                              The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all server-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
 AdminCommands.Shutdown.Comm.Desc2:                              Rebooting the server is currently a manual effort. Bringing the server back online requires access to the server machine's command line. Please make sure someone is prepared to run the server build and launch commands once the shutdown is complete.
 AdminCommands.Shutdown.Comm.Desc3:                              If you have further questions about this slash command, please make an inquiry on the OpenDAoC Discord server.
-AdminCommands.Shutdown.Msg.YouCancel:                           You have stopped the server shutdown process!
-AdminCommands.Shutdown.Msg.StaffCancel:                         {0} stopped the server shutdown!
+AdminCommands.Shutdown.Msg.YouCancel:                           [SUCCESS] You have stopped the server shutdown process!
+AdminCommands.Shutdown.Msg.StaffCancel:                         [INFO] {0} stopped the server shutdown!
 AdminCommands.Shutdown.Msg.ShutdownEnd:                         The server restart has been canceled! Please stand by for additional information from server staff.
-AdminCommands.Shutdown.Msg.ServerOpen:                          The server is now open and accepting incoming connections!
-AdminCommands.Shutdown.Err.NoShutdown:                          No server shutdown is scheduled currently!
-AdminCommands.Shutdown.Err.WrongNumber:                         A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+AdminCommands.Shutdown.Msg.ServerOpen:                          [INFO] The server is now open and accepting incoming connections!
+AdminCommands.Shutdown.Err.NoShutdown:                          [ERROR] No server shutdown is scheduled currently!
+AdminCommands.Shutdown.Err.WrongNumber:                         [ERROR] A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
 AdminCommands.Shutdown.Msg.ServerShutdownMins:                  The server will shut down in {0} minutes!
 AdminCommands.Shutdown.Msg.AttentionShutdown:                   ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
 AdminCommands.Shutdown.Description:                             Initiates a total shutdown of the server. The server must then be manually started.

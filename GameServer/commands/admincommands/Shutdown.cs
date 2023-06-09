@@ -283,9 +283,9 @@ namespace DOL.GS.Commands
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
 						// Send twice for good measure
-						// Message: The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
-						// Message: The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
@@ -466,9 +466,9 @@ namespace DOL.GS.Commands
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
 						// Send twice for good measure
-						// Message: The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
-						// Message: The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
@@ -575,13 +575,13 @@ namespace DOL.GS.Commands
 						m_shuttingDown = false;
 						
 						// Send this message to player executing stop command
-						// Message: You have stopped the server shutdown process!
+						// Message: [SUCCESS] You have stopped the server shutdown process!
 						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Shutdown.Msg.YouCancel", null);
 						
 						// Send message to all players letting them know the shutdown isn't occurring
 						foreach (GameClient playingClient in WorldMgr.GetAllPlayingClients())
 						{
-							// Message: {0} stopped the server shutdown!
+							// Message: [INFO] {0} stopped the server shutdown!
 							ChatUtil.SendTypeMessage((int)eMsg.Debug, playingClient, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
 							// Message: The server restart has been canceled! Please stand by for additional information from server staff.
 							ChatUtil.SendTypeMessage((int)eMsg.Server, playingClient, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
@@ -593,7 +593,7 @@ namespace DOL.GS.Commands
 							// Allow incoming connections
 							GameServer.Instance.Open();
 							
-							// Message: The server is now open and accepting incoming connections!
+							// Message: [INFO] The server is now open and accepting incoming connections!
 							ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Shutdown.Msg.ServerOpen", null);
 							
 							log.Info("[STATUS] Shutdown aborted. Server now accepting incoming connections!");
@@ -630,7 +630,7 @@ namespace DOL.GS.Commands
 					// If no countdown is detected
 					else
 					{
-						// Message: No server shutdown is scheduled currently!
+						// Message: [ERROR] No server shutdown is scheduled currently!
 						ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Shutdown.Err.NoShutdown", null);
 					}
 					return;
@@ -729,7 +729,7 @@ namespace DOL.GS.Commands
 						// Require a value equal to or between 10 and 43200 (10 seconds to 6 hours)
 						if (m_counter is <= 9 or >= 43200)
 						{
-							// Message: A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+							// Message: [ERROR] A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
 							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Shutdown.Err.WrongNumber", null);
 							return;
 						}

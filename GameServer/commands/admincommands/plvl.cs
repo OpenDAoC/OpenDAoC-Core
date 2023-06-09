@@ -77,7 +77,6 @@ namespace DOL.GS.Commands
 			switch (args[1])
 			{
 				#region Single
-
 				// Grants a single command type to the specified player that may be used no matter their privilege level
 				// Syntax: /plvl single <commandType> <playerName>
 				// See the comments above 'using' about SendMessage translation IDs
@@ -98,8 +97,8 @@ namespace DOL.GS.Commands
 						// Player is not specified
 						case 3:
 						{
-							// Message: You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
+							// Message: [ERROR] You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// Player name specified
@@ -109,7 +108,7 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null)
 							{
-								// Message:  No character is online with the name '{0}'.
+								// Message: [ERROR] No character is online with the name '{0}'.
 								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
@@ -119,7 +118,7 @@ namespace DOL.GS.Commands
 
 							// Adds the command type to the 'singlepermission' table
 							SinglePermission.setPermission(targetClient.Player, args[2]);
-							// Message: You've granted {0} access to the '/{1}' command!
+							// Message: [SUCCESS] You have granted {0} access to the '/{1}' command!
 							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
 
 							if (target != client.Player)
@@ -132,9 +131,7 @@ namespace DOL.GS.Commands
 					}
 					return;
 				}
-
 				#endregion Single
-
 				#region Single Account
 				// Grants a command type to all existing characters on the specified player's account
 				// Syntax: /plvl singleaccount <commandType> <playerName>
@@ -156,8 +153,8 @@ namespace DOL.GS.Commands
 						// If only '/plvl singleaccount <commandName>' is entered
 						case 3:
 						{
-							// Message: You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
+							// Message: [ERROR] You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -167,15 +164,15 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null)
 							{
-								// Message: No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", null);
+								// Message: [ERROR] No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", null);
 								return;
 							}
 
 							target = targetClient.Player;
 
 							SinglePermission.setPermissionAccount(target, args[2]);
-							// Message: You have granted {0}'s account access to the '/{1}' command!
+							// Message: [SUCCESS] You have granted {0}'s account access to the '/{1}' command!
 							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddAcct", target.Name, args[2]);
 
 							// Sends message to target
@@ -190,7 +187,6 @@ namespace DOL.GS.Commands
 					return;
 				}
 				#endregion Single Account
-
 				#region Remove
 				// Revokes a command type from the specified character
 				// Syntax: /plvl remove <commandType> <playerName>
@@ -212,8 +208,8 @@ namespace DOL.GS.Commands
 						// If only '/plvl remove <commandType>' is entered
 						case 3:
 						{
-							// Message: You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
+							// Message: [ERROR] You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -224,8 +220,8 @@ namespace DOL.GS.Commands
 							// If the account doesn't exist
 							if (targetClient == null)
 							{
-								// Message: No character is online with the name '{0}'..
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
+								// Message: [ERROR] No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -241,13 +237,13 @@ namespace DOL.GS.Commands
 							// If player doesn't have permission
 							else
 							{
-								// Message: No permission has been granted to {0} for the '/{1}' command.
+								// Message: [ERROR] No permission has been granted to {0} for the '/{1}' command.
 								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoPermFound",
 									target.Name, args[2]);
 								return;
 							}
 
-							// Message: You have revoked {0}'s access to the '/{1}' command!
+							// Message: [SUCCESS] You have revoked {0}'s access to the '/{1}' command!
 							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeSinglePerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
@@ -261,10 +257,8 @@ namespace DOL.GS.Commands
 						return;
 					}
 					break;
-				} 
-			
+				}
 				#endregion Remove
-
 				#region Remove Account
 				// Revokes a command type from the specified character's account
 				// Syntax: /plvl removeaccount <commandType> <playerName>
@@ -286,8 +280,8 @@ namespace DOL.GS.Commands
 						// If '/plvl removeaccount <commandType>' is entered
 						case 3:
 						{
-							// Message: You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.SpecifyName", null);
+							// Message: [ERROR] You must specify a player name for this command.
+							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -298,8 +292,8 @@ namespace DOL.GS.Commands
 							// If the account doesn't exist
 							if (targetClient == null)
 							{
-								// Message: No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
+								// Message: [ERROR] No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -314,12 +308,12 @@ namespace DOL.GS.Commands
 							// If player's account doesn't have permission
 							else
 							{
-								// Message: No permission was found for {0}'s account and the '/{1}" command!
+								// Message: [ERROR] No permission was found for {0}'s account and the '/{1}" command!
 								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoAcctPermFound", target.Name, args[2]);
 								return;
 							}
 
-							// Message: You have revoked {0}'s account access to the '/{1}' command!
+							// Message: [SUCCESS] You have revoked {0}'s account access to the '/{1}' command!
 							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeAcctPerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
@@ -335,7 +329,6 @@ namespace DOL.GS.Commands
 	                break;
                 }
 				#endregion Remove Account
-
 				#region Plvl
 				// Sets the privilege level for a player's account
 				// Syntax: /plvl <newPlvl> <playerName>
@@ -361,8 +354,8 @@ namespace DOL.GS.Commands
 
 							if (targetClient == null) 
 							{
-								// Message: No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[2]);
+								// Message: [ERROR] No character is online with the name '{0}'.
+								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[2]);
 								return;
 							}
 							
@@ -390,7 +383,7 @@ namespace DOL.GS.Commands
 							// Refresh equipment for player so they don't appear naked after changing plvl
 							client.Player.UpdateEquipmentAppearance();
 
-							// Message: You have changed {0}'s account privilege level to {1}!
+							// Message: [SUCCESS] You have changed {0}'s account privilege level to {1}!
 							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name, plvl.ToString());
 
 							if (target != client.Player)
@@ -400,7 +393,6 @@ namespace DOL.GS.Commands
 						break;
 					}
 				#endregion Plvl
-
 				#region Command
 				// Provides additional information regarding the '/plvl' command type
 				// Syntax: /plvl command

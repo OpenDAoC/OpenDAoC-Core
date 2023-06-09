@@ -83,8 +83,8 @@ namespace DOL.GS.Commands
 					// Final duration to list full range of spells/skills
 					spent = GameTimer.GetTickCount() - start;
 					
-					// Message: The skills benchmark took {0}ms to list {1} usable skills.
-					ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
+					// Message: [SUCCESS] The skills benchmark took {0}ms to list {1} usable skills.
+					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
 					return;
 				}
 				#endregion List Skills
@@ -107,8 +107,8 @@ namespace DOL.GS.Commands
 					// Final duration to list full range of spells/skills
 					spent = GameTimer.GetTickCount() - start;
 					
-					// Message: The spells benchmark took {0}ms to list {1} usable spells.
-					ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);
+					// Message: [SUCCESS] The spells benchmark took {0}ms to list {1} usable spells.
+					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);
 					return;
 				}
 				#endregion List Spells

@@ -58,8 +58,8 @@ namespace DOL.GS.Commands
             {
                 if (client.Player != null)
                 {
-                    // Message: Error(s) occurred while compiling the specified code:
-                    ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Code.Err.Compiling", null);
+                    // Message: [ERROR] Issue(s) occurred while compiling the specified code:
+                    ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Code.Err.Compiling", null);
 
                     // Send each error message that occurs
                     foreach (var errorMessage in errorMessages)
@@ -67,7 +67,7 @@ namespace DOL.GS.Commands
                 }
                 else
                 {
-                    log.Debug("[FAILED] - An error occurred while compiling for the '/code' command.");
+                    log.Debug("[FAILED] An error occurred while compiling for the '/code' command.");
                 }
                 return;
             }
@@ -80,12 +80,12 @@ namespace DOL.GS.Commands
 
                 if (client.Player != null)
                 {
-                    // Message: The specified code executed successfully!
-                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Code.Msg.CodeExecuted", null);
+                    // Message: [SUCCESS] The specified code has been executed!
+                    ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Code.Msg.CodeExecuted", null);
                 }
                 else
                 {
-                    log.Debug("[SUCCESS] - Code executed using the '/code' command.");
+                    log.Debug("[SUCCESS] Code executed using the '/code' command.");
                 }
 
             }
@@ -95,11 +95,11 @@ namespace DOL.GS.Commands
                 {
                     string[] errors = ex.ToString().Split('\n');
                     foreach (string error in errors)
-                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, error, null);
+                        ChatUtil.SendTypeMessage((int)eMsg.Debug, client, error, null);
                 }
                 else
                 {
-                    log.Debug("[FAILED] - An unexpected error occurred while attempting to execute the '/code' command.");
+                    log.Debug("[FAILED] An unexpected error occurred while attempting to execute the '/code' command.");
                 }
             }
         }

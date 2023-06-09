@@ -93,21 +93,21 @@ namespace DOL.GS.Commands
 				
 				if (method.Value == null)
 				{
-					// Message: An incorrect module was specified. Use '/refresh list' to see available options.
-					ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Refresh.Err.WrongModule", null);
+					// Message: [ERROR] An incorrect module was specified. Use '/refresh list' to see available options.
+					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Err.WrongModule", null);
 				}
 				else
 				{
-					// Message: [START] Refreshing the module static cache for: {0}
-					ChatUtil.SendTypeMessage((int)eMsg.Important, client, "AdminCommands.Refresh.Msg.RefreshingModules", method.Key);
+					// Message: [SUCCESS] Refreshing the module static cache for: {0}
+					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Msg.RefreshingModules", method.Key);
 					
 					try
 					{
 						object value = method.Value.Invoke(null, new object[] { });
 
 						if (value != null)
-							// Message: [RETURN] Module returned value: {0}
-							ChatUtil.SendTypeMessage((int)eMsg.Important, client, "AdminCommands.Refresh.Msg.ReturnedValue", value);
+							// Message: [INFO] Module returned value: {0}
+							ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Msg.ReturnedValue", value);
 					}
 					catch(Exception e)
 					{
@@ -152,7 +152,7 @@ namespace DOL.GS.Commands
 						if (!method.IsStatic)
 							continue;
 						
-						// Properties shoud contain a property attribute
+						// Properties should contain a property attribute
 						object[] attribs = method.GetCustomAttributes(typeof(RefreshCommandAttribute), false);
 						
 						if (attribs.Length == 0)
