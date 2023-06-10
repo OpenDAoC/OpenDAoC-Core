@@ -40,12 +40,12 @@ namespace DOL.GS.Commands
 			{
 				if (playerClient.Player == null) continue;
 				
-				if (playerClient.Player.Realm == client.Player.Realm && playerClient.Account.PrivLevel > 1)
+				if (playerClient.Player.Realm == client.Player.Realm)
 				{
 					var name = "OpenDAoC";
 
 					// Message: [ADVICE {0}] {1}: {2}
-					ChatUtil.SendTypeMessage((int)eMsg.Advice, client, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), name, msg);
+					ChatUtil.SendTypeMessage(eMsg.Advice, playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), name, msg);
 				}
 			}
 			

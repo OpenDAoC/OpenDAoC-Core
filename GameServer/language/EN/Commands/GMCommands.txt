@@ -36,7 +36,7 @@ GMCommands.AddBind.Usage.Add:                                   Creates a new bi
 GMCommands.AddBind.BindPointAdded:			                    [SUCCESS] Bind point added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
 
 ## '/addhookpoint' Commands
-GMCommands.HookPoint.Description:			                    Adds a hook point to a selected GameKeepComponent.
+GMCommands.AddHook.Description:			                    Adds a hook point to a selected GameKeepComponent.
 GMCommands.AddHook.Syntax.Add:					                /addhookpoint <skin> <id>
 GMCommands.AddHook.Usage.Add:                                   Adds a hook point.
 GMCommands.HookPoint.NoGKCTarget:			                    [ERROR] You are not targeting a keep component!

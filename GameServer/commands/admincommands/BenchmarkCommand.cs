@@ -84,7 +84,7 @@ namespace DOL.GS.Commands
 					spent = GameTimer.GetTickCount() - start;
 					
 					// Message: [SUCCESS] The skills benchmark took {0}ms to list {1} usable skills.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
 					return;
 				}
 				#endregion List Skills
@@ -108,7 +108,7 @@ namespace DOL.GS.Commands
 					spent = GameTimer.GetTickCount() - start;
 					
 					// Message: [SUCCESS] The spells benchmark took {0}ms to list {1} usable spells.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);
 					return;
 				}
 				#endregion List Spells

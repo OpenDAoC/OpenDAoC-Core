@@ -22,6 +22,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
+/* Disabled
 namespace DOL.GS.Commands
 {
 	/// <summary>
@@ -64,12 +65,12 @@ namespace DOL.GS.Commands
 					new RegionTimer(client.Player, FreezeCallback).Start(1);
 					
 					// Message: [INFO] The region time will now stop for {0} seconds. Please stand by...
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Freeze.Msg.Freezing", delay);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Freeze.Msg.Freezing", delay);
 				}
 				catch
 				{
 					// Message: [ERROR] The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Freeze.Err.Freeze", null);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Freeze.Err.Freeze", null);
 				}
 			}
 		}
@@ -82,3 +83,4 @@ namespace DOL.GS.Commands
 
 	}
 }
+*/

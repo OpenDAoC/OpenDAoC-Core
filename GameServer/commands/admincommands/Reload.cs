@@ -128,7 +128,7 @@ namespace DOL.GS.Commands
 				case "mob":
 				{
 					if (args.Length == 1)
-						ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AdminCommands.Reload.Header.Realms", null);
+						ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AdminCommands.Reload.Header.Realms", null);
 					if (args.Length >= 2)
 					{
 						if (args[2] == "all")
@@ -212,7 +212,7 @@ namespace DOL.GS.Commands
 					NpcTemplateMgr.Reload();
 					
 					// Message: Reload complete! All NPC Templates have been added to the live cache.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.NPCTempReloaded", null);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.NPCTempReloaded", null);
 					
 					log.Info("[SUCCESS] - NPC templates reloaded.");
 					return;
@@ -298,22 +298,22 @@ namespace DOL.GS.Commands
 				case "realm":
 				{
 					// Message: <----- Realm Syntax ----->
-					ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AdminCommands.Reload.Header.Realms", null);
+					ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AdminCommands.Reload.Header.Realms", null);
 					// Message: None = 0, n, no, none
-					ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AdminCommands.Reload.Usage.NoneRealm", null);
+					ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Reload.Usage.NoneRealm", null);
 					// Message: Albion = 1, a, alb, albion
-					ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AdminCommands.Reload.Usage.AlbRealm", null);
+					ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Reload.Usage.AlbRealm", null);
 					// Message: Midgard = 2, m, mid, midgard
-					ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AdminCommands.Reload.Usage.MidRealm", null);
+					ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Reload.Usage.MidRealm", null);
 					// Message: Hibernia = 3, h, hib, hibernia
-					ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AdminCommands.Reload.Usage.HibRealm", null);
+					ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Reload.Usage.HibRealm", null);
 					return;
 				}
 				case "specs":
 				{
 					int count = SkillBase.LoadSpecializations();
 					// Message: Reload complete! {0} specializations have been added to the live cache.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.SpecsReloaded", count);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.SpecsReloaded", count);
 					log.Info(string.Format("[SUCCESS] - Reloaded DB and {0} specializations loaded!", count));
 					return;
 				}
@@ -322,7 +322,7 @@ namespace DOL.GS.Commands
 					SkillBase.ReloadDBSpells();
 					int loaded = SkillBase.ReloadSpellLines();
 					// Message: Reload complete! {0} spells from all spell lines have been added to the live cache.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.SpellsReloaded", loaded);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.SpellsReloaded", loaded);
 					log.Info(string.Format("[SUCCESS] - Reloaded DB and {0} spells for all spell lines!", loaded));
 					return;
 				}
@@ -330,7 +330,7 @@ namespace DOL.GS.Commands
 				{
 					WorldMgr.LoadTeleports();
 					// Message: Reload complete! All teleport locations have been added to the live cache.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.TeleportsReloaded", null);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TeleportsReloaded", null);
 					log.Info("[SUCCESS] - Teleport locations reloaded.");
 					return;
 				}
@@ -340,14 +340,14 @@ namespace DOL.GS.Commands
 					if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.ConnectionType.DATABASE_XML)
 					{
 						// Message: XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Err.XMLOld", null);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Err.XMLOld", null);
 						return;
 					}
 			
 					ServerProperties.Properties.Reload();
 					
 					// Message: Values from the 'serverproperty' table have been reloaded into the server's cache!
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.PropsRefreshed", null);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.PropsRefreshed", null);
 					return;
 				}
 				default:
@@ -369,7 +369,7 @@ namespace DOL.GS.Commands
 			}
 
 			// Message: Removing and then re-adding all mobs where {0} = {1}.
-			ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingMobs", arg1, arg2);
+			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingMobs", arg1, arg2);
 
 			int added = 0;
 			int removed = 0;
@@ -456,7 +456,7 @@ namespace DOL.GS.Commands
 			}
 
 			// Message: Reload complete! {0} mobs were removed and {1} added to this region.
-			ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalMobsRemovedAdded", removed, added);
+			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalMobsRemovedAdded", removed, added);
 		}
 
 		private void ReloadStaticItem(GameClient client, ushort region, string arg1, string arg2)
@@ -468,7 +468,7 @@ namespace DOL.GS.Commands
 			}
 			
 			// Message: Removing and then re-adding all objects where {0} = {1}.
-			ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingObjs", arg1, arg2);
+			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingObjs", arg1, arg2);
 
 			int added = 0;
 			int removed = 0;
@@ -554,7 +554,7 @@ namespace DOL.GS.Commands
 			}
 			
 			// Message: Reload complete! {0} objects were removed and {1} added to this region.
-			ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalObjRemovedAdded", removed, added);
+			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalObjRemovedAdded", removed, added);
 		}
 	}
 }

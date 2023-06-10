@@ -72,7 +72,7 @@ namespace DOL.GS.Commands
 						client.Player.TempProperties.setProperty("SendAlert", false);
 						
 						// Message: [SUCCESS] You will now receive sound alerts.
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.AllOn", null);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AllOn", null);
 					}
 					if (args[2] == "off")
 					{
@@ -80,7 +80,7 @@ namespace DOL.GS.Commands
 						client.Player.TempProperties.setProperty("SendAlert", true);
 						
 						// Message: [SUCCESS] You will no longer receive sound alerts.
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.AllOff", null);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AllOff", null);
 					}
 					return;
 				}
@@ -98,14 +98,14 @@ namespace DOL.GS.Commands
 							client.Player.TempProperties.setProperty("AppealAlert", false);
 							
 							// Message: [SUCCESS] You will now receive sound alerts when an appeal is filed or awaiting assistance.
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.AppealOn", null);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AppealOn", null);
 						}
 						if (args[2] == "off")
 						{
 							client.Player.TempProperties.setProperty("AppealAlert", true);
 							
 							// Message: [SUCCESS] You will no longer receive sound alerts regarding appeals.
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.AppealOff", null);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AppealOff", null);
 						}
 						return;
 					}
@@ -123,14 +123,14 @@ namespace DOL.GS.Commands
 							client.Player.TempProperties.setProperty("SendAlert", false);
 							
 							// Message: [SUCCESS] You will now receive sound alerts when a player sends you a message.
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.SendOn", null);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.SendOn", null);
 						}
 						if (args[2] == "off")
 						{
 							client.Player.TempProperties.setProperty("SendAlert", true);
 							
 							// Message: [SUCCESS] You will no longer receive sound alerts for player messages.
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.Alert.Msg.SendOff", null);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.SendOff", null);
 						}
 						return;
 					}

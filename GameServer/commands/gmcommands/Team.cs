@@ -93,7 +93,7 @@ namespace DOL.GS.Commands
 				if (player.Account.PrivLevel > 1)
 				{
 					// Message: [TEAM] {0}: {1}
-					ChatUtil.SendTypeMessage((int)eMsg.Team, player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
+					ChatUtil.SendTypeMessage(eMsg.Team, player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
 				}
 			}
 		}

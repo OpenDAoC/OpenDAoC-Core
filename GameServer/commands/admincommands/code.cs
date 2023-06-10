@@ -59,11 +59,11 @@ namespace DOL.GS.Commands
                 if (client.Player != null)
                 {
                     // Message: [ERROR] Issue(s) occurred while compiling the specified code:
-                    ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Code.Err.Compiling", null);
+                    ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Code.Err.Compiling", null);
 
                     // Send each error message that occurs
                     foreach (var errorMessage in errorMessages)
-                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, errorMessage);
+                        ChatUtil.SendTypeMessage(eMsg.Error, client, errorMessage);
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
                 if (client.Player != null)
                 {
                     // Message: [SUCCESS] The specified code has been executed!
-                    ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Code.Msg.CodeExecuted", null);
+                    ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Code.Msg.CodeExecuted", null);
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace DOL.GS.Commands
                 {
                     string[] errors = ex.ToString().Split('\n');
                     foreach (string error in errors)
-                        ChatUtil.SendTypeMessage((int)eMsg.Debug, client, error, null);
+                        ChatUtil.SendTypeMessage(eMsg.Debug, client, error, null);
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace DOL.GS.Commands
             text.Append("public static GameClient Client = null;\n");
             text.Append("public static void print(object obj) {\n");
             text.Append("	string str = (obj==null)?\"(null)\":obj.ToString();\n");
-            text.Append("	if (Client==null || Client.Player==null) Log.Debug(str);\n	else ChatUtil.SendTypeMessage((int)eMsg.Error, client, str);\n}\n");
+            text.Append("	if (Client==null || Client.Player==null) Log.Debug(str);\n	else ChatUtil.SendTypeMessage(eMsg.Error, client, str);\n}\n");
             text.Append("public static void DynMethod(GameObject target, GamePlayer player) {\nif (player!=null) Client = player.Client;\n");
             text.Append("GameNPC targetNpc = target as GameNPC;");
             text.Append(methodBody);

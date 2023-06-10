@@ -98,7 +98,7 @@ namespace DOL.GS.Commands
 						case 3:
 						{
 							// Message: [ERROR] You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// Player name specified
@@ -109,7 +109,7 @@ namespace DOL.GS.Commands
 							if (targetClient == null)
 							{
 								// Message: [ERROR] No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AllCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -119,12 +119,12 @@ namespace DOL.GS.Commands
 							// Adds the command type to the 'singlepermission' table
 							SinglePermission.setPermission(targetClient.Player, args[2]);
 							// Message: [SUCCESS] You have granted {0} access to the '/{1}' command!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
 
 							if (target != client.Player)
 							{
 								// Message: {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
-								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveSinglePerm", client.Player.Name, args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveSinglePerm", client.Player.Name, args[2]);
 							}
 							return;
 						}
@@ -154,7 +154,7 @@ namespace DOL.GS.Commands
 						case 3:
 						{
 							// Message: [ERROR] You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -165,7 +165,7 @@ namespace DOL.GS.Commands
 							if (targetClient == null)
 							{
 								// Message: [ERROR] No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", null);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", null);
 								return;
 							}
 
@@ -173,13 +173,13 @@ namespace DOL.GS.Commands
 
 							SinglePermission.setPermissionAccount(target, args[2]);
 							// Message: [SUCCESS] You have granted {0}'s account access to the '/{1}' command!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.AddAcct", target.Name, args[2]);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Plvl.Msg.AddAcct", target.Name, args[2]);
 
 							// Sends message to target
 							if (target != client.Player)
 							{
 								// Message: {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
-								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveAcct", client.Player.Name, args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.GaveAcct", client.Player.Name, args[2]);
 							}
 							return;
 						}
@@ -209,7 +209,7 @@ namespace DOL.GS.Commands
 						case 3:
 						{
 							// Message: [ERROR] You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
 							if (targetClient == null)
 							{
 								// Message: [ERROR] No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -238,19 +238,19 @@ namespace DOL.GS.Commands
 							else
 							{
 								// Message: [ERROR] No permission has been granted to {0} for the '/{1}' command.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoPermFound",
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Plvl.Err.NoPermFound",
 									target.Name, args[2]);
 								return;
 							}
 
 							// Message: [SUCCESS] You have revoked {0}'s access to the '/{1}' command!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeSinglePerm", target.Name, args[2]);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeSinglePerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
 							if (target != client.Player)
 							{
 								// Message: {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
-								ChatUtil.SendTypeMessage((int)eMsg.Staff, target, "AdminCommands.Plvl.Msg.DelSinglePerm", client.Player.Name, args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Staff, target, "AdminCommands.Plvl.Msg.DelSinglePerm", client.Player.Name, args[2]);
 								return;
 							}
 						}
@@ -281,7 +281,7 @@ namespace DOL.GS.Commands
 						case 3:
 						{
 							// Message: [ERROR] You must specify a player name for this command.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.SpecifyName", null);
 							return;
 						}
 						// If full command is entered
@@ -293,7 +293,7 @@ namespace DOL.GS.Commands
 							if (targetClient == null)
 							{
 								// Message: [ERROR] No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[3]);
 								return;
 							}
 
@@ -309,18 +309,18 @@ namespace DOL.GS.Commands
 							else
 							{
 								// Message: [ERROR] No permission was found for {0}'s account and the '/{1}" command!
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Plvl.Err.NoAcctPermFound", target.Name, args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Plvl.Err.NoAcctPermFound", target.Name, args[2]);
 								return;
 							}
 
 							// Message: [SUCCESS] You have revoked {0}'s account access to the '/{1}' command!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeAcctPerm", target.Name, args[2]);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Plvl.Msg.RevokeAcctPerm", target.Name, args[2]);
 
 							// If the target isn't player executing command
 							if (target != client.Player)
 							{
 								// Message: {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
-								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.DelAcctPerm", client.Player.Name, args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.DelAcctPerm", client.Player.Name, args[2]);
 								return;
 							}
 						}
@@ -355,7 +355,7 @@ namespace DOL.GS.Commands
 							if (targetClient == null) 
 							{
 								// Message: [ERROR] No character is online with the name '{0}'.
-								ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[2]);
+								ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Command.Err.NoOnlineChar", args[2]);
 								return;
 							}
 							
@@ -368,7 +368,7 @@ namespace DOL.GS.Commands
 							if (SinglePermission.HasPermission(client.Player, "plvl") == false)
 							{
 								// Message: You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
-								ChatUtil.SendTypeMessage((int)eMsg.DialogWarn, client, "AdminCommands.Plvl.Err.NoPlvlPerm", null);
+								ChatUtil.SendTypeMessage(eMsg.DialogWarn, client, "AdminCommands.Plvl.Err.NoPlvlPerm", null);
 								return;
 							}
 						}
@@ -384,11 +384,11 @@ namespace DOL.GS.Commands
 							client.Player.UpdateEquipmentAppearance();
 
 							// Message: [SUCCESS] You have changed {0}'s account privilege level to {1}!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name, plvl.ToString());
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name, plvl.ToString());
 
 							if (target != client.Player)
 								// Message: {0} has changed your account's privilege level to {1}!
-								ChatUtil.SendTypeMessage((int)eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.YourPlvlSet", client.Player.Name, plvl.ToString());
+								ChatUtil.SendTypeMessage(eMsg.Staff, target.Client, "AdminCommands.Plvl.Msg.YourPlvlSet", client.Player.Name, plvl.ToString());
 						}
 						break;
 					}
@@ -399,7 +399,7 @@ namespace DOL.GS.Commands
 				// See the comments above 'using' about SendMessage translation IDs
 				case "command":
 					{
-						ChatUtil.SendWindowMessage((int)eWindow.Text, client, "Using the '/plvl' Command",
+						ChatUtil.SendWindowMessage(eWindow.Text, client, "Using the '/plvl' Command",
 							" ", 
 							// Message: ----- Privilege Levels -----
 							"Dialog.Header.Content.PrivLevels", 

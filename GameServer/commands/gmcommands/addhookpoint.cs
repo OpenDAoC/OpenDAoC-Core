@@ -57,7 +57,7 @@ namespace DOL.GS.Commands
 				if (comp == null)
 				{
 					// Message: [ERROR] You are not targeting a keep component!
-					ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.HookPoint.NoGKCTarget", null);
+					ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.HookPoint.NoGKCTarget", null);
 					return;
 				}
 				
@@ -76,7 +76,7 @@ namespace DOL.GS.Commands
 			catch (Exception e)
 			{
 				// Message: [Error] {0}
-				ChatUtil.SendTypeMessage((int)eMsg.Error, client, "GMCommands.Error", e.Message);
+				ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Error", e.Message);
 			}
 		}
 	}

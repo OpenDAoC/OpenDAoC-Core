@@ -58,7 +58,7 @@ namespace DOL.GS.Commands
         /// <param name="args"></param>
         public void OnCommand(GameClient client, string[] args)
         {
-            if (args.Length < 4)
+            if (args.Length < 1)
             {
                 DisplaySyntax(client);
                 return;
@@ -72,28 +72,28 @@ namespace DOL.GS.Commands
                         if (npcString == "")
                         {
                             // Message: [ERROR] You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
-                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportString", null);
+                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportString", null);
                             return;
                         }
                         
-                        if (npcString != "enter" || npcString != "exit")
+                        if (npcString != "enter" && npcString != "exit")
                         {
                             // Message: [ERROR] The string value entered is not supported. Accepted values include "enter" or "exit".
-                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidStrings", null);
+                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidStrings", null);
                             return;
                         }
                         
                         if (args[3] == "")
                         {
                             // Message: [ERROR] You must specify a teleport type. Accepted values include "in" or "out".
-                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportType", null);
+                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.DoorTeleport.Err.TeleportType", null);
                             return;
                         }
 
-                        if (args[3] != "in" || args[3] != "out")
+                        if (args[3] != "in" && args[3] != "out")
                         {
                             // Message: [ERROR] The teleport type entered is not supported. Accepted values include "in" or "out".
-                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidTypes", null);
+                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.DoorTeleport.Err.ValidTypes", null);
                             return;
                         }
 
@@ -111,7 +111,7 @@ namespace DOL.GS.Commands
                         if (keep == null)
                         {
                             // Message: [ERROR] You must be inside a keep area to execute this command.
-                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.DoorTeleport.Err.KeepArea", null);
+                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.DoorTeleport.Err.KeepArea", null);
                             return;
                         }
 
@@ -124,7 +124,7 @@ namespace DOL.GS.Commands
                     var results = WorldMgr.LoadTeleports();
                     log.Info(results);
 
-                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, results);
+                    ChatUtil.SendTypeMessage(eMsg.Success, client, results);
                     
                     break;
 
@@ -150,7 +150,7 @@ namespace DOL.GS.Commands
             if (verification != null)
             {
                 // Message: [ERROR] A teleport ID with the same parameter(s) already exists!
-                ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.DoorTeleport.Err.SameParameter", null);
+                ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.DoorTeleport.Err.SameParameter", null);
                 return;
             }
             
@@ -168,7 +168,7 @@ namespace DOL.GS.Commands
             GameServer.Database.AddObject(teleport);
             
             // Message: [SUCCESS] You have added a keep door teleport location (ID {0})!
-            ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.DoorTeleport.Msg.TeleportAdded", null);
+            ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.DoorTeleport.Msg.TeleportAdded", null);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
 	                            // Message: [Announce]: {0}
-	                            ChatUtil.SendTypeMessage((int)eMsg.Important, clients, "GMCommands.Announce.LogAnnounce", message);
+	                            ChatUtil.SendTypeMessage(eMsg.Important, clients, "GMCommands.Announce.LogAnnounce", message);
 						break;
 					}
 				#endregion Log
@@ -94,7 +94,7 @@ namespace DOL.GS.Commands
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
 	                            // Message: Announce from {0}
-	                            ChatUtil.SendWindowMessage((int)eWindow.Text, clients, "GMCommands.Announce.WindowAnnounce", messages);
+	                            ChatUtil.SendWindowMessage(eWindow.Text, clients, "GMCommands.Announce.WindowAnnounce", client, messages);
 						break;
 					}
 				#endregion Window
@@ -104,7 +104,7 @@ namespace DOL.GS.Commands
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
 							if(clients != null)
 	                            // Message: [Announce]: {0}
-	                            ChatUtil.SendTypeMessage((int)eMsg.Send, clients, "GMCommands.Announce.SendAnnounce", message);
+	                            ChatUtil.SendTypeMessage(eMsg.Send, clients, "GMCommands.Announce.SendAnnounce", message);
 						break;
 					}
 				#endregion Send
@@ -113,7 +113,7 @@ namespace DOL.GS.Commands
 					{
                         foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if (clients != null)
-	                            ChatUtil.SendTypeMessage((int)eMsg.ScreenCenter, client, message);
+	                            ChatUtil.SendTypeMessage(eMsg.ScreenCenter, client, message);
 						break;
 					}
 				#endregion Center
@@ -121,9 +121,9 @@ namespace DOL.GS.Commands
 				case "confirm":
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
-                            if(clients != null)
+                            if (clients != null)
 	                            // Message: Announce from {0}: {1}
-	                            ChatUtil.SendTypeMessage((int)eMsg.DialogWarn, client, "GMCommands.Announce.ConfirmAnnounce", message);
+	                            ChatUtil.SendTypeMessage(eMsg.DialogWarn, clients, "GMCommands.Announce.ConfirmAnnounce", client, message);
 						break;
 					}
 				#endregion Confirm

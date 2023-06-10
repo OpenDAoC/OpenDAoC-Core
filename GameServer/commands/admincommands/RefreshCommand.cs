@@ -94,12 +94,12 @@ namespace DOL.GS.Commands
 				if (method.Value == null)
 				{
 					// Message: [ERROR] An incorrect module was specified. Use '/refresh list' to see available options.
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Err.WrongModule", null);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Refresh.Err.WrongModule", null);
 				}
 				else
 				{
 					// Message: [SUCCESS] Refreshing the module static cache for: {0}
-					ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Msg.RefreshingModules", method.Key);
+					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Refresh.Msg.RefreshingModules", method.Key);
 					
 					try
 					{
@@ -107,16 +107,16 @@ namespace DOL.GS.Commands
 
 						if (value != null)
 							// Message: [INFO] Module returned value: {0}
-							ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Refresh.Msg.ReturnedValue", value);
+							ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Refresh.Msg.ReturnedValue", value);
 					}
 					catch(Exception e)
 					{
 						// Message: [ERROR] An unexpected issue occurred: {0}, {1}
-						ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Refresh.Err.ErrorStaticCache", method.Key, e);
+						ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Refresh.Err.ErrorStaticCache", method.Key, e);
 					}
 						
 					// Message: [DONE] Refreshed the static cache for: {0}
-					ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Refresh.Msg.StaticCacheFinished", method.Key);
+					ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Refresh.Msg.StaticCacheFinished", method.Key);
 				}
 			}
 		}
@@ -128,10 +128,10 @@ namespace DOL.GS.Commands
 		private void DisplayAvailableModules(GameClient client)
 		{
 			// Message: <----- '/refresh' Modules ----->
-			ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AdminCommands.Refresh.Msg.AvailableModules", null);
+			ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AdminCommands.Refresh.Msg.AvailableModules", null);
 			
 			foreach(var mods in m_refreshCommandCache.Keys)
-				ChatUtil.SendTypeMessage((int)eMsg.System, client, mods);
+				ChatUtil.SendTypeMessage(eMsg.System, client, mods);
 		}
 
 		/// <summary>

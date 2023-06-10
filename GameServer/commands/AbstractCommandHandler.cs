@@ -82,7 +82,7 @@ namespace DOL.GS.Commands
 			if (client == null || !client.IsPlaying)
 				return;
 
-			ChatUtil.SendTypeMessage((int)eMsg.System, client, string.Format(message, objs));
+			ChatUtil.SendTypeMessage(eMsg.System, client, string.Format(message, objs));
 			return;
 		}
 
@@ -111,19 +111,19 @@ namespace DOL.GS.Commands
 				// Include header/divider at head of return upon typing the main command identifier or alias (e.g., '/command')
 				if (attrib[0].Header != "")
 					// Message: 
-					ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, attrib[0].Header, command, plvlReq);
+					ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, attrib[0].Header, command, plvlReq);
 				else
 					// Message: <----- '/{0}' Command ----->
-					ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AllCommands.Header.Basic.Commands", command);
+					ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AllCommands.Header.Basic.Commands", command);
 			}
 			
 			// Include main command type description below the header
 			// Example: Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
-			ChatUtil.SendTypeMessage((int)eMsg.CmdDesc, client, attrib[0].Description, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdDesc, client, attrib[0].Description, null);
 			// Line break
-			ChatUtil.SendTypeMessage((int)eMsg.Command, client, " ");
+			ChatUtil.SendTypeMessage(eMsg.Command, client, " ");
 			// Message: Use the following syntax for this command:
-			ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AllCommands.Text.General.UseSyntax", null);
+			ChatUtil.SendTypeMessage(eMsg.Command, client, "AllCommands.Text.General.UseSyntax", null);
 
 			// Run for each value found under params until the whole list of subcommands is displayed
 			foreach (var sentence in attrib[0].Usage)
@@ -132,13 +132,13 @@ namespace DOL.GS.Commands
 				if (sentence.Contains(".Syntax."))
 				{
 					// Example: /account changepassword <accountName> <newPassword>
-					ChatUtil.SendTypeMessage((int)eMsg.CmdSyntax, client, sentence, null);
+					ChatUtil.SendTypeMessage(eMsg.CmdSyntax, client, sentence, null);
 				}
 				// All other values display as command descriptions (i.e., CT_System)
 				else
 				{
 					// Example: Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
-					ChatUtil.SendTypeMessage((int)eMsg.CmdUsage, client, sentence, null);
+					ChatUtil.SendTypeMessage(eMsg.CmdUsage, client, sentence, null);
 				}
 			}
 		}
@@ -172,28 +172,28 @@ namespace DOL.GS.Commands
 			{
 				if (subcommand2 != "")
 					// Message: <----- '/{0}{1}{2}' Subcommand {3}----->
-					ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AllCommands.Header.General.2Subcommand", command, subVar, subVar2, plvlReq);
+					ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AllCommands.Header.General.2Subcommand", command, subVar, subVar2, plvlReq);
 				else
 					// Message: <----- '/{0}{1}' Subcommand {2}----->
-					ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AllCommands.Header.General.Subcommand", command, subVar, plvlReq);
+					ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AllCommands.Header.General.Subcommand", command, subVar, plvlReq);
 			}
 			
 			if (subcommand == "")
 				// Message: <----- '/{0}' Command {2}----->
-				ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, "AllCommands.Header.General.Commands", command, plvlReq);
+				ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AllCommands.Header.General.Commands", command, plvlReq);
 			
 			if (database == false || client.Account.PrivLevel == 1)
 				// Message: Use the following syntax for this command:
-				ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AllCommands.Text.General.UseSyntax", null);
+				ChatUtil.SendTypeMessage(eMsg.Command, client, "AllCommands.Text.General.UseSyntax", null);
 				
 			if (database && client.Account.PrivLevel > 1)
 				// Message: It is recommended that you perform actions associated with this command with the Atlas Admin (https://admin.atlasfreeshard.com). Otherwise, use the following syntax:
-				ChatUtil.SendTypeMessage((int)eMsg.Command, client, "AllCommands.Text.General.SyntaxDB", null);
+				ChatUtil.SendTypeMessage(eMsg.Command, client, "AllCommands.Text.General.SyntaxDB", null);
 			
 			// Example: /account command
-			ChatUtil.SendTypeMessage((int)eMsg.CmdSyntax, client, syntaxID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdSyntax, client, syntaxID, null);
 			// Example: Provides additional information regarding the '/account' command type.
-			ChatUtil.SendTypeMessage((int)eMsg.CmdUsage, client, usageID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdUsage, client, usageID, null);
 		}
 		
 		/// <summary>
@@ -210,9 +210,9 @@ namespace DOL.GS.Commands
 				return;
 			
 			// Example: /account command
-			ChatUtil.SendTypeMessage((int)eMsg.CmdSyntax, client, syntaxID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdSyntax, client, syntaxID, null);
 			// Example: Provides additional information regarding the '/account' command type.
-			ChatUtil.SendTypeMessage((int)eMsg.CmdUsage, client, usageID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdUsage, client, usageID, null);
 		}
 		
 		public void DisplayHeaderSyntax(GameClient client, string headerID)
@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
 				return;
 			
 			// Example: /account command
-			ChatUtil.SendTypeMessage((int)eMsg.CmdHeader, client, headerID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, headerID, null);
 		}
 		
 		public void DisplaySyntaxSyntax(GameClient client, string syntaxID)
@@ -230,7 +230,7 @@ namespace DOL.GS.Commands
 				return;
 			
 			// Example: /account command
-			ChatUtil.SendTypeMessage((int)eMsg.CmdSyntax, client, syntaxID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdSyntax, client, syntaxID, null);
 		}
 		
 		public void DisplayUsageSyntax(GameClient client, string usageID)
@@ -239,7 +239,7 @@ namespace DOL.GS.Commands
 				return;
 			
 			// Example: Provides additional information regarding the '/account' command type. 
-			ChatUtil.SendTypeMessage((int)eMsg.CmdUsage, client, usageID, null);
+			ChatUtil.SendTypeMessage(eMsg.CmdUsage, client, usageID, null);
 		}
 
 		public virtual void DisplaySyntax(GameClient client, string subcommand)

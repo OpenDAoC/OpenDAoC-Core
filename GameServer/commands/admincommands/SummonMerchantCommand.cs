@@ -42,7 +42,7 @@ namespace DOL.GS.Commands
             if (changeTime < 30000)
             {
                 // Message: You must wait {0} more seconds before you can use this command again!
-                ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.SummonMerchant.Err.WaitSeconds", ((30000 - changeTime)/1000));
+                ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.SummonMerchant.Err.WaitSeconds", ((30000 - changeTime)/1000));
                 return;
             }
             
@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
                 spellHandler.StartSpell(client.Player);
             
             // Message: You have summoned a merchant!
-            ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.SummonMerchant.Msg.SummonedMerchant", null);
+            ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.SummonMerchant.Msg.SummonedMerchant", null);
         }
         #endregion Command Timer
 

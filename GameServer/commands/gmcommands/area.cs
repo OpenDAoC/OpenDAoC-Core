@@ -120,19 +120,19 @@ namespace DOL.GS.Commands
 						GameServer.Database.AddObject(area);
 
 						// Message: [SUCCESS] You have created a new area!
-						ChatUtil.SendTypeMessage((int)eMsg.Important, client, "GMCommands.Area.Msg.AreaCreated", null);
+						ChatUtil.SendTypeMessage(eMsg.Important, client, "GMCommands.Area.Msg.AreaCreated", null);
 						// Message: [INFO] Description:
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaDesc", null);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaDesc", null);
 						// Message: --- Name: {0}
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaName", area.Description);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaName", area.Description);
 						// Message: --- X: {0}, Y: {1}, Z: {2}, Region: {3}
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaLoc", area.X, area.Y, area.Z, area.Region);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaLoc", area.X, area.Y, area.Z, area.Region);
 						// Message: --- Radius: {0}
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaRadius", area.Radius);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaRadius", area.Radius);
 						// Message: --- Broadcast: {0}
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaBroad", area.CanBroadcast.ToString());
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaBroad", area.CanBroadcast.ToString());
 						// Message: --- Sound: {0}
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "GMCommands.Area.Msg.AreaSound", area.Sound);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "GMCommands.Area.Msg.AreaSound", area.Sound);
 
 						break;
 					}
@@ -145,8 +145,7 @@ namespace DOL.GS.Commands
 				// --------------------------------------------------------------------------------
 				case "info":
                     {
-						string name = "Area Information";
-						var info = new List<string>();
+	                    var info = new List<string>();
 						//info.Add("        Current Areas : " + client.Player.CurrentAreas);
 						//info.Add(" ");
 						var areas = client.Player.CurrentAreas;
@@ -180,7 +179,7 @@ namespace DOL.GS.Commands
 							info.Add("AllCommands.Header.Note.Dashes");
                         }
 
-                        ChatUtil.SendWindowMessage((int)eWindow.Text, client, name, info);
+                        ChatUtil.SendWindowMessage(eWindow.Text, client, "Area Information", info);
 
 						break;
                     }

@@ -119,7 +119,7 @@ namespace DOL.GS.Commands
 	                        if (accountname.Length < 4 || password.Length < 4)
 	                        {
 		                        // Message: [ERROR] A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
-		                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.InvalidNamePass", null);
+		                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.InvalidNamePass", null);
 	                            return;
 	                        }
 	                        
@@ -128,7 +128,7 @@ namespace DOL.GS.Commands
 	                        if (account != null)
 	                        {
 		                        // Message: [ERROR] An account already exists with the name '{0}'! Try again with a different value.
-		                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AlreadyRegistered", accountname);
+		                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AlreadyRegistered", accountname);
 	                            return;
 	                        }
 	                        
@@ -148,12 +148,12 @@ namespace DOL.GS.Commands
 	                        // AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountCreate, "", "acct="+args[2]);
 	                        
 	                        // Message: [SUCCESS] You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.AccountCreated", account.Name);
+	                        ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.AccountCreated", account.Name);
                         }
                         else
                         {
 	                        // Message: [ERROR] A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.SpecialChars", null);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.SpecialChars", null);
                         }
                     }
                     break;
@@ -186,7 +186,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: [ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 						
@@ -194,7 +194,7 @@ namespace DOL.GS.Commands
 						if (newpass.Length < 4)
 						{
 							// Message: [ERROR] A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.PasswordChars", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.PasswordChars", null);
 							return;
 						}
 						
@@ -204,7 +204,7 @@ namespace DOL.GS.Commands
 						GameServer.Database.SaveObject(acc);
 						
 						// Message: [SUCCESS] You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.PasswordChanged", accountname);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.PasswordChanged", accountname);
 						
 						// todo Make Audit work
 						// AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountPasswordChange, "acct="+args[2], "");
@@ -237,7 +237,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: [ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
@@ -249,7 +249,7 @@ namespace DOL.GS.Commands
 						// AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountDelete, args[2], (""));
 						
 						// Message: [SUCCESS] You have successfully deleted the account '{0}'!
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.AccountDeleted", acc.Name);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.AccountDeleted", acc.Name);
 						return;
 					}
 				#endregion Delete
@@ -279,7 +279,7 @@ namespace DOL.GS.Commands
                         if (cha == null)
                         {
 	                        // Message: [ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charname);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charname);
                             return;
                         }
 
@@ -291,7 +291,7 @@ namespace DOL.GS.Commands
 						// AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, args[2], (""));
 						
 						// Message: [SUCCESS] You have successfully deleted the character '{0}'!
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.CharacterDeleted", cha.Name);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.CharacterDeleted", cha.Name);
                         return;
                     }
                 #endregion Delete Character
@@ -323,7 +323,7 @@ namespace DOL.GS.Commands
                         if (cha == null)
                         {
 	                        // Message: [ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charname);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charname);
                             return;
                         }
                         
@@ -334,7 +334,7 @@ namespace DOL.GS.Commands
                         if (acc == null)
                         {
 	                        // Message: [ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
                             return;
                         }
 
@@ -354,7 +354,7 @@ namespace DOL.GS.Commands
                             {
 	                            // If the character does not belong to any of these realms (i.e., somehow got assigned Neutral (0))
 	                            // Message: [ERROR] {0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit this character from the database or use the '/player realm' command on the desired character to resolve this issue.
-	                            ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.CharNotFromValidRealm", cha.Name, cha.Realm);
+	                            ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.CharNotFromValidRealm", cha.Name, cha.Realm);
                                 return;
 	                        }
                         }
@@ -384,7 +384,7 @@ namespace DOL.GS.Commands
                         if (freeslot == 0)
                         {
 	                        // Message: [FAILED] The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Failed, client, "AdminCommands.Account.Err.NoFreeSlots", accountname);
+	                        ChatUtil.SendTypeMessage(eMsg.Failed, client, "AdminCommands.Account.Err.NoFreeSlots", accountname);
                             return;
                         }
 
@@ -407,7 +407,7 @@ namespace DOL.GS.Commands
                         // AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterMove, "char="+args[2], ("acct="+args[3]));
                         
                         // Message: [SUCCESS] You have transferred ownership of {0} to account '{1}'!
-                        ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.CharacterMovedToAccount", cha.Name, acc.Name);
+                        ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.CharacterMovedToAccount", cha.Name, acc.Name);
                         return;
                     }
                 #endregion Move Character
@@ -436,7 +436,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: [ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
@@ -450,7 +450,7 @@ namespace DOL.GS.Commands
                         catch (Exception)
                         {
 	                        // Message: [ERROR] The value you entered was not expected. Please provide a number between '0' and '255'.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.StatusValueReq", null);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.StatusValueReq", null);
 	                        
 	                        return;
                         }
@@ -459,7 +459,7 @@ namespace DOL.GS.Commands
 						{
 							// Message triggers here to catch previous status from DB before it is replaced
 							// Message: [SUCCESS] You have changed the status for account '{0}' from {1} to {2}!
-							ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.SetStatus", acc.Name, acc.Status, status);
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.SetStatus", acc.Name, acc.Status, status);
 							
 							// Change DB entry for Status
 							acc.Status=status;
@@ -472,7 +472,7 @@ namespace DOL.GS.Commands
 						else
 						{
 							// Message: [ERROR] The value you entered was not expected. Please provide a number between '0' and '255'.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.StatusValueReq", null);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.StatusValueReq", null);
 						}
 						
 						return;
@@ -504,7 +504,7 @@ namespace DOL.GS.Commands
 						if (acc == null)
 						{
 							// Message: [ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountNotFound", accountname);
 							return;
 						}
 
@@ -514,7 +514,7 @@ namespace DOL.GS.Commands
 						if (banacc.Count == 0)
 						{
 							// Message: [ERROR] The account '{0}' is not currently banned!
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.AccountBanNotFound", accountname);
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.AccountBanNotFound", accountname);
 							return;
 						}
 						
@@ -532,7 +532,7 @@ namespace DOL.GS.Commands
 						// AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountUnbanned, accountname, (""));
 						
 						// Message: [SUCCESS] You have removed the ban from the account '{0}'!
-						ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.AccountUnbanned", accountname);
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.AccountUnbanned", accountname);
 						return;
 					}
 				#endregion Unban
@@ -562,14 +562,14 @@ namespace DOL.GS.Commands
                         if (Char == null)
                         {
 	                        // Message: [ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-	                        ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charName);
+	                        ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Account.Err.CharacterNotFound", charName);
                             return;
                         }
                         
                         string accName = GetAccountName(Char.Name);
                         
                         // Message: [INFO] {0} is associated with the account '{1}'.
-                        ChatUtil.SendTypeMessage((int)eMsg.Success, client, "AdminCommands.Account.Msg.AccNameForChar", Char.Name, accName);
+                        ChatUtil.SendTypeMessage(eMsg.Success, client, "AdminCommands.Account.Msg.AccNameForChar", Char.Name, accName);
                         return;
                     }
                 #endregion Account Name
@@ -581,7 +581,7 @@ namespace DOL.GS.Commands
 				// --------------------------------------------------------------------------------
 				case "command":
 				{
-					ChatUtil.SendWindowMessage((int)eWindow.Text, client, "Using the '/account' Command", 
+					ChatUtil.SendWindowMessage(eWindow.Text, client, "Using the '/account' Command",
 						" ",
 						" ",
 						// Message: Creates new, manages existing, and controls character assignment for OpenDAoC accounts. We recommend editing the database directly where possible to perform many of these same functions. Otherwise, use the following syntax:

@@ -227,7 +227,7 @@ AdminCommands.Shutdown.Msg.StaffCancel:                         [INFO] {0} stopp
 AdminCommands.Shutdown.Msg.ShutdownEnd:                         The server restart has been canceled! Please stand by for additional information from server staff.
 AdminCommands.Shutdown.Msg.ServerOpen:                          [INFO] The server is now open and accepting incoming connections!
 AdminCommands.Shutdown.Err.NoShutdown:                          [ERROR] No server shutdown is scheduled currently!
-AdminCommands.Shutdown.Err.WrongNumber:                         [ERROR] A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+AdminCommands.Shutdown.Err.WrongNumber:                         [ERROR] A server shutdown could not be initiated! Enter a value between '10' (i.e., 10 seconds) and '43200' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
 AdminCommands.Shutdown.Msg.ServerShutdownMins:                  The server will shut down in {0} minutes!
 AdminCommands.Shutdown.Msg.AttentionShutdown:                   ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
 AdminCommands.Shutdown.Description:                             Initiates a total shutdown of the server. The server must then be manually started.

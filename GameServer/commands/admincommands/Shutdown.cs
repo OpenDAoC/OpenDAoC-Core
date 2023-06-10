@@ -115,7 +115,7 @@ namespace DOL.GS.Commands
 				foreach (GameClient m_client in WorldMgr.GetAllPlayingClients())
 				{
 					// Message: An automated server restart/backup has been triggered. The server will shut down temporarily in {0} minutes.
-					ChatUtil.SendTypeMessage((int)eMsg.DialogWarn, m_client, "AdminCommands.Shutdown.Msg.AutomatedRestart", m_counter / 60);
+					ChatUtil.SendTypeMessage(eMsg.DialogWarn, m_client, "AdminCommands.Shutdown.Msg.AutomatedRestart", m_counter / 60);
 				}
 
 				string msg = "[STATUS] An automated server restart will occur in " + m_counter / 60 + " minutes! (Restart at " + date.ToString("HH:mm \"GMT\" zzz") + ")";
@@ -269,10 +269,10 @@ namespace DOL.GS.Commands
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
 						if (args2 == -1)
-							ChatUtil.SendTypeMessage((int)eMsg.Server, client, translationID, args1);
+							ChatUtil.SendTypeMessage(eMsg.Server, client, translationID, args1);
 						else
 							// Message: 
-							ChatUtil.SendTypeMessage((int)eMsg.Server, client, translationID, args1, args2);
+							ChatUtil.SendTypeMessage(eMsg.Server, client, translationID, args1, args2);
 					}
 				}
 
@@ -284,9 +284,9 @@ namespace DOL.GS.Commands
 					{
 						// Send twice for good measure
 						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
 				
@@ -453,9 +453,9 @@ namespace DOL.GS.Commands
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
 						if (args2 == -1)
-							ChatUtil.SendTypeMessage((int)eMsg.Server, client, translationID, args1);
+							ChatUtil.SendTypeMessage(eMsg.Server, client, translationID, args1);
 						else
-							ChatUtil.SendTypeMessage((int)eMsg.Server, client, translationID, args1, args2);
+							ChatUtil.SendTypeMessage(eMsg.Server, client, translationID, args1, args2);
 					}
 				}
 
@@ -467,9 +467,9 @@ namespace DOL.GS.Commands
 					{
 						// Send twice for good measure
 						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 						// Message: [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
 				
@@ -538,32 +538,35 @@ namespace DOL.GS.Commands
 				case "command":
 				{
 					// Displays dialog with information
-					var info = new List<string>();
-					info.Add(" ");
-					// Message: ----- Implications of a Shutdown -----
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.Shutdown"));
-					info.Add(" ");
-					// Message: The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all server-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc1"));
-					info.Add(" ");
-					// Message: Rebooting the server is currently a manual effort. Bringing the server back online requires access to the server machine's command line. Please make sure someone is prepared to run the server build and launch commands once the shutdown is complete.
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc2"));
-					info.Add(" ");
-					// Message: ----- Additional Info -----
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
-					info.Add(" ");
-					// Message: If you have further questions about this slash command, please make an inquiry on the OpenDAoC Discord server.
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc3"));
+					ChatUtil.SendWindowMessage(eWindow.Text, client, "Using the '/shutdown' Command",
+						" ",
+						// Message: ----- Implications of a Shutdown -----
+						"Dialog.Header.Content.Shutdown",
+						" ",
+						// Message: The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all server-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
+						"AdminCommands.Shutdown.Comm.Desc1",
+						" ",
+						// Message: Rebooting the server is currently a manual effort. Bringing the server back online requires access to the server machine's command line. Please make sure someone is prepared to run the server build and launch commands once the shutdown is complete.
+						"AdminCommands.Shutdown.Comm.Desc2",
+						" ",
+						// Message: ----- Additional Info -----
+						"Dialog.Header.Content.MoreInfo",
+						" ",
+						// Message: If you have further questions about this slash command, please make an inquiry on the OpenDAoC Discord server.
+						"AdminCommands.Shutdown.Comm.Desc3",
+						" ",
+						" "
+					);
 
-					ChatUtil.SendWindowMessage((int)eWindow.Text, client, "Using the '/shutdown' Command", info);
 					return;
 				}
 				#endregion Command
 
 				#region Stop
 				// Cancels a server shutdown
-				// Syntax: /shutdown stop
+				// Syntax: /shutdown < stop | cancel >
 				// Args:   /shutdown args[1]
+				case "cancel":
 				case "stop":
 				{
 					// If the server is counting down
@@ -576,15 +579,15 @@ namespace DOL.GS.Commands
 						
 						// Send this message to player executing stop command
 						// Message: [SUCCESS] You have stopped the server shutdown process!
-						ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Shutdown.Msg.YouCancel", null);
+						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Shutdown.Msg.YouCancel", null);
 						
 						// Send message to all players letting them know the shutdown isn't occurring
 						foreach (GameClient playingClient in WorldMgr.GetAllPlayingClients())
 						{
 							// Message: [INFO] {0} stopped the server shutdown!
-							ChatUtil.SendTypeMessage((int)eMsg.Debug, playingClient, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
+							ChatUtil.SendTypeMessage(eMsg.Debug, playingClient, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
 							// Message: The server restart has been canceled! Please stand by for additional information from server staff.
-							ChatUtil.SendTypeMessage((int)eMsg.Server, playingClient, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
+							ChatUtil.SendTypeMessage(eMsg.Server, playingClient, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
 						}
 
 						// If server status is closed (< 2 min to shutdown)
@@ -594,7 +597,7 @@ namespace DOL.GS.Commands
 							GameServer.Instance.Open();
 							
 							// Message: [INFO] The server is now open and accepting incoming connections!
-							ChatUtil.SendTypeMessage((int)eMsg.Debug, client, "AdminCommands.Shutdown.Msg.ServerOpen", null);
+							ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Shutdown.Msg.ServerOpen", null);
 							
 							log.Info("[STATUS] Shutdown aborted. Server now accepting incoming connections!");
 						}
@@ -631,7 +634,7 @@ namespace DOL.GS.Commands
 					else
 					{
 						// Message: [ERROR] No server shutdown is scheduled currently!
-						ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Shutdown.Err.NoShutdown", null);
+						ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Shutdown.Err.NoShutdown", null);
 					}
 					return;
 				}
@@ -727,10 +730,10 @@ namespace DOL.GS.Commands
 							return;
 						}
 						// Require a value equal to or between 10 and 43200 (10 seconds to 6 hours)
-						if (m_counter is <= 9 or >= 43200)
+						if (m_counter is <= 9 or >= 43201)
 						{
-							// Message: [ERROR] A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
-							ChatUtil.SendTypeMessage((int)eMsg.Error, client, "AdminCommands.Shutdown.Err.WrongNumber", null);
+							// Message: [ERROR] A server shutdown could not be initiated! Enter a value between '10' (i.e., 10 seconds) and '43200' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "AdminCommands.Shutdown.Err.WrongNumber", null);
 							return;
 						}
 					}
@@ -764,25 +767,23 @@ namespace DOL.GS.Commands
 			{
 				if (popup)
 				{
-					// Displays dialog with information
-					var shutdown = new List<string>();
-					
-					shutdown.Add(" ");
-					// Message: ----- ATTENTION -----
-					shutdown.Add(LanguageMgr.GetTranslation(m_client.Account.Language, "Dialog.Header.Content.Attention"));
-					shutdown.Add(" ");
-					// Message: A server reboot has been scheduled to occur at {1}. The server will then be unavailable temporarily for maintenance.
-					shutdown.Add(LanguageMgr.GetTranslation(m_client.Account.Language, "AdminCommands.Shutdown.Msg.ScheduledShutdown", date.ToString("HH:mm \"GMT\" zzz")));
-					shutdown.Add(" ");
-					// Message: It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
-					shutdown.Add(LanguageMgr.GetTranslation(m_client.Account.Language, "AdminCommands.Shutdown.Msg.PlanLogout"));
-				
-					// Send the above messages in a dialog
-					ChatUtil.SendWindowMessage((int)eWindow.Text, m_client, "Server Reboot Scheduled", shutdown);
+					ChatUtil.SendWindowMessage(eWindow.Text, m_client, "Server Reboot Scheduled",
+						" ",
+						// Message: ----- ATTENTION -----
+						"Dialog.Header.Content.Attention",
+						" ",
+						// Message: A server reboot has been scheduled to occur at {1}. The server will then be unavailable temporarily for maintenance.
+						"AdminCommands.Shutdown.Msg.ScheduledShutdown",
+						" ",
+						// Message: It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
+						"AdminCommands.Shutdown.Msg.PlanLogout",
+						" ",
+						" "
+					);
 				}
 
 				// Message: ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
-				ChatUtil.SendTypeMessage((int)eMsg.Server, m_client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
+				ChatUtil.SendTypeMessage(eMsg.Server, m_client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
 			}
 
 			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))

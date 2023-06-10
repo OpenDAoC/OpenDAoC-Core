@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
 				if (target is GamePlayer targetPlayer)
 				{
 					// Message: You feel refreshed and cured of all maladies!
-					ChatUtil.SendTypeMessage((int)eMsg.Spell, targetPlayer, "GMCommands.Heal.Msg.YouFeelCured", null);
+					ChatUtil.SendTypeMessage(eMsg.Spell, targetPlayer, "GMCommands.Heal.Msg.YouFeelCured", null);
 
 					// Force an update of the target's status so that the heal is registered in the UI more quickly
 					targetPlayer.UpdatePlayerStatus();

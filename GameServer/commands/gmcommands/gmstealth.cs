@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
                    client.Player.CurrentSpeed = 191;
 
                    // Message: You are now invisible to all clients with a privilege level of 1!
-                   ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOn", null);
+                   ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOn", null);
                 }
         	}
             else if (args[1].ToLower().Equals("off"))
@@ -63,7 +63,7 @@ namespace DOL.GS.Commands
                     client.Player.Stealth(false);
 
                     // Message: You are no longer invisible to Players!
-                    ChatUtil.SendTypeMessage((int)eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOff", null);
+                    ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.GMStealth.Msg.InvisibleOff", null);
             }
         }
     }
