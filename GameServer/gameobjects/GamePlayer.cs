@@ -2120,27 +2120,21 @@ namespace DOL.GS
         /// <summary>
         /// The timer that will be started when the player wants to pray
         /// </summary>
-        protected RegionTimerAction<GameGravestone> m_prayAction;
-        /// <summary>
-        /// The delay to wait until xp is regained, in milliseconds
-        /// </summary>
-        protected virtual ushort PrayDelay { get { return 5000; }}
+        private ECSGameTimer m_prayAction;
+
         /// <summary>
         /// Gets the praying-state of this living
         /// </summary>
-        public virtual bool IsPraying
-        {
-            get { return m_prayAction != null && m_prayAction.IsAlive; }
-        }
+        public virtual bool IsPraying => m_prayAction?.IsAlive == true;
 
         /// <summary>
         /// Prays on a gravestone for XP!
         /// </summary>
         public virtual void Pray()
         {
-            string cantPrayMessage = string.Empty;
+            string cantPrayMessage = null;
             GameGravestone gravestone = TargetObject as GameGravestone;
-			
+
             if (!IsAlive)
                 cantPrayMessage = "GamePlayer.Pray.CantPrayNow";
             else if (IsRiding)
@@ -2155,33 +2149,35 @@ namespace DOL.GS
                 cantPrayMessage = "GamePlayer.Pray.MustStandingStill";
             else if (IsPraying)
                 cantPrayMessage = "GamePlayer.Pray.AlreadyPraying";
-			
-            if (cantPrayMessage != string.Empty)
+
+            if (cantPrayMessage != null)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, cantPrayMessage), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            if (m_prayAction != null)
-                m_prayAction.Stop();
-			
-            m_prayAction = new RegionTimerAction<GameGravestone>(gravestone, stn => {
-                if (stn.XPValue > 0)
+            m_prayAction = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            {
+                if (gravestone.XPValue > 0)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pray.GainBack"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    GainExperience(eXPSource.Praying, stn.XPValue);
+                    GainExperience(eXPSource.Praying, gravestone.XPValue);
                 }
-                stn.XPValue = 0;
-                stn.Delete();
-            });
-            m_prayAction.Start(PrayDelay);
+
+                gravestone.XPValue = 0;
+                gravestone.Delete();
+                m_prayAction = null;
+                return 0;
+            }), 5000);
 
             Sit(true);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pray.Begin"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == null) continue;
+                if (player == null)
+                    continue;
+
                 player.Out.SendEmoteAnimation(this, eEmote.Pray);
             }
         }
