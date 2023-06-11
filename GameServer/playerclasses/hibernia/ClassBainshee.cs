@@ -17,20 +17,16 @@
  *
  */
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
-using DOL.GS.Realm;
-using DOL.GS.Effects;
 using DOL.Events;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
 	[CharacterClass((int)eCharacterClass.Bainshee, "Bainshee", "Magician")]
 	public class ClassBainshee : ClassMagician
 	{
-		public ClassBainshee()
-			: base()
+		public ClassBainshee() : base()
 		{
 			m_profession = "PlayerClass.Profession.PathofAffinity";
 			m_specializationMultiplier = 10;
@@ -51,12 +47,12 @@ namespace DOL.GS.PlayerClass
 		/// <summary>
 		/// Timer Action for Reseting Wraith Form
 		/// </summary>
-		protected RegionTimerAction<GamePlayer> m_WraithTimerAction;
+		protected ECSGameTimer m_wraithTimerAction;
 		
 		/// <summary>
 		/// Event Trigger When Player Zoning Out to Force Reset Form
 		/// </summary>
-		protected DOLEventHandler m_WraithTriggerEvent;
+		protected DOLEventHandler m_wraithTriggerEvent;
 		
 		/// <summary>
 		/// Bainshee Transform While Casting.
@@ -65,12 +61,19 @@ namespace DOL.GS.PlayerClass
 		public override void Init(GamePlayer player)
 		{
 			base.Init(player);
-			// Add Cast Listener.
-			m_WraithTimerAction = new RegionTimerAction<GamePlayer>(Player, pl => { if (pl.CharacterClass is ClassBainshee) ((ClassBainshee)pl.CharacterClass).TurnOutOfWraith(); });
-			m_WraithTriggerEvent = new DOLEventHandler(TriggerUnWraithForm);
-			GameEventMgr.AddHandler(Player, GamePlayerEvent.CastFinished, new DOLEventHandler(TriggerWraithForm));
+
+			m_wraithTimerAction = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(_ =>
+			{
+				if (player.CharacterClass is ClassBainshee bainshee)
+					bainshee.TurnOutOfWraith();
+
+				return 0;
+			}));
+
+			m_wraithTriggerEvent = new DOLEventHandler(TriggerUnWraithForm);
+			GameEventMgr.AddHandler(Player, GameLivingEvent.CastFinished, new DOLEventHandler(TriggerWraithForm));
 		}
-				
+
 		/// <summary>
 		/// Check if this Spell Cast Trigger Wraith Form
 		/// </summary>
@@ -88,8 +91,7 @@ namespace DOL.GS.PlayerClass
 			
 			if (args == null || args.SpellHandler == null)
 				return;
-			
-			
+
 			if (!args.SpellHandler.HasPositiveEffect)
 				TurnInWraith();
 		}
@@ -119,24 +121,19 @@ namespace DOL.GS.PlayerClass
 			if (Player == null)
 				return;
 			
-			if (m_WraithTimerAction.IsAlive)
+			if (!m_wraithTimerAction.IsAlive)
 			{
-				m_WraithTimerAction.Stop();
-			}
-			else
-			{
-				switch (Player.Race)
+				Player.Model = Player.Race switch
 				{
-					case 11: Player.Model = 1885; break; //Elf
-					case 12: Player.Model = 1884; break; //Lurikeen
-					case 9: 
-					default: Player.Model = 1883; break; //Celt
-				}
-				
-				GameEventMgr.AddHandler(Player, GamePlayerEvent.RemoveFromWorld, m_WraithTriggerEvent);
+					11 => 1885,//Elf
+					12 => 1884,//Lurikeen
+					_ => 1883,//Celt
+				};
+
+				GameEventMgr.AddHandler(Player, GameObjectEvent.RemoveFromWorld, m_wraithTriggerEvent);
 			}
 			
-			m_WraithTimerAction.Start(WRAITH_FORM_RESET_DELAY);
+			m_wraithTimerAction.Start(WRAITH_FORM_RESET_DELAY);
 		}
 
 		/// <summary>
@@ -164,16 +161,12 @@ namespace DOL.GS.PlayerClass
 			//	return;
 			//}
 			
-			if (m_WraithTimerAction.IsAlive)
-				m_WraithTimerAction.Stop();
-			
-			GameEventMgr.RemoveHandler(Player, GamePlayerEvent.RemoveFromWorld, m_WraithTriggerEvent);
-			
+			m_wraithTimerAction.Stop();
+			GameEventMgr.RemoveHandler(Player, GameObjectEvent.RemoveFromWorld, m_wraithTriggerEvent);
 			Player.Model = (ushort)Player.Client.Account.Characters[Player.Client.ActiveCharIndex].CreationModel;
-			
 		}
 
-		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+		public override List<PlayerRace> EligibleRaces => new()
 		{
 			// PlayerRace.Celt, PlayerRace.Elf, PlayerRace.Lurikeen,
 		};
