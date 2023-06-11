@@ -1311,32 +1311,19 @@ namespace DOL.GS
         /// <summary>
         /// Expire Combat Timer Interval
         /// </summary>
-        protected virtual int CombatTimerInterval { get { return 11000; }}
-
-        /// <summary>
-        /// Combat Timer Lock
-        /// </summary>
-        private object m_CombatTimerLock = new object();
+        private static int COMBAT_TIMER_INTERVAL => 11000;
 
         /// <summary>
         /// Combat Timer
         /// </summary>
-        private RegionTimerAction<GamePlayer> m_CombatTimer = null;
+        private ECSGameTimer m_combatTimer;
 
         /// <summary>
         /// Reset and Restart Combat Timer
         /// </summary>
         protected virtual void ResetInCombatTimer()
         {
-            lock (m_CombatTimerLock)
-            {
-                if (m_CombatTimer == null)
-                {
-                    m_CombatTimer = new RegionTimerAction<GamePlayer>(this, p => p.Out.SendUpdateMaxSpeed());
-                }
-                m_CombatTimer.Stop();
-                m_CombatTimer.Start(CombatTimerInterval);
-            }
+            m_combatTimer.Start(COMBAT_TIMER_INTERVAL);
         }
         #endregion
 
@@ -15584,6 +15571,12 @@ namespace DOL.GS
             LoadFromDatabase(dbChar);
             CreateStatistics();
             EntityManagerId = EntityManager.Add(EntityManager.EntityType.Player, this);
+
+            m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            {
+                Out.SendUpdateMaxSpeed();
+                return 0;
+            }));
         }
 
         /// <summary>
