@@ -16,11 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.GS;
 using DOL.Language;
 using log4net;
 
@@ -43,13 +40,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (code != 0)
 				log.Warn($"bonuses button: code is other than zero ({code})");
 
-			new RegionTimerAction<GamePlayer>(
-				client.Player,
-				p => p.Out.SendCustomTextWindow(
-						LanguageMgr.GetTranslation(client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Bonuses"),
-						client.Player.GetBonuses().ToList()
-					)
-				).Start(1);
+			new ECSGameTimer(client.Player, new ECSGameTimer.ECSTimerCallback(_ =>
+			{
+				client.Player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Bonuses"), client.Player.GetBonuses().ToList());
+				return 0;
+			}), 1);
 		}
 	}
 }
