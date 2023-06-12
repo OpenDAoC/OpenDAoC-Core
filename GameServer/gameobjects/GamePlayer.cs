@@ -2077,7 +2077,7 @@ namespace DOL.GS
             }
 
             if (player.IsUnderwater && player.CanBreathUnderWater == false)
-                player.Diving(eWaterBreath.Holding);
+                player.UpdateWaterBreathState(eWaterBreath.Holding);
             //We need two different sickness spells because RvR sickness is not curable by Healer NPC -Unty
             if (applyRezSick)
                 switch (DeathType)
@@ -7144,7 +7144,7 @@ namespace DOL.GS
             bool realmDeath = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
 
             TargetObject = null;
-            Diving(eWaterBreath.Normal);
+            UpdateWaterBreathState(eWaterBreath.None);
             if (IsOnHorse)
                 IsOnHorse = false;
 
@@ -9467,7 +9467,9 @@ namespace DOL.GS
                 m_invulnerabilityTimer.Stop();
                 m_invulnerabilityTimer = null;
             }
-            Diving(eWaterBreath.Normal);
+
+            UpdateWaterBreathState(eWaterBreath.None);
+
             if (IsOnHorse)
                 IsOnHorse = false;
 
@@ -9549,7 +9551,7 @@ namespace DOL.GS
             if (rgn.GetZone(x, y) == null)
                 return false;
 
-            Diving(eWaterBreath.Normal);
+            UpdateWaterBreathState(eWaterBreath.None);
 
             if (SiegeWeapon != null)
                 SiegeWeapon.ReleaseControl();
@@ -9941,7 +9943,9 @@ namespace DOL.GS
             set
             {
                 base.X = value;
-                if (DBCharacter != null) DBCharacter.Xpos = base.X;
+
+                if (DBCharacter != null)
+                    DBCharacter.Xpos = base.X;
             }
         }
 
@@ -9953,7 +9957,9 @@ namespace DOL.GS
             set
             {
                 base.Y = value;
-                if (DBCharacter != null) DBCharacter.Ypos = base.Y;
+
+                if (DBCharacter != null)
+                    DBCharacter.Ypos = base.Y;
             }
         }
 
@@ -9964,10 +9970,10 @@ namespace DOL.GS
         {
             set
             {
-                if (value < CurrentRegion.WaterLevel)
-                    value = CurrentRegion.WaterLevel;
                 base.Z = value;
-                if (DBCharacter != null) DBCharacter.Zpos = base.Z;
+
+                if (DBCharacter != null)
+                    DBCharacter.Zpos = base.Z;
             }
         }
 
@@ -10152,33 +10158,33 @@ namespace DOL.GS
             }
         }
 
-
-		
-
         protected long m_beginDrowningTick;
         protected eWaterBreath m_currentWaterBreathState;
 
         protected int DrowningTimerCallback(ECSGameTimer callingTimer)
         {
-            if (!IsAlive || ObjectState != eObjectState.Active)
-                return 0;
-            if (this.Client.Account.PrivLevel == 1)
+            if (!IsAlive)
             {
-                // MoveTo(CurrentRegion.ID, X, Y, Z + 5, Heading);
                 Out.SendCloseTimerWindow();
-                IsDiving = false;
-
                 return 0;
-                }
-        
-            return 1000;
-        }
+            }
 
-        protected int HoldingBreathTimerCallback(ECSGameTimer callingTimer)
-        {
-            m_holdBreathTimer = null;
-            Diving(eWaterBreath.Drowning);
-            return 0;
+            if (ObjectState != eObjectState.Active)
+                return 0;
+
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+
+            if (GameLoop.GameLoopTime - m_beginDrowningTick > 15000)
+            {
+                TakeDamage(null, eDamageType.Natural, MaxHealth, 0);
+                Out.SendCloseTimerWindow();
+                return 0;
+            }
+            else
+                TakeDamage(null, eDamageType.Natural, MaxHealth / 20, 0);
+
+            return 1000;
         }
 
         protected ECSGameTimer m_drowningTimer;
@@ -10188,94 +10194,107 @@ namespace DOL.GS
         /// The diving state of this player
         /// </summary>
         protected bool m_diving;
-        /// <summary>
-        /// Gets/sets the current diving state
-        /// </summary>
+
         public bool IsDiving
         {
-            get { return m_diving; }
+            get => m_diving;
             set
             {
-                if (m_diving != value)
+                if (!CurrentZone.IsDivingEnabled && value && Client.Account.PrivLevel == 1)
                 {
-                    MoveTo(CurrentRegion.ID, X, Y, Z + 1, Heading);
-
-                    // in case we need to go aggressive
-                    // Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                    // TakeDamage(null, eDamageType.Natural, (int)(MaxHealth * 0.05), 0);
-                    Diving(eWaterBreath.Drowning);
+                    Z += 1;
+                    Out.SendPlayerJump(false);
+                    return;
                 }
-                    
-                //if (value && !CanBreathUnderWater)
-                //{
-                //    Diving(waterBreath.Holding);
-                //}
-                //else
-                //    Diving(waterBreath.Normal);
-                m_diving = value; 
+
+                if (m_diving == value)
+                    return;
+
+                m_diving = value;
+
+                if (m_diving)
+                {
+                    if (!CanBreathUnderWater)
+                        UpdateWaterBreathState(eWaterBreath.Holding);
+                }
+                else
+                    UpdateWaterBreathState(eWaterBreath.None);
             }
         }
 
         protected bool m_canBreathUnderwater;
         public bool CanBreathUnderWater
         {
-            get { return m_canBreathUnderwater; }
+            get => m_canBreathUnderwater;
             set
             {
+                if (m_canBreathUnderwater == value)
+                    return;
+
                 m_canBreathUnderwater = value;
-                if (!value && IsDiving)
-                    Diving(eWaterBreath.Holding);
-                else
-                    Diving(eWaterBreath.Normal);
+
+                if (IsDiving)
+                {
+                    if (m_canBreathUnderwater)
+                        UpdateWaterBreathState(eWaterBreath.None);
+                    else
+                        UpdateWaterBreathState(eWaterBreath.Holding);
+                }
             }
         }
 
-        public void Diving(eWaterBreath state)
+        public void UpdateWaterBreathState(eWaterBreath state)
         {
-            //bool changeSpeed = false;
-            if (m_currentWaterBreathState != state)
-            {
-                //changeSpeed = true;
-                Out.SendCloseTimerWindow();
-            }
+            if (Client.Account.PrivLevel != 1)
+                return;
 
-            if (m_holdBreathTimer != null)
-            {
-                m_holdBreathTimer.Stop();
-                m_holdBreathTimer = null;
-            }
-            if (m_drowningTimer != null)
-            {
-                m_drowningTimer.Stop();
-                m_drowningTimer = null;
-            }
             switch (state)
             {
-                case eWaterBreath.Normal:
+                case eWaterBreath.None:
+                {
+                    m_holdBreathTimer.Stop();
+                    m_drowningTimer.Stop();
+                    Out.SendCloseTimerWindow();
                     break;
+                }
                 case eWaterBreath.Holding:
-                    if (m_holdBreathTimer == null)
+                {
+
+                    m_drowningTimer.Stop();
+
+                    if (!m_holdBreathTimer.IsAlive)
                     {
                         Out.SendTimerWindow("Holding Breath", 30);
-                        m_holdBreathTimer = new ECSGameTimer(this);
-                        m_holdBreathTimer.Callback = new ECSGameTimer.ECSTimerCallback(HoldingBreathTimerCallback);
-                        m_holdBreathTimer.Start(30001);
+                        m_holdBreathTimer.Start(30000);
                     }
+
                     break;
+                }
                 case eWaterBreath.Drowning:
-                    m_beginDrowningTick = CurrentRegion.Time;
-                    if (m_drowningTimer == null)
+                {
+                    if (m_holdBreathTimer.IsAlive)
                     {
-                        //Out.SendTimerWindow("Drowning", 5);
-                        m_drowningTimer = new ECSGameTimer(this);
-                        m_drowningTimer.Callback = new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback);
-                        m_drowningTimer.Start(1);
+                        m_holdBreathTimer.Stop();
+
+                        if (!m_drowningTimer.IsAlive)
+                        {
+                            Out.SendTimerWindow("Drowning", 15);
+                            m_beginDrowningTick = CurrentRegion.Time;
+                            m_drowningTimer.Start(0);
+                        }
                     }
+                    else
+                    {
+                        // In case the player gets out of water right before the timer is stopped (and ticks instead).
+                        UpdateWaterBreathState(eWaterBreath.None);
+                        return;
+                    }
+
                     break;
+                }
             }
+
             m_currentWaterBreathState = state;
-            //if (changeSpeed)
-            //	Out.SendUpdateMaxSpeed();
         }
 
         protected int LavaBurnTimerCallback(ECSGameTimer callingTimer)
@@ -10285,6 +10304,7 @@ namespace DOL.GS
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.LavaBurnTimerCallback.YourInLava"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.LavaBurnTimerCallback.Take34%Damage"), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+
             if (Client.Account.PrivLevel == 1)
             {
                 TakeDamage(null, eDamageType.Natural, (int)(MaxHealth * 0.34), 0);
@@ -10292,6 +10312,7 @@ namespace DOL.GS
                 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     player.Out.SendCombatAnimation(null, this, 0x0000, 0x0000, 0x00, 0x00, 0x14, HealthPercent);
             }
+
             return 2000;
         }
 
@@ -15529,7 +15550,6 @@ namespace DOL.GS
         {
             m_characterClass = charClass;
         }
-        
 
         /// <summary>
         /// Creates a new player
@@ -15573,6 +15593,14 @@ namespace DOL.GS
                 Out.SendUpdateMaxSpeed();
                 return 0;
             }));
+
+            m_holdBreathTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            {
+                UpdateWaterBreathState(eWaterBreath.Drowning);
+                return 0;
+            }));
+
+            m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
         }
 
         /// <summary>
