@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 
 namespace DOL.GS
 {
@@ -71,19 +70,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Removes this object from the world
-		/// </summary>
-		public override void Delete()
-		{
-			if (m_removeItemAction != null)
-			{
-				m_removeItemAction.Stop();
-				m_removeItemAction = null;
-			}
-			base.Delete ();
-		}
-
-		/// <summary>
 		/// Adds this object to the world
 		/// </summary>
 		/// <returns>true if successfull</returns>
@@ -94,6 +80,17 @@ namespace DOL.GS
 				m_removeItemAction = new RemoveItemAction(this);
 			m_removeItemAction.Start((int)m_removeDelay);
 			return true;
+		}
+
+		public override bool RemoveFromWorld()
+		{
+			if (RemoveFromWorld(RespawnInterval))
+			{
+				m_removeItemAction?.Stop();
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>

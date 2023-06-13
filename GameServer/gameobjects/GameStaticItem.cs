@@ -349,7 +349,6 @@ namespace DOL.GS
 			return RemoveFromWorld(RespawnInterval);
 		}
 
-
 		/// <summary>
 		/// Temporarily remove this static item from the world.
 		/// Used mainly for quest interaction
@@ -368,7 +367,6 @@ namespace DOL.GS
 
 			return false;
 		}
-
 
 		/// <summary>
 		/// Timer used to respawn this object

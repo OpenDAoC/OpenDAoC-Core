@@ -17,10 +17,8 @@
  *
  */
 using System;
-using System.Reflection;
-using DOL.GS.PacketHandler;
 using DOL.Database;
-using log4net;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -186,11 +184,7 @@ namespace DOL.GS
 		{
 			if (base.RemoveFromWorld())
 			{
-				if (m_item is IGameInventoryItem)
-				{
-					(m_item as IGameInventoryItem).OnRemoveFromWorld();
-				}
-
+				(m_item as IGameInventoryItem)?.OnRemoveFromWorld();
 				m_isRemoved = true;
 				return true;
 			}
