@@ -55,6 +55,7 @@ namespace DOL.GS
         public int Waterlevel { get; set; }
         public bool IsDivingEnabled { get; set; }
         public virtual bool IsLava { get; set; }
+        public bool IsPathingEnabled { get; set; }
         public int ObjectCount => _objectCount;
 
         public bool IsDungeon
