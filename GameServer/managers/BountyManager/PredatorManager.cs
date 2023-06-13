@@ -577,7 +577,7 @@ public class PredatorManager
 
     public static void BroadcastKill(GamePlayer deadGuy)
     {
-        Parallel.ForEach(deadGuy.GetPlayersInRadius(10000).OfType<GamePlayer>().ToList(), player =>
+        Parallel.ForEach(deadGuy.GetPlayersInRadius(10000), player =>
         {
             player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.",
                 eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);

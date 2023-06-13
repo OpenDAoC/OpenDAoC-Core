@@ -103,7 +103,7 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
                 {
                     if (player == null) return;
                     player.Out.SendSpellEffectAnimation(this, this, 6160, 0, false, 0x01);//left hand glow

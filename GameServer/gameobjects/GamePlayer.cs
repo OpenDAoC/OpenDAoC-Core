@@ -1005,9 +1005,6 @@ namespace DOL.GS
             // Notify players in close proximity.
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
-                if (player == null)
-                    continue;
-
                 if (GameServer.ServerRules.IsAllowedToUnderstand(this, player))
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }

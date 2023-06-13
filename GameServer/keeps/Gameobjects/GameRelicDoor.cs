@@ -292,7 +292,7 @@ namespace DOL.GS.Keeps
 		{
 
 			
-			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+			Parallel.ForEach(this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				try
 				{

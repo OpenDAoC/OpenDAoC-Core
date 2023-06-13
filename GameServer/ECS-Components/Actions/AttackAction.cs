@@ -203,7 +203,7 @@ namespace DOL.GS
             byte flightDuration = (byte)(_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
             bool cancelPrepareAnimation = _owner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown;
 
-            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
             {
                 if (player == null)
                     return;
@@ -363,7 +363,7 @@ namespace DOL.GS
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
 
-            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
             {
                 if (player == null)
                     return;

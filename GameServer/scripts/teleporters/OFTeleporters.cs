@@ -216,7 +216,7 @@ namespace DOL.GS.Scripts
 
             InventoryItem medallion;
 
-            foreach (GamePlayer player in GetPlayersInRadius(500).OfType<GamePlayer>().ToList())
+            foreach (GamePlayer player in GetPlayersInRadius(500))
             {
                 GameLocation PortLocation = null;
                 medallion = player.Inventory.GetItem(eInventorySlot.Mythical);

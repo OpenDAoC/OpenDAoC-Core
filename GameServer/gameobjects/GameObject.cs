@@ -1354,22 +1354,16 @@ namespace DOL.GS
             set { }
         }
 
-        #region Broadcast Utils
+		#region Broadcast Utils
 
-        /// <summary>
+		/// <summary>
 		/// Broadcasts the Object Update to all players around
 		/// </summary>
 		public virtual void BroadcastUpdate()
 		{
 			if (ObjectState != eObjectState.Active)
 				return;
-			// Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
-			// {
-			// 	if (player == null)
-			// 		return;
-				
-			// 	player.Out.SendObjectUpdate(this);
-			// });
+
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)
@@ -1378,10 +1372,9 @@ namespace DOL.GS
 				player.Out.SendObjectUpdate(this);
 			}
 		}
-        
-        #endregion
-        
-        
+
+		#endregion
+
 		/// <summary>
 		/// Constructs a new empty GameObject
 		/// </summary>

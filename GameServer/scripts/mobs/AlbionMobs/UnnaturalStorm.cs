@@ -43,7 +43,7 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 				{
 					if (player == null) return;
 					player.Out.SendSpellCastAnimation(this, 14323, 1);
@@ -177,7 +177,7 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 				{
 					if (player == null) return;
 					player.Out.SendSpellCastAnimation(this, 14323, 1);

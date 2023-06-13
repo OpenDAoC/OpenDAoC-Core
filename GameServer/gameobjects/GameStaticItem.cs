@@ -333,7 +333,7 @@ namespace DOL.GS
 			if(!base.AddToWorld()) return false;
 			// foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			
-			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
 				player.Out.SendObjectCreate(this);
 			});

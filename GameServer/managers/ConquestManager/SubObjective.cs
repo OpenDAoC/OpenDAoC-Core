@@ -91,8 +91,7 @@ public class SubObjective
         FlagObject.BroadcastUpdate();
         CaptureTimer = null;
         BroadcastCapture();
-        var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>()
-            .Where(player => player.Realm == CapturingRealm).ToList();
+        var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true).Where(player => player.Realm == CapturingRealm).ToList();
         ConquestService.ConquestManager.AddContributors(nearbyPlayers);
 
         foreach (var player in nearbyPlayers)
@@ -126,7 +125,7 @@ public class SubObjective
     
     private void BroadcastCapture()
     {
-        Parallel.ForEach(FlagObject.GetPlayersInRadius(750, false).OfType<GamePlayer>(), player =>
+        Parallel.ForEach(FlagObject.GetPlayersInRadius(750, false), player =>
         {
             switch (player.Realm)
             {
@@ -142,7 +141,7 @@ public class SubObjective
             }
         });
         
-        Parallel.ForEach(FlagObject.GetPlayersInRadius(50000, false).OfType<GamePlayer>(), player =>
+        Parallel.ForEach(FlagObject.GetPlayersInRadius(50000, false), player =>
         {
             if (player.Realm == CapturingRealm)
             {
@@ -200,7 +199,7 @@ public class SubObjective
         else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
-            ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).OfType<GamePlayer>().Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
+            ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
         }
     }
     

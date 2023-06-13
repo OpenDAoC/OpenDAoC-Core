@@ -582,7 +582,7 @@ namespace DOL.GS
         {
             if (IsAlive)
             {
-                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
                 {
                     player?.Out.SendSpellEffectAnimation(this, this, 4323, 0, false, 0x01);
                 });

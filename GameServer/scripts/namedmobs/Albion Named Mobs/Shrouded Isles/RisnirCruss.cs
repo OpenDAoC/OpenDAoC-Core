@@ -181,7 +181,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.IsAlive && !HasAggro)
 			{
-				Parallel.ForEach(Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).OfType<GamePlayer>(), player =>
+				Parallel.ForEach(Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 				{
 					player?.Out.SendSpellEffectAnimation(Body, Body, 6085, 0, false, 0x01);
 				});
