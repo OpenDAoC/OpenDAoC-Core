@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,40 +10,149 @@ namespace DOL.GS
     public class AuxTimerService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "AuxTimerService";
+        private const string SERVICE_NAME = "Aux Timer Service";
+
+        // Will print active brain count/array size info for debug purposes if superior to 0.
+        public static int DebugTickCount;
+
+        private static List<AuxECSGameTimer> _activeTimers;
+        private static Stack<AuxECSGameTimer> _timerToRemove;
+        private static Stack<AuxECSGameTimer> _timerToAdd;
+        private static readonly object _addTimerLockObject = new();
+        private static readonly object _removeTimerLockObject = new();
+
+        private static bool Debug => DebugTickCount > 0;
+
+        static AuxTimerService()
+        {
+            _activeTimers = new List<AuxECSGameTimer>();
+            _timerToAdd = new Stack<AuxECSGameTimer>();
+            _timerToRemove = new Stack<AuxECSGameTimer>();
+        }
 
         public static void Tick(long tick)
         {
             // Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<AuxECSGameTimer> list = EntityManager.GetAll<AuxECSGameTimer>(EntityManager.EntityType.AuxTimer);
+            // Debug variables.
+            Dictionary<string, int> TimerToRemoveCallbacks = null;
+            Dictionary<string, int> TimerToAddCallbacks = null;
+            int TimerToRemoveCount = 0;
+            int TimerToAddCount = 0;
 
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.AuxTimer) + 1, i =>
+            // Check if need to debug, then setup vars.
+            if (Debug && DebugTickCount > 0)
             {
-                AuxECSGameTimer timer = list[i];
+                TimerToRemoveCount = _timerToRemove.Count;
+                TimerToAddCount = _timerToAdd.Count;
+                TimerToRemoveCallbacks = new Dictionary<string, int>();
+                TimerToAddCallbacks = new Dictionary<string, int>();
+            }
 
-                if (timer == null)
-                    return;
-
-                try
+            while (_timerToRemove.Count > 0)
+            {
+                lock (_removeTimerLockObject)
                 {
-                    if (timer.NextTick < tick)
+                    if (Debug && TimerToRemoveCallbacks != null && _timerToRemove.Peek() != null && _timerToRemove.Peek().Callback != null)
                     {
-                        long startTick = GameTimer.GetTickCount();
-                        timer.Tick();
-                        long stopTick = GameTimer.GetTickCount();
-
-                        if ((stopTick - startTick) > 25)
-                            log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");
+                        string callbackMethodName = _timerToRemove.Peek().Callback.Method.Name;
+                        if (TimerToRemoveCallbacks.ContainsKey(callbackMethodName))
+                            TimerToRemoveCallbacks[callbackMethodName]++;
+                        else
+                            TimerToRemoveCallbacks.Add(callbackMethodName, 1);
                     }
+
+                    if (_activeTimers.Contains(_timerToRemove.Peek()))
+                        _activeTimers.Remove(_timerToRemove.Pop());
+                    else
+                        _timerToRemove.Pop();
                 }
-                catch (Exception e)
+            }
+
+            while (_timerToAdd.Count > 0)
+            {
+                lock (_addTimerLockObject)
                 {
-                    log.Error($"Critical error encountered in AuxTimerService: {e}");
+                    if (Debug && TimerToAddCallbacks != null && _timerToAdd.Peek() != null && _timerToAdd.Peek().Callback != null)
+                    {
+                        string callbackMethodName = _timerToAdd.Peek().Callback.Method.Name;
+                        if (TimerToAddCallbacks.ContainsKey(callbackMethodName))
+                            TimerToAddCallbacks[callbackMethodName]++;
+                        else
+                            TimerToAddCallbacks.Add(callbackMethodName, 1);
+                    }
+
+                    if (!_activeTimers.Contains(_timerToAdd.Peek()))
+                        _activeTimers.Add(_timerToAdd.Pop());
+                    else
+                        _timerToAdd.Pop();
+                }
+            }
+
+            //Console.WriteLine($"timer size {ActiveTimers.Count}");
+            /*
+            if (debugTick + 1000 < tick)
+            {
+                Console.WriteLine($"timer size {ActiveTimers.Count}");
+                debugTick = tick;
+            }*/
+
+            Parallel.ForEach(_activeTimers, timer =>
+            {
+                if (timer != null && timer.NextTick < tick)
+                {
+                    long startTick = GameTimer.GetTickCount();
+                    timer.Tick();
+                    long stopTick = GameTimer.GetTickCount();
+                    if ((stopTick - startTick) > 25)
+                        log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");
                 }
             });
 
+            // Output debug info.
+            if (Debug && TimerToRemoveCallbacks != null && TimerToAddCallbacks != null)
+            {
+                log.Debug($"==== AuxTimerService Debug - Total ActiveTimers: {_activeTimers.Count} ====");
+                log.Debug($"==== AuxTimerService RemoveTimer Top 5 Callback Methods. Total TimerToRemove Count: {TimerToRemoveCount} ====");
+
+                foreach (var callbacks in TimerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+                {
+                    log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+                }
+
+                log.Debug($"==== AuxTimerService AddTimer Top 5 Callback Methods. Total TimerToAdd Count: {TimerToAddCount} ====");
+
+                foreach (var callbacks in TimerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(5))
+                {
+                    log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
+                }
+
+                log.Debug("---------------------------------------------------------------------------");
+
+                DebugTickCount--;
+            }
+
             // Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        // The Tick() method will still check for duplicate timer in ActiveTimers.
+        public static void AddTimer(AuxECSGameTimer newTimer)
+        {
+            lock (_addTimerLockObject)
+            {
+                _timerToAdd?.Push(newTimer);
+            }
+        }
+
+        public static void RemoveTimer(AuxECSGameTimer timerToRemove)
+        {
+            lock (_removeTimerLockObject)
+            {
+                if (_activeTimers.Contains(timerToRemove))
+                {
+                    _timerToRemove?.Push(timerToRemove);
+                }
+            }
         }
     }
 
@@ -54,14 +163,13 @@ namespace DOL.GS
         /// </summary>
         public delegate int AuxECSTimerCallback(AuxECSGameTimer timer);
 
-        public GameObject TimerOwner { get; set; }
-        public AuxECSTimerCallback Callback { get; set; }
-        public int Interval { get; set; }
-        public long StartTick { get; set; }
+        public GameObject TimerOwner;
+        public AuxECSTimerCallback Callback;
+        public int Interval;
+        public long StartTick;
         public long NextTick => StartTick + Interval;
-        public bool IsAlive => EntityManagerId != EntityManager.UNSET_ID;
+        public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
         private PropertyCollection _properties;
 
         public AuxECSGameTimer(GameObject target)
@@ -85,23 +193,24 @@ namespace DOL.GS
 
         public void Start()
         {
-            // Use half-second intervals by default.
-            Start(Interval <= 0 ? 500 : Interval);
+            if (Interval <= 0)
+                Start(500); // Use half-second intervals by default.
+            else
+                Start(Interval);
         }
 
         public void Start(int interval)
         {
             StartTick = AuxGameLoop.GameLoopTime;
             Interval = interval;
-
-            if (!IsAlive)
-                EntityManager.Add(EntityManager.EntityType.AuxTimer, this);
+            IsAlive = true;
+            AuxTimerService.AddTimer(this);
         }
 
         public void Stop()
         {
-            if (IsAlive)
-                EntityManager.Remove(EntityManager.EntityType.AuxTimer, EntityManagerId);
+            IsAlive = false;
+            AuxTimerService.RemoveTimer(this);
         }
 
         public void Tick()

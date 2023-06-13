@@ -306,7 +306,7 @@ namespace DOL.GS.Commands
                 TimerService.DebugTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " TimerService tick(s)");
             }
-
+            
             if (args[1].ToLower().Equals("think"))
             {
                 int tickcount = int.Parse(args[2]);

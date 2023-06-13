@@ -20,9 +20,7 @@ namespace DOL.GS
             CastingComponent,
             EffectListComponent,
             CraftComponent,
-            ObjectChangingSubZone,
-            Timer,
-            AuxTimer
+            ObjectChangingSubZone
         }
 
         private static Dictionary<EntityType, dynamic> _entityArrays = new()
@@ -34,9 +32,7 @@ namespace DOL.GS
             { EntityType.CastingComponent, new EntityArrayWrapper<CastingComponent>(1250) },
             { EntityType.EffectListComponent, new EntityArrayWrapper<EffectListComponent>(3000) },
             { EntityType.CraftComponent, new EntityArrayWrapper<CraftComponent>(250) },
-            { EntityType.ObjectChangingSubZone, new EntityArrayWrapper<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.Timer, new EntityArrayWrapper<ECSGameTimer>(250) },
-            { EntityType.AuxTimer, new EntityArrayWrapper<AuxECSGameTimer>(250) }
+            { EntityType.ObjectChangingSubZone, new EntityArrayWrapper<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) }
         };
 
         public static int Add<T>(EntityType type, T entity)
@@ -142,18 +138,7 @@ namespace DOL.GS
             {
                 lock (_lock)
                 {
-                    CleanUp();
                     return _lastNonNullIndex;
-                }
-
-                void CleanUp()
-                {
-                    for (int i = 0; _deletedIndexes.Any() && _deletedIndexes.Max < _lastNonNullIndex && i < 1; i++)
-                    {
-                        T entity = Entities[_lastNonNullIndex];
-                        Remove(_lastNonNullIndex);
-                        Add(entity);
-                    }
                 }
             }
         }
