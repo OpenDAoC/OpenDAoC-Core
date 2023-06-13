@@ -952,39 +952,36 @@ namespace DOL.GS
 
             return 0;
         }
-		
+
         public void OnLinkdeath()
         {
             if (log.IsInfoEnabled)
                 log.InfoFormat("Player {0}({1}) went linkdead!", Name, Client.Account.Name);
 
-            // LD Necros need to be "Unshaded"
+            // Unshade necromancers.
             if (Client.Player.CharacterClass.Player.IsShade)
-            {
                 Client.Player.CharacterClass.Player.Shade(false);
-            }
 
-            // Dead link-dead players release on live servers
+            // Dead link-dead players release on live servers.
             if (!IsAlive)
             {
                 Release(m_releaseType, true);
+
                 if (log.IsInfoEnabled)
                     log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
+
                 SaveIntoDatabase();
                 Client.Quit();
                 return;
             }
 
-            // Stop player if he's running...
+            // Stop player if he's running.
             CurrentSpeed = 0;
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player.ObjectState != eObjectState.Active || player == null || player == this) 
+                if (player == this || player.ObjectState != eObjectState.Active)
                     continue;
-                //Maybe there is a better solution?
-                player.Out.SendObjectRemove(this);
-                player.Out.SendPlayerCreate(this);
             }
 
             UpdateEquipmentAppearance();
@@ -999,27 +996,29 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
 
-            // Keep linkdead characters in game
+            // Keep link-dead characters in game.
             new AuxECSGameTimer(this, LinkdeathTimerCallback, 1750);
 
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
 
-            // Notify players in close proximity
+            // Notify players in close proximity.
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
-                if (player == null) continue;
+                if (player == null)
+                    continue;
+
                 if (GameServer.ServerRules.IsAllowedToUnderstand(this, player))
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
-            // Notify other group members of this linkdead
+            // Notify other group members.
             if (Group != null)
                 Group.UpdateMember(this, false, false);
 
             CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary();
 
-            // Notify our event handlers (if any)
+            // Notify our event handlers (if any).
             Notify(GamePlayerEvent.Linkdeath, this);
         }
 
