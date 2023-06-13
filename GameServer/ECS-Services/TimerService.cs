@@ -155,18 +155,8 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        // Currently identical to 'AddExistingTimer'.
-        public static void AddTimer(ECSGameTimer newTimer)
-        {
-            lock (_addTimerLockObject)
-            {
-                _timerToAdd?.Push(newTimer);
-            }
-        }
-
-        // Adds timer to the TimerToAdd Stack without checking it already exists. Helpful if the timer is being removed and then added again in same tick.
         // The Tick() method will still check for duplicate timer in ActiveTimers.
-        public static void AddExistingTimer(ECSGameTimer newTimer)
+        public static void AddTimer(ECSGameTimer newTimer)
         {
             lock (_addTimerLockObject)
             {
@@ -181,26 +171,10 @@ namespace DOL.GS
                 _timerToRemove?.Push(timerToRemove);
             }
         }
-
-        public static bool HasActiveTimer(ECSGameTimer timer)
-        {
-            List<ECSGameTimer> currentTimers = new();
-            List<ECSGameTimer> timerAdds = new();
-            lock (_addTimerLockObject)
-            {
-                currentTimers = _activeTimers.ToList();
-                timerAdds = _timerToAdd.ToList();
-            }
-
-            return currentTimers.Contains(timer) || timerAdds.Contains(timer);
-        }
     }
 
     public class ECSGameTimer
     {
-        /// <summary>
-        /// This delegate is the callback function for the ECS Timer
-        /// </summary>
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
         public GameObject TimerOwner;
@@ -208,17 +182,19 @@ namespace DOL.GS
         public int Interval;
         public long StartTick;
         public long NextTick => StartTick + Interval;
-        public bool IsAlive => TimerService.HasActiveTimer(this);
+        public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-
-        /// <summary>
-        /// Holds properties for this region timer
-        /// </summary>
-        private PropertyCollection m_properties;
+        private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject target)
         {
             TimerOwner = target;
+        }
+
+        public ECSGameTimer(GameObject target, ECSTimerCallback callback)
+        {
+            TimerOwner = target;
+            Callback = callback;
         }
 
         public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
@@ -227,12 +203,6 @@ namespace DOL.GS
             Callback = callback;
             Interval = interval;
             Start();
-        }
-
-        public ECSGameTimer(GameObject target, ECSTimerCallback callback)
-        {
-            TimerOwner = target;
-            Callback = callback;
         }
 
         public void Start()
@@ -247,28 +217,22 @@ namespace DOL.GS
         {
             StartTick = GameLoop.GameLoopTime;
             Interval = interval;
+            IsAlive = true;
             TimerService.AddTimer(this);
-        }
-
-        public void StartExistingTimer(int interval)
-        {
-            StartTick = GameLoop.GameLoopTime;
-            Interval = interval;
-            TimerService.AddExistingTimer(this);
         }
 
         public void Stop()
         {
+            IsAlive = false;
             TimerService.RemoveTimer(this);
         }
 
         public void Tick()
         {
             StartTick = GameLoop.GameLoopTime;
+
             if (Callback != null)
-            {
                 Interval = Callback.Invoke(this);
-            }
 
             if (Interval == 0)
                 Stop();
@@ -278,20 +242,20 @@ namespace DOL.GS
         {
             get
             {
-                if (m_properties == null)
+                if (_properties == null)
                 {
                     lock (this)
                     {
-                        if (m_properties == null)
+                        if (_properties == null)
                         {
                             PropertyCollection properties = new PropertyCollection();
                             Thread.MemoryBarrier();
-                            m_properties = properties;
+                            _properties = properties;
                         }
                     }
                 }
 
-                return m_properties;
+                return _properties;
             }
         }
     }

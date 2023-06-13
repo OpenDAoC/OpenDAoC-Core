@@ -1571,27 +1571,25 @@ namespace DOL.GS
 		/// <param name="maxDistance">Max distance to keep following</param>
 		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
 		{
-				if (target == null || target.ObjectState != eObjectState.Active)
-					return;
+			if (target == null || target.ObjectState != eObjectState.Active)
+				return;
 			
-				if (m_followTimer != null && m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
-					return;
-				else if (m_followTimer != null)
-				{
-					m_followTimer.Stop();
-				}
-				else if (m_followTimer == null)
-				{
-					m_followTimer = new ECSGameTimer(this);
-					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
-				}
+			if (m_followTimer != null && m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
+				return;
+			else if (m_followTimer != null)
+			{
+				m_followTimer.Stop();
+			}
+			else if (m_followTimer == null)
+			{
+				m_followTimer = new ECSGameTimer(this);
+				m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
+			}
 			
-				m_followMaxDist = maxDistance;
-				m_followMinDist = minDistance;
-				m_followTarget.Target = target;
-				m_followTimer.StartExistingTimer(100);
-			
-		
+			m_followMaxDist = maxDistance;
+			m_followMinDist = minDistance;
+			m_followTarget.Target = target;
+			m_followTimer.Start(100);
 		}
 
 		/// <summary>

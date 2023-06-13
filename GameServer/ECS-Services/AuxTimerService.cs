@@ -135,18 +135,8 @@ namespace DOL.GS
             // Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        // Currently identical to 'AddExistingTimer'.
-        public static void AddTimer(AuxECSGameTimer newTimer)
-        {
-            lock (_addTimerLockObject)
-            {
-                _timerToAdd?.Push(newTimer);
-            }
-        }
-
-        // Adds timer to the TimerToAdd Stack without checking it already exists. Helpful if the timer is being removed and then added again in same tick.
         // The Tick() method will still check for duplicate timer in ActiveTimers.
-        public static void AddExistingTimer(AuxECSGameTimer newTimer)
+        public static void AddTimer(AuxECSGameTimer newTimer)
         {
             lock (_addTimerLockObject)
             {
@@ -164,11 +154,6 @@ namespace DOL.GS
                 }
             }
         }
-
-        public static bool HasActiveTimer(AuxECSGameTimer timer)
-        {
-            return _activeTimers.Contains(timer) || _timerToAdd.Contains(timer);
-        }
     }
 
     public class AuxECSGameTimer
@@ -183,17 +168,19 @@ namespace DOL.GS
         public int Interval;
         public long StartTick;
         public long NextTick => StartTick + Interval;
-        public bool IsAlive => AuxTimerService.HasActiveTimer(this);
+        public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-
-        /// <summary>
-        /// Holds properties for this region timer
-        /// </summary>
-        private PropertyCollection m_properties;
+        private PropertyCollection _properties;
 
         public AuxECSGameTimer(GameObject target)
         {
             TimerOwner = target;
+        }
+
+        public AuxECSGameTimer(GameObject target, AuxECSTimerCallback callback)
+        {
+            TimerOwner = target;
+            Callback = callback;
         }
 
         public AuxECSGameTimer(GameObject target, AuxECSTimerCallback callback, int interval)
@@ -202,12 +189,6 @@ namespace DOL.GS
             Callback = callback;
             Interval = interval;
             Start();
-        }
-
-        public AuxECSGameTimer(GameObject target, AuxECSTimerCallback callback)
-        {
-            TimerOwner = target;
-            Callback = callback;
         }
 
         public void Start()
@@ -222,28 +203,22 @@ namespace DOL.GS
         {
             StartTick = AuxGameLoop.GameLoopTime;
             Interval = interval;
+            IsAlive = true;
             AuxTimerService.AddTimer(this);
-        }
-
-        public void StartExistingTimer(int interval)
-        {
-            StartTick = AuxGameLoop.GameLoopTime;
-            Interval = interval;
-            AuxTimerService.AddExistingTimer(this);
         }
 
         public void Stop()
         {
+            IsAlive = false;
             AuxTimerService.RemoveTimer(this);
         }
 
         public void Tick()
         {
             StartTick = AuxGameLoop.GameLoopTime;
+
             if (Callback != null)
-            {
                 Interval = Callback.Invoke(this);
-            }
 
             if (Interval == 0)
                 Stop();
@@ -253,20 +228,20 @@ namespace DOL.GS
         {
             get
             {
-                if (m_properties == null)
+                if (_properties == null)
                 {
                     lock (this)
                     {
-                        if (m_properties == null)
+                        if (_properties == null)
                         {
                             PropertyCollection properties = new PropertyCollection();
                             Thread.MemoryBarrier();
-                            m_properties = properties;
+                            _properties = properties;
                         }
                     }
                 }
 
-                return m_properties;
+                return _properties;
             }
         }
     }
