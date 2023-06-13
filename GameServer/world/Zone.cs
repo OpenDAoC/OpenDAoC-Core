@@ -489,7 +489,11 @@ namespace DOL.GS
                 }
             }
             else if (!subZoneObject.IsChangingSubZone)
-                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, null, null)); // Ghost object.
+            {
+                // Ghost object.
+                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, null, null));
+                return true;
+            }
 
             return false;
         }

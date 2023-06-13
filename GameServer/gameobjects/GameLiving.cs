@@ -6772,36 +6772,35 @@ namespace DOL.GS
 		
 		#region Region
 
-        /// <summary>
-        /// Removes the item from the world
-        /// </summary>
-        public override bool RemoveFromWorld()
+		/// <summary>
+		/// Removes the item from the world
+		/// </summary>
+		public override bool RemoveFromWorld()
 		{
-			if (!base.RemoveFromWorld()) return false;
+			if (!base.RemoveFromWorld())
+				return false;
 
 			attackComponent.StopAttack();
 			List<GameObject> temp;
+
 			lock (attackComponent.Attackers)
 			{
 				temp = new List<GameObject>(attackComponent.Attackers);
-                attackComponent.Attackers.Clear();
+				attackComponent.Attackers.Clear();
 			}
+
 			Util.ForEach(temp.OfType<GameLiving>(), o => o.EnemyKilled(this));
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();
-
-			//if (m_attackAction != null) m_attackAction.Stop();
-            if (attackComponent.attackAction != null) attackComponent.attackAction.CleanUp();
-			if (m_healthRegenerationTimer != null) m_healthRegenerationTimer.Stop();
-			if (m_powerRegenerationTimer != null) m_powerRegenerationTimer.Stop();
-			if (m_enduRegenerationTimer != null) m_enduRegenerationTimer.Stop();
-            //m_attackAction = null;
-            if (attackComponent.attackAction != null)
-                attackComponent.attackAction.CleanUp();
+			attackComponent.attackAction?.CleanUp();
+			m_healthRegenerationTimer?.Stop();
+			m_powerRegenerationTimer?.Stop();
+			m_enduRegenerationTimer?.Stop();
 			m_healthRegenerationTimer = null;
 			m_powerRegenerationTimer = null;
 			m_enduRegenerationTimer = null;
+
 			return true;
 		}
 

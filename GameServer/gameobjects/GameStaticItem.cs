@@ -18,9 +18,8 @@
  */
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
 using DOL.Language;
@@ -359,21 +358,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool RemoveFromWorld(int respawnSeconds)
 		{
-			if (ObjectState == eObjectState.Active)
-			{
-				//foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).OfType<GamePlayer>(), player =>
-				{
-					player.Out.SendObjectRemove(this);
-				});
-			}
-
 			if (base.RemoveFromWorld())
 			{
 				if (respawnSeconds > 0)
-				{
 					StartRespawn(Math.Max(1, respawnSeconds));
-				}
 
 				return true;
 			}

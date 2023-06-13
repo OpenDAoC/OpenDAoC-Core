@@ -2203,18 +2203,21 @@ namespace DOL.GS
         /// </summary>
         public virtual string LastName
         {
-            get { return DBCharacter != null ? DBCharacter.LastName : string.Empty; }
+            get => DBCharacter != null ? DBCharacter.LastName : string.Empty;
             set
             {
-                if (DBCharacter == null) return;
+                if (DBCharacter == null)
+                    return;
+
                 DBCharacter.LastName = value;
-                //update last name for all players if client is playing
+
+                // Update last name for all players if client is playing.
                 if (ObjectState == eObjectState.Active)
                 {
                     Out.SendUpdatePlayer();
+
                     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
-                        if (player == null) continue;
                         if (player != this)
                         {
                             player.Out.SendObjectRemove(this);
@@ -2249,26 +2252,27 @@ namespace DOL.GS
         /// </summary>
         public override string Name
         {
-            get { return DBCharacter != null ? DBCharacter.Name : base.Name; }
+            get => DBCharacter != null ? DBCharacter.Name : base.Name;
             set
             {
-                var oldname = base.Name;
+                string oldname = base.Name;
                 base.Name = value;
-				
+
                 if (DBCharacter != null)
                     DBCharacter.Name = value;
-				
+
                 if (oldname != value)
                 {
-                    //update name for all players if client is playing
+                    // Update name for all players if client is playing.
                     if (ObjectState == eObjectState.Active)
                     {
                         Out.SendUpdatePlayer();
+
                         if (Group != null)
                             Out.SendGroupWindowUpdate();
+
                         foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         {
-                            if (player == null) continue;
                             if (player != this)
                             {
                                 player.Out.SendObjectRemove(this);
@@ -9433,31 +9437,22 @@ namespace DOL.GS
         /// <returns>true if removed, false if removing failed</returns>
         public override bool RemoveFromWorld()
         {
-            if (CharacterClass.RemoveFromWorld() == false)
-            {
+            if (!CharacterClass.RemoveFromWorld())
                 return false;
-            }
 
-            if (ObjectState == eObjectState.Active)
+            DismountSteed(true);
+
+            if (!base.RemoveFromWorld())
+                return false;
+
+            if (CurrentRegion.GetZone(X, Y) == null)
             {
-                DismountSteed(true);
-                if (CurrentRegion.GetZone(X, Y) == null)
+                if (Client.Account.PrivLevel < 3 && !TempProperties.getProperty("isbeingbanned", false))
                 {
-                    if (this is GamePlayer && this.Client.Account.PrivLevel < 3 && !(this as GamePlayer).TempProperties.getProperty("isbeingbanned", false))
-                    {
-                        GamePlayer player = this as GamePlayer;
-                        player.TempProperties.setProperty("isbeingbanned", true);
-                        player.MoveToBind();
-                    }
-                }
-                else foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    if (player == null) continue;
-                    if (player != this)
-                        player.Out.SendObjectRemove(this);
+                    TempProperties.setProperty("isbeingbanned", true);
+                    MoveToBind();
                 }
             }
-            if (!base.RemoveFromWorld()) return false;
 
             IsJumping = false;
 
@@ -9472,9 +9467,8 @@ namespace DOL.GS
             if (IsOnHorse)
                 IsOnHorse = false;
 
-            //Dinberg, instance change.
-            if (CurrentRegion is BaseInstance)
-                ((BaseInstance)CurrentRegion).OnPlayerLeaveInstance(this);
+            if (CurrentRegion is BaseInstance instance)
+                instance.OnPlayerLeaveInstance(this);
 
             return true;
         }
@@ -9483,33 +9477,17 @@ namespace DOL.GS
         /// Marks this player as deleted
         /// </summary>
         public override void Delete()
-        {			
-            // do some Cleanup
+        {
             CleanupOnDisconnect();
-			
-            if (Group != null)
-            {
-                Group.RemoveMember(this);
-            }
-            BattleGroup mybattlegroup = (BattleGroup)this.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-            if (mybattlegroup != null)
-            {
-                mybattlegroup.RemoveBattlePlayer(this);
-            }
-            if (m_guild != null)
-            {
-                m_guild.RemoveOnlineMember(this);
-            }
+            Group?.RemoveMember(this);
+            BattleGroup mybattlegroup = (BattleGroup) TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            mybattlegroup?.RemoveBattlePlayer(this);
+            m_guild?.RemoveOnlineMember(this);
             GroupMgr.RemovePlayerLooking(this);
 
-            // if (Client.ClientState == GameClient.eClientState.Linkdead)
-            // {
-            //     return;
-            // }
             if (log.IsDebugEnabled)
-            {
                 log.DebugFormat("({0}) player.Delete()", Name);
-            }
+
             base.Delete();
         }
 
@@ -9530,23 +9508,21 @@ namespace DOL.GS
         /// <returns>true if move succeeded, false if failed</returns>
         public override bool MoveTo(ushort regionID, int x, int y, int z, ushort heading)
         {
-            //if we are jumping somewhere away from our house not using house.Exit
-            //we need to make the server know we have left the house
+            // If we are jumping somewhere away from our house not using house.Exit, we need to make the server know we have left the house.
             if ((CurrentHouse != null || InHouse) && CurrentHouse.RegionID != regionID)
             {
                 InHouse = false;
                 CurrentHouse = null;
             }
-            //if we send a jump, we get off the horse
+
             if (IsOnHorse)
                 IsOnHorse = false;
-            //Get the destination region based on the ID
+
             Region rgn = WorldMgr.GetRegion(regionID);
-            //If the region doesn't exist, return false or if they aren't allowed to zone here
+
             if (rgn == null || !GameServer.ServerRules.IsAllowedToZone(this, rgn))
                 return false;
-            //If the x,y inside this region doesn't point to a zone
-            //return false
+
             if (rgn.GetZone(x, y) == null)
                 return false;
 
@@ -9557,122 +9533,110 @@ namespace DOL.GS
 
             if (regionID != CurrentRegionID)
             {
-                GameEventMgr.Notify(GamePlayerEvent.RegionChanging, this);
+                GameEventMgr.Notify(GameLivingEvent.RegionChanging, this);
+
                 if (!RemoveFromWorld())
                     return false;
-                //notify event
+
                 CurrentRegion.Notify(RegionEvent.PlayerLeave, CurrentRegion, new RegionPlayerEventArgs(this));
 
-                // CancelAllConcentrationEffects(true);
                 if (ControlledBrain != null)
                     CommandNpcRelease();
             }
             else
             {
-                //Just remove the player visible, but leave his OID intact!
-                //If player doesn't change region
                 if (Steed != null)
                     DismountSteed(true);
 
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    if (player == null) continue;
-                    if (player != this)
-                    {
-                        player.Out.SendObjectRemove(this);
-                    }
-                }
-
                 IsJumping = true;
             }
+
             bool hasPetToMove = false;
-            //Remove the last update tick property, to prevent speedhack messages during zoning and teleporting!
+            // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
             LastPositionUpdateTick = 0;
 
             if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
             {
-                if (CharacterClass.ID != (int)eCharacterClass.Theurgist && CharacterClass.ID != (int)eCharacterClass.Animist)
-                {
+                if (CharacterClass.ID is not ((int) eCharacterClass.Theurgist) and not ((int) eCharacterClass.Animist))
                     hasPetToMove = true;
-                }
             }
-            //Set the new destination
-            //Current Speed = 0 when moved ... else X,Y,Z continue to be modified
+
+            HashSet<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+
             CurrentSpeed = 0;
             MovementStartTick = GameLoop.GameLoopTime;
-            Point3D originalPoint = new Point3D(X, Y, Z);
+            Point3D originalPoint = new(X, Y, Z);
             X = x;
             Y = y;
             Z = z;
             Heading = heading;
 
-            //Remove the last update tick property, to prevent speedhack messages during zoning and teleporting!
+            // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
             TempProperties.removeProperty(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
-            //If the destination is in another region
+
             if (regionID != CurrentRegionID)
             {
-                //Set our new region
                 CurrentRegionID = regionID;
-
-                //Send the region update packet, the rest will be handled
-                //by the packethandlers
                 Out.SendRegionChanged();
             }
             else
             {
-                //Add the player to the new coordinates
+                // Previous position.
+                foreach (GamePlayer player in playersInRadius)
+                {
+                    if (player != this)
+                        player.Out.SendObjectRemove(this);
+                }
+
                 Out.SendPlayerJump(false);
 
-                // are we jumping far enough to force a complete refresh?
+                // Are we jumping far enough to force a complete refresh?
                 if (GetDistanceTo(originalPoint) > WorldMgr.REFRESH_DISTANCE)
-                {
                     RefreshWorld();
-                }
                 else
                 {
                     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
-                        if (player != null && player != this)
+                        if (player != this)
                         {
                             if (IsStealthed == false || player.CanDetect(this))
-                            {
                                 player.Out.SendPlayerCreate(this);
-                            }
                         }
                     }
                 }
 
                 UpdateEquipmentAppearance();
 
-                if (this.IsUnderwater)
-                    this.IsDiving = true;
+                if (IsUnderwater)
+                    IsDiving = true;
 
                 if (hasPetToMove)
                 {
                     Point2D point = GetPointFromHeading(Heading, 64);
-
                     IControlledBrain npc = ControlledBrain;
+
                     if (npc != null)
                     {
                         GameNPC petBody = npc.Body;
-
-                        petBody.MoveInRegion(CurrentRegionID, point.X, point.Y, this.Z + 10, (ushort)((this.Heading + 2048) % 4096), false);
+                        petBody.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
 
                         if (petBody != null && petBody.ControlledNpcList != null)
                         {
-                            foreach (IControlledBrain icb in petBody.ControlledNpcList)
+                            foreach (IControlledBrain controlledBrain in petBody.ControlledNpcList)
                             {
-                                if (icb != null && icb.Body != null)
+                                if (controlledBrain != null && controlledBrain.Body != null)
                                 {
-                                    GameNPC petBody2 = icb.Body;
+                                    GameNPC petBody2 = controlledBrain.Body;
+
                                     if (petBody2 != null && originalPoint.IsWithinRadius(petBody2, 500))
-                                        petBody2.MoveInRegion(CurrentRegionID, point.X, point.Y, this.Z + 10, (ushort)((this.Heading + 2048) % 4096), false);
+                                        petBody2.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
                                 }
                             }
                         }
                     }
                 }
             }
+
             return true;
         }
 
@@ -9755,24 +9719,21 @@ namespace DOL.GS
         /// </summary>
         public Guild Guild
         {
-            get { return m_guild; }
+            get => m_guild;
             set
             {
                 if (value == null)
-                {
-                    // remove this player from the online list of their current guild
                     m_guild.RemoveOnlineMember(this);
-                }
 
                 m_guild = value;
 
-                //update guild name for all players if client is playing
+                // Update guild name for all players if client is playing.
                 if (ObjectState == eObjectState.Active)
                 {
                     Out.SendUpdatePlayer();
+
                     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
-                        if (player == null) continue;
                         if (player != this)
                         {
                             player.Out.SendObjectRemove(this);

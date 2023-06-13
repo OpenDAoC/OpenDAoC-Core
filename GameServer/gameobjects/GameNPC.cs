@@ -3172,12 +3172,6 @@ namespace DOL.GS
 					player.DismountSteed(true);
 			}
 
-			if (ObjectState == eObjectState.Active)
-			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					player.Out.SendObjectRemove(this);
-			}
-
 			if (!base.RemoveFromWorld())
 				return false;
 
@@ -3212,20 +3206,16 @@ namespace DOL.GS
 			if (m_ObjectState != eObjectState.Active)
 				return false;
 
-			// pets can't be moved across regions
 			if (regionID != CurrentRegionID)
 				return false;
 
 			if (forceMove == false)
 			{
-				// do not move a pet in combat, player can passive / follow to bring pet to them
 				if (InCombat)
 					return false;
 
-				ControlledNpcBrain controlledBrain = Brain as ControlledNpcBrain;
-
-				// only move pet if it's following the owner
-				if (controlledBrain != null && controlledBrain.WalkState != eWalkState.Follow)
+				// Only move pet if it's following the owner.
+				if (Brain is ControlledNpcBrain controlledBrain && controlledBrain.WalkState != eWalkState.Follow)
 					return false;
 			}
 
@@ -3234,33 +3224,29 @@ namespace DOL.GS
 			if (rgn == null || rgn.GetZone(x, y) == null)
 				return false;
 
-			// For a pet move simple erase the pet from all clients and redraw in the new location
-
 			Notify(GameObjectEvent.MoveTo, this, new MoveToEventArgs(regionID, x, y, z, heading));
 
-			if (ObjectState == eObjectState.Active)
-			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					player.Out.SendObjectRemove(this);
-				}
-			}
+			HashSet<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
 			m_x = x;
 			m_y = y;
 			m_z = z;
 			m_Heading = heading;
 
+			// Previous position.
+			foreach (GamePlayer player in playersInRadius)
+				player.Out.SendObjectRemove(this);
+
+			// New position.
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				if (player == null) continue;
+				if (player == null)
+					continue;
 
 				player.Out.SendNPCCreate(this);
 
 				if (m_inventory != null)
-				{
 					player.Out.SendLivingEquipmentUpdate(this);
-				}
 			}
 
 			return true;

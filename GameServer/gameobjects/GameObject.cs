@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Housing;
@@ -810,8 +811,15 @@ namespace DOL.GS
 		{
 			if (m_CurrentRegion == null || ObjectState != eObjectState.Active)
 				return false;
+
 			Notify(GameObjectEvent.RemoveFromWorld, this);
 			ObjectState = eObjectState.Inactive;
+
+			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+			{
+				player.Out.SendObjectRemove(this);
+			});
+
 			m_CurrentRegion.RemoveObject(this);
 			return true;
 		}
