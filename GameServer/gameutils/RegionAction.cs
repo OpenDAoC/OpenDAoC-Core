@@ -77,19 +77,6 @@ namespace DOL.GS
 		}
 
 		protected abstract int OnTick(ECSGameTimer timer);
-
-
-		/// <summary>
-		/// Returns short information about the timer
-		/// </summary>
-		/// <returns>Short info about the timer</returns>
-		public override string ToString()
-		{
-			return new StringBuilder(base.ToString(), 128)
-				.Append(" actionSource: (").Append(m_actionSource.ToString())
-				.Append(')')
-				.ToString();
-		}
 	}
 
 	public abstract class AuxRegionECSAction : AuxECSGameTimer
@@ -114,18 +101,5 @@ namespace DOL.GS
 		}
 
 		protected abstract int OnTick(AuxECSGameTimer timer);
-
-
-		/// <summary>
-		/// Returns short information about the timer
-		/// </summary>
-		/// <returns>Short info about the timer</returns>
-		public override string ToString()
-		{
-			return new StringBuilder(base.ToString(), 128)
-				.Append(" actionSource: (").Append(m_actionSource.ToString())
-				.Append(')')
-				.ToString();
-		}
 	}
 }
