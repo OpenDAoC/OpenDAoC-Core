@@ -13,7 +13,6 @@ namespace DOL.GS
     public static class NPCThinkService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         private const string SERVICE_NAME = "NPCThinkService";
 
         private static int _nonNullBrainCount;
@@ -33,9 +32,9 @@ namespace DOL.GS
                 _nullBrainCount = 0;
             }
 
-            List<ABrain> list = EntityManager.GetAll<ABrain>(EntityManager.EntityType.Brain);
+            List<ABrain> list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastNonNullIndex);
 
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Brain) + 1, i =>
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
                 ABrain brain = list[i];
 
@@ -89,8 +88,7 @@ namespace DOL.GS
             // Output debug info.
             if (Debug)
             {
-                log.Debug($"==== Non-Null NPCs in EntityManager Array: {_nonNullBrainCount} | Null NPCs: {_nullBrainCount} | Total Size: {list.Count}====");
-                log.Debug("---------------------------------------------------------------------------");
+                log.Debug($"==== Non-null NCs in EntityManager array: {_nonNullBrainCount} | Null NPCs: {_nullBrainCount} | Total size: {list.Count} ====");
                 DebugTickCount--;
             }
 

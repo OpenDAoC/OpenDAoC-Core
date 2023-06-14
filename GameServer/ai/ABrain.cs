@@ -27,10 +27,10 @@ namespace DOL.AI
 	/// <summary>
 	/// This class is the base of all arteficial intelligence in game objects
 	/// </summary>
-	public abstract class ABrain
+	public abstract class ABrain : IManagedEntity
 	{
 		public FSM FSM { get; set; }
-		public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
+		public EntityManagerId EntityManagerId { get; set; } = new();
 		public virtual GameNPC Body { get; set; }
 		public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
 		public virtual int ThinkInterval { get; set; } = 2500;
@@ -56,10 +56,7 @@ namespace DOL.AI
 		/// <returns>true if started</returns>
 		public virtual bool Start()
 		{
-			if (EntityManagerId == EntityManager.UNSET_ID)
-				EntityManagerId = EntityManager.Add(EntityManager.EntityType.Brain, this);
-
-			return true;
+			return EntityManager.Add(EntityManager.EntityType.Brain, this);
 		}
 
 		/// <summary>
@@ -68,10 +65,7 @@ namespace DOL.AI
 		/// <returns>true if stopped</returns>
 		public virtual bool Stop()
 		{
-			if (EntityManagerId != EntityManager.UNSET_ID)
-				EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Brain, EntityManagerId);
-
-			return true;
+			return EntityManager.Remove(EntityManager.EntityType.Brain, this);
 		}
 
 		/// <summary>

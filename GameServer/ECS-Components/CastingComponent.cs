@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -10,7 +9,7 @@ using DOL.Language;
 namespace DOL.GS
 {
     // This component will hold all data related to casting spells.
-    public class CastingComponent
+    public class CastingComponent : IManagedEntity
     {
         private class StartCastSpellRequest
         {
@@ -31,7 +30,7 @@ namespace DOL.GS
         public ISpellHandler SpellHandler { get; private set; }
         public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
-        public int EntityManagerId { get; private set; } = EntityManager.UNSET_ID;
+        public EntityManagerId EntityManagerId { get; set; } = new();
         private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
 
         public CastingComponent(GameLiving owner)
@@ -61,7 +60,7 @@ namespace DOL.GS
             SpellHandler?.Tick(time);
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.Count == 0)
-                EntityManagerId = EntityManager.Remove(EntityManager.EntityType.CastingComponent, EntityManagerId);
+                EntityManager.Remove(EntityManager.EntityType.CastingComponent, this);
         }
 
         public bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
@@ -79,10 +78,7 @@ namespace DOL.GS
             }
 
             _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
-
-            if (EntityManagerId == EntityManager.UNSET_ID)
-                EntityManagerId = EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
-
+            EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
             return true;
         }
 

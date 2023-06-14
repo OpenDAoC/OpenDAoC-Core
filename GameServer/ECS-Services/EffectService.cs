@@ -24,9 +24,9 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<ECSGameEffect> list = EntityManager.GetAll<ECSGameEffect>(EntityManager.EntityType.Effect);
+            List<ECSGameEffect> list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastNonNullIndex);
 
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.Effect) + 1, i =>
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
                 ECSGameEffect effect = list[i];
 
@@ -40,7 +40,7 @@ namespace DOL.GS
                 else
                     HandlePropertyModification(effect);
 
-                effect.EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Effect, effect.EntityManagerId);
+                EntityManager.Remove(EntityManager.EntityType.Effect, effect);
 
                 long stopTick = GameTimer.GetTickCount();
 
@@ -279,9 +279,7 @@ namespace DOL.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-
-            if (effect.EntityManagerId == EntityManager.UNSET_ID)
-                effect.EntityManagerId = EntityManager.Add(EntityManager.EntityType.Effect, effect);
+            EntityManager.Add(EntityManager.EntityType.Effect, effect);
         }
 
         /// <summary>

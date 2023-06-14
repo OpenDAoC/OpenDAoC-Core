@@ -22,7 +22,7 @@ namespace DOL.GS
     /// <summary>
     /// Base class for all Effects
     /// </summary>
-    public class ECSGameEffect
+    public class ECSGameEffect : IManagedEntity
     {
         //public ISpellHandler SpellHandler;
         //Based on GameLoop expire tick
@@ -42,7 +42,7 @@ namespace DOL.GS
         public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
-        public int EntityManagerId { get; set; }= EntityManager.UNSET_ID;
+        public EntityManagerId EntityManagerId { get; set; } = new();
         public ISpellHandler SpellHandler { get; protected set; }
 
         /// <summary>

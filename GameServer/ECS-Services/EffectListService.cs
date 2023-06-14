@@ -19,9 +19,9 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<EffectListComponent> list = EntityManager.GetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent);
+            List<EffectListComponent> list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastNonNullIndex);
 
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.EffectListComponent) + 1, i =>
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
                 EffectListComponent e = list[i];
 
@@ -43,7 +43,7 @@ namespace DOL.GS
         {
             if (!effectListComponent.Effects.Any())
             {
-                effectListComponent.EntityManagerId = EntityManager.Remove(EntityManager.EntityType.EffectListComponent, effectListComponent.EntityManagerId);
+                EntityManager.Remove(EntityManager.EntityType.EffectListComponent, effectListComponent);
                 return;
             }
 
