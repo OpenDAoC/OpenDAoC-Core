@@ -17,9 +17,9 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<AttackComponent> list = EntityManager.GetAll<AttackComponent>(EntityManager.EntityType.AttackComponent);
+            List<AttackComponent> list = EntityManager.UpdateAndGetAll<AttackComponent>(EntityManager.EntityType.AttackComponent, out int lastNonNullIndex);
 
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.AttackComponent) + 1, i =>
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
                 try
                 {

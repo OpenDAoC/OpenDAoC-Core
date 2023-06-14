@@ -20,10 +20,10 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<ObjectChangingSubZone> list = EntityManager.GetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone);
+            List<ObjectChangingSubZone> list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastNonNullIndex);
 
             // Remove objects from one sub zone, and add them to another.
-            Parallel.For(0, EntityManager.GetLastNonNullIndex(EntityManager.EntityType.ObjectChangingSubZone) + 1, i =>
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
                 ObjectChangingSubZone objectChangingSubZone = list[i];
 
@@ -72,7 +72,7 @@ namespace DOL.GS
                         destinationZone.OnObjectAddedToZone();
                 }
 
-                EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, i);
+                EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
             });
 
             if (_failedRemove > 0)

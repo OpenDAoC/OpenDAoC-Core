@@ -19,12 +19,12 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class AttackComponent
+    public class AttackComponent : IManagedEntity
     {
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
-        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
+        public EntityManagerId EntityManagerId { get; set; } = new();
 
         /// <summary>
         /// The objects currently attacking this living
@@ -108,7 +108,7 @@ namespace DOL.GS
                 weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-                EntityManagerId = EntityManager.Remove(EntityManager.EntityType.AttackComponent, EntityManagerId);
+                EntityManager.Remove(EntityManager.EntityType.AttackComponent, this);
         }
 
         /// <summary>
@@ -576,9 +576,7 @@ namespace DOL.GS
             {
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
-
-                if (EntityManagerId == EntityManager.UNSET_ID)
-                    EntityManagerId = EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
+                EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
             }
         }
 

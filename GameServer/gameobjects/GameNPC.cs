@@ -3034,8 +3034,7 @@ namespace DOL.GS
 
 			lock (BrainSync)
 			{
-				if (Brain?.EntityManagerId == EntityManager.UNSET_ID)
-					Brain.Start();
+				Brain?.Start();
 			}
 		}
 

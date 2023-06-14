@@ -23,7 +23,7 @@ namespace DOL.GS
                 IsBackground = true
             };
             _gameLoopThread.Start();
-            
+
             return true;
         }
 

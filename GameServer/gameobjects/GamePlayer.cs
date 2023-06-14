@@ -51,7 +51,7 @@ namespace DOL.GS
     /// <summary>
     /// This class represents a player inside the game
     /// </summary>
-    public class GamePlayer : GameLiving
+    public class GamePlayer : GameLiving, IManagedEntity
     {
         private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
 
@@ -68,8 +68,8 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
-        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
-        
+        public EntityManagerId EntityManagerId { get; set; } = new();
+
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
         {
@@ -819,7 +819,7 @@ namespace DOL.GS
         #endregion
 
         #endregion
-		
+
         #region Player Quitting
         /// <summary>
         /// quit timer
@@ -1044,7 +1044,7 @@ namespace DOL.GS
                 IsOnHorse = false;
 
             GameEventMgr.RemoveAllHandlersForObject(m_inventory);
-            EntityManagerId = EntityManager.Remove(EntityManager.EntityType.Player, EntityManagerId);
+            EntityManager.Remove(EntityManager.EntityType.Player, this);
 
             if (CraftTimer != null)
             {
@@ -14417,7 +14417,7 @@ namespace DOL.GS
         }
 
         #endregion
-        
+
         #region Achievements
 
         public void Achieve(string achievementName, int count = 1)
@@ -15543,7 +15543,7 @@ namespace DOL.GS
 
             LoadFromDatabase(dbChar);
             CreateStatistics();
-            EntityManagerId = EntityManager.Add(EntityManager.EntityType.Player, this);
+            EntityManager.Add(EntityManager.EntityType.Player, this);
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
             {

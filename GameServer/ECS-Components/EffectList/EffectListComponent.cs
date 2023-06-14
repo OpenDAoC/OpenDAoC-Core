@@ -7,12 +7,12 @@ using DOL.GS.Spells;
 namespace DOL.GS
 {
     // Component for holding persistent effects on the player.
-    public class EffectListComponent
+    public class EffectListComponent : IManagedEntity
     {
         private int _lastUpdateEffectsCount;
 
         public GameLiving Owner { get; private set; }
-        public int EntityManagerId { get; set; } = EntityManager.UNSET_ID;
+        public EntityManagerId EntityManagerId { get; set; } = new();
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
         public object EffectsLock { get; private set; } = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
@@ -34,8 +34,7 @@ namespace DOL.GS
                     if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
                         return false;
 
-                    if (EntityManagerId == EntityManager.UNSET_ID)
-                        EntityManagerId = EntityManager.Add(EntityManager.EntityType.EffectListComponent, this);
+                    EntityManager.Add(EntityManager.EntityType.EffectListComponent, this);
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)

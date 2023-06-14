@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,176 +13,81 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = "TimerService";
 
-        // Will print active brain count/array size info for debug purposes if superior to 0.
-        public static int DebugTickCount;
+        private static int _nonNullTimerCount;
+        private static int _nullTimerCount;
 
-        private static HashSet<ECSGameTimer> _activeTimers;
-        private static Stack<ECSGameTimer> _timerToRemove;
-        private static Stack<ECSGameTimer> _timerToAdd;
-        private static readonly object _addTimerLockObject = new();
-        private static readonly object _removeTimerLockObject = new();
-
+        public static int DebugTickCount { get; set; } // Will print active brain count/array size info for debug purposes if superior to 0.
         private static bool Debug => DebugTickCount > 0;
-
-        static TimerService()
-        {
-            _activeTimers = new HashSet<ECSGameTimer>();
-            _timerToAdd = new Stack<ECSGameTimer>();
-            _timerToRemove = new Stack<ECSGameTimer>();
-        }
 
         public static void Tick(long tick)
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            // Debug variables.
-            Dictionary<string, int> timerToRemoveCallbacks = null;
-            Dictionary<string, int> timerToAddCallbacks = null;
-            int timerToRemoveCount = 0;
-            int timerToAddCount = 0;
-
-            // Check if need to debug, then setup vars.
             if (Debug)
             {
-                timerToRemoveCount = _timerToRemove.Count;
-                timerToAddCount = _timerToAdd.Count;
-                timerToRemoveCallbacks = new Dictionary<string, int>();
-                timerToAddCallbacks = new Dictionary<string, int>();
+                _nonNullTimerCount = 0;
+                _nullTimerCount = 0;
             }
 
-            long addRemoveStartTick = GameTimer.GetTickCount();
+            List<ECSGameTimer> list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastNonNullIndex);
 
-            lock (_removeTimerLockObject)
+            Parallel.For(0, lastNonNullIndex + 1, i =>
             {
-                while (_timerToRemove.Count > 0)
+                ECSGameTimer timer = list[i];
+
+                if (timer == null)
                 {
-                    if (Debug && timerToRemoveCallbacks != null && _timerToRemove.Peek() != null && _timerToRemove.Peek().Callback != null)
-                    {
-                        string callbackMethodName = _timerToRemove.Peek().Callback.Method.DeclaringType + "." + _timerToRemove.Peek().Callback.Method.Name;
-                        if (timerToRemoveCallbacks.ContainsKey(callbackMethodName))
-                            timerToRemoveCallbacks[callbackMethodName]++;
-                        else
-                            timerToRemoveCallbacks.Add(callbackMethodName, 1);
-                    }
+                    if (Debug)
+                        Interlocked.Increment(ref _nullTimerCount);
 
-                    if (_activeTimers.Contains(_timerToRemove.Peek()))
-                        _activeTimers.Remove(_timerToRemove.Pop());
-                    else
-                        _timerToRemove.Pop();
+                    return;
                 }
-            }
 
-            long addRemoveStopTick = GameTimer.GetTickCount();
+                if (Debug)
+                    Interlocked.Increment(ref _nonNullTimerCount);
 
-            if ((addRemoveStopTick - addRemoveStartTick) > 25)
-                log.Warn($"Long TimerService Remove Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
-
-            addRemoveStartTick = GameTimer.GetTickCount();
-
-            lock (_addTimerLockObject)
-            {
-                while (_timerToAdd.Count > 0)
-                {
-                    if (Debug && timerToAddCallbacks != null && _timerToAdd.Peek() != null && _timerToAdd.Peek().Callback != null)
-                    {
-                        string callbackMethodName = _timerToAdd.Peek().Callback.Method.DeclaringType + "." + _timerToAdd.Peek().Callback.Method.Name;
-                        if (timerToAddCallbacks.ContainsKey(callbackMethodName))
-                            timerToAddCallbacks[callbackMethodName]++;
-                        else
-                            timerToAddCallbacks.Add(callbackMethodName, 1);
-                    }
-
-                    if (!_activeTimers.Contains(_timerToAdd.Peek()))
-                        _activeTimers.Add(_timerToAdd.Pop());
-                    else
-                        _timerToAdd.Pop();
-                }
-            }
-
-            addRemoveStopTick = GameTimer.GetTickCount();
-
-            if ((addRemoveStopTick - addRemoveStartTick) > 25)
-                log.Warn($"Long TimerService Add Timers Time: {addRemoveStopTick - addRemoveStartTick}ms");
-
-            //Console.WriteLine($"timer size {ActiveTimers.Count}");
-            /*
-            if (debugTick + 1000 < tick)
-            {
-                Console.WriteLine($"timer size {ActiveTimers.Count}");
-                debugTick = tick;
-            }*/
-
-            Parallel.ForEach(_activeTimers.ToArray(), timer =>
-            {
                 try
                 {
-                    if (timer != null && timer.NextTick < tick)
+                    if (timer.NextTick < tick)
                     {
                         long startTick = GameTimer.GetTickCount();
                         timer.Tick();
                         long stopTick = GameTimer.GetTickCount();
+
                         if ((stopTick - startTick) > 25)
                             log.Warn($"Long TimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in Timer Service: {e}");
+                    log.Error($"Critical error encountered in TimerService: {e}");
                 }
             });
 
-            // Output Debug info.
-            if (Debug && timerToRemoveCallbacks != null && timerToAddCallbacks != null)
+            // Output debug info.
+            if (Debug)
             {
-                log.Debug($"==== TimerService Debug - Total ActiveTimers: {_activeTimers.Count} ====");
-                log.Debug($"==== TimerService RemoveTimer Top 10 Callback Methods. Total TimerToRemove Count: {timerToRemoveCount} ====");
-
-                foreach (var callbacks in timerToRemoveCallbacks.OrderByDescending(callback => callback.Value).Take(10))
-                    log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
-
-                log.Debug($"==== TimerService AddTimer Top 10 Callback Methods. Total TimerToAdd Count: {timerToAddCount} ====");
-
-                foreach (var callbacks in timerToAddCallbacks.OrderByDescending(callback => callback.Value).Take(10))
-                    log.Debug($"Callback Name: {callbacks.Key} Occurences: {callbacks.Value}");
-
-                log.Debug("---------------------------------------------------------------------------");
-
+                log.Debug($"==== Non-null timers in EntityManager array: {_nonNullTimerCount} | Null timers: {_nullTimerCount} | Total size: {list.Count} ====");
                 DebugTickCount--;
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
-
-        // The Tick() method will still check for duplicate timer in ActiveTimers.
-        public static void AddTimer(ECSGameTimer newTimer)
-        {
-            lock (_addTimerLockObject)
-            {
-                _timerToAdd?.Push(newTimer);
-            }
-        }
-
-        public static void RemoveTimer(ECSGameTimer timerToRemove)
-        {
-            lock (_removeTimerLockObject)
-            {
-                _timerToRemove?.Push(timerToRemove);
-            }
-        }
     }
 
-    public class ECSGameTimer
+    public class ECSGameTimer : IManagedEntity
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
-        public GameObject TimerOwner;
-        public ECSTimerCallback Callback;
-        public int Interval;
-        public long StartTick;
+        public GameObject TimerOwner { get; set; }
+        public ECSTimerCallback Callback { get; set; }
+        public int Interval { get; set; }
+        public long StartTick { get; set; }
         public long NextTick => StartTick + Interval;
-        public bool IsAlive { get; private set; }
+        public bool IsAlive { get; set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
+        public EntityManagerId EntityManagerId { get; set; } = new();
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject target)
@@ -207,10 +111,8 @@ namespace DOL.GS
 
         public void Start()
         {
-            if (Interval <= 0)
-                Start(500); // Use half-second intervals by default.
-            else
-                Start(Interval);
+            // Use half-second intervals by default.
+            Start(Interval <= 0 ? 500 : Interval);
         }
 
         public void Start(int interval)
@@ -218,13 +120,15 @@ namespace DOL.GS
             StartTick = GameLoop.GameLoopTime;
             Interval = interval;
             IsAlive = true;
-            TimerService.AddTimer(this);
+
+            if (EntityManager.Add(EntityManager.EntityType.Timer, this))
+                IsAlive = true;
         }
 
         public void Stop()
         {
-            IsAlive = false;
-            TimerService.RemoveTimer(this);
+            if (EntityManager.Remove(EntityManager.EntityType.Timer, this))
+               IsAlive = false;
         }
 
         public void Tick()
