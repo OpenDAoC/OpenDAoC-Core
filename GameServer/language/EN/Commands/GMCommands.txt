@@ -1,5 +1,8 @@
 ﻿# Gamemaster Commands
-GMCommands.Error:							[Error] {0}
+GMCommands.Error:							[ERROR] {0}
+GMCommands.Command.Err.SpecifyName:                             [ERROR] You must specify a player name for this command.
+GMCommands.Command.Err.NoOnlineChar:                            [ERROR] No character is online with the name '{0}'.
+GMCommands.Ban.Err.InvalidClientID:                             [ERROR] You have entered an invalid client ID. Type '/clientlist' to view a list of logged in clients.
 
 ## Command List
 GMCommands.CmdList.Achievement.Description:                     '/achievement' - Grants boss kill credit to an individual player, group, or battlegroup.
@@ -9,6 +12,7 @@ GMCommands.AdviceTeam.CmdList.Description:                      '/adviceteam' or
 GMCommands.Alert.CmdList.Description:                           '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
 GMCommands.Announce.CmdList.Description:                        '/announce' - Sends a message server-wide (to all players) using the specified delivery method.
 GMCommands.Area.CmdList.Description:                            '/area' - Creates areas and displays area information in-game.
+AdminCommands.Ban.CmdList.Description:                          '/ban' - Bans the player's account or current IP address.
 GMCommands.AddBind.CmdList.Description:                         '/gmstealth' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
 GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 
@@ -78,7 +82,7 @@ GMCommands.Announce.Usage.Window:                               Sends a text win
 GMCommands.Announce.LogAnnounce:			                    [Announce]: {0}
 GMCommands.Announce.WindowAnnounce:			                    Announce from {0}
 GMCommands.Announce.SendAnnounce:			                    [Announce]: {0}
-GMCommands.Announce.ConfirmAnnounce:		                    Announce from {0}: {1}
+GMCommands.Announce.ConfirmAnnounce:		                    Announcement: {0}
 
 ## '/area' Commands
 GMCommands.Area.Description:				                    Allows for the management of areas and area information.
@@ -94,18 +98,21 @@ GMCommands.Area.Msg.AreaRadius:                                 --- Radius: {0}
 GMCommands.Area.Msg.AreaBroad:                                  --- Broadcast: {0}
 GMCommands.Area.Msg.AreaSound:                                  --- Sound: {0}
 
-## /ban
-GMCommands.Ban.Description:					Usage of /ban command: 
-GMCommands.Ban.Usage.IP:					'/ban ip <account or player name> <reason>' - Ban the specified IP address.
-GMCommands.Ban.Usage.Account:				'/ban account <player name> <reason>' - Ban the specified account.
-GMCommands.Ban.Usage.Both:					'/ban both <player name> <reason>' - Ban the specified account and its associated IP address.
-GMCommands.Ban.UnableToFindPlayer:			Unable to find the specified player!
-GMCommands.Ban.AAlreadyBanned:				This account has already been banned.
-GMCommands.Ban.ABanned:						Account {0} has been banned!
-GMCommands.Ban.IAlreadyBanned:				This IP has already been banned.
-GMCommands.Ban.IBanned:						IP {0} has been banned!
-GMCommands.Ban.BAlreadyBanned:				This account and IP address have already been banned.
-GMCommands.Ban.BBanned:						Account {0} and IP {1} have been banned!
+## '/ban' Commands
+GMCommands.Ban.Description:					                    Bans the account or IP address by player name or client ID.
+GMCommands.Ban.Syntax.Account:                                  /ban account <playerName|client#> <reason>
+GMCommands.Ban.Usage.Account:                                   Bans the player's account indefinitely.
+GMCommands.Ban.Syntax.Both:                                     /ban both <playerName|client#> <reason>
+MCommands.Ban.Usage.Both:                                       Bans the player's account and current IP address indefinitely.
+GMCommands.Ban.Syntax.IPAddress:                                /ban ip <playerName|client#> <reason>
+GMCommands.Ban.Usage.IPAddress:                                 Bans the IP address the player is currently accessing.
+GMCommands.Ban.Err.InsuffPlvl:                                  [ERROR] Your privilege level is insufficient to ban this player's account or IP address.
+GMCommands.Ban.Err.CantBanSelf:                                 [ERROR] You can't ban yourself!
+GMCommands.Ban.Err.AlreaedyBanned:                              [ERROR] The specified account has already been banned!
+GMCommands.Ban.Msg.AccountBanned:                               [SUCCESS] You have banned the account '{0}'!
+GMCommands.Ban.Err.IPAlreaedyBanned:                            [ERROR] The account's associated IP address has already been banned!
+GMCommands.Ban.Msg.IPAddrBanned:                                [SUCCESS] You have banned IP address {0}!
+GMCommands.Ban.Msg.AccountIPAddrBanned:                         [SUCCESS] You have banned the account '{0}' and IP address {1}!
 
 ## /cast
 GMCommands.Cast.Description:            Cast a spell/effect/sound

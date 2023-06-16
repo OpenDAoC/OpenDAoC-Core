@@ -16,26 +16,40 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Linq;
 using System.Reflection;
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-
 using log4net;
 
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
+		// Enter '/ban' to list all associated subcommands
 		"&ban",
+		// Message: '/ban' - Bans the player's account or current IP address.
+		"AdminCommands.Ban.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
+		// Message: Bans the account or IP address by player name or client ID.
 		"GMCommands.Ban.Description",
-		"GMCommands.Ban.Usage.IP",
+		// Message: /ban account <playerName|client#> <reason>
+		"GMCommands.Ban.Syntax.Account",
+		// Message: Bans the player's account indefinitely.
 		"GMCommands.Ban.Usage.Account",
+		// Message: /ban both <playerName|client#> <reason>
+		"GMCommands.Ban.Syntax.Both",
+		// Message: Bans the player's account and current IP address indefinitely.
 		"GMCommands.Ban.Usage.Both",
-		"#<ClientID> can be used in place of player name.  Use /clientlist to see playing clients."
+		// Message: /ban ip <playerName|client#> <reason>
+		"GMCommands.Ban.Syntax.IPAddress",
+		// Message: Bans the IP address the player is currently accessing.
+		"GMCommands.Ban.Usage.IPAddress"
 	)]
 	public class BanCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -43,128 +57,214 @@ namespace DOL.GS.Commands
 
 		public void OnCommand(GameClient client, string[] args)
 		{
+			if (client == null)
+				return;
+
 			if (args.Length < 3)
 			{
 				DisplaySyntax(client);
 				return;
 			}
 
-			GameClient gc = null;
+			GameClient gameClient = null;
 
+			// Search for the account name by client ID
 			if (args[2].StartsWith("#"))
 			{
 				try
 				{
 					var sessionID = Convert.ToUInt32(args[1].Substring(1));
-					gc = WorldMgr.GetClientFromID(sessionID);
+
+					gameClient = WorldMgr.GetClientFromID(sessionID);
 				}
 				catch
 				{
+					// Message: [ERROR] You have entered an invalid client ID. Type '/clientlist' to view a list of logged in clients.
+					ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.InvalidClientID", null);
 					DisplayMessage(client, "Invalid client ID");
 				}
 			}
 			else
 			{
-				gc = WorldMgr.GetClientByPlayerName(args[2], false, false);
+				gameClient = WorldMgr.GetClientByPlayerName(args[2], false, false);
 			}
 
-			var acc = gc != null ? gc.Account : DOLDB<Account>.SelectObject(DB.Column("Name").IsLike(args[2]));
-			if (acc == null)
+			var accountName = gameClient != null ? gameClient.Account : DOLDB<Account>.SelectObject(DB.Column("Name").IsLike(args[2]));
+
+			// Check to see if the specified player is online
+			if (accountName == null)
 			{
-				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.UnableToFindPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				// Message: [ERROR] No character is online with the name '{0}'.
+				ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Command.Err.NoOnlineChar", null);
 				return;
 			}
 
-			if (client.Account.PrivLevel < acc.PrivLevel)
+			// Prevent GM from banning Admin accounts
+			if (client.Account.PrivLevel < accountName.PrivLevel)
 			{
-				DisplayMessage(client, "Your privlevel is not high enough to ban this player.");
+				// Message: [ERROR] Your privilege level is insufficient to ban this player's account or IP address.
+				ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.InsuffPlvl", null);
 				return;
 			}
 
-			if (client.Account.Name == acc.Name)
+			// Prevent the player from accidentally banning themselves
+			if (client.Account.Name == accountName.Name)
 			{
-				DisplayMessage(client, "Your can't ban yourself!");
+				// Message: [ERROR] You can't ban yourself!
+				ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.CantBanSelf", null);
 				return;
 			}
 
 			try
 			{
-				DBBannedAccount b = new DBBannedAccount
-				                    {
-				                    	DateBan = DateTime.Now,
-				                    	Author = client.Player.Name,
-				                    	Ip = acc.LastLoginIP,
-				                    	Account = acc.Name
-				                    };
+				DBBannedAccount bannedAccount = new DBBannedAccount
+				{
+					DateBan = DateTime.Now,
+					Author = client.Player.Name,
+					Ip = accountName.LastLoginIP,
+					Account = accountName.Name
+				};
 
-				if (args.Length >= 4)
-					b.Reason = String.Join(" ", args, 3, args.Length - 3);
+				if (args.Length >= 3)
+					bannedAccount.Reason = String.Join(" ", args, 3, args.Length - 3);
 				else
-					b.Reason = "No Reason.";
+					bannedAccount.Reason = "No reason specified.";
 
 				switch (args[1].ToLower())
 				{
-						#region Account
+					#region Account
+					// --------------------------------------------------------------------------------
+					// ACCOUNT
+					// '/ban account <playerName|client#> <reason>'
+					// Bans the player's account indefinitely.
+					// --------------------------------------------------------------------------------
 					case "account":
-						var acctBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(acc.Name)));
+					{
+						var acctBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountName.Name)));
+
 						if (acctBans.Count > 0)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.AAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							// Message: [ERROR] The specified account has already been banned!
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.AlreaedyBanned", null);
 							return;
 						}
 
-						b.Type = "A";
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.ABanned", acc.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						bannedAccount.Type = "A";
+
+						// Message: [SUCCESS] You have banned the account '{0}'!
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Ban.Msg.AccountBanned", accountName.Name);
+
+						GameClient playingclient = WorldMgr.GetClientByPlayerName(args[2], true, false);
+
+						KickCharacter(playingclient.Player.Name);
+					}
 						break;
-						#endregion Account
-						#region IP
+					#endregion Account
+					#region IP
+					// --------------------------------------------------------------------------------
+					// IPADDRESS
+					// '/ban ip <playerName|client#> <reason>'
+					// Bans the IP address the player is currently accessing.
+					// --------------------------------------------------------------------------------
 					case "ip":
-						var ipBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
+					{
+						var ipBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("I")
+							.Or(DB.Column("Type").IsEqualTo("B"))
+							.And(DB.Column("Ip").IsEqualTo(accountName.LastLoginIP)));
+
 						if (ipBans.Count > 0)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							// Message: [ERROR] The account's associated IP address has already been banned!
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.IPAlreaedyBanned", null);
 							return;
 						}
 
-						b.Type = "I";
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IBanned", acc.LastLoginIP), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						bannedAccount.Type = "I";
+
+						// Message: [SUCCESS] You have banned IP address {0}!
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Ban.Msg.IPAddrBanned", accountName.LastLoginIP);
+
+						GameClient playingClient = WorldMgr.GetClientByPlayerName(args[2], true, false);
+
+						KickCharacter(playingClient.Player.Name);
+					}
 						break;
-						#endregion IP
-						#region Both
+					#endregion IP
+					#region Both
+					// --------------------------------------------------------------------------------
+					// BOTH
+					// '/ban both <playerName> <reason>'
+					// Ban the specified account and its associated IP address.
+					// --------------------------------------------------------------------------------
 					case "both":
-						var acctIpBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("B").And(DB.Column("Account").IsEqualTo(acc.Name)).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
+					{
+						var acctIpBans = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("B")
+							.And(DB.Column("Account").IsEqualTo(accountName.Name))
+							.And(DB.Column("Ip").IsEqualTo(accountName.LastLoginIP)));
+
 						if (acctIpBans.Count > 0)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							// Message: [ERROR] The specified account has already been banned!
+							ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Ban.Err.AlreaedyBanned", null);
 							return;
 						}
 
-						b.Type = "B";
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BBanned", acc.Name, acc.LastLoginIP), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						bannedAccount.Type = "B";
+
+						// Message: [SUCCESS] You have banned the account '{0}' and IP address {1}!
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Ban.Msg.AccountIPAddrBanned", accountName.Name, accountName.LastLoginIP);
+
+						GameClient playingClient = WorldMgr.GetClientByPlayerName(args[2], true, false);
+
+						KickCharacter(playingClient.Player.Name);
+					}
 						break;
-						#endregion Both
-						#region Default
+					#endregion Both
+					#region Default
+					// --------------------------------------------------------------------------------
+					// DEFAULT
+					// Displays all command syntax.
+					// --------------------------------------------------------------------------------
 					default:
 						{
 							DisplaySyntax(client);
 							return;
 						}
-						#endregion Default
+					#endregion Default
 				}
-				GameServer.Database.AddObject(b);
+
+				GameServer.Database.AddObject(bannedAccount);
 
 				if (log.IsInfoEnabled)
-					log.Info("Ban added [" + args[1].ToLower() + "]: " + acc.Name + "(" + acc.LastLoginIP + ")");
+					log.Info("[INFO] Ban added for " + accountName.Name + " and " + accountName.LastLoginIP + "!");
 				return;
 			}
 			catch (Exception e)
 			{
 				if (log.IsErrorEnabled)
-					log.Error("/ban Exception", e);
+					log.Error("[ERROR] A ban exception occurred: " + e);
 			}
 
-			// if not returned here, there is an error
+			// If returned here, there is an error
 			DisplaySyntax(client);
+		}
+
+		/// <summary>
+		/// Kicks an active playing character from the server and closes the client
+		/// </summary>
+		/// <param name="player">The character</param>
+		private void KickCharacter(string player)
+		{
+			GameClient playingClient = WorldMgr.GetClientByPlayerName(player, true, false);
+
+			if (playingClient != null)
+			{
+				// Message:{0} has been disconnected!
+				ChatUtil.SendTypeMessage(eMsg.SysArea, playingClient, "GMCommands.Ban.Msg.BeenDisconnected", playingClient.Player.Name);
+
+				playingClient.Out.SendPlayerQuit(true);
+				playingClient.Disconnect();
+			}
 		}
 	}
 }
