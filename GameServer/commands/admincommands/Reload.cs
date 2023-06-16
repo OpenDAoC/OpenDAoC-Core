@@ -128,6 +128,7 @@ namespace DOL.GS.Commands
 				case "mob":
 				{
 					if (args.Length == 1)
+						// Message: <----- Realm Syntax ----->
 						ChatUtil.SendTypeMessage(eMsg.CmdHeader, client, "AdminCommands.Reload.Header.Realms", null);
 					if (args.Length >= 2)
 					{
@@ -148,7 +149,9 @@ namespace DOL.GS.Commands
 								DisplayHeadSyntax(client, "reload", "mob", "model", 3, false, "AdminCommands.Reload.Syntax.ModelMob", "AdminCommands.Reload.Usage.ModelMob");
 								return;
 							}
+
 							arg = args[3];
+
 							ReloadMobs(client, region, args[2], arg);
 							return;
 						}
@@ -165,6 +168,7 @@ namespace DOL.GS.Commands
 							}
 								
 							arg = String.Join(" ", args, 3, args.Length - 3);
+
 							ReloadMobs(client, region, args[2], arg);
 							return;
 						}
@@ -190,10 +194,7 @@ namespace DOL.GS.Commands
 								arg = "Hibernia";
 							else
 							{
-								// Message: <----- '/{0}' Command {1}----->
-								// Message: <----- '/{0}{1}' Subcommand {2}----->
 								// Message: <----- '/{0}{1}{2}' Subcommand {3}----->
-								// Message: It is recommended that you perform actions associated with this command with the Atlas Admin (https://admin.atlasfreeshard.com). Otherwise, use the following syntax:
 								// Message: Use the following syntax for this command:
 								// Syntax: /reload mob realm <realm>
 								// Message: Reloads all in-game objects in your current region with the 'GameNPC' type and matching the realm specified.
@@ -211,7 +212,7 @@ namespace DOL.GS.Commands
 				{
 					NpcTemplateMgr.Reload();
 					
-					// Message: Reload complete! All NPC Templates have been added to the live cache.
+					// Message: [SUCCESS] Reload complete! All NPC Templates have been added to the live cache.
 					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.NPCTempReloaded", null);
 					
 					log.Info("[SUCCESS] - NPC templates reloaded.");
@@ -239,7 +240,9 @@ namespace DOL.GS.Commands
 								DisplayHeadSyntax(client, "reload", "mob", "model", 3, false, "AdminCommands.Reload.Syntax.ModelObject", "AdminCommands.Reload.Usage.ModelObject");
 								return;
 							}
+
 							arg = args[3];
+
 							ReloadStaticItem(client, region, args[2], arg);
 							return;
 						}
@@ -256,6 +259,7 @@ namespace DOL.GS.Commands
 							}
 							
 							arg = String.Join(" ", args, 3, args.Length - 3);
+
 							ReloadStaticItem(client, region, args[2], arg);
 							return;
 						}
@@ -312,7 +316,7 @@ namespace DOL.GS.Commands
 				case "specs":
 				{
 					int count = SkillBase.LoadSpecializations();
-					// Message: Reload complete! {0} specializations have been added to the live cache.
+					// Message: [SUCCESS] Reload complete! {0} specializations have been added to the live cache.
 					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.SpecsReloaded", count);
 					log.Info(string.Format("[SUCCESS] - Reloaded DB and {0} specializations loaded!", count));
 					return;
@@ -321,7 +325,7 @@ namespace DOL.GS.Commands
 				{
 					SkillBase.ReloadDBSpells();
 					int loaded = SkillBase.ReloadSpellLines();
-					// Message: Reload complete! {0} spells from all spell lines have been added to the live cache.
+					// Message: [SUCCESS] Reload complete! {0} spells from all spell lines have been added to the live cache.
 					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.SpellsReloaded", loaded);
 					log.Info(string.Format("[SUCCESS] - Reloaded DB and {0} spells for all spell lines!", loaded));
 					return;
@@ -329,7 +333,7 @@ namespace DOL.GS.Commands
 				case "teleports":
 				{
 					WorldMgr.LoadTeleports();
-					// Message: Reload complete! All teleport locations have been added to the live cache.
+					// Message: [SUCCESS] Reload complete! All teleport locations have been added to the live cache.
 					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TeleportsReloaded", null);
 					log.Info("[SUCCESS] - Teleport locations reloaded.");
 					return;
@@ -339,14 +343,14 @@ namespace DOL.GS.Commands
 					// Dated code for people still using XML setups instead of MySQL
 					if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.ConnectionType.DATABASE_XML)
 					{
-						// Message: XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
+						// Message: [ERROR] XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
 						ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Err.XMLOld", null);
 						return;
 					}
 			
 					ServerProperties.Properties.Reload();
 					
-					// Message: Values from the 'serverproperty' table have been reloaded into the server's cache!
+					// Message: [SUCCESS] Values from the 'serverproperty' table have been reloaded into the server's cache!
 					ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.PropsRefreshed", null);
 					return;
 				}
@@ -368,7 +372,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			// Message: Removing and then re-adding all mobs where {0} = {1}.
+			// Message: [INITIALIZING] Removing and then re-adding all mobs where {0} = {1}.
 			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingMobs", arg1, arg2);
 
 			int added = 0;
@@ -455,7 +459,7 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			// Message: Reload complete! {0} mobs were removed and {1} added to this region.
+			// Message: [SUCCESS] Reload complete! {0} mobs were removed and {1} added to this region.
 			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalMobsRemovedAdded", removed, added);
 		}
 
@@ -467,7 +471,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 			
-			// Message: Removing and then re-adding all objects where {0} = {1}.
+			// Message: [INITIALIZING] Removing and then re-adding all objects where {0} = {1}.
 			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.RemovingReaddingObjs", arg1, arg2);
 
 			int added = 0;
@@ -553,7 +557,7 @@ namespace DOL.GS.Commands
 				}
 			}
 			
-			// Message: Reload complete! {0} objects were removed and {1} added to this region.
+			// Message: [SUCCESS] Reload complete! {0} objects were removed and {1} added to this region.
 			ChatUtil.SendTypeMessage(eMsg.Debug, client, "AdminCommands.Reload.Msg.TotalObjRemovedAdded", removed, added);
 		}
 	}

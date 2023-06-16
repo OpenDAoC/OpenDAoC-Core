@@ -161,53 +161,53 @@ AdminCommands.Refresh.Msg.StaticCacheFinished:          [DONE] Refreshed the sta
 AdminCommands.Refresh.Msg.AvailableModules:             <----- '/refresh' Modules ----->
 
 ## '/reload' Commands
-AdminCommands.Reload.CmdList.Description:               '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
-AdminCommands.Reload.Description:                       Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
-AdminCommands.Reload.Syntax.Mob:                        /reload mob [all|model|name|realm]
-AdminCommands.Reload.Usage.Mob:                         Reloads all in-game objects in your current region with the 'GameNPC' type and the filter specified.
-AdminCommands.Reload.Syntax.AllMob:                        /reload mob all
-AdminCommands.Reload.Usage.AllMob:                         Reloads all in-game objects in your current region with the 'GameNPC' type.
-AdminCommands.Reload.Syntax.ModelMob:                   /reload mob model <modelID>
-AdminCommands.Reload.Usage.ModelMob:                    Reloads all in-game objects in your current region with the 'GameNPC' type and the model ID specified.
-AdminCommands.Reload.Syntax.NameMob:                    /reload mob name <mobName>
-AdminCommands.Reload.Usage.NameMob:                     Reloads all in-game objects in your current region with the 'GameNPC' type and matching the name specified.
-AdminCommands.Reload.Syntax.RealmMob:                   /reload mob realm <realm>
-AdminCommands.Reload.Usage.RealmMob:                    Reloads all in-game objects in your current region with the 'GameNPC' type and matching the realm specified.
-AdminCommands.Reload.Syntax.Object:                     /reload object all
-AdminCommands.Reload.Usage.Object:                      Reloads all in-game objects in your current region with the 'GameStaticItem' type.
-AdminCommands.Reload.Syntax.ModelObject:                /reload object model <modelID>
-AdminCommands.Reload.Usage.ModelObject:                 Reloads all in-game objects in your current region with the 'GameStaticItem' type and the model ID specified.
-AdminCommands.Reload.Syntax.NameObject:                 /reload object name <objName>
-AdminCommands.Reload.Usage.NameObject:                  Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the name specified.
-AdminCommands.Reload.Syntax.RealmObject:                /reload object realm <realm>
-AdminCommands.Reload.Usage.RealmObject:                 Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the realm specified.
-AdminCommands.Reload.Syntax.Serverproperties:           /reload serverproperties
-AdminCommands.Reload.Usage.Serverproperties:            Reloads the server cache with any changes from the 'serverproperty' table.
-AdminCommands.Reload.Syntax.Specs:                      /reload specs
-AdminCommands.Reload.Usage.Specs:                       Reloads all database objects from the 'Specialization' table.
-AdminCommands.Reload.Syntax.Spells:                     /reload spells
-AdminCommands.Reload.Usage.Spells:                      Reloads all database objects from the 'Spell' table.
-AdminCommands.Reload.Syntax.Teleports:                  /reload teleports
-AdminCommands.Reload.Usage.Teleports:                   Reloads all database objects from the 'Teleport' table.
-AdminCommands.Reload.Syntax.NPCTemplates:               /reload npctemplates
-AdminCommands.Reload.Usage.NPCTemplates:                Reloads all database objects from the 'NpcTemplate' table.
-AdminCommands.Reload.Syntax.Realm:                      /reload realm
-AdminCommands.Reload.Usage.Realm:                       Displays all accepted values for '/reload mob realm' and '/reload object realm' subcommands.
-AdminCommands.Reload.Header.Realms:                     <----- Realm Syntax ----->
-AdminCommands.Reload.Usage.NoneRealm:                   None = 0, n, no, none
-AdminCommands.Reload.Usage.AlbRealm:                    Albion = 1, a, alb, albion
-AdminCommands.Reload.Usage.MidRealm:                    Midgard = 2, m, mid, midgard
-AdminCommands.Reload.Usage.HibRealm:                    Hibernia = 3, h, hib, hibernia
-AdminCommands.Reload.Msg.TotalMobsRemovedAdded:         Reload complete! {0} mobs were removed and {1} added to this region.
-AdminCommands.Reload.Msg.TotalObjRemovedAdded:          Reload complete! {0} objects were removed and {1} added to this region.
-AdminCommands.Reload.Msg.RemovingReaddingMobs:          Removing and then re-adding all mobs where {0} = {1}.
-AdminCommands.Reload.Msg.RemovingReaddingObjs:          Removing and then re-adding all objects where {0} = {1}.
-AdminCommands.Reload.Msg.NPCTempReloaded:               Reload complete! All NPC Templates have been added to the live cache.
-AdminCommands.Reload.Msg.SpecsReloaded:                 Reload complete! {0} specializations have been added to the live cache.
-AdminCommands.Reload.Msg.SpellsReloaded:                Reload complete! {0} spells from all spell lines have been added to the live cache.
-AdminCommands.Reload.Msg.TeleportsReloaded:             Reload complete! All teleport locations have been added to the live cache.
-AdminCommands.Reload.Err.XMLOld:                        XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
-AdminCommands.Reload.Msg.PropsRefreshed:                Values from the 'serverproperty' table have been reloaded in the server's cache!
+AdminCommands.Reload.CmdList.Description:                       '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Reload.Description:                               Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Reload.Syntax.Mob:                                /reload mob [all|model|name|realm]
+AdminCommands.Reload.Usage.Mob:                                 Reloads all in-game objects in your current region with the 'GameNPC' type and the filter specified.
+AdminCommands.Reload.Syntax.AllMob:                             /reload mob all
+AdminCommands.Reload.Usage.AllMob:                              Reloads all in-game objects in your current region with the 'GameNPC' type.
+AdminCommands.Reload.Syntax.ModelMob:                           /reload mob model <modelID>
+AdminCommands.Reload.Usage.ModelMob:                            Reloads all in-game objects in your current region with the 'GameNPC' type and the model ID specified.
+AdminCommands.Reload.Syntax.NameMob:                            /reload mob name <mobName>
+AdminCommands.Reload.Usage.NameMob:                             Reloads all in-game objects in your current region with the 'GameNPC' type and matching the name specified.
+AdminCommands.Reload.Syntax.RealmMob:                           /reload mob realm <realm>
+AdminCommands.Reload.Usage.RealmMob:                            Reloads all in-game objects in your current region with the 'GameNPC' type and matching the realm specified.
+AdminCommands.Reload.Syntax.Object:                             /reload object all
+AdminCommands.Reload.Usage.Object:                              Reloads all in-game objects in your current region with the 'GameStaticItem' type.
+AdminCommands.Reload.Syntax.ModelObject:                        /reload object model <modelID>
+AdminCommands.Reload.Usage.ModelObject:                         Reloads all in-game objects in your current region with the 'GameStaticItem' type and the model ID specified.
+AdminCommands.Reload.Syntax.NameObject:                         /reload object name <objName>
+AdminCommands.Reload.Usage.NameObject:                          Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the name specified.
+AdminCommands.Reload.Syntax.RealmObject:                        /reload object realm <realm>
+AdminCommands.Reload.Usage.RealmObject:                         Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the realm specified.
+AdminCommands.Reload.Syntax.Serverproperties:                   /reload serverproperties
+AdminCommands.Reload.Usage.Serverproperties:                    Reloads the server cache with any changes from the 'serverproperty' table.
+AdminCommands.Reload.Syntax.Specs:                              /reload specs
+AdminCommands.Reload.Usage.Specs:                               Reloads all database objects from the 'Specialization' table.
+AdminCommands.Reload.Syntax.Spells:                             /reload spells
+AdminCommands.Reload.Usage.Spells:                              Reloads all database objects from the 'Spell' table.
+AdminCommands.Reload.Syntax.Teleports:                          /reload teleports
+AdminCommands.Reload.Usage.Teleports:                           Reloads all database objects from the 'Teleport' table.
+AdminCommands.Reload.Syntax.NPCTemplates:                       /reload npctemplates
+AdminCommands.Reload.Usage.NPCTemplates:                        Reloads all database objects from the 'NpcTemplate' table.
+AdminCommands.Reload.Syntax.Realm:                              /reload realm
+AdminCommands.Reload.Usage.Realm:                               Displays all accepted values for '/reload mob realm' and '/reload object realm' subcommands.
+AdminCommands.Reload.Header.Realms:                             <----- Realm Syntax ----->
+AdminCommands.Reload.Usage.NoneRealm:                           None = 0, n, no, none
+AdminCommands.Reload.Usage.AlbRealm:                            Albion = 1, a, alb, albion
+AdminCommands.Reload.Usage.MidRealm:                            Midgard = 2, m, mid, midgard
+AdminCommands.Reload.Usage.HibRealm:                            Hibernia = 3, h, hib, hibernia
+AdminCommands.Reload.Msg.TotalMobsRemovedAdded:                 [SUCCESS] Reload complete! {0} mobs were removed and {1} added to this region.
+AdminCommands.Reload.Msg.TotalObjRemovedAdded:                  [SUCCESS] Reload complete! {0} objects were removed and {1} added to this region.
+AdminCommands.Reload.Msg.RemovingReaddingMobs:                  [INITIALIZING] Removing and then re-adding all mobs where {0} = {1}.
+AdminCommands.Reload.Msg.RemovingReaddingObjs:                  [INITIALIZING] Removing and then re-adding all objects where {0} = {1}.
+AdminCommands.Reload.Msg.NPCTempReloaded:                       [SUCCESS] Reload complete! All NPC Templates have been added to the live cache.
+AdminCommands.Reload.Msg.SpecsReloaded:                         [SUCCESS] Reload complete! {0} specializations have been added to the live cache.
+AdminCommands.Reload.Msg.SpellsReloaded:                        [SUCCESS] Reload complete! {0} spells from all spell lines have been added to the live cache.
+AdminCommands.Reload.Msg.TeleportsReloaded:                     [SUCCESS] Reload complete! All teleport locations have been added to the live cache.
+AdminCommands.Reload.Err.XMLOld:                                [ERROR] XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
+AdminCommands.Reload.Msg.PropsRefreshed:                        [SUCCESS] Values from the 'serverproperty' table have been reloaded in the server's cache!
 
 ## '/shutdown' Commands
 AdminCommands.Shutdown.Msg.CountdownHours:                      A server reboot is scheduled to occur in {0} hours!
