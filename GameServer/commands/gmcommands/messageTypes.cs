@@ -56,13 +56,13 @@ namespace DOL.GS.Commands
         /// <param name="args">The arguments associated with the command.</param>
         public void OnCommand(GameClient client, string[] args)
         {
-            if (args.Length < 1)
+            if (args.Length < 2)
             {
                 DisplaySyntax(client);
                 return;
             }
 
-            if (args.Length == 1)
+            if (args.Length == 2)
             {
                 Enum.TryParse<eMsg>(args[1], true, out eMsg result);
 
