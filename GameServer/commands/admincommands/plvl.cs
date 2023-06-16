@@ -368,7 +368,7 @@ namespace DOL.GS.Commands
 							if (SinglePermission.HasPermission(client.Player, "plvl") == false)
 							{
 								// Message: You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
-								ChatUtil.SendTypeMessage(eMsg.DialogWarn, client, "AdminCommands.Plvl.Err.NoPlvlPerm", null);
+								client.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Err.NoPlvlPerm"));
 								return;
 							}
 						}
