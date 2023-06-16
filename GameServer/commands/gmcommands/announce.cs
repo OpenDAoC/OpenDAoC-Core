@@ -76,6 +76,11 @@ namespace DOL.GS.Commands
 			switch (args.GetValue(1).ToString().ToLower())
 			{
 				#region Log
+				// --------------------------------------------------------------------------------
+				// LOG
+				// '/announce log <message>'
+				// Sends a message to all players which displays as Important in their System window.
+				// --------------------------------------------------------------------------------
 				case "log":
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
@@ -86,19 +91,25 @@ namespace DOL.GS.Commands
 					}
 				#endregion Log
 				#region Window
+				// --------------------------------------------------------------------------------
+				// WINDOW
+				// '/announce window <message>'
+				// Sends a text window to all players which displays the specified message.
+				// --------------------------------------------------------------------------------
 				case "window":
 					{
-						var messages = new List<string>();
-						messages.Add(message);
-
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if(clients != null)
-	                            // Message: Announce from {0}
-	                            ChatUtil.SendWindowMessage(eWindow.Text, clients, "GMCommands.Announce.WindowAnnounce", client, messages);
+	                            ChatUtil.SendWindowMessage(eWindow.Text, clients, "Server Announcement", message);
 						break;
 					}
 				#endregion Window
 				#region Send
+				// --------------------------------------------------------------------------------
+				// SEND
+				// '/announce send <message>'
+				// Sends a message to all players which displays as a Send message in their Chat window.
+				// --------------------------------------------------------------------------------
 				case "send":
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
@@ -109,6 +120,11 @@ namespace DOL.GS.Commands
 					}
 				#endregion Send
 				#region Center
+				// --------------------------------------------------------------------------------
+				// CENTER
+				// '/announce center <message>'
+				// Sends a message to all players which displays in the center of their screen.
+				// --------------------------------------------------------------------------------
 				case "center":
 					{
                         foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
@@ -118,12 +134,16 @@ namespace DOL.GS.Commands
 					}
 				#endregion Center
 				#region Confirm
+				// --------------------------------------------------------------------------------
+				// CONFIRM
+				// '/announce confirm <message>'
+				// Sends a dialog to all players which requires them to click 'OK' to confirm.
+				// --------------------------------------------------------------------------------
 				case "confirm":
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if (clients != null)
-	                            // Message: Announce from {0}: {1}
-	                            ChatUtil.SendTypeMessage(eMsg.DialogWarn, clients, "GMCommands.Announce.ConfirmAnnounce", client, message);
+	                            ChatUtil.SendTypeMessage(eMsg.DialogWarn, clients, message);
 						break;
 					}
 				#endregion Confirm
