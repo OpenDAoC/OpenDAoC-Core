@@ -98,11 +98,11 @@ namespace DOL.GS
         /// Used to send translated messages
         /// </summary>
         /// <param name="type">Determines the eChatType and eChatLoc to use for the message.</param>
-        /// <param name="target">The target client receiving the message (e.g., "client")</param>
+        /// <param name="target">The target client receiving the message (e.g., "target.Client")</param>
         /// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
         /// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
         /// <note>Please paste the translation ID's associated message (English) into a comment above this method.</note>
-        /// <example>ChatUtil.SendTypeMessage("cmdheader", client, "AdminCommands.Account.Description", null);</example>
+        /// <example>ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Account.Description", null);</example>
         /// <comment>To perform message changes, reference the '.txt' files located in 'GameServer > language > EN'. Please remember, if you change the translation ID value, check all other language folders (e.g., DE, FR, ES, etc.) to ensure all translated strings correctly reflect the new ID.</comment>
         public static void SendTypeMessage(eMsg type, GamePlayer target, string translationID, params object[] args)
         {
@@ -115,11 +115,11 @@ namespace DOL.GS
 	            target.Client.Out.SendMessage(translatedMsg, announcement.Item1, announcement.Item2);
 	            target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }
-            // Server-wide alerts
+            // Server-wide alerts, send twice for good measure
             else if (table.TryGetValue(eMsg.Server, out var server))
             {
 	            target.Client.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
-	            target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+	            target.Client.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
             }
             // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
             else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Client.Account.PrivLevel > (int)ePrivLevel.GM)
@@ -144,200 +144,57 @@ namespace DOL.GS
 	            target.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
         }
 
-        /// <summary>
+		/// <summary>
         /// Used to send translated messages
         /// </summary>
-        /// <param name="type">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "emoteSysOthers", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "playerDiedOthers2", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
+        /// <param name="type">Determines the eChatType and eChatLoc to use for the message.</param>
         /// <param name="target">The target client receiving the message (e.g., "client")</param>
         /// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
         /// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
         /// <note>Please paste the translation ID's associated message (English) into a comment above this method.</note>
-        /// <example>ChatUtil.SendTypeMessage("cmdheader", client, "AdminCommands.Account.Description", null);</example>
+        /// <example>ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Account.Description", null);</example>
         /// <comment>To perform message changes, reference the '.txt' files located in 'GameServer > language > EN'. Please remember, if you change the translation ID value, check all other language folders (e.g., DE, FR, ES, etc.) to ensure all translated strings correctly reflect the new ID.</comment>
         public static void SendTypeMessage(eMsg type, GameClient target, string translationID, params object[] args)
         {
             // See example above for formatting
-            var translatedMsg = LanguageMgr.GetTranslation(target.Account.Language, translationID, args);
+            var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-            switch (type)
+            // Announcement messages sent using '/announce'
+            if (table.TryGetValue(eMsg.Announce, out var announcement))
             {
-                case eMsg.None when target.Account.PrivLevel > (int)ePrivLevel.Player:
-                    // Message: No message type was specified for: "{0}"
-                    translatedMsg = LanguageMgr.GetTranslation(target.Account.Language, "GamePlayer.Debug.Err.NoMsgType", translationID);
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    return;
-                case eMsg.Advice: // Advice channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Alliance: // Guild alliance messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Alliance, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Announce: // Server-wide announcement messages
-                {
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                }
-                    break;
-                case eMsg.Battlegroup: // Standard battlegroup channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.BGLeader: // Battlegroup leader channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Broadcast: // Broadcast channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.CenterSys: // Center screen and system window
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Chat: // Chat channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Command: // Command general information, "It is recommender..."
-                case eMsg.CmdDesc: // Description of command type, "Manually executes a custom code."
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdHeader: // Command type header, "<----- '/account' Commands (plvl 3) ----->"
-                case eMsg.CmdSyntax: // Command syntax, "/account accountname <characterName>"
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdUsage: // Command description, "Deletes the specified account, along with any associated characters."
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DamageAddSh: // Damage add (DA) & damage shield (DS)
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Damaged: // You damage target
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Debug when target.Account.PrivLevel > (int)ePrivLevel.Player: // Admin debug
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Emote: // Emote-formatted messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.EmoteSysOthers: // Emote-formatted messages sent to all other players except the originating player
-                    Message.SystemToOthers(target.Player, translatedMsg, eChatType.CT_Emote);
-                    break;
-                case eMsg.Error: // Incorrect outputs or problems with command syntax
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Expires: // Spell expires
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Group: // Group channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Guild: // Guild channel messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Help: // System help
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Important: // Important system messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByAlb: // Alb killspam
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_KilledByAlb, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByHib: // Hib killspam
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_KilledByHib, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByMid: // Mid killspam
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_KilledByMid, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.LFG: // LFG channel
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Loot: // Item drops
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Merchant: // Merchant messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Message: // System messages conveying information
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Missed: // Missed combat
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Officer: // Officer channel
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Officer, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.OthersCombat: // Other's combat
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_OthersCombat, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.PlayerDied: // Player died
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.PlayerDiedOthers: // Player death message sent to other nearby players
-                    Message.SystemToOthers2(target.Player, eChatType.CT_PlayerDied, translationID, args);
-                    break;
-                case eMsg.Pulse: // Spell pulse
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_SpellPulse, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Resisted: // Spell resisted
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Say: // GameLiving say
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.ScreenCenter: // Center of screen
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Send: // Private messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Server: // Server-wide alerts
-	                target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-	                target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-	                break;
-                case eMsg.Skill: // Skill
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Spell: // Spell casting and effects
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Staff: // Atlas Admin communication w/players or GM-related messages (e.g., /mute  restrictions)
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Success: // Important command execution messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.SysArea: // System messages sent to a general AoE space
-                    Message.SystemToArea(target.Player, translatedMsg, eChatType.CT_System, target.Player);
-                    break;
-                case eMsg.SysOthers: // System messages sent to all nearby players, except the target
-                    Message.SystemToOthers(target.Player, translatedMsg, eChatType.CT_System);
-                    break;
-                case eMsg.System: // Standard system messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Team when target.Account.PrivLevel > (int)ePrivLevel.Player: // Atlas Team channel
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Trade: // Trade channel
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Yell: // Yelling communication
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.YouDied: // You died messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouHit: // You hit a target messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouWereHit: // GameLiving hit you messages
-                    target.Out.SendMessage(translatedMsg, eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DialogWarn: // Incorrect outputs or problems with command syntax
-	                target.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, translatedMsg);
-	                break;
+	            target.Out.SendMessage(translatedMsg, announcement.Item1, announcement.Item2);
+	            target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }
+            // Server-wide alerts, send twice for good measure
+            else if (table.TryGetValue(eMsg.Server, out var server))
+            {
+	            target.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
+	            target.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
+            }
+            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
+            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Account.PrivLevel > (int)ePrivLevel.GM)
+	            target.Out.SendMessage(translatedMsg, debug.Item1, debug.Item2);
+            // Emote-formatted messages sent to all other players, excluding the originating player
+            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
+	            Message.SystemToOthers(target.Player, translatedMsg, emote.Item1);
+            // Player death message sent to other nearby players
+            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
+	            Message.SystemToOthers2(target.Player, diedOthers.Item1, translationID, args);
+            // System messages sent to a general AoE space
+            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
+	            Message.SystemToArea(target.Player, translatedMsg, sysArea.Item1, target.Player);
+            // System messages sent to all nearby players, except the target
+            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
+	            Message.SystemToOthers(target.Player, translatedMsg, sysOthers.Item1);
+            // OpenDAoC Team channel
+            else if (table.TryGetValue(eMsg.Team, out var team) && target.Account.PrivLevel > (int)ePrivLevel.Player)
+	            target.Out.SendMessage(translatedMsg, team.Item1, team.Item2);
+            // All other eMsg types
+            else if (table.TryGetValue(type, out var result))
+	            target.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
         }
 
-        /// <summary>
+		/// <summary>
         /// Used to send various messages
         /// </summary>
         /// <param name="type">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "sysArea", "sysOthers", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
@@ -347,186 +204,39 @@ namespace DOL.GS
         /// <example>ChatUtil.SendTypeMessage("system", client, "This is a message.");</example>
         public static void SendTypeMessage(eMsg type, GamePlayer target, string message)
         {
-	        if (table.TryGetValue(type, out var result))
-		        target.Client.Out.SendMessage(message, result.Item1, result.Item2);
-
-            // See example above for formatting
-            switch (type)
+	        // Announcement messages sent using '/announce'
+            if (table.TryGetValue(eMsg.Announce, out var announcement))
             {
-                case eMsg.None when target.Client.Account.PrivLevel > (int)ePrivLevel.Player:
-                    // Message: No message type was specified for: "{0}"
-                    var error = LanguageMgr.GetTranslation(target.Client.Account.Language, "GamePlayer.Debug.Err.NoMsgType", message);
-                    target.Client.Out.SendMessage(error, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    return;
-                case eMsg.Advice: // Advice channel
-                    target.Client.Out.SendMessage(message, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Alliance: // Guild alliance
-                    target.Client.Out.SendMessage(message, eChatType.CT_Alliance, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Announce: // Server-wide announcement messages
-                {
-                    target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                }
-                    break;
-                case eMsg.Battlegroup: // Standard Battle group channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.BGLeader: // Battlegroup leader channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Broadcast: // Broadcast channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.CenterSys: // Center screen and system window
-                    target.Client.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Chat: // Chat channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Command: // Command general information, "It is recommender..."
-                case eMsg.CmdDesc: // Description of command type, "Manually executes a custom code."
-                    target.Client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdHeader: // Command type header, "<----- '/account' Commands (plvl 3) ----->"
-                case eMsg.CmdSyntax: // Command syntax, "/account accountname <characterName>"
-                    target.Client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdUsage: // Command description, "Deletes the specified account, along with any associated characters."
-                    target.Client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DamageAddSh: // Damage add (DA) & damage shield (DS)
-                    target.Client.Out.SendMessage(message, eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Damaged: // You damage target
-                    target.Client.Out.SendMessage(message, eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Debug when target.Client.Account.PrivLevel > (int)ePrivLevel.Player: // Admin debug
-                    target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Emote: // Emote-formatted messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.EmoteSysOthers: // System messages sent to all nearby players, except the target
-                    Message.SystemToOthers(target, message, eChatType.CT_Emote);
-                    break;
-                case eMsg.Error: // Incorrect outputs or problems with command syntax
-                    target.Client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Expires: // Spell expires
-                    target.Client.Out.SendMessage(message, eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Group: // Group channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Guild: // Guild channel messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Help: // System help
-                    target.Client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Important: // Important system messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByAlb: // Alb killspam
-                    target.Client.Out.SendMessage(message, eChatType.CT_KilledByAlb, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByHib: // Hib killspam
-                    target.Client.Out.SendMessage(message, eChatType.CT_KilledByHib, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByMid: // Mid killspam
-                    target.Client.Out.SendMessage(message, eChatType.CT_KilledByMid, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.LFG: // LFG channel
-                    target.Client.Out.SendMessage(message, eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Loot: // Item drops
-                    target.Client.Out.SendMessage(message, eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Merchant: // Merchant messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Message: // System messages conveying information
-                    target.Client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Missed: // Missed combat
-                    target.Client.Out.SendMessage(message, eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Officer: // Officer channel
-                    target.Client.Out.SendMessage(message, eChatType.CT_Officer, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.OthersCombat: // Other's combat
-                    target.Client.Out.SendMessage(message, eChatType.CT_OthersCombat, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.PlayerDied: // Player died
-                    target.Client.Out.SendMessage(message, eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.PlayerDiedOthers: // System messages sent to all nearby players, except the target
-                    Message.SystemToOthers(target, message, eChatType.CT_System);
-                    break;
-                case eMsg.Pulse: // Spell pulse
-                    target.Client.Out.SendMessage(message, eChatType.CT_SpellPulse, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Resisted: // Spell resisted
-                    target.Client.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Say: // GameLiving say
-                    target.Client.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.ScreenCenter: // Center of screen
-                    target.Client.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Send: // Private messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Server: // Server-wide alerts
-	                target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-	                target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-	                break;
-                case eMsg.Skill: // Skill
-                    target.Client.Out.SendMessage(message, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Spell: // Spell casting and effects
-                    target.Client.Out.SendMessage(message, eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Staff: // Atlas Admin communication w/players or GM-related messages (e.g., /mute  restrictions)
-                    target.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Success: // Important command execution messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.SysArea: // System messages sent to a general AoE space
-                    Message.SystemToArea(target, message, eChatType.CT_System, target);
-                    break;
-                case eMsg.SysOthers: // System messages sent to all nearby players, except the target
-                    Message.SystemToOthers(target, message, eChatType.CT_System);
-                    break;
-                case eMsg.System: // Standard system messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Team when target.Client.Account.PrivLevel > (int)ePrivLevel.Player: // Atlas Team channel
-                    target.Client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Trade: // Trade channel
-                    target.Client.Out.SendMessage(message, eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Yell: // Yelling communication
-                    target.Client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.YouDied: // You died messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouHit: // You hit a target messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouWereHit: // GameLiving hit you messages
-                    target.Client.Out.SendMessage(message, eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DialogWarn: // Incorrect outputs or problems with command syntax
-	                target.Client.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, message);
-	                break;
+	            target.Out.SendMessage(message, announcement.Item1, announcement.Item2);
+	            target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }
+            // Server-wide alerts, send twice for good measure
+            else if (table.TryGetValue(eMsg.Server, out var server))
+            {
+	            target.Out.SendMessage(message, server.Item1, server.Item2);
+	            target.Out.SendMessage(message, server.Item1, server.Item2);
+            }
+            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
+            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Client.Account.PrivLevel > (int)ePrivLevel.GM)
+	            target.Client.Out.SendMessage(message, debug.Item1, debug.Item2);
+            // Emote-formatted messages sent to all other players, excluding the originating player
+            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
+	            Message.SystemToOthers(target, message, emote.Item1);
+            // Player death message sent to other nearby players
+            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
+	            Message.SystemToOthers2(target, diedOthers.Item1, message);
+            // System messages sent to a general AoE space
+            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
+	            Message.SystemToArea(target, message, sysArea.Item1, target);
+            // System messages sent to all nearby players, except the target
+            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
+	            Message.SystemToOthers(target, message, sysOthers.Item1);
+            // OpenDAoC Team channel
+            else if (table.TryGetValue(eMsg.Team, out var team) && target.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+	            target.Client.Out.SendMessage(message, team.Item1, team.Item2);
+            // All other eMsg types
+            else if (table.TryGetValue(type, out var result))
+	            target.Client.Out.SendMessage(message, result.Item1, result.Item2);
         }
 
         /// <summary>
@@ -539,180 +249,39 @@ namespace DOL.GS
         /// <example>ChatUtil.SendTypeMessage("system", client, "This is a message.");</example>
         public static void SendTypeMessage(eMsg type, GameClient target, string message)
         {
-            // See example above for formatting
-            switch (type)
+	        // Announcement messages sent using '/announce'
+            if (table.TryGetValue(eMsg.Announce, out var announcement))
             {
-                case eMsg.None when target.Account.PrivLevel > (int)ePrivLevel.Player:
-                    // Message: No message type was specified for: "{0}"
-                    var error = LanguageMgr.GetTranslation(target.Account.Language, "GamePlayer.Debug.Err.NoMsgType", message);
-                    target.Out.SendMessage(error, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    return;
-                case eMsg.Advice: // Advice channel
-                    target.Out.SendMessage(message, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Alliance: // Guild alliance
-                    target.Out.SendMessage(message, eChatType.CT_Alliance, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Announce: // Server-wide announcement messages
-                {
-                    target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                }
-                    break;
-                case eMsg.Battlegroup: // Standard Battlegroup channel messages
-                    target.Out.SendMessage(message, eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.BGLeader: // Battlegroup leader
-                    target.Out.SendMessage(message, eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Broadcast: // Broadcast channel messages
-                    target.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.CenterSys: // Center screen and system window
-                    target.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Chat:
-                    target.Out.SendMessage(message, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Command: // Command general information, "It is recommender..."
-                case eMsg.CmdDesc: // Description of command type, "Manually executes a custom code."
-                    target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdHeader: // Command type header, "<----- '/account' Commands (plvl 3) ----->"
-                case eMsg.CmdSyntax: // Command syntax, "/account accountname <characterName>"
-                    target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.CmdUsage: // Command description, "Deletes the specified account, along with any associated characters."
-                    target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DamageAddSh: // Damage add (DA) & damage shield (DS)
-                    target.Out.SendMessage(message, eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Damaged: // You damage target
-                    target.Out.SendMessage(message, eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Debug when target.Account.PrivLevel > (int)ePrivLevel.Player: // Admin debug
-                    target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Emote: // Emote formatted messages
-                    target.Out.SendMessage(message, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.EmoteSysOthers: // Emote formatted messages
-                    Message.SystemToOthers(target.Player, message, eChatType.CT_System);
-                    break;
-                case eMsg.Error: // Incorrect outputs or problems with command syntax
-                    target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Expires: // Spell expires
-                    target.Out.SendMessage(message, eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Group: // Group channel messages
-                    target.Out.SendMessage(message, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Guild: // Guild channel messages
-                    target.Out.SendMessage(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Help: // System help
-                    target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Important: // Important system messages
-                    target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByAlb: // Alb killspam
-                    target.Out.SendMessage(message, eChatType.CT_KilledByAlb, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByHib: // Hib killspam
-                    target.Out.SendMessage(message, eChatType.CT_KilledByHib, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.KilledByMid: // Mid killspam
-                    target.Out.SendMessage(message, eChatType.CT_KilledByMid, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.LFG: // LFG channel
-                    target.Out.SendMessage(message, eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Loot: // Item drops
-                    target.Out.SendMessage(message, eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Merchant: // Merchant messages
-                    target.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Message: // System messages conveying information
-                    target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Missed: // Missed combat
-                    target.Out.SendMessage(message, eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Officer: // Officer channel
-                    target.Out.SendMessage(message, eChatType.CT_Officer, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.OthersCombat: // Other's combat
-                    target.Out.SendMessage(message, eChatType.CT_OthersCombat, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.PlayerDied: // Player died
-                    target.Out.SendMessage(message, eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Pulse: // Spell pulse
-                    target.Out.SendMessage(message, eChatType.CT_SpellPulse, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Resisted: // Spell resisted
-                    target.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Say: // GameLiving say
-                    target.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.ScreenCenter: // Center of screen
-                    target.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Send: // Private messages
-                    target.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Server: // Server-wide alerts
-	                target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-	                target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-	                break;
-                case eMsg.Skill: // Skill
-                    target.Out.SendMessage(message, eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Spell: // Spell casting and effects
-                    target.Out.SendMessage(message, eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Staff: // Atlas Admin communication w/players or GM-related messages (e.g., /mute  restrictions)
-                    target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Success: // Important command execution messages
-                    target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.SysArea: // System messages sent to a general AoE space
-                    Message.SystemToArea(target.Player, message, eChatType.CT_System, target.Player);
-                    break;
-                case eMsg.SysOthers: // System messages sent to all nearby players, except the target
-                    Message.SystemToOthers(target.Player, message, eChatType.CT_System);
-                    break;
-                case eMsg.System: // Standard system messages
-                    target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Team when target.Account.PrivLevel > (int)ePrivLevel.Player: // Atlas Team channel
-                    target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.Trade: // Trade channel
-                    target.Out.SendMessage(message, eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.Yell: // Yelling communication
-                    target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-                    break;
-                case eMsg.YouDied: // You died messages
-                    target.Out.SendMessage(message, eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouHit: // You hit a target messages
-                    target.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.YouWereHit: // GameLiving hit you messages
-                    target.Out.SendMessage(message, eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-                    break;
-                case eMsg.DialogWarn: // Incorrect outputs or problems with command syntax
-	                target.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, message);
-	                break;
+	            target.Out.SendMessage(message, announcement.Item1, announcement.Item2);
+	            target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }
+            // Server-wide alerts, send twice for good measure
+            else if (table.TryGetValue(eMsg.Server, out var server))
+            {
+	            target.Out.SendMessage(message, server.Item1, server.Item2);
+	            target.Out.SendMessage(message, server.Item1, server.Item2);
+            }
+            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
+            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Account.PrivLevel > (int)ePrivLevel.GM)
+	            target.Out.SendMessage(message, debug.Item1, debug.Item2);
+            // Emote-formatted messages sent to all other players, excluding the originating player
+            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
+	            Message.SystemToOthers(target.Player, message, emote.Item1);
+            // Player death message sent to other nearby players
+            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
+	            Message.SystemToOthers2(target.Player, diedOthers.Item1, message);
+            // System messages sent to a general AoE space
+            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
+	            Message.SystemToArea(target.Player, message, sysArea.Item1, target.Player);
+            // System messages sent to all nearby players, except the target
+            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
+	            Message.SystemToOthers(target.Player, message, sysOthers.Item1);
+            // OpenDAoC Team channel
+            else if (table.TryGetValue(eMsg.Team, out var team) && target.Account.PrivLevel > (int)ePrivLevel.Player)
+	            target.Out.SendMessage(message, team.Item1, team.Item2);
+            // All other eMsg types
+            else if (table.TryGetValue(type, out var result))
+	            target.Out.SendMessage(message, result.Item1, result.Item2);
         }
 		
         /// <summary>
