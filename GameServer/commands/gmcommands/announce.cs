@@ -143,7 +143,7 @@ namespace DOL.GS.Commands
 					{
 						foreach (GameClient clients in WorldMgr.GetAllPlayingClients())
                             if (clients != null)
-	                            ChatUtil.SendTypeMessage(eMsg.DialogWarn, clients, message);
+	                            clients.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, message);
 						break;
 					}
 				#endregion Confirm
