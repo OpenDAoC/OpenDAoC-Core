@@ -50,18 +50,18 @@ AdminCommands.Account.Syntax.Unban:                     /account unban <accountN
 AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip'), but will remove '/ban both' and '/ban account' records.
 AdminCommands.Account.Msg.AccNameForChar:				[INFO] {0} is associated with the account '{1}'.
 AdminCommands.Account.Err.AccountBanNotFound:			[ERROR] The account '{0}' is not currently banned!
-AdminCommands.Account.Msg.AccountCreated:				[SUCCESS] You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
-AdminCommands.Account.Msg.AccountDeleted:				[SUCCESS] You have successfully deleted the account '{0}'!
+AdminCommands.Account.Msg.AccountCreated:				[SUCCESS] You have created the account '{0}'! Remember to write down the login credentials for future use.
+AdminCommands.Account.Msg.AccountDeleted:				[SUCCESS] You have deleted the account '{0}'!
 AdminCommands.Account.Err.AlreadyRegistered:            [ERROR] An account already exists with the name '{0}'! Try again with a different value.
 AdminCommands.Account.Err.AccountNotFound:				[ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
 AdminCommands.Account.Msg.AccountUnbanned:              [SUCCESS] You have removed the ban from the account '{0}'!
-AdminCommands.Account.Msg.CharacterDeleted:				[SUCCESS] You have successfully deleted the character {0}!
+AdminCommands.Account.Msg.CharacterDeleted:				[SUCCESS] You have deleted the character {0}!
 AdminCommands.Account.Msg.CharacterMovedToAccount:		[SUCCESS] You have transferred ownership of {0} to account '{1}'!
 AdminCommands.Account.Err.CharacterNotFound:			[ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
 AdminCommands.Account.Err.CharNotFromValidRealm:		[ERROR] {0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit this character from the database or use the '/player realm' command on the desired character to resolve this issue.
 AdminCommands.Account.Err.InvalidNamePass:              [ERROR] A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
 AdminCommands.Account.Err.NoFreeSlots:                  [FAILED] The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
-AdminCommands.Account.Msg.PasswordChanged:              [SUCCESS] You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
+AdminCommands.Account.Msg.PasswordChanged:              [SUCCESS] You have changed the password to account '{0}'. Share this with the account owner, if applicable.
 AdminCommands.Account.Err.PasswordChars:                [ERROR] A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
 AdminCommands.Account.Msg.SetStatus:                    [SUCCESS] You have changed the status for account '{0}' from {1} to {2}!
 AdminCommands.Account.Err.SpecialChars:                 [ERROR] A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
