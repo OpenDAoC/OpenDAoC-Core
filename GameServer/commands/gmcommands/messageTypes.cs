@@ -62,10 +62,13 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            Enum.TryParse<eMsg>(args[1], true, out eMsg result);
+            if (args.Length == 1)
+            {
+                Enum.TryParse<eMsg>(args[1], true, out eMsg result);
 
-            // Message: This is a test of the {0} message type.
-            ChatUtil.SendTypeMessage(result, client, "GMCommands.Message.Msg.TestMessage", args[1]);
+                // Message: This is a test of the {0} message type.
+                ChatUtil.SendTypeMessage(result, client, "GMCommands.Message.Msg.TestMessage", args[1]);
+            }
 
         }
     }
