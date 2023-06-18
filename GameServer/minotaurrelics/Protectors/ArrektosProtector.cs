@@ -36,12 +36,6 @@
  * Classes should inherit from "BaseProtector"
  * 
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -78,10 +72,8 @@ namespace DOL.GS
 
             return base.AddToWorld();
         }
-        public void StartAttack(GameObject target)
+        public override void StartAttack(GameObject target)
         {
-            attackComponent.RequestStartAttack(target);
-
             if (!TempProperties.getProperty<bool>(ALREADY_GOT_HELP))
             {
                 foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -93,6 +85,8 @@ namespace DOL.GS
 
                 TempProperties.setProperty(ALREADY_GOT_HELP, true);
             }
+
+            base.StartAttack(target);
         }
         public override void Die(GameObject killer)
         {

@@ -16,14 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using log4net;
 
@@ -142,7 +142,7 @@ namespace DOL.GS.Keeps
 
 		public override long ExperienceValue => 0;
 
-		public int AttackRange => 1000;
+		public override int AttackRange => 1000;
 
 		public override IList GetExamineMessages(GamePlayer player)
 		{

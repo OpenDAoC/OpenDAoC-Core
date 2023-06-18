@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System.Reflection;
 using DOL.AI;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -23,7 +25,6 @@ using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using log4net;
-using System.Reflection;
 
 namespace DOL.GS
 {
@@ -110,8 +111,8 @@ namespace DOL.GS
         /// <summary>
         /// Starts a melee or ranged attack on a given target.
         /// </summary>
-        /// <param name="attackTarget">The object to attack.</param>
-        public void StartAttack(GameObject attackTarget)
+        /// <param name="target">The object to attack.</param>
+        public override void StartAttack(GameObject target)
         {
             // Don't allow ranged attacks
             if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
@@ -131,7 +132,8 @@ namespace DOL.GS
                 else
                     SwitchWeapon(eActiveWeaponSlot.Standard);
             }
-            attackComponent.RequestStartAttack(attackTarget);
+
+            base.StartAttack(target);
         }
 
         /// <summary>

@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using log4net;
 
 namespace DOL.GS.PropertyCalc
@@ -37,7 +37,7 @@ namespace DOL.GS.PropertyCalc
 	/// </summary>
 	public class PropertyCalculator : IPropertyCalculator
 	{
-		protected static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public PropertyCalculator()
 		{

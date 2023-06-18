@@ -20,10 +20,8 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -32,7 +30,6 @@ namespace DOL.GS.Spells
 	public class RampingDamageFocus : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private GameLiving Target;
 		private int pulseCount = 0;
 		private ISpellHandler snareSubSpell;
 

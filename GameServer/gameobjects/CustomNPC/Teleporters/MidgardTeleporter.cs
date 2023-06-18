@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -113,52 +112,5 @@ namespace DOL.GS
 			Say("I'm now teleporting you to " + destination.TeleportID + ".");
 			OnTeleportSpell(player, destination);
 		}
-
-        /// <summary>
-        /// Teleport the player to the designated coordinates using the
-        /// portal spell.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="destination"></param>
-        protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
-        {
-            SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
-            List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
-            Spell spell = SkillBase.GetSpellByID(5999); // UniPortal spell.
-
-            if (spell != null)
-            {
-                UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
-                portalHandler.StartSpell(player);
-                return;
-            }
-
-            // Spell not found in the database, fall back on default procedure.
-
-            if (player.Client.Account.PrivLevel > 1)
-                player.Out.SendMessage("Uni-Portal spell not found.",
-                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-
-
-            this.OnTeleport(player, destination);
-        }
-
-        /// <summary>
-        /// Teleport the player to the designated coordinates. 
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="destination"></param>
-        protected virtual void OnTeleport(GamePlayer player, Teleport destination)
-        {
-            if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
-            {
-                player.LeaveHouse();
-                GameLocation currentLocation =
-                    new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
-                player.MoveTo((ushort) destination.RegionID, destination.X, destination.Y, destination.Z,
-                    (ushort) destination.Heading);
-                GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
-            }
-        }
 	}
 }

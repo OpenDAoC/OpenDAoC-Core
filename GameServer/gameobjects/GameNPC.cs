@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -46,7 +47,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject
 	{
-		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constant for determining if already at a point
@@ -4116,7 +4117,7 @@ namespace DOL.GS
 		/// Returns the damage type of the current attack
 		/// </summary>
 		/// <param name="weapon">attack weapon</param>
-		public eDamageType AttackDamageType(InventoryItem weapon)
+		public virtual eDamageType AttackDamageType(InventoryItem weapon)
 		{
 			return m_meleeDamageType;
 		}
@@ -4447,17 +4448,19 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="selfRegenerationTimer">the regeneration timer</param>
 		/// <returns>the new interval</returns>
-		protected int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			int period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
+
 			if (!InCombat)
 			{
 				int oldPercent = HealthPercent;
+
 				if (oldPercent != HealthPercent)
 					NeedsBroadcastUpdate = true;
-				//BroadcastUpdate();
 			}
-			return (Health < MaxHealth) ? period : 0;
+
+			return period;
 		}
 
 		/// <summary>

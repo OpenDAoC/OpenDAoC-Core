@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using log4net;
 
 namespace DOL.GS
@@ -85,10 +85,6 @@ namespace DOL.GS
                 return true;
 
             return base.HasAbility(keyName);
-        }
-        public virtual byte HealthPercent
-        {
-            get { return (byte) (MaxHealth <= 0 ? 0 : Health * 100 / MaxHealth); }
         }
         public override void Die(GameObject killer)
         {

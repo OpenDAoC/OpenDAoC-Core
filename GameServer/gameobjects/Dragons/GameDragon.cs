@@ -16,18 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Linq;
-using System;
-using System.Text;
-using DOL.GS.PacketHandler;
-using DOL.Database;
-using log4net;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using DOL.Events;
-using DOL.GS.ServerProperties;
-using DOL.AI.Brain;
 
+using System;
+using System.Text.RegularExpressions;
+using DOL.AI.Brain;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -108,7 +104,7 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public int AttackRange
+        public override int AttackRange
         {
             get { return 450; }
             set { }
@@ -168,7 +164,7 @@ namespace DOL.GS
             }
         }
 
-        public double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(InventoryItem weapon)
         {
             return base.AttackDamage(weapon) * 1.0 * DragonDifficulty / 100;
         }

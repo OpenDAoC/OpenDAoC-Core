@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -266,7 +265,7 @@ namespace DOL.GS
 			}
 		}
 
-		public int AttackRange
+		public override int AttackRange
 		{
 			get
 			{

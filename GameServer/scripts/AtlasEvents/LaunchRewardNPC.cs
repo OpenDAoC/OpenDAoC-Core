@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.Events;
-using DOL.GS.PacketHandler;
 using System.Reflection;
 using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -11,9 +11,9 @@ namespace DOL.GS.Scripts
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const int OrbsReward = 15000;
-        private const string LaunchQuestAchievement = "LaunchQuest";
-        private const string customKey = "LaunchQuestOrbs-";
+        private const int ORBS_REWARD = 15000;
+        private const string LAUNCH_QUEST_ACHIEVEMENT = "LaunchQuest";
+        private const string CUSTOM_KEY = "LaunchQuestOrbs-";
         public override bool AddToWorld()
 		{
 			Name = "Kay the Nut";
@@ -45,11 +45,11 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player))
                 return false;
             
-            var LaunchQuestParamKey = $"{customKey}{Realm}";
+            var LaunchQuestParamKey = $"{CUSTOM_KEY}{Realm}";
             
-            var hasRealmCredit = AchievementUtils.CheckPlayerCredit(LaunchQuestAchievement, player, (int)Realm);
+            var hasRealmCredit = AchievementUtils.CheckPlayerCredit(LAUNCH_QUEST_ACHIEVEMENT, player, (int)Realm);
             
-            var hasAccountCredit = AchievementUtils.CheckAccountCredit(LaunchQuestAchievement, player);
+            var hasAccountCredit = AchievementUtils.CheckAccountCredit(LAUNCH_QUEST_ACHIEVEMENT, player);
 
             if (hasRealmCredit)
             {
@@ -57,13 +57,13 @@ namespace DOL.GS.Scripts
                 {
                     if (player.Level < 50)
                     {
-                        player.Out.SendMessage($"For your efforts, the realm of {RealmName(Realm)} has decided to award you with {OrbsReward} Atlas Orbs, congratulations!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        player.Out.SendMessage($"For your efforts, the realm of {RealmName(Realm)} has decided to award you with {ORBS_REWARD} Atlas Orbs, congratulations!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         player.Out.SendMessage("Unfortunately though, the Orbs are too powerful for you at this time. Come back when you reach level 50.\n\n" +
                                                "My dear friend Cruella de Ville has something you can have immediately, go find here! She is around here.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                         return false;
                     }
 
-                    player.Out.SendMessage($"For your efforts, the realm of {RealmName(Realm)} has decided to award you with {OrbsReward} Atlas Orbs, congratulations!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                    player.Out.SendMessage($"For your efforts, the realm of {RealmName(Realm)} has decided to award you with {ORBS_REWARD} Atlas Orbs, congratulations!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     player.Out.SendMessage($"Would you like to [receive them] now? \n\n I suggest you storing them in your Account Vault to avoid losing them, I won't be able to give you more.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
                     return true;
@@ -96,7 +96,7 @@ namespace DOL.GS.Scripts
 
             var player = source as GamePlayer;
 
-            var hasRealmCredit = AchievementUtils.CheckPlayerCredit(LaunchQuestAchievement, player, (int)player.Realm);
+            var hasRealmCredit = AchievementUtils.CheckPlayerCredit(LAUNCH_QUEST_ACHIEVEMENT, player, (int)player.Realm);
             
             switch(str)
             {
@@ -105,11 +105,11 @@ namespace DOL.GS.Scripts
                     if (HasCustomParam(player)) return false;
                     if (player.Level < 50) return false;
                     
-                    player.Out.SendMessage($"Here, take {OrbsReward} Atlas Orbs! \n\n" +
+                    player.Out.SendMessage($"Here, take {ORBS_REWARD} Atlas Orbs! \n\n" +
                                            $"The whole realm of {RealmName(Realm)} thanks you for your help and wish you luck with your adventures! \n \n" +
                                            "Now, don't forget to visit my friend Cruella de Ville, I'm sure she will have more rewards for you.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                     
-                    AtlasROGManager.GenerateReward(player, OrbsReward);
+                    AtlasROGManager.GenerateReward(player, ORBS_REWARD);
                     SetCustomParam(player);
                     return true;
                 default:
@@ -134,7 +134,7 @@ namespace DOL.GS.Scripts
         private void SetCustomParam(GamePlayer player)
         {
 
-            var LaunchQuestParamKey = $"{customKey}{Realm}";
+            var LaunchQuestParamKey = $"{CUSTOM_KEY}{Realm}";
             var HasLaunchQuestParam = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(player.Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(LaunchQuestParamKey)));
 
             if (HasLaunchQuestParam != null) return;
@@ -148,7 +148,7 @@ namespace DOL.GS.Scripts
 
         private bool HasCustomParam(GamePlayer player)
         {
-            var LaunchQuestParamKey = $"{customKey}{Realm}";
+            var LaunchQuestParamKey = $"{CUSTOM_KEY}{Realm}";
             
             return DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(player.Client.Account.Name).And(DB.Column("KeyName").IsEqualTo(LaunchQuestParamKey))) != null;
 

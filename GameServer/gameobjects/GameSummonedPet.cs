@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
-using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -409,15 +409,15 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public eDamageType AttackDamageType(InventoryItem weapon)
+		public override eDamageType AttackDamageType(InventoryItem weapon)
 		{
 			if (weapon != null)
 			{
 				switch ((eWeaponDamageType)weapon.Type_Damage)
 				{
-						case eWeaponDamageType.Crush: return eDamageType.Crush;
-						case eWeaponDamageType.Slash: return eDamageType.Slash;
-						case eWeaponDamageType.Thrust: return eDamageType.Thrust;
+					case eWeaponDamageType.Crush: return eDamageType.Crush;
+					case eWeaponDamageType.Slash: return eDamageType.Slash;
+					case eWeaponDamageType.Thrust: return eDamageType.Thrust;
 				}
 			}
 
