@@ -20,7 +20,6 @@
 using System;
 using DOL.AI;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 
@@ -403,60 +402,6 @@ namespace DOL.GS
 		#endregion
 
 		#region Melee
-
-		/// <summary>
-		/// The type of damage the currently active weapon does.
-		/// </summary>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		public override eDamageType AttackDamageType(InventoryItem weapon)
-		{
-			if (weapon != null)
-			{
-				switch ((eWeaponDamageType)weapon.Type_Damage)
-				{
-					case eWeaponDamageType.Crush: return eDamageType.Crush;
-					case eWeaponDamageType.Slash: return eDamageType.Slash;
-					case eWeaponDamageType.Thrust: return eDamageType.Thrust;
-				}
-			}
-
-			return base.AttackDamageType(weapon);
-		}
-
-		/// <summary>
-		/// Get melee speed in milliseconds.
-		/// </summary>
-		/// <param name="weapons"></param>
-		/// <returns></returns>
-		public int AttackSpeed(params InventoryItem[] weapons)
-		{
-			double weaponSpeed = 0.0;
-
-			if (weapons != null)
-			{
-				foreach (InventoryItem item in weapons)
-				{
-					if (item != null)
-					{
-						weaponSpeed += item.SPD_ABS;
-					}
-					else
-					{
-						weaponSpeed += 34;
-					}
-				}
-
-				weaponSpeed = (weapons.Length > 0) ? weaponSpeed / weapons.Length : 34.0;
-			}
-			else
-			{
-				weaponSpeed = 34.0;
-			}
-
-			double speed = 100 * weaponSpeed * (1.0 - (GetModified(eProperty.Quickness) - 60) / 500.0);
-			return (int)Math.Max(500.0, (speed * (double)GetModified(eProperty.MeleeSpeed) * 0.01)); // no bonus is 100%, opposite how players work
-		}
 
 		/// <summary>
 		/// Calculate how fast this pet can cast a given spell

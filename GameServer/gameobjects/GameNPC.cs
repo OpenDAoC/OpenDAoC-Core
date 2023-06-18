@@ -4114,15 +4114,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Returns the damage type of the current attack
-		/// </summary>
-		/// <param name="weapon">attack weapon</param>
-		public virtual eDamageType AttackDamageType(InventoryItem weapon)
-		{
-			return m_meleeDamageType;
-		}
-
-		/// <summary>
 		/// Stores the NPC evade chance
 		/// </summary>
 		protected byte m_evadeChance;
