@@ -16,29 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 namespace DOL.AI.Brain
 {
-	public class BlankBrain : ABrain
-	{
-		public BlankBrain()
-			: base()
-		{
-		}
-		public override bool Start()
-		{
-			return true;
-		}
-		public override bool Stop()
-		{
-			return true;
-		}
-		public override void Think()
-		{
-		}
+    public class BlankBrain : ABrain
+    {
+        public BlankBrain() : base() { }
+        
+        public override void Think() { }
 
-		public override void KillFSM()
-        {
-
-        }
-	}
+        public override void KillFSM() { }
+    }
 }
