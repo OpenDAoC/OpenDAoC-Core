@@ -30,6 +30,7 @@ using DOL.Database;
 using System.Collections;
 using DOL.GS.Effects;
 using DOL.GS.Styles;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -129,9 +130,9 @@ namespace DOL.GS
             if (Spells.Count < 1 || Level < 1)
                 return;
 
-            if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL < 1)
-                base.SortSpells();
-            else
+            base.SortSpells();
+
+            if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
             {
                 int scaleLevel = Level;
 
@@ -145,7 +146,7 @@ namespace DOL.GS
                         scaleLevel = spec;
                 }
 
-                SortSpells(scaleLevel);
+                ScaleSpells(scaleLevel);
             }
         }
 

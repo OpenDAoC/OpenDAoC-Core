@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 {
 	/// <summary>
 	/// Pet summon spell handler
-	/// 
+	///
 	/// Spell.LifeDrainReturn is used for pet ID.
 	///
 	/// Spell.Value is used for hard pet level cap
@@ -142,7 +142,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-            IControlledBrain brain = null;
+			IControlledBrain brain = null;
 
 			if (template.ClassType != null && template.ClassType.Length > 0)
 			{
@@ -152,6 +152,7 @@ namespace DOL.GS.Spells
 				if (brain == null && log.IsWarnEnabled)
 					log.Warn($"ApplyEffectOnTarget(): ClassType {template.ClassType} on NPCTemplateID {template.TemplateId} not found, using default ControlledBrain");
 			}
+
 			if (brain == null)
 				brain = GetPetBrain(Caster);
 
@@ -186,15 +187,12 @@ namespace DOL.GS.Spells
 
 			AddHandlers();
 			SetBrainToOwner(brain);
-			
+
 			m_pet.SetPetLevel();
 			m_pet.Health = m_pet.MaxHealth;
+			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
-			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
-				m_pet.Spells = template.Spells; // Have to scale spells again now that the pet level has been assigned
-
-            CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, effectiveness), effectiveness, this));
-
+			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, effectiveness), effectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 
@@ -234,23 +232,23 @@ namespace DOL.GS.Spells
 		/// <param name="arguments"></param>
 		protected virtual void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
 		{
-            if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
-                return;
+			if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
+				return;
 
-            GameLiving petOwner = petBrain.Owner;
+			GameLiving petOwner = petBrain.Owner;
 
 			if (petOwner.ControlledBrain == petBrain)
 				petOwner.SetControlledBrain(null);
 
-            foreach (var ability in pet.effectListComponent.GetAbilityEffects())
-            {
-	            if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
-		            interceptEffect.Cancel(false);
-            }
+			foreach (var ability in pet.effectListComponent.GetAbilityEffects())
+			{
+				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
+					interceptEffect.Cancel(false);
+			}
 
-            GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 			
-            if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
+			if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
 				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
@@ -263,7 +261,7 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>();
 
-                // TODO: Fix no spellType
+				// TODO: Fix no spellType
 				//list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);

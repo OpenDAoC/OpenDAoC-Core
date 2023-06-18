@@ -152,88 +152,82 @@ namespace DOL.GS
 		/// </summary>
 		public override void SortSpells()
 		{
-			SortSpells(0);
+			if (Spells.Count < 1 || Level < 1 || this is TurretPet)
+				return;
+
+			base.SortSpells();
+
+			if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+				ScaleSpells(Level);
 		}
 
 		/// <summary>
 		/// Sort spells into specific lists, scaling spells by scaleLevel
 		/// </summary>
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
-		public virtual void SortSpells(int scaleLevel)
+		protected virtual void ScaleSpells(int scaleLevel)
 		{
-			if (Spells.Count < 1 || Level < 1 || this is TurretPet)
-				return;
+			if (scaleLevel <= 0)
+				scaleLevel = Level;
 
-			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
-				base.SortSpells();
-			else
+			// Need to make copies of spells to scale or else it will affect every other pet with the same spell on the server.
+			// Enchanter, Cabalist, Spiritmaster and Theurgist pets need to have their spells scaled.
+			if (Properties.PET_LEVELS_WITH_OWNER || 
+				(this is BDSubPet && Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
+				Name.Contains("underhill") || Name.Contains("simulacrum") || Name.Contains("spirit") || this is TheurgistPet)
 			{
-				if (scaleLevel <= 0)
-					scaleLevel = Level;
-
-				
-				if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER || 
-					(this is BDSubPet && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
-					this.Name.Contains("underhill") || this.Name.Contains("simulacrum") || this.Name.Contains("spirit") || this is TheurgistPet )
+				if (CanCastHarmfulSpells)
 				{
-					//Need to make copies of spells to scale or else it will effect every other pet with the same spell on server.
-					//Enchanter, Cabalist, Spiritmaster & Theurgist Pets need to have pet's spells scaled.
-
-					base.SortSpells();
-					
-					if (CanCastHarmfulSpells)
-						for (int i = 0; i < HarmfulSpells.Count; i++)
-						{
-							HarmfulSpells[i] = HarmfulSpells[i].Copy();
-							ScalePetSpell(HarmfulSpells[i], scaleLevel);
-						}
-
-					if (CanCastInstantHarmfulSpells)
-						for (int i = 0; i < InstantHarmfulSpells.Count; i++)
-						{
-							InstantHarmfulSpells[i] = InstantHarmfulSpells[i].Copy();
-							ScalePetSpell(InstantHarmfulSpells[i], scaleLevel);
-						}
-
-					if (CanCastHealSpells)
-						for (int i = 0; i < HealSpells.Count; i++)
-						{
-							HealSpells[i] = HealSpells[i].Copy();
-							ScalePetSpell(HealSpells[i], scaleLevel);
-						}
-
-					if (CanCastInstantHealSpells)
-						for (int i = 0; i < InstantHealSpells.Count; i++)
-						{
-							InstantHealSpells[i] = InstantHealSpells[i].Copy();
-							ScalePetSpell(InstantHealSpells[i], scaleLevel);
-						}
-
-					if (CanCastInstantMiscSpells)
-						for (int i = 0; i < InstantMiscSpells.Count; i++)
-						{
-							InstantMiscSpells[i] = InstantMiscSpells[i].Copy();
-							ScalePetSpell(InstantMiscSpells[i], scaleLevel);
-						}
-
-					if (CanCastMiscSpells)
-						for (int i = 0; i < MiscSpells.Count; i++)
-						{
-							MiscSpells[i] = MiscSpells[i].Copy();
-							ScalePetSpell(MiscSpells[i], scaleLevel);
-						}
+					for (int i = 0; i < HarmfulSpells.Count; i++)
+					{
+						HarmfulSpells[i] = HarmfulSpells[i].Copy();
+						ScalePetSpell(HarmfulSpells[i], scaleLevel);
+					}
 				}
-				else
+
+				if (CanCastInstantHarmfulSpells)
 				{
-					//Don't need to scale here
+					for (int i = 0; i < InstantHarmfulSpells.Count; i++)
+					{
+						InstantHarmfulSpells[i] = InstantHarmfulSpells[i].Copy();
+						ScalePetSpell(InstantHarmfulSpells[i], scaleLevel);
+					}
+				}
 
-					// We don't need to keep the original spells, so don't waste memory keeping separate copies.
-					// foreach (Spell spell in Spells)
-					// 	ScalePetSpell(spell, scaleLevel);
+				if (CanCastHealSpells)
+				{
+					for (int i = 0; i < HealSpells.Count; i++)
+					{
+						HealSpells[i] = HealSpells[i].Copy();
+						ScalePetSpell(HealSpells[i], scaleLevel);
+					}
+				}
 
+				if (CanCastInstantHealSpells)
+				{
+					for (int i = 0; i < InstantHealSpells.Count; i++)
+					{
+						InstantHealSpells[i] = InstantHealSpells[i].Copy();
+						ScalePetSpell(InstantHealSpells[i], scaleLevel);
+					}
+				}
 
-					
-					base.SortSpells();
+				if (CanCastInstantMiscSpells)
+				{
+					for (int i = 0; i < InstantMiscSpells.Count; i++)
+					{
+						InstantMiscSpells[i] = InstantMiscSpells[i].Copy();
+						ScalePetSpell(InstantMiscSpells[i], scaleLevel);
+					}
+				}
+
+				if (CanCastMiscSpells)
+				{
+					for (int i = 0; i < MiscSpells.Count; i++)
+					{
+						MiscSpells[i] = MiscSpells[i].Copy();
+						ScalePetSpell(MiscSpells[i], scaleLevel);
+					}
 				}
 			}
 		}
@@ -245,11 +239,14 @@ namespace DOL.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
 		{
-			if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1 || spell.ScaledToPetLevel)
+			if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1 || spell.ScaledToPetLevel)
 				return;
 
 			if (casterLevel < 1)
 				casterLevel = Level;
+
+			double scalingFactor = (double) casterLevel / Properties.PET_SCALE_SPELL_MAX_LEVEL;
+
 			switch ((eSpellType)spell.SpellType)
 			{
 				// Scale Damage
@@ -260,8 +257,7 @@ namespace DOL.GS
 				case eSpellType.Lifedrain:
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.StyleBleeding: // Style bleed effect
-					double scaleFactor = (casterLevel + 1.0) / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
-					spell.Damage *= scaleFactor;
+					spell.Damage *= scalingFactor;
 					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Value
@@ -296,7 +292,7 @@ namespace DOL.GS
 				case eSpellType.SpeedDecrease:
 				case eSpellType.SavageCombatSpeedBuff:
 				//case eSpellType.OffensiveProc:
-					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+					spell.Value *= scalingFactor;
 					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Duration
@@ -306,7 +302,7 @@ namespace DOL.GS
 				case eSpellType.Mesmerize:
 				case eSpellType.StyleStun: // Style stun effet
 				case eSpellType.StyleSpeedDecrease: // Style hinder effet
-					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
 					spell.ScaledToPetLevel = true;
 					break;
 				// Scale Damage and value
@@ -316,18 +312,18 @@ namespace DOL.GS
 					 *	For pet level 1-23, the debuff is now 10%.
 					 *	For pet level 24-43, the debuff is now 20%.
 					 *	For pet level 44-50, the debuff is now 30%.  */
-					spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
-					spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
-					spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+					spell.Value *= (double) scalingFactor;
+					spell.Damage *= (double) scalingFactor;
+					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
 					spell.ScaledToPetLevel = true;
 					break;
 				case eSpellType.StyleTaunt: // Style taunt effects already scale with damage
 				case eSpellType.CurePoison:
 				case eSpellType.CureDisease:
-						break;
+					break;
 				default:
 					break; // Don't mess with types we don't know
-			} // switch (m_spell.SpellType.ToString().ToLower())
+			}
 		}
 
 		#endregion
