@@ -16,15 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
-using DOL.GS.RealmAbilities;
 using DOL.GS.Styles;
-using DOL.GS.Effects;
-
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -41,7 +37,7 @@ namespace DOL.GS.PacketHandler
 		/// Constructs a new PacketLib for Version 1.80 clients
 		/// </summary>
 		/// <param name="client">the gameclient this lib is associated with</param>
-		public PacketLib180(GameClient client):base(client)
+		public PacketLib180(GameClient client) : base(client)
 		{
 		}
 
@@ -52,11 +48,11 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ControlledHorse)))
 			{
-
 				if (player.HasHorse)
 				{
 					pak.WriteShort(0); // for set self horse OID must be zero
 					pak.WriteByte(player.ActiveHorse.ID);
+
 					if (player.ActiveHorse.BardingColor == 0 && player.ActiveHorse.Barding != 0 && player.Guild != null)
 					{
 						int newGuildBitMask = (player.Guild.Emblem & 0x010000) >> 9;
@@ -68,6 +64,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte(player.ActiveHorse.Barding);
 						pak.WriteShort(player.ActiveHorse.BardingColor);
 					}
+
 					pak.WriteByte(player.ActiveHorse.Saddle);
 					pak.WriteByte(player.ActiveHorse.SaddleColor);
 					pak.WriteByte(player.ActiveHorse.Slots);
@@ -78,6 +75,7 @@ namespace DOL.GS.PacketHandler
 				{
 					pak.Fill(0x00, 8);
 				}
+
 				SendTCP(pak);
 			}
 		}
@@ -108,7 +106,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte(player.ActiveHorse.Barding);
 						pak.WriteShort(player.ActiveHorse.BardingColor);
 					}
-	
+
 					pak.WriteByte(player.ActiveHorse.Saddle);
 					pak.WriteByte(player.ActiveHorse.SaddleColor);
 				}
@@ -163,7 +161,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort(playerToCreate.Heading);
-	
+
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
@@ -172,7 +170,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
-	
+
 				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
 				if (playerToCreate.IsAlive == false) flags |= 0x01;
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
@@ -181,7 +179,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.CharacterClass.ID == (int)eCharacterClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
-	
+
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));
@@ -209,13 +207,13 @@ namespace DOL.GS.PacketHandler
 				{
 					pak.WriteByte(0); // trailing zero
 				}
-	
+
 				SendTCP(pak);
 			}
 
 			// Update Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(playerToCreate.CurrentRegionID, (ushort)playerToCreate.ObjectID)] = GameTimer.GetTickCount();
-			
+
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
 
 			if (playerToCreate.GuildBanner != null)
@@ -226,11 +224,11 @@ namespace DOL.GS.PacketHandler
 
 		public override void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
 		{
-			if(pak.Length > 1500)
+			if (pak.Length > 1500)
 			{
 				pak.Position = 4;
 				pak.WriteByte((byte)(maxSkills - first));
-				pak.WriteByte( (byte)( first == 0 ? 99 : 0x03 ) ); //subtype
+				pak.WriteByte((byte)(first == 0 ? 99 : 0x03)); //subtype
 				pak.WriteByte((byte)first);
 				SendTCP(pak);
 				pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate));
@@ -243,15 +241,15 @@ namespace DOL.GS.PacketHandler
 			maxSkills++;
 		}
 
-		
+
 		public override void SendUpdatePlayerSkills()
 		{
 			if (m_gameClient.Player == null)
 				return;
-			
+
 			// Get Skills as "Usable Skills" which are in network order ! (with forced update)
 			List<Tuple<Skill, Skill>> usableSkills = m_gameClient.Player.GetAllUsableSkills(true);
-						
+
 			bool sent = false; // set to true once we can't send packet anymore !
 			int index = 0; // index of our position in the list !
 			int total = usableSkills.Count; // cache List count.
@@ -276,7 +274,7 @@ namespace DOL.GS.PacketHandler
 						{
 							break;
 						}
-						
+
 						// Enter Packet Values !! Format Level - Type - SpecialField - Bonus - Icon - Name
 						Skill skill = usableSkills[index].Item1;
 						Skill skillrelated = usableSkills[index].Item2;
@@ -292,24 +290,24 @@ namespace DOL.GS.PacketHandler
 							pak.WritePascalString(spec.Name);
 						}
 						else if (skill is Ability)
-						{							
+						{
 							Ability ab = (Ability)skill;
-							
+
 							pak.WriteByte((byte)0);
 							pak.WriteByte((byte)ab.SkillType);
 							pak.WriteShort(0);
 							pak.WriteByte((byte)0);
 							pak.WriteShort((ushort)ab.Icon);
-							pak.WritePascalString(ab.Name);							
+							pak.WritePascalString(ab.Name);
 						}
 						else if (skill is Spell)
 						{
 							Spell spell = (Spell)skill;
 							pak.WriteByte((byte)spell.Level);
 							pak.WriteByte((byte)spell.SkillType);
-							
+
 							// spec index for this Spell - Special for Song and Unknown Indexes...
-							int spin = 0;							
+							int spin = 0;
 							if (spell.SkillType == eSkillPage.Songs)
 							{
 								spin = 0xFF;
@@ -320,7 +318,7 @@ namespace DOL.GS.PacketHandler
 								if (skillrelated is SpellLine && !Util.IsEmpty(((SpellLine)skillrelated).Spec))
 								{
 									spin = usableSkills.FindIndex(sk => (sk.Item1 is Specialization) && ((Specialization)sk.Item1).KeyName == ((SpellLine)skillrelated).Spec);
-									
+
 									if (spin == -1)
 										spin = 0xFE;
 								}
@@ -329,7 +327,7 @@ namespace DOL.GS.PacketHandler
 									spin = 0xFE;
 								}
 							}
-							
+
 							pak.WriteShort((ushort)spin); // special index for spellline
 							pak.WriteByte(0); // bonus
 							pak.WriteShort(spell.InternalIconID > 0 ? spell.InternalIconID : spell.Icon); // icon
@@ -340,10 +338,10 @@ namespace DOL.GS.PacketHandler
 							Style style = (Style)skill;
 							pak.WriteByte((byte)style.SpecLevelRequirement);
 							pak.WriteByte((byte)style.SkillType);
-							
+
 							// Special pre-requisite (First byte is Pre-requisite Icon / second Byte is prerequisite code...)
 							int pre = 0;
-				
+
 							switch (style.OpeningRequirementType)
 							{
 								case Style.eOpening.Offensive:
@@ -351,8 +349,8 @@ namespace DOL.GS.PacketHandler
 									if (style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
 									{
 										// get style requirement value... find prerequisite style index from specs beginning...
-										int styleindex = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Style) && it.Item1.ID == style.OpeningRequirementValue));										
-										int speccount = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Specialization) == false));										
+										int styleindex = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Style) && it.Item1.ID == style.OpeningRequirementValue));
+										int speccount = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Specialization) == false));
 										pre |= ((byte)(100 + styleindex - speccount)) << 8;
 									}
 									break;
@@ -363,17 +361,17 @@ namespace DOL.GS.PacketHandler
 									pre = 200 + style.OpeningRequirementValue;
 									break;
 							}
-							
+
 							// style required?
 							if (pre == 0)
 								pre = 0x100;
-	
+
 							pak.WriteShort((ushort)pre);
 							pak.WriteByte(GlobalConstants.GetSpecToInternalIndex(style.Spec)); // index specialization in bonus...
 							pak.WriteShort((ushort)style.Icon);
 							pak.WritePascalString(style.Name);
-						}						
-						
+						}
+
 						packetEntry++;
 						index++;
 					}
@@ -381,21 +379,21 @@ namespace DOL.GS.PacketHandler
 					// test if we finished sending packets
 					if (index >= total || index >= byte.MaxValue)
 						sent = true;
-					
+
 					// rewrite header for count.
 					pak.Position = 4;
 					pak.WriteByte((byte)packetEntry);
-					
+
 					if (!sent)
 						pak.WriteByte((byte)99);
-					
+
 					SendTCP(pak);
-					
+
 				}
-				
+
 				packetCount++;
 			}
-			
+
 			// Send List Cast Spells...
 			SendNonHybridSpellLines();
 			// reset trainer cache

@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using log4net;
-using System.Collections;
+
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -58,17 +57,17 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
-	
+
 						InventoryItem item = null;
 						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
-	
+
 						if (item == null)
 						{
 							pak.Fill(0x00, 19);
 							continue;
 						}
 						pak.WriteByte((byte)item.Level);
-	
+
 						int value1; // some object types use this field to display count
 						int value2; // some object types use this field to display count
 						switch (item.Object_Type)
@@ -107,12 +106,12 @@ namespace DOL.GS.PacketHandler
 								value2 = item.SPD_ABS;
 								/*
 								Value2 byte sets the width, only lower 4 bits 'seem' to be used (so 1-15 only)
-	
+
 								The byte used for "Hand" (IE: Mini-delve showing a weapon as Left-Hand
 								usabe/TwoHanded), the lower 4 bits store the height (1-15 only)
 								*/
 								break;
-	
+
 							default:
 								value1 = item.DPS_AF;
 								value2 = item.SPD_ABS;
@@ -120,7 +119,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte((byte)value1);
 						pak.WriteByte((byte)value2);
-	
+
 						if (item.Object_Type == (int)eObjectType.GardenObject)
 							pak.WriteByte((byte)(item.DPS_AF));
 						else
@@ -168,7 +167,7 @@ namespace DOL.GS.PacketHandler
 						if (item.Object_Type != (int)eObjectType.AlchemyTincture)
 						{
 							SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-	
+
 							if (chargeEffectsLine != null)
 							{
 								if (item.SpellID > 0/* && item.Charges > 0*/)

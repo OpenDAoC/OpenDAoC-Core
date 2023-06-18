@@ -1,4 +1,4 @@
- /*
+/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  *
  * This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Reflection;
 using log4net;
 
@@ -43,13 +43,13 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
 			{
-				GamePlayer player = base.m_gameClient.Player;
-	
+				GamePlayer player = m_gameClient.Player;
+
 				pak.WriteShort((ushort)player.ObjectID);
-				pak.WriteByte((byte)8);
-				pak.WriteByte((byte)flag);
-				pak.WriteByte((byte)0);
-	
+				pak.WriteByte(8);
+				pak.WriteByte(flag);
+				pak.WriteByte(0);
+
 				SendTCP(pak);
 			}
 		}

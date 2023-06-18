@@ -16,18 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
-using DOL.Language;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.Keeps;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -99,7 +93,7 @@ namespace DOL.GS.PacketHandler
 											break;
 									}
 								}
-	
+
 								pak.WriteByte(0x01);
 								pak.WriteByte((byte)characters[j].EyeSize);
 								pak.WriteByte((byte)characters[j].LipSize);
@@ -112,8 +106,8 @@ namespace DOL.GS.PacketHandler
 								pak.WriteByte((byte)characters[j].CustomisationStep); //1 = auto generate config, 2= config ended by player, 3= enable config to player
 								pak.WriteByte((byte)characters[j].MoodType);
 								pak.Fill(0x0, 13); //0 String
-	
-	
+
+
 								Region reg = WorldMgr.GetRegion((ushort)characters[j].Region);
 								if (reg != null)
 								{
@@ -122,12 +116,12 @@ namespace DOL.GS.PacketHandler
 								}
 								else
 									pak.Fill(0x0, 24); //No known location
-	
+
 								if (characters[j].Class == 0)
 									pak.FillString("", 24); //Class name
 								else
 									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
-	
+
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
 								pak.WriteByte((byte)characters[j].Level);
@@ -149,7 +143,7 @@ namespace DOL.GS.PacketHandler
 								pak.WriteByte((byte)characters[j].Piety);
 								pak.WriteByte((byte)characters[j].Empathy);
 								pak.WriteByte((byte)characters[j].Charisma);
-	
+
 								int found = 0;
 								//16 bytes: armor model
 								for (int k = 0x15; k < 0x1D; k++)
@@ -175,7 +169,7 @@ namespace DOL.GS.PacketHandler
 										l = (int)eInventorySlot.LeftHandWeapon;
 									else
 										l = k;
-	
+
 									found = 0;
 									foreach (InventoryItem item in items)
 									{
@@ -252,7 +246,7 @@ namespace DOL.GS.PacketHandler
 					//				pak.Fill(0x0,184); //Slot 10
 				}
 				pak.Fill(0x0, 0x82); //Don't know why so many trailing 0's | Corillian: Cuz they're stupid like that ;)
-	
+
 				SendTCP(pak);
 			}
 		}
@@ -289,7 +283,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort(playerToCreate.Heading);
-	
+
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
@@ -298,7 +292,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
 				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
-	
+
 				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
 				if (playerToCreate.IsAlive == false) flags |= 0x01;
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
@@ -315,10 +309,10 @@ namespace DOL.GS.PacketHandler
 	            pak.WritePascalString(GameServer.ServerRules.GetPlayerTitle(m_gameClient.Player, playerToCreate)); // new in 1.74, NewTitle
 				SendTCP(pak);
 			}
-			
+
 			// Update Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(playerToCreate.CurrentRegionID, (ushort)playerToCreate.ObjectID)] = GameTimer.GetTickCount();
-			
+
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
 		}
 
@@ -333,18 +327,18 @@ namespace DOL.GS.PacketHandler
 				pak.WriteInt((uint)m_gameClient.Player.X);
 				pak.WriteInt((uint)m_gameClient.Player.Y);
 				pak.WriteShort(m_gameClient.Player.Heading);
-	
+
 				int flags = 0;
 				Zone zone = m_gameClient.Player.CurrentZone;
 				if (zone == null) return;
-	
+
 				if (m_gameClient.Player.CurrentZone.IsDivingEnabled)
 					flags = 0x80 | (m_gameClient.Player.IsUnderwater ? 0x01 : 0x00);
-	
+
 				pak.WriteByte((byte)(flags));
-	
+
 				pak.WriteByte(0x00);	//TODO Unknown (Instance ID: 0xB0-0xBA, 0xAA-0xAF)
-	
+
 				if (zone.IsDungeon)
 				{
 					pak.WriteShort((ushort)(zone.XOffset / 0x2000));
@@ -392,11 +386,15 @@ namespace DOL.GS.PacketHandler
 			SendRegions(m_gameClient.Player.CurrentRegion.Skin);
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RegionChanged)))
 			{
-	            //Dinberg - Changing to allow instances...
-	            pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
-	            //Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for 
-	            //clientside positions of objects.
-				pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				//Dinberg - Changing to allow instances...
+				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
+				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for
+				//clientside positions of objects.
+				if(m_gameClient.Player.CurrentZone != null)
+					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+				else
+					pak.WriteShort(0x00);
+
 				pak.WriteShort(0x00); // ?
 				pak.WriteShort(0x01); // cause region change ?
 				pak.WriteByte(0x0C); //Server ID
@@ -521,6 +519,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendLivingEquipmentUpdate(GameLiving living)
 		{
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
@@ -532,10 +531,10 @@ namespace DOL.GS.PacketHandler
 				ICollection<InventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
-	
+
 				pak.WriteShort((ushort)living.ObjectID);
 				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
-	
+
 				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
 				if (items != null)
 				{
@@ -543,22 +542,22 @@ namespace DOL.GS.PacketHandler
 					foreach (InventoryItem item in items)
 					{
 						pak.WriteByte((byte)item.SlotPosition);
-	
+
 						ushort model = (ushort)(item.Model & 0x1FFF);
 						int texture = (item.Emblem != 0) ? item.Emblem : item.Color;
-	
+
 						if ((texture & ~0xFF) != 0)
 							model |= 0x8000;
 						else if ((texture & 0xFF) != 0)
 							model |= 0x4000;
 						if (item.Effect != 0)
 							model |= 0x2000;
-	
+
 						pak.WriteShort(model);
-	
+
 						if (item.SlotPosition > Slot.RANGED || item.SlotPosition < Slot.RIGHTHAND)
 							pak.WriteByte((byte)item.Extension);
-	
+
 						if ((texture & ~0xFF) != 0)
 							pak.WriteShort((ushort)texture);
 						else if ((texture & 0xFF) != 0)

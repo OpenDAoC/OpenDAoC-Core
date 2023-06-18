@@ -16,15 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.Database;
-using DOL.Language;
 using DOL.GS.Housing;
-
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -47,19 +45,19 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendFindGroupWindowUpdate(GamePlayer[] list)
 		{
-			if (m_gameClient.Player==null)
+			if (m_gameClient.Player == null)
 				return;
-			
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.FindGroupUpdate)))
 			{
-				if (list!=null)
+				if (list != null)
 				{
 					pak.WriteByte((byte)list.Length);
-					byte nbleader=0;
-					byte nbsolo=0x1E;
-					foreach(GamePlayer player in list)
+					byte nbleader = 0;
+					byte nbsolo = 0x1E;
+					foreach (GamePlayer player in list)
 					{
-						if (player.Group!=null)
+						if (player.Group != null)
 						{
 							pak.WriteByte(nbleader++);
 						}
@@ -70,9 +68,9 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte(player.Level);
 						pak.WritePascalString(player.Name);
 						pak.WriteString(player.CharacterClass.Name, 4);
-	                    //Dinberg:Instances - We use ZoneSkinID to bluff our way to victory and
-	                    //trick the client for positioning objects (as IDs are hard coded).
-						if(player.CurrentZone != null)
+						//Dinberg:Instances - We use ZoneSkinID to bluff our way to victory and
+						//trick the client for positioning objects (as IDs are hard coded).
+						if (player.CurrentZone != null)
 							pak.WriteShort(player.CurrentZone.ZoneSkinID);
 						else
 							pak.WriteShort(0); // ?
@@ -80,7 +78,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte(0); // objective
 						pak.WriteByte(0);
 						pak.WriteByte(0);
-						pak.WriteByte((byte) (player.Group!=null ? 1 : 0));
+						pak.WriteByte((byte) (player.Group != null ? 1 : 0));
 						pak.WriteByte(0);
 					}
 				}
@@ -103,12 +101,12 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectCreate)))
 			{
 				pak.WriteShort((ushort)obj.ObjectID);
-				
+
 				if (obj is GameStaticItem)
 					pak.WriteShort((ushort)(obj as GameStaticItem).Emblem);
-				else 
+				else
 					pak.WriteShort(0);
-				
+
 				pak.WriteShort(obj.Heading);
 				pak.WriteShort((ushort)obj.Z);
 				pak.WriteInt((uint)obj.X);
@@ -134,28 +132,28 @@ namespace DOL.GS.PacketHandler
 					pak.WriteInt((uint)newEmblemBitMask);//TODO other bits
 				}
 				else pak.WriteInt(0);
-	
-	            string name = obj.Name;
-	            LanguageDataObject translation = null;
-	            if (obj is GameStaticItem)
-	            {
-	                translation = LanguageMgr.GetTranslation(m_gameClient, (GameStaticItem)obj);
-	                if (translation != null)
-	                {
-	                    if (obj is WorldInventoryItem)
-	                    {
-	                        //if (!Util.IsEmpty(((DBLanguageItem)translation).Name))
-	                        //    name = ((DBLanguageItem)translation).Name;
-	                    }
-	                    else
-	                    {
-	                        if (!Util.IsEmpty(((DBLanguageGameObject)translation).Name))
-	                            name = ((DBLanguageGameObject)translation).Name;
-	                    }
-	                }
-	            }
-	            pak.WritePascalString(name.Length > 48 ? name.Substring(0, 48) : name);
-	
+
+				string name = obj.Name;
+				LanguageDataObject translation = null;
+				if (obj is GameStaticItem)
+				{
+					translation = LanguageMgr.GetTranslation(m_gameClient, (GameStaticItem)obj);
+					if (translation != null)
+					{
+						if (obj is WorldInventoryItem)
+						{
+							//if (!Util.IsEmpty(((DBLanguageItem)translation).Name))
+							//    name = ((DBLanguageItem)translation).Name;
+						}
+						else
+						{
+							if (!Util.IsEmpty(((DBLanguageGameObject)translation).Name))
+								name = ((DBLanguageGameObject)translation).Name;
+						}
+					}
+				}
+				pak.WritePascalString(name.Length > 48 ? name.Substring(0, 48) : name);
+
 				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
@@ -164,7 +162,7 @@ namespace DOL.GS.PacketHandler
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-			
+
 			// Update Object Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameTimer.GetTickCount();
 		}
@@ -187,15 +185,15 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)(updatedSlot));
 						InventoryItem item = null;
 						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
-	
+
 						if (item == null)
 						{
 							pak.Fill(0x00, 19);
 							continue;
 						}
-	
+
 						pak.WriteByte((byte)item.Level);
-	
+
 						int value1; // some object types use this field to display count
 						int value2; // some object types use this field to display count
 						switch (item.Object_Type)
@@ -237,12 +235,12 @@ namespace DOL.GS.PacketHandler
 								value2 = item.SPD_ABS;
 								/*
 								Value2 byte sets the width, only lower 4 bits 'seem' to be used (so 1-15 only)
-	
+
 								The byte used for "Hand" (IE: Mini-delve showing a weapon as Left-Hand
 								usabe/TwoHanded), the lower 4 bits store the height (1-15 only)
 								*/
 								break;
-	
+
 							default:
 								value1 = item.DPS_AF;
 								value2 = item.SPD_ABS;
@@ -250,7 +248,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte((byte)value1);
 						pak.WriteByte((byte)value2);
-	
+
 						if (item.Object_Type == (int)eObjectType.GardenObject)
 							pak.WriteByte((byte)(item.DPS_AF));
 						else
@@ -299,10 +297,10 @@ namespace DOL.GS.PacketHandler
 				ICollection<InventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
-	
+
 				pak.WriteShort((ushort)living.ObjectID);
 				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
-	
+
 				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
 				if (items != null)
 				{
@@ -321,12 +319,12 @@ namespace DOL.GS.PacketHandler
 							model |= 0x4000;
 						if (item.Effect != 0)
 							model |= 0x2000;
-	
+
 						pak.WriteShort(model);
-	
+
 						if (item.SlotPosition > Slot.RANGED || item.SlotPosition < Slot.RIGHTHAND)
 							pak.WriteByte((byte)item.Extension);
-	
+
 						if ((texture & ~0xFF) != 0)
 							pak.WriteShort((ushort)texture);
 						else if ((texture & 0xFF) != 0)
@@ -386,10 +384,10 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)house.WindowMaterial);
 				pak.WriteByte(0x03);
 				pak.WritePascalString(house.Name);
-	
+
 				SendTCP(pak);
 			}
-			
+
 			// Update cache
 			m_gameClient.HouseUpdateArray[new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber)] = GameTimer.GetTickCount();
 		}
@@ -398,7 +396,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseEnter)))
 			{
-	
+
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort((ushort)25000);         //constant!
 				pak.WriteInt((uint)house.X);
@@ -418,7 +416,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)house.Rug3Color);
 				pak.WriteByte((byte)house.Rug4Color);
 				pak.WriteByte(0x00);
-	
+
 				SendTCP(pak);
 			}
 		}
@@ -427,8 +425,8 @@ namespace DOL.GS.PacketHandler
 		{
 			pak.WriteByte((byte)index);
 			byte type = 0;
-            if (item.Emblem > 0)
-                item.Color = item.Emblem;
+			if (item.Emblem > 0)
+				item.Color = item.Emblem;
 			if (item.Color > 0)
 			{
 				if (item.Color <= 0xFF)
@@ -476,7 +474,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerCreate(GamePlayer playerToCreate)
 		{
 			base.SendPlayerCreate(playerToCreate);
-			
+
 			if (playerToCreate.GuildBanner != null)
 				playerToCreate.Out.SendRvRGuildBanner(playerToCreate, true);
 		}

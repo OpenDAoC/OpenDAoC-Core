@@ -1,4 +1,4 @@
- /*
+/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  *
  * This program is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Reflection;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
@@ -118,10 +118,15 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(0); // unknown
-	
-					for (int i = 0; i < m_gameClient.Player.effectListComponent.ConcentrationEffects.Count; i++)
+
+					var effects = m_gameClient.Player?.effectListComponent.ConcentrationEffects;
+
+					if (effects == null)
+						return;
+
+					for (int i = 0; i < effects.Count; i++)
 					{
-						IConcentrationEffect effect = m_gameClient.Player.effectListComponent.ConcentrationEffects[i];
+						IConcentrationEffect effect = effects[i];
 						pak.WriteByte((byte)i);
 						pak.WriteByte(0); // unknown
 						pak.WriteByte(effect.Concentration);
@@ -136,10 +141,11 @@ namespace DOL.GS.PacketHandler
 							pak.WritePascalString(effect.OwnerName);
 					}
 				}
+
 				SendTCP(pak);
 			}
-			
-			SendStatusUpdate(); // send status update for convinience, mostly the conc has changed
+
+			SendStatusUpdate(); // send status update for convenience, mostly the conc has changed
 		}
 
 		/// <summary>

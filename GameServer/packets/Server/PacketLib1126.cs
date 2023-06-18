@@ -1,28 +1,29 @@
 ﻿/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.Database;
-using log4net;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using DOL.Database;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -322,42 +323,34 @@ namespace DOL.GS.PacketHandler
 		public override void SendUpdateWeaponAndArmorStats()
 		{
 			if (m_gameClient.Player == null)
-			{
 				return;
-			}
-			try
-			{ 
-				using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
-				{
-					pak.WriteByte(0x05); //subcode
-					pak.WriteByte(6); //number of entries
-					pak.WriteByte(0x00); //subtype
-					pak.WriteByte(0x00); //unk
 
-					// weapondamage
-					var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.ActiveWeapon) * 100.0);
-					pak.WriteByte((byte)(wd / 256));
-					pak.WriteByte(0x00);
-					pak.WriteByte((byte)(wd % 256));
-					pak.WriteByte(0x00);
-					// weaponskill
-					int ws = m_gameClient.Player.DisplayedWeaponSkill;
-					pak.WriteByte((byte)(ws >> 8));
-					pak.WriteByte(0x00);
-					pak.WriteByte((byte)(ws & 0xff));
-					pak.WriteByte(0x00);
-					// overall EAF
-					int eaf = m_gameClient.Player.EffectiveOverallAF;
-					pak.WriteByte((byte)(eaf >> 8));
-					pak.WriteByte(0x00);
-					pak.WriteByte((byte)(eaf & 0xff));
-					pak.WriteByte(0x00);
-					SendTCP(pak);
-				}
-			}
-			catch
+			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
-				Console.WriteLine($"Error encountered attempting to SendUpdateWeaponAndArmorStats");
+				pak.WriteByte(0x05); //subcode
+				pak.WriteByte(6); //number of entries
+				pak.WriteByte(0x00); //subtype
+				pak.WriteByte(0x00); //unk
+
+				// weapondamage
+				var wd = (int)(m_gameClient.Player.WeaponDamage(m_gameClient.Player.ActiveWeapon) * 100.0);
+				pak.WriteByte((byte)(wd / 256));
+				pak.WriteByte(0x00);
+				pak.WriteByte((byte)(wd % 256));
+				pak.WriteByte(0x00);
+				// weaponskill
+				int ws = m_gameClient.Player.DisplayedWeaponSkill;
+				pak.WriteByte((byte)(ws >> 8));
+				pak.WriteByte(0x00);
+				pak.WriteByte((byte)(ws & 0xff));
+				pak.WriteByte(0x00);
+				// overall EAF
+				int eaf = m_gameClient.Player.EffectiveOverallAF;
+				pak.WriteByte((byte)(eaf >> 8));
+				pak.WriteByte(0x00);
+				pak.WriteByte((byte)(eaf & 0xff));
+				pak.WriteByte(0x00);
+				SendTCP(pak);
 			}
 		}
 
@@ -388,4 +381,3 @@ namespace DOL.GS.PacketHandler
 		}
 	}
 }
-

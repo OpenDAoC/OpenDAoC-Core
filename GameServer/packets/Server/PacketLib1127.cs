@@ -1,25 +1,25 @@
 ﻿/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
 
-using log4net;
 using System;
 using System.Reflection;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -41,10 +41,10 @@ namespace DOL.GS.PacketHandler
 		long m_packetInterval = 500; //.5s
 		int m_numPacketsSent = 0;
 		int m_packetCap = 10; // packets sent every packetInterval
-		
+
 		/// <summary>
 		/// 1127 login granted packet unchanged, work around for server type
-		/// </summary>        
+		/// </summary>
 		public override void SendLoginGranted(byte color)
 		{
 			// work around for character screen bugs when server type sent as 00 but player doesnt have a realm
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
-		
+
 		public override void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{
 			if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
@@ -91,66 +91,13 @@ namespace DOL.GS.PacketHandler
 			//		SendTCP(pak);
 			//		m_numPacketsSent++;
 			//		m_lastPacketSendTick = GameLoop.GameLoopTime;
-			//	}				
+			//	}
 			//} else
 			//{
 				pak.WriteString(str + msg);
 				SendTCP(pak);
 			//}
-			
-		}
-		
-		[Obsolete("Shouldn't be used in favor of new LoS Check Manager")]
-		public override void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
-		{
-			if (m_gameClient.Player == null)
-				return;
-			int TargetOID = (Target != null ? Target.ObjectID : 0);
-			string key = string.Format("LOS C:0x{0} T:0x{1}", Checker.ObjectID, TargetOID);
-			CheckLOSResponse old_callback = null;
-			lock (m_gameClient.Player.TempProperties)
-			{
-				old_callback = (CheckLOSResponse)m_gameClient.Player.TempProperties.getProperty<object>(key, null);
-				m_gameClient.Player.TempProperties.setProperty(key, callback);
-			}
-			if (old_callback != null)
-				old_callback(m_gameClient.Player, 0, 0); // not sure for this,  i want targetOID there
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
-			{
-				pak.WriteShort((ushort)Checker.ObjectID);
-				pak.WriteShort((ushort)TargetOID);
-				pak.WriteShort(0x00); // ?
-				SendTCP(pak);
-			}
-		}
-
-		public override void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
-		{
-			if (m_gameClient.Player == null)
-				return;
-
-			int TargetOID = (target != null ? target.ObjectID : 0);
-			int SourceOID = (source != null ? source.ObjectID : 0);
-
-			string key = string.Format("LOSMGR C:0x{0} T:0x{1}", SourceOID, TargetOID);
-
-			CheckLOSMgrResponse old_callback = null;
-			lock (m_gameClient.Player.TempProperties)
-			{
-				old_callback = (CheckLOSMgrResponse)m_gameClient.Player.TempProperties.getProperty<object>(key, null);
-				m_gameClient.Player.TempProperties.setProperty(key, callback);
-			}
-			if (old_callback != null)
-				old_callback(m_gameClient.Player, 0, 0, 0);
-
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
-			{
-				pak.WriteShort((ushort)SourceOID);
-				pak.WriteShort((ushort)TargetOID);
-				pak.WriteShort(0x00); // ?
-				SendTCP(pak);
-			}
 		}
 
 		/// <summary>
@@ -158,14 +105,13 @@ namespace DOL.GS.PacketHandler
 		/// Usually Position Packet Should only be relayed
 		/// This method can be used to refresh postion when there is lag or during a linkdeath to prevent models from disappearing
 		/// </summary>
-		/// <param name="player"></param>
 		public override void SendPlayerForgedPosition(GamePlayer player)
 		{
 			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.PlayerPosition)))
 			{
 				ushort newHeading = player.Heading;
 				ushort steedSeatPosition = 0;
-				
+
 				if (player.Steed != null && player.Steed.ObjectState == GameObject.eObjectState.Active)
 				{
 					newHeading = (ushort)player.Steed.ObjectID;

@@ -16,16 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Spells;
-using log4net;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DOL.Database;
+using DOL.GS.Housing;
+using DOL.GS.Spells;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -61,8 +61,8 @@ namespace DOL.GS.PacketHandler
 		}
 
 		/// <summary>
-		/// 1125 login granted		
-		/// </summary>        
+		/// 1125 login granted
+		/// </summary>
 		public override void SendLoginGranted(byte color)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
@@ -71,14 +71,14 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
 				pak.WriteByte(0x05); //Server ID, seems irrelevant
 				pak.WriteByte(color); // 00 normal type?, 01 mordred type, 03 gaheris type, 07 ywain type
-				pak.WriteByte(0x00); // Trial switch 0x00 - subbed, 0x01 - trial acc 
+				pak.WriteByte(0x00); // Trial switch 0x00 - subbed, 0x01 - trial acc
 				SendTCP(pak);
 			}
 		}
 
 		/// <summary>
 		/// 1125 sendrealm
-		/// </summary>        
+		/// </summary>
 		public override void SendRealm(eRealm realm)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Realm)))
@@ -91,7 +91,7 @@ namespace DOL.GS.PacketHandler
 
 		/// <summary>
 		/// 1125 char overview
-		/// </summary>        
+		/// </summary>
 		public override void SendCharacterOverview(eRealm realm)
 		{
 			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
@@ -335,7 +335,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Empathy);
 							pak.WriteByte((byte)c.Charisma);
 							pak.WriteByte((byte)c.Class); // moved
-							pak.WriteByte((byte)c.Realm); // moved                            
+							pak.WriteByte((byte)c.Realm); // moved
 							pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 4)));
 
 							if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
@@ -571,7 +571,7 @@ namespace DOL.GS.PacketHandler
 
 					pak.WriteByte((byte)((item.Type_Damage > 3 ? 0 : item.Type_Damage << 6) | item.Object_Type));
 					pak.WriteByte((byte)(m_gameClient.Player.HasAbilityToUseItem(item.Template) ? 0 : 1));
-					pak.WriteShortLowEndian((ushort)(item.PackSize > 1 ? item.Weight * item.PackSize : item.Weight)); // 
+					pak.WriteShortLowEndian((ushort)(item.PackSize > 1 ? item.Weight * item.PackSize : item.Weight)); //
 
 					pak.WriteByte((byte)item.ConditionPercent);
 					pak.WriteByte((byte)item.DurabilityPercent);
@@ -636,7 +636,7 @@ namespace DOL.GS.PacketHandler
 
 		/// <summary>
 		/// 1125d+ Merchant window
-		/// </summary>  
+		/// </summary>
 		public override void SendMerchantWindow(MerchantTradeItems tradeItemsList, eMerchantWindowType windowType)
 		{
 			if (tradeItemsList != null)
@@ -764,7 +764,7 @@ namespace DOL.GS.PacketHandler
 		}
 		/// <summary>
         /// short to low endian
-        /// </summary> 
+        /// </summary>
         public override void SendFurniture(House house)
         {
             using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
@@ -785,7 +785,7 @@ namespace DOL.GS.PacketHandler
 
         /// <summary>
         /// short to low endian
-        /// </summary>        
+        /// </summary>
         public override void SendFurniture(House house, int i)
         {
             using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
@@ -801,7 +801,7 @@ namespace DOL.GS.PacketHandler
 
         /// <summary>
         /// Shorts changed to low endian
-        /// </summary>        
+        /// </summary>
         protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
         {
             pak.WriteByte((byte)index);
@@ -857,5 +857,5 @@ namespace DOL.GS.PacketHandler
             pak.WriteByte((byte)item.Position);
             pak.WriteByte((byte)(item.PlacementMode - 2));
         }
-	}
+    }
 }

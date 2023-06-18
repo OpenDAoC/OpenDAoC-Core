@@ -1,23 +1,22 @@
 ﻿/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Linq;
+
 using System.Collections.Generic;
 using DOL.Database;
 
@@ -34,10 +33,10 @@ namespace DOL.GS.PacketHandler
 			: base(client)
 		{
 		}
-		
+
 		/// <summary>
 		/// New item data packet for 1.119
-		/// </summary>		
+		/// </summary>
 		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
 		{
 			if (item == null)
@@ -107,7 +106,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
-			
+
 			pak.WriteByte((byte)((item.Type_Damage > 3 ? 0 : item.Type_Damage << 6) | item.Object_Type));
 			pak.WriteByte(0x00); //unk 1.112
 			pak.WriteShort((ushort)item.Weight);

@@ -1,58 +1,54 @@
 /*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 using System;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 using DOL.Database;
-using DOL.GS.RealmAbilities;
 using DOL.GS.Styles;
-
 using log4net;
-
 
 namespace DOL.GS.PacketHandler
 {
-    [PacketLib(1112, GameClient.eClientVersion.Version1112)]
-    public class PacketLib1112 : PacketLib1111
-    {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	[PacketLib(1112, GameClient.eClientVersion.Version1112)]
+	public class PacketLib1112 : PacketLib1111
+	{
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        /// <summary>
-        /// Constructs a new PacketLib for Client Version 1.112
-        /// </summary>
-        /// <param name="client">the gameclient this lib is associated with</param>
-        public PacketLib1112(GameClient client)
-            : base(client)
-        {
-        }
-        
+		/// <summary>
+		/// Constructs a new PacketLib for Client Version 1.112
+		/// </summary>
+		/// <param name="client">the gameclient this lib is associated with</param>
+		public PacketLib1112(GameClient client)
+			: base(client)
+		{
+		}
+
 		public override void SendUpdatePlayerSkills()
 		{
 			if (m_gameClient.Player == null)
 				return;
-			
+
 			// Get Skills as "Usable Skills" which are in network order ! (with forced update)
 			List<Tuple<Skill, Skill>> usableSkills = m_gameClient.Player.GetAllUsableSkills(true);
-			
+
 			bool sent = false; // set to true once we can't send packet anymore !
 			int index = 0; // index of our position in the list !
 			int total = usableSkills.Count; // cache List count.
@@ -60,7 +56,7 @@ namespace DOL.GS.PacketHandler
 			while (!sent)
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
-				// using pak
+									 // using pak
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Write header
@@ -70,14 +66,14 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)index); // packet first entry
 
 					// getting pak filled
-					while(index < total)
+					while (index < total)
 					{
 						// this item will break the limit, send the packet before, keep index as is to continue !
 						if ((index >= byte.MaxValue) || ((pak.Length + 8 + usableSkills[index].Item1.Name.Length) > 1400))
 						{
 							break;
 						}
-						
+
 						// Enter Packet Values !! Format Level - Type - SpecialField - Bonus - Icon - Name
 						Skill skill = usableSkills[index].Item1;
 						Skill skillrelated = usableSkills[index].Item2;
@@ -103,7 +99,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)0);
 							pak.WriteShort((ushort)ab.Icon);
 							pak.WritePascalString(ab.Name);
-							
+
 						}
 						else if (skill is Spell)
 						{
@@ -111,9 +107,9 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)spell.Level);
 							pak.WriteShort((ushort)spell.InternalID); //new 1.112
 							pak.WriteByte((byte)spell.SkillType);
-							
+
 							// spec index for this Spell - Special for Song and Unknown Indexes...
-							int spin = 0;							
+							int spin = 0;
 							if (spell.SkillType == eSkillPage.Songs)
 							{
 								spin = 0xFF;
@@ -124,7 +120,7 @@ namespace DOL.GS.PacketHandler
 								if (skillrelated is SpellLine && !Util.IsEmpty(((SpellLine)skillrelated).Spec))
 								{
 									spin = usableSkills.FindIndex(sk => (sk.Item1 is Specialization) && ((Specialization)sk.Item1).KeyName == ((SpellLine)skillrelated).Spec);
-									
+
 									if (spin == -1)
 										spin = 0xFE;
 								}
@@ -133,7 +129,7 @@ namespace DOL.GS.PacketHandler
 									spin = 0xFE;
 								}
 							}
-							
+
 							pak.WriteShort((ushort)spin); // special index for spellline
 							pak.WriteByte(0); // bonus
 							pak.WriteShort(spell.InternalIconID > 0 ? spell.InternalIconID : spell.Icon); // icon
@@ -145,10 +141,10 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)style.SpecLevelRequirement);
 							pak.WriteShort((ushort)style.InternalID); //new 1.112
 							pak.WriteByte((byte)style.SkillType);
-							
+
 							// Special pre-requisite (First byte is Pre-requisite Icon / second Byte is prerequisite code...)
 							int pre = 0;
-				
+
 							switch (style.OpeningRequirementType)
 							{
 								case Style.eOpening.Offensive:
@@ -156,8 +152,8 @@ namespace DOL.GS.PacketHandler
 									if (style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
 									{
 										// get style requirement value... find prerequisite style index from specs beginning...
-										int styleindex = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Style) && it.Item1.ID == style.OpeningRequirementValue));										
-										int speccount = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Specialization) == false));										
+										int styleindex = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Style) && it.Item1.ID == style.OpeningRequirementValue));
+										int speccount = Math.Max(0, usableSkills.FindIndex(it => (it.Item1 is Specialization) == false));
 										pre |= ((byte)(100 + styleindex - speccount)) << 8;
 									}
 									break;
@@ -168,17 +164,17 @@ namespace DOL.GS.PacketHandler
 									pre = 200 + style.OpeningRequirementValue;
 									break;
 							}
-							
+
 							// style required?
 							if (pre == 0)
 								pre = 0x100;
-	
+
 							pak.WriteShort((ushort)pre);
 							pak.WriteByte(GlobalConstants.GetSpecToInternalIndex(style.Spec)); // index specialization in bonus...
 							pak.WriteShort((ushort)style.Icon);
 							pak.WritePascalString(style.Name);
 						}
-						
+
 						packetEntry++;
 						index++;
 					}
@@ -186,26 +182,26 @@ namespace DOL.GS.PacketHandler
 					// test if we finished sending packets
 					if (index >= total || index >= byte.MaxValue)
 						sent = true;
-					
+
 					// rewrite header for count.
 					pak.Position = 4;
 					pak.WriteByte((byte)packetEntry);
-					
+
 					if (!sent)
 						pak.WriteByte((byte)99);
-					
+
 					SendTCP(pak);
-					
+
 				}
-				
+
 				packetCount++;
 			}
-			
+
 			// Send List Cast Spells...
 			SendNonHybridSpellLines();
 			// clear trainer cache
 			m_gameClient.TrainerSkillCache = null;
-			
+
 			if (ForceTooltipUpdate)
 				SendForceTooltipUpdate(usableSkills.Select(t => t.Item1));
 		}
@@ -220,24 +216,24 @@ namespace DOL.GS.PacketHandler
 				return;
 
 			List<Tuple<SpellLine, List<Skill>>> spellsXLines = player.GetAllUsableListSpells(true);
-			
+
 			int lineIndex = 0;
 			foreach (var spXsl in spellsXLines)
 			{
 				// Prepare packet
-				using(var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Add Line Header
 					pak.WriteByte(0x02); //subcode
 					pak.WriteByte((byte)(spXsl.Item2.Count + 1)); //number of entry
 					pak.WriteByte(0x02); //subtype
 					pak.WriteByte((byte)lineIndex); //number of line
-					
+
 					pak.WriteShortLowEndian(0); // level, not used when spell line
 					pak.WriteShort((ushort)spXsl.Item1.InternalID); //new 1.112
 					pak.WriteShort(0); // icon, not used when spell line
 					pak.WritePascalString(spXsl.Item1.Name);
-					
+
 					// Add All Spells...
 					foreach (Skill sk in spXsl.Item2)
 					{
@@ -256,21 +252,21 @@ namespace DOL.GS.PacketHandler
 								reqLevel = ((Style)sk).SpecLevelRequirement;
 							else if (sk is Ability)
 								reqLevel = ((Ability)sk).SpecLevelRequirement;
-							
+
 							pak.WriteShortLowEndian((ushort)((byte)reqLevel + (sk is Style ? 512 : 256)));
 							pak.WriteShort((ushort)sk.InternalID); //new 1.112
 							pak.WriteShort(sk.Icon);
 							pak.WritePascalString(sk.Name);
 						}
 					}
-					
+
 					// Send
 					SendTCP(pak);
 				}
-				
+
 				lineIndex++;
 			}
-			
+
 			// Footer packet
 			using (GSTCPPacketOut pak3 = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
@@ -280,11 +276,11 @@ namespace DOL.GS.PacketHandler
 				pak3.WriteByte(0x00);
 				SendTCP(pak3);
 			}
-			
+
 			if (ForceTooltipUpdate)
 				SendForceTooltipUpdate(spellsXLines.SelectMany(e => e.Item2));
 		}
-		
+
 		protected override void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
 		{
 			if (template == null)
@@ -373,7 +369,6 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-
 		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
 		{
 			if (item == null)
@@ -443,7 +438,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
-			
+
 			pak.WriteByte((byte)((item.Type_Damage > 3 ? 0 : item.Type_Damage << 6) | item.Object_Type));
 			pak.WriteByte(0x00); //unk 1.112
 			pak.WriteShort((ushort)item.Weight);
@@ -554,8 +549,8 @@ namespace DOL.GS.PacketHandler
 			if (name.Length > 55)
 				name = name.Substring(0, 55);
 			pak.WritePascalString(name);
-		}        
-        
+		}
+
 		/// <summary>
 		/// This is used to build a server side "Position Object"
 		/// Usually Position Packet Should only be relayed
@@ -568,7 +563,7 @@ namespace DOL.GS.PacketHandler
 			{
 				// PID
 				pak.WriteShort((ushort)player.Client.SessionID);
-				
+
 				// Write Speed
 				if (player.Steed != null && player.Steed.ObjectState == GameObject.eObjectState.Active)
 				{
@@ -580,7 +575,7 @@ namespace DOL.GS.PacketHandler
 					short rSpeed = player.CurrentSpeed;
 					if (player.IsIncapacitated)
 						rSpeed = 0;
-					
+
 					ushort content;
 					if (rSpeed < 0)
 					{
@@ -590,7 +585,7 @@ namespace DOL.GS.PacketHandler
 					{
 						content = (ushort)(rSpeed > 511 ? 511 : rSpeed);
 					}
-					
+
 					if (!player.IsAlive)
 					{
 						content += 5 << 10;
@@ -598,21 +593,21 @@ namespace DOL.GS.PacketHandler
 					else
 					{
 						ushort state = 0;
-						
+
 						if (player.IsSwimming)
 							state = 1;
-						
+
 						if (player.IsClimbing)
 							state = 7;
-						
+
 						if (player.IsSitting)
 							state = 4;
-						
+
 						content += (ushort)(state << 10);
 					}
-					
+
 					content += (ushort)(player.IsStrafing ? 1 << 13 : 0 << 13);
-					
+
 					pak.WriteShort(content);
 				}
 
@@ -623,7 +618,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)player.Z);
 				pak.WriteShort((ushort)offX);
 				pak.WriteShort((ushort)offY);
-				
+
 				// Write Zone
 				pak.WriteShort(player.CurrentZone.ZoneSkinID);
 
@@ -641,49 +636,48 @@ namespace DOL.GS.PacketHandler
 					// No Fall Speed.
 					pak.WriteShort(0);
 				}
-				
+
 				// Write Flags
 				byte flagcontent = 0;
-			
+
 				if (player.IsDiving)
 				{
 					flagcontent += 0x04;
 				}
-				
+
 				if (player.IsWireframe)
 				{
 					flagcontent += 0x01;
 				}
-				
+
 				if (player.IsStealthed)
 				{
 					flagcontent += 0x02;
 				}
-				
+
 				if (player.IsTorchLighted)
 				{
 					flagcontent += 0x80;
 				}
-				
+
 				pak.WriteByte(flagcontent);
 
 				// Write health + Attack
 				byte healthcontent = (byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0));
-			
+
 				pak.WriteByte(healthcontent);
-				
+
 				// Send Remaining
 				pak.WriteByte(player.ManaPercent);
 				pak.WriteByte(player.EndurancePercent);
 				pak.WriteByte((byte)(player.RPFlag ? 1 : 0));
 				pak.WriteByte(0);
 
-				SendUDP(pak);	
+				SendUDP(pak);
 			}
-			
+
 			// Update Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(player.CurrentRegionID, (ushort)player.ObjectID)] = GameTimer.GetTickCount();
 		}
-
-    }
+	}
 }

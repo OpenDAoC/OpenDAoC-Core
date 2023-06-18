@@ -1,30 +1,28 @@
 ﻿/*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-
 using DOL.Database;
-
 using log4net;
-
 
 namespace DOL.GS.PacketHandler
 {
@@ -54,7 +52,7 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
-	
+
 				if (m_gameClient.Account.Characters == null)
 				{
 					pak.Fill(0x0, 1880);
@@ -74,20 +72,20 @@ namespace DOL.GS.PacketHandler
 						}
 					}
 					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, InventoryItem>>();
-					
+
 					if (charsBySlot.Any())
 					{
 						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
 							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
 						var allItems = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
-						
+
 						foreach (InventoryItem item in allItems)
 						{
 							try
 							{
 								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
 									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, InventoryItem>());
-								
+
 								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
 							}
 							catch (Exception ex)
@@ -96,7 +94,7 @@ namespace DOL.GS.PacketHandler
 							}
 						}
 					}
-	
+
 					for (int i = firstSlot; i < (firstSlot + 10); i++)
 					{
 						DOLCharacters c = null;
@@ -107,22 +105,22 @@ namespace DOL.GS.PacketHandler
 						else
 						{
 							Dictionary<eInventorySlot, InventoryItem> charItems = null;
-	
+
 							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out charItems))
 								charItems = new Dictionary<eInventorySlot, InventoryItem>();
-	
+
 							byte extensionTorso = 0;
 							byte extensionGloves = 0;
 							byte extensionBoots = 0;
-	
+
 							InventoryItem item = null;
-	
+
 							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out item))
 								extensionTorso = item.Extension;
-	
+
 							if (charItems.TryGetValue(eInventorySlot.HandsArmor, out item))
 								extensionGloves = item.Extension;
-	
+
 							if (charItems.TryGetValue(eInventorySlot.FeetArmor, out item))
 								extensionBoots = item.Extension;
 
@@ -140,7 +138,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.CustomisationStep); //1 = auto generate config, 2= config ended by player, 3= enable config to player
 							pak.WriteByte((byte)c.MoodType);
 							pak.Fill(0x0, 13); //0 String
-	
+
 							string locationDescription = string.Empty;
 							Region region = WorldMgr.GetRegion((ushort)c.Region);
 							if (region != null)
@@ -148,15 +146,15 @@ namespace DOL.GS.PacketHandler
 								locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
 							}
 							pak.FillString(locationDescription, 24);
-	
+
 							string classname = "";
 							if (c.Class != 0)
 								classname = ((eCharacterClass)c.Class).ToString();
 							pak.FillString(classname, 24);
-	
+
 							string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
 							pak.FillString(racename, 24);
-	
+
 							pak.WriteByte((byte)c.Level);
 							pak.WriteByte((byte)c.Class);
 							pak.WriteByte((byte)c.Realm);
@@ -176,7 +174,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Piety);
 							pak.WriteByte((byte)c.Empathy);
 							pak.WriteByte((byte)c.Charisma);
-	
+
 							InventoryItem rightHandWeapon = null;
 							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out rightHandWeapon);
 							InventoryItem leftHandWeapon = null;
@@ -185,7 +183,7 @@ namespace DOL.GS.PacketHandler
 							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out twoHandWeapon);
 							InventoryItem distanceWeapon = null;
 							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out distanceWeapon);
-	
+
 							InventoryItem helmet = null;
 							charItems.TryGetValue(eInventorySlot.HeadArmor, out helmet);
 							InventoryItem gloves = null;
@@ -200,86 +198,86 @@ namespace DOL.GS.PacketHandler
 							charItems.TryGetValue(eInventorySlot.LegsArmor, out legs);
 							InventoryItem arms = null;
 							charItems.TryGetValue(eInventorySlot.ArmsArmor, out arms);
-	
+
 							pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));
 							pak.WriteShortLowEndian((ushort)(gloves != null ? gloves.Model : 0));
 							pak.WriteShortLowEndian((ushort)(boots != null ? boots.Model : 0));
-	
+
 							ushort rightHandColor = 0;
 							if (rightHandWeapon != null)
 							{
 								rightHandColor = (ushort)(rightHandWeapon.Emblem != 0 ? rightHandWeapon.Emblem : rightHandWeapon.Color);
 							}
 							pak.WriteShortLowEndian(rightHandColor);
-	
+
 							pak.WriteShortLowEndian((ushort)(torso != null ? torso.Model : 0));
 							pak.WriteShortLowEndian((ushort)(cloak != null ? cloak.Model : 0));
 							pak.WriteShortLowEndian((ushort)(legs != null ? legs.Model : 0));
 							pak.WriteShortLowEndian((ushort)(arms != null ? arms.Model : 0));
-	
+
 							ushort helmetColor = 0;
 							if (helmet != null)
 							{
 								helmetColor = (ushort)(helmet.Emblem != 0 ? helmet.Emblem : helmet.Color);
 							}
 							pak.WriteShortLowEndian(helmetColor);
-	
+
 							ushort glovesColor = 0;
 							if (gloves != null)
 							{
 								glovesColor = (ushort)(gloves.Emblem != 0 ? gloves.Emblem : gloves.Color);
 							}
 							pak.WriteShortLowEndian(glovesColor);
-	
+
 							ushort bootsColor = 0;
 							if (boots != null)
 							{
 								bootsColor = (ushort)(boots.Emblem != 0 ? boots.Emblem : boots.Color);
 							}
 							pak.WriteShortLowEndian(bootsColor);
-	
+
 							ushort leftHandWeaponColor = 0;
 							if (leftHandWeapon != null)
 							{
 								leftHandWeaponColor = (ushort)(leftHandWeapon.Emblem != 0 ? leftHandWeapon.Emblem : leftHandWeapon.Color);
 							}
 							pak.WriteShortLowEndian(leftHandWeaponColor);
-	
+
 							ushort torsoColor = 0;
 							if (torso != null)
 							{
 								torsoColor = (ushort)(torso.Emblem != 0 ? torso.Emblem : torso.Color);
 							}
 							pak.WriteShortLowEndian(torsoColor);
-	
+
 							ushort cloakColor = 0;
 							if (cloak != null)
 							{
 								cloakColor = (ushort)(cloak.Emblem != 0 ? cloak.Emblem : cloak.Color);
 							}
 							pak.WriteShortLowEndian(cloakColor);
-	
+
 							ushort legsColor = 0;
 							if (legs != null)
 							{
 								legsColor = (ushort)(legs.Emblem != 0 ? legs.Emblem : legs.Color);
 							}
 							pak.WriteShortLowEndian(legsColor);
-	
+
 							ushort armsColor = 0;
 							if (arms != null)
 							{
 								armsColor = (ushort)(arms.Emblem != 0 ? arms.Emblem : arms.Color);
 							}
 							pak.WriteShortLowEndian(armsColor);
-	
+
 							//weapon models
-	
+
 							pak.WriteShortLowEndian((ushort)(rightHandWeapon != null ? rightHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(leftHandWeapon != null ? leftHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
-	
+
 							if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
@@ -294,34 +292,34 @@ namespace DOL.GS.PacketHandler
 							{
 								byte righthand = 0xFF;
 								byte lefthand = 0xFF;
-	
+
 								if (rightHandWeapon != null)
 									righthand = 0x00;
-	
+
 								if (leftHandWeapon != null)
 									lefthand = 0x01;
-	
+
 								pak.WriteByte(righthand);
 								pak.WriteByte(lefthand);
 							}
-	
+
 							if (region == null || region.Expansion != 1)
 								pak.WriteByte(0x00);
 							else
 								pak.WriteByte(0x01); //0x01=char in SI zone, classic client can't "play"
-	
+
 							pak.WriteByte((byte)c.Constitution);
 						}
-	
+
 					}
 				}
-				
+
 				pak.Fill(0x0, 94);
 				SendTCP(pak);
 			}
 		}
-		
-		public override void SendDupNameCheckReply(string name, byte nameExists)
+
+		public override void SendDupNameCheckReply(string name, byte result)
 		{
 			if (m_gameClient == null || m_gameClient.Account == null)
 				return;
@@ -332,11 +330,10 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.FillString(name, 30);
 				pak.FillString(m_gameClient.Account.Name, 24);
-				pak.WriteByte(nameExists);
+				pak.WriteByte(result);
 				pak.Fill(0x0, 3);
 				SendTCP(pak);
 			}
 		}
-
 	}
 }

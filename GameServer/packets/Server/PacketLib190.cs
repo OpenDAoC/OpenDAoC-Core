@@ -1,29 +1,27 @@
 /*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-
-using DOL.Language;
 using DOL.GS.Effects;
-using DOL.GS.Quests;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -96,16 +94,17 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		// 190c+ SendUpdateIcons
 		public override void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount)
 		{
 			if (m_gameClient.Player == null)
 				return;
-			
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.UpdateIcons)))
 			{
 				long initPos = pak.Position;
-	
+
 				int fxcount = 0;
 				int entriesCount = 0;
 				lock (m_gameClient.Player.EffectList)
@@ -152,7 +151,7 @@ namespace DOL.GS.PacketHandler
 							entriesCount++;
 						}
 					}
-	
+
 					int oldCount = lastUpdateEffectsCount;
 					lastUpdateEffectsCount = fxcount;
 					while (oldCount > fxcount)
@@ -162,17 +161,17 @@ namespace DOL.GS.PacketHandler
 						entriesCount++;
 						//					Log.DebugFormat("adding [{0}] (empty)", fxcount-1);
 					}
-	
+
 					if (changedEffects != null)
 						changedEffects.Clear();
-	
+
 					if (entriesCount == 0)
 						return; // nothing changed - no update is needed
-	
+
 					pak.Position = initPos;
 					pak.WriteByte((byte)entriesCount);
 					pak.Seek(0, SeekOrigin.End);
-	
+
 					SendTCP(pak);
 				}
 			}
@@ -195,10 +194,10 @@ namespace DOL.GS.PacketHandler
 
 			if (m_gameClient.Player.MLLevel < 10)
 			{
-				mlXPPercent = 100.0 * (double)m_gameClient.Player.MLExperience / (double)m_gameClient.Player.GetMLExperienceForLevel((int)(m_gameClient.Player.MLLevel + 1));
+				mlXPPercent = 100.0 * m_gameClient.Player.MLExperience / m_gameClient.Player.GetMLExperienceForLevel(m_gameClient.Player.MLLevel + 1);
 				if (m_gameClient.Player.GetStepCountForML((byte)(m_gameClient.Player.MLLevel + 1)) > 0)
 				{
-					mlStepPercent = 100.0 * (double)m_gameClient.Player.GetCountMLStepsCompleted((byte)(m_gameClient.Player.MLLevel + 1)) / (double)m_gameClient.Player.GetStepCountForML((byte)(m_gameClient.Player.MLLevel + 1));
+					mlStepPercent = 100.0 * m_gameClient.Player.GetCountMLStepsCompleted((byte)(m_gameClient.Player.MLLevel + 1)) / m_gameClient.Player.GetStepCountForML((byte)(m_gameClient.Player.MLLevel + 1));
 				}
 			}
 			else
@@ -214,20 +213,20 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0);
 				pak.WriteShort((ushort)0); // exp1 ? new in 1.90
 				pak.WriteShort((ushort)0); // exp2 ? new in 1.90
-				pak.WriteByte(ml); 
-	
+				pak.WriteByte(ml);
+
 				// ML level completion is displayed client side for Step 11
 				for (int i = 1; i < 11; i++)
 				{
 					string description = m_gameClient.Player.GetMLStepDescription(mlToSend, i);
 					pak.WritePascalString(description);
 				}
-	
+
 				pak.WriteByte(0);
 				SendTCP(pak);
 			}
 		}
-		
+
 		/// <summary>
 		/// This is used to build a server side "Position Object"
 		/// Usually Position Packet Should only be relayed
@@ -240,7 +239,7 @@ namespace DOL.GS.PacketHandler
 			{
 				// PID
 				pak.WriteShort((ushort)player.Client.SessionID);
-				
+
 				// Write Speed
 				if (player.Steed != null && player.Steed.ObjectState == GameObject.eObjectState.Active)
 				{
@@ -252,7 +251,7 @@ namespace DOL.GS.PacketHandler
 					short rSpeed = player.CurrentSpeed;
 					if (player.IsIncapacitated)
 						rSpeed = 0;
-					
+
 					ushort content;
 					if (rSpeed < 0)
 					{
@@ -262,7 +261,7 @@ namespace DOL.GS.PacketHandler
 					{
 						content = (ushort)(rSpeed > 511 ? 511 : rSpeed);
 					}
-					
+
 					if (!player.IsAlive)
 					{
 						content += 5 << 10;
@@ -270,21 +269,21 @@ namespace DOL.GS.PacketHandler
 					else
 					{
 						ushort state = 0;
-						
+
 						if (player.IsSwimming)
 							state = 1;
-						
+
 						if (player.IsClimbing)
 							state = 7;
-						
+
 						if (player.IsSitting)
 							state = 4;
-						
+
 						content += (ushort)(state << 10);
 					}
-					
+
 					content += (ushort)(player.IsStrafing ? 1 << 13 : 0 << 13);
-					
+
 					pak.WriteShort(content);
 				}
 
@@ -295,7 +294,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)player.Z);
 				pak.WriteShort((ushort)offX);
 				pak.WriteShort((ushort)offY);
-				
+
 				// Write Zone
 				pak.WriteShort(player.CurrentZone.ZoneSkinID);
 
@@ -313,47 +312,47 @@ namespace DOL.GS.PacketHandler
 					// No Fall Speed.
 					pak.WriteShort(0);
 				}
-				
+
 				// Write Flags
 				byte flagcontent = 0;
-			
+
 				if (player.IsDiving)
 				{
 					flagcontent += 0x04;
 				}
-				
+
 				if (player.IsWireframe)
 				{
 					flagcontent += 0x01;
 				}
-				
+
 				if (player.IsStealthed)
 				{
 					flagcontent += 0x02;
 				}
-				
+
 				if (player.IsTorchLighted)
 				{
 					flagcontent += 0x80;
 				}
-				
+
 				pak.WriteByte(flagcontent);
 
 				// Write health + Attack
 				byte healthcontent = (byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0));
-			
+
 				pak.WriteByte(healthcontent);
-				
+
 				// Write Remainings.
 				pak.WriteByte(player.ManaPercent);
 				pak.WriteByte(player.EndurancePercent);
 				pak.FillString(player.CharacterClass.Name, 32);
 				pak.WriteByte((byte)(player.RPFlag ? 1 : 0));
 				pak.WriteByte(0); // send last byte for 190+ packets
-	
+
 				SendUDP(pak);
 			}
-			
+
 			// Update Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(player.CurrentRegionID, (ushort)player.ObjectID)] = GameTimer.GetTickCount();
 		}

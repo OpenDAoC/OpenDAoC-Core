@@ -1,36 +1,32 @@
 /*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
-using System;
-using System.IO;
-using System.Reflection;
-using System.Linq;
-using DOL.Database;
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.Effects;
-using DOL.GS.RealmAbilities;
-using DOL.GS.Styles;
-using DOL.Language;
-using log4net;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
-
+using DOL.GS.Styles;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -47,7 +43,7 @@ namespace DOL.GS.PacketHandler
             : base(client)
         {
         }
-                
+
         /// <summary>
         /// Property to enable "forced" Tooltip send when Update are made to player skills, or player effects.
         /// This can be controlled through server propertiers !
@@ -76,126 +72,120 @@ namespace DOL.GS.PacketHandler
 			{
 				return;
 			}
-			
-			var tooltipSpellhandlers = new List<ISpellHandler>();
-			
+
+			var tooltipSpellHandlers = new List<ISpellHandler>();
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.UpdateIcons)))
 			{
 				long initPos = pak.Position;
-	
+
 				int fxcount = 0;
 				int entriesCount = 0;
-	
-				pak.WriteByte(0); // effects count set in the end
+
+				pak.WriteByte(0); // effects count set in the end0
 				pak.WriteByte(0); // unknown
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
-	
-				foreach (IGameEffect effect in m_gameClient.Player.EffectList)
-				{
-					if (effect.Icon != 0)
-					{
-						fxcount++;
-						if (changedEffects != null && !changedEffects.Contains(effect))
-						{
-							continue;
-						}
-						
-						// store tooltip update for gamespelleffect.
-						if (ForceTooltipUpdate && effect is GameSpellEffect gameEffect)
-						{
-							tooltipSpellhandlers.Add(gameEffect.SpellHandler);
-						}
 
-						//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
-						pak.WriteByte((byte)(fxcount - 1)); // icon index
-						pak.WriteByte((effect is GameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff);
-						
-						byte ImmunByte = 0;
-						var gsp = effect as GameSpellEffect;
-						if (gsp != null && gsp.IsDisabled)
-							ImmunByte = 1;
-						pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
-						
-						// bit 0x08 adds "more..." to right click info
-						pak.WriteShort(effect.Icon);
-						//pak.WriteShort(effect.IsFading ? (ushort)1 : (ushort)(effect.RemainingTime / 1000));
-						pak.WriteShort((ushort)(effect.RemainingTime / 1000));
-						if (effect is GameSpellEffect)
-							pak.WriteShort((ushort)((GameSpellEffect)effect).Spell.InternalID); //v1.110+ send the spell ID for delve info in active icon
-						else
-							pak.WriteShort(0);//don't override existing tooltip ids
-	
-						byte flagNegativeEffect = 0;
-						if (effect is StaticEffect)
-						{
-							if (((StaticEffect)effect).HasNegativeEffect)
-							{
-								flagNegativeEffect = 1;
-							}
-						}
-						else if (effect is GameSpellEffect)
-						{
-							if (!((GameSpellEffect)effect).SpellHandler.HasPositiveEffect)
-							{
-								flagNegativeEffect = 1;
-							}
-						}
-						pak.WriteByte(flagNegativeEffect);
-	
-						pak.WritePascalString(effect.Name);
-						entriesCount++;
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
+				{
+					if (effect.Icon == 0)
+						continue;
+
+					fxcount++;
+					if (changedEffects != null && !changedEffects.Contains(effect))
+					{
+						continue;
 					}
+
+					// store tooltip update for gamespelleffect.
+					if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
+					{
+						tooltipSpellHandlers.Add(gameEffect.SpellHandler);
+					}
+
+					//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
+					// icon index
+					pak.WriteByte((byte)(fxcount - 1));
+					// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
+					pak.WriteByte((effect is ECSGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1));
+					//pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); // <- [Takii] previous version
+
+					byte ImmunByte = 0;
+					var gsp = effect as ECSGameEffect;
+					if (gsp is ECSImmunityEffect || gsp.IsDisabled)
+						ImmunByte = 1;
+					//todo this should be the ImmunByte
+					pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
+
+					// bit 0x08 adds "more..." to right click info
+					pak.WriteShort(effect.Icon);
+					pak.WriteShort((ushort)(effect.GetRemainingTimeForClient() / 1000));
+					if (effect is ECSGameEffect || effect is ECSImmunityEffect)
+						pak.WriteShort(effect.Icon); //v1.110+ send the spell ID for delve info in active icon
+					else
+						pak.WriteShort(0);//don't override existing tooltip ids
+
+					byte flagNegativeEffect = 0;
+
+					if (!effect.HasPositiveEffect)
+					{
+						flagNegativeEffect = 1;
+					}
+
+					pak.WriteByte(flagNegativeEffect);
+
+					pak.WritePascalString(effect.Name);
+					entriesCount++;
 				}
-	
+
 				int oldCount = lastUpdateEffectsCount;
 				lastUpdateEffectsCount = fxcount;
-	
+
 				while (oldCount > fxcount)
 				{
 					pak.WriteByte((byte)(fxcount++));
 					pak.Fill(0, 10);
 					entriesCount++;
-					//					log.DebugFormat("adding [{0}] (empty)", fxcount-1);
 				}
-	
+
 				if (changedEffects != null)
 				{
 					changedEffects.Clear();
 				}
-	
+
 				if (entriesCount == 0)
 				{
 					return; // nothing changed - no update is needed
 				}
-	
+
 				pak.Position = initPos;
 				pak.WriteByte((byte)entriesCount);
 				pak.Seek(0, SeekOrigin.End);
-	
+
 				SendTCP(pak);
 			}
-			
+
 			// force tooltips update
-			foreach (var spellhandler in tooltipSpellhandlers)
+			foreach (var spellHandler in tooltipSpellHandlers)
 			{
-				if (m_gameClient.CanSendTooltip(24, spellhandler.Spell.InternalID))
-					SendDelveInfo(DetailDisplayHandler.DelveSpell(spellhandler));
+				if (m_gameClient.CanSendTooltip(24, spellHandler.Spell.InternalID))
+					SendDelveInfo(DetailDisplayHandler.DelveSpell(spellHandler));
 			}
 		}
-		
+
 		/// <summary>
 		/// Override for handling force tooltip update...
 		/// </summary>
 		public override void SendTrainerWindow()
 		{
 			base.SendTrainerWindow();
-			
+
 			// Send tooltips
 			if (ForceTooltipUpdate && m_gameClient.TrainerSkillCache != null)
 				SendForceTooltipUpdate(m_gameClient.TrainerSkillCache.SelectMany(e => e.Item2).Select(e => e.Item3));
 		}
-		
+
 		/// <summary>
 		/// Send Delve for Provided Collection of Skills that need forced Tooltip Update.
 		/// </summary>
@@ -217,25 +207,44 @@ namespace DOL.GS.PacketHandler
 					if (m_gameClient.CanSendTooltip(28, t.InternalID))
 						SendDelveInfo(DetailDisplayHandler.DelveAbility(m_gameClient, t.InternalID));
 				}
-				else if (t is Style)
+				else if (t is Style style)
 				{
 					if (m_gameClient.CanSendTooltip(25, t.InternalID))
+					{
+						if (style.Procs != null && style.Procs.Count > 0)
+						{
+							foreach ((Spell, int, int) proc in style.Procs)
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, proc.Item1));
+						}
+
 						SendDelveInfo(DetailDisplayHandler.DelveStyle(m_gameClient, t.InternalID));
+					}
 				}
 				else if (t is Spell spell)
 				{
-					if (t is Song || spell.NeedInstrument)
+					if (spell is Song || spell.NeedInstrument)
 					{
 						if (m_gameClient.CanSendTooltip(26, spell.InternalID))
 							SendDelveInfo(DetailDisplayHandler.DelveSong(m_gameClient, spell.InternalID));
 					}
 
 					if (m_gameClient.CanSendTooltip(24, spell.InternalID))
+					{
 						SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, spell));
+
+						if (spell.HasSubSpell)
+						{
+							if (m_gameClient.CanSendTooltip(24, SkillBase.GetSpellByID(spell.SubSpellID).InternalID))
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
+						}
+
+						if (spell.SpellType == (byte)eSpellType.DefensiveProc || spell.SpellType == (byte)eSpellType.OffensiveProc)
+							SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID((int)spell.Value)));
+					}
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// new siege weapon animation packet 1.110
 		/// </summary>
@@ -269,7 +278,7 @@ namespace DOL.GS.PacketHandler
                 SendTCP(pak);
             }
         }
-		
+
 		/// <summary>
 		/// new siege weapon fireanimation 1.110 // patch 0021
 		/// </summary>
@@ -291,8 +300,8 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte) SiegeTimer.eAction.Fire);
 				pak.WriteShort(0xE134); // default ammo type, the only type currently supported on DOL
 				pak.WriteByte(0x08); // always this flag when firing
-				SendTCP(pak);				
+				SendTCP(pak);
 			}
-		}		
+		}
     }
 }

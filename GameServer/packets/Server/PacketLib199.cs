@@ -1,28 +1,26 @@
 /*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.Database;
-using DOL.Language;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -116,7 +114,7 @@ namespace DOL.GS.PacketHandler
 								Region reg = WorldMgr.GetRegion((ushort)characters[j].Region);
 								if (reg != null)
 								{
-									var description = m_gameClient.GetTranslatedSpotDescription(reg, characters[j].Xpos, characters[j].Ypos, characters[j].Zpos);									
+									var description = m_gameClient.GetTranslatedSpotDescription(reg, characters[j].Xpos, characters[j].Ypos, characters[j].Zpos);
 									pak.FillString(description, 24);
 								}
 								else
@@ -152,7 +150,7 @@ namespace DOL.GS.PacketHandler
 								pak.WriteByte((byte)characters[j].Piety);
 								pak.WriteByte((byte)characters[j].Empathy);
 								pak.WriteByte((byte)characters[j].Charisma);
-	
+
 								int found = 0;
 								//16 bytes: armor model
 								for (int k = 0x15; k < 0x1D; k++)
@@ -178,7 +176,7 @@ namespace DOL.GS.PacketHandler
 										l = (int)eInventorySlot.LeftHandWeapon;
 									else
 										l = k;
-	
+
 									found = 0;
 									foreach (InventoryItem item in items)
 									{
@@ -259,8 +257,8 @@ namespace DOL.GS.PacketHandler
 						}
 					}
 				}
-				pak.Fill(0x0, 90); 
-	
+				pak.Fill(0x0, 90);
+
 				SendTCP(pak);
 			}
 		}

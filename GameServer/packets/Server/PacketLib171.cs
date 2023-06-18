@@ -19,13 +19,11 @@
 
 using System;
 using System.Reflection;
-
-using DOL.Database;
-using DOL.Language;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.Quests;
-
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -58,12 +56,12 @@ namespace DOL.GS.PacketHandler
 				pak.WriteInt((uint)m_gameClient.Player.X);
 				pak.WriteInt((uint)m_gameClient.Player.Y);
 				pak.WriteShort(m_gameClient.Player.Heading);
-	
+
 				int flags = 0;
 				if (m_gameClient.Player.CurrentZone.IsDivingEnabled)
 					flags = 0x80 | (m_gameClient.Player.IsUnderwater ? 0x01 : 0x00);
 				pak.WriteByte((byte)(flags));
-	
+
 				pak.WriteByte(0x00);	//TODO Unknown
 				Zone zone = m_gameClient.Player.CurrentZone;
 				if (zone == null) return;
@@ -110,7 +108,7 @@ namespace DOL.GS.PacketHandler
 					flag |= 0x04;
 				pak.WriteShort((ushort)flag);
 				pak.WriteInt(0x0); //TODO: unknown, new in 1.71
-	
+
 				string name = obj.Name;
 				LanguageDataObject translation = null;
 				if (obj is GameStaticItem)
@@ -131,7 +129,7 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 				pak.WritePascalString(name);
-	
+
 				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
@@ -192,17 +190,17 @@ namespace DOL.GS.PacketHandler
 					level |= 0x80;
 				}
 				pak.WriteByte(level);
-	
+
 				byte flags = (byte)(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
 				if ((npc.Flags & GameNPC.eFlags.GHOST) != 0) flags |= 0x01;
 				if (npc.Inventory != null) flags |= 0x02; //If mob has equipment, then only show it after the client gets the 0xBD packet
 				if ((npc.Flags & GameNPC.eFlags.PEACE) != 0) flags |= 0x10;
 				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0) flags |= 0x20;
 				if((npc.Flags & GameNPC.eFlags.TORCH) != 0) flags |= 0x04;
-				
+
 				pak.WriteByte(flags);
 				pak.WriteByte(0x20); //TODO this is the default maxstick distance
-	
+
 				string add = "";
 				byte flags2 = 0x00;
 				IControlledBrain brain = npc.Brain as IControlledBrain;
@@ -219,12 +217,12 @@ namespace DOL.GS.PacketHandler
 				if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
 					if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 				else flags2 |= 0x02;
-	
+
 				if( ( npc.Flags & GameNPC.eFlags.STEALTH ) > 0 )
 					flags2 |= 0x04;
-	
+
 				eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
-	
+
 				if (questIndicator == eQuestIndicator.Available)
 					flags2 |= 0x08;//hex 8 - quest available
 				if (questIndicator == eQuestIndicator.Finish)
@@ -232,10 +230,10 @@ namespace DOL.GS.PacketHandler
 				//flags2 |= 0x20;//hex 32 - water mob?
 				//flags2 |= 0x40;//hex 64 - unknown
 				//flags2 |= 0x80;//hex 128 - has owner
-				
-	
+
+
 				pak.WriteByte(flags2); // flags 2
-	
+
 				byte flags3 = 0x00;
 				if (questIndicator == eQuestIndicator.Lesson)
 					flags3 |= 0x01;
@@ -243,35 +241,35 @@ namespace DOL.GS.PacketHandler
 					flags3 |= 0x02;
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
-	
+
 				string name = npc.Name;
 				string guildName = npc.GuildName;
-	
+
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
 				if (translation != null)
 				{
 					if (!Util.IsEmpty(((DBLanguageNPC)translation).Name))
 						name = ((DBLanguageNPC)translation).Name;
-	
+
 					if (!Util.IsEmpty(((DBLanguageNPC)translation).GuildName))
 						guildName = ((DBLanguageNPC)translation).GuildName;
 				}
-	
+
 				if (name.Length + add.Length + 2 > 47) // clients crash with too long names
 					name = name.Substring(0, 47 - add.Length - 2);
 				if (add.Length > 0)
 					name = string.Format("[{0}]{1}", name, add);
-	
+
 				pak.WritePascalString(name);
-	
+
 				if (guildName.Length > 47)
 					pak.WritePascalString(guildName.Substring(0, 47));
 				else pak.WritePascalString(guildName);
-	
+
 				pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-			
+
 			// Update Cache
 			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(npc.CurrentRegionID, (ushort)npc.ObjectID)] = 0;
 		}
@@ -384,6 +382,7 @@ namespace DOL.GS.PacketHandler
 					pak.WritePascalString(living.GuildName);
 					pak.WritePascalString(living.Name);
 				}
+
 				SendTCP(pak);
 			}
 		}
@@ -395,11 +394,11 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte(0x09); // subcode
-	
+
 				byte flag = player.FreeLevelState;
-	
+
 				TimeSpan t = new TimeSpan((long)(DateTime.Now.Ticks - player.LastFreeLeveled.Ticks));
-	
+
 				ushort time = 0;
 				//time is in minutes
 				switch (player.Realm)
@@ -414,7 +413,7 @@ namespace DOL.GS.PacketHandler
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA * 24 * 60) - t.TotalMinutes);
 						break;
 				}
-	
+
 				//flag 1 = above level, 2 = elligable, 3= time until, 4 = level and time until, 5 = level until
 				pak.WriteByte(flag); //flag
 				pak.WriteShort(0); //unknown

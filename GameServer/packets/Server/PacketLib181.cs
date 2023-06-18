@@ -16,14 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.AI.Brain;
-using DOL.GS.Effects;
 using DOL.GS.PlayerTitles;
 using log4net;
-using System.Collections.Generic;
 
 namespace DOL.GS.PacketHandler
 {
@@ -46,7 +45,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendNonHybridSpellLines()
 		{
 			base.SendNonHybridSpellLines();
-			
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x02); //subcode
@@ -71,9 +70,9 @@ namespace DOL.GS.PacketHandler
 				if (caption.Length > byte.MaxValue)
 					caption = caption.Substring(0, byte.MaxValue);
 				pak.WritePascalString(caption); //window caption
-	
+
 				WriteCustomTextWindowData(pak, text);
-	
+
 				//Trailing Zero!
 				pak.WriteByte(0);
 				SendTCP(pak);
@@ -88,14 +87,14 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(1); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
 				pak.WritePascalString("Player Statistics"); //window caption
-	
+
 				byte line = 1;
 				foreach (string str in m_gameClient.Player.FormatStatistics())
 				{
 					pak.WriteByte(line++);
 					pak.WritePascalString(str);
 				}
-	
+
 				pak.WriteByte(200);
 				long titlesCountPos = pak.Position;
 				pak.WriteByte(0); // length of all titles part
@@ -127,39 +126,62 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); //unused
 				switch (windowAction) //0-released, 1-normal, 2-just charmed? | Roach: 0-close window, 1-update window, 2-create window
 				{
-					case ePetWindowAction.Open  : pak.WriteByte(2); break;
-					case ePetWindowAction.Update: pak.WriteByte(1); break;
-					default: pak.WriteByte(0); break;
+					case ePetWindowAction.Open:
+						pak.WriteByte(2);
+						break;
+					case ePetWindowAction.Update:
+						pak.WriteByte(1);
+						break;
+					default: pak.WriteByte(0);
+						break;
 				}
 				switch (aggroState) //1-aggressive, 2-defensive, 3-passive
 				{
-					case eAggressionState.Aggressive: pak.WriteByte(1); break;
-					case eAggressionState.Defensive : pak.WriteByte(2); break;
-					case eAggressionState.Passive   : pak.WriteByte(3); break;
+					case eAggressionState.Aggressive:
+						pak.WriteByte(1);
+						break;
+					case eAggressionState.Defensive:
+						pak.WriteByte(2);
+						break;
+					case eAggressionState.Passive:
+						pak.WriteByte(3);
+						break;
 					default: pak.WriteByte(0); break;
 				}
 				switch (walkState) //1-follow, 2-stay, 3-goto, 4-here
 				{
-					case eWalkState.Follow  : pak.WriteByte(1); break;
-					case eWalkState.Stay    : pak.WriteByte(2); break;
-					case eWalkState.GoTarget: pak.WriteByte(3); break;
-					case eWalkState.ComeHere: pak.WriteByte(4); break;
-					default: pak.WriteByte(0); break;
+					case eWalkState.Follow:
+						pak.WriteByte(1);
+						break;
+					case eWalkState.Stay:
+						pak.WriteByte(2);
+						break;
+					case eWalkState.GoTarget:
+						pak.WriteByte(3);
+						break;
+					case eWalkState.ComeHere:
+						pak.WriteByte(4);
+						break;
+					default: pak.WriteByte(0);
+						break;
 				}
 				pak.WriteByte(0x00); //unused
-	
+
 				if (pet != null)
 				{
-					lock (pet.EffectList)
+					lock (pet.effectListComponent.EffectsLock)
 					{
 						ArrayList icons = new ArrayList();
-						foreach (IGameEffect effect in pet.EffectList)
+						foreach (var effects in pet.effectListComponent.Effects.Values)
 						{
-							if (icons.Count >= 8)
-								break;
-							if (effect.Icon == 0)
-								continue;
-							icons.Add(effect.Icon);
+							foreach (ECSGameEffect effect in effects)
+							{
+								if (icons.Count >= 8)
+									break;
+								if (effect.Icon == 0)
+									continue;
+								icons.Add(effect.Icon);
+							}
 						}
 						pak.WriteByte((byte)icons.Count); // effect count
 						// 0x08 - null terminated - (byte) list of shorts - spell icons on pet
@@ -171,6 +193,7 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 					pak.WriteByte((byte)0); // effect count
+
 				SendTCP(pak);
 			}
 		}

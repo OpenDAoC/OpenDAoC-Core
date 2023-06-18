@@ -1,4 +1,4 @@
- /*
+/*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  *
  * This program is free software; you can redistribute it and/or
@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using log4net;
-using DOL.GS.Quests;
+
 using System.Reflection;
+using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -80,24 +79,24 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShort((ushort)attacker.ObjectID);
 				else
 					pak.WriteShort(0x00);
-				
+
 				if (defender != null)
 					pak.WriteShort((ushort)defender.ObjectID);
 				else
 					pak.WriteShort(0x00);
-				
+
 				pak.WriteShort(weaponID);
 				pak.WriteShort(shieldID);
 				pak.WriteShortLowEndian((ushort)style);
 				pak.WriteByte(stance);
 				pak.WriteByte(result);
-				
+
 				// If Health Percent is invalid get the living Health.
 				if (defender is GameLiving && targetHealthPercent > 100)
 				{
 					targetHealthPercent = (defender as GameLiving).HealthPercent;
 				}
-				
+
 				pak.WriteByte(targetHealthPercent);
 				pak.WriteByte(0);//unk
 				SendTCP(pak);
@@ -108,33 +107,32 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MinotaurRelicMapRemove)))
 			{
-            	pak.WriteIntLowEndian((uint)id);
+				pak.WriteIntLowEndian((uint)id);
 				SendTCP(pak);
 			}
 		}
-		
+
 		public override void SendMinotaurRelicMapUpdate(byte id, ushort region, int x, int y, int z)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MinotaurRelicMapUpdate)))
 			{
-
 				pak.WriteIntLowEndian((uint)id);
-	            pak.WriteIntLowEndian((uint)region);
-	            pak.WriteIntLowEndian((uint)x);
-	            pak.WriteIntLowEndian((uint)y);
-	            pak.WriteIntLowEndian((uint)z);
-	
+				pak.WriteIntLowEndian((uint)region);
+				pak.WriteIntLowEndian((uint)x);
+				pak.WriteIntLowEndian((uint)y);
+				pak.WriteIntLowEndian((uint)z);
+
 				SendTCP(pak);
 			}
 		}
-		
+
 		public override void SendMinotaurRelicWindow(GamePlayer player, int effect, bool flag)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
 			{
-
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte((byte)13);
+
 				if (flag)
 				{
 					pak.WriteByte(0);
@@ -145,7 +143,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(1);
 					pak.WriteInt((uint)effect);
 				}
-	
+
 				SendTCP(pak);
 			}
 		}
@@ -154,16 +152,15 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
 			{
-
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte((byte)14);
 				pak.WriteByte(0);
 				//4k maximum
 				if (xp > 4000) xp = 4000;
 				if (xp < 0) xp = 0;
-	
+
 				pak.WriteInt((uint)xp);
-	
+
 				SendTCP(pak);
 			}
 		}

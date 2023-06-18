@@ -16,16 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Reflection;
+
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Reflection;
 using DOL.GS.Keeps;
 using DOL.GS.Quests;
-
 using log4net;
-
 
 namespace DOL.GS.PacketHandler
 {
@@ -83,7 +80,6 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepRemove)))
 			{
-
 				pak.WriteShort((ushort)keep.KeepID);
 				SendTCP(pak);
 			}
@@ -93,7 +89,6 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentInfo)))
 			{
-
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
 				pak.WriteInt((uint)keepComponent.ObjectID);
@@ -113,6 +108,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendKeepComponentDetailUpdate(IGameKeepComponent keepComponent)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentDetailUpdate)))
@@ -122,18 +118,19 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)keepComponent.Height);
 				pak.WriteByte(keepComponent.HealthPercent);
 				byte flag = keepComponent.Status;
-				
+
 				if (keepComponent.IsRaized) // Only for towers
 					flag |= 0x04;
-				
+
 				if (flag == 0x00 && keepComponent.Climbing)
 					flag = 0x02;
-				
+
 				pak.WriteByte(flag);
 				pak.WriteByte(0x00);//unk
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendKeepComponentRemove(IGameKeepComponent keepComponent)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentRemove)))
@@ -143,15 +140,16 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendKeepComponentUpdate(IGameKeep keep, bool LevelUp)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentUpdate)))
 			{
-
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteByte((byte)keep.Realm);
 				pak.WriteByte((byte)keep.Level);
 				pak.WriteByte((byte)keep.SentKeepComponents.Count);
+
 				foreach (IGameKeepComponent component in keep.SentKeepComponents)
 				{
 					byte m_flag = (byte)component.Height;
@@ -165,6 +163,7 @@ namespace DOL.GS.PacketHandler
 						m_flag |= 0x40;
 					pak.WriteByte(m_flag);
 				}
+
 				pak.WriteByte((byte)0);//unk
 				SendTCP(pak);
 			}
@@ -174,7 +173,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null || keep == null)
 				return;
-			
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepClaim)))
 			{
 
@@ -194,12 +193,12 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteByte((byte)component.Keep.Realm);
 				pak.WriteByte(component.HealthPercent);
-	
+
 				pak.WriteByte(component.Keep.EffectiveLevel(component.Keep.Level));
 				pak.WriteByte(component.Keep.EffectiveLevel((byte)ServerProperties.Properties.MAX_KEEP_LEVEL));
 				//guild
 				pak.WriteByte((byte)1); //Keep Type: always melee here, type is no longer used
-	
+
 				if (component.Keep.Guild != null)
 				{
 					pak.WriteString(component.Keep.Guild.Name);
@@ -208,7 +207,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
-		
+
 		public override void SendKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
@@ -229,6 +228,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 		}
+
 		public override void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
@@ -245,21 +245,27 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointStore)))
 			{
-
 				pak.WriteShort((ushort)hookPoint.Component.Keep.KeepID);
 				pak.WriteShort((ushort)hookPoint.Component.ID);
 				pak.WriteShort((ushort)hookPoint.ID);
 				pak.Fill(0x01, 3);
 				HookPointInventory inventory;
-				if (hookPoint.ID > 0x80) inventory = HookPointInventory.YellowHPInventory; //oil
-				else if (hookPoint.ID > 0x60) inventory = HookPointInventory.GreenHPInventory;//big siege
-				else if (hookPoint.ID > 0x40) inventory = HookPointInventory.LightGreenHPInventory; //small siege
-				else if (hookPoint.ID > 0x20) inventory = HookPointInventory.BlueHPInventory;//npc
-				else inventory = HookPointInventory.RedHPInventory;//guard
-	
-				pak.WriteByte((byte)inventory.GetAllItems().Count);//count
+
+				if (hookPoint.ID > 0x80)
+					inventory = HookPointInventory.YellowHPInventory; //oil
+				else if (hookPoint.ID > 0x60)
+					inventory = HookPointInventory.GreenHPInventory; //big siege
+				else if (hookPoint.ID > 0x40)
+					inventory = HookPointInventory.LightGreenHPInventory; //small siege
+				else if (hookPoint.ID > 0x20)
+					inventory = HookPointInventory.BlueHPInventory; //npc
+				else
+					inventory = HookPointInventory.RedHPInventory; //guard
+
+				pak.WriteByte((byte)inventory.GetAllItems().Count); //count
 				pak.WriteShort(0);
 				int i = 0;
+
 				foreach (HookPointItem item in inventory.GetAllItems())
 				{
 					//TODO : must be quite like the merchant item.
@@ -277,6 +283,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShort(item.Icon);
 					pak.WritePascalString(item.Name);//item sell
 				}
+
 				SendTCP(pak);
 			}
 		}
@@ -306,7 +313,7 @@ namespace DOL.GS.PacketHandler
 						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
 						desc = desc.Substring(0, ushort.MaxValue);
 					}
-	
+
 					pak.WriteByte((byte)name.Length);
 					pak.WriteShort((ushort)desc.Length);
 					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
@@ -385,18 +392,18 @@ namespace DOL.GS.PacketHandler
 				foreach (AbstractGameKeep keep in list)
 	            {
 	                int keepId = keep.KeepID;
-	
+
 	                /*if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
 	                {
 	                    keepId -= 12;
-	                    if ((keep.KeepID > 74 && keep.KeepID < 114) || (keep.KeepID > 330 && keep.KeepID < 370) || (keep.KeepID > 586 && keep.KeepID < 626) 
-	                        || (keep.KeepID > 842 && keep.KeepID < 882) || (keep.KeepID > 1098 && keep.KeepID < 1138)) 
+	                    if ((keep.KeepID > 74 && keep.KeepID < 114) || (keep.KeepID > 330 && keep.KeepID < 370) || (keep.KeepID > 586 && keep.KeepID < 626)
+	                        || (keep.KeepID > 842 && keep.KeepID < 882) || (keep.KeepID > 1098 && keep.KeepID < 1138))
 	                        keepId += 5;
 	                }*/
-	
+
 	                int id = keepId & 0xFF;
 					int tower = keep.KeepID >> 8;
-					int map = (id - 25) / 25;					
+					int map = (id - 25) / 25;
 					int index = id - (map * 25 + 25);
 					int flag = (byte)keep.Realm; // 3 bits
 					Guild guild = keep.Guild;
@@ -407,7 +414,7 @@ namespace DOL.GS.PacketHandler
 						flag |= (byte)eRealmWarmapKeepFlags.Claimed;
 						name = guild.Name;
 					}
-	
+
 					//Teleport
 					if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player)
 					{
@@ -427,19 +434,19 @@ namespace DOL.GS.PacketHandler
 							}
 						}
 					}
-	
+
 					if (keep.InCombat)
 					{
 						flag |= (byte)eRealmWarmapKeepFlags.UnderSiege;
 					}
-	
+
 					pak.WriteByte((byte)flag);
 					pak.WritePascalString(name);
 				}
 				SendTCP(pak);
 			}
 		}
-		
+
 		public override void SendWarmapBonuses()
 		{
 			if (m_gameClient.Player == null) return;
@@ -511,7 +518,7 @@ namespace DOL.GS.PacketHandler
 				default:
 					break;
 			}
-			
+
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarmapBonuses)))
 			{
 				pak.WriteByte((byte)RealmKeeps);
@@ -530,8 +537,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte((byte)fights.Count);// count - Fights (Byte)
 				pak.WriteByte((byte)groups.Count);// count - Groups (Byte)
-				// order first fights after than groups
-	
+
 				// zoneid  - byte // zoneid from zones.xml
 				//			- A7 - Mid	- left			-	10100111		Map: Midgard
 				//			- A8 - Mid	- middle		-	10101000			| X	|
@@ -542,14 +548,14 @@ namespace DOL.GS.PacketHandler
 				//			- AC - Hib	- middle		-	10101100				|X		|
 				//			- AD - Hib	- middle -left	-	10101101			|x	 x		|
 				//			- AE - Hib	- bottom		-	10101110				|x		|
-	
+
 				//			- AF - Alb	- bottom		-	10101111			Map: Albion
 				//			- B0 - Alb	- middle -right	-	10110000			|X	|
 				//			- B1 - Alb	- middle -left	-	10110001			|x	 x	|
 				//			- B2 - Alb	- top			-	10110010	178		|X	|
-	
+
 				// position   x/y offset  x<<4,y
-	
+
 				foreach (List<byte> obj in fights)
 				{
 					pak.WriteByte(obj[0]);// zoneid
@@ -557,13 +563,13 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(obj[3]);// color - ( Fights:  0x00 - Grey , 0x01 - RedBlue , 0x02 - RedGreen , 0x03 - GreenBlue )
 					pak.WriteByte(obj[4]);// type  - ( Fights:  Size 0x00 - small  0x01 - medium  0x02 - big 0x03 - huge )
 				}
-	
+
 				foreach (List<byte> obj in groups)
 				{
 					pak.WriteByte(obj[0]);// zoneid
 					pak.WriteByte((byte)(obj[1] << 4 | obj[2])); // position
 					byte realm = obj[3];
-	
+
 					pak.WriteByte((byte)((realm == 3) ? 0x04 : (realm == 2) ? 0x02 : 0x01));//	color   ( Groups:  0x01 - Alb  , 0x02 - Mid , 0x04 - Hib
 					switch ((eRealm)obj[3])
 					{
@@ -582,7 +588,7 @@ namespace DOL.GS.PacketHandler
 							break;
 					}
 				}
-	
+
 				SendTCP(pak);
 			}
 		}
