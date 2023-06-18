@@ -16,20 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS;
-using DOL.GS.Spells;
+
 using DOL.AI.Brain;
-using DOL.Events;
-using log4net;
-using DOL.GS.PacketHandler;
 using DOL.Database;
-using System.Collections;
-using DOL.GS.Effects;
-using DOL.GS.Styles;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS
@@ -137,7 +126,7 @@ namespace DOL.GS
                 int scaleLevel = Level;
 
                 // Some minions have multiple spells, so only grab their owner's spec once per pet.
-                if (DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+                if (Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                     && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer BD)
                 {
                     int spec = BD.GetModifiedSpecLevel(PetSpecLine);
@@ -157,15 +146,15 @@ namespace DOL.GS
         /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
         public override void ScalePetSpell(Spell spell, int casterLevel = 0)
         {
-            if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1)
+            if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1)
                 return;
 
             if (casterLevel < 1)
             {
                 casterLevel = Level;
 
-                // Style procs and subspells can't be scaled in advance, so we need to check BD spec here as well				
-                if (DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+                // Style procs and subspells can't be scaled in advance, so we need to check BD spec here as well.
+                if (Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                     && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer BD)
                 {
                     int spec = BD.GetModifiedSpecLevel(PetSpecLine);
