@@ -17,7 +17,7 @@ namespace DOL.GS.PropertyCalc
 	[PropertyCalculator(eProperty.MaxHealth)]
 	public class MaxHealthCalculator : PropertyCalculator
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public override int CalcValue(GameLiving living, eProperty property)
 		{

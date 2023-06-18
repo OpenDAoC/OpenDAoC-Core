@@ -319,7 +319,7 @@ namespace DOL.GS
 {
     public class Olcasgean : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Olcasgean()
             : base()
         {
@@ -864,7 +864,7 @@ namespace DOL.GS
 {
     public class Olcasgean2 : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Olcasgean2()
             : base()
         {
@@ -1127,7 +1127,7 @@ namespace DOL.GS
 {
     public class AirPrimal : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AirPrimal()
             : base()
@@ -1577,7 +1577,7 @@ namespace DOL.GS
 {
     public class WaterPrimal : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public WaterPrimal()
             : base()
@@ -1912,7 +1912,7 @@ namespace DOL.GS
 {
     public class FirePrimal : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public FirePrimal()
             : base()
@@ -2153,7 +2153,7 @@ namespace DOL.GS
 {
     public class TrailOfFire : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TrailOfFire()
             : base()
@@ -2310,7 +2310,7 @@ namespace DOL.GS
 {
     public class EarthPrimal : GameEpicBoss
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public EarthPrimal()
             : base()
@@ -2515,7 +2515,7 @@ namespace DOL.GS
 {
     public class GuardianEarthmender : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public GuardianEarthmender()
             : base()
@@ -2723,7 +2723,7 @@ namespace DOL.GS
 {
     public class MagicalEarthmender : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public MagicalEarthmender()
             : base()
@@ -2934,7 +2934,7 @@ namespace DOL.GS
 {
     public class NaturalEarthmender : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public NaturalEarthmender()
             : base()
@@ -3142,7 +3142,7 @@ namespace DOL.GS
 {
     public class ShadowyEarthmender : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ShadowyEarthmender()
             : base()

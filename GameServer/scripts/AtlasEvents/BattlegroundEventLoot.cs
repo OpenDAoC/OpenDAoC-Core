@@ -14,7 +14,7 @@ namespace DOL.GS.Scripts
 {
     public class BattlegroundEventLoot : GameNPC
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private static int freeLootLevelOffset = 2;
 		private int playerRewardOffset = 6;
 		

@@ -10,7 +10,7 @@ namespace DOL.GS.Keeps
 {
     public class GuardLord : GameKeepGuard
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private eRealm m_lastRealm = eRealm.None;
         private long m_lastSpawnTime = 0;

@@ -9,7 +9,7 @@ namespace DOL.GS
 {
     public class BlueLady : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
@@ -254,7 +254,7 @@ namespace DOL.GS
 {
     public class BlueLadySwordAdd : GameNPC
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public BlueLadySwordAdd()
@@ -328,7 +328,7 @@ namespace DOL.GS
     }
     public class BlueLadyAxeAdd : GameNPC
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public BlueLadyAxeAdd()

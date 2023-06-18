@@ -1361,10 +1361,6 @@ namespace DOL.GS.Keeps
                 guard.AddBrain(brain);
                 brain.Body = guard;
             }
-            else
-            {
-                int a = 0;
-            }
 
             if (guard is MissionMaster)
             {

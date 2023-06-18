@@ -9,7 +9,7 @@ namespace DOL.GS
 {
     public class Xaga : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Xaga()
@@ -274,7 +274,7 @@ namespace DOL.GS
 {
     public class Beatha : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Beatha()
@@ -502,7 +502,7 @@ namespace DOL.GS
 {
     public class Tine : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Tine()

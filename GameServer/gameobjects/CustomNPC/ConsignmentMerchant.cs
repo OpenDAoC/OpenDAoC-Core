@@ -28,7 +28,7 @@ namespace DOL.GS
 {
     public class GameConsignmentMerchant : GameNPC, IGameInventoryObject
     {
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public const int CONSIGNMENT_SIZE = 100;
 		public const int CONSIGNMENT_OFFSET = 1350; // client sends the same slots as a housing vault

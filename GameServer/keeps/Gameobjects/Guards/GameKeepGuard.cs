@@ -34,7 +34,7 @@ namespace DOL.GS.Keeps
 	/// </summary>
 	public class GameKeepGuard : GameNPC, IKeepItem
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private Patrol m_Patrol = null;
 		public Patrol PatrolGroup

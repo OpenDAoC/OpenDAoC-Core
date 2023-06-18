@@ -47,7 +47,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constant for determining if already at a point

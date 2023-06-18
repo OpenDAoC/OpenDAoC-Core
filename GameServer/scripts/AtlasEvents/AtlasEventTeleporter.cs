@@ -16,7 +16,7 @@ namespace DOL.GS.Scripts
 {
     public class AtlasEventTeleporter : GameNPC
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		
 		public static int TeleportDelay = 40000; //value in milliseconds
 		public override bool AddToWorld()

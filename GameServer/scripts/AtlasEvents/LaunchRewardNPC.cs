@@ -9,7 +9,7 @@ namespace DOL.GS.Scripts
 {
     public class LaunchRewardNPC : GameNPC
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const int ORBS_REWARD = 15000;
         private const string LAUNCH_QUEST_ACHIEVEMENT = "LaunchQuest";

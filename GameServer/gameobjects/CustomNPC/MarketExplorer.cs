@@ -16,7 +16,7 @@ namespace DOL.GS
 {
     public class MarketExplorer : GameNPC, IGameInventoryObject
     {
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const string EXPLORER_ITEM_LIST = "MarketExplorerItems";
 

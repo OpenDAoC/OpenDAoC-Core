@@ -15,7 +15,7 @@ namespace DOL.GS.Scripts
 {
     public class Legion : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static IArea legionArea = null;
@@ -731,7 +731,7 @@ namespace DOL.GS
 {
     public class LegionAdd : GameNPC
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public LegionAdd()
@@ -823,7 +823,7 @@ namespace DOL.GS
 {
     public class Behemoth : GameEpicBoss
     {
-        private static readonly log4net.ILog log =
+        private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Behemoth()

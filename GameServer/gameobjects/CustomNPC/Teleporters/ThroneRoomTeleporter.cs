@@ -29,7 +29,7 @@ namespace DOL.GS
 	/// <author>Aredhel</author>
 	public class ThroneRoomTeleporter : GameNPC
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Interact with the NPC.

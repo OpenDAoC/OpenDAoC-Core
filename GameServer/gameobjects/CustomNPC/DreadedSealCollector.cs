@@ -30,7 +30,7 @@ namespace DOL.GS
     /// </summary>
     public class DreadedSealCollector : GameNPC
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         protected static List<Tuple<int, int>> m_levelMultipliers = ParseMultipliers();
         protected static Dictionary<string, float> m_BPMultipliers = ParseValues(ServerProperties.Properties.DREADEDSEALS_BP_VALUES);

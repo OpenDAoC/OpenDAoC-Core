@@ -15,7 +15,7 @@ namespace DOL.GS.Scripts
 {
     public class AtlasEventTP : GameNPC
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int EventRPCap = ServerProperties.Properties.EVENT_RPCAP;
 		public static int EventLVCap = ServerProperties.Properties.EVENT_LVCAP;
 		public static int SoloPop = ServerProperties.Properties.EVENT_SOLO_POP;

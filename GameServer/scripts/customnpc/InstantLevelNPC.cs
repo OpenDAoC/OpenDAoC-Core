@@ -22,7 +22,7 @@ namespace DOL.GS.Scripts
 
     public class InstantLevelNPC : GameNPC
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
 		public override bool AddToWorld()
 		{

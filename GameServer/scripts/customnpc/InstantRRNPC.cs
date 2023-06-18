@@ -43,7 +43,7 @@ namespace DOL.GS
         int freeRR = 13;
         protected readonly bool AllowGMChangeAmount = true;
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 

@@ -21,7 +21,7 @@ namespace DOL.GS.Scripts
 {
     public class EventLevelBracketNPC : GameNPC
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static int EventLVCap = Properties.EVENT_LVCAP;
         public static int realmPoints = Properties.EVENT_START_RP;
         
