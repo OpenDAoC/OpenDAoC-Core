@@ -16,21 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-//#define OUTPUT_DEBUG_INFO
+
 using System;
-using System.Collections;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text;
-
 using DOL.Database;
-using DOL.Events;
-using DOL.Language;
-using DOL.GS;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 using DOL.GS.Utils;
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -57,9 +51,30 @@ namespace DOL.GS.PacketHandler.Client.v168
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
 			//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
-			if ((client.Player.ObjectState != GameObject.eObjectState.Active) ||
-			    (client.ClientState != GameClient.eClientState.Playing))
+			if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
 				return;
+
+			// Don't allow movement if the player isn't close to the NPC they're supposed to be riding.
+			// Instead, teleport them to it and send an update packet (the client may then ask for a create packet).
+			if (client.Player.Steed != null && client.Player.Steed.ObjectState == GameObject.eObjectState.Active)
+			{
+				GamePlayer rider = client.Player;
+				GameNPC steed = rider.Steed;
+
+				// The rider and their steed are never at the exact same position (made worse by a high latency).
+				// So the radius is arbitrary and must not be too low to avoid spamming packets.
+				if (!rider.IsWithinRadius(steed, 500))
+				{
+					rider.X = steed.X;
+					rider.Y = steed.Y;
+					rider.Z = steed.Z;
+					rider.Heading = steed.Heading;
+					rider.MovementStartTick = GameLoop.GameLoopTime;
+					rider.Out.SendPlayerJump(false);
+					rider.Out.SendObjectUpdate(steed);
+					return;
+				}
+			}
 
 			if (client.Version >= GameClient.eClientVersion.Version1124)
 			{

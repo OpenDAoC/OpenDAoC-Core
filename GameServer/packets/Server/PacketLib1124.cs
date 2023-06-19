@@ -267,6 +267,14 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 
+			// If the client needs us to send a create packet for its steed, it means we updated it in 'PlayerPositionUpdateHandler' but they fell off.
+			// It can happen because of lag or if a NPC fails to broadcast its position.
+			if (npc == m_gameClient.Player.Steed)
+			{
+				GamePlayer player = m_gameClient.Player;
+				player.Out.SendRiding(player, npc, false);
+			}
+
 			// Hack to make NPCs untargetable with TAB on a PvP server. There might be a better way to do it.
 			// Relies on 'SendObjectGuildID' not to be called after this.
 			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
