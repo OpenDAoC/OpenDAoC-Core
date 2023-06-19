@@ -338,28 +338,34 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 			{
 				if (log.IsErrorEnabled)
-					log.Error("SendPlayerCreate: _gameClient.Player == null");
+					log.Error("SendPlayerCreate: m_gameClient.Player == null");
 				return;
 			}
 
-			Region playerRegion = playerToCreate.CurrentRegion;
-			if (playerRegion == null)
+			if (playerToCreate.CurrentRegion == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("SendPlayerCreate: playerRegion == null");
+					log.Warn("SendPlayerCreate: playerToCreate.CurrentRegion == null");
 				return;
 			}
 
-			Zone playerZone = playerToCreate.CurrentZone;
-			if (playerZone == null)
+			if (playerToCreate.CurrentZone == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn("SendPlayerCreate: playerZone == null");
+					log.Warn("SendPlayerCreate: playerToCreate.CurrentZone == null");
 				return;
 			}
 
-			if (playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
+			if (!playerToCreate.IsVisibleTo(m_gameClient.Player))
 				return;
+
+			// Players sometimes see other players standing up on their mount (includes boats and siege engines).
+			// It seems to happen when a player is created, then updated (the rider disappears) before their mount is created (the rider reappears, standing up).
+			// Preventing the player update if the mount hasn't been created yet is very tricky since that information isn't known.
+			// Instead, we can force the mount to be created before its rider.
+			// However, it means it's possible for the steed to be created twice in quick succession (probably fine).
+			if (playerToCreate.Steed != null)
+				m_gameClient.Out.SendNPCCreate(playerToCreate.Steed);
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
 			{
