@@ -81,8 +81,10 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
     public override void Exit()
     {
         _brain.ClearAggroList();
+
         if (_brain.Body.IsAttacking)
             _brain.Body.StopAttack();
+
         _brain.Body.TargetObject = null;
     }
 

@@ -114,7 +114,7 @@ namespace DOL.GS
         {
             if (owner.GetDistanceTo(target) < MIN_PATHING_DISTANCE)
                 return false; // too close to path
-            if (owner.IsFlying)
+            if (owner.Flags.HasFlag(GameNPC.eFlags.FLYING))
                 return false;
             if (owner.Z <= 0)
                 return false; // this will probably result in some really awkward paths otherwise

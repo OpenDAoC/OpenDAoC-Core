@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Movement;
@@ -20,6 +21,8 @@ namespace DOL.GS
         private long _walkingToEstimatedArrivalTime;
         private short _moveOnPathMinSpeed;
         private long _stopAtWaypointUntil;
+        private PathCalculator _pathCalculator;
+        private Action<NpcMovementComponent> _goToNextPathingNodeCallback;
 
         public new GameNPC Owner { get; private set; }
         public IPoint3D TargetPosition { get; private set; } = new Point3D();
@@ -40,6 +43,7 @@ namespace DOL.GS
         public NpcMovementComponent(GameNPC npcOwner) : base(npcOwner)
         {
             Owner = npcOwner;
+            _pathCalculator = new(npcOwner);
         }
 
         public override void Tick(long tick)
@@ -105,6 +109,45 @@ namespace DOL.GS
             }
         }
 
+        public bool PathTo(IPoint3D targetPosition, short speed)
+        {
+            Vector3 dest = new(targetPosition.X, targetPosition.Y, targetPosition.Z);
+
+            if (_pathCalculator == null || !PathCalculator.ShouldPath(Owner, dest))
+            {
+                _movementType &= ~MovementType.PATHING;
+                WalkTo(targetPosition, speed);
+                return false;
+            }
+
+            Tuple<Vector3?, NoPathReason> res = _pathCalculator.CalculateNextTarget(dest);
+            Vector3? nextNode = res.Item1;
+            //NoPathReason noPathReason = res.Item2;
+            //bool shouldUseAirPath = noPathReason == NoPathReason.RECAST_FOUND_NO_PATH;
+            //bool didFindPath = PathCalculator.DidFindPath;
+
+            if (!nextNode.HasValue)
+            {
+                _movementType &= ~MovementType.PATHING;
+                WalkTo(targetPosition, speed);
+                return false;
+            }
+
+            // Do the actual pathing bit: Walk towards the next pathing node
+            _movementType |= MovementType.PATHING;
+            _goToNextPathingNodeCallback = x => x.PathTo(targetPosition, speed);
+            WalkTo(new Point3D(nextNode.Value.X, nextNode.Value.Y, nextNode.Value.Z), speed);
+            return true;
+        }
+
+        public void PathOrWalkTo(IPoint3D targetPosition, short speed)
+        {
+            if (Owner.CurrentZone.IsPathingEnabled)
+                PathTo(targetPosition, speed);
+            else
+                WalkTo(targetPosition, speed);
+        }
+
         public void StopMoving()
         {
             _movementType = MovementType.NONE;
@@ -166,7 +209,7 @@ namespace DOL.GS
             if (CurrentWaypoint != null)
             {
                 _movementType |= MovementType.ON_PATH;
-                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+                PathOrWalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
             }
             else
                 StopMovingOnPath();
@@ -196,7 +239,7 @@ namespace DOL.GS
             (Owner.Brain as StandardMobBrain)?.ClearAggroList();
             IsReturningHome = true;
             IsReturningToSpawnPoint = true;
-            WalkTo(Owner.SpawnPoint, speed);
+            PathOrWalkTo(Owner.SpawnPoint, speed);
         }
 
         public void CancelReturnToSpawnPoint()
@@ -208,6 +251,15 @@ namespace DOL.GS
         public void Roam(short speed)
         {
             int maxRoamingRadius = Owner.RoamingRange > 0 ? Owner.RoamingRange : Owner.CurrentRegion.IsDungeon ? 5 : 500;
+
+            if (Owner.CurrentZone.IsPathingEnabled)
+            {
+                Vector3? target = PathingMgr.Instance.GetRandomPointAsync(Owner.CurrentZone, new Vector3(Owner.X, Owner.Y, Owner.Z), maxRoamingRadius);
+
+                if (target.HasValue)
+                    PathOrWalkTo(new Point3D(target.Value.X, target.Value.Y, target.Value.Z), speed);
+            }
+
             double targetX = Owner.SpawnPoint.X + Util.Random(-maxRoamingRadius, maxRoamingRadius);
             double targetY = Owner.SpawnPoint.Y + Util.Random(-maxRoamingRadius, maxRoamingRadius);
             WalkTo(new Point3D((int) targetX, (int) targetY, Owner.SpawnPoint.Z), speed);
@@ -299,7 +351,7 @@ namespace DOL.GS
                     {
                         targetPosition = new(newX, newY, newZ);
                         double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50);
-                        WalkTo(targetPosition, (short) followSpeed);
+                        PathOrWalkTo(targetPosition, (short) followSpeed);
                         return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
                     }
                 }
@@ -329,9 +381,9 @@ namespace DOL.GS
 
             // Slow down out of combat pets when they're close.
             if (!Owner.InCombat && Owner.Brain is ControlledNpcBrain controledBrain && controledBrain.Owner == Owner.FollowTarget)
-                WalkTo(targetPosition, (short) Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50));
+                PathOrWalkTo(targetPosition, (short) Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50));
             else
-                WalkTo(targetPosition, MaxSpeed);
+                PathOrWalkTo(targetPosition, MaxSpeed);
 
             return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
@@ -340,6 +392,12 @@ namespace DOL.GS
         {
             if (IsMoving)
                 UpdateMovement(new Point3D(), 0);
+
+            if (IsSet(MovementType.PATHING))
+            {
+                _goToNextPathingNodeCallback(this);
+                return;
+            }
 
             if (IsReturningToSpawnPoint)
             {
@@ -408,7 +466,7 @@ namespace DOL.GS
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
             if (CurrentWaypoint != null)
-                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+                PathOrWalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }
@@ -437,6 +495,7 @@ namespace DOL.GS
             WALK_TO = 2,     // Has a destination.
             ON_PATH = 4,     // Following a path / patrolling.
             AT_WAYPOINT = 8, // Waiting at a waypoint.
+            PATHING = 16     // Pathing is enabled.
         }
     }
 }

@@ -993,6 +993,16 @@ namespace DOL.GS
 			movementComponent.WalkTo(target, speed);
 		}
 
+		public virtual void PathTo(IPoint3D target, short speed)
+		{
+			movementComponent.PathTo(target, speed);
+		}
+
+		public virtual void PathOrWalkTo(IPoint3D target, short speed)
+		{
+			movementComponent.PathOrWalkTo(target, speed);
+		}
+
 		public virtual void StopMoving()
 		{
 			movementComponent.StopMoving();
