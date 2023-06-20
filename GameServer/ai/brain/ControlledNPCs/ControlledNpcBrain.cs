@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -297,7 +298,7 @@ namespace DOL.AI.Brain
 			m_tempY = Body.Y;
 			m_tempZ = Body.Z;
 			WalkState = eWalkState.Stay;
-			Body.StopFollowing();
+			Body.StopMoving();
 		}
 
 		/// <summary>
@@ -558,8 +559,6 @@ namespace DOL.AI.Brain
                 return false;
 
             bool casted = false;
-            // clear current target, set target based on spell type, cast spell, return target to original target
-            Body.CachedTarget = Body.TargetObject;
             Body.TargetObject = null;
             GamePlayer player;
             GameLiving owner;
@@ -1003,8 +1002,8 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Body.EffectList)
 						{
-							if (effect is GameSpellEffect && (effect as GameSpellEffect).SpellHandler is SpeedEnhancementSpellHandler)
-								effects.Add(effect as GameSpellEffect);
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+								effects.Add(gameSpellEffect);
 						}
 					}
 
@@ -1012,8 +1011,8 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Owner.EffectList)
 						{
-							if (effect is GameSpellEffect && (effect as GameSpellEffect).SpellHandler is SpeedEnhancementSpellHandler)
-								effects.Add(effect as GameSpellEffect);
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+								effects.Add(gameSpellEffect);
 						}
 					}
 
@@ -1025,11 +1024,8 @@ namespace DOL.AI.Brain
 				{
 					Body.StartAttack(target);
 
-					if (Body.CurrentFollowTarget != target)
-					{
-						Body.StopFollowing();
+					if (Body.FollowTarget != target)
 						Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
-					}
 				}
 			}
 			else
@@ -1042,7 +1038,11 @@ namespace DOL.AI.Brain
 				if (WalkState == eWalkState.Follow)
 					FollowOwner();
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
+				{
+					Body.StopFollowing();
 					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+					// TODO: Should the cached position be cleared?
+				}
 			}
 		}
 

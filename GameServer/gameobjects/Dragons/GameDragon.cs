@@ -169,11 +169,7 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * 1.0 * DragonDifficulty / 100;
         }
 
-        public override short MaxSpeedBase
-        {
-            get { return (short)(191 + (Level * 2)); }
-            set { m_maxSpeedBase = value; }
-        }
+        public override short MaxSpeedBase => (short) (191 + Level * 2);
 
         public override short Strength
         {
@@ -323,10 +319,10 @@ namespace DOL.GS
         /// Return to spawn point, dragon can't be attacked while it's
         /// on it's way.
         /// </summary>
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             EvadeChance = 100;
-            WalkToSpawn(MaxSpeed);
+            ReturnToSpawnPoint(MaxSpeed);
         }
 
         public override void OnAttackedByEnemy(AttackData ad)
@@ -666,9 +662,11 @@ namespace DOL.GS
         /// </summary>
         private void PrepareToGlare()
         {
-            if (GlareTarget == null) return;
+            if (GlareTarget == null)
+                return;
+
             TurnTo(GlareTarget);
-            BroadcastMessage(String.Format(m_glareAnnounce, Name, GlareTarget.Name));
+            BroadcastMessage(string.Format(m_glareAnnounce, Name, GlareTarget.Name));
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastGlare), 5000);
         }
 
@@ -826,21 +824,17 @@ namespace DOL.GS
         /// <param name="target">The player to hurl into the air.</param>
         private void ThrowLiving(GameLiving target)
         {
-            BroadcastMessage(String.Format("{0} is hurled into the air!", target.Name));
+            BroadcastMessage(string.Format("{0} is hurled into the air!", target.Name));
 
             // Face the target, then push it 700 units up and 300 - 500 units backwards.
-
             TurnTo(target);
-
             Point3D targetPosition = PositionOfTarget(target, 700, Heading, Util.Random(300, 500));
 
             if (target is GamePlayer)
-            {
                 target.MoveTo(target.CurrentRegionID, targetPosition.X, targetPosition.Y, targetPosition.Z, target.Heading);
-            }
-            else if (target is GameNPC)
+            else if (target is GameNPC targetNpc)
             {
-                (target as GameNPC).MoveInRegion(target.CurrentRegionID, targetPosition.X, targetPosition.Y, targetPosition.Z, target.Heading, true);
+                targetNpc.MoveInRegion(target.CurrentRegionID, targetPosition.X, targetPosition.Y, targetPosition.Z, target.Heading, true);
                 target.ChangeHealth(this, eHealthChangeType.Spell, (int)(target.Health * -0.35));
             }
         }

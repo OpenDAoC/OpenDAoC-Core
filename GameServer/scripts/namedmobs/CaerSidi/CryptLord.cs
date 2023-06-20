@@ -63,14 +63,14 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (CurrentRegionID == 60) //if region is caer sidi
             {
                 if (IsAlive)
                     return;
             }
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
 
         public override bool AddToWorld()

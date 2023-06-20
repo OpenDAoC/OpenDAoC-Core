@@ -16,13 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Reflection;
-using DOL.Events;
+
 using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Movement;
-using log4net;
 
 namespace DOL.AI.Brain
 {
@@ -38,8 +34,8 @@ namespace DOL.AI.Brain
 		public override bool Start()
 		{
 			if (!base.Start()) return false;
-			Body.CurrentWayPoint = MovementMgr.LoadPath(Body.PathID != "" ? Body.PathID : Body.InternalID + " Rounds");
-			Body.MoveOnPath((short)Body.CurrentWayPoint.MaxSpeed);
+			Body.CurrentWaypoint = MovementMgr.LoadPath(Body.PathID != "" ? Body.PathID : Body.InternalID + " Rounds");
+			Body.MoveOnPath(Body.CurrentWaypoint.MaxSpeed);
 			return true;
 		}
 		/// <summary>
@@ -52,10 +48,10 @@ namespace DOL.AI.Brain
 		{
 			//save current position in path go to here and reload path point
 			//insert path in pathpoint
-			PathPoint temporaryPathPoint = new PathPoint(Body.X, Body.Y, Body.Z, Body.CurrentSpeed, Body.CurrentWayPoint.Type);
-			temporaryPathPoint.Next = Body.CurrentWayPoint;
-			temporaryPathPoint.Prev = Body.CurrentWayPoint.Prev;
-			Body.CurrentWayPoint = temporaryPathPoint;
+			PathPoint temporaryPathPoint = new PathPoint(Body.X, Body.Y, Body.Z, Body.CurrentSpeed, Body.CurrentWaypoint.Type);
+			temporaryPathPoint.Next = Body.CurrentWaypoint;
+			temporaryPathPoint.Prev = Body.CurrentWaypoint.Prev;
+			Body.CurrentWaypoint = temporaryPathPoint;
 			//this path point will be not available after the following point because no link to itself
 			base.AddToAggroList(living, aggroamount);
 		}
@@ -69,7 +65,7 @@ namespace DOL.AI.Brain
 		{
 			GameLiving living = base.CalculateNextAttackTarget();
 			if (living == null)
-				Body.MoveOnPath((short)Body.CurrentWayPoint.MaxSpeed);
+				Body.MoveOnPath(Body.CurrentWaypoint.MaxSpeed);
 			return living;
 		}
 	}

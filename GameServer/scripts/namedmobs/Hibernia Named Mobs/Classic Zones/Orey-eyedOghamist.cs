@@ -73,11 +73,11 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public override void WalkToSpawn(short speed)
+		public override void ReturnToSpawnPoint(short speed)
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn(speed);
+			base.ReturnToSpawnPoint(speed);
 		}
 	}
 }

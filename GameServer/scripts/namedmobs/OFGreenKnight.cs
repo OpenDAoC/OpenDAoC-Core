@@ -593,7 +593,7 @@ namespace DOL.AI.Brain
             {
                 Body.Flags = GameNPC.eFlags.PEACE;
                 Body.Health = Body.MaxHealth;
-                Body.WalkToSpawn(400); //move boss back to his spawn point
+                Body.ReturnToSpawnPoint(400); //move boss back to his spawn point
                 foreach (GameNPC npc in Body.GetNPCsInRadius(6500))
                 {
                     if (npc.Brain is GKTreesBrain)

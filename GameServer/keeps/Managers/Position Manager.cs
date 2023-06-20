@@ -18,14 +18,12 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections;
-
+using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
-using DOL.GS;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
-using System.Collections.Generic;
 
 namespace DOL.GS.Keeps
 {
@@ -344,7 +342,7 @@ namespace DOL.GS.Keeps
 			for (int i = 0; i < sorted.Count; i++)
 			{
 				DBPathPoint pp = (DBPathPoint)sorted.GetByIndex(i);
-				PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, pp.MaxSpeed, pathType);
+				PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType);
 
 				int x, y;
 				LoadXY(component, pp.X, pp.Y, out x, out y);

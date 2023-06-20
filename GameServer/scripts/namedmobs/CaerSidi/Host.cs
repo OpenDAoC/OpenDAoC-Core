@@ -292,11 +292,11 @@ namespace DOL.GS
             }
         }
 
-        public override void WalkToSpawn() //dont walk to spawn
+        public override void ReturnToSpawnPoint() //dont walk to spawn
         {
             if (IsAlive)
                 return;
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
         public static int HostCount = 0;
 

@@ -138,14 +138,14 @@ namespace DOL.GS.Scripts
         /// Return to spawn point, Uaimh Lairmaster can't be attacked while it's
         /// on it's way.
         /// </summary>
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
             StopAttack();
             StopFollowing();
             brain.AggroTable.Clear();
             EvadeChance = 100;
-            WalkToSpawn(MaxSpeed);
+            ReturnToSpawnPoint(MaxSpeed);
         }
 
         public override void OnAttackedByEnemy(AttackData ad)
@@ -198,7 +198,7 @@ namespace DOL.GS.Scripts
             if (HealthPercent <= 60 && IsFleeing)
             {
                 BroadcastMessage(String.Format(m_FleeingAnnounce, Name));
-                WalkToSpawn();
+                ReturnToSpawnPoint();
                 IsFleeing = false;
                 return true;
             }

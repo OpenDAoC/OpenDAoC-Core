@@ -75,11 +75,11 @@ namespace DOL.GS.Scripts
 				log.Info("Skeletal Sacristan NPC Initializing...");
 		}
 
-        public override void WalkToSpawn(short speed)
+        public override void ReturnToSpawnPoint(short speed)
         {
             if (IsAlive)
                 return;
-            base.WalkToSpawn(speed);
+            base.ReturnToSpawnPoint(speed);
         }
         public override void StartAttack(GameObject target)
         {
@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
                 if(_lastRoamIndex >= _roamingPathPoints.Count)
                 {
                     _lastRoamIndex = 0;
-                    Body.WalkToSpawn();
+                    Body.ReturnToSpawnPoint();
                 }
                 else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], (short)Util.Random(195, 250));
                 

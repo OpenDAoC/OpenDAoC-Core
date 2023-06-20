@@ -193,13 +193,13 @@ namespace DOL.GS
 		{
 			get { return 300000; }
 		}
-        public override void WalkToSpawn(short speed)
+        public override void ReturnToSpawnPoint(short speed)
         {
 			speed = 400;
 			if (MidGjalpinulvaBrain.IsRestless)
 				return;
 			else
-				base.WalkToSpawn(speed);
+				base.ReturnToSpawnPoint(speed);
         }
         public override void StartAttack(GameObject target)
         {
@@ -442,7 +442,7 @@ namespace DOL.AI.Brain
 			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
 				IsRestless = false;//can roam again
-				Body.WalkToSpawn();//move dragon to spawn so he can attack again
+				Body.ReturnToSpawnPoint();//move dragon to spawn so he can attack again
 				Body.Flags = 0; //remove all flags
 				_lastRoamIndex = 0;
 				ResetChecks = true;//do it only once
@@ -506,7 +506,7 @@ namespace DOL.AI.Brain
 					_lastRoamIndex++;
 				}
 
-				if(_lastRoamIndex >= _roamingPathPoints.Count) Body.WalkToSpawn();
+				if(_lastRoamIndex >= _roamingPathPoints.Count) Body.ReturnToSpawnPoint();
 				else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
             }
         }
@@ -1016,11 +1016,11 @@ namespace DOL.GS
 		{
 			get { return 1500; }
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override int GetResist(eDamageType damageType)
 		{
@@ -1354,11 +1354,11 @@ namespace DOL.GS
 		public override void DropLoot(GameObject killer) //no loot
 		{
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override long ExperienceValue => 0;
 		public override int MaxHealth

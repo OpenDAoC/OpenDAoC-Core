@@ -539,14 +539,14 @@ namespace DOL.GS
             }
         }
 
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (CurrentRegionID == 160) //if region is TG
             {
                 if (IsAlive)
                     return;
             }
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
 
         public override double AttackDamage(InventoryItem weapon)

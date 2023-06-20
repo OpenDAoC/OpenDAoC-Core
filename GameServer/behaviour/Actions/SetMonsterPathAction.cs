@@ -16,17 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.PacketHandler;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
-using DOL.Database;
-using DOL.AI.Brain;
-using log4net;
 using System.Reflection;
+using DOL.AI.Brain;
+using DOL.Events;
+using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Movement;
+using log4net;
 
 namespace DOL.GS.Behaviour.Actions
 {
@@ -54,15 +51,14 @@ namespace DOL.GS.Behaviour.Actions
             if (npc.Brain is RoundsBrain)
             {
                 RoundsBrain brain = (RoundsBrain)npc.Brain;
-                npc.CurrentWayPoint = P;
-                brain.Start();                
+                npc.CurrentWaypoint = P;
+                brain.Start();
             }
             else
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Mob without RoundsBrain was assigned to walk along Path");                
             }
-            
         }
     }
 }

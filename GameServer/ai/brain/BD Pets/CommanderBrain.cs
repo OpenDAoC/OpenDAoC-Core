@@ -101,7 +101,24 @@ namespace DOL.AI.Brain
 				}
 			}
 		}
-		
+
+		public override void Disengage()
+		{
+			base.Disengage();
+
+			if (Body.ControlledNpcList != null)
+			{
+				lock (Body.ControlledNpcList)
+				{
+					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					{
+						if (icb != null)
+							icb.Disengage();
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Defend a minion that is being attacked
 		/// </summary>

@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
-using DOL.GS;
-using DOL.GS.Movement;
-using DOL.Events;
 using DOL.Database;
+using DOL.GS.Movement;
 
 namespace DOL.GS.Keeps
 {
@@ -234,8 +230,8 @@ namespace DOL.GS.Keeps
 
 			foreach (GameKeepGuard guard in PatrolGuards)
 			{
-				if (guard.CurrentWayPoint == null)
-					guard.CurrentWayPoint = PatrolPath;
+				if (guard.CurrentWaypoint == null)
+					guard.CurrentWaypoint = PatrolPath;
 
 				guard.MoveOnPath(PATROL_SPEED);
 			}

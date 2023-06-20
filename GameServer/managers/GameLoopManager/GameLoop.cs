@@ -43,7 +43,7 @@ namespace DOL.GS
             _stopwatch.Restart();
             ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
 
-            NPCThinkService.Tick(GameLoopTime);
+            NpcService.Tick(GameLoopTime);
             AttackService.Tick(GameLoopTime);
             CastingService.Tick(GameLoopTime);
             EffectService.Tick();

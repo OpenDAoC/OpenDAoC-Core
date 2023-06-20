@@ -16,15 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
 using DOL.GS.Movement;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -384,7 +382,7 @@ namespace DOL.GS.Commands
 								{
 									RemoveAllTempPathObjects(client);
 
-									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 100000, ePathType.Once);
+									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, ePathType.Once);
 									client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, startpoint);
 									client.Player.TempProperties.setProperty(TEMP_PATH_LAST, startpoint);
 									client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.CreationStarted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -402,12 +400,12 @@ namespace DOL.GS.Commands
 										return;
 									}
 
-									int speedlimit = 1000;
+									short speedlimit = 1000;
 									if (args.Length == 4)
 									{
 										try
 										{
-											speedlimit = int.Parse(args[3]);
+											speedlimit = short.Parse(args[3]);
 										}
 										catch
 										{

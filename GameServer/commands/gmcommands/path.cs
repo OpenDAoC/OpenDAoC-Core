@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using DOL.Database;
@@ -25,8 +26,8 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
-	   "&path",
-	   ePrivLevel.GM,
+		"&path",
+		ePrivLevel.GM,
 		"There are several path functions",
 		"/path create - creates a new temporary path, deleting any existing temporary path",
 		"/path load <pathname> - loads a path from db",
@@ -118,13 +119,13 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			int speedlimit = 1000;
+			short speedlimit = 1000;
 			int waittime = 0;
 			if (args.Length > 2)
 			{
 				try
 				{
-					speedlimit = int.Parse(args[2]);
+					speedlimit = short.Parse(args[2]);
 				}
 				catch
 				{
@@ -164,17 +165,16 @@ namespace DOL.GS.Commands
 
 		private void PathSpeed(GameClient client, string[] args)
 		{
-			int speedlimit = 80;
-
 			if (args.Length < 3)
 			{
 				DisplayMessage(client, "No valid speedlimit '{0}'!", args[2]);
 				return;
 			}
 
+			short speedlimit;
 			try
 			{
-				speedlimit = int.Parse(args[2]);
+				speedlimit = short.Parse(args[2]);
 			}
 			catch
 			{
@@ -215,13 +215,13 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, "No path created yet! Use /path create first!");
 				return;
 			}
-			short speed = Math.Min(((GameNPC)client.Player.TargetObject).MaxSpeedBase, (short)path.MaxSpeed);
+			short speed = Math.Min(((GameNPC)client.Player.TargetObject).MaxSpeedBase, path.MaxSpeed);
 
 			// clear any current path
-			((GameNPC)client.Player.TargetObject).CurrentWayPoint = null;
+			((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
 
 			// set the new path
-			((GameNPC)client.Player.TargetObject).CurrentWayPoint = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_FIRST, null);
+			((GameNPC)client.Player.TargetObject).CurrentWaypoint = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_FIRST, null);
 
 			((GameNPC)client.Player.TargetObject).MoveOnPath(speed);
 
@@ -238,8 +238,8 @@ namespace DOL.GS.Commands
 			}
 
 			// clear any current path
-			((GameNPC)client.Player.TargetObject).CurrentWayPoint = null;
-			((GameNPC)client.Player.TargetObject).WalkToSpawn();
+			((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
+			((GameNPC)client.Player.TargetObject).ReturnToSpawnPoint();
 
 			DisplayMessage(client, "{0} told to walk to spawn!", client.Player.TargetObject.Name);
 		}

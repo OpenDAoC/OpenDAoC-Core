@@ -36,11 +36,7 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-        public override short MaxSpeedBase
-        {
-            get => (short) (191 + (Level * 2));
-            set => m_maxSpeedBase = value;
-        }
+        public override short MaxSpeedBase => (short) (191 + Level * 2);
         public override int MaxHealth => 100000;
         public override int AttackRange
         {
@@ -88,7 +84,7 @@ namespace DOL.AI.Brain
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if(ad != null && ad.Attacker != null && Body.TargetObject != ad.Attacker && CanPoison==false)
-            {          
+            {
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(25))
                 {
@@ -101,7 +97,7 @@ namespace DOL.AI.Brain
                         Body.CastSpell(BaneOfHope_Aoe_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportEnemy), 4500);
                         CanPoison = true;
-                    }                  
+                    }
                     if (oldTarget != null) Body.TargetObject = oldTarget;
                 }
             }

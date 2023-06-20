@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                Body.WalkToSpawn();
+                Body.ReturnToSpawnPoint();
             }
 
             if (HasAggro && Body.InCombat)

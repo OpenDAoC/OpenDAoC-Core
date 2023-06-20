@@ -1,0 +1,10 @@
+^C:\USERS\BAPTI\SOURCE\REPOS\OPENDAOC-CORE\PATHING\DETOUR\BUILD\CMAKEFILES\A5721A6145121CC4E9CB2A96CD329E24\GENERATE.STAMP.RULE
+setlocal
+C:\Users\bapti\Desktop\cmake-3.26.4-windows-x86_64\bin\cmake.exe -SC:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour -BC:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/DOL_Detour.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

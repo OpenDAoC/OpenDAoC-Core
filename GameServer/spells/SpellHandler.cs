@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -556,7 +557,7 @@ namespace DOL.GS.Spells
 				if (!Spell.IsInstantCast)
 				{
 					if (npcOwner.IsMoving)
-						npcOwner.StopFollowing();
+						npcOwner.StopMoving();
 				}
 
 				if (npcOwner != Target)
@@ -751,7 +752,7 @@ namespace DOL.GS.Spells
 					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
 					if (Caster is GameNPC npc)
-						npc.Follow(selectedTarget, Spell.Range - 100, GameNPC.STICKMAXIMUMRANGE);
+						npc.Follow(selectedTarget, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
 
 					return false;
 				}

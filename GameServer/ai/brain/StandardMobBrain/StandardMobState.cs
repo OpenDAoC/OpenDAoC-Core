@@ -67,7 +67,7 @@ public class StandardMobState_IDLE : StandardMobState
             return;
         }
 
-        if (_brain.CanRandomWalk)
+        if (_brain.Body.CanRoam)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
             return;
@@ -114,7 +114,7 @@ public class StandardMobState_WAKING_UP : StandardMobState
         //Console.WriteLine($"{_brain.Body} is WAKING_UP");
         //if allowed to roam,
         //set state == ROAMING
-        if (!_brain.Body.attackComponent.AttackState && _brain.CanRandomWalk)
+        if (!_brain.Body.attackComponent.AttackState && _brain.Body.CanRoam)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
             return;
@@ -244,18 +244,8 @@ public class StandardMobState_ROAMING : StandardMobState
         {
             if (_lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
-                IPoint3D target = _brain.CalcRandomWalkTarget();
-
-                if (target != null)
-                {
-                    if (Util.IsNearDistance(target.X, target.Y, target.Z, _brain.Body.X, _brain.Body.Y, _brain.Body.Z, GameNPC.CONST_WALKTOTOLERANCE))
-                        _brain.Body.TurnTo(_brain.Body.GetHeading(target));
-                    else
-                        _brain.Body.WalkTo(target, 50);
-
-                    _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
-                }
-
+                _brain.Body.Roam(50);
+                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
                 _lastRoamTick = GameLoop.GameLoopTime;
             }
         }
@@ -283,7 +273,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
             _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
         _brain.ClearAggroList();
         _brain.IsReturningToSpawn = true;
-        _brain.Body.WalkToSpawn();
+        _brain.Body.ReturnToSpawnPoint();
         base.Enter();
     }
 
@@ -297,21 +287,21 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     public override void Think()
     {
         // If the mob is not near his spawn, doesnt have aggro, is not enganged and is just standing around and  interested in going home, send him home.
-        if(!_brain.Body.IsNearSpawn() && (this._brain.AggroTable.Count == 0 || !this._brain.Body.IsEngaging) && (_brain.Body.IsReturningHome == false || _brain.Body.IsReturningToSpawnPoint == false) && this._brain.Body.CurrentSpeed == 0)
+        if(!_brain.Body.IsNearSpawn && (_brain.AggroTable.Count == 0 || !_brain.Body.IsEngaging) && (_brain.Body.IsReturningHome == false || _brain.Body.IsReturningToSpawnPoint == false) && _brain.Body.CurrentSpeed == 0)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
-            _brain.Body.ResetHeading();
+            _brain.Body.TurnTo(_brain.Body.SpawnHeading);
             return;
         }
-        if (_brain.Body.IsNearSpawn())
+        if (_brain.Body.IsNearSpawn)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
-            _brain.Body.ResetHeading();
+            _brain.Body.TurnTo(_brain.Body.SpawnHeading);
             return;
         }
         if (_brain.CheckProximityAggro())
         {
-            _brain.Body.CancelWalkToSpawn();
+            _brain.Body.CancelReturnToSpawnPoint();
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
         }
 
@@ -357,8 +347,8 @@ public class StandardMobState_PATROLLING : StandardMobState
         PathPoint path = MovementMgr.LoadPath(_brain.Body.PathID);
         if (path != null)
         {
-            _brain.Body.CurrentWayPoint = path;
-            _brain.Body.MoveOnPath((short)path.MaxSpeed);
+            _brain.Body.CurrentWaypoint = path;
+            _brain.Body.MoveOnPath(path.MaxSpeed);
         }
         else
         {

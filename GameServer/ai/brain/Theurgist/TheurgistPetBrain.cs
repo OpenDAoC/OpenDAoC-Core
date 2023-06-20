@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -39,7 +40,7 @@ namespace DOL.AI.Brain
 				return;
 			}
 
-			if (Body.CurrentFollowTarget != m_target)
+			if (Body.FollowTarget != m_target)
 			{
 				Body.StopFollowing();
 				Body.Follow(m_target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);

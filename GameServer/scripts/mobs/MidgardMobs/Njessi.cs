@@ -32,11 +32,11 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (IsAlive)
                 return;
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {

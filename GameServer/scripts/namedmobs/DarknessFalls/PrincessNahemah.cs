@@ -47,11 +47,7 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override short MaxSpeedBase
-        {
-            get => (short) (191 + (Level * 2));
-            set => m_maxSpeedBase = value;
-        }
+        public override short MaxSpeedBase => (short) (191 + Level * 2);
         public override int AttackRange
         {
             get => 180;

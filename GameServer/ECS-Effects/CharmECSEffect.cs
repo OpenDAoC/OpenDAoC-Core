@@ -113,7 +113,7 @@ namespace DOL.GS
                             charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                         }
                         else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
-                            charmMob.WalkToSpawn();
+                            charmMob.ReturnToSpawnPoint();
                         else
                         {
                             newBrain.Stop();

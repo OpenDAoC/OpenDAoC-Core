@@ -316,7 +316,7 @@ namespace DOL.GS.Commands
                     return;
                 }
 
-                NPCThinkService.DebugTickCount = tickcount;
+                NpcService.DebugTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " NPCThinkService tick(s)");
             }
         }

@@ -48,10 +48,6 @@ namespace DOL.GS
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public AttackComponent attackComponent;
-		public CraftComponent craftComponent;
-		public RangeAttackComponent rangeAttackComponent;
-		public StyleComponent styleComponent;
 		public int UsedConcentration;
 
 		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; private set; } = new();
@@ -278,35 +274,6 @@ namespace DOL.GS
 		{
 			get { return m_isEngaging; }
 			set { m_isEngaging = value; }
-		}
-
-		/// <summary>
-		/// Holds the turning disabled counter
-		/// </summary>
-		protected sbyte m_turningDisabledCount;
-		/// <summary>
-		/// Gets/Sets wether the player can turn the character
-		/// </summary>
-		public bool IsTurningDisabled
-		{
-			get
-			{
-				if (this.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
-					return false;
-				return m_turningDisabledCount > 0;
-			}
-		}
-		/// <summary>
-		/// Disables the turning for this living
-		/// </summary>
-		/// <param name="add"></param>
-		public virtual void DisableTurning(bool add)
-		{
-			if (add) m_turningDisabledCount++;
-			else m_turningDisabledCount--;
-
-			if (m_turningDisabledCount < 0)
-				m_turningDisabledCount=0;
 		}
 
 		/// <summary>
@@ -4107,11 +4074,11 @@ namespace DOL.GS
 				}
 			}
 			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
-				npc.CancelWalkToSpawn();
+				npc.CancelReturnToSpawnPoint();
 		}
 
 		public void HandleDamageShields(AttackData ad)
-        {
+		{
 			var dSEffects = effectListComponent.GetSpellEffects(eEffect.FocusShield);
 			// Handle DamageShield damage
 			if (dSEffects != null)
@@ -5554,16 +5521,21 @@ namespace DOL.GS
 		}
         #endregion
 
-        #region Components
-        //will be moved to a ComponentManager
-        //Declare Components
-        public CastingComponent castingComponent;
-        public HealthComponent healthComponent;
-        //public DamageComponent damageComponent;
-        public StatsComponent statsComponent;
-        //public SingleStatBuffComponent buffComponent;
-        public EffectListComponent effectListComponent;
-        #endregion
+		#region Components
+
+		public AttackComponent attackComponent;
+		public RangeAttackComponent rangeAttackComponent;
+		public StyleComponent styleComponent;
+		public CastingComponent castingComponent;
+		public EffectListComponent effectListComponent;
+		public MovementComponent movementComponent;
+		public HealthComponent healthComponent;
+		public CraftComponent craftComponent;
+		//public DamageComponent damageComponent;
+		//public StatsComponent statsComponent;
+		//public SingleStatBuffComponent buffComponent;
+
+		#endregion
 
         #region Mana/Health/Endurance/Concentration/Delete
         /// <summary>
@@ -5787,83 +5759,11 @@ namespace DOL.GS
         /// when this living has a reference on it ...
         /// </summary>
         protected readonly WeakReference m_targetObjectWeakReference;
-		/// <summary>
-		/// The current speed of this living
-		/// </summary>
-		protected short m_currentSpeed;
-		/// <summary>
-		/// The base maximum speed of this living
-		/// </summary>
-		protected short m_maxSpeedBase;
+
 		/// <summary>
 		/// Holds the Living's Coordinate inside the current Region
 		/// </summary>
 		protected Point3D m_groundTarget;
-
-		/// <summary>
-		/// Gets the current direction the Object is facing
-		/// </summary>
-		public override ushort Heading
-		{
-			get { return base.Heading; }
-			set
-			{
-				ushort oldHeading = base.Heading;
-				base.Heading = value;
-				if (base.Heading != oldHeading)
-					UpdateTickSpeed();
-			}
-		}
-
-		private bool m_fixedSpeed = false;
-
-		/// <summary>
-		/// Does this NPC have a fixed speed, unchanged by any modifiers?
-		/// </summary>
-		public virtual bool FixedSpeed
-		{
-			get { return m_fixedSpeed; }
-			set { m_fixedSpeed = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the current speed of this living
-		/// </summary>
-		public virtual short CurrentSpeed
-		{
-			get
-			{
-				return m_currentSpeed;
-			}
-			set
-			{
-				m_currentSpeed = value;
-				UpdateTickSpeed();
-			}
-		}
-
-		/// <summary>
-		/// Gets the maxspeed of this living
-		/// </summary>
-		public virtual short MaxSpeed
-		{
-			get
-			{
-				if (FixedSpeed)
-					return MaxSpeedBase;
-
-				return (short)GetModified(eProperty.MaxSpeed);
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the base max speed of this living
-		/// </summary>
-		public virtual short MaxSpeedBase
-		{
-			get { return m_maxSpeedBase; }
-			set { m_maxSpeedBase = value; }
-		}
 
 		/// <summary>
 		/// Gets or sets the target of this living
@@ -5942,39 +5842,6 @@ namespace DOL.GS
 
 		#endregion
 		#region Movement
-		/// <summary>
-		/// The tick speed in X direction.
-		/// </summary>
-		public double TickSpeedX { get; protected set; }
-
-		/// <summary>
-		/// The tick speed in Y direction.
-		/// </summary>
-		public double TickSpeedY { get; protected set; }
-
-		/// <summary>
-		/// The tick speed in Z direction.
-		/// </summary>
-		public double TickSpeedZ { get; protected set; }
-
-		/// <summary>
-		/// Updates tick speed for this living.
-		/// </summary>
-		protected virtual void UpdateTickSpeed()
-		{
-			int speed = CurrentSpeed;
-
-			if (speed == 0)
-				SetTickSpeed(0, 0, 0);
-			else
-			{
-				// Living will move in the direction it is currently heading.
-
-				double heading = Heading * HEADING_TO_RADIAN;
-				SetTickSpeed(-Math.Sin(heading), Math.Cos(heading), 0, speed);
-			}
-		}
-
 		public virtual void UpdateHealthManaEndu()
 		{
 			if (IsAlive)
@@ -5990,51 +5857,54 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Set the tick speed, that is the distance covered in one tick.
-		/// </summary>
-		/// <param name="dx"></param>
-		/// <param name="dy"></param>
-		/// <param name="dz"></param>
-		protected void SetTickSpeed(double dx, double dy, double dz)
+		public virtual bool IsTurningDisabled => movementComponent.IsTurningDisabled;
+
+		public virtual short CurrentSpeed
 		{
-			TickSpeedX = dx;
-			TickSpeedY = dy;
-			TickSpeedZ = dz;
+			get => movementComponent.CurrentSpeed;
+			set => movementComponent.CurrentSpeed = value;
 		}
 
-		/// <summary>
-		/// Set the tick speed, that is the distance covered in one tick.
-		/// </summary>
-		/// <param name="dx"></param>
-		/// <param name="dy"></param>
-		/// <param name="dz"></param>
-		/// <param name="speed"></param>
-		protected void SetTickSpeed(double dx, double dy, double dz, int speed)
+		public virtual short MaxSpeed => movementComponent.MaxSpeed;
+
+		public virtual short MaxSpeedBase
 		{
-			double tickSpeed = speed * 0.001;
-			SetTickSpeed(dx * tickSpeed, dy * tickSpeed, dz * tickSpeed);
+			get => movementComponent.MaxSpeedBase;
+			set => movementComponent.MaxSpeedBase = value;
 		}
 
-		/// <summary>
-		/// The tick at which the movement started.
-		/// </summary>
-		public long MovementStartTick { get; set; }
-
-		/// <summary>
-		/// Elapsed ticks since movement started.
-		/// </summary>
-		protected long MovementElapsedTicks
+		public virtual bool FixedSpeed
 		{
-			get { return GameLoop.GameLoopTime - MovementStartTick; }
+			set => movementComponent.FixedSpeed = value;
 		}
 
-		/// <summary>
-		/// True if the living is moving, else false.
-		/// </summary>
-		public virtual bool IsMoving
+		public virtual bool IsMoving => movementComponent.IsMoving;
+
+		public long MovementElapsedTicks => movementComponent.MovementElapsedTicks;
+
+		public long MovementStartTick
 		{
-			get { return m_currentSpeed != 0; }
+			set => movementComponent.MovementStartTick = value;
+		}
+
+		public virtual void DisableTurning(bool add)
+		{
+			movementComponent.DisableTurning(add);
+		}
+
+		public virtual void TurnTo(ushort heading, int duration = 0)
+		{
+			movementComponent.TurnTo(heading, duration);
+		}
+
+		public virtual void TurnTo(int x, int y, int duration = 0)
+		{
+			movementComponent.TurnTo(x, y, duration);
+		}
+
+		public virtual void TurnTo(GameObject target, int duration = 0)
+		{
+			movementComponent.TurnTo(target, duration);
 		}
 
 		/// <summary>
@@ -6042,16 +5912,8 @@ namespace DOL.GS
 		/// </summary>
 		public override int X
 		{
-			get
-			{
-				return (IsMoving)
-					? (int)(base.X + MovementElapsedTicks * TickSpeedX)
-					: base.X;
-			}
-			set
-			{
-				base.X = value;
-			}
+			get => IsMoving ? (int) (base.X + MovementElapsedTicks * movementComponent.TickSpeedX) : base.X;
+			set => base.X = value;
 		}
 
 		/// <summary>
@@ -6059,16 +5921,8 @@ namespace DOL.GS
 		/// </summary>
 		public override int Y
 		{
-			get
-			{
-				return (IsMoving)
-					? (int)(base.Y + MovementElapsedTicks * TickSpeedY)
-					: base.Y;
-			}
-			set
-			{
-				base.Y = value;
-			}
+			get => IsMoving ? (int) (base.Y + MovementElapsedTicks * movementComponent.TickSpeedY) : base.Y;
+			set => base.Y = value;
 		}
 
 		/// <summary>
@@ -6076,16 +5930,8 @@ namespace DOL.GS
 		/// </summary>
 		public override int Z
 		{
-			get
-			{
-				return (IsMoving)
-					? (int)(base.Z + MovementElapsedTicks * TickSpeedZ)
-					: base.Z;
-			}
-			set
-			{
-				base.Z = value;
-			}
+			get => IsMoving ? (int) (base.Z + MovementElapsedTicks * movementComponent.TickSpeedZ) : base.Z;
+			set => base.Z = value;
 		}
 
 		/// <summary>
@@ -7072,37 +6918,32 @@ namespace DOL.GS
 		/// <summary>
 		/// Constructor to create a new GameLiving
 		/// </summary>
-		public GameLiving()
-			: base()
+		public GameLiving() : base()
 		{
-            attackComponent = new AttackComponent(this);
-            rangeAttackComponent = new RangeAttackComponent(this);
-            styleComponent = new StyleComponent(this);
-            castingComponent = new CastingComponent(this);
-            effectListComponent = new EffectListComponent(this);
+			attackComponent = new AttackComponent(this);
+			rangeAttackComponent = new RangeAttackComponent(this);
+			styleComponent = new StyleComponent(this);
+			castingComponent = new CastingComponent(this);
+			effectListComponent = new EffectListComponent(this);
+			movementComponent = MovementComponent.Create(this);
+			healthComponent = new HealthComponent(this);
 
-            m_guildName = string.Empty;
+			m_guildName = string.Empty;
 			m_targetObjectWeakReference = new WeakRef(null);
 			m_groundTarget = new Point3D(0, 0, 0);
 
 			//Set all combat properties
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;
-            rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
-            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
-            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+			rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
+			rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+			rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
-			
-			//m_attackers = new List<GameObject>();
 
 			m_health = 1;
 			m_mana = 1;
 			m_endurance = 1;
 			m_maxEndurance = 1;
-
-
-            healthComponent = new HealthComponent(this);
-			// damageComponent = new DamageComponent(this);
 		}
 	}
 }

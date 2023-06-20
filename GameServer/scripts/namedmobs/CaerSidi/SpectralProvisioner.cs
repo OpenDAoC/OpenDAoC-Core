@@ -8,8 +8,8 @@ using DOL.GS.Scripts;
 
 namespace DOL.GS.Scripts
 {
-    public class SpectralProvisioner : GameEpicBoss
-    {
+	public class SpectralProvisioner : GameEpicBoss
+	{
 	public SpectralProvisioner()
 		: base() { }
 		public override int GetResist(eDamageType damageType)
@@ -62,23 +62,19 @@ namespace DOL.GS.Scripts
 			return base.HasAbility(keyName);
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
-	    {
-		    // 85% ABS is cap.
-		    return 0.20;
-	    }
+		{
+			// 85% ABS is cap.
+			return 0.20;
+		}
 
-	    public override short MaxSpeedBase
-	    {
-		    get => (short)(191 + (Level * 2));
-		    set => m_maxSpeedBase = value;
-	    }
-	    public override int MaxHealth => 100000;
+		public override short MaxSpeedBase => (short) (191 + Level * 2);
+		public override int MaxHealth => 100000;
 
-	    public override int AttackRange
-	    {
-		    get => 180;
-		    set { }
-	    }
+		public override int AttackRange
+		{
+			get => 180;
+			set { }
+		}
 		public override bool AddToWorld()
 		{
 			Level = 77;
@@ -114,11 +110,11 @@ namespace DOL.GS.Scripts
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
 		}
-		public override void WalkToSpawn(short speed)
+		public override void ReturnToSpawnPoint(short speed)
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn(speed);
+			base.ReturnToSpawnPoint(speed);
 		}
 		public override void StartAttack(GameObject target)
         {

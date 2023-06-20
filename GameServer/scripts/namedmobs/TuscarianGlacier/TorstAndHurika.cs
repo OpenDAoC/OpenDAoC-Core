@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -55,14 +53,14 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
         #region Stats
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
@@ -439,14 +437,14 @@ namespace DOL.GS
             }
         }
 
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (CurrentRegionID == 160) //if region is tuscaran glacier
             {
                 if (IsAlive)
                     return;
             }
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
 
         public override double AttackDamage(InventoryItem weapon)
@@ -747,17 +745,11 @@ namespace DOL.GS
                 return;
             base.Follow(target, minDistance, maxDistance);
         }
-        public override void FollowTargetInRange()
+        public override void ReturnToSpawnPoint(short speed)
         {
             if (IsAlive)
                 return;
-            base.FollowTargetInRange();
-        }
-        public override void WalkToSpawn(short speed)
-        {
-            if (IsAlive)
-                return;
-            base.WalkToSpawn(speed);
+            base.ReturnToSpawnPoint(speed);
         }
         public override void StartAttack(GameObject target)
         {

@@ -6,11 +6,11 @@ namespace DOL.GS
 	public class Eques : GameNPC
 	{
 		public Eques() : base() { }
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override bool AddToWorld()
 		{

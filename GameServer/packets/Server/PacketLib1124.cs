@@ -161,17 +161,17 @@ namespace DOL.GS.PacketHandler
 			{
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
 				{
-					int speed = 0;
+					short speed = 0;
 					ushort speedZ = 0;
 					if (npc == null)
 						return;
 					if (!npc.IsAtTargetPosition)
 					{
 						speed = npc.CurrentSpeed;
-						speedZ = (ushort)npc.TickSpeedZ;
+						speedZ = (ushort)npc.movementComponent.TickSpeedZ;
 					}
 					pak.WriteShort((ushort)npc.ObjectID);
-					pak.WriteShort((ushort)(speed));
+					pak.WriteShort((ushort)speed);
 					pak.WriteShort(npc.Heading);
 					pak.WriteShort((ushort)npc.Z);
 					pak.WriteInt((uint)npc.X);

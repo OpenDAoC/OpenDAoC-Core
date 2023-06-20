@@ -163,10 +163,10 @@ namespace DOL.GS.Scripts
         /// Return to spawn point, Aros the Spiritmaster can't be attacked while it's
         /// on it's way.
         /// </summary>
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             EvadeChance = 100;
-            WalkToSpawn(MaxSpeed);
+            ReturnToSpawnPoint(MaxSpeed);
         }
         public override void OnAttackedByEnemy(AttackData ad)
         {

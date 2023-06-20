@@ -16,16 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Reflection;
+using System.Collections;
 using DOL.Database;
 using DOL.Events;
-using DOL.Language;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
-using System.Collections;
 using DOL.GS.Quests;
-using log4net;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -242,7 +241,7 @@ namespace DOL.GS
 						mount.FixedSpeed = true;
 						mount.MaxSpeedBase = 1500;
 						mount.AddToWorld();
-						mount.CurrentWayPoint = path;
+						mount.CurrentWaypoint = path;
 						//GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						new MountHorseAction(player, mount).Start(400);
 						new HorseRideAction(mount).Start(4000);

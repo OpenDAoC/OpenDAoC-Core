@@ -49,14 +49,6 @@ namespace DOL.GS
 	{
 		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// Constant for determining if already at a point
-		/// </summary>
-		/// <remarks>
-		/// This helps to reduce the turning of an npc while fighting or returning to a spawn
-		/// Tested - min distance for mob sticking within combat range to player is 25 (Edit Navelator, 25 stops them too early, 20 keeps them in range)
-		/// </remarks>
-		public const int CONST_WALKTOTOLERANCE = 20;
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
 
 		private int m_databaseLevel;
@@ -179,21 +171,19 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the heading of this NPC
-		/// </summary>
 		public override ushort Heading
 		{
-			get { return base.Heading; }
+			get => base.Heading;
 			set
 			{
 				if (IsTurningDisabled)
 					return;
+
 				ushort oldHeading = base.Heading;
 				base.Heading = value;
+
 				if (base.Heading != oldHeading)
 					NeedsBroadcastUpdate = true;
-				//BroadcastUpdate();
 			}
 		}
 
@@ -202,7 +192,7 @@ namespace DOL.GS
 		/// </summary>
 		public override byte Level
 		{
-			get { return base.Level; }
+			get => base.Level;
 			set
 			{
 				bool bMaxHealth = (m_health == MaxHealth);
@@ -812,42 +802,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Gets or sets the current speed of the npc
-		/// </summary>
-		public override short CurrentSpeed
-		{
-			set
-			{
-				SaveCurrentPosition();
-
-				if (base.CurrentSpeed != value)
-				{
-					base.CurrentSpeed = value;
-					NeedsBroadcastUpdate = true;
-					//BroadcastUpdate();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Stores the currentwaypoint that npc has to wander to
-		/// </summary>
-		protected PathPoint m_currentWayPoint = null;
-
-		/// <summary>
-		/// Gets sets the speed for traveling on path
-		/// </summary>
-		public short PathingNormalSpeed
-		{
-			get { return m_pathingNormalSpeed; }
-			set { m_pathingNormalSpeed = value; }
-		}
-		/// <summary>
-		/// Stores the speed for traveling on path
-		/// </summary>
-		protected short m_pathingNormalSpeed;
-
-		/// <summary>
 		/// Gets the current X of this living. Don't modify this property
 		/// to try to change position of the mob while active. Use the
 		/// MoveTo function instead
@@ -857,24 +811,26 @@ namespace DOL.GS
 			get
 			{
 				if (!IsMoving)
-					return base.X;
+					return m_x;
 
-				if (TargetPosition.X != 0 || TargetPosition.Y != 0 || TargetPosition.Z != 0)
+				if (IsTargetPositionSet)
 				{
-					long expectedDistance = FastMath.Abs((long)TargetPosition.X - m_x);
+					long expectedDistance = FastMath.Abs((long) TargetPosition.X - m_x);
 
 					if (expectedDistance == 0)
 						return TargetPosition.X;
 
-					long actualDistance = FastMath.Abs((long)(MovementElapsedTicks * TickSpeedX));
+					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedX));
 
 					if (expectedDistance - actualDistance < 0)
 						return TargetPosition.X;
 				}
 
-				return base.X;
+				return (int) (m_x + MovementElapsedTicks * movementComponent.TickSpeedX);
 			}
 		}
+
+		public int RealX => m_x;
 
 		/// <summary>
 		/// Gets the current Y of this NPC. Don't modify this property
@@ -886,23 +842,26 @@ namespace DOL.GS
 			get
 			{
 				if (!IsMoving)
-					return base.Y;
+					return m_y;
 
-				if (TargetPosition.X != 0 || TargetPosition.Y != 0 || TargetPosition.Z != 0)
+				if (IsTargetPositionSet)
 				{
-					long expectedDistance = FastMath.Abs((long)TargetPosition.Y - m_y);
+					long expectedDistance = FastMath.Abs((long) TargetPosition.Y - m_y);
 
 					if (expectedDistance == 0)
 						return TargetPosition.Y;
 
-					long actualDistance = FastMath.Abs((long)(MovementElapsedTicks * TickSpeedY));
+					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedY));
 
 					if (expectedDistance - actualDistance < 0)
 						return TargetPosition.Y;
 				}
-				return base.Y;
+
+				return (int) (m_y + MovementElapsedTicks * movementComponent.TickSpeedY);
 			}
 		}
+
+		public int RealY => m_y;
 
 		/// <summary>
 		/// Gets the current Z of this NPC. Don't modify this property
@@ -914,37 +873,32 @@ namespace DOL.GS
 			get
 			{
 				if (!IsMoving)
-					return base.Z;
+					return m_z;
 
-				if (TargetPosition.X != 0 || TargetPosition.Y != 0 || TargetPosition.Z != 0)
+				if (IsTargetPositionSet)
 				{
-					long expectedDistance = FastMath.Abs((long)TargetPosition.Z - m_z);
+					long expectedDistance = FastMath.Abs(TargetPosition.Z - m_z);
 
 					if (expectedDistance == 0)
 						return TargetPosition.Z;
 
-					long actualDistance = FastMath.Abs((long)(MovementElapsedTicks * TickSpeedZ));
+					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedZ));
 
 					if (expectedDistance - actualDistance < 0)
 						return TargetPosition.Z;
 				}
-				return base.Z;
+
+				return (int) (m_z + MovementElapsedTicks * movementComponent.TickSpeedZ);
 			}
 		}
+
+		public int RealZ => m_z;
 
 		/// <summary>
 		/// The stealth state of this NPC
 		/// </summary>
-		public override bool IsStealthed
-		{
-			get
-			{
-				return false;// (Flags & eFlags.STEALTH) != 0;
-			}
-		}
-
-		bool m_wasStealthed = false;
-		public bool WasStealthed => m_wasStealthed;
+		public override bool IsStealthed => false;// (Flags & eFlags.STEALTH) != 0;
+		public bool WasStealthed { get; private set; } = false;
 
 		protected int m_maxdistance;
 		/// <summary>
@@ -957,16 +911,6 @@ namespace DOL.GS
 		{
 			get { return m_maxdistance; }
 			set { m_maxdistance = value; }
-		}
-
-		protected int m_roamingRange;
-		/// <summary>
-		/// radius for roaming
-		/// </summary>
-		public int RoamingRange
-		{
-			get { return m_roamingRange; }
-			set { m_roamingRange = value; }
 		}
 
 		protected int m_tetherRange;
@@ -1008,1015 +952,107 @@ namespace DOL.GS
 		#endregion
 
 		#region Movement
-		/// <summary>
-		/// Timer to be set if an OnArriveAtTarget
-		/// handler is set before calling the WalkTo function
-		/// </summary>
-		protected ArriveAtTargetAction m_arriveAtTargetAction;
 
-		/// <summary>
-		/// Is the mob roaming towards a target?
-		/// </summary>
-		public bool IsRoaming
-		{
-			get
-			{
-				return m_arriveAtTargetAction != null && m_arriveAtTargetAction.IsAlive;
-			}
-		}
+		public const int STICK_MINIMUM_RANGE = 75;
+		public const int STICK_MAXIMUM_RANGE = 5000;
 
-		/// <summary>
-		/// Timer to be set if an OnCloseToTarget
-		/// handler is set before calling the WalkTo function
-		/// </summary>
-		//protected CloseToTargetAction m_closeToTargetAction;
-		/// <summary>
-		/// Object that this npc is following as weakreference
-		/// </summary>
-		protected WeakReference m_followTarget;
-		/// <summary>
-		/// Max range to keep following
-		/// </summary>
-		protected int m_followMaxDist;
-		/// <summary>
-		/// Min range to keep to the target
-		/// </summary>
-		protected int m_followMinDist;
-		/// <summary>
-		/// Timer with purpose of follow updating
-		/// </summary>
-		protected ECSGameTimer m_followTimer;
-		/// <summary>
-		/// Property entry on follow timer, wether the follow target is in range
-		/// </summary>
-		protected const string FOLLOW_TARGET_IN_RANGE = "FollowTargetInRange";
-		/// <summary>
-		/// Minimum allowed attacker follow distance to avoid issues with client / server resolution (herky jerky motion)
-		/// </summary>
-		protected const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
-		/// <summary>
-		/// Minimum allowed pet follow distance
-		/// </summary>
-		protected const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
+		public long LastVisibleToPlayersTickCount => m_lastVisibleToPlayerTick;
 
-		private string m_pathID;
+		public IPoint3D TargetPosition => movementComponent.TargetPosition;
+		public GameObject FollowTarget => movementComponent.FollowTarget;
 		public string PathID
 		{
-			get { return m_pathID; }
-			set { m_pathID = value; }
+			get => movementComponent.PathID;
+			set => movementComponent.PathID = value;
 		}
-
-		private IPoint3D m_targetPosition = new Point3D(0, 0, 0);
-
-		/// <summary>
-		/// The target position.
-		/// </summary>
-		public virtual IPoint3D TargetPosition
+		public PathPoint CurrentWaypoint
 		{
-			get
-			{
-				return m_targetPosition;
-			}
-
-			protected set
-			{
-				if (value != m_targetPosition)
-				{
-					SaveCurrentPosition();
-					m_targetPosition = value;
-				}
-			}
+			get => movementComponent.CurrentWaypoint;
+			set => movementComponent.CurrentWaypoint = value;
 		}
-
-		private GameObject m_cachedTarget;
-
-		public GameObject CachedTarget
+		public bool IsReturningHome => movementComponent.IsReturningHome;
+		public bool IsReturningToSpawnPoint => movementComponent.IsReturningToSpawnPoint;
+		public int RoamingRange
 		{
-			get => m_cachedTarget;
-			set => m_cachedTarget = value;
+			get => movementComponent.RoamingRange;
+			set => movementComponent.RoamingRange = value;
 		}
+		public bool IsMovingOnPath => movementComponent.IsMovingOnPath;
+		public bool IsNearSpawn => movementComponent.IsNearSpawn;
+		public bool IsTargetPositionSet => movementComponent.IsTargetPositionSet;
+		public bool IsAtTargetPosition => movementComponent.IsAtTargetPosition;
+		public bool CanRoam => movementComponent.CanRoam;
 
-		public void ResetHeading()
+		public virtual void WalkTo(int x, int y, int z, short speed)
 		{
-			TurnTo(SpawnHeading);
-			IsReturningToSpawnPoint = false;
+			movementComponent.WalkTo(new Point3D(x, y, z), speed);
 		}
 
-		/// <summary>
-		/// Updates the tick speed for this living.
-		/// </summary>
-		protected override void UpdateTickSpeed()
-		{
-			if (!IsMoving)
-			{
-				SetTickSpeed(0, 0, 0);
-				return;
-			}
-
-			if (TargetPosition.X != 0 || TargetPosition.Y != 0 || TargetPosition.Z != 0)
-			{
-				double dist = this.GetDistanceTo(new Point3D(TargetPosition.X, TargetPosition.Y, TargetPosition.Z));
-
-				if (dist <= 0)
-				{
-					SetTickSpeed(0, 0, 0);
-					return;
-				}
-		
-				double dx = (double)(TargetPosition.X - m_x) / dist;
-				double dy = (double)(TargetPosition.Y - m_y) / dist;
-				double dz = (double)(TargetPosition.Z - m_z) / dist;
-
-				SetTickSpeed(dx, dy, dz, CurrentSpeed);
-			
-				return;
-			}
-
-			base.UpdateTickSpeed();
-		}
-
-		/// <summary>
-		/// True if the mob is at its target position, else false.
-		/// </summary>
-		public bool IsAtTargetPosition
-		{
-			get
-			{
-				return (X == TargetPosition.X && Y == TargetPosition.Y && Z == TargetPosition.Z);
-			}
-		}
-
-		/// <summary>
-		/// Turns the npc towards a specific spot
-		/// </summary>
-		/// <param name="tx">Target X</param>
-		/// <param name="ty">Target Y</param>
-		public virtual void TurnTo(int tx, int ty)
-		{
-			TurnTo(tx, ty, true);
-		}
-
-		/// <summary>
-		/// Turns the npc towards a specific spot
-		/// optionally sends update to client
-		/// </summary>
-		/// <param name="tx">Target X</param>
-		/// <param name="ty">Target Y</param>
-		public virtual void TurnTo(int tx, int ty, bool sendUpdate)
-		{
-			if (IsStunned || IsMezzed) return;
-
-			// Notify(GameNPCEvent.TurnTo, this, new TurnToEventArgs(tx, ty));
-
-			if (sendUpdate)
-				Heading = GetHeading(new Point2D(tx, ty));
-			else
-				base.Heading = GetHeading(new Point2D(tx, ty));
-		}
-
-		/// <summary>
-		/// Turns the npc towards a specific heading
-		/// </summary>
-		/// <param name="newHeading">the new heading</param>
-		public virtual void TurnTo(ushort heading)
-		{
-			TurnTo(heading, true);
-		}
-
-		/// <summary>
-		/// Turns the npc towards a specific heading
-		/// optionally sends update to client
-		/// </summary>
-		/// <param name="newHeading">the new heading</param>
-		public virtual void TurnTo(ushort heading, bool sendUpdate)
-		{
-			if (IsStunned || IsMezzed) return;
-
-			// Notify(GameNPCEvent.TurnToHeading, this, new TurnToHeadingEventArgs(heading));
-
-			if (sendUpdate)
-				if (Heading != heading) Heading = heading;
-				else
-				if (base.Heading != heading) base.Heading = heading;
-		}
-
-		/// <summary>
-		/// Turns the NPC towards a specific gameObject
-		/// which can be anything ... a player, item, mob, npc ...
-		/// </summary>
-		/// <param name="target">GameObject to turn towards</param>
-		public virtual void TurnTo(GameObject target)
-		{
-			TurnTo(target, true);
-		}
-
-		/// <summary>
-		/// Turns the NPC towards a specific gameObject
-		/// which can be anything ... a player, item, mob, npc ...
-		/// optionally sends update to client
-		/// </summary>
-		/// <param name="target">GameObject to turn towards</param>
-		public virtual void TurnTo(GameObject target, bool sendUpdate)
-		{
-			if (target == null || target.CurrentRegion != CurrentRegion)
-				return;
-
-			TurnTo(target.X, target.Y, sendUpdate);
-		}
-
-		/// <summary>
-		/// Turns the NPC towards a specific gameObject
-		/// which can be anything ... a player, item, mob, npc ...
-		/// and turn back after specified duration
-		/// </summary>
-		/// <param name="target">GameObject to turn towards</param>
-		/// <param name="duration">restore heading after this duration</param>
-		public virtual void TurnTo(GameObject target, int duration)
-		{
-			if (target == null || target.CurrentRegion != CurrentRegion)
-				return;
-
-			// Store original heading if not set already.
-
-			RestoreHeadingAction restore = (RestoreHeadingAction)TempProperties.getProperty<object>(RESTORE_HEADING_ACTION_PROP, null);
-
-			if (restore == null)
-			{
-				restore = new RestoreHeadingAction(this);
-				TempProperties.setProperty(RESTORE_HEADING_ACTION_PROP, restore);
-			}
-
-			TurnTo(target);
-			restore.Start(duration);
-		}
-
-		/// <summary>
-		/// The property used to store the NPC heading restore action
-		/// </summary>
-		protected const string RESTORE_HEADING_ACTION_PROP = "NpcRestoreHeadingAction";
-
-		/// <summary>
-		/// Restores the NPC heading after some time
-		/// </summary>
-		protected class RestoreHeadingAction : RegionECSAction
-		{
-			/// <summary>
-			/// The NPCs old heading
-			/// </summary>
-			protected readonly ushort m_oldHeading;
-
-			/// <summary>
-			/// The NPCs old position
-			/// </summary>
-			protected readonly Point3D m_oldPosition;
-
-			/// <summary>
-			/// Creates a new TurnBackAction
-			/// </summary>
-			/// <param name="actionSource">The source of action</param>
-			public RestoreHeadingAction(GameNPC actionSource)
-				: base(actionSource)
-			{
-				m_oldHeading = actionSource.Heading;
-				m_oldPosition = new Point3D(actionSource);
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameNPC npc = (GameNPC)m_actionSource;
-
-				npc.TempProperties.removeProperty(RESTORE_HEADING_ACTION_PROP);
-
-				if (npc.ObjectState != eObjectState.Active) return 0;
-				if (!npc.IsAlive) return 0;
-				if (npc.attackComponent.AttackState) return 0;
-				if (npc.IsMoving) return 0;
-				if (npc.Equals(m_oldPosition)) return 0;
-				if (npc.Heading == m_oldHeading) return 0; // already set? oO
-
-				npc.TurnTo(m_oldHeading);
-
-				return 0;
-			}
-		}
-
-		/// <summary>
-		/// Gets the last this this NPC was actually update to at least one player.
-		/// </summary>
-		public long LastVisibleToPlayersTickCount
-		{
-			get { return m_lastVisibleToPlayerTick; }
-		}
-
-		/// <summary>
-		/// Delayed action that fires an event when an NPC arrives at its target
-		/// </summary>
-		protected class ArriveAtTargetAction : RegionECSAction
-		{
-			/// <summary>
-			/// Constructs a new ArriveAtTargetAction
-			/// </summary>
-			/// <param name="actionSource">The action source</param>
-			public ArriveAtTargetAction(GameNPC actionSource)
-				: base(actionSource)
-			{
-			}
-
-			/// <summary>
-			/// This function is called when the Mob arrives at its target spot
-			/// This time was estimated using walking speed and distance.
-			/// It fires the ArriveAtTarget event
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameNPC npc = (GameNPC)m_actionSource;
-
-				bool arriveAtSpawnPoint = npc.IsReturningToSpawnPoint;
-
-				npc.StopMoving();
-				//npc.Notify(GameNPCEvent.ArriveAtTarget, npc);
-
-				if (arriveAtSpawnPoint)
-				{
-					npc.TurnTo(npc.SpawnHeading);
-					return 0;
-				}
-
-				if (!npc.IsMovingOnPath)
-					return 0;
-
-				if (npc.CurrentWayPoint != null)
-				{
-					WaypointDelayAction waitTimer = new WaypointDelayAction(npc);
-					waitTimer.Start(Math.Max(1, npc.CurrentWayPoint.WaitTime * 100));
-				}
-				else
-					npc.StopMovingOnPath();
-
-				return 0;
-			}
-		}
-
-		public virtual void CancelWalkToTimer()
-		{
-			if (m_arriveAtTargetAction != null)
-			{
-				m_arriveAtTargetAction?.Stop();
-				m_arriveAtTargetAction = null;
-			}
-		}
-
-		/// <summary>
-		/// Ticks required to arrive at a given spot.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="speed"></param>
-		/// <returns></returns>
-		public virtual int GetTicksToArriveAt(IPoint3D target, int speed)
-		{
-			return GetDistanceTo(target) * 1000 / speed;
-		}
-
-		/// <summary>
-		/// Make the current (calculated) position permanent.
-		/// </summary>
-		public void SaveCurrentPosition()
-		{
-			SavePosition(this);
-		}
-
-		/// <summary>
-		/// Make the target position permanent.
-		/// </summary>
-		private void SavePosition(IPoint3D target)
-		{
-			X = target.X;
-			Y = target.Y;
-			Z = target.Z;
-
-			MovementStartTick = GameLoop.GameLoopTime;
-		}
-
-		/// <summary>
-		/// Walk to a certain spot at a given speed.
-		/// </summary>
-		/// <param name="tx"></param>
-		/// <param name="ty"></param>
-		/// <param name="tz"></param>
-		/// <param name="speed"></param>
-		public virtual void WalkTo(int targetX, int targetY, int targetZ, short speed)
-		{
-			WalkTo(new Point3D(targetX, targetY, targetZ), speed);
-		}
-
-		/// <summary>
-		/// Walk to a certain spot at a given speed.
-		/// </summary>
 		public virtual void WalkTo(IPoint3D target, short speed)
 		{
-			if (IsTurningDisabled)
-				return;
-
-			if (speed > MaxSpeed)
-				speed = MaxSpeed;
-
-			if (speed <= 0)
-				return;
-
-			TargetPosition = target; // This also saves the current position.
-
-			// No need to start walking.
-			if (IsWithinRadius(TargetPosition, CONST_WALKTOTOLERANCE))
-				return;
-
-			CancelWalkToTimer();
-			m_Heading = GetHeading(TargetPosition);
-			m_currentSpeed = speed;
-			MovementStartTick = GameLoop.GameLoopTime; // Adding this to prevent pets from warping when using GoTo and Here on the same target twice.
-			UpdateTickSpeed();
-			int ticksToArrive = GetTicksToArriveAt(TargetPosition, speed);
-
-			// Cancel the ranged attack if the NPC is moving.
-			if (ActiveWeaponSlot == eActiveWeaponSlot.Distance && ticksToArrive > 0)
-			{
-				StopAttack();
-				attackComponent.attackAction?.CleanUp();
-			}
-
-			StartArriveAtTargetAction(ticksToArrive);
-			NeedsBroadcastUpdate = true;
+			movementComponent.WalkTo(target, speed);
 		}
 
-		private void StartArriveAtTargetAction(int requiredTicks)
-		{
-			m_arriveAtTargetAction = new ArriveAtTargetAction(this);
-			m_arriveAtTargetAction.Start((requiredTicks > 1) ? requiredTicks : 1);
-		}
-
-		/// <summary>
-		/// Walk to the spawn point
-		/// </summary>
-		public virtual void WalkToSpawn()
-		{
-			WalkToSpawn((short)(50));
-		}
-
-		/// <summary>
-		/// Walk to the spawn point
-		/// </summary>
-		public virtual void CancelWalkToSpawn()
-		{
-			CancelWalkToTimer();
-			IsReturningHome = false;
-			IsReturningToSpawnPoint = false;
-		}
-
-		public bool IsNearSpawn()
-		{
-			return IsWithinRadius(SpawnPoint, CONST_WALKTOTOLERANCE);
-		}
-
-		/// <summary>
-		/// Walk to the spawn point with specified speed
-		/// </summary>
-		public virtual void WalkToSpawn(short speed)
-		{
-			attackComponent.StopAttack();
-			StopFollowing();
-
-			StandardMobBrain brain = Brain as StandardMobBrain;
-
-			if (brain != null && brain.HasAggro)
-			{
-				brain.ClearAggroList();
-			}
-
-			TargetObject = null;
-
-			IsReturningHome = true;
-			IsReturningToSpawnPoint = true;
-			WalkTo(SpawnPoint, speed);
-		}
-
-		/// <summary>
-		/// This function is used to start the mob walking. It will
-		/// walk in the heading direction until the StopMovement function
-		/// is called
-		/// </summary>
-		/// <param name="speed">walk speed</param>
-		public virtual void Walk(short speed)
-		{
-			Notify(GameNPCEvent.Walk, this, new WalkEventArgs(speed));
-
-			CancelWalkToTimer();
-			SaveCurrentPosition();
-			TargetPosition.Clear();
-
-			m_currentSpeed = speed;
-
-			MovementStartTick = GameLoop.GameLoopTime;
-			UpdateTickSpeed();
-			NeedsBroadcastUpdate = true;
-			//BroadcastUpdate();
-		}
-
-		/// <summary>
-		/// Gets the NPC current follow target
-		/// </summary>
-		public GameObject CurrentFollowTarget
-		{
-			get { return m_followTarget.Target as GameObject; }
-		}
-
-		/// <summary>
-		/// Stops the movement of the mob.
-		/// </summary>
 		public virtual void StopMoving()
 		{
-			CancelWalkToSpawn();
-
-			if (IsMoving)
-				CurrentSpeed = 0;
+			movementComponent.StopMoving();
 		}
 
-		/// <summary>
-		/// Stops the movement of the mob and forcibly moves it to the
-		/// given target position.
-		/// </summary>
-		public virtual void StopMovingAt(IPoint3D target)
+		public virtual void Follow(GameObject target)
 		{
-			CancelWalkToSpawn();
-
-			if (IsMoving)
-			{
-				m_currentSpeed = 0;
-				UpdateTickSpeed();
-			}
-
-			SavePosition(target);
-			NeedsBroadcastUpdate = true;
-			//BroadcastUpdate();
+			movementComponent.Follow(target);
 		}
 
-		public const int STICKMINIMUMRANGE = 75;
-		public const int STICKMAXIMUMRANGE = 5000;
-
-		/// <summary>
-		/// Follow given object
-		/// </summary>
-		/// <param name="target">Target to follow</param>
-		/// <param name="minDistance">Min distance to keep to the target</param>
-		/// <param name="maxDistance">Max distance to keep following</param>
 		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
 		{
-			if (target == null || target.ObjectState != eObjectState.Active)
-				return;
-			
-			if (m_followTimer != null && m_followTimer.IsAlive && m_followTarget?.Target == target && m_followMinDist == minDistance && m_followMaxDist == maxDistance)
-				return;
-			else if (m_followTimer != null)
-			{
-				m_followTimer.Stop();
-			}
-			else if (m_followTimer == null)
-			{
-				m_followTimer = new ECSGameTimer(this);
-				m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
-			}
-			
-			m_followMaxDist = maxDistance;
-			m_followMinDist = minDistance;
-			m_followTarget.Target = target;
-			m_followTimer.Start(100);
+			movementComponent.Follow(target, minDistance, maxDistance);
 		}
 
-		/// <summary>
-		/// Stop following
-		/// </summary>
 		public virtual void StopFollowing()
 		{
-			lock (m_followTimer)
-			{
-				if (m_followTimer.IsAlive)
-					m_followTimer.Stop();
-
-				m_followTarget.Target = null;
-				StopMoving();
-			}
+			movementComponent.StopFollowing();
 		}
 
-		/// <summary>
-		/// Will be called if follow mode is active
-		/// and we reached the follow target
-		/// </summary>
-		public virtual void FollowTargetInRange()
+		public virtual void MoveOnPath(short minSpeed)
 		{
-			if (attackComponent.AttackState)
-			{
-				// if in last attack the enemy was out of range, we can attack him now immediately
-				AttackData ad = (AttackData)TempProperties.getProperty<object>(LAST_ATTACK_DATA, null);
-				if (ad != null && ad.AttackResult == eAttackResult.OutOfRange && attackComponent.attackAction != null)
-				{
-					//m_attackAction.Start(1);// schedule for next tick
-					attackComponent.attackAction.StartTime = 1;
-				}
-			}
-			//sirru
-			else if (attackComponent.Attackers.Count == 0 && this.Spells.Count > 0 && this.TargetObject != null && GameServer.ServerRules.IsAllowedToAttack(this, (this.TargetObject as GameLiving), true))
-			{
-				if (TargetObject?.Realm == 0 || Realm == 0)
-					m_lastAttackTickPvE = m_CurrentRegion.Time;
-				else m_lastAttackTickPvP = m_CurrentRegion.Time;
-				if (this.CurrentRegion.Time - LastAttackedByEnemyTick > 10 * 1000)
-				{
-					// Aredhel: Erm, checking for spells in a follow method, what did we create
-					// brain classes for again?
-
-					//Check for negatively casting spells
-					StandardMobBrain stanBrain = (StandardMobBrain)Brain;
-					if (stanBrain != null)
-						((StandardMobBrain)stanBrain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive);
-				}
-			}
+			movementComponent.MoveOnPath(minSpeed);
 		}
 
-		/// <summary>
-		/// Keep following a specific object at a max distance
-		/// </summary>
-		protected virtual int FollowTimerCallback(ECSGameTimer callingTimer)
+		public virtual void StopMovingOnPath()
 		{
-			double followSpeedScaler = 2.5; //This is used to scale the follow speed based on the distance from target
-
-			if (IsCasting)
-				return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
-
-			bool wasInRange = m_followTimer.Properties.getProperty(FOLLOW_TARGET_IN_RANGE, false);
-			m_followTimer.Properties.removeProperty(FOLLOW_TARGET_IN_RANGE);
-
-			GameObject followTarget = (GameObject)m_followTarget.Target;
-			GameLiving followLiving = followTarget as GameLiving;
-
-			//Stop following if target living is dead
-			if (followLiving != null && !followLiving.IsAlive)
-			{
-				StopFollowing();
-				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
-				return 0;
-			}
-
-			//Stop following if we have no target
-			if (followTarget == null || followTarget.ObjectState != eObjectState.Active || CurrentRegionID != followTarget.CurrentRegionID)
-			{
-				StopFollowing();
-				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
-				return 0;
-			}
-
-			//Calculate the difference between our position and the players position
-			float diffx = (long)followTarget.X - X;
-			float diffy = (long)followTarget.Y - Y;
-			float diffz = (long)followTarget.Z - Z;
-
-			//SH: Removed Z checks when one of the two Z values is zero(on ground)
-			//Tolakram: a Z of 0 does not indicate on the ground.  Z varies based on terrain  Removed 0 Z check
-			float distance = (float)Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
-
-			//if distance is greater then the max follow distance, stop following and return home
-			if ((int)distance > m_followMaxDist)
-			{
-				StopFollowing();
-				//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
-				this.WalkToSpawn();
-				return 0;
-			}
-			int newX, newY, newZ;
-
-			if (this.Brain is StandardMobBrain)
-			{
-				StandardMobBrain brain = this.Brain as StandardMobBrain;
-
-				//if the npc hasn't hit or been hit in a while, stop following and return home
-				if (!(Brain is IControlledBrain))
-				{
-					if (attackComponent.AttackState && brain != null && followLiving != null)
-					{
-						long seconds = 25 + ((brain.GetAggroAmountForLiving(followLiving) / (MaxHealth + 1)) * 100);
-						long lastattacked = LastAttackTick;
-						long lasthit = LastAttackedByEnemyTick;
-						if ((GameLoop.GameLoopTime - lastattacked > seconds * 1000 && GameLoop.GameLoopTime - lasthit > seconds * 1000)
-							&& lasthit != 0)
-						{
-							//StopFollow();
-							//Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
-							//brain.ClearAggroList();
-							//this.WalkToSpawn();
-							LastAttackedByEnemyTickPvE = 0;
-							LastAttackedByEnemyTickPvP = 0;
-							brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-							return 0;
-						}
-					}
-				}
-
-				//If we're part of a formation, we can get out early.
-				newX = followTarget.X;
-				newY = followTarget.Y;
-				newZ = followTarget.Z;
-				
-				if (TargetObject != null && TargetObject.Realm != this.Realm)
-				{
-					//do nothing 
-				}
-				//else if (brain.CheckFormation(ref newX, ref newY, ref newZ) || TargetObject?.Realm == this.Realm)
-				else if (brain.CheckFormation(ref newX, ref newY, ref newZ))
-				{
-					short followspeed= (short) Math.Max(Math.Min(MaxSpeed,GetDistance(new Point2D(newX, newY))*followSpeedScaler),50);
-					//log.Debug($"Followspeed: {followspeed}");
-					WalkTo(newX, newY, (ushort) newZ, followspeed);
-					//WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-					
-					return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
-				}
-			}
-
-			// Tolakram - Distances under 100 do not calculate correctly leading to the mob always being told to walkto
-			int minAllowedFollowDistance = MIN_ALLOWED_FOLLOW_DISTANCE;
-
-			// pets can follow closer.  need to implement /fdistance command to make this adjustable
-			if (this.Brain is IControlledBrain)
-				minAllowedFollowDistance = MIN_ALLOWED_PET_FOLLOW_DISTANCE;
-
-			//Are we in range yet?
-			if ((int)distance <= (m_followMinDist < minAllowedFollowDistance ? minAllowedFollowDistance : m_followMinDist))
-			{
-				StopMoving();
-				TurnTo(followTarget);
-				if (!wasInRange)
-				{
-					m_followTimer.Properties.setProperty(FOLLOW_TARGET_IN_RANGE, true);
-					FollowTargetInRange();
-				}
-				return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
-			}
-
-			// follow on distance
-			diffx = (diffx / distance) * m_followMinDist;
-			diffy = (diffy / distance) * m_followMinDist;
-			diffz = (diffz / distance) * m_followMinDist;
-
-			//Subtract the offset from the target's position to get
-			//our target position
-			newX = (int)(followTarget.X - diffx);
-			newY = (int)(followTarget.Y - diffy);
-			newZ = (int)(followTarget.Z - diffz);
-			
-			if (Brain is ControlledNpcBrain controlledNpcBrain)
-			{
-				if (InCombat || Brain is BomberBrain || TargetObject != null)
-					WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-				// else if (!IsWithinRadius(new Point2D(newX, newY),200)) // MaxSpeed < GetDistance(new Point2D(newX, newY)))
-				// 	WalkTo(newX, newY, (ushort) newZ, MaxSpeed); //(short)Math.Min(MaxSpeed, followLiving.CurrentSpeed + 50));
-				else //If close, slow down followspeed to target. This is based on distance and followSpeedScaler
-				{
-					// WalkTo(newX, newY, (ushort) newZ, (short)185);//(GetDistance(new Point2D(newX, newY)) + 191));
-					short followspeed = (short) Math.Max(Math.Min(MaxSpeed,GetDistance(new Point2D(newX, newY))*followSpeedScaler),50);
-					WalkTo(newX, newY, (ushort) newZ, followspeed);
-				}
-			}
-			else
-				WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-			return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
-			
+			movementComponent.StopMovingOnPath();
 		}
 
-		/// <summary>
-		/// Disables the turning for this living
-		/// </summary>
-		/// <param name="add"></param>
-		public override void DisableTurning(bool add)
+		public virtual void ReturnToSpawnPoint()
 		{
-			bool old = IsTurningDisabled;
-			base.DisableTurning(add);
-			if (old != IsTurningDisabled)
-				NeedsBroadcastUpdate = true;
-			//BroadcastUpdate();
+			movementComponent.ReturnToSpawnPoint();
 		}
 
-		#endregion
-
-		#region Path (Movement)
-		/// <summary>
-		/// Gets sets the currentwaypoint that npc has to wander to
-		/// </summary>
-		public PathPoint CurrentWayPoint
+		public virtual void ReturnToSpawnPoint(short speed)
 		{
-			get { return m_currentWayPoint; }
-			set { m_currentWayPoint = value; }
+			movementComponent.ReturnToSpawnPoint(speed);
 		}
 
-		/// <summary>
-		/// Is the NPC returning home, if so, we don't want it to think
-		/// </summary>
-		public bool IsReturningHome
+		public virtual void CancelReturnToSpawnPoint()
 		{
-			get { return m_isReturningHome; }
-			set { m_isReturningHome = value; }
+			movementComponent.CancelReturnToSpawnPoint();
 		}
 
-		protected bool m_isReturningHome = false;
-
-		/// <summary>
-		/// Whether or not the NPC is on its way back to the spawn point.
-		/// [Aredhel: I decided to add this property in order not to mess
-		/// with SMB and IsReturningHome. Also, to prevent outside classes
-		/// from interfering the setter is now protected.]
-		/// </summary>
-		public bool IsReturningToSpawnPoint { get; protected set; }
-
-		/// <summary>
-		/// Gets if npc moving on path
-		/// </summary>
-		public bool IsMovingOnPath
+		public virtual void Roam(short speed)
 		{
-			get { return m_IsMovingOnPath; }
-		}
-		/// <summary>
-		/// Stores if npc moving on path
-		/// </summary>
-		protected bool m_IsMovingOnPath = false;
-
-		/// <summary>
-		/// let the npc travel on its path
-		/// </summary>
-		/// <param name="speed">Speed on path</param>
-		public void MoveOnPath(short speed)
-		{
-			if (IsMovingOnPath)
-				StopMovingOnPath();
-
-			if (CurrentWayPoint == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("No path to travel on for " + Name);
-				return;
-			}
-
-			PathingNormalSpeed = speed;
-
-			if (this.IsWithinRadius(CurrentWayPoint, 100))
-			{
-				// reaching a waypoint can start an ambient sentence
-				FireAmbientSentence(eAmbientTrigger.moving, this);
-
-				if (CurrentWayPoint.Type == ePathType.Path_Reverse && CurrentWayPoint.FiredFlag)
-					CurrentWayPoint = CurrentWayPoint.Prev;
-				else
-				{
-					if ((CurrentWayPoint.Type == ePathType.Loop) && (CurrentWayPoint.Next == null))
-						CurrentWayPoint = MovementMgr.FindFirstPathPoint(CurrentWayPoint);
-					else
-						CurrentWayPoint = CurrentWayPoint.Next;
-				}
-			}
-
-			if (CurrentWayPoint != null)
-			{
-				//GameEventMgr.AddHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
-				WalkTo(CurrentWayPoint, Math.Min(speed, (short)CurrentWayPoint.MaxSpeed));
-				m_IsMovingOnPath = true;
-				//Notify(GameNPCEvent.PathMoveStarts, this);
-			}
-			else
-			{
-				StopMovingOnPath();
-			}
+			movementComponent.Roam(speed);
 		}
 
-		/// <summary>
-		/// Stop moving on path.
-		/// </summary>
-		public void StopMovingOnPath()
-		{
-			if (!IsMovingOnPath)
-				return;
-
-			m_IsMovingOnPath = false;
-			
-			//GameEventMgr.RemoveHandler(this, GameNPCEvent.ArriveAtTarget, new DOLEventHandler(OnArriveAtWaypoint));
-			//Notify(GameNPCEvent.PathMoveEnds, this);
-			if (this is GameTaxi || this is GameTaxiBoat)
-			{
-				StopMoving();
-				RemoveFromWorld();
-			}
-			
-			
-		}
-
-		/// <summary>
-		/// decides what to do on reached waypoint in path
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="n"></param>
-		/// <param name="args"></param>
-		protected void OnArriveAtWaypoint(DOLEvent e, object n, EventArgs args)
-		{
-			if (!IsMovingOnPath || n != this)
-				return;
-
-			if (CurrentWayPoint != null)
-			{
-				WaypointDelayAction waitTimer = new WaypointDelayAction(this);
-				waitTimer.Start(Math.Max(1, CurrentWayPoint.WaitTime * 100));
-			}
-			else
-				StopMovingOnPath();
-		}
-
-		/// <summary>
-		/// Delays movement to the next waypoint
-		/// </summary>
-		protected class WaypointDelayAction : RegionECSAction
-		{
-			/// <summary>
-			/// Constructs a new WaypointDelayAction
-			/// </summary>
-			/// <param name="actionSource"></param>
-			public WaypointDelayAction(GameObject actionSource)
-				: base(actionSource)
-			{
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameNPC npc = (GameNPC)m_actionSource;
-				if (!npc.IsMovingOnPath)
-					return 0;
-				PathPoint oldPathPoint = npc.CurrentWayPoint;
-				PathPoint nextPathPoint = npc.CurrentWayPoint.Next;
-				if ((npc.CurrentWayPoint.Type == ePathType.Path_Reverse) && (npc.CurrentWayPoint.FiredFlag))
-					nextPathPoint = npc.CurrentWayPoint.Prev;
-
-				if (nextPathPoint == null)
-				{
-					switch (npc.CurrentWayPoint.Type)
-					{
-						case ePathType.Loop:
-							{
-								npc.CurrentWayPoint = MovementMgr.FindFirstPathPoint(npc.CurrentWayPoint);
-								//npc.Notify(GameNPCEvent.PathMoveStarts, npc);
-								break;
-							}
-						case ePathType.Once:
-							npc.CurrentWayPoint = null;//to stop
-							break;
-						case ePathType.Path_Reverse://invert sens when go to end of path
-							if (oldPathPoint.FiredFlag)
-								npc.CurrentWayPoint = npc.CurrentWayPoint.Next;
-							else
-								npc.CurrentWayPoint = npc.CurrentWayPoint.Prev;
-							break;
-					}
-				}
-				else
-				{
-					if ((npc.CurrentWayPoint.Type == ePathType.Path_Reverse) && (npc.CurrentWayPoint.FiredFlag))
-						npc.CurrentWayPoint = npc.CurrentWayPoint.Prev;
-					else
-						npc.CurrentWayPoint = npc.CurrentWayPoint.Next;
-				}
-				oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
-
-				if (npc.CurrentWayPoint != null)
-				{
-					npc.WalkTo(npc.CurrentWayPoint, (short)Math.Min(npc.PathingNormalSpeed, npc.CurrentWayPoint.MaxSpeed));
-				}
-				else
-				{
-					npc.StopMovingOnPath();
-				}
-
-				return 0;
-			}
-		}
 		#endregion
 
 		#region Inventory/LoadfromDB
-		private NpcTemplate m_npcTemplate = null;
-		/// <summary>
-		/// The NPC's template
-		/// </summary>
+		private NpcTemplate m_npcTemplate;
 		public NpcTemplate NPCTemplate
 		{
 			get { return m_npcTemplate; }
 			set { m_npcTemplate = value; }
 		}
+
 		/// <summary>
 		/// Loads the equipment template of this npc
 		/// </summary>
@@ -2076,13 +1112,14 @@ namespace DOL.GS
 		/// <param name="obj">template to load from</param>
 		public override void LoadFromDatabase(DataObject obj)
 		{
-			if (obj == null) return;
+			if (obj is not Mob)
+				return;
+
 			base.LoadFromDatabase(obj);
-			if (!(obj is Mob)) return;
+
 			m_loadedFromScript = false;
 			Mob dbMob = (Mob)obj;
 			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
-
 			TranslationId = dbMob.TranslationId;
 			Name = dbMob.Name;
 			Suffix = dbMob.Suffix;
@@ -2092,40 +1129,34 @@ namespace DOL.GS
 			m_x = dbMob.X;
 			m_y = dbMob.Y;
 			m_z = dbMob.Z;
-			m_Heading = (ushort)(dbMob.Heading & 0xFFF);
-			m_maxSpeedBase = (short)dbMob.Speed;
-			m_currentSpeed = 0;
+			m_Heading = (ushort) (dbMob.Heading & 0xFFF);
+			MaxSpeedBase = (short) dbMob.Speed;
 			CurrentRegionID = dbMob.Region;
 			Realm = (eRealm)dbMob.Realm;
 			Model = dbMob.Model;
 			Size = dbMob.Size;
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
-
-			// Skip Level.set calling AutoSetStats() so it doesn't load the DB entry we already have
 			m_level = dbMob.Level;
 			m_databaseLevel = dbMob.Level;
 			AutoSetStats(dbMob);
 			Level = dbMob.Level;
-
 			MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
+
 			if (MeleeDamageType == 0)
-			{
 				MeleeDamageType = eDamageType.Slash;
-			}
+
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;
 			rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
-
 			m_faction = FactionMgr.GetFactionByID(dbMob.FactionID);
+
 			LoadEquipmentTemplateFromDatabase(dbMob.EquipmentTemplateID);
 
 			if (dbMob.RespawnInterval == -1)
-			{
 				dbMob.RespawnInterval = 0;
-			}
-			m_respawnInterval = dbMob.RespawnInterval * 1000;
 
-			m_pathID = dbMob.PathID;
+			m_respawnInterval = dbMob.RespawnInterval * 1000;
+			PathID = dbMob.PathID;
 
 			if (dbMob.Brain != "")
 			{
@@ -2134,10 +1165,12 @@ namespace DOL.GS
 					ABrain brain = null;
 					foreach (Assembly asm in ScriptMgr.GameServerScripts)
 					{
-						brain = (ABrain)asm.CreateInstance(dbMob.Brain, false);
+						brain = (ABrain) asm.CreateInstance(dbMob.Brain, false);
+
 						if (brain != null)
 							break;
 					}
+
 					if (brain != null)
 						SetOwnBrain(brain);
 				}
@@ -2147,45 +1180,39 @@ namespace DOL.GS
 				}
 			}
 
-			IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
-			if (aggroBrain != null)
+			if (Brain is IOldAggressiveBrain aggroBrain)
 			{
 				aggroBrain.AggroLevel = dbMob.AggroLevel;
 				aggroBrain.AggroRange = dbMob.AggroRange;
+
 				if (aggroBrain.AggroRange == Constants.USE_AUTOVALUES)
 				{
 					if (Realm == eRealm.None)
 					{
 						aggroBrain.AggroRange = 400;
+
 						if (Name != Name.ToLower())
-						{
 							aggroBrain.AggroRange = 500;
-						}
+
 						if (CurrentRegion.IsDungeon)
-						{
 							aggroBrain.AggroRange = 300;
-						}
 					}
 					else
-					{
 						aggroBrain.AggroRange = 500;
-					}
 				}
+
 				if (aggroBrain.AggroLevel == Constants.USE_AUTOVALUES)
 				{
 					aggroBrain.AggroLevel = 0;
+
 					if (Level > 5)
-					{
 						aggroBrain.AggroLevel = 30;
-					}
+
 					if (Name != Name.ToLower())
-					{
 						aggroBrain.AggroLevel = 30;
-					}
+
 					if (Realm != eRealm.None)
-					{
 						aggroBrain.AggroLevel = 60;
-					}
 				}
 			}
 
@@ -2193,18 +1220,13 @@ namespace DOL.GS
 			m_bodyType = (ushort)dbMob.BodyType;
 			m_houseNumber = (ushort)dbMob.HouseNumber;
 			m_maxdistance = dbMob.MaxDistance;
-			m_roamingRange = dbMob.RoamingRange;
+			RoamingRange = dbMob.RoamingRange;
 			m_isCloakHoodUp = dbMob.IsCloakHoodUp;
 			m_visibleActiveWeaponSlots = dbMob.VisibleWeaponSlots;
-
 			Gender = (eGender)dbMob.Gender;
 			OwnerID = dbMob.OwnerID;
 
 			LoadTemplate(NPCTemplate);
-			/*
-						if (Inventory != null)
-							SwitchWeapon(ActiveWeaponSlot);
-			*/
 		}
 
 		/// <summary>
@@ -2226,40 +1248,32 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Saves a mob into the db if it exists, it is
-		/// updated, else it creates a new object in the DB
+		/// Saves or updates a NPC in the DB.
 		/// </summary>
 		public override void SaveIntoDatabase()
 		{
-			// do not allow saving in an instanced region
+			// Do not allow saving in an instanced region.
 			if (CurrentRegion.IsInstance)
 			{
 				LoadedFromScript = true;
 				return;
 			}
 
-			if (Brain != null && Brain is IControlledBrain)
-			{
-				// do not allow saving of controlled npc's
+			// Do not allow saving of controlled NPCs.
+			if (Brain is IControlledBrain)
 				return;
-			}
 
 			Mob mob = null;
+
 			if (InternalID != null)
-			{
 				mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
-			}
 
 			if (mob == null)
 			{
 				if (LoadedFromScript == false)
-				{
 					mob = new Mob();
-				}
 				else
-				{
 					return;
-				}
 			}
 
 			mob.TranslationId = TranslationId;
@@ -2289,35 +1303,33 @@ namespace DOL.GS
 			mob.Empathy = Empathy;
 			mob.Charisma = Charisma;
 
-			mob.ClassType = this.GetType().ToString();
-			mob.Flags = (uint)Flags;
+			mob.ClassType = GetType().ToString();
+			mob.Flags = (uint) Flags;
 			mob.Speed = MaxSpeedBase;
 			mob.RespawnInterval = m_respawnInterval / 1000;
 			mob.HouseNumber = HouseNumber;
 			mob.RoamingRange = RoamingRange;
+
 			if (Brain.GetType().FullName != typeof(StandardMobBrain).FullName)
 				mob.Brain = Brain.GetType().FullName;
-			IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
-			if (aggroBrain != null)
+
+			if (Brain is IOldAggressiveBrain aggroBrain)
 			{
 				mob.AggroLevel = aggroBrain.AggroLevel;
 				mob.AggroRange = aggroBrain.AggroRange;
 			}
+
 			mob.EquipmentTemplateID = EquipmentTemplateID;
 
 			if (m_faction != null)
 				mob.FactionID = m_faction.ID;
 
-			mob.MeleeDamageType = (int)MeleeDamageType;
+			mob.MeleeDamageType = (int) MeleeDamageType;
 
 			if (NPCTemplate != null)
-			{
 				mob.NPCTemplateID = NPCTemplate.TemplateId;
-			}
 			else
-			{
 				mob.NPCTemplateID = -1;
-			}
 
 			mob.Race = Race;
 			mob.BodyType = BodyType;
@@ -2325,7 +1337,7 @@ namespace DOL.GS
 			mob.MaxDistance = m_maxdistance;
 			mob.IsCloakHoodUp = m_isCloakHoodUp;
 			mob.Gender = (byte)Gender;
-			mob.VisibleWeaponSlots = this.m_visibleActiveWeaponSlots;
+			mob.VisibleWeaponSlots = m_visibleActiveWeaponSlots;
 			mob.PackageID = PackageID;
 			mob.OwnerID = OwnerID;
 
@@ -2335,9 +1347,7 @@ namespace DOL.GS
 				InternalID = mob.ObjectId;
 			}
 			else
-			{
 				GameServer.Database.SaveObject(mob);
-			}
 		}
 
 		/// <summary>
@@ -2386,14 +1396,14 @@ namespace DOL.GS
 			if (!template.ReplaceMobValues && !LoadedFromScript)
 				return;
 
-			var m_templatedInventory = new List<string>();
-			this.TranslationId = template.TranslationId;
-			this.Name = template.Name;
-			this.Suffix = template.Suffix;
-			this.GuildName = template.GuildName;
-			this.ExamineArticle = template.ExamineArticle;
-			this.MessageArticle = template.MessageArticle;
-			this.Faction = FactionMgr.GetFactionByID(template.FactionId);
+			List<string> m_templatedInventory = new();
+			TranslationId = template.TranslationId;
+			Name = template.Name;
+			Suffix = template.Suffix;
+			GuildName = template.GuildName;
+			ExamineArticle = template.ExamineArticle;
+			MessageArticle = template.MessageArticle;
+			Faction = FactionMgr.GetFactionByID(template.FactionId);
 
 			#region Models, Sizes, Levels, Gender
 			// Grav: this.Model/Size/Level accessors are triggering SendUpdate()
@@ -2425,12 +1435,12 @@ namespace DOL.GS
 			#endregion
 
 			#region Misc Stats
-			this.MaxDistance = template.MaxDistance;
-			this.Race = (short)template.Race;
-			this.BodyType = (ushort)template.BodyType;
-			this.MaxSpeedBase = template.MaxSpeed;
-			this.Flags = (eFlags)template.Flags;
-			this.MeleeDamageType = template.MeleeDamageType;
+			MaxDistance = template.MaxDistance;
+			Race = (short) template.Race;
+			BodyType = template.BodyType;
+			MaxSpeedBase = template.MaxSpeed;
+			Flags = (eFlags)template.Flags;
+			MeleeDamageType = template.MeleeDamageType;
 			#endregion
 
 			#region Inventory
@@ -3063,7 +2073,6 @@ namespace DOL.GS
 				if (m_inventory != null)
 					player.Out.SendLivingEquipmentUpdate(this);
 
-				// If any player was initialized, update last visible tick to enable brain.
 				anyPlayer = true;
 			}
 
@@ -3082,67 +2091,58 @@ namespace DOL.GS
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
-			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)  //Only start PowerRegen if needed
+			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)
 				StartPowerRegeneration();
 
-			//If the Mob has a Path assigned he will now walk on it!
+			// If a path is assigned, walk on it.
 			if (MaxSpeedBase > 0 && CurrentSpellHandler == null && !IsMoving
 				&& !attackComponent.AttackState && !InCombat && !IsMovingOnPath && !IsReturningHome
-				//Check everything otherwise the Server will crash
 				&& PathID != null && PathID != "" && PathID != "NULL")
 			{
-				PathPoint path = MovementMgr.LoadPath(PathID);
-				if (path != null)
-				{
-					CurrentWayPoint = path;
-					MoveOnPath((short)path.MaxSpeed);
-				}
+				CurrentWaypoint = MovementMgr.LoadPath(PathID);
+				MoveOnPath(CurrentWaypoint.MaxSpeed);
 			}
 
-			if (m_houseNumber > 0 && !(this is GameConsignmentMerchant))
+			if (m_houseNumber > 0 && this is not GameConsignmentMerchant)
 			{
 				log.Info("NPC '" + Name + "' added to house " + m_houseNumber);
 				CurrentHouse = HouseMgr.GetHouse(m_houseNumber);
+
 				if (CurrentHouse == null)
-					log.Warn("House " + CurrentHouse + " for NPC " + Name + " doesn't exist !!!");
+					log.Warn("House " + CurrentHouse + " for NPC " + Name + " doesn't exist");
 				else
 					log.Info("Confirmed number: " + CurrentHouse.HouseNumber.ToString());
 			}
 
-			// [Ganrod] Nidel: spawn full life
 			if (!InCombat && IsAlive && base.Health < MaxHealth)
-			{
 				base.Health = MaxHealth;
-			}
 
-			// create the ambiant text list for this NPC
 			BuildAmbientTexts();
+
 			if (GameServer.Instance.ServerStatus == eGameServerStatus.GSS_Open)
 				FireAmbientSentence(eAmbientTrigger.spawning, this);
-
 
 			if (ShowTeleporterIndicator)
 			{
 				if (m_teleporterIndicator == null)
 				{
-					m_teleporterIndicator = new GameNPC();
-					m_teleporterIndicator.Name = "";
-					m_teleporterIndicator.Model = 1923;
-					m_teleporterIndicator.Flags ^= eFlags.PEACE;
-					m_teleporterIndicator.Flags ^= eFlags.CANTTARGET;
-					m_teleporterIndicator.Flags ^= eFlags.DONTSHOWNAME;
-					m_teleporterIndicator.Flags ^= eFlags.FLYING;
-					m_teleporterIndicator.X = X;
-					m_teleporterIndicator.Y = Y;
-					m_teleporterIndicator.Z = Z + 1;
-					m_teleporterIndicator.CurrentRegionID = CurrentRegionID;
+					m_teleporterIndicator = new GameNPC
+					{
+						Name = "",
+						Model = 1923,
+						X = X,
+						Y = Y,
+						Z = Z + 1,
+						CurrentRegionID = CurrentRegionID,
+						Flags = eFlags.PEACE | eFlags.CANTTARGET | eFlags.DONTSHOWNAME | eFlags.FLYING
+					};
 				}
 
 				m_teleporterIndicator.AddToWorld();
 			}
 
 			if (Flags.HasFlag(eFlags.STEALTH))
-				m_wasStealthed = true;
+				WasStealthed = true;
 
 			return true;
 		}
@@ -3257,18 +2257,12 @@ namespace DOL.GS
 		/// </summary>
 		public override Region CurrentRegion
 		{
-			get { return base.CurrentRegion; }
+			get => base.CurrentRegion;
 			set
 			{
 				Region oldRegion = CurrentRegion;
 				base.CurrentRegion = value;
 				Region newRegion = CurrentRegion;
-				if (oldRegion != newRegion && newRegion != null)
-				{
-					if (m_followTimer != null) m_followTimer.Stop();
-					m_followTimer = new ECSGameTimer(this);
-					m_followTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowTimerCallback);
-				}
 			}
 		}
 
@@ -3808,6 +2802,7 @@ namespace DOL.GS
 
 			TurnTo(target);
 			string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true, target.Client.Account.Language, this), message);
+
 			switch (loc)
 			{
 				case eChatLoc.CL_PopupWindow:
@@ -3852,10 +2847,10 @@ namespace DOL.GS
 		{
 			attackComponent.RequestStartAttack(target);
 
-			if (CurrentFollowTarget != target)
+			if (FollowTarget != target)
 			{
 				StopFollowing();
-				Follow(target, m_followMinDist, m_followMaxDist);
+				Follow(target);
 			}
 
 			FireAmbientSentence(eAmbientTrigger.fighting, target);
@@ -3904,46 +2899,31 @@ namespace DOL.GS
 		/// </summary>
 		public override int Health
 		{
-			get
-			{
-				return base.Health;
-			}
+			get => base.Health;
 			set
 			{
 				base.Health = value;
-				//Slow mobs down when they are hurt!
-				short maxSpeed = MaxSpeed;
-				if (CurrentSpeed > maxSpeed)
-					CurrentSpeed = maxSpeed;
+
+				// Slow NPCs down when they are hurt.
+				if (CurrentSpeed > MaxSpeed)
+					CurrentSpeed = MaxSpeed;
 			}
 		}
 
 		/// <summary>
 		/// npcs can always have mana to cast
 		/// </summary>
-		public override int Mana
-		{
-			get { return 5000; }
-		}
+		public override int Mana => 5000;
 
 		/// <summary>
 		/// The Max Mana for this NPC
 		/// </summary>
-		public override int MaxMana
-		{
-			get { return 1000; }
-		}
+		public override int MaxMana => 1000;
 
 		/// <summary>
 		/// The Concentration for this NPC
 		/// </summary>
-		public override int Concentration
-		{
-			get
-			{
-				return 500;
-			}
-		}
+		public override int Concentration => 500;
 
 		/// <summary>
 		/// Tests if this MOB should give XP and loot based on the XPGainers
@@ -5567,10 +4547,9 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Gender of this NPC.
-		/// </summary>
 		public override eGender Gender { get; set; }
+
+		public new NpcMovementComponent movementComponent;
 
 		public GameNPC Copy()
 		{
@@ -5620,7 +4599,6 @@ namespace DOL.GS
 			copyTarget.NPCTemplate = NPCTemplate;
 			copyTarget.ParryChance = ParryChance;
 			copyTarget.PathID = PathID;
-			copyTarget.PathingNormalSpeed = PathingNormalSpeed;
 			copyTarget.Quickness = Quickness;
 			copyTarget.Piety = Piety;
 			copyTarget.Race = Race;
@@ -5692,45 +4670,27 @@ namespace DOL.GS
 			return copyTarget;
 		}
 
-		/// <summary>
-		/// Constructs a NPC
-		/// NOTE: Most npcs are generated as GameLiving objects and then used as GameNPCs when needed.
-		/// 	As a result, this constructor is rarely called.
-		/// </summary>
-		public GameNPC()
-			: this(new StandardMobBrain())
-		{
-		}
-
 		public GameNPC(ABrain defaultBrain) : base()
 		{
+			if (movementComponent == null)
+				movementComponent = (NpcMovementComponent) base.movementComponent;
+
 			Level = 1;
 			m_health = MaxHealth;
 			m_Realm = 0;
 			m_name = "new mob";
 			m_model = 408;
-			//Fill the living variables
-			//			CurrentSpeed = 0; // cause position addition recalculation
 			MaxSpeedBase = 200;
 			GuildName = "";
-
 			m_brainSync = m_brains.SyncRoot;
-			m_followTarget = new WeakRef(null);
-
-			m_size = 50; //Default size
-			TargetPosition = new Point3D();
-			m_followMinDist = 100;
-			m_followMaxDist = 3000;
+			m_size = 50;
 			m_flags = 0;
 			m_maxdistance = 0;
-			m_roamingRange = 0; // default to non roaming - tolakram
+			RoamingRange = 0;
 			m_ownerID = "";
-
-			if (m_spawnPoint == null)
-				m_spawnPoint = new Point3D();
-
-			//m_factionName = "";
+			m_spawnPoint = new Point3D();
 			LinkedFactions = new ArrayList(1);
+
 			if (m_ownBrain == null)
 			{
 				m_ownBrain = defaultBrain;
@@ -5738,43 +4698,23 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// create npc from template
-		/// NOTE: Most npcs are generated as GameLiving objects and then used as GameNPCs when needed.
-		/// 	As a result, this constructor is rarely called.
-		/// </summary>
-		/// <param name="template">template of generator</param>
-		public GameNPC(INpcTemplate template)
-			: this()
-		{
-			if (template == null) return;
+		public GameNPC() : this(new StandardMobBrain()) { }
 
-			// When creating a new mob from a template, we have to get all values from the template
+		public GameNPC(INpcTemplate template) : this()
+		{
+			if (template == null)
+				return;
+
 			if (template is NpcTemplate npcTemplate)
 				npcTemplate.ReplaceMobValues = true;
 
 			LoadTemplate(template);
 		}
 
-		// camp bonus
 		private double m_campBonus = 1;
-		/// <summary>
-		/// gets/sets camp bonus experience this gameliving grants
-		/// </summary>
-		public virtual double CampBonus
-		{
-			get
-			{
-				return m_campBonus;
-			}
-			set
-			{
-				m_campBonus = value;
-			}
-		}
 
+		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
 		public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
-		
 		public int OrbsReward { get => orbsReward; set => orbsReward = value; }
 	}
 }

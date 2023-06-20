@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Collections;
 
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -145,7 +144,7 @@ namespace DOL.GS.Keeps
 				m_flags = eFlags.PEACE | eFlags.DONTSHOWNAME;
 				m_size = 255;
 				m_model = 0x783;
-				m_maxSpeedBase = 0;
+				MaxSpeedBase = 0;
 			}
 		}
 

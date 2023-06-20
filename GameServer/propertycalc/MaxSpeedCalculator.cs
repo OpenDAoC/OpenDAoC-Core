@@ -135,7 +135,7 @@ namespace DOL.GS.PropertyCalc
                         GameLiving owner = brain.GetLivingOwner();
                         int distance = brain.Body.GetDistanceTo(owner);
 
-                        if (owner != null && owner == brain.Body.CurrentFollowTarget)
+                        if (owner != null && owner == brain.Body.FollowTarget)
                         {
                             if (distance > 20)
                                 speed *= 1.25;
@@ -163,7 +163,7 @@ namespace DOL.GS.PropertyCalc
                 {
                     GameLiving owner = brain?.GetLivingOwner();
 
-                    if (owner != null && owner == brain.Body.CurrentFollowTarget)
+                    if (owner != null && owner == brain.Body.FollowTarget)
                     {
                         if (owner is GamePlayer playerOwner && playerOwner.IsSprinting)
                             speed *= 1.3;

@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.Database;
 
 namespace DOL.GS.Movement
@@ -26,7 +26,7 @@ namespace DOL.GS.Movement
 	/// </summary>
 	public class PathPoint : Point3D
 	{
-		protected int m_maxspeed;
+		protected short m_maxspeed;
 		protected PathPoint m_next = null;
 		protected PathPoint m_prev = null;
 		protected ePathType m_type;
@@ -35,9 +35,9 @@ namespace DOL.GS.Movement
 
 		public PathPoint(PathPoint pp) : this(pp, pp.MaxSpeed,pp.Type) {}
 
-		public PathPoint(Point3D p, int maxspeed, ePathType type) : this(p.X,  p.Y,  p.Z, maxspeed, type) {}
+		public PathPoint(Point3D p, short maxspeed, ePathType type) : this(p.X,  p.Y,  p.Z, maxspeed, type) {}
 
-		public PathPoint(int x, int y, int z, int maxspeed, ePathType type) : base(x, y, z)
+		public PathPoint(int x, int y, int z, short maxspeed, ePathType type) : base(x, y, z)
 		{
 			m_maxspeed = maxspeed;
 			m_type = type;
@@ -48,7 +48,7 @@ namespace DOL.GS.Movement
 		/// <summary>
 		/// Speed allowed after that waypoint in forward direction
 		/// </summary>
-		public int MaxSpeed
+		public short MaxSpeed
 		{
 			get { return m_maxspeed; }
 			set { m_maxspeed = value; }

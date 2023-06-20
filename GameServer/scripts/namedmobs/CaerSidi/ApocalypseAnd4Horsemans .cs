@@ -1342,11 +1342,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (MorbusBrain.IsBug)
                 return;
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {

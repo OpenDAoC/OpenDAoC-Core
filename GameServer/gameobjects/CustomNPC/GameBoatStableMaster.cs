@@ -1,4 +1,3 @@
-
 /*
  * DAWN OF LIGHT - The first free open source DAoC server emulator
  * 
@@ -17,14 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.Language;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
-using log4net;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -142,7 +140,7 @@ namespace DOL.GS
 						boat.CurrentRegion = CurrentRegion;
                         boat.Heading = path.GetHeading( path.Next );
 						boat.AddToWorld();
-						boat.CurrentWayPoint = path;
+						boat.CurrentWaypoint = path;
 						//GameEventMgr.AddHandler(boat, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						//new MountHorseAction(player, boat).Start(400);
 						new HorseRideAction(boat).Start(30 * 1000);

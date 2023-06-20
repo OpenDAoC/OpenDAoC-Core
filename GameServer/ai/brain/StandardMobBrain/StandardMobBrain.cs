@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -628,7 +629,7 @@ namespace DOL.AI.Brain
         {
             AttackMostWanted();
             if (!Body.attackComponent.AttackState)
-                Body.WalkToSpawn();
+                Body.ReturnToSpawnPoint();
         }
 
 		public virtual void OnAttackedByEnemy(AttackData ad)
@@ -1202,9 +1203,9 @@ namespace DOL.AI.Brain
                 if (casted && spell.CastTime > 0)
                     Body.StopFollowing();
                 //If instant cast and spell casted, and current follow target is not the target object, then switch follow target to current TargetObject
-                else if(casted && (spell.CastTime == 0 && Body.CurrentFollowTarget != Body.TargetObject))
+                else if(casted && (spell.CastTime == 0 && Body.FollowTarget != Body.TargetObject))
                 {
-                    Body.Follow(Body.TargetObject, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
+                    Body.Follow(Body.TargetObject, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
                 }
             }
             return casted;
@@ -1340,46 +1341,11 @@ namespace DOL.AI.Brain
 
         #endregion
 
-        #region Random Walk
-
-        public virtual bool CanRandomWalk {
-            get {
-                /* Roaming:
-				   <0 means random range
-				   0 means no roaming
-				   >0 means range of roaming
-				   defaut roaming range is defined in CanRandomWalk method
-				 */
-                if (!DOL.GS.ServerProperties.Properties.ALLOW_ROAM)
-                    return false;
-                if (Body.RoamingRange == 0)
-                    return false;
-                if (!string.IsNullOrWhiteSpace(Body.PathID))
-                    return false;
-                return true;
-            }
-        }
-
-        public virtual IPoint3D CalcRandomWalkTarget()
-        {
-            int maxRoamingRadius = Body.CurrentRegion.IsDungeon ? 5 : 500;
-
-            if (Body.RoamingRange > 0)
-                maxRoamingRadius = Body.RoamingRange;
-
-            double targetX = Body.SpawnPoint.X + Util.Random(-maxRoamingRadius, maxRoamingRadius);
-            double targetY = Body.SpawnPoint.Y + Util.Random(-maxRoamingRadius, maxRoamingRadius);
-
-            return new Point3D((int)targetX, (int)targetY, Body.SpawnPoint.Z);
-        }
-
-        #endregion
-
         #region DetectDoor
 
         public virtual void DetectDoor()
         {
-            ushort range = (ushort)((ThinkInterval / 800) * Body.CurrentWayPoint.MaxSpeed);
+            ushort range = (ushort)((ThinkInterval / 800) * Body.CurrentWaypoint.MaxSpeed);
 
             foreach (GameDoorBase door in Body.CurrentRegion.GetDoorsInRadius(Body.X, Body.Y, Body.Z, range, false))
             {

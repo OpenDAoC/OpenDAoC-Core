@@ -1,14 +1,8 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.GS;
-using DOL.GS.Relics;
 using FiniteStateMachine;
-using log4net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 public class DragonState : StandardMobState
 {
     protected new DragonBrain _brain = null;
@@ -137,14 +131,14 @@ public class DragonState_RETURN_TO_SPAWN : DragonState
         }
 
         _brain.ClearAggroList();
-        _brain.Body.WalkToSpawn();
+        _brain.Body.ReturnToSpawnPoint();
     }
 
     public override void Think()
     {
-        if (_brain.Body.IsNearSpawn())
+        if (_brain.Body.IsNearSpawn)
         {
-            _brain.Body.CancelWalkToSpawn();
+            _brain.Body.CancelReturnToSpawnPoint();
             _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
         }
     }

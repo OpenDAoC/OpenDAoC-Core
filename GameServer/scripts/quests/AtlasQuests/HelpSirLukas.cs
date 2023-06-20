@@ -3,7 +3,7 @@
  */
 /*
 *Author         : Kelt
-*Editor			: Kelt, Clait
+*Editor         : Kelt, Clait
 *Source         : Custom
 *Date           : 20 December 2021
 *Quest Name     : [Memorial] All in the gold
@@ -15,12 +15,10 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using log4net;
@@ -759,7 +757,7 @@ namespace DOL.GS.Quests.Albion
 			                           "Thank you again, " + m_questPlayer.Name + ", it means more than you know.");
 			Lukas.TurnTo(m_questPlayer);
 			Lukas.Emote(eEmote.Curtsey);
-			Lukas.ResetHeading();
+			Lukas.TurnTo(Lukas.SpawnHeading);
 
 			m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");

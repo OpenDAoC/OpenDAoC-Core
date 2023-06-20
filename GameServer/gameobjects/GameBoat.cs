@@ -17,22 +17,12 @@
  *
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using DOL.GS;
 using DOL.Database;
-using DOL.Language;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using log4net;
-using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-	public class GameBoat : GameMovingObject
-	{
+    public class GameBoat : GameMovingObject
+    {
         private byte m_boatType = 0;
         protected DBBoat m_dbBoat;
         private string m_boatID;
@@ -40,225 +30,147 @@ namespace DOL.GS
         private string m_boatName;
         private ushort m_boatModel;
         private short m_boatMaxSpeedBase;
+        private AuxECSGameTimer m_removeTimer = null;
 
-		private AuxECSGameTimer m_removeTimer = null;
-
-        public GameBoat(byte type)
-            : base()
+        public GameBoat(byte type) : base()
         {
             m_boatType = type;
             base.OwnerID = BoatOwner;
         }
 
-        public GameBoat()
-			: base()
+        public GameBoat() : base()
         {
             base.OwnerID = BoatOwner;
         }
 
-		public override bool AddToWorld()
-		{
-            if (!base.AddToWorld())
-            {
-                return false;
-            }
-            return true;            
+        public override bool AddToWorld()
+        {
+            return base.AddToWorld();
         }
 
         /// <summary>
         /// Gets or sets the boats db
         /// </summary>
-        public DBBoat theBoatDB
+        public DBBoat DBBoat
         {
-            get { return m_dbBoat; }
-            set { m_dbBoat = value; }
+            get => m_dbBoat;
+            set => m_dbBoat = value;
         }
 
         public string BoatID
         {
-            get
-            {
-                return m_boatID;
-            }
-            set
-            {
-                m_boatID = value;
-            }
+            get => m_boatID;
+            set => m_boatID = value;
         }
-        
+
         public override string Name
         {
-            get
-            {
-                return m_boatName;
-            }
-            set
-            {
-                m_boatName = value;
-            }
+            get => m_boatName;
+            set => m_boatName = value;
         }
 
         public override ushort Model
         {
-            get
-            {
-                return m_boatModel;
-            }
-            set
-            {
-                m_boatModel = value;
-            }
+            get => m_boatModel;
+            set => m_boatModel = value;
         }
 
         public override short MaxSpeedBase
         {
-            get
-            {
-                return m_boatMaxSpeedBase;
-            }
-            set
-            {
-                m_boatMaxSpeedBase = value;
-            }
+            get => m_boatMaxSpeedBase;
+            set => m_boatMaxSpeedBase = value;
         }
 
         public string BoatOwner
         {
-            get
-            {
-                return m_boatOwner;
-            }
-            set
-            {
-                m_boatOwner = value;
-            }
+            get => m_boatOwner;
+            set => m_boatOwner = value;
         }
 
-        public override int MAX_PASSENGERS
+        public override int MAX_PASSENGERS => m_boatType switch
         {
-            get
-            {
-                switch (m_boatType)
-                {
-                    case 0: return 8;
-                    case 1: return 8;
-                    case 2: return 16;
-                    case 3: return 32;
-                    case 4: return 32;
-                    case 5: return 31;
-                    case 6: return 24;
-                    case 7: return 64;
-                    case 8: return 33;
-                    default: return 2;
-                }
-            }
+            0 => 8,
+            1 => 8,
+            2 => 16,
+            3 => 32,
+            4 => 32,
+            5 => 31,
+            6 => 24,
+            7 => 64,
+            8 => 33,
+            _ => 2,
+        };
+
+        public override int REQUIRED_PASSENGERS => m_boatType switch
+        {
+            0 => 1,
+            1 => 1,
+            2 => 1,
+            3 => 1,
+            4 => 1,
+            5 => 1,
+            6 => 1,
+            7 => 1,
+            8 => 1,
+            _ => 1,
+        };
+
+        public override int SLOT_OFFSET => 1;
+
+        public override bool RiderMount(GamePlayer rider, bool forced)
+        {
+            if (!base.RiderMount(rider, forced))
+                return false;
+
+            if (m_removeTimer != null && m_removeTimer.IsAlive)
+                m_removeTimer.Stop();
+
+            return true;
         }
 
-		public override int REQUIRED_PASSENGERS
-		{
-			get
-			{
-				switch (m_boatType)
-				{
-                    case 0: return 1;
-                    case 1: return 1;
-                    case 2: return 1;
-                    case 3: return 1;
-                    case 4: return 1;
-                    case 5: return 1;
-                    case 6: return 1;
-                    case 7: return 1;
-                    case 8: return 1;
-                    default: return 1;
-				}
-			}
-		}
+        public override bool RiderDismount(bool forced, GamePlayer player)
+        {
+            if (!base.RiderDismount(forced, player))
+                return false;
 
-		public override int SLOT_OFFSET
-		{
-			get
-			{
-				return 1;
-			}
-		}
+            if (CurrentRiders.Length == 0)
+            {
+                if (m_removeTimer == null)
+                    m_removeTimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RemoveCallback));
+                else if (m_removeTimer.IsAlive)
+                    m_removeTimer.Stop();
 
-		public override bool RiderMount(GamePlayer rider, bool forced)
-		{
-			if (!base.RiderMount(rider, forced))
-				return false;
+                m_removeTimer.Start(15 * 60 * 1000);
+            }
 
-			if (m_removeTimer != null && m_removeTimer.IsAlive)
-				m_removeTimer.Stop();
-
-			return true;
-		}
-
-		public override bool RiderDismount(bool forced, GamePlayer player)
-		{
-			if (!base.RiderDismount(forced, player))
-				return false;
-
-			if (CurrentRiders.Length == 0)
-			{
-				if (m_removeTimer == null)
-					m_removeTimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RemoveCallback));
-				else if (m_removeTimer.IsAlive)
-					m_removeTimer.Stop();
-				m_removeTimer.Start(15 * 60 * 1000);
-			}
-      
-			return true;
-		}
+            return true;
+        }
 
         protected int RemoveCallback(AuxECSGameTimer timer)
-		{
-			m_removeTimer.Stop();
-			m_removeTimer = null;
-			Delete();
-			return 0;
-        }
-
-        /// <summary>
-        /// Checks if a player can see the boat.
-        /// </summary>
-        public bool CanSeeBoat(GamePlayer player, GameBoat boat)
         {
-            foreach (GamePlayer plr in boat.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                if (player.Name == plr.Name)
-                    return true;
-            }
-            return false;
+            m_removeTimer.Stop();
+            m_removeTimer = null;
+            Delete();
+            return 0;
         }
 
-        /// <summary>
-        /// Must overide interact for Game Boat - Cannot allow boarders on player boat
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
         public override bool Interact(GamePlayer player)
         {
-            if (this.OwnerID != "")            
-                return false;
-              
- 	        return base.Interact(player);
-        }       
-       
-        /// <summary>
-        /// Loads this boat from a boat table
-        /// </summary>
-        /// <param name="obj"></param>
+            return OwnerID != "" ? false : base.Interact(player);
+        }
+
         public override void LoadFromDatabase(DataObject obj)
         {
-            if (!(obj is DBBoat))
+            if (obj is not Database.DBBoat)
                 return;
 
-            m_dbBoat = (DBBoat)obj;
+            m_dbBoat = (DBBoat) obj;
             m_boatID = m_dbBoat.ObjectId;
             m_boatName = m_dbBoat.BoatName;
             m_boatMaxSpeedBase = m_dbBoat.BoatMaxSpeedBase;
             m_boatModel = m_dbBoat.BoatModel;
             m_boatOwner = m_dbBoat.BoatOwner;
+
             switch (m_boatModel)
             {
                 case 1616: m_boatType = 0; break;
@@ -271,13 +183,14 @@ namespace DOL.GS
                 case 1613: m_boatType = 7; break;
                 case 1614: m_boatType = 8; break;
             }
-            theBoatDB = m_dbBoat;
+
+            DBBoat = m_dbBoat;
             base.LoadFromDatabase(obj);
         }
 
         public override void SaveIntoDatabase()
         {
-            GameServer.Database.SaveObject(theBoatDB);
+            GameServer.Database.SaveObject(DBBoat);
         }
     }
 }

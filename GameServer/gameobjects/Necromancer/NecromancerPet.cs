@@ -48,8 +48,6 @@ namespace DOL.GS
 			set => m_damageRvRMemory = value;
 		}
 
-		public override short MaxSpeed => (short)GetModified(eProperty.MaxSpeed);
-
 		/// <summary>
 		/// Proc IDs for various pet weapons.
 		/// </summary>

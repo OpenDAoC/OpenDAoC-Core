@@ -10,10 +10,10 @@ namespace DOL.GS {
             ScalingFactor = 80;
             OrbsReward = Properties.EPICBOSS_ORBS;         
         }
-        public override void WalkToSpawn(short speed)
+        public override void ReturnToSpawnPoint(short speed)
         {
             speed = 350;
-            base.WalkToSpawn(speed);
+            base.ReturnToSpawnPoint(speed);
         }
         public override bool HasAbility(string keyName)
         {

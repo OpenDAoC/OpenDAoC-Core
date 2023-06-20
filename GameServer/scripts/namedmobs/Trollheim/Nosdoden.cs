@@ -2743,11 +2743,11 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -2893,11 +2893,11 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -3024,11 +3024,11 @@ namespace DOL.GS
 		{
 			return 200;
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override void StartAttack(GameObject target)
 		{

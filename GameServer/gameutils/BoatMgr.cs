@@ -22,7 +22,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using log4net;
 
@@ -128,17 +127,17 @@ namespace DOL.GS
 
 
                 //create table of GameBoat
-                boat.theBoatDB = new DBBoat();
-                boat.theBoatDB.BoatOwner = creator.InternalID;
-                boat.theBoatDB.BoatID = boat.BoatID;
-                boat.theBoatDB.BoatMaxSpeedBase = boat.MaxSpeedBase;
-                boat.theBoatDB.BoatModel = boat.Model;
-                boat.theBoatDB.BoatName = boat.Name;
+                boat.DBBoat = new DBBoat();
+                boat.DBBoat.BoatOwner = creator.InternalID;
+                boat.DBBoat.BoatID = boat.BoatID;
+                boat.DBBoat.BoatMaxSpeedBase = boat.MaxSpeedBase;
+                boat.DBBoat.BoatModel = boat.Model;
+                boat.DBBoat.BoatName = boat.Name;
                 boat.OwnerID = creator.InternalID;
                 boat.Flags ^= GameNPC.eFlags.PEACE;
 
                 AddBoat(boat);
-                GameServer.Database.AddObject(boat.theBoatDB);
+                GameServer.Database.AddObject(boat.DBBoat);
                 return boat;
             }
             catch (Exception e)

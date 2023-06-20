@@ -906,15 +906,11 @@ namespace DOL.GS
 
             if (AttackState)
             {
-                // If we're moving we need to lock down the current position.
-                if (npc.IsMoving)
-                    npc.SaveCurrentPosition();
-
                 // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
                 if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    npc.Follow(attackTarget, AttackRange - 30, GameNPC.STICKMAXIMUMRANGE);
+                    npc.Follow(attackTarget, AttackRange - 30, GameNPC.STICK_MAXIMUM_RANGE);
                 else
-                    npc.Follow(attackTarget, GameNPC.STICKMINIMUMRANGE, GameNPC.STICKMAXIMUMRANGE);
+                    npc.Follow(attackTarget, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
             }
         }
 

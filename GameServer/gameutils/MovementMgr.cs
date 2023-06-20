@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Linq;
+
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
@@ -158,7 +158,7 @@ namespace DOL.GS.Movement
 	
 				foreach (DBPathPoint pp in pathPoints.Values)
 				{
-					PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, pp.MaxSpeed, pathType);
+					PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType);
 					p.WaitTime = pp.WaitTime;
 	
 					if (first == null)

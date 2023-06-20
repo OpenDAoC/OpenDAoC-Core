@@ -221,7 +221,7 @@ namespace DOL.AI.Brain
                 Aggression.Clear();
                 Body.TargetObject = null;
                 AttackBehaviour = PassiveBehaviour;
-                Body.WalkToSpawn();
+                Body.ReturnToSpawnPoint();
             }
             else
             {
@@ -255,7 +255,7 @@ namespace DOL.AI.Brain
             if (attackData.Target == Body)
             {
                 if (Body.IsReturningToSpawnPoint)
-                    Body.CancelWalkToSpawn();
+                    Body.CancelReturnToSpawnPoint();
 
                 if (!attackData.IsMeleeAttack)
                 {

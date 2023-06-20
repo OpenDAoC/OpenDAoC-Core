@@ -87,10 +87,10 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.20;
         }
-        public override void WalkToSpawn(short speed)
+        public override void ReturnToSpawnPoint(short speed)
         {
             speed = 300;
-            base.WalkToSpawn(speed);
+            base.ReturnToSpawnPoint(speed);
         }
         public override void Die(GameObject killer)
         {

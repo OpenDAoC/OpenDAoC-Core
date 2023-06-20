@@ -328,9 +328,8 @@ namespace DOL.GS
             }
 
             // Mobs' heading isn't updated after they start attacking, so we update it after they swing.
-            // Only updates internal heading, does not broadcast it.
             if (m_owner is GameNPC npcOwner)
-                npcOwner.TurnTo(mainHandAD.Target, false);
+                npcOwner.TurnTo(mainHandAD.Target);
 
             return;
         }

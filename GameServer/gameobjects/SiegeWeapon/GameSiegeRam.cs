@@ -284,15 +284,17 @@ namespace DOL.GS
 		{
 			get
 			{
-				//custom formula
-				double speed = (10.0 + (5.0 * Level) + 50.0 * CurrentRiders.Length / MAX_PASSENGERS);
+				double speed = 10.0 + 5.0 * Level + 50.0 * CurrentRiders.Length / MAX_PASSENGERS;
+
 				foreach (GamePlayer player in CurrentRiders)
 				{
 					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.AtlasOF_LifterAbility>();
+
 					if (ab != null)
-						speed *= 1 + (ab.Amount / 100);
+						speed *= 1 + ab.Amount / 100;
 				}
-				return (short)speed;
+
+				return (short) speed;
 			}
 		}
 	}

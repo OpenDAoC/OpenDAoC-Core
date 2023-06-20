@@ -150,11 +150,11 @@ namespace DOL.GS
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (IsAlive)
 				return;
-			base.WalkToSpawn();
+			base.ReturnToSpawnPoint();
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{

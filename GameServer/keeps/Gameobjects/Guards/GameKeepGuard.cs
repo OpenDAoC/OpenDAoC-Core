@@ -158,7 +158,7 @@ namespace DOL.GS.Keeps
 		/// <returns>Whether or not we are responding</returns>
 		public virtual bool AssistLord(GuardLord lord)
 		{
-			Follow(lord, GameNPC.STICKMINIMUMRANGE, int.MaxValue);
+			Follow(lord, STICK_MINIMUM_RANGE, int.MaxValue);
 			return true;
 		}
 
@@ -290,7 +290,6 @@ namespace DOL.GS.Keeps
 				return;
 
 			Spell castSpell = null;
-
 			SpellLine castLine = SkillBase.GetSpellLine(spellLineName);
 			List<Spell> spells = SkillBase.GetSpellList(castLine.KeyName);
 
@@ -302,10 +301,13 @@ namespace DOL.GS.Keeps
 					break;
 				}
 			}
+
 			if (attackComponent.AttackState)
 				attackComponent.StopAttack();
+
 			if (IsMoving)
 				StopFollowing();
+
 			TurnTo(TargetObject);
 			CastSpell(castSpell, castLine);
 		}
@@ -448,26 +450,27 @@ namespace DOL.GS.Keeps
 		/// <returns></returns>
 		public override bool AddToWorld()
 		{
-			base.RoamingRange = 0;
-			base.TetherRange = 10000;
+			RoamingRange = 0;
+			TetherRange = 10000;
 
 			if (!base.AddToWorld())
 				return false;
 
-			if (IsPortalKeepGuard && (Brain as KeepGuardBrain != null))
+			if (IsPortalKeepGuard && Brain is KeepGuardBrain keepGuardBrain)
 			{
-				(this.Brain as KeepGuardBrain).AggroRange = 2000;
-				(this.Brain as KeepGuardBrain).AggroLevel = 99;
+				keepGuardBrain.AggroRange = 2000;
+				keepGuardBrain.AggroLevel = 99;
 			}
 
 			if (PatrolGroup != null && !m_changingPositions)
 			{
 				bool foundGuard = false;
+
 				foreach (GameKeepGuard guard in PatrolGroup.PatrolGuards)
 				{
-					if (guard.IsAlive && guard.CurrentWayPoint != null)
+					if (guard.IsAlive && guard.CurrentWaypoint != null)
 					{
-						CurrentWayPoint = guard.CurrentWayPoint;
+						CurrentWaypoint = guard.CurrentWaypoint;
 						m_changingPositions = true;
 						MoveTo(guard.CurrentRegionID, guard.X - Util.Random(200, 350), guard.Y - Util.Random(200, 350), guard.Z, guard.Heading);
 						m_changingPositions = false;
@@ -477,7 +480,7 @@ namespace DOL.GS.Keeps
 				}
 
 				if (!foundGuard)
-					CurrentWayPoint = PatrolGroup.PatrolPath;
+					CurrentWaypoint = PatrolGroup.PatrolPath;
 
 				MoveOnPath(Patrol.PATROL_SPEED);
 			}
@@ -754,15 +757,18 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Adding special handling for walking to a point for patrol guards to be in a formation
 		/// </summary>
-		public override void WalkTo(int tx, int ty, int tz, short speed)
+		public override void WalkTo(IPoint3D target, short speed)
 		{
-			int offX = 0; int offY = 0;
+			int offX = 0;
+			int offY = 0;
+
 			if (IsMovingOnPath && PatrolGroup != null)
 				PatrolGroup.GetMovementOffset(this, out offX, out offY);
-			base.WalkTo(tx - offX, ty - offY, tz, speed);
+
+			base.WalkTo(target.X - offX, target.Y - offY, target.Z, speed);
 		}
 
-		public override void WalkToSpawn()
+		public override void ReturnToSpawnPoint()
 		{
 			if (PatrolGroup != null)
 			{
@@ -779,7 +785,7 @@ namespace DOL.GS.Keeps
 			}
 			else
 			{
-				WalkToSpawn(MaxSpeed);
+				ReturnToSpawnPoint(MaxSpeed);
 			}
 		}
 

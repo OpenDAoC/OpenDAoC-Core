@@ -65,8 +65,6 @@ public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
         // Handle pet movement.
         if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
             brain.Follow(brain.Owner);
-        if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
-            brain.Goto(brain.Body.TargetObject);
 
         // Cast defensive spells if applicable.
         brain.CheckSpells(eCheckSpellType.Defensive);
@@ -110,10 +108,6 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
 
         brain.CheckSpells(eCheckSpellType.Offensive);
 
-        // Handle pet movement.
-        if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
-            brain.Goto(brain.Body.TargetObject);
-
         if (brain.AggressionState == eAggressionState.Aggressive)
             brain.CheckProximityAggro();
 
@@ -134,11 +128,11 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         // Only prevent casting if we are ordering pet to come to us or go to target.
         if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && brain.WalkState != eWalkState.ComeHere && brain.WalkState != eWalkState.GoTarget))
             brain.CheckSpells(eCheckSpellType.Defensive);
-   
+
         // Always check offensive spells, or pets in melee will keep blindly melee attacking, when they should be stopping to cast offensive spells.
         if (brain.Body.CurrentSpellHandler != null)
             return;
-        
+
         // Return to defensive if our target(s) are dead.
         if (!brain.HasAggro && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
@@ -185,9 +179,7 @@ public class ControlledNPCState_PASSIVE : StandardMobState
         // Handle pet movement.
         if (brain.WalkState == eWalkState.Follow && brain.Owner != null)
             brain.Follow(brain.Owner);
-        if (brain.WalkState == eWalkState.GoTarget && brain.Body.TargetObject != null)
-            brain.Goto(brain.Body.TargetObject);
-        
+
         // Cast defensive spells if applicable.
         brain.CheckSpells(eCheckSpellType.Defensive);
     }

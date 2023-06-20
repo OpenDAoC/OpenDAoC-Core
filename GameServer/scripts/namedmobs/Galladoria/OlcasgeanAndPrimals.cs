@@ -1186,11 +1186,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override void WalkToSpawn(short speed)
+        public override void ReturnToSpawnPoint(short speed)
         {
             if (IsAlive)
                 return;
-            base.WalkToSpawn(speed);
+            base.ReturnToSpawnPoint(speed);
         }
         public override void Follow(GameObject target, int minDistance, int maxDistance)
         {
@@ -1931,11 +1931,11 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void WalkToSpawn()
+        public override void ReturnToSpawnPoint()
         {
             if (IsAlive)
                 return;
-            base.WalkToSpawn();
+            base.ReturnToSpawnPoint();
         }
         public override void Die(GameObject killer)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -48,7 +48,7 @@ namespace DOL.GS
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
-            if(IsReturningToSpawnPoint && keyName == GS.Abilities.DamageImmunity)
+            if (IsReturningToSpawnPoint && keyName == GS.Abilities.DamageImmunity)
                 return true;
             return base.HasAbility(keyName);
         }
@@ -331,9 +331,9 @@ namespace DOL.AI.Brain
         private protected void IsAtPillar(IPoint3D target)
         {
             Body.MaxSpeedBase = 0;
-            Body.StopMovingAt(target);
-            Body.IsReturningHome = false;
-            Body.CancelWalkToSpawn();
+            Body.MoveTo(Body.CurrentRegionID, target.X, target.Y, target.Z, Body.Heading);
+            Body.CancelReturnToSpawnPoint();
+
             foreach(GameNPC evern in Body.GetNPCsInRadius(2500))
             {
                 if(evern != null)
