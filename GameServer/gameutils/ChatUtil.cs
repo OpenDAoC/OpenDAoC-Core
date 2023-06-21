@@ -20,8 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using log4net;
 
 namespace DOL.GS
 {
@@ -30,6 +32,8 @@ namespace DOL.GS
 	/// </summary>
 	public static class ChatUtil
 	{
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
 		/// <summary>
 		/// Dictionary for assigning eChatType and eChatLoc based on eMsg type.
 		/// </summary>
@@ -97,192 +101,326 @@ namespace DOL.GS
 		/// <summary>
         /// Used to send translated messages
         /// </summary>
-        /// <param name="type">Determines the eChatType and eChatLoc to use for the message.</param>
-        /// <param name="target">The target client receiving the message (e.g., "target.Client")</param>
-        /// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+        /// <param name="messageType">Determines the eChatType and eChatLoc to use for the message.</param>
+        /// <param name="messageTarget">The target client receiving the message (e.g., "target.Client")</param>
+        /// <param name="translationId">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
         /// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
-        /// <note>Please paste the translation ID's associated message (English) into a comment above this method.</note>
+        /// <note>Please paste the translation ID's associated message (English) into a comment above the method when called (e.g., "// Message: This is the message.").</note>
         /// <example>ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Account.Description", null);</example>
         /// <comment>To perform message changes, reference the '.txt' files located in 'GameServer > language > EN'. Please remember, if you change the translation ID value, check all other language folders (e.g., DE, FR, ES, etc.) to ensure all translated strings correctly reflect the new ID.</comment>
-        public static void SendTypeMessage(eMsg type, GamePlayer target, string translationID, params object[] args)
-        {
-            // See example above for formatting
-            var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
+        public static void SendTypeMessage(eMsg messageType, GamePlayer messageTarget, string translationId, params object[] args)
+		{
+			if (messageTarget == null)
+			{
+				if (string.IsNullOrEmpty(translationId))
+					log.Error("[ERROR] Message could not be delivered, target not found.");
+				else
+					log.Error("[ERROR] Message " + translationId + " could not be delivered, target not found.");
+				return;
+			}
+			if (string.IsNullOrEmpty(translationId))
+			{
+				log.Error("[ERROR] Message ID is null or empty.");
+				return;
+			}
 
-            // Announcement messages sent using '/announce'
-            if (table.TryGetValue(eMsg.Announce, out var announcement))
+			// See example above for formatting
+			var translatedMsg = LanguageMgr.GetTranslation(messageTarget.Client, translationId, args);
+
+			// For troubleshooting messages
+			if (string.IsNullOrEmpty(translatedMsg))
             {
-	            target.Client.Out.SendMessage(translatedMsg, announcement.Item1, announcement.Item2);
-	            target.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	            var errorMessage = LanguageMgr.GetTranslation(messageTarget.Client, "AllCommands.Error.NoTranslationID", translationId);
+
+	            // Message: [ERROR] Translation ID empty or not found: "{0}"
+	            messageTarget.Client.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            log.Error("[ERROR] Translation ID " + translationId + " message string empty or could not be found.");
+	            return;
             }
-            // Server-wide alerts, send twice for good measure
-            else if (table.TryGetValue(eMsg.Server, out var server))
+
+            // All eMsg types
+            if (table.TryGetValue(messageType, out var result))
             {
-	            target.Client.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
-	            target.Client.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
+	            switch (messageType)
+	            {
+		            // Announcement messages sent using '/announce'
+		            case eMsg.Announce:
+			            messageTarget.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			            messageTarget.Client.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			            break;
+		            // Server-wide alerts, send twice for good measure
+		            case eMsg.Server:
+			            messageTarget.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            messageTarget.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+		            // Admin/GM messages when troubleshooting behaviors/commands/activities in-game
+		            // Debug mode must be on ('/debug on')
+		            case eMsg.Debug when messageTarget.TempProperties.getProperty<int>(GamePlayer.DEBUG_MODE_PROPERTY) != 1:
+			            return;
+		            case eMsg.Debug:
+			            messageTarget.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            log.Error("[DEBUG] Message: " + translatedMsg);
+			            break;
+		            // Emote-formatted messages sent to all other players, excluding the originating player
+		            // Player death message sent to other nearby players
+		            // System messages sent to all nearby players, except the target
+		            case eMsg.PlayerDiedOthers or eMsg.EmoteSysOthers or eMsg.SysOthers:
+			            Message.SystemToArea(messageTarget, translatedMsg, result.Item1, WorldMgr.INFO_DISTANCE, messageTarget);
+			            break;
+		            // System messages sent to a general space, does not exclude the originating player
+		            case eMsg.SysArea:
+			            Message.SystemToArea(messageTarget, translatedMsg, result.Item1, WorldMgr.INFO_DISTANCE, null);
+			            break;
+		            // OpenDAoC Team channel
+		            case eMsg.Team:
+		            {
+			            // Must have access to the '/team' command
+			            if (messageTarget.Client.Account.PrivLevel > 1 || SinglePermission.HasPermission(messageTarget, "team") || SinglePermission.HasPermission(messageTarget, "te"))
+				            messageTarget.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+		            }
+		            default:
+			            messageTarget.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+	            }
             }
-            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
-            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Client.Account.PrivLevel > (int)ePrivLevel.GM)
-	            target.Client.Out.SendMessage(translatedMsg, debug.Item1, debug.Item2);
-            // Emote-formatted messages sent to all other players, excluding the originating player
-            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
-	            Message.SystemToOthers(target, translatedMsg, emote.Item1);
-            // Player death message sent to other nearby players
-            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
-	            Message.SystemToOthers2(target, diedOthers.Item1, translationID, args);
-            // System messages sent to a general AoE space
-            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
-	            Message.SystemToArea(target, translatedMsg, sysArea.Item1, target);
-            // System messages sent to all nearby players, except the target
-            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
-	            Message.SystemToOthers(target, translatedMsg, sysOthers.Item1);
-            // OpenDAoC Team channel
-            else if (table.TryGetValue(eMsg.Team, out var team) && target.Client.Account.PrivLevel > (int)ePrivLevel.Player)
-	            target.Client.Out.SendMessage(translatedMsg, team.Item1, team.Item2);
-            // All other eMsg types
-            else if (table.TryGetValue(type, out var result))
-	            target.Client.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
-        }
+		}
 
 		/// <summary>
         /// Used to send translated messages
         /// </summary>
-        /// <param name="type">Determines the eChatType and eChatLoc to use for the message.</param>
-        /// <param name="target">The target client receiving the message (e.g., "client")</param>
-        /// <param name="translationID">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
+        /// <param name="messageType">Determines the eChatType and eChatLoc to use for the message.</param>
+        /// <param name="messageTarget">The target client receiving the message (e.g., "client")</param>
+        /// <param name="translationId">The translation ID for the message (e.g., "AdminCommands.Command.Err.NoPlayerFound")</param>
         /// <param name="args">Any argument values to include in the message, such as "client.Player.Name" (if no args, then use "null")</param>
-        /// <note>Please paste the translation ID's associated message (English) into a comment above this method.</note>
+        /// <note>Please paste the translation ID's associated message (English) into a comment above the method when called (e.g., "// Message: This is a message.").</note>
         /// <example>ChatUtil.SendTypeMessage(eMsg.Command, client, "AdminCommands.Account.Description", null);</example>
         /// <comment>To perform message changes, reference the '.txt' files located in 'GameServer > language > EN'. Please remember, if you change the translation ID value, check all other language folders (e.g., DE, FR, ES, etc.) to ensure all translated strings correctly reflect the new ID.</comment>
-        public static void SendTypeMessage(eMsg type, GameClient target, string translationID, params object[] args)
-        {
-            // See example above for formatting
-            var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
+        public static void SendTypeMessage(eMsg messageType, GameClient messageTarget, string translationId, params object[] args)
+		{
+			if (messageTarget == null)
+			{
+				if (string.IsNullOrEmpty(translationId))
+					log.Error("[ERROR] Message could not be delivered, target not found.");
+				else
+					log.Error("[ERROR] Message " + translationId + " could not be delivered, target not found.");
+				return;
+			}
+			if (string.IsNullOrEmpty(translationId))
+			{
+				log.Error("[ERROR] Message ID is null or empty.");
+				return;
+			}
 
-            // Announcement messages sent using '/announce'
-            if (table.TryGetValue(eMsg.Announce, out var announcement))
+			// See example above for formatting
+			var translatedMsg = LanguageMgr.GetTranslation(messageTarget, translationId, args);
+
+			// For troubleshooting messages
+			if (string.IsNullOrEmpty(translatedMsg))
             {
-	            target.Out.SendMessage(translatedMsg, announcement.Item1, announcement.Item2);
-	            target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	            var errorMessage = LanguageMgr.GetTranslation(messageTarget, "AllCommands.Error.NoTranslationID", translationId);
+
+	            // Message: [ERROR] Translation ID empty or not found: "{0}"
+	            messageTarget.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            log.Error("[ERROR] Translation ID " + translationId + " message string empty or could not be found.");
+	            return;
             }
-            // Server-wide alerts, send twice for good measure
-            else if (table.TryGetValue(eMsg.Server, out var server))
+
+            // All eMsg types
+            if (table.TryGetValue(messageType, out var result))
             {
-	            target.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
-	            target.Out.SendMessage(translatedMsg, server.Item1, server.Item2);
+	            switch (messageType)
+	            {
+		            // Announcement messages sent using '/announce'
+		            case eMsg.Announce:
+			            messageTarget.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			            messageTarget.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			            break;
+		            // Server-wide alerts, send twice for good measure
+		            case eMsg.Server:
+			            messageTarget.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            messageTarget.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+		            // Admin/GM messages when troubleshooting behaviors/commands/activities in-game
+		            // Debug mode must be on ('/debug on')
+		            case eMsg.Debug when messageTarget.Player.TempProperties.getProperty<int>(GamePlayer.DEBUG_MODE_PROPERTY) != 1:
+			            return;
+		            case eMsg.Debug:
+			            messageTarget.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            log.Error("[DEBUG] Message: " + translatedMsg);
+			            break;
+		            // Emote-formatted messages sent to all other players, excluding the originating player
+		            // Player death message sent to other nearby players
+		            // System messages sent to all nearby players, except the target
+		            case eMsg.PlayerDiedOthers or eMsg.EmoteSysOthers or eMsg.SysOthers:
+			            Message.SystemToArea(messageTarget.Player, translatedMsg, result.Item1, WorldMgr.INFO_DISTANCE, messageTarget.Player);
+			            break;
+		            // System messages sent to a general space, does not exclude the originating player
+		            case eMsg.SysArea:
+			            Message.SystemToArea(messageTarget.Player, translatedMsg, result.Item1, WorldMgr.INFO_DISTANCE, null);
+			            break;
+		            // OpenDAoC Team channel
+		            case eMsg.Team:
+		            {
+			            // Must have access to the '/team' command
+			            if (messageTarget.Account.PrivLevel > 1 || SinglePermission.HasPermission(messageTarget.Player, "team") || SinglePermission.HasPermission(messageTarget.Player, "te"))
+				            messageTarget.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+		            }
+		            default:
+			            messageTarget.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
+			            break;
+	            }
             }
-            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
-            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Account.PrivLevel > (int)ePrivLevel.GM)
-	            target.Out.SendMessage(translatedMsg, debug.Item1, debug.Item2);
-            // Emote-formatted messages sent to all other players, excluding the originating player
-            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
-	            Message.SystemToOthers(target.Player, translatedMsg, emote.Item1);
-            // Player death message sent to other nearby players
-            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
-	            Message.SystemToOthers2(target.Player, diedOthers.Item1, translationID, args);
-            // System messages sent to a general AoE space
-            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
-	            Message.SystemToArea(target.Player, translatedMsg, sysArea.Item1, target.Player);
-            // System messages sent to all nearby players, except the target
-            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
-	            Message.SystemToOthers(target.Player, translatedMsg, sysOthers.Item1);
-            // OpenDAoC Team channel
-            else if (table.TryGetValue(eMsg.Team, out var team) && target.Account.PrivLevel > (int)ePrivLevel.Player)
-	            target.Out.SendMessage(translatedMsg, team.Item1, team.Item2);
-            // All other eMsg types
-            else if (table.TryGetValue(type, out var result))
-	            target.Out.SendMessage(translatedMsg, result.Item1, result.Item2);
-        }
+		}
 
 		/// <summary>
         /// Used to send various messages
         /// </summary>
-        /// <param name="type">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "sysArea", "sysOthers", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
-        /// <param name="target">The target client receiving the message (e.g., "player")</param>
+        /// <param name="messageType">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "sysArea", "sysOthers", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
+        /// <param name="messageTarget">The target client receiving the message (e.g., "player")</param>
         /// <param name="message">The string message (e.g., "You died!")</param>
         /// <returns>The identified string message</returns>
         /// <example>ChatUtil.SendTypeMessage("system", client, "This is a message.");</example>
-        public static void SendTypeMessage(eMsg type, GamePlayer target, string message)
-        {
-	        // Announcement messages sent using '/announce'
-            if (table.TryGetValue(eMsg.Announce, out var announcement))
+        public static void SendTypeMessage(eMsg messageType, GamePlayer messageTarget, string message)
+		{
+			if (messageTarget == null)
+			{
+				log.Error("[ERROR] Message could not be delivered, target not found.");
+				return;
+			}
+			// For troubleshooting messages
+			if (string.IsNullOrEmpty(message))
             {
-	            target.Out.SendMessage(message, announcement.Item1, announcement.Item2);
-	            target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	            var errorMessage = LanguageMgr.GetTranslation(messageTarget.Client, "AllCommands.Error.NoMessageFound", null);
+
+	            // Message: [ERROR] Message is null or empty.
+	            messageTarget.Client.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            log.Error("[ERROR] Message is null or empty.");
+	            return;
             }
-            // Server-wide alerts, send twice for good measure
-            else if (table.TryGetValue(eMsg.Server, out var server))
+
+            // All eMsg types
+            if (table.TryGetValue(messageType, out var result))
             {
-	            target.Out.SendMessage(message, server.Item1, server.Item2);
-	            target.Out.SendMessage(message, server.Item1, server.Item2);
+	            switch (messageType)
+	            {
+		            // Announcement messages sent using '/announce'
+		            case eMsg.Announce:
+			            messageTarget.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			            messageTarget.Client.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			            break;
+		            // Server-wide alerts, send twice for good measure
+		            case eMsg.Server:
+			            messageTarget.Client.Out.SendMessage(message, result.Item1, result.Item2);
+			            messageTarget.Client.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+		            // Admin/GM messages when troubleshooting behaviors/commands/activities in-game
+		            // Debug mode must be on ('/debug on')
+		            case eMsg.Debug when messageTarget.TempProperties.getProperty<int>(GamePlayer.DEBUG_MODE_PROPERTY) != 1:
+			            return;
+		            case eMsg.Debug:
+			            messageTarget.Client.Out.SendMessage(message, result.Item1, result.Item2);
+			            log.Error("[DEBUG] Message: " + message);
+			            break;
+		            // Emote-formatted messages sent to all other players, excluding the originating player
+		            // Player death message sent to other nearby players
+		            // System messages sent to all nearby players, except the target
+		            case eMsg.PlayerDiedOthers or eMsg.EmoteSysOthers or eMsg.SysOthers:
+			            Message.SystemToArea(messageTarget, message, result.Item1, WorldMgr.INFO_DISTANCE, messageTarget);
+			            break;
+		            // System messages sent to a general space, does not exclude the originating player
+		            case eMsg.SysArea:
+			            Message.SystemToArea(messageTarget, message, result.Item1, WorldMgr.INFO_DISTANCE, null);
+			            break;
+		            // OpenDAoC Team channel
+		            case eMsg.Team:
+		            {
+			            // Must have access to the '/team' command
+			            if (messageTarget.Client.Account.PrivLevel > 1 || SinglePermission.HasPermission(messageTarget, "team") || SinglePermission.HasPermission(messageTarget, "te"))
+				            messageTarget.Client.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+		            }
+		            default:
+			            messageTarget.Client.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+	            }
             }
-            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
-            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Client.Account.PrivLevel > (int)ePrivLevel.GM)
-	            target.Client.Out.SendMessage(message, debug.Item1, debug.Item2);
-            // Emote-formatted messages sent to all other players, excluding the originating player
-            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
-	            Message.SystemToOthers(target, message, emote.Item1);
-            // Player death message sent to other nearby players
-            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
-	            Message.SystemToOthers2(target, diedOthers.Item1, message);
-            // System messages sent to a general AoE space
-            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
-	            Message.SystemToArea(target, message, sysArea.Item1, target);
-            // System messages sent to all nearby players, except the target
-            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
-	            Message.SystemToOthers(target, message, sysOthers.Item1);
-            // OpenDAoC Team channel
-            else if (table.TryGetValue(eMsg.Team, out var team) && target.Client.Account.PrivLevel > (int)ePrivLevel.Player)
-	            target.Client.Out.SendMessage(message, team.Item1, team.Item2);
-            // All other eMsg types
-            else if (table.TryGetValue(type, out var result))
-	            target.Client.Out.SendMessage(message, result.Item1, result.Item2);
-        }
+		}
 
         /// <summary>
         /// Used to send various messages
         /// </summary>
-        /// <param name="type">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "sysArea", "sysOthers", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
-        /// <param name="target">The target client receiving the message (e.g., "client")</param>
+        /// <param name="messageType">Determines the eChatType and eChatLoc to use for the message. Options include: "advise", "alliance", "battlegroup", "bgLeader", "broadcast", "centerSys", "chat", "command", "cmdDesc", "cmdHeader","cmdSyntax", "cmdUsage", "damageAdd", "damaged", "debug", "dialog", "emote", "error", "expires", "group", "guild", "help", "important", "killedByAlb", "killedByHib", "killedByMid", "lfg", "loot", "merchant", "missed", "officer", "othersCombat", "playerDied", "pulse", "resisted", "say", "screenCenter", "send", "skill", "spell", "staff", "sysArea", "sysOthers", "system", "team", "trade", "yell", "youDied", "youHit", "youWereHit".</param>
+        /// <param name="messageTarget">The target client receiving the message (e.g., "client")</param>
         /// <param name="message">The string message (e.g., "You died!")</param>
         /// <returns>The identified string message</returns>
         /// <example>ChatUtil.SendTypeMessage("system", client, "This is a message.");</example>
-        public static void SendTypeMessage(eMsg type, GameClient target, string message)
-        {
-	        // Announcement messages sent using '/announce'
-            if (table.TryGetValue(eMsg.Announce, out var announcement))
+        public static void SendTypeMessage(eMsg messageType, GameClient messageTarget, string message)
+		{
+			if (messageTarget == null)
+			{
+				log.Error("[ERROR] Message could not be delivered, target not found.");
+				return;
+			}
+			// For troubleshooting messages
+			if (string.IsNullOrEmpty(message))
             {
-	            target.Out.SendMessage(message, announcement.Item1, announcement.Item2);
-	            target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+	            var errorMessage = LanguageMgr.GetTranslation(messageTarget, "AllCommands.Error.NoMessageFound", null);
+
+	            // Message: [ERROR] Message is null or empty.
+	            messageTarget.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+	            log.Error("[ERROR] Message is null or empty.");
+	            return;
             }
-            // Server-wide alerts, send twice for good measure
-            else if (table.TryGetValue(eMsg.Server, out var server))
+
+            // All eMsg types
+            if (table.TryGetValue(messageType, out var result))
             {
-	            target.Out.SendMessage(message, server.Item1, server.Item2);
-	            target.Out.SendMessage(message, server.Item1, server.Item2);
+	            switch (messageType)
+	            {
+		            // Announcement messages sent using '/announce'
+		            case eMsg.Announce:
+			            messageTarget.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			            messageTarget.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			            break;
+		            // Server-wide alerts, send twice for good measure
+		            case eMsg.Server:
+			            messageTarget.Out.SendMessage(message, result.Item1, result.Item2);
+			            messageTarget.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+		            // Admin/GM messages when troubleshooting behaviors/commands/activities in-game
+		            // Debug mode must be on ('/debug on')
+		            case eMsg.Debug when messageTarget.Player.TempProperties.getProperty<int>(GamePlayer.DEBUG_MODE_PROPERTY) != 1:
+			            return;
+		            case eMsg.Debug:
+			            messageTarget.Out.SendMessage(message, result.Item1, result.Item2);
+			            log.Error("[DEBUG] Message: " + message);
+			            break;
+		            // Emote-formatted messages sent to all other players, excluding the originating player
+		            // Player death message sent to other nearby players
+		            // System messages sent to all nearby players, except the target
+		            case eMsg.PlayerDiedOthers or eMsg.EmoteSysOthers or eMsg.SysOthers:
+			            Message.SystemToArea(messageTarget.Player, message, result.Item1, WorldMgr.INFO_DISTANCE, messageTarget.Player);
+			            break;
+		            // System messages sent to a general space, does not exclude the originating player
+		            case eMsg.SysArea:
+			            Message.SystemToArea(messageTarget.Player, message, result.Item1, WorldMgr.INFO_DISTANCE, null);
+			            break;
+		            // OpenDAoC Team channel
+		            case eMsg.Team:
+		            {
+			            // Must have access to the '/team' command
+			            if (messageTarget.Account.PrivLevel > 1 || SinglePermission.HasPermission(messageTarget.Player, "team") || SinglePermission.HasPermission(messageTarget.Player, "te"))
+				            messageTarget.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+		            }
+		            default:
+			            messageTarget.Out.SendMessage(message, result.Item1, result.Item2);
+			            break;
+	            }
             }
-            // Admin debugging messages when troubleshooting behaviors/commands/activities in-game
-            else if (table.TryGetValue(eMsg.Debug, out var debug) && target.Account.PrivLevel > (int)ePrivLevel.GM)
-	            target.Out.SendMessage(message, debug.Item1, debug.Item2);
-            // Emote-formatted messages sent to all other players, excluding the originating player
-            else if (table.TryGetValue(eMsg.EmoteSysOthers, out var emote))
-	            Message.SystemToOthers(target.Player, message, emote.Item1);
-            // Player death message sent to other nearby players
-            else if (table.TryGetValue(eMsg.PlayerDiedOthers, out var diedOthers))
-	            Message.SystemToOthers2(target.Player, diedOthers.Item1, message);
-            // System messages sent to a general AoE space
-            else if (table.TryGetValue(eMsg.SysArea, out var sysArea))
-	            Message.SystemToArea(target.Player, message, sysArea.Item1, target.Player);
-            // System messages sent to all nearby players, except the target
-            else if (table.TryGetValue(eMsg.SysOthers, out var sysOthers))
-	            Message.SystemToOthers(target.Player, message, sysOthers.Item1);
-            // OpenDAoC Team channel
-            else if (table.TryGetValue(eMsg.Team, out var team) && target.Account.PrivLevel > (int)ePrivLevel.Player)
-	            target.Out.SendMessage(message, team.Item1, team.Item2);
-            // All other eMsg types
-            else if (table.TryGetValue(type, out var result))
-	            target.Out.SendMessage(message, result.Item1, result.Item2);
-        }
+		}
 		
         /// <summary>
 		/// Used to send translated messages contained in a text window

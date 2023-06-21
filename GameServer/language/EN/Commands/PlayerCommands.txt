@@ -2,6 +2,8 @@
 
 ## Error
 AllCommands.Error.NoCommand:                        No such command ({0}).
+AllCommands.Error.NoTranslationID:                  [ERROR] Translation ID empty or not found: "{0}"
+AllCommands.Error.NoMessageFound:                   [ERROR] Message is null or empty.
 
 ## General
 AllCommands.Header.Basic.Commands:                              <----- '/{0}' Command ----->
