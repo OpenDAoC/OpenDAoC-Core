@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 
 namespace DOL
@@ -30,6 +31,7 @@ namespace DOL
 		{
 			private	string		m_cmd;
 			private string[]	m_cmdAliases;
+			private string      m_cmdList;
 			private	string		m_header;
 			private uint		m_plvl;
 			private	string		m_description;
@@ -73,14 +75,16 @@ namespace DOL
 			/// </summary>
 			/// <param name="cmd">Command type to handle (e.g., "/player")</param>
 			/// <param name="alias">Other names the command type goes by (e.g., '/gmhelp')</param>
+			/// <param name="cmdList">The string to use command array lists</param>
 			/// <param name="header">Separator for the command type (e.g., "AdminCommands.Header.Syntax.Plvl")</param>
 			/// <param name="plvl">Minimum required privilege level (e.g., ePrivLevel.Admin)</param>
 			/// <param name="desc">Description of the command type (e.g., "AdminCommands.Account.Description")</param>
 			/// <param name="usage">Syntax/descriptions for how to structure and use all commands of this type (e.g., syntax = "AdminCommands.Account.Syntax.AccountName", desc = "AdminCommands.Account.Usage.AccountName")</param>
-			public CmdAttribute(string cmd, string[] alias, string header, ePrivLevel plvl, string desc, params string[] usage)
+			public CmdAttribute(string cmd, string[] alias, string cmdList, string header, ePrivLevel plvl, string desc, params string[] usage)
 			{
 				m_cmd = cmd;
 				m_cmdAliases = alias;
+				m_cmdList = cmdList;
 				m_header = header;
 				m_plvl = (uint)plvl;
 				m_description = desc;
@@ -91,13 +95,15 @@ namespace DOL
 			/// Command constructor with header/divider
 			/// </summary>
 			/// <param name="cmd">Command type to handle (e.g., "/player")</param>
+			/// <param name="cmdList">The string to use command array lists</param>
 			/// <param name="header">Separator for the command type (e.g., "AdminCommands.Header.Syntax.Plvl")</param>
 			/// <param name="plvl">Minimum required privilege level (e.g., ePrivLevel.Admin)</param>
 			/// <param name="desc">Description of the command type (e.g., "AdminCommands.Account.Description")</param>
 			/// <param name="usage">Syntax/descriptions for how to structure and use all commands of this type (e.g., syntax = "AdminCommands.Account.Syntax.AccountName", desc = "AdminCommands.Account.Usage.AccountName")</param>
-			public CmdAttribute(string cmd, string header, ePrivLevel plvl, string desc, params string[] usage)
+			public CmdAttribute(string cmd, string cmdList, string header, ePrivLevel plvl, string desc, params string[] usage)
 			{
 				m_cmd = cmd;
+				m_cmdList = cmdList;
 				m_header = header;
 				m_plvl = (uint)plvl;
 				m_description = desc;
@@ -123,6 +129,18 @@ namespace DOL
 				get
 				{
 					return m_cmdAliases;
+				}
+			}
+			
+						
+			/// <summary>
+			/// Gets the string to use in command array lists
+			/// </summary>
+			public string CmdList
+			{
+				get
+				{
+					return m_cmdList;
 				}
 			}
 

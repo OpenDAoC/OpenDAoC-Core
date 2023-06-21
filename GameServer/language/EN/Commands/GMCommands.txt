@@ -1,57 +1,118 @@
 ﻿# Gamemaster Commands
-GMCommands.Error:							Error: {0}
+GMCommands.Error:							[ERROR] {0}
+GMCommands.Command.Err.SpecifyName:                             [ERROR] You must specify a player name for this command.
+GMCommands.Command.Err.NoOnlineChar:                            [ERROR] No character is online with the name '{0}'.
+GMCommands.Ban.Err.InvalidClientID:                             [ERROR] You have entered an invalid client ID. Type '/clientlist' to view a list of logged in clients.
 
-## /addbind
-GMCommands.AddBind.Description:				Adds a bindpoint to the game.
-GMCommands.AddBind.Usage:					/addbind [radius=750]
-GMCommands.AddBind.BindPointAdded:			Bindpoint added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
+## Command List
+GMCommands.CmdList.Achievement.Description:                     '/achievement' - Grants boss kill credit to an individual player, group, or battlegroup.
+GMCommands.AddBind.CmdList.Description:                         '/addbind' - Adds a new bind point based on the client's current in-game position.
+GMCommands.AddHook.CmdList.Description:                         '/addhookpoint' - Adds a hook point to a selected keep component.
+GMCommands.AdviceTeam.CmdList.Description:                      '/adviceteam' or '/advt' - Sends messages to the Advice channel with the sender labeled as "OpenDAoC".
+GMCommands.Alert.CmdList.Description:                           '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
+GMCommands.Announce.CmdList.Description:                        '/announce' - Sends a message server-wide (to all players) using the specified delivery method.
+GMCommands.Area.CmdList.Description:                            '/area' - Creates areas and displays area information in-game.
+AdminCommands.Ban.CmdList.Description:                          '/ban' - Bans the player's account or current IP address.
+GMCommands.AddBind.CmdList.Description:                         '/gmstealth' - Activates/Deactivates a GM/Admin's ability to remain invisible to all players.
+GMCommands.CmdList.Team.Description:                            '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
 
-## /addhookpoint
-GMCommands.HookPoint.Description:			Add hookpoint on a keep component.
-GMCommands.HookPoint.Usage:					'/addhookpoint <skin> <id>' to add a hookpoint (select the GameKeepComponent)
-GMCommands.HookPoint.NoGKCTarget:			You are not targeting a GameKeepComponent!
+## '/achievement' Commands
+GMCommands.Achievement.Description:                             Allows server staff to manually grant kill credit for an individual boss mob to a player, group, or battlegroup.
+GMCommands.Achievement.Syntax.SingleAdd:                        /achievement add <mobName>
+GMCommands.Achievement.Usage.SingleAdd:                         Grants kill credit to the player you are presently targeting.
+GMCommands.Achievement.Syntax.GroupAdd:                         /achievement addgroup <mobName>
+GMCommands.Achievement.Usage.GroupAdd:                          Grants kill credit to all members of the group you're in.
+GMCommands.Achievement.Syntax.BGAdd:                            /achievement addbg <mobName>
+GMCommands.Achievement.Usage.BGAdd:                             Grants kill credit to all members of the battlegroup you're in.
+GMCommands.Achievement.Err.TargetPlayer:                        [ERROR] You need to target a player to add an achievement.
+GMCommands.Achievement.Err.JoinBG:                              [ERROR] You must join a battlegroup to add an achievement for its members.
+GMCommands.Achievement.Err.JoinGroup:                           [ERROR] You must join a group to add an achievement for its members.
+GMCommands.Achievement.Err.ErrorTempProp:                       [ERROR] An error occurred while loading TempProperties!
+GMCommands.Achievement.Msg.YouAddAchievement:                   [SUCCESS] You have given {0} credit for {1}!
+GMCommands.Achievement.Msg.YouGotAchievement:                   {0} has given you achievement credit for {1}!
+GMCommands.Achievement.Msg.AchievementAdded:                    [SUCCESS] An achievement for {0} has been added to the selected player(s)!
+GMCommands.Achievement.Msg.AchievementAborted:                  [INFO] Achievement credit aborted. Use the command again if you change your mind.
+
+## '/addbind' Commands
+GMCommands.AddBind.Description:				                    Adds a new bind point based on the client's current in-game position.
+GMCommands.AddBind.Syntax.Add:					                /addbind <radius>
+GMCommands.AddBind.Usage.Add:                                   Creates a new bind point in-game.
+GMCommands.AddBind.BindPointAdded:			                    [SUCCESS] Bind point added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
+
+## '/addhookpoint' Commands
+GMCommands.AddHook.Description:			                    Adds a hook point to a selected GameKeepComponent.
+GMCommands.AddHook.Syntax.Add:					                /addhookpoint <skin> <id>
+GMCommands.AddHook.Usage.Add:                                   Adds a hook point.
+GMCommands.HookPoint.NoGKCTarget:			                    [ERROR] You are not targeting a keep component!
+
+## '/adviceteam' Commands
+GMCommands.AdviceTeam.Description:                              Allows server staff to send messages to the Advice channel behind a universal name/tag.
+GMCommands.AdviceTeam.Syntax.Message:                           /advt <message>
+GMCommands.AdviceTeam.Usage.Message:                            Sends a message as server staff to the Advice channel.
 
 ## /alert
-GMCommands.Header.Syntax.Alert:                     <----- '/alert' Commands (plvl 2) ----->
-GMCommands.Alert.Syntax.All:                        /alert all < on | off >
-GMCommands.Alert.Usage.All:                         Activates/Deactivates sound alerts for all alert types.
-GMCommands.Alert.Description:                       Controls whether sound alerts are triggered when receiving Player messages and appeals.
-GMCommands.Alert.Syntax.Send:                       /alert send < on | off >
-GMCommands.Alert.Usage.Send:                        Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
-GMCommands.Alert.Syntax.Appeal:                     /alert appeal < on | off >
-GMCommands.Alert.Usage.Appeal:                      Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
-GMCommands.Alert.Msg.AppealOn:                      You will now receive sound alerts when an appeal is filed or awaiting assistance.
-GMCommands.Alert.Msg.AppealOff:                     You will no longer receive sound alerts regarding appeals.
-GMCommands.Alert.Msg.SendOn:                        You will now receive sound alerts when a player sends you a message.
-GMCommands.Alert.Msg.SendOff:                       You will no longer receive sound alerts for player messages.
-GMCommands.Alert.Msg.AllOn:                         You will now receive sound alerts.
-GMCommands.Alert.Msg.AllOff:                        You will no longer receive sound alerts.
+GMCommands.Header.Syntax.Alert:                                 <----- '/alert' Commands (plvl 2) ----->
+GMCommands.Alert.Syntax.All:                                    /alert all < on | off >
+GMCommands.Alert.Usage.All:                                     Activates/Deactivates sound alerts for all alert types.
+GMCommands.Alert.Description:                                   Controls whether sound alerts are triggered when receiving Player messages and appeals.
+GMCommands.Alert.Syntax.Send:                                   /alert send < on | off >
+GMCommands.Alert.Usage.Send:                                    Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
+GMCommands.Alert.Syntax.Appeal:                                 /alert appeal < on | off >
+GMCommands.Alert.Usage.Appeal:                                  Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
+GMCommands.Alert.Msg.AppealOn:                                  [SUCCESS] You will now receive sound alerts when an appeal is filed or awaiting assistance.
+GMCommands.Alert.Msg.AppealOff:                                 [SUCCESS] You will no longer receive sound alerts regarding appeals.
+GMCommands.Alert.Msg.SendOn:                                    [SUCCESS] You will now receive sound alerts when a player sends you a message.
+GMCommands.Alert.Msg.SendOff:                                   [SUCCESS] You will no longer receive sound alerts for player messages.
+GMCommands.Alert.Msg.AllOn:                                     [SUCCESS] You will now receive sound alerts.
+GMCommands.Alert.Msg.AllOff:                                    [SUCCESS] You will no longer receive sound alerts.
 
-## /announce
-GMCommands.Announce.Description:			Send message to all players online
+## '/announce' Commands
+GMCommands.Announce.Description:			                    Sends a message server-wide (to all online players) using the specified delivery method.
 GMCommands.Announce.Usage:					/announce <log|window|send|center|confirm> <message>
-GMCommands.Announce.LogAnnounce:			[Announce]: {0}
-GMCommands.Announce.WindowAnnounce:			Announce from {0}
-GMCommands.Announce.SendAnnounce:			[Announce]: {0}
-GMCommands.Announce.ConfirmAnnounce:		Announce from {0}: {1}
+GMCommands.Announce.Syntax.Center:                              /announce center <message>
+GMCommands.Announce.Usage.Center:                               Sends a message to all players which displays in the center of their screen.
+GMCommands.Announce.Syntax.Confirm:                             /announce confirm <message>
+GMCommands.Announce.Usage.Confirm:                              Sends a dialog to all players which requires them to click 'OK' to confirm.
+GMCommands.Announce.Syntax.Log:                                 /announce log <message>
+GMCommands.Announce.Usage.Log:                                  Sends a message to all players which displays as Important in their System window.
+GMCommands.Announce.Syntax.Send:                                /announce send <message>
+GMCommands.Announce.Usage.Send:                                 Sends a message to all players which displays as a Send message in their Chat window.
+GMCommands.Announce.Syntax.Window:                              /announce window <message>
+GMCommands.Announce.Usage.Window:                               Sends a text window to all players which displays the specified message.
+GMCommands.Announce.LogAnnounce:			                    [Announce]: {0}
+GMCommands.Announce.WindowAnnounce:			                    Announce from {0}
+GMCommands.Announce.SendAnnounce:			                    [Announce]: {0}
+GMCommands.Announce.ConfirmAnnounce:		                    Announcement: {0}
 
-## /area
-GMCommands.Area.Description:				Various commands to help you with areas
-GMCommands.Area.Usage.Create:				/area create <name> <type(circle|square|safe|bind)> <radius> <broadcast(y|n)> <soundid>
-GMCommands.Area.AreaCreated:				Area created - Description: {0}, X={1}, Y={2}, Z={3}, Radius={4}, Broadcast={5}, Sound={6}.
+## '/area' Commands
+GMCommands.Area.Description:				                    Allows for the management of areas and area information.
+GMCommands.Area.Syntax.Create:                                  /area create <name> < circle | square | safe | bind > <radius> <broadcast ( y | n )> <soundID>
+GMCommands.Area.Usage.Create:                                   Creates an area of the specified type/shape and radius.
+GMCommands.Area.Syntax.Info:                                    /area info
+GMCommands.Area.Usage.Info:                                     Displays relevant information regarding the areas in which the client are located.
+GMCommands.Area.Msg.AreaCreated:                                [SUCCESS] You have created a new area!
+GMCommands.Area.Msg.AreaDesc:				                    [INFO] Description:
+GMCommands.Area.Msg.AreaName:                                   --- Name: {0}
+GMCommands.Area.Msg.AreaLoc:                                    --- X: {0}, Y: {1}, Z: {2}, Region: {3}
+GMCommands.Area.Msg.AreaRadius:                                 --- Radius: {0}
+GMCommands.Area.Msg.AreaBroad:                                  --- Broadcast: {0}
+GMCommands.Area.Msg.AreaSound:                                  --- Sound: {0}
 
-## /ban
-GMCommands.Ban.Description:					Usage of /ban command: 
-GMCommands.Ban.Usage.IP:					'/ban ip <account or player name> <reason>' - Ban the specified IP address.
-GMCommands.Ban.Usage.Account:				'/ban account <player name> <reason>' - Ban the specified account.
-GMCommands.Ban.Usage.Both:					'/ban both <player name> <reason>' - Ban the specified account and its associated IP address.
-GMCommands.Ban.UnableToFindPlayer:			Unable to find the specified player!
-GMCommands.Ban.AAlreadyBanned:				This account has already been banned.
-GMCommands.Ban.ABanned:						Account {0} has been banned!
-GMCommands.Ban.IAlreadyBanned:				This IP has already been banned.
-GMCommands.Ban.IBanned:						IP {0} has been banned!
-GMCommands.Ban.BAlreadyBanned:				This account and IP address have already been banned.
-GMCommands.Ban.BBanned:						Account {0} and IP {1} have been banned!
+## '/ban' Commands
+GMCommands.Ban.Description:					                    Bans the account or IP address by player name or client ID.
+GMCommands.Ban.Syntax.Account:                                  /ban account <playerName|client#> <reason>
+GMCommands.Ban.Usage.Account:                                   Bans the player's account indefinitely.
+GMCommands.Ban.Syntax.Both:                                     /ban both <playerName|client#> <reason>
+MCommands.Ban.Usage.Both:                                       Bans the player's account and current IP address indefinitely.
+GMCommands.Ban.Syntax.IPAddress:                                /ban ip <playerName|client#> <reason>
+GMCommands.Ban.Usage.IPAddress:                                 Bans the IP address the player is currently accessing.
+GMCommands.Ban.Err.InsuffPlvl:                                  [ERROR] Your privilege level is insufficient to ban this player's account or IP address.
+GMCommands.Ban.Err.CantBanSelf:                                 [ERROR] You can't ban yourself!
+GMCommands.Ban.Err.AlreaedyBanned:                              [ERROR] The specified account has already been banned!
+GMCommands.Ban.Msg.AccountBanned:                               [SUCCESS] You have banned the account '{0}'!
+GMCommands.Ban.Err.IPAlreaedyBanned:                            [ERROR] The account's associated IP address has already been banned!
+GMCommands.Ban.Msg.IPAddrBanned:                                [SUCCESS] You have banned IP address {0}!
+GMCommands.Ban.Msg.AccountIPAddrBanned:                         [SUCCESS] You have banned the account '{0}' and IP address {1}!
 
 ## /cast
 GMCommands.Cast.Description:            Cast a spell/effect/sound
@@ -85,6 +146,13 @@ GMCommands.Debug.Description:				Activate or deactivate debug
 GMCommands.Debug.Usage:						/debug <on/off>
 GMCommands.Debug.ModeON:					Debug mode ON
 GMCommands.Debug.ModeOFF:					Debug mode OFF
+
+## '/gmstealth' Commands
+GMCommands.GMStealth.Description:                               Controls a GM/Admin's visibility to Players. Does not make a character invisible to clients with a privilege level of 2+.
+GMCommands.GMStealth.Syntax.OnOff:                              /gmstealth < on | off >
+GMCommands.GMStealth.Usage.OnOff:                               Activates/Deactivates a GM/Admin's visibility to Players.
+GMCommands.GMStealth.Msg.InvisibleOn:                           You are now invisible to all clients with a privilege level of 1!
+GMCommands.GMStealth.Msg.InvisibleOff:                          You are no longer invisible to Players!
 
 ## /hascredit
 GMCommands.HasCredit.Description:			Checks if a player has a mob kill credit
@@ -166,9 +234,13 @@ GMCommands.Harm.Description:				Harms your target (health)
 GMCommands.Harm.Usage:						/harm <amount>
 GMCommands.Harm.InvalidTarget:				You have not selected a valid target
 
-## /heal
-GMCommands.Heal.Description:				Heals your target (health, endu, mana)
-GMCommands.Heal.Usage:						/heal
+## '/heal' Commands
+GMCommands.Heal.Description:				                    Restores a target's HP, endurance, and power to full, as well as removing any negative effects.
+GMCommands.Heal.Syntax.Heal:						            /heal
+GMCommands.Heal.Usage.Heal:                                     Heals the target's HP, endurance, and power.
+GMCommands.Heal.Syntax.MeHeal:                                  /heal me
+GMCommands.Heal.Usage.MeHeal:                                   Restores the stats of the client executing the command.
+GMCommands.Heal.Msg.YouFeelCured:                               You feel refreshed and cured of all maladies!
 
 ## /item
 GMCommands.Item.Description:				Various Item commands!
@@ -263,6 +335,13 @@ GMCommands.Jump.Pushed:						Current location pushed
 GMCommands.Jump.PushedTotal:				({0} total)
 GMCommands.Jump.PopInstructions:			type '/jump pop' to return to it.
 GMCommands.Jump.NothingPushed:				No locations in stack - you need to use '/jump push' first.
+
+## '/message' Commands
+GMCommands.Message.CmdList.Description:                     '/message' - Tests the output of various message types used for the implementation of the SendMessageType standardization method.
+GMCommands.Message.Description:                             Tests the output of various message types used for the implementation of the SendMessageType standardization method.
+GMCommands.Message.Syntax.Message:                          /message <all|none|advice|alliance|announce|battlegroup|bgleader|broadcast|centersys|chat|command|cmddesc|cmdheader|cmdsyntax|cmdusage|damageaddsh|damaged|debug|emote|emotesysothers|error|expires|failed|group|guild|help|important|killedbyalb|killedbyhib|killedbymid|lfg|loot|merchant|message|missed|officer|otherscombat|playerdied|playerdiedothers|pulse|resisted|say|screencenter|send|skill|spell|staff|success|sysarea|sysothers|system|team|trade|yell|youdied|youhit|youwerehit|dialogwarn>
+GMCommands.Message.Usage.Message:                           Triggers a message of the specified type to test outputs.
+GMCommands.Message.Msg.TestMessage:                         This is a test of the {0} message type.
 
 ## /offlinejump
 GMCommands.Offlinejump.Description:         Teleports a character to a specific location while offline
@@ -380,9 +459,9 @@ GMCommands.Mute.Err.NoSpeakChannel:                   You have been muted by Atl
 GMCommands.Mute.Err.NoUseCommand:                     You have been muted by Atlas staff and are not allowed to use this command.
 
 ## /team or /te
-GMCommands.Header.Command.Team:                         <----- '/team' Commands (plvl 2) ----->
+GMCommands.Team.Description:                            Broadcasts a message to all server team members with a privilege level of 2 or higher.
 GMCommands.Team.Syntax.Team:                            '/team <message>' or '/te <message>'
-GMCommands.Team.Usage.Team:                             Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+GMCommands.Team.Usage.Team:                             Broadcasts a message to the [TEAM] channel.
 
 ## /viewreports
 Scripts.Player.ViewReport.Usage: 			Usage:

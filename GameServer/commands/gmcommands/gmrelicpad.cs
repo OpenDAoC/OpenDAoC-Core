@@ -50,6 +50,7 @@ namespace DOL.GS.Commands
 			pad.Y = client.Player.Y;
 			pad.Z = client.Player.Z;
 			pad.Heading = client.Player.Heading;
+
 			pad.AddToWorld();
 			pad.SaveIntoDatabase();
 		}

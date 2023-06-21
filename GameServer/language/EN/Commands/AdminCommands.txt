@@ -1,8 +1,10 @@
 ﻿# Admin (plvl 3) Commands
 AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
-AdminCommands.Command.SyntaxCRUD:                           If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:
+AdminCommands.Command.SyntaxDB:                             If you are unable to perform database queries to accomplish this action, use the following syntax:
+AdminCommands.Command.Err.SpecifyName:                          [ERROR] You must specify a player name for this command.
+AdminCommands.Command.Err.NoOnlineChar:                         [ERROR] No character is online with the name '{0}'.
 
-# Admin Command Headers/Dividers
+## Admin Command Headers/Dividers
 AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
 AdminCommands.Header.Syntax.Benchmark:                  <----- '/benchmark' Commands (plvl 3) ----->
 AdminCommands.Header.Syntax.Code:                       <----- '/code' Commands (plvl 3) ----->
@@ -13,16 +15,27 @@ AdminCommands.Header.Syntax.Reload:                     <----- '/reload' Command
 AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverproperties' Command (plvl 3) ----->
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
-# '/account' Commands
-AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
-AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
+## Command List
+AdminCommands.Account.CmdList.Description:                      '/account' - Creates new, manages existing, and controls character assignment for OpenDAoC accounts.
+AdminCommands.Benchmark.CmdList.Description:                    '/benchmark' - Performs a system benchmark of the specified type. This is used to gauge overall system performance.
+AdminCommands.Code.CmdList.Description:                         '/code' - Manually executes a custom script in-game.
+AdminCommands.Freeze.CmdList.Description:                       '/freeze' - Triggers a brief pause in the region time for testing purposes.
+AdminCommands.DoorTeleport.CmdList.Description:                 '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
+AdminCommands.Plvl.CmdList.Description:                         '/plvl' - Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl.
+AdminCommands.Refresh.CmdList.Description:                      '/refresh' - Refreshes specific static data caches stored via scripts and other objects.
+AdminCommands.Reload.CmdList.Description:                       '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Shutdown.CmdList.Description:                     '/shutdown' - Initiates a manual reboot of the server. This does not push live any recent changes or commits made to the master branch.
+AdminCommands.SummonMerchant.CmdList.Description:               '/summonmerchant' - Summons a merchant for a short period of time.
+
+## '/account' Commands
+AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for OpenDAoC accounts. We recommend editing the database directly where possible to perform many of these same functions. Otherwise, use the following syntax:
+AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' slash command, please direct all inquiries to the OpenDAoC Discord channel.
 AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
 AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
 AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
 AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
 AdminCommands.Account.Syntax.Comm:                      /account command
-AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' command type.
+AdminCommands.Account.Usage.Comm:			            Provides syntax information regarding all '/account' subcommands in a dialog.
 AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
 AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
 AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
@@ -35,46 +48,67 @@ AdminCommands.Account.Syntax.Status:                    /account status <account
 AdminCommands.Account.Usage.Status:					    Sets an account's status (between '0' and '255'), which is used to define custom behaviors.
 AdminCommands.Account.Syntax.Unban:                     /account unban <accountName>
 AdminCommands.Account.Usage.Unban:					    Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip'), but will remove '/ban both' and '/ban account' records.
-AdminCommands.Account.Msg.AccNameForChar:				{0} is associated with the account '{1}'.
-AdminCommands.Account.Err.AccountBanNotFound:			The account '{0}' is not currently banned!
-AdminCommands.Account.Msg.AccountCreated:				You have successfully created the account '{0}'! Remember to write down the login credentials for future use.
-AdminCommands.Account.Msg.AccountDeleted:				You have successfully deleted the account '{0}'!
-AdminCommands.Account.Err.AlreadyRegistered:            An account already exists with the name '{0}'! Try again with a different value.
-AdminCommands.Account.Err.AccountNotFound:				No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
-AdminCommands.Account.Msg.AccountUnbanned:              You have successfully removed the ban from the account '{0}'!
-AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
-AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
-AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
-AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
-AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
-AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
-AdminCommands.Account.Err.PasswordChars:                A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
-AdminCommands.Account.Msg.SetStatus:                    You have changed the status for account '{0}' from {1} to {2}!
-AdminCommands.Account.Err.SpecialChars:                 A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
-AdminCommands.Account.Err.StatusValueReq:               The value you entered was not expected. Please provide a number between '0' and '255'.
+AdminCommands.Account.Msg.AccNameForChar:				[INFO] {0} is associated with the account '{1}'.
+AdminCommands.Account.Err.AccountBanNotFound:			[ERROR] The account '{0}' is not currently banned!
+AdminCommands.Account.Msg.AccountCreated:				[SUCCESS] You have created the account '{0}'! Remember to write down the login credentials for future use.
+AdminCommands.Account.Msg.AccountDeleted:				[SUCCESS] You have deleted the account '{0}'!
+AdminCommands.Account.Err.AlreadyRegistered:            [ERROR] An account already exists with the name '{0}'! Try again with a different value.
+AdminCommands.Account.Err.AccountNotFound:				[ERROR] No account exists with the name '{0}'. Please make sure you entered the full account name correctly.
+AdminCommands.Account.Msg.AccountUnbanned:              [SUCCESS] You have removed the ban from the account '{0}'!
+AdminCommands.Account.Msg.CharacterDeleted:				[SUCCESS] You have deleted the character {0}!
+AdminCommands.Account.Msg.CharacterMovedToAccount:		[SUCCESS] You have transferred ownership of {0} to account '{1}'!
+AdminCommands.Account.Err.CharacterNotFound:			[ERROR] No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
+AdminCommands.Account.Err.CharNotFromValidRealm:		[ERROR] {0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Edit this character from the database or use the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.InvalidNamePass:              [ERROR] A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
+AdminCommands.Account.Err.NoFreeSlots:                  [FAILED] The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
+AdminCommands.Account.Msg.PasswordChanged:              [SUCCESS] You have changed the password to account '{0}'. Share this with the account owner, if applicable.
+AdminCommands.Account.Err.PasswordChars:                [ERROR] A new password could not be set! The expected value was too short. Enter a password at least 4 characters long for security purposes.
+AdminCommands.Account.Msg.SetStatus:                    [SUCCESS] You have changed the status for account '{0}' from {1} to {2}!
+AdminCommands.Account.Err.SpecialChars:                 [ERROR] A new account could not be created! Special characters (e.g., !@#.?) were detected in the account name. Only numbers and lower-case letters are allowed.
+AdminCommands.Account.Err.StatusValueReq:               [ERROR] The value you entered was not expected. Please provide a number between '0' and '255'.
 
-# '/benchmark' Commands
+## '/benchmark' Commands
 AdminCommands.Benchmark.Description:                    Performs a system benchmark of the specified type. This is used to gauge overall system performance.
 AdminCommands.Benchmark.Syntax.Listskills:              /benchmark listskills
 AdminCommands.Benchmark.Usage.Listskills:               Tests the total amount of time (in milliseconds) the system takes to list a set number of cached skills. This does not include spellcasting specializations.
 AdminCommands.Benchmark.Syntax.Listspells:              /benchmark listspells
 AdminCommands.Benchmark.Usage.Listspells:               Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells.
-AdminCommands.Benchmark.Msg.SkillsIterations:           The skills benchmark took {0}ms to list {1} usable skills.
-AdminCommands.Benchmark.Msg.SpellsIterations:           The spells benchmark took {0}ms to list {1} usable spells.
+AdminCommands.Benchmark.Msg.SkillsIterations:           [SUCCESS] The skills benchmark took {0}ms to list {1} usable skills.
+AdminCommands.Benchmark.Msg.SpellsIterations:           [SUCCESS] The spells benchmark took {0}ms to list {1} usable spells.
 
-# '/code' Commands
+## '/code' Commands
+AdminCommands.Code.CmdList.Description:                 '/code' - Manually executes a custom script in-game.
+AdminCommands.Code.Description:                         Manually executes a custom code.
+AdminCommands.Code.Syntax.Code:                         /code <className>
+AdminCommands.Code.Usage.Code:                          Triggers the system compiler for the specified script.
+AdminCommands.Code.Err.Compiling:                       [ERROR] Issue(s) occurred while compiling the specified code:
+AdminCommands.Code.Msg.CodeExecuted:                    [SUCCESS] The specified code has been executed!
 
-# Old /code Command
-AdminCommands.Code.Description:						Executes custom code!
-AdminCommands.Code.Usage:							/code <codesnippet>
-AdminCommands.Code.ErrorCompiling:					Error Compiling Expression:
-AdminCommands.Code.CodeExecuted:					Code executed...
+## '/freeze' Commands
+AdminCommands.Freeze.CmdList.Description:               '/freeze' - Triggers a brief pause in the region time for testing purposes.
+AdminCommands.Freeze.Description:                       Triggers a brief pause in the region time for testing purposes.
+AdminCommands.Freeze.Syntax.Freeze:                     /freeze <seconds>
+AdminCommands.Freeze.Usage.Freeze:                      Freezes the region time for the specified number of seconds.
+AdminCommands.Freeze.Msg.Freezing:                      [INFO] The region time will now stop for {0} seconds. Please stand by...
+AdminCommands.Freeze.Err.Freeze:                        [ERROR] The command did not work as expected! Please make sure you entered a numeric value to indicate the number of seconds to freeze the region timer.
 
-# '/freeze' Commands
+## '/keepdoorteleport' Commands
+AdminCommands.DoorTeleport.CmdList.Description:         '/keepdoorteleport' - Manages teleport destinations for keep door gatekeepers.
+AdminCommands.DoorTeleport.Description:                 Manages teleport locations for keep door gatekeepers.
+AdminCommands.DoorTeleport.Syntax.Add:                  /keepdoorteleport add <enter|exit> <in|out>
+AdminCommands.DoorTeleport.Usage.Add:                   Adds a keep door teleport location for entering or exiting a keep.
+AdminCommands.DoorTeleport.Syntax.Reload:               /keepdoorteleport reload
+AdminCommands.DoorTeleport.Usage.Reload:                Loads any new changes from the database into the server's cache.
+AdminCommands.DoorTeleport.Err.TeleportString:          [ERROR] You must specify a string value for players to whisper to the gatekeeper. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.ValidStrings:            [ERROR] The string value entered is not supported. Accepted values include "enter" or "exit".
+AdminCommands.DoorTeleport.Err.TeleportType:            [ERROR] You must specify a teleport type. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.ValidTypes:              [ERROR] The teleport type entered is not supported. Accepted values include "in" or "out".
+AdminCommands.DoorTeleport.Err.KeepArea:                [ERROR] You must be inside a keep area to execute this command.
+AdminCommands.DoorTeleport.Err.SameParameter:           [ERROR] A teleport ID with the same parameter(s) already exists!
+AdminCommands.DoorTeleport.Msg.TeleportAdded:           [SUCCESS] You have added a keep door teleport location (ID {0})!
 
-# '/plvl' Commands
-AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
+## '/plvl' Commands
+AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-staff accounts.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
 AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
 AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
@@ -95,63 +129,122 @@ AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked b
 AdminCommands.Plvl.Comm.3:                              3 = Admin
 AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
 AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
-AdminCommands.Plvl.Comm.Desc:                           For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
+AdminCommands.Plvl.Msg.AddSinglePerm:                   [SUCCESS] You have granted {0} access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
-AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
+AdminCommands.Plvl.Msg.RevokeSinglePerm:                [SUCCESS] You have revoked {0}'s access to the '/{1}' command!
 AdminCommands.Plvl.Msg.DelSinglePerm:                   {0} has removed your access to the '/{1}' command! You may no longer use this command type while assigned the Player privilege level.
-AdminCommands.Plvl.Msg.AddAcct:                         You have granted {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.AddAcct:                         [SUCCESS] You have granted {0}'s account access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveAcct:                        {0} has given your account access to the '/{1}' command! Type '/{1}' to view the command list.
-AdminCommands.Plvl.Msg.RevokeAcctPerm:                  You have revoked {0}'s account access to the '/{1}' command!
+AdminCommands.Plvl.Msg.RevokeAcctPerm:                  [SUCCESS] You have revoked {0}'s account access to the '/{1}' command!
 AdminCommands.Plvl.Msg.DelAcctPerm:                     {0} has removed your account's access to the '/{1}' command! Your characters may no longer use this command type while assigned the Player privilege level.
 AdminCommands.Plvl.Msg.YourPlvlSet:                     {0} has changed your account's privilege level to {1}!
-AdminCommands.Plvl.Msg.PlvlSet:                         You have changed {0}'s account privilege level to {1}!
+AdminCommands.Plvl.Msg.PlvlSet:                         [SUCCESS] You have changed {0}'s account privilege level to {1}!
 AdminCommands.Plvl.Err.NoPlayerExists:                  No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online.
 AdminCommands.Plvl.Err.NoPlayerName:                    You must specify a player name for '/plvl' commands!
-AdminCommands.Plvl.Err.NoPermFound:                     No permission has been granted to {0} for the '/{1}' command.
-AdminCommands.Plvl.Err.NoAcctPermFound:                 No permission was found for {0}'s account and the '/{1}" command!
+AdminCommands.Plvl.Err.NoPermFound:                     [ERROR] No permission has been granted to {0} for the '/{1}' command.
+AdminCommands.Plvl.Err.NoAcctPermFound:                 [ERROR] No permission was found for {0}'s account and the '/{1}" command!
 AdminCommands.Plvl.Err.NoPlvlPerm:                      You do not have the '/plvl' permission assigned! You will be unable to access the '/plvl' command again as a GM or Player.
 AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to specific command types as a Player, enter '/plvl single' or '/plvl singleaccount' for details.
 
-# '/refresh' Commands
+## '/refresh' Commands
+AdminCommands.Refresh.CmdList.Description:              '/refresh' - Refreshes specific static data caches stored via scripts and other objects.
+AdminCommands.Refresh.Description:                      Refreshes specific static data caches stored using scripts and other objects.
+AdminCommands.Refresh.Syntax.RefreshModule:             /refresh <className>.<methodName>
+AdminCommands.Refresh.Usage.RefreshModule:              Refreshes a specific module's static cache.
+AdminCommands.Refresh.Syntax.RefreshList:               /refresh list
+AdminCommands.Refresh.Usage.RefreshList:                Returns a list of all available modules that with static caches that may be refreshed.
+AdminCommands.Refresh.Err.WrongModule:                  An incorrect module was specified. Use '/refresh list' to see available options.
+AdminCommands.Refresh.Msg.RefreshingModules:            [START] Refreshing the module static cache for: {0}
+AdminCommands.Refresh.Msg.ReturnedValue:                [RETURN] Module returned value: {0}
+AdminCommands.Refresh.Err.ErrorStaticCache:             [ERROR] An unexpected issue occurred: {0}, {1}
+AdminCommands.Refresh.Msg.StaticCacheFinished:          [DONE] Refreshed the static cache for: {0}
+AdminCommands.Refresh.Msg.AvailableModules:             <----- '/refresh' Modules ----->
 
-# '/reload' Commands
+## '/reload' Commands
+AdminCommands.Reload.CmdList.Description:                       '/reload' - Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Reload.Description:                               Removes and then re-adds specific in-game elements. This is used to apply any recent database changes to the live server.
+AdminCommands.Reload.Syntax.Mob:                                /reload mob [all|model|name|realm]
+AdminCommands.Reload.Usage.Mob:                                 Reloads all in-game objects in your current region with the 'GameNPC' type and the filter specified.
+AdminCommands.Reload.Syntax.AllMob:                             /reload mob all
+AdminCommands.Reload.Usage.AllMob:                              Reloads all in-game objects in your current region with the 'GameNPC' type.
+AdminCommands.Reload.Syntax.ModelMob:                           /reload mob model <modelID>
+AdminCommands.Reload.Usage.ModelMob:                            Reloads all in-game objects in your current region with the 'GameNPC' type and the model ID specified.
+AdminCommands.Reload.Syntax.NameMob:                            /reload mob name <mobName>
+AdminCommands.Reload.Usage.NameMob:                             Reloads all in-game objects in your current region with the 'GameNPC' type and matching the name specified.
+AdminCommands.Reload.Syntax.RealmMob:                           /reload mob realm <realm>
+AdminCommands.Reload.Usage.RealmMob:                            Reloads all in-game objects in your current region with the 'GameNPC' type and matching the realm specified.
+AdminCommands.Reload.Syntax.Object:                             /reload object all
+AdminCommands.Reload.Usage.Object:                              Reloads all in-game objects in your current region with the 'GameStaticItem' type.
+AdminCommands.Reload.Syntax.ModelObject:                        /reload object model <modelID>
+AdminCommands.Reload.Usage.ModelObject:                         Reloads all in-game objects in your current region with the 'GameStaticItem' type and the model ID specified.
+AdminCommands.Reload.Syntax.NameObject:                         /reload object name <objName>
+AdminCommands.Reload.Usage.NameObject:                          Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the name specified.
+AdminCommands.Reload.Syntax.RealmObject:                        /reload object realm <realm>
+AdminCommands.Reload.Usage.RealmObject:                         Reloads all in-game objects in your current region with the 'GameStaticItem' type and matching the realm specified.
+AdminCommands.Reload.Syntax.Serverproperties:                   /reload serverproperties
+AdminCommands.Reload.Usage.Serverproperties:                    Reloads the server cache with any changes from the 'serverproperty' table.
+AdminCommands.Reload.Syntax.Specs:                              /reload specs
+AdminCommands.Reload.Usage.Specs:                               Reloads all database objects from the 'Specialization' table.
+AdminCommands.Reload.Syntax.Spells:                             /reload spells
+AdminCommands.Reload.Usage.Spells:                              Reloads all database objects from the 'Spell' table.
+AdminCommands.Reload.Syntax.Teleports:                          /reload teleports
+AdminCommands.Reload.Usage.Teleports:                           Reloads all database objects from the 'Teleport' table.
+AdminCommands.Reload.Syntax.NPCTemplates:                       /reload npctemplates
+AdminCommands.Reload.Usage.NPCTemplates:                        Reloads all database objects from the 'NpcTemplate' table.
+AdminCommands.Reload.Syntax.Realm:                              /reload realm
+AdminCommands.Reload.Usage.Realm:                               Displays all accepted values for '/reload mob realm' and '/reload object realm' subcommands.
+AdminCommands.Reload.Header.Realms:                             <----- Realm Syntax ----->
+AdminCommands.Reload.Usage.NoneRealm:                           None = 0, n, no, none
+AdminCommands.Reload.Usage.AlbRealm:                            Albion = 1, a, alb, albion
+AdminCommands.Reload.Usage.MidRealm:                            Midgard = 2, m, mid, midgard
+AdminCommands.Reload.Usage.HibRealm:                            Hibernia = 3, h, hib, hibernia
+AdminCommands.Reload.Msg.TotalMobsRemovedAdded:                 [SUCCESS] Reload complete! {0} mobs were removed and {1} added to this region.
+AdminCommands.Reload.Msg.TotalObjRemovedAdded:                  [SUCCESS] Reload complete! {0} objects were removed and {1} added to this region.
+AdminCommands.Reload.Msg.RemovingReaddingMobs:                  [INITIALIZING] Removing and then re-adding all mobs where {0} = {1}.
+AdminCommands.Reload.Msg.RemovingReaddingObjs:                  [INITIALIZING] Removing and then re-adding all objects where {0} = {1}.
+AdminCommands.Reload.Msg.NPCTempReloaded:                       [SUCCESS] Reload complete! All NPC Templates have been added to the live cache.
+AdminCommands.Reload.Msg.SpecsReloaded:                         [SUCCESS] Reload complete! {0} specializations have been added to the live cache.
+AdminCommands.Reload.Msg.SpellsReloaded:                        [SUCCESS] Reload complete! {0} spells from all spell lines have been added to the live cache.
+AdminCommands.Reload.Msg.TeleportsReloaded:                     [SUCCESS] Reload complete! All teleport locations have been added to the live cache.
+AdminCommands.Reload.Err.XMLOld:                                [ERROR] XML values are cached and cannot be updated. Server properties may only be reloaded using MySQL.
+AdminCommands.Reload.Msg.PropsRefreshed:                        [SUCCESS] Values from the 'serverproperty' table have been reloaded in the server's cache!
 
-# '/serverproperties' Commands
+## '/shutdown' Commands
+AdminCommands.Shutdown.Msg.CountdownHours:                      A server reboot is scheduled to occur in {0} hours!
+AdminCommands.Shutdown.Msg.CountdownHrMn:                       A server reboot is scheduled to occur in {0} hours and {1} minutes!
+AdminCommands.Shutdown.Msg.CountdownMins:                       A server reboot will occur in {0} minutes!
+AdminCommands.Shutdown.Msg.CountdownSecs:                       A server reboot will occur in {0} seconds!
+AdminCommands.Shutdown.Msg.CountdownMnSc:                       A server reboot will occur in {0} minutes and {1} seconds!
+AdminCommands.Shutdown.Msg.CountdownLogoutSecs:                 Server reboot in {0} seconds! Log out now to avoid any loss of progress!
+AdminCommands.Shutdown.Msg.ScheduledShutdown:                   A server reboot has been scheduled to occur at {0}. The server will then be unavailable temporarily for maintenance.
+AdminCommands.Account.Msg.ServerClosed:                         [INFO] The server is now closed to all incoming connections! The server will shut down in {0} seconds!
+AdminCommands.Shutdown.Msg.PlanLogout:                          It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
+AdminCommands.Shutdown.Comm.Desc1:                              The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all server-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
+AdminCommands.Shutdown.Comm.Desc2:                              Rebooting the server is currently a manual effort. Bringing the server back online requires access to the server machine's command line. Please make sure someone is prepared to run the server build and launch commands once the shutdown is complete.
+AdminCommands.Shutdown.Comm.Desc3:                              If you have further questions about this slash command, please make an inquiry on the OpenDAoC Discord server.
+AdminCommands.Shutdown.Msg.YouCancel:                           [SUCCESS] You have stopped the server shutdown process!
+AdminCommands.Shutdown.Msg.StaffCancel:                         [INFO] {0} stopped the server shutdown!
+AdminCommands.Shutdown.Msg.ShutdownEnd:                         The server restart has been canceled! Please stand by for additional information from server staff.
+AdminCommands.Shutdown.Msg.ServerOpen:                          [INFO] The server is now open and accepting incoming connections!
+AdminCommands.Shutdown.Err.NoShutdown:                          [ERROR] No server shutdown is scheduled currently!
+AdminCommands.Shutdown.Err.WrongNumber:                         [ERROR] A server shutdown could not be initiated! Enter a value between '10' (i.e., 10 seconds) and '43200' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
+AdminCommands.Shutdown.Msg.ServerShutdownMins:                  The server will shut down in {0} minutes!
+AdminCommands.Shutdown.Msg.AttentionShutdown:                   ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
+AdminCommands.Shutdown.Description:                             Initiates a total shutdown of the server. The server must then be manually started.
+AdminCommands.Shutdown.Syntax.Comm:                             /shutdown command
+AdminCommands.Shutdown.Usage.Comm:                              Provides additional information regarding the '/shutdown' command type.
+AdminCommands.Shutdown.Syntax.Secs:                             /shutdown <seconds>
+AdminCommands.Shutdown.Usage.Secs:                              Schedules a manual shutdown of the server, counting down from the specified number of seconds.
+AdminCommands.Shutdown.Syntax.HrMin:                            /shutdown on <HH>:<MM>
+AdminCommands.Shutdown.Usage.HrMin:                             Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format).
+AdminCommands.Shutdown.Syntax.Cancel:                           /shutdown cancel
+AdminCommands.Shutdown.Syntax.Stop:                             /shutdown stop
+AdminCommands.Shutdown.Usage.Stop:                              Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.
+AdminCommands.Shutdown.Msg.AutomatedRestart:                    An automated server restart/backup has been triggered. The server will shut down temporarily in {0} minutes.
 
-# Old /serverproperties Command
-AdminCommands.ServerProperties.Description:			Reloads server properties from the database
-AdminCommands.ServerProperties.Usage:				/serverproperties
-AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
-AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
-
-# '/shutdown' Commands
-AdminCommands.Shutdown.Msg.CountdownHours:          A server reboot is scheduled to occur in {0} hours!
-AdminCommands.Shutdown.Msg.CountdownHrMn:           A server reboot is scheduled to occur in {0} hours and {1} minutes!
-AdminCommands.Shutdown.Msg.CountdownMins:           A server reboot will occur in {0} minutes!
-AdminCommands.Shutdown.Msg.CountdownSecs:           A server reboot will occur in {0} seconds!
-AdminCommands.Shutdown.Msg.CountdownMnSc:           A server reboot will occur in {0} minutes and {1} seconds!
-AdminCommands.Shutdown.Msg.CountdownLogoutSecs:     Server reboot in {0} seconds! Log out now to avoid any loss of progress!
-AdminCommands.Shutdown.Msg.ScheduledShutdown:       A server reboot has been scheduled to occur at {0}. The Atlas server will then be unavailable temporarily for maintenance.
-AdminCommands.Account.Msg.ServerClosed:             The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!
-AdminCommands.Shutdown.Msg.PlanLogout:              It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
-AdminCommands.Shutdown.Comm.Desc1:                  The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all DOL-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
-AdminCommands.Shutdown.Comm.Desc2:                  Rebooting Atlas is a team effort. Bringing the server back online is performed manually by Clait, Fen, or Suite. Please make sure someone is prepared to run the server once the shutdown is complete. Do not use these commands unless instructed.
-AdminCommands.Shutdown.Comm.Desc3:                  For more information regarding the '/shutdown' command type, see the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Shutdown.Msg.YouCancel:             You have stopped the server shutdown process!
-AdminCommands.Shutdown.Msg.StaffCancel:             {0} stopped the server shutdown!
-AdminCommands.Shutdown.Msg.ShutdownEnd:             The server restart has been canceled! Please stand by for additional information from Atlas staff.
-AdminCommands.Shutdown.Msg.ServerOpen:              The Atlas server is now open and accepting incoming connections!
-AdminCommands.Shutdown.Err.NoShutdown:              No server shutdown is scheduled currently!
-AdminCommands.Shutdown.Err.WrongNumber:             A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
-AdminCommands.Shutdown.Msg.ServerShutdownMins:      The Atlas server will shut down in {0} minutes!
-AdminCommands.Shutdown.Msg.AttentionShutdown:       ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
-AdminCommands.Shutdown.Description:                 Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite.
-AdminCommands.Shutdown.Syntax.Comm:                 /shutdown command
-AdminCommands.Shutdown.Usage.Comm:                 Provides additional information regarding the '/shutdown' command type.
-AdminCommands.Shutdown.Syntax.Secs:                 /shutdown <seconds>
-AdminCommands.Shutdown.Usage.Secs:                  Schedules a manual shutdown of the server, counting down from the specified number of seconds.
-AdminCommands.Shutdown.Syntax.HrMin:                /shutdown on <HH>:<MM>
-AdminCommands.Shutdown.Usage.HrMin:                  Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT.
-AdminCommands.Shutdown.Syntax.Stop:                 /shutdown stop
-AdminCommands.Shutdown.Usage.Stop:                  Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.
+## '/summonmerchant' Commands
+AdminCommands.SummonMerchant.Description:                       Summons a merchant for a short period of time.
+AdminCommands.SummonMerchant.Syntax.Summon:                     /summonmerchant
+AdminCommands.SummonMerchant.Usage.Summon:                      Summons a merchant at the client's present location.
+AdminCommands.SummonMerchant.Err.WaitSeconds:                   You must wait {0} more seconds before you can use this command again!
+AdminCommands.SummonMerchant.Msg.SummonedMerchant:              You have summoned a merchant!

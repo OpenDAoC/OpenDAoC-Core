@@ -30,7 +30,12 @@ using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-	[Cmd("&GMinfo", ePrivLevel.GM, "Various Information", "'/GMinfo (select a target or not)")]
+	[Cmd(
+		"&GMinfo", 
+		ePrivLevel.GM, 
+		"Various Information", 
+		"'/GMinfo (select a target or not)"
+	)]
 	
 	public class GMInfoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -41,11 +46,10 @@ namespace DOL.GS.Commands
 			uint seconde = WorldMgr.GetCurrentGameTime() / 1000 % 60;
 			IPHostEntry ip = Dns.GetHostByName(Dns.GetHostName());
 			string myNIC = ip.AddressList[0].ToString();
-
 			string myInternetIP = ip.AddressList[0].ToString();
-
 			string name = "(NoName)";
 			var info = new List<string>();
+			
 			info.Add("        Current Region : " + client.Player.CurrentRegionID );
 			info.Add(" ");
 			Type regionType = client.Player.CurrentRegion.GetType();
@@ -72,25 +76,28 @@ namespace DOL.GS.Commands
 					var target = client.Player.TargetObject as GameNPC;
 					name = target.Name;
 					
-					
 					info.Add(" + Class: " + target.GetType().ToString());
 					info.Add(" + Brain: " + (target.Brain == null ? "(null)" : target.Brain.GetType().ToString()));
+					
 					if (target.LoadedFromScript)
 						info.Add(" + Loaded: from Script");
 					else
 						info.Add(" + Loaded: from Database");
+					
 					info.Add(" ");
+					
 					if (client.Player.TargetObject is GameMerchant)
 					{
 						var targetM = client.Player.TargetObject as GameMerchant;
-						
-                        info.Add(" + Is Merchant ");
+						info.Add(" + Is Merchant ");
+                        
 						if (targetM.TradeItems != null)
 						{
                             info.Add(" + Sell List: \n   " + targetM.TradeItems.ItemsListID);
 						}
 						else 
 							info.Add(" + Sell List:  Not Present !\n");
+						
 						info.Add(" ");
 					}
 
@@ -101,9 +108,11 @@ namespace DOL.GS.Commands
 						info.Add("Enemies: " + target.Faction.EnemyFactions.Count);
 						info.Add("Friends: " + target.Faction.FriendFactions.Count);
 					}
+					
 					if (client.Player.TargetObject is GameSummonedPet)
 					{
 						var targetP = client.Player.TargetObject as GameSummonedPet;
+						
                         info.Add(" + Is Pet ");
 						info.Add(" + Pet Owner:   " + targetP.Owner);
 						info.Add(" ");
@@ -113,6 +122,7 @@ namespace DOL.GS.Commands
 					if (client.Player.TargetObject is GameMovingObject)
 					{
 						var targetM = client.Player.TargetObject as GameMovingObject;
+						
                         info.Add(" + Is GameMovingObject  ");
                         info.Add(" + ( Boats - Siege weapons - Custom Object");
 						info.Add(" + Emblem:   " + targetM.Emblem);
@@ -120,25 +130,28 @@ namespace DOL.GS.Commands
 					}
 					
 					info.Add(" + Name: " + name);
+					
 					if (target.GuildName != null && target.GuildName.Length > 0)
 						info.Add(" + Guild: " + target.GuildName);
+					
 					info.Add(" + Level: " + target.Level);
 					info.Add(" + Realm: " + GlobalConstants.RealmToName(target.Realm));
 					info.Add(" + Model:  " + target.Model);
 					info.Add(" + Size " + target.Size);
 					info.Add(string.Format(" + Flags: {0} (0x{1})", ((GameNPC.eFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
 					info.Add(" ");
-					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
 					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
 					info.Add(" + Attacker Count: " + target.attackComponent.Attackers.Count);
 					info.Add(" + AF: " + GetTotalAFHelper(target));
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
+					
 					if (aggroBrain != null)
 					{
 						info.Add(" + Aggro level: " + aggroBrain.AggroLevel);
 						info.Add(" + Aggro range: " + aggroBrain.AggroRange);
+						
 						if(aggroBrain is StandardMobBrain mobBrain)
 							info.Add(" + ThinkInterval: " + mobBrain.ThinkInterval +"ms");
 
@@ -156,6 +169,7 @@ namespace DOL.GS.Commands
 					info.Add(" + Roaming Range: " + target.RoamingRange);
 
 					TimeSpan respawn = TimeSpan.FromMilliseconds(target.RespawnInterval);
+					
 					if (target.RespawnInterval <= 0)
 						info.Add(" + Respawn: NPC will not respawn");
 					else
@@ -180,6 +194,7 @@ namespace DOL.GS.Commands
 						info.Add(" + OwnerID: " + target.OwnerID);
 						
 					info.Add(" ");
+					
 					if (target.Strength > 0)
 						info.Add(" + STR: "+ target.Strength);
 					if (target.Constitution > 0)
@@ -204,15 +219,15 @@ namespace DOL.GS.Commands
 						info.Add(" + Evade %:  "+ target.EvadeChance);
 					
 					info.Add(" + Damage type: " + target.MeleeDamageType);
+					
 					if (target.LeftHandSwingChance > 0)
 						info.Add(" + Left Swing %: " + target.LeftHandSwingChance);
-					if(target.ScalingFactor > 0)
+					if (target.ScalingFactor > 0)
 						info.Add(" + DamageTableScalingFactor: " + target.ScalingFactor);
-					if(target.GetModified(eProperty.MeleeDamage) > 0) 
+					if (target.GetModified(eProperty.MeleeDamage) > 0) 
 						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
 					if (target.GetWeaponSkill(new InventoryItem()) > 0)
 						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new InventoryItem()));
-
 
 					if (target.Abilities != null && target.Abilities.Count > 0)
 						info.Add(" + Abilities: " + target.Abilities.Count);
@@ -224,6 +239,7 @@ namespace DOL.GS.Commands
 						info.Add(" + Styles: " + target.Styles.Count);
 						
 					info.Add(" ");
+					
 					if (target.Race > 0)
 						info.Add(" + Race:  " + target.Race);
 						
@@ -250,6 +266,7 @@ namespace DOL.GS.Commands
 				    	info.Add(" + Resist Spirit:  " + target.GetDamageResist(eProperty.Resist_Spirit));
 					if (target.GetDamageResist(eProperty.Resist_Energy) > 0)
 				    	info.Add(" + Resist Energy:  " + target.GetDamageResist(eProperty.Resist_Energy));
+					
 					info.Add(" + Active weapon slot: " + target.ActiveWeaponSlot);
 					info.Add(" + Visible weapon slot: " + target.VisibleActiveWeaponSlots);
 					
@@ -265,13 +282,14 @@ namespace DOL.GS.Commands
 					info.Add(" + OID: " + target.ObjectID);
 					info.Add(" + Package ID:  " + target.PackageID);
 					
-				/*	if (target.Brain != null && target.Brain.IsActive)
+					/*	if (target.Brain != null && target.Brain.IsActive)
 					{
 						info.Add(target.Brain.GetType().FullName);
 						info.Add(target.Brain.ToString());
 						info.Add("");
 					}
-				*/
+					*/
+					
 					info.Add("");
 					info.Add(" ------ State ------");
 					if (target.IsReturningHome || target.IsReturningToSpawnPoint)
@@ -342,6 +360,7 @@ namespace DOL.GS.Commands
 					info.Add(" + Loot:");
 
 					var template = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(target.Name));
+
 					foreach (LootTemplate loot in template)
 					{
 						ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(loot.ItemTemplateID);

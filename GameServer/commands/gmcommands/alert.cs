@@ -17,55 +17,32 @@
  *
  */
 
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 namespace DOL.GS.Commands
 {
-	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute(
 		// Enter '/alert' to list all commands of this type
 		"&alert",
-		// Message: <----- '/alert' Commands (plvl 2) ----->
-		"GMCommands.Header.Syntax.Alert",
+		// Message: '/alert' - Controls whether sound alerts are triggered when receiving Player messages and appeals.
+		"GMCommands.Alert.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
-		// Message: "Controls whether sound alerts are triggered when receiving Player messages and appeals."
+		// Message: Controls whether sound alerts are triggered when receiving Player messages and appeals.
 		"GMCommands.Alert.Description",
 		// Syntax: /alert all < on | off >
 		"GMCommands.Alert.Syntax.All",
-		// Message: "Activates/Deactivates sound alerts for all alert types."
+		// Message: Activates/Deactivates sound alerts for all alert types.
 		"GMCommands.Alert.Usage.All",
 		// Syntax: /alert send < on | off >
 		"GMCommands.Alert.Syntax.Send",
-		// Message: "Activates/Deactivates a sound alert each time a '/send' message is received from a Player."
+		// Message: Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
 		"GMCommands.Alert.Usage.Send",
 		// Syntax: /alert appeal < on | off >
 		"GMCommands.Alert.Syntax.Appeal",
-		// Message: "Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance."
+		// Message: Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
 		"GMCommands.Alert.Usage.Appeal"
-		)]
+	)]
 	public class AlertCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 
@@ -93,15 +70,17 @@ namespace DOL.GS.Commands
 					{
 						client.Player.TempProperties.setProperty("AppealAlert", false);
 						client.Player.TempProperties.setProperty("SendAlert", false);
-						// Message: "You will now receive sound alerts."
-						ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AllOn", null);
+						
+						// Message: [SUCCESS] You will now receive sound alerts.
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AllOn", null);
 					}
 					if (args[2] == "off")
 					{
 						client.Player.TempProperties.setProperty("AppealAlert", true);
 						client.Player.TempProperties.setProperty("SendAlert", true);
-						// Message: "You will no longer receive sound alerts."
-						ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AllOff", null);
+						
+						// Message: [SUCCESS] You will no longer receive sound alerts.
+						ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AllOff", null);
 					}
 					return;
 				}
@@ -117,14 +96,16 @@ namespace DOL.GS.Commands
 						if (args[2] == "on")
 						{
 							client.Player.TempProperties.setProperty("AppealAlert", false);
-							// Message: "You will now receive sound alerts when an appeal is filed or awaiting assistance."
-							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AppealOn", null);
+							
+							// Message: [SUCCESS] You will now receive sound alerts when an appeal is filed or awaiting assistance.
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AppealOn", null);
 						}
 						if (args[2] == "off")
 						{
 							client.Player.TempProperties.setProperty("AppealAlert", true);
-							// Message: "You will no longer receive sound alerts regarding appeals."
-							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AppealOff", null);
+							
+							// Message: [SUCCESS] You will no longer receive sound alerts regarding appeals.
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.AppealOff", null);
 						}
 						return;
 					}
@@ -140,19 +121,20 @@ namespace DOL.GS.Commands
 						if (args[2] == "on")
 						{
 							client.Player.TempProperties.setProperty("SendAlert", false);
-							// Message: "You will now receive sound alerts when a player sends you a message."
-							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.SendOn", null);
+							
+							// Message: [SUCCESS] You will now receive sound alerts when a player sends you a message.
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.SendOn", null);
 						}
 						if (args[2] == "off")
 						{
 							client.Player.TempProperties.setProperty("SendAlert", true);
-							// Message: "You will no longer receive sound alerts for player messages."
-							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.SendOff", null);
+							
+							// Message: [SUCCESS] You will no longer receive sound alerts for player messages.
+							ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.Alert.Msg.SendOff", null);
 						}
 						return;
 					}
 				#endregion Send
-				
 			}
 		}
 	}

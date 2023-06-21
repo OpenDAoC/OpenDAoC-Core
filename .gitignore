@@ -44,3 +44,10 @@ mono_crash.*
 /usbwebserver - Shortcut.lnk
 /heidisql - Shortcut.lnk
 /.editorconfig
+.DS_Store
+DOLBase/.DS_Store
+DOLDatabase/.DS_Store
+DOLServer/.DS_Store
+GameServer/.DS_Store
+Tests/.DS_Store
+global.json

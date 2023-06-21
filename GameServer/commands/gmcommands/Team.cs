@@ -51,17 +51,22 @@ namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[CmdAttribute( 
-	// Enter '/team' to see command syntax messages
-	"&team",
-	new [] { "&te" },
-	// Message: <----- '/team' Commands (plvl 2) ----->
-	"GMCommands.Header.Command.Team",
-   ePrivLevel.GM,
-	"Broadcasts a message to all Atlas server team members (i.e., plvl 2+).",
-	// Syntax: '/team <message>' or '/te <message>'
-	"GMCommands.Team.Syntax.Team",
-	// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
-	"GMCommands.Team.Usage.Team")]
+		// Enter '/team' to see command syntax messages
+		"&team",
+		new [] { "&te" },
+		// Message: '/team' or '/te' - Broadcasts a message to all server team members (i.e., plvl 2+).
+		"GMCommands.CmdList.Team.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
+		ePrivLevel.GM,
+		// Message: Broadcasts a message to all server team members with a privilege level of 2 or higher.
+		"GMCommands.Team.Description",
+		// Syntax: '/team <message>' or '/te <message>'
+		"GMCommands.Team.Syntax.Team",
+		// Message: Broadcasts a message to the [TEAM] channel.
+		"GMCommands.Team.Usage.Team"
+	)]
 
 	public class TeamCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
@@ -70,14 +75,12 @@ namespace DOL.GS.Commands
 			// Lists all '/team' command syntax
 			if (args.Length < 2)
 			{
-				// Message: <----- '/team' Commands (plvl 2) ----->
-				ChatUtil.SendHeaderMessage(client, "GMCommands.Header.Command.Team", null);
+				// Lists the '/team' command's full syntax
+				// Syntax: <----- '/{0}' Command {1}----->
 				// Message: Use the following syntax for this command:
-				ChatUtil.SendCommMessage(client, "AllCommands.Command.SyntaxDesc", null);
 				// Syntax: '/team <message>' or '/te <message>'
-				ChatUtil.SendSyntaxMessage(client, "GMCommands.Team.Syntax.Team", null);
-				// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
-				ChatUtil.SendCommMessage(client, "GMCommands.Team.Usage.Team", null);	
+				// Message: Broadcasts a message to the [TEAM] channel.
+				DisplayHeadSyntax(client, "team", "", "", 2, false, "GMCommands.Team.Syntax.Team", "GMCommands.Team.Usage.Team");
 				return;
 			}
 
@@ -90,7 +93,7 @@ namespace DOL.GS.Commands
 				if (player.Account.PrivLevel > 1)
 				{
 					// Message: [TEAM] {0}: {1}
-					ChatUtil.SendTeamMessage(player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
+					ChatUtil.SendTypeMessage(eMsg.Team, player, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);
 				}
 			}
 		}

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -25,9 +26,19 @@ namespace DOL.GS.Commands
 {
 	[CmdAttribute(
 		"&addbind",
+		// Message: '/addbind' - Adds a new bind point based on the client's current in-game position.
+		"GMCommands.AddBind.CmdList.Description",
+		// Message: <----- '/{0}' Command {1}----->
+		"AllCommands.Header.General.Commands",
+		// Required minimum privilege level to use the command
 		ePrivLevel.GM,
+		// Message: Adds a new bind point based on the client's current in-game position.
 		"GMCommands.AddBind.Description",
-		"GMCommands.AddBind.Usage")]
+		// Message: /addbind <radius>
+		"GMCommands.AddBind.Syntax.Add",
+		// Message: Creates a new bind point in-game.
+		"GMCommands.AddBind.Usage.Add"
+	)]
 	public class AddBindCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -41,7 +52,8 @@ namespace DOL.GS.Commands
 				}
 				catch (Exception e)
 				{
-					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Error", e.Message));
+					// Message: [Error] {0}
+					ChatUtil.SendTypeMessage(eMsg.Error, client, "GMCommands.Error", e.Message);
 					return;
 				}
 			}
@@ -51,9 +63,12 @@ namespace DOL.GS.Commands
 			bp.Z = client.Player.Z;
 			bp.Region = client.Player.CurrentRegionID;
 			bp.Radius = bindRadius;
+			
 			GameServer.Database.AddObject(bp);
 			client.Player.CurrentRegion.AddArea(new Area.BindArea("bind point", bp));
-			DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.AddBind.BindPointAdded", bp.X, bp.Y, bp.Z, bp.Radius, bp.Region));
+			
+			// Message: [SUCCESS] Bind point added: X={0}, Y={1}, Z={2}, Radius={3}, Region={4}
+			ChatUtil.SendTypeMessage(eMsg.Success, client, "GMCommands.AddBind.BindPointAdded", bp.X, bp.Y, bp.Z, bp.Radius, bp.Region);
 		}
 	}
 }
