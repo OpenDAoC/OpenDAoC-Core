@@ -63,7 +63,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_component != null)
 					return m_component.Keep.Realm;
-				if (m_CurrentRegion.ID == 163)
+				if (_currentRegion.ID == 163)
 					return CurrentZone.Realm;
 				return base.Realm;
 			}
@@ -126,13 +126,13 @@ namespace DOL.GS.Keeps
 
 		public void GetTeleportLocation(out int x, out int y)
 		{
-			ushort originalHeading = m_Heading;
-			m_Heading = (ushort)Util.Random((m_Heading - 500), (m_Heading + 500));
+			ushort originalHeading = _heading;
+			_heading = (ushort)Util.Random((_heading - 500), (_heading + 500));
 			int distance = Util.Random(50, 150);
             Point2D portloc = this.GetPointFromHeading( this.Heading, distance );
             x = portloc.X;
             y = portloc.Y;
-			m_Heading = originalHeading;
+			_heading = originalHeading;
 		}
 
 		public class TeleporterEffect : GameNPC

@@ -93,88 +93,52 @@ namespace DOL.GS
 
 		#region Position
 
-		/// <summary>
-		/// The Object's current Region
-		/// </summary>
-		protected Region m_CurrentRegion;
+		protected Region _currentRegion;
+		protected Zone _currentZone;
+		protected string _ownerID;
+		protected ushort _heading;
+		protected eRealm _realm;
 
-		/// <summary>
-		/// The direction the Object is facing
-		/// </summary>
-		protected ushort m_Heading;
-
-		/// <summary>
-		/// Holds the realm of this object
-		/// </summary>
-		protected eRealm m_Realm;
-
-		/// <summary>
-		/// Gets or Sets the current Realm of the Object
-		/// </summary>
 		public virtual eRealm Realm
 		{
-			get { return m_Realm; }
-			set { m_Realm = value; }
+			get => _realm;
+			set => _realm = value;
 		}
 
-		/// <summary>
-		/// Gets or Sets the current Region of the Object
-		/// </summary>
 		public virtual Region CurrentRegion
 		{
-			get { return m_CurrentRegion; }
-			set { m_CurrentRegion = value; }
+			get => _currentRegion;
+			set => _currentRegion = value;
 		}
 
-		protected string m_ownerID;
-
-		/// <summary>
-		/// Gets or sets the owner ID for this object
-		/// </summary>
 		public virtual string OwnerID
 		{
-			get { return m_ownerID; }
-			set
-			{
-				m_ownerID = value;
-			}
+			get => _ownerID;
+			set => _ownerID = value;
 		}
 
-
-		/// <summary>
-		/// Get's or sets the current Region by the ID
-		/// </summary>
 		public virtual ushort CurrentRegionID
 		{
-			get { return m_CurrentRegion == null ? (ushort)0 : m_CurrentRegion.ID; }
-			set
-			{
-				CurrentRegion = WorldMgr.GetRegion(value);
-			}
+			get => _currentRegion == null ? (ushort) 0 : _currentRegion.ID;
+			set => CurrentRegion = WorldMgr.GetRegion(value);
 		}
 
-		/// <summary>
-		/// Gets the current Zone of the Object
-		/// </summary>
 		public Zone CurrentZone
 		{
 			get
 			{
-				if (m_CurrentRegion != null)
-				{
-					return m_CurrentRegion.GetZone(X, Y);
-				}
-				return null;
+				if (_currentZone == null && _currentRegion != null)
+					_currentZone = _currentRegion.GetZone(X, Y);
+
+				return _currentZone;
 			}
+			set => _currentZone = value;
 		}
 
-		/// <summary>
-		/// Gets the current direction the Object is facing
-		/// </summary>
 		public virtual ushort Heading
 		{
-			get { return m_Heading; }
-			set { m_Heading = (ushort)(value & 0xFFF); }
+			get => _heading;
+			set => _heading = (ushort) (value & 0xFFF);
 		}
 
 		/// <summary>
@@ -773,7 +737,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			m_Heading = heading;
+			_heading = heading;
 			return AddToWorld();
 		}
 
@@ -787,7 +751,7 @@ namespace DOL.GS
 			if (currentZone == null || m_ObjectState == eObjectState.Active)
 				return false;
 
-			if (!m_CurrentRegion.AddObject(this))
+			if (!_currentRegion.AddObject(this))
 				return false;
 
 			CurrentZone?.AddObjectToZone(this);
@@ -809,7 +773,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool RemoveFromWorld()
 		{
-			if (m_CurrentRegion == null || ObjectState != eObjectState.Active)
+			if (_currentRegion == null || ObjectState != eObjectState.Active)
 				return false;
 
 			Notify(GameObjectEvent.RemoveFromWorld, this);
@@ -820,7 +784,7 @@ namespace DOL.GS
 				player.Out.SendObjectRemove(this);
 			});
 
-			m_CurrentRegion.RemoveObject(this);
+			_currentRegion.RemoveObject(this);
 			return true;
 		}
 
@@ -862,7 +826,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			m_Heading = heading;
+			_heading = heading;
 			CurrentRegionID = regionID;
 			return AddToWorld();
 		}

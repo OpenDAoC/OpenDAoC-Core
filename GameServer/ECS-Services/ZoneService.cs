@@ -48,7 +48,10 @@ namespace DOL.GS
                     }
 
                     if (changingZone)
+                    {
+                        subZoneObject.Object.CurrentZone = null;
                         currentZone.OnObjectRemovedFromZone();
+                    }
 
                     subZoneObject.CurrentSubZone = null;
                 }
@@ -69,7 +72,10 @@ namespace DOL.GS
                     subZoneObject.IsChangingSubZone = false;
 
                     if (changingZone)
+                    {
+                        subZoneObject.Object.CurrentZone = destinationZone;
                         destinationZone.OnObjectAddedToZone();
+                    }
                 }
 
                 EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);

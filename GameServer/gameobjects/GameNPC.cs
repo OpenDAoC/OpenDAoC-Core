@@ -1096,7 +1096,7 @@ namespace DOL.GS
 			m_x = dbMob.X;
 			m_y = dbMob.Y;
 			m_z = dbMob.Z;
-			m_Heading = (ushort) (dbMob.Heading & 0xFFF);
+			_heading = (ushort) (dbMob.Heading & 0xFFF);
 			MaxSpeedBase = (short) dbMob.Speed;
 			CurrentRegionID = dbMob.Region;
 			Realm = (eRealm)dbMob.Realm;
@@ -2198,7 +2198,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			m_Heading = heading;
+			_heading = heading;
 
 			// Previous position.
 			foreach (GamePlayer player in playersInRadius)
@@ -4644,7 +4644,7 @@ namespace DOL.GS
 
 			Level = 1;
 			m_health = MaxHealth;
-			m_Realm = 0;
+			_realm = 0;
 			m_name = "new mob";
 			m_model = 408;
 			MaxSpeedBase = 200;
@@ -4654,7 +4654,7 @@ namespace DOL.GS
 			m_flags = 0;
 			m_maxdistance = 0;
 			RoamingRange = 0;
-			m_ownerID = "";
+			_ownerID = "";
 			m_spawnPoint = new Point3D();
 			LinkedFactions = new ArrayList(1);
 

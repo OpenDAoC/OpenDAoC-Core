@@ -67,7 +67,7 @@ namespace DOL.GS
 			if (curZone == null) return;
 			this.CurrentRegion = curZone.ZoneRegion;
 			m_name = m_dbdoor.Name;
-			m_Heading = (ushort)m_dbdoor.Heading;
+			_heading = (ushort)m_dbdoor.Heading;
 			m_x = m_dbdoor.X;
 			m_y = m_dbdoor.Y;
 			m_z = m_dbdoor.Z;
@@ -75,7 +75,7 @@ namespace DOL.GS
 			m_model = 0xFFFF;
 			m_doorID = m_dbdoor.InternalID;
 			m_guildName = m_dbdoor.Guild;
-			m_Realm = (eRealm)m_dbdoor.Realm;
+			_realm = (eRealm)m_dbdoor.Realm;
 			m_level = m_dbdoor.Level;
 			m_health = m_dbdoor.MaxHealth;
 			m_maxHealth = m_dbdoor.MaxHealth;

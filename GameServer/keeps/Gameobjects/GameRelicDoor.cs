@@ -240,7 +240,7 @@ namespace DOL.GS.Keeps
 			if (curZone == null) return;
 			this.CurrentRegion = curZone.ZoneRegion;
 			m_name = door.Name;
-			m_Heading = (ushort)door.Heading;
+			_heading = (ushort)door.Heading;
 			m_x = door.X;
 			m_y = door.Y;
 			m_z = door.Z;

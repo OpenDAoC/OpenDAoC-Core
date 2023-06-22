@@ -685,10 +685,10 @@ namespace DOL.GS.Keeps
 			if (curZone == null)
 				return;
 			
-			m_CurrentRegion = curZone.ZoneRegion;
+			_currentRegion = curZone.ZoneRegion;
 			m_name = dbDoor.Name;
 			m_health = dbDoor.Health;
-			m_Heading = (ushort)dbDoor.Heading;
+			_heading = (ushort)dbDoor.Heading;
 			m_x = dbDoor.X;
 			m_y = dbDoor.Y;
 			m_z = dbDoor.Z;

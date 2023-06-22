@@ -11916,7 +11916,7 @@ namespace DOL.GS
             m_x = DBCharacter.Xpos;
             m_y = DBCharacter.Ypos;
             m_z = DBCharacter.Zpos;
-            m_Heading = (ushort)DBCharacter.Direction;
+            _heading = (ushort)DBCharacter.Direction;
             //important, use CurrentRegion property
             //instead because it sets the Region too
             CurrentRegionID = (ushort)DBCharacter.Region;
@@ -11926,7 +11926,7 @@ namespace DOL.GS
                 m_x = DBCharacter.BindXpos;
                 m_y = DBCharacter.BindYpos;
                 m_z = DBCharacter.BindZpos;
-                m_Heading = (ushort)DBCharacter.BindHeading;
+                _heading = (ushort)DBCharacter.BindHeading;
                 CurrentRegionID = (ushort)DBCharacter.BindRegion;
             }
 

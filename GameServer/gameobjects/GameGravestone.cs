@@ -44,7 +44,7 @@ namespace DOL.GS
 			//the same startingspots when we restart!
 			m_saveInDB = false;
 			m_name = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameGravestone.GameGravestone.Grave", player.Name);
-			m_Heading = player.Heading;
+			_heading = player.Heading;
 			m_x = player.X;
 			m_y = player.Y;
 			m_z = player.Z;
