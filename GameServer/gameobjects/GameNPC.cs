@@ -2067,7 +2067,11 @@ namespace DOL.GS
 				&& PathID != null && PathID != "" && PathID != "NULL")
 			{
 				CurrentWaypoint = MovementMgr.LoadPath(PathID);
-				MoveOnPath(CurrentWaypoint.MaxSpeed);
+
+				if (CurrentWaypoint == null)
+					log.Error($"'MovementMgr.LoadPath' couldn't find the path (PathID: {PathID}) for (NPC: {this})");
+				else
+					MoveOnPath(CurrentWaypoint.MaxSpeed);
 			}
 
 			if (m_houseNumber > 0 && this is not GameConsignmentMerchant)
