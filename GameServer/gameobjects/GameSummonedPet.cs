@@ -20,6 +20,7 @@
 using System;
 using DOL.AI;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 
@@ -332,67 +333,45 @@ namespace DOL.GS
 		/// <summary>
 		/// Set stats according to PET_AUTOSET values, then scale them according to the npcTemplate
 		/// </summary>
-		public override void AutoSetStats()
+		public override void AutoSetStats(Mob dbMob = null)
 		{
-			// Assign base values
 			Strength = Properties.PET_AUTOSET_STR_BASE;
-			if (Strength < 1)
-				Strength = 1;
-
 			Constitution = Properties.PET_AUTOSET_CON_BASE;
-			if (Constitution < 1)
-				Constitution = 1;
-
 			Quickness = Properties.PET_AUTOSET_QUI_BASE;
-			if (Quickness < 1)
-				Quickness = 1;
-
 			Dexterity = Properties.PET_AUTOSET_DEX_BASE;
-			if (Dexterity < 1)
-				Dexterity = 1;
-
 			Intelligence = Properties.PET_AUTOSET_INT_BASE;
-			if (Intelligence < 1)
-				Intelligence = 1;
-
 			Empathy = 30;
 			Piety = 30;
 			Charisma = 30;
-
 			if (Level > 1)
 			{
-				// Now add stats for levelling
-				Strength += (short)Math.Round(10.0 * (Level - 1) * Properties.PET_AUTOSET_STR_MULTIPLIER);
-				Constitution += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_CON_MULTIPLIER);
-				Quickness += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_QUI_MULTIPLIER);
-				Dexterity += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_DEX_MULTIPLIER);
-				Intelligence += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_INT_MULTIPLIER);
-				Empathy += (short)(Level - 1);
-				Piety += (short)(Level - 1);
-				Charisma += (short)(Level - 1);
+				int levelMinusOne = Level - 1;
+				Strength += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_STR_MULTIPLIER);
+				Constitution += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_CON_MULTIPLIER);
+				Quickness += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_QUI_MULTIPLIER);
+				Dexterity += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_DEX_MULTIPLIER);
+				Intelligence += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_INT_MULTIPLIER);
 			}
 
-			// Now scale them according to NPCTemplate values
+			// Stats are scaled using the current template.
 			if (NPCTemplate != null)
 			{
 				if (NPCTemplate.Strength > 0)
-					Strength = (short)Math.Round(Strength * (NPCTemplate.Strength / 100.0));
+					Strength = (short) Math.Round(Strength * (NPCTemplate.Strength / 100.0));
 				if (NPCTemplate.Constitution > 0)
-					Constitution = (short)Math.Round(Constitution * (NPCTemplate.Constitution / 100.0));
+					Constitution = (short) Math.Round(Constitution * (NPCTemplate.Constitution / 100.0));
 				if (NPCTemplate.Quickness > 0)
-					Quickness = (short)Math.Round(Quickness * (NPCTemplate.Quickness / 100.0));
+					Quickness = (short) Math.Round(Quickness * (NPCTemplate.Quickness / 100.0));
 				if (NPCTemplate.Dexterity > 0)
-					Dexterity = (short)Math.Round(Dexterity * (NPCTemplate.Dexterity / 100.0));
+					Dexterity = (short) Math.Round(Dexterity * (NPCTemplate.Dexterity / 100.0));
 				if (NPCTemplate.Intelligence > 0)
-					Intelligence = (short)Math.Round(Intelligence * (NPCTemplate.Intelligence / 100.0));
-
-				// Except for CHA, EMP, AND PIE as those don't have autoset values.
+					Intelligence = (short) Math.Round(Intelligence * (NPCTemplate.Intelligence / 100.0));
 				if (NPCTemplate.Empathy > 0)
-					Empathy = (short)NPCTemplate.Empathy;
+					Empathy = NPCTemplate.Empathy;
 				if (NPCTemplate.Piety > 0)
-					Piety = (short)NPCTemplate.Piety;
+					Piety = NPCTemplate.Piety;
 				if (NPCTemplate.Charisma > 0)
-					Charisma = (short)NPCTemplate.Charisma;
+					Charisma = NPCTemplate.Charisma;
 			}
 		}
 		#endregion

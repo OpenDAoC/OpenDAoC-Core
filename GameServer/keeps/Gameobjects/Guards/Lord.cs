@@ -1,5 +1,6 @@
 using System;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
@@ -359,13 +360,13 @@ namespace DOL.GS.Keeps
 
         protected override KeepGuardBrain GetBrain() => new LordBrain();
 
-        protected override void SetStats()
+        public override void AutoSetStats(Mob dbMob = null)
         {
-            Strength = (short)(Properties.LORD_AUTOSET_STR_BASE + (10 * Level * Properties.LORD_AUTOSET_STR_MULTIPLIER));
-            Dexterity = (short)(Properties.LORD_AUTOSET_DEX_BASE + (Level * Properties.LORD_AUTOSET_DEX_MULTIPLIER));
-            Constitution = (short)(Properties.LORD_AUTOSET_CON_BASE + (Level * Properties.LORD_AUTOSET_CON_MULTIPLIER));
-            Quickness = (short)(Properties.LORD_AUTOSET_QUI_BASE + (Level * Properties.LORD_AUTOSET_QUI_MULTIPLIER));
-            Intelligence = (short)(Properties.LORD_AUTOSET_INT_BASE + (Level * Properties.LORD_AUTOSET_INT_MULTIPLIER));
+            Strength = (short) (Properties.LORD_AUTOSET_STR_BASE + Level * Properties.LORD_AUTOSET_STR_MULTIPLIER);
+            Constitution = (short) (Properties.LORD_AUTOSET_CON_BASE + Level * Properties.LORD_AUTOSET_CON_MULTIPLIER);
+            Dexterity = (short) (Properties.LORD_AUTOSET_DEX_BASE + Level * Properties.LORD_AUTOSET_DEX_MULTIPLIER);
+            Quickness = (short) (Properties.LORD_AUTOSET_QUI_BASE + Level * Properties.LORD_AUTOSET_QUI_MULTIPLIER);
+            Intelligence = (short) (Properties.LORD_AUTOSET_INT_BASE + Level * Properties.LORD_AUTOSET_INT_MULTIPLIER);
         }
 
         protected override void SetRespawnTime()

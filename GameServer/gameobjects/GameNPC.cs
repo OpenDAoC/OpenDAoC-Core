@@ -224,14 +224,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Auto set stats based on DB entry, npcTemplate, and level.
 		/// </summary>
-		public virtual void AutoSetStats()
-		{
-			AutoSetStats(null);
-		}
-
-		/// <summary>
-		/// Auto set stats based on DB entry, npcTemplate, and level.
-		/// </summary>
 		/// <param name="dbMob">Mob DB entry to load stats from, retrieved from DB if null</param>
 		public virtual void AutoSetStats(Mob dbMob = null)
 		{
@@ -273,52 +265,17 @@ namespace DOL.GS
 				}
 				else
 				{
-					// This is usually a mob about to be loaded from its DB entry,
-					//	but it could also be a new mob created by a GM command, so we need to assign stats.
-					Strength = 0;
-					Constitution = 0;
-					Quickness = 0;
-					Dexterity = 0;
-					Intelligence = 0;
-					Empathy = 0;
-					Piety = 0;
-					Charisma = 0;
+					if (Level > 1)
+					{
+						int levelMinusOne = Level - 1;
+						Strength = (short) (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+						Constitution = (short) (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+						Quickness = (short) (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+						Dexterity = (short) (Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+						Intelligence = (short) (Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+					}
 				}
 			}
-			
-			// STR
-			Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short) 1;
-			if (Level > 1)
-				Strength += (byte)((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-			
-			// CON
-			Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short) 1;
-			if (Level > 1)
-				Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-			
-			// QUI
-			Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short) 1;
-			if (Level > 1)
-				Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-			
-			// DEX
-			Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short) 1;
-			if (Level > 1)
-				Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-			
-			// INT
-			Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short) 1;
-			if (Level > 1)
-				Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-			
-			// EMP
-			Empathy = (short)(29 + Level);
-			
-			// PIE
-			Piety = (short)(29 + Level);
-			
-			// CHA
-			Charisma = (short)(29 + Level);
 		}
 
 		/*

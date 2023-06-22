@@ -16,64 +16,42 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*
- * [Ganrod] Nidel 2008-07-08
- * - Class for turret, like 1.90 EU official servers: Turret isn't interrupted
- */
 
 using DOL.AI.Brain;
-using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-	public class TurretPet : GameSummonedPet
-	{
-		public TurretPet(INpcTemplate template)
-			: base(template)
-		{
-		}
+    public class TurretPet : GameSummonedPet
+    {
+        public TurretPet(INpcTemplate template) : base(template) { }
 
-		private Spell turretSpell;
+        public Spell TurretSpell;
 
-		/// <summary>
-		/// Get first spell only
-		/// </summary>
-		public Spell TurretSpell
-		{
-			get { return turretSpell; }
-			set { turretSpell = value; }
-		}
+        public override int Health { get => base.Health; set => base.Health = value; }
 
-		public override int Health { get => base.Health; set => base.Health = value; }
+        protected override void BuildAmbientTexts()
+        {
+            base.BuildAmbientTexts();
 
-		/// <summary>
-		/// Not all summoned turrets 'll throw ambient texts
-		/// let's say 20%
-		/// </summary>
-		protected override void BuildAmbientTexts()
-		{
-			base.BuildAmbientTexts();
-			if (ambientTexts.Count>0)
-				foreach (var at in ambientTexts)
-					at.Chance /= 5;
-		}
+            if (ambientTexts.Count>0)
+            {
+                foreach (MobXAmbientBehaviour ambientText in ambientTexts)
+                    ambientText.Chance /= 5;
+            }
+        }
 
-        // Temporarily modified
         public override void StartAttack(GameObject attackTarget)
         {
             if (attackTarget == null)
                 return;
 
-            if (attackTarget is GameLiving && GameServer.ServerRules.IsAllowedToAttack(this, (GameLiving)attackTarget, true) == false)
+            if (attackTarget is GameLiving livingTarget && GameServer.ServerRules.IsAllowedToAttack(this, livingTarget, true) == false)
                 return;
 
-            if (Brain is IControlledBrain)
+            if (Brain is IControlledBrain brain)
             {
-                if ((Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+                if (brain.AggressionState == eAggressionState.Passive)
                     return;
-                GamePlayer playerowner;
-                if ((playerowner = ((IControlledBrain)Brain).GetPlayerOwner()) != null)
-                    playerowner.Stealth(false);
             }
 
             TargetObject = attackTarget;
@@ -84,44 +62,13 @@ namespace DOL.GS
                 m_lastAttackTickPvP = GameLoop.GameLoopTime;
 
             if (Brain is TurretMainPetTankBrain)
-            {
                 attackComponent.RequestStartAttack(TargetObject);
-            }
         }
 
         public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
         {
-            // Don't interrupt turrets.
+            // Don't interrupt turrets (1.90 EU).
             return;
         }
-
-        public override void AutoSetStats()
-		{
-			Strength = Properties.PET_AUTOSET_STR_BASE;
-			if (Strength < 1)
-				Strength = 1;
-
-			Constitution = Properties.PET_AUTOSET_CON_BASE;
-			if (Constitution < 1)
-				Constitution = 1;
-
-			Quickness = Properties.PET_AUTOSET_QUI_BASE;
-			if (Quickness < 1)
-				Quickness = 1;
-
-			Dexterity = Properties.PET_AUTOSET_DEX_BASE;
-			if (Dexterity < 1)
-				Dexterity = 1;
-
-			Intelligence = Properties.PET_AUTOSET_INT_BASE;
-			if (Intelligence < 1)
-				Intelligence = 1;
-
-			Empathy = 30;
-			Piety = 30;
-			Charisma = 30;
-
-			//base.AutoSetStats();
-		}
-	}
+    }
 }

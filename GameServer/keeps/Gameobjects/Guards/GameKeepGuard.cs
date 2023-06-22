@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -802,7 +803,7 @@ namespace DOL.GS.Keeps
 			SetSpeed();
 			SetLevel();
 			SetResists();
-			SetStats();
+			AutoSetStats();
 			SetAggression();
 			ClothingMgr.EquipGuard(this);
 			ClothingMgr.SetEmblem(this);
@@ -881,13 +882,13 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		protected virtual void SetStats()
+		public override void AutoSetStats(Mob dbMob = null)
 		{
-			Strength = (short)(Properties.GUARD_AUTOSET_STR_BASE + (10 * Level * Properties.GUARD_AUTOSET_STR_MULTIPLIER));
-			Dexterity = (short)(Properties.GUARD_AUTOSET_DEX_BASE + (Level * Properties.GUARD_AUTOSET_DEX_MULTIPLIER));
-			Constitution = (short)(Properties.GUARD_AUTOSET_CON_BASE + (Level * Properties.GUARD_AUTOSET_CON_MULTIPLIER));
-			Quickness = (short)(Properties.GUARD_AUTOSET_QUI_BASE + (Level * Properties.GUARD_AUTOSET_QUI_MULTIPLIER));
-			Intelligence = (short)(Properties.GUARD_AUTOSET_INT_BASE + (Level * Properties.GUARD_AUTOSET_INT_MULTIPLIER));
+			Strength = (short) (Properties.GUARD_AUTOSET_STR_BASE + Level * Properties.GUARD_AUTOSET_STR_MULTIPLIER);
+			Constitution = (short) (Properties.GUARD_AUTOSET_CON_BASE + Level * Properties.GUARD_AUTOSET_CON_MULTIPLIER);
+			Dexterity = (short) (Properties.GUARD_AUTOSET_DEX_BASE + Level * Properties.GUARD_AUTOSET_DEX_MULTIPLIER);
+			Quickness = (short) (Properties.GUARD_AUTOSET_QUI_BASE + Level * Properties.GUARD_AUTOSET_QUI_MULTIPLIER);
+			Intelligence = (short) (Properties.GUARD_AUTOSET_INT_BASE + Level * Properties.GUARD_AUTOSET_INT_MULTIPLIER);
 		}
 
 		private void SetRealm()
