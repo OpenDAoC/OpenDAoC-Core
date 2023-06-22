@@ -1,9 +1,0 @@
-﻿  Checking Build System
-  CMake is re-running because C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/generate.stamp is out-of-date.
-    the file 'C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/CMakeLists.txt'
-    is newer than 'C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/generate.stamp.depend'
-    result='-1'
-  -- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
-  -- Configuring done (0.1s)
-  -- Generating done (0.1s)
-  -- Build files have been written to: C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build

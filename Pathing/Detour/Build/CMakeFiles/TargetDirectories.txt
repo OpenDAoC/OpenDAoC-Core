@@ -1,5 +1,0 @@
-C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/dol_detour.dir
-C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/detour_test.dir
-C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/INSTALL.dir
-C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/ALL_BUILD.dir
-C:/Users/bapti/source/repos/OpenDAoC-Core/Pathing/Detour/Build/CMakeFiles/ZERO_CHECK.dir
