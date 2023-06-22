@@ -7,12 +7,12 @@ Detour offers a simple static navmesh data representation which is suitable for 
 
 This project is based on [recastnavigation](https://github.com/recastnavigation/recastnavigation).
 
-## How to use with DOL
-You need to generate navmeshes (navigation meshes) with [Uthgard open source tools](https://github.com/thekroko/uthgard-opensource/tree/master/pathing) or download them from [Amtenael](https://amtenael.fr/pathing.7z) (some zones are missing).
+## How to use with OpenDAoC
+We recommend generating navmeshes (navigation meshes) with [Uthgard open source tools](https://github.com/thekroko/uthgard-opensource/tree/master/pathing). You can also download them from [our old repository](https://gitlab.com/atlas-freeshard/misc/navmeshes) (classic) or from [Amtenael](https://amtenael.fr/pathing.7z) (some zones are missing).
 
-You can create a "pathing" folder in your DOL folder (where you have DOLServer.exe) and copy the navmeshes.
+Create a "pathing" folder in your server's folder (where you have DOLServer.exe) and copy the navmeshes in it.
 
-Caution: if you use all navmeshes, you will need at least 5GB of RAM and DOL will be take some time to load.
+Caution: if you use all navmeshes, you will need at least 5GB of RAM and the server will be take some time to load.
 
 ## Build (Windows)
 This guide will use Visual Studio 2022.
@@ -24,7 +24,7 @@ You will need to build the dll for that, you need some tools:
 About Linux, you can use your package manager to install theses tools: cmake, g++ or clang++ and gmake (often included in a "build-essentials" package).
 
 1. Open CMake (cmake-gui)
-2. In "Where is the source code", put the path for this folder (example: `C:/dev/DOLSharp/Pathing/Detour`)
+2. In "Where is the source code", put the path for this folder (example: `C:/dev/OpenDAoC-Core/Pathing/Detour`)
 3. In "Where to build the binaries", you can copy the source code path and add `/build` at the end
 4. Click on "Configure"
   .. Accept to create the build folder
@@ -33,7 +33,7 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
 5. Click on "Generate" and "Open Project"
 6. Visual Studio should open with DOL_Detour
 7. Select "Release" instead of "Debug" and build the solution
-8. You can copy dol_detour.dll from `Release` in your build folder to your DOL folder
+8. You can copy dol_detour.dll from `Release` in your build folder to your OpenDAoC-Core folder
 
 ## Build (Linux)
 - Debian / Ubuntu: `sudo apt-get install build-essential cmake`
@@ -42,4 +42,4 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
 1. Open a terminal in this path
 2. `mkdir build && cd build`
 3. `cmake -DCMAKE_BUILD_TYPE=Release .. && make`
-4. Copy `libdol_detour.so` in your DOL folder
+4. Copy `libdol_detour.so` in your OpenDAoC-Core folder
