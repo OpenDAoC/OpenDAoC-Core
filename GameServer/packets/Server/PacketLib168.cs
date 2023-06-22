@@ -805,9 +805,13 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				GameObject target = npc.TargetObject;
-				if (npc.attackComponent.AttackState && target != null && target.ObjectState == GameObject.eObjectState.Active && !npc.IsTurningDisabled)
-					targetOID = (ushort)target.ObjectID;
+				if (npc.attackComponent.IsAttacking && !npc.IsTurningDisabled)
+				{
+					GameObject target = npc.TargetObject;
+
+					if (target?.ObjectState == GameObject.eObjectState.Active && npc.IsWithinRadius(target, npc.attackComponent.AttackRange))
+						targetOID = (ushort) target.ObjectID;
+				}
 			}
 
 			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.ObjectUpdate)))

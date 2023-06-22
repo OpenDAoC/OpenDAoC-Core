@@ -889,11 +889,8 @@ namespace DOL.GS
 
         private void NpcStartAttack(GameObject attackTarget)
         {
-            GameNPC npcOwner = owner as GameNPC;
-            npcOwner.TargetObject = attackTarget;
-
             GameNPC npc = owner as GameNPC;
-
+            npc.TargetObject = attackTarget;
             npc.StopMovingOnPath();
 
             if (npc.Brain != null && npc.Brain is IControlledBrain)
