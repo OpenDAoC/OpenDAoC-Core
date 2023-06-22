@@ -11,27 +11,13 @@ namespace DOL.GS
     // This component will hold all data related to casting spells.
     public class CastingComponent : IManagedEntity
     {
-        private class StartCastSpellRequest
-        {
-            public Spell Spell { get; private set; }
-            public SpellLine SpellLine { get; private set ; }
-            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
-            public GameLiving Target { get; private set; }
-
-            public StartCastSpellRequest(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target)
-            {
-                Spell = spell;
-                SpellLine = spellLine;
-                SpellCastingAbilityHandler = spellCastingAbilityHandler;
-                Target = target;
-            }
-        }
+        private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
 
         public ISpellHandler SpellHandler { get; private set; }
         public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
-        private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
+        public bool IsCasting => SpellHandler != null || !_startCastSpellRequests.IsEmpty;
 
         public CastingComponent(GameLiving owner)
         {
@@ -156,7 +142,7 @@ namespace DOL.GS
 
         public void InterruptCasting()
         {
-            if (SpellHandler?.IsCasting == true)
+            if (SpellHandler?.IsInCastingPhase == true)
             {
                 Parallel.ForEach(Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
                 {
@@ -270,6 +256,22 @@ namespace DOL.GS
             }
 
             return true;
+        }
+
+        private class StartCastSpellRequest
+        {
+            public Spell Spell { get; private set; }
+            public SpellLine SpellLine { get; private set ; }
+            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
+            public GameLiving Target { get; private set; }
+
+            public StartCastSpellRequest(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target)
+            {
+                Spell = spell;
+                SpellLine = spellLine;
+                SpellCastingAbilityHandler = spellCastingAbilityHandler;
+                Target = target;
+            }
         }
     }
 }

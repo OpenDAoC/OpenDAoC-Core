@@ -10055,8 +10055,7 @@ namespace DOL.GS
                 m_sitting = value;
                 if (value)
                 {
-                    if (IsCasting)
-                        CurrentSpellHandler.CasterMoves();
+                    CurrentSpellHandler?.CasterMoves();
                     if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
                         string attackTypeMsg = "shot";
@@ -10145,7 +10144,7 @@ namespace DOL.GS
                 Sit(false);
 
             if (IsCasting)
-                CurrentSpellHandler.CasterMoves();
+                CurrentSpellHandler?.CasterMoves();
 
             if (IsCastingRealmAbility)
             {

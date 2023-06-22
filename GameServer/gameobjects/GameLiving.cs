@@ -4643,10 +4643,7 @@ namespace DOL.GS
 			set { }
 		}
 
-		public virtual bool IsCasting
-		{
-			get { return castingComponent != null && castingComponent.SpellHandler != null && castingComponent.SpellHandler.IsCasting; }
-		}
+		public virtual bool IsCasting => castingComponent.IsCasting;
 
 		/// <summary>
 		/// Returns true if the living has the spell effect, else false.

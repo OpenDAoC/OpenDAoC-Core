@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Returns true when spell is in casting phase
 		/// </summary>
-		bool IsCasting { get; }
+		bool IsInCastingPhase { get; }
 
 		/// <summary>
 		/// Can this spell be queued with other spells?

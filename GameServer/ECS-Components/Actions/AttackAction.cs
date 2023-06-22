@@ -132,7 +132,7 @@ namespace DOL.GS
             if (_owner.IsMezzed || _owner.IsStunned)
                 return false;
 
-            if (_owner.IsCasting && !_owner.CurrentSpellHandler.Spell.Uninterruptible)
+            if (_owner.IsCasting && !_owner.CurrentSpellHandler?.Spell.Uninterruptible != true)
                 return false;
 
             if (_owner.IsEngaging || _owner.TargetObject == null)

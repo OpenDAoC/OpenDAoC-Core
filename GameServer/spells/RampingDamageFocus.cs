@@ -114,7 +114,7 @@ namespace DOL.GS.Spells
                 || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
                 return false;
            
-			if (IsCasting && Stage < 2)
+			if (IsInCastingPhase && Stage < 2)
 			{
 				Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
 				MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);

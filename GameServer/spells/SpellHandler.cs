@@ -247,7 +247,7 @@ namespace DOL.GS.Spells
 		{
 			return new StringBuilder(128)
 				.Append("Caster=").Append(Caster == null ? "(null)" : Caster.Name)
-				.Append(", IsCasting=").Append(IsCasting)
+				.Append(", IsCasting=").Append(IsInCastingPhase)
 				.Append(", m_interrupted=").Append(m_interrupted)
 				.Append("\nSpell: ").Append(Spell == null ? "(null)" : Spell.ToString())
 				.Append("\nSpellLine: ").Append(SpellLine == null ? "(null)" : SpellLine.ToString())
@@ -504,7 +504,7 @@ namespace DOL.GS.Spells
 				return false;
 
 			// Only interrupt if we're under 50% of the way through the cast.
-			if (IsCasting && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
+			if (IsInCastingPhase && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
 			{
 				if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 				{
@@ -893,7 +893,7 @@ namespace DOL.GS.Spells
 
 			if (!player.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
 			{
-				if (IsCasting)
+				if (IsInCastingPhase)
 					MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 
 				InterruptCasting();
@@ -3034,7 +3034,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Is the spell being cast?
 		/// </summary>
-		public bool IsCasting
+		public bool IsInCastingPhase
 		{
 			get { return CastState == eCastState.Casting; }//return m_castTimer != null && m_castTimer.IsAlive; }
 		}

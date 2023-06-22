@@ -39,7 +39,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (_owner.IsCasting && !_owner.CurrentSpellHandler.Spell.Uninterruptible)
+            if (_owner.IsCasting && !_owner.CurrentSpellHandler?.Spell.Uninterruptible != true)
             {
                 CleanupCraftAction();
                 return;
