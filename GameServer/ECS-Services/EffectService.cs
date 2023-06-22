@@ -373,7 +373,7 @@ namespace DOL.GS
                 GameLiving target;
 
                 // Focus damage shield. Need to figure out why this is needed.
-                if (spell.IsPulsing && spell.SpellType == (byte)eSpellType.DamageShield)
+                if (spell.IsPulsing && spell.SpellType == eSpellType.DamageShield)
                     target = spellHandler.Target;
                 else
                     target = e.Owner;
@@ -391,188 +391,188 @@ namespace DOL.GS
             {
                 #region Positive Effects
 
-                case (byte)eSpellType.Bladeturn:
+                case eSpellType.Bladeturn:
                     return eEffect.Bladeturn;
-                case (byte)eSpellType.DamageAdd:
+                case eSpellType.DamageAdd:
                     return eEffect.DamageAdd;
-                //case (byte)eSpellType.DamageReturn:
+                //case eSpellType.DamageReturn:
                 //    return eEffect.DamageReturn;
-                case (byte)eSpellType.DamageShield: // FocusShield: Could be the wrong SpellType here.
+                case eSpellType.DamageShield: // FocusShield: Could be the wrong SpellType here.
                     return eEffect.FocusShield;
-                case (byte)eSpellType.AblativeArmor:
+                case eSpellType.AblativeArmor:
                     return eEffect.AblativeArmor;
-                case (byte)eSpellType.MeleeDamageBuff:
+                case eSpellType.MeleeDamageBuff:
                     return eEffect.MeleeDamageBuff;
-                case (byte)eSpellType.CombatSpeedBuff:
+                case eSpellType.CombatSpeedBuff:
                     return eEffect.MeleeHasteBuff;
-                //case (byte)eSpellType.Celerity: // Possibly the same as CombatSpeedBuff?
+                //case eSpellType.Celerity: // Possibly the same as CombatSpeedBuff?
                 //    return eEffect.Celerity;
-                case (byte)eSpellType.SpeedOfTheRealm:
-                case (byte)eSpellType.SpeedEnhancement:
+                case eSpellType.SpeedOfTheRealm:
+                case eSpellType.SpeedEnhancement:
                     return eEffect.MovementSpeedBuff;
-                case (byte)eSpellType.HealOverTime:
+                case eSpellType.HealOverTime:
                     return eEffect.HealOverTime;
-                case (byte)eSpellType.CombatHeal:
+                case eSpellType.CombatHeal:
                     return eEffect.CombatHeal;
 
                 // Stats.
-                case (byte)eSpellType.StrengthBuff:
+                case eSpellType.StrengthBuff:
                     return eEffect.StrengthBuff;
-                case (byte)eSpellType.DexterityBuff:
+                case eSpellType.DexterityBuff:
                     return eEffect.DexterityBuff;
-                case (byte)eSpellType.ConstitutionBuff:
+                case eSpellType.ConstitutionBuff:
                     return eEffect.ConstitutionBuff;
-                case (byte)eSpellType.StrengthConstitutionBuff:
+                case eSpellType.StrengthConstitutionBuff:
                     return eEffect.StrengthConBuff;
-                case (byte)eSpellType.DexterityQuicknessBuff:
+                case eSpellType.DexterityQuicknessBuff:
                     return eEffect.DexQuickBuff;
-                case (byte)eSpellType.AcuityBuff:
+                case eSpellType.AcuityBuff:
                     return eEffect.AcuityBuff;
-                case (byte)eSpellType.ArmorAbsorptionBuff:
+                case eSpellType.ArmorAbsorptionBuff:
                     return eEffect.ArmorAbsorptionBuff;
-                case (byte)eSpellType.PaladinArmorFactorBuff:
+                case eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
-                case (byte)eSpellType.ArmorFactorBuff:
+                case eSpellType.ArmorFactorBuff:
                     return isBaseLine ? eEffect.BaseAFBuff : eEffect.SpecAFBuff;
 
                 // Resists.
-                case (byte)eSpellType.BodyResistBuff:
+                case eSpellType.BodyResistBuff:
                     return eEffect.BodyResistBuff;
-                case (byte)eSpellType.SpiritResistBuff:
+                case eSpellType.SpiritResistBuff:
                     return eEffect.SpiritResistBuff;
-                case (byte)eSpellType.EnergyResistBuff:
+                case eSpellType.EnergyResistBuff:
                     return eEffect.EnergyResistBuff;
-                case (byte)eSpellType.HeatResistBuff:
+                case eSpellType.HeatResistBuff:
                     return eEffect.HeatResistBuff;
-                case (byte)eSpellType.ColdResistBuff:
+                case eSpellType.ColdResistBuff:
                     return eEffect.ColdResistBuff;
-                case (byte)eSpellType.MatterResistBuff:
+                case eSpellType.MatterResistBuff:
                     return eEffect.MatterResistBuff;
-                case (byte)eSpellType.BodySpiritEnergyBuff:
+                case eSpellType.BodySpiritEnergyBuff:
                     return eEffect.BodySpiritEnergyBuff;
-                case (byte)eSpellType.HeatColdMatterBuff:
+                case eSpellType.HeatColdMatterBuff:
                     return eEffect.HeatColdMatterBuff;
-                case (byte)eSpellType.AllMagicResistBuff:
+                case eSpellType.AllMagicResistBuff:
                     return eEffect.AllMagicResistsBuff;
 
                 // Regens.
-                case (byte)eSpellType.HealthRegenBuff:
+                case eSpellType.HealthRegenBuff:
                     return eEffect.HealthRegenBuff;
-                case (byte)eSpellType.EnduranceRegenBuff:
+                case eSpellType.EnduranceRegenBuff:
                     return eEffect.EnduranceRegenBuff;
-                case (byte)eSpellType.PowerRegenBuff:
+                case eSpellType.PowerRegenBuff:
                     return eEffect.PowerRegenBuff;
 
                 // Misc.
-                case (byte)eSpellType.OffensiveProc:
+                case eSpellType.OffensiveProc:
                     return eEffect.OffensiveProc;
-                case (byte)eSpellType.DefensiveProc:
+                case eSpellType.DefensiveProc:
                     return eEffect.DefensiveProc;
-                case (byte)eSpellType.HereticPiercingMagic:
+                case eSpellType.HereticPiercingMagic:
                     return eEffect.HereticPiercingMagic;
 
                 #endregion
                 #region NEGATIVE_EFFECTS
 
-                case (byte)eSpellType.StyleBleeding:
+                case eSpellType.StyleBleeding:
                     return eEffect.Bleed;
-                case (byte)eSpellType.DamageOverTime:
+                case eSpellType.DamageOverTime:
                     return eEffect.DamageOverTime;
-                case (byte)eSpellType.Charm:
+                case eSpellType.Charm:
                     return eEffect.Charm;
-                case (byte)eSpellType.DamageSpeedDecrease:
-                case (byte)eSpellType.DamageSpeedDecreaseNoVariance:
-                case (byte)eSpellType.StyleSpeedDecrease:
-                case (byte)eSpellType.SpeedDecrease:
-                case (byte)eSpellType.UnbreakableSpeedDecrease:
+                case eSpellType.DamageSpeedDecrease:
+                case eSpellType.DamageSpeedDecreaseNoVariance:
+                case eSpellType.StyleSpeedDecrease:
+                case eSpellType.SpeedDecrease:
+                case eSpellType.UnbreakableSpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
-                case (byte)eSpellType.MeleeDamageDebuff:
+                case eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
-                case (byte)eSpellType.StyleCombatSpeedDebuff:
-                case (byte)eSpellType.CombatSpeedDebuff:
+                case eSpellType.StyleCombatSpeedDebuff:
+                case eSpellType.CombatSpeedDebuff:
                     return eEffect.MeleeHasteDebuff;
-                case (byte)eSpellType.Disease:
+                case eSpellType.Disease:
                     return eEffect.Disease;
-                case (byte)eSpellType.Confusion:
+                case eSpellType.Confusion:
                     return eEffect.Confusion;
 
                 // Crowd control.
-                case (byte)eSpellType.StyleStun:
-                case (byte)eSpellType.Stun:
+                case eSpellType.StyleStun:
+                case eSpellType.Stun:
                     return eEffect.Stun;
-                //case (byte)eSpellType.StunImmunity:
+                //case eSpellType.StunImmunity:
                 //    return eEffect.StunImmunity;
-                case (byte)eSpellType.Mesmerize:
+                case eSpellType.Mesmerize:
                     return eEffect.Mez;
-                case (byte)eSpellType.MesmerizeDurationBuff:
+                case eSpellType.MesmerizeDurationBuff:
                     return eEffect.MesmerizeDurationBuff;
-                //case (byte)eSpellType.MezImmunity:
+                //case eSpellType.MezImmunity:
                 //    return eEffect.MezImmunity;
-                //case (byte)eSpellType.StyleSpeedDecrease:
+                //case eSpellType.StyleSpeedDecrease:
                 //    return eEffect.MeleeSnare;
-                //case (byte)eSpellType.Snare: // May work off of SpeedDecrease.
+                //case eSpellType.Snare: // May work off of SpeedDecrease.
                 //    return eEffect.Snare;
-                //case (byte)eSpellType.SnareImmunity: // Not implemented.
+                //case eSpellType.SnareImmunity: // Not implemented.
                 //    return eEffect.SnareImmunity;
-                case (byte)eSpellType.Nearsight:
+                case eSpellType.Nearsight:
                     return eEffect.Nearsight;
 
                 // Stats.
-                case (byte)eSpellType.StrengthDebuff:
+                case eSpellType.StrengthDebuff:
                     return eEffect.StrengthDebuff;
-                case (byte)eSpellType.DexterityDebuff:
+                case eSpellType.DexterityDebuff:
                     return eEffect.DexterityDebuff;
-                case (byte)eSpellType.ConstitutionDebuff:
+                case eSpellType.ConstitutionDebuff:
                     return eEffect.ConstitutionDebuff;
-                case (byte)eSpellType.StrengthConstitutionDebuff:
+                case eSpellType.StrengthConstitutionDebuff:
                     return eEffect.StrConDebuff;
-                case (byte)eSpellType.DexterityQuicknessDebuff:
+                case eSpellType.DexterityQuicknessDebuff:
                     return eEffect.DexQuiDebuff;
-                case (byte)eSpellType.WeaponSkillConstitutionDebuff:
+                case eSpellType.WeaponSkillConstitutionDebuff:
                     return eEffect.WsConDebuff;
-                //case (byte)eSpellType.AcuityDebuff: // Not sure what this is yet.
+                //case eSpellType.AcuityDebuff: // Not sure what this is yet.
                 //    return eEffect.Acuity;
-                case (byte)eSpellType.ArmorAbsorptionDebuff:
+                case eSpellType.ArmorAbsorptionDebuff:
                     return eEffect.ArmorAbsorptionDebuff;
-                case (byte)eSpellType.ArmorFactorDebuff:
+                case eSpellType.ArmorFactorDebuff:
                     return eEffect.ArmorFactorDebuff;
 
                 // Resists.
-                case (byte)eSpellType.BodyResistDebuff:
+                case eSpellType.BodyResistDebuff:
                     return eEffect.BodyResistDebuff;
-                case (byte)eSpellType.SpiritResistDebuff:
+                case eSpellType.SpiritResistDebuff:
                     return eEffect.SpiritResistDebuff;
-                case (byte)eSpellType.EnergyResistDebuff:
+                case eSpellType.EnergyResistDebuff:
                     return eEffect.EnergyResistDebuff;
-                case (byte)eSpellType.HeatResistDebuff:
+                case eSpellType.HeatResistDebuff:
                     return eEffect.HeatResistDebuff;
-                case (byte)eSpellType.ColdResistDebuff:
+                case eSpellType.ColdResistDebuff:
                     return eEffect.ColdResistDebuff;
-                case (byte)eSpellType.MatterResistDebuff:
+                case eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
-                case (byte)eSpellType.SlashResistDebuff:
+                case eSpellType.SlashResistDebuff:
                     return eEffect.SlashResistDebuff;
 
                 // Misc.
-                case (byte)eSpellType.SavageCombatSpeedBuff:
+                case eSpellType.SavageCombatSpeedBuff:
                     return eEffect.MeleeHasteBuff;
-                case (byte)eSpellType.SavageCrushResistanceBuff:
-                case (byte)eSpellType.SavageDPSBuff:
-                case (byte)eSpellType.SavageEnduranceHeal:
-                case (byte)eSpellType.SavageEvadeBuff:
-                case (byte)eSpellType.SavageParryBuff:
-                case (byte)eSpellType.SavageSlashResistanceBuff:
-                case (byte)eSpellType.SavageThrustResistanceBuff:
+                case eSpellType.SavageCrushResistanceBuff:
+                case eSpellType.SavageDPSBuff:
+                case eSpellType.SavageEnduranceHeal:
+                case eSpellType.SavageEvadeBuff:
+                case eSpellType.SavageParryBuff:
+                case eSpellType.SavageSlashResistanceBuff:
+                case eSpellType.SavageThrustResistanceBuff:
                     return eEffect.SavageBuff;
-                case (byte)eSpellType.DirectDamage:
+                case eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
-                case (byte)eSpellType.FacilitatePainworking:
+                case eSpellType.FacilitatePainworking:
                     return eEffect.FacilitatePainworking;
-                case (byte)eSpellType.FatigueConsumptionBuff:
+                case eSpellType.FatigueConsumptionBuff:
                     return eEffect.FatigueConsumptionBuff;
-                case (byte)eSpellType.FatigueConsumptionDebuff:
+                case eSpellType.FatigueConsumptionDebuff:
                     return eEffect.FatigueConsumptionDebuff;
-                case (byte)eSpellType.DirectDamageWithDebuff:
+                case eSpellType.DirectDamageWithDebuff:
                     if (spell.DamageType == eDamageType.Body)
                         return eEffect.BodyResistDebuff;
                     else if (spell.DamageType == eDamageType.Cold)
@@ -581,28 +581,28 @@ namespace DOL.GS
                         return eEffect.HeatResistDebuff;
                     else
                         return eEffect.Unknown;
-                case (byte)eSpellType.PiercingMagic:
+                case eSpellType.PiercingMagic:
                     return eEffect.PiercingMagic;
-                case (byte)eSpellType.PveResurrectionIllness:
+                case eSpellType.PveResurrectionIllness:
                     return eEffect.ResurrectionIllness;
-                case (byte)eSpellType.RvrResurrectionIllness:
+                case eSpellType.RvrResurrectionIllness:
                     return eEffect.RvrResurrectionIllness;
 
                 #endregion
 
                 // Pets.
-                case (byte)eSpellType.SummonTheurgistPet:
-                case (byte)eSpellType.SummonNoveltyPet:
-                case (byte)eSpellType.SummonAnimistPet:
-                case (byte)eSpellType.SummonAnimistFnF:
-                case (byte)eSpellType.SummonSpiritFighter:
-                case (byte)eSpellType.SummonHunterPet:
-                case (byte)eSpellType.SummonUnderhill:
-                case (byte)eSpellType.SummonDruidPet:
-                case (byte)eSpellType.SummonSimulacrum:
-                case (byte)eSpellType.SummonNecroPet:
-                case (byte)eSpellType.SummonCommander:
-                case (byte)eSpellType.SummonMinion:
+                case eSpellType.SummonTheurgistPet:
+                case eSpellType.SummonNoveltyPet:
+                case eSpellType.SummonAnimistPet:
+                case eSpellType.SummonAnimistFnF:
+                case eSpellType.SummonSpiritFighter:
+                case eSpellType.SummonHunterPet:
+                case eSpellType.SummonUnderhill:
+                case eSpellType.SummonDruidPet:
+                case eSpellType.SummonSimulacrum:
+                case eSpellType.SummonNecroPet:
+                case eSpellType.SummonCommander:
+                case eSpellType.SummonMinion:
                     return eEffect.Pet;
 
                 default:

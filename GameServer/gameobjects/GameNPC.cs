@@ -4182,7 +4182,7 @@ namespace DOL.GS
 			{
 				foreach ((Spell, int, int) t in style.Procs)
 				{
-					if (t.Item1.SpellType == (byte)eSpellType.StyleStun && living.HasEffect(t.Item1))
+					if (t.Item1.SpellType == eSpellType.StyleStun && living.HasEffect(t.Item1))
 						return false;
 				}
 			}

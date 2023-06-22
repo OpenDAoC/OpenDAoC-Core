@@ -285,7 +285,7 @@ namespace DOL.GS.Spells
             //         //do nothing
             //     }
             //     else if(m_spell.Pulse == 0 && m_caster.CurrentRegionID != 242 && // On Exclu zone COOP
-            //         m_spell.SpellType != (byte)eSpellType.SpreadHeal && target != m_caster &&
+            //         m_spell.SpellType != eSpellType.SpreadHeal && target != m_caster &&
             //         m_spellLine.KeyName != GlobalSpellsLines.Item_Spells &&
             //         m_spellLine.KeyName != GlobalSpellsLines.Potions_Effects &&
             //         m_spellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect &&

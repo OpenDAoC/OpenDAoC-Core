@@ -94,7 +94,7 @@ namespace DOL.GS.Spells
             //     duration = (double)Math.Round(duration * mocFactor);
             // }
 
-            if (Spell.SpellType != (byte)eSpellType.StyleStun)
+            if (Spell.SpellType != eSpellType.StyleStun)
             {
                 // capping duration adjustment to 100%, live cap unknown - Tolakram
                 int hitChance = Math.Min(200, CalculateToHitChance(target));
@@ -267,7 +267,7 @@ namespace DOL.GS.Spells
 
                 if (Spell.Range != 0)
                 {
-                    if (!Caster.IsWithinRadius(target, Spell.Range) && !m_spell.IsPulsing && m_spell.SpellType != (byte) eSpellType.Mesmerize)
+                    if (!Caster.IsWithinRadius(target, Spell.Range) && !m_spell.IsPulsing && m_spell.SpellType != eSpellType.Mesmerize)
                         return;
                 }
             }
@@ -421,7 +421,7 @@ namespace DOL.GS.Spells
             }
 
             // Ceremonial bracer doesn't intercept physical stun.
-            if(Spell.SpellType != (byte)eSpellType.StyleStun)
+            if(Spell.SpellType != eSpellType.StyleStun)
             {
                 /*
                 GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
@@ -470,7 +470,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.Spell.EffectGroup;
-            if (compare.Spell.SpellType == (byte)eSpellType.StyleStun) return true;
+            if (compare.Spell.SpellType == eSpellType.StyleStun) return true;
             return base.IsOverwritable(compare);
         }
 

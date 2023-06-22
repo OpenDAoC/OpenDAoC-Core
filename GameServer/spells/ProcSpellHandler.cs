@@ -355,7 +355,7 @@ namespace DOL.GS.Spells
 		//		{
 		//			if (pet.GetSkillDisabledDuration(spell) == 0)
 		//			{
-		//				if (spell.SpellType == (byte)eSpellType.OffensiveProc)
+		//				if (spell.SpellType == eSpellType.OffensiveProc)
 		//					procSpells.Add(spell);
 		//			}
 		//		}
@@ -411,7 +411,7 @@ namespace DOL.GS.Spells
             //    {
             //        if (pet.GetSkillDisabledDuration(spell) == 0)
             //        {
-            //            if (spell.SpellType == (byte)eSpellType.OffensiveProc)
+            //            if (spell.SpellType == eSpellType.OffensiveProc)
             //                procSpells.Add(spell);
             //        }
             //    }

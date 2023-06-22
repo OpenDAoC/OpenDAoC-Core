@@ -1162,7 +1162,7 @@ namespace DOL.GS
             ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
 
             // Asp style range add.
-            IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == (byte) eSpellType.StyleRange);
+            IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == eSpellType.StyleRange);
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
             if (dualWield && (ad.Attacker is GamePlayer gPlayer) &&

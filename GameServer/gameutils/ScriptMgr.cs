@@ -886,11 +886,11 @@ namespace DOL.GS
 		/// <returns>spellhandler or null if not found</returns>
 		public static ISpellHandler CreateSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 		{
-			if (spell == null || ((eSpellType)spell.SpellType).ToString().Length == 0)
+			if (spell == null || (spell.SpellType).ToString().Length == 0)
 				return null;
 
 			// try to find it in assemblies when not in cache
-			if (!m_spellhandlerConstructorCache.TryGetValue(((eSpellType)spell.SpellType).ToString(), out var handlerConstructor))
+			if (!m_spellhandlerConstructorCache.TryGetValue((spell.SpellType).ToString(), out var handlerConstructor))
 			{
 				foreach (Assembly script in GameServerScripts)
 				{
@@ -909,7 +909,7 @@ namespace DOL.GS
 
 							foreach (SpellHandlerAttribute attrib in objs)
 							{
-								if (attrib.SpellType == ((eSpellType)spell.SpellType).ToString())
+								if (attrib.SpellType == (spell.SpellType).ToString())
 								{
 									ParameterExpression[] constructorParams = new ParameterExpression[] { Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine)) };
 									ConstructorInfo constructor = type.GetConstructor(new[] { typeof(GameLiving), typeof(Spell), typeof(SpellLine) });
@@ -933,7 +933,7 @@ namespace DOL.GS
 				}
 
 				if (handlerConstructor != null)
-					m_spellhandlerConstructorCache.TryAdd(((eSpellType)spell.SpellType).ToString(), handlerConstructor);
+					m_spellhandlerConstructorCache.TryAdd((spell.SpellType).ToString(), handlerConstructor);
 			}
 
 			if (handlerConstructor != null)

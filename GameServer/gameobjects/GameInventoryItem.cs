@@ -1555,7 +1555,7 @@ namespace DOL.GS {
             if (spl != null)
             {
                 list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
-                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Type", ((eSpellType)spl.SpellType).ToString()));
+                list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Type", (spl.SpellType).ToString()));
                 list.Add(" ");
                 list.Add(spl.Description);
                 list.Add(" ");

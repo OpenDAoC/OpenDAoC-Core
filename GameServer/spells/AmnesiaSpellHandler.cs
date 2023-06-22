@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
 			// 	foreach(ECSGameEffect e in target.effectListComponent.GetAllPulseEffects())
 			// 	{
 					
-			// 		if(e is ECSGameSpellEffect effect && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedEnhancement)
+			// 		if(e is ECSGameSpellEffect effect && effect.SpellHandler.Spell.SpellType == eSpellType.SpeedEnhancement)
 			// 		{
 			// 			Console.WriteLine($"effect: {effect} SpellType: {effect.SpellHandler.Spell.SpellType} PulseFreq: {effect.PulseFreq} ");
 			// 			if(effect.ExpireTick > GameLoop.GameLoopTime && effect.ExpireTick < (GameLoop.GameLoopTime + 10000))
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 			// 	foreach(ECSGameEffect e in Caster.effectListComponent.GetAllPulseEffects())
 			// 	{
 					
-			// 		if(e is ECSGameSpellEffect effect && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedEnhancement)
+			// 		if(e is ECSGameSpellEffect effect && effect.SpellHandler.Spell.SpellType == eSpellType.SpeedEnhancement)
 			// 		{
 			// 			Console.WriteLine($"effect: {effect} SpellType: {effect.SpellHandler.Spell.SpellType} PulseFreq: {effect.PulseFreq} Duration: {effect.Duration} ");
 						

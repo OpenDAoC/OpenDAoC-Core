@@ -89,7 +89,7 @@ namespace DOL.GS
                                         // It will be restarted in 'EffectService.HandlePropertyModification()'.
                                         // Also needed for movement speed debuffs' since their effect decrease over time.
                                         if (existingEffect.Effectiveness != newSpellEffect.Effectiveness ||
-                                            existingSpell.SpellType is (byte)eSpellType.SpeedDecrease or (byte)eSpellType.UnbreakableSpeedDecrease)
+                                            existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
                                             existingEffect.OnStopEffect();
 
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;

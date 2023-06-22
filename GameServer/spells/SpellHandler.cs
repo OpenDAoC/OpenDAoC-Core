@@ -188,8 +188,8 @@ namespace DOL.GS.Spells
 		{
 			get
 			{
-				if (m_spell.SpellType != (int)eSpellType.Null)
-					switch ((eSpellType)m_spell.SpellType)
+				if (m_spell.SpellType != eSpellType.Null)
+					switch (m_spell.SpellType)
 					{
 						case eSpellType.Bomber:
 						case eSpellType.Charm:
@@ -324,7 +324,7 @@ namespace DOL.GS.Spells
 		/// <param name="living">owner of pulsing spell</param>
 		/// <param name="spellType">type of spell to cancel</param>
 		/// <returns>true if any spells were canceled</returns>
-		public virtual bool CancelPulsingSpell(GameLiving living, byte spellType)
+		public virtual bool CancelPulsingSpell(GameLiving living, eSpellType spellType)
 		{
 			//lock (living.ConcentrationEffects)
 			//{
@@ -468,7 +468,7 @@ namespace DOL.GS.Spells
 		///</summary>
 		public virtual void SendSpellMessages()
 		{
-			if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
+			if (Spell.SpellType != eSpellType.PveResurrectionIllness && Spell.SpellType != eSpellType.RvrResurrectionIllness)
 			{
 				if (Spell.InstrumentRequirement == 0)
 				{
@@ -608,7 +608,7 @@ namespace DOL.GS.Spells
 
 			/*
 			GameSpellEffect Phaseshift = FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
+			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == eSpellType.Mesmerize))
 			{
 				if (!quiet) MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;
@@ -631,7 +631,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (selectedTarget !=null && selectedTarget.HasAbility("DamageImmunity") && Spell.SpellType == (byte)eSpellType.DirectDamage && Spell.Radius == 0)
+			if (selectedTarget !=null && selectedTarget.HasAbility("DamageImmunity") && Spell.SpellType == eSpellType.DirectDamage && Spell.Radius == 0)
 			{
 				if (!quiet)
 					MessageToCaster(selectedTarget.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
@@ -776,14 +776,14 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (m_spell.SpellType == (byte)eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
+						if (m_spell.SpellType == eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
 							break;
 
 						if (Caster is TurretPet)
 							return true;
 
 						// Pet spells (shade) don't require the target to be in front.
-						if ((m_spell.SpellType != (byte)eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)) || !Caster.TargetInView)
+						if ((m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)) || !Caster.TargetInView)
 						{
 							if (!quiet)
 								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
@@ -835,7 +835,7 @@ namespace DOL.GS.Spells
 			}
 			
 			//Ryan: don't want mobs to have reductions in mana
-			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(selectedTarget) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != (byte)eSpellType.Archery)
+			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(selectedTarget) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
@@ -983,10 +983,10 @@ namespace DOL.GS.Spells
 				switch (m_spell.Target)
 				{
 					case "Enemy":
-						if (m_spell.SpellType == (byte)eSpellType.Charm)
+						if (m_spell.SpellType == eSpellType.Charm)
 							break;
 
-						if (m_spell.SpellType != (byte)eSpellType.PetSpell)
+						if (m_spell.SpellType != eSpellType.PetSpell)
 						{
 							// The target must be visible and in front of the caster
 							// Thankfully TargetInView seems to return false if the target hides behind a wall, even if the caster selects a new target during the animation
@@ -994,7 +994,7 @@ namespace DOL.GS.Spells
 							if (target.IsStealthed || !Caster.TargetInView || !Caster.IsObjectInFront(target, 180, 0))
 							{
 								// Avoid flute mez's chat log spam.
-								if (m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize)
+								if (m_spell.IsPulsing && m_spell.SpellType == eSpellType.Mesmerize)
 								{
 									MesmerizeSpellHandler mesmerizeSpellHandler = this as MesmerizeSpellHandler;
 
@@ -1035,13 +1035,13 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != (byte)eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != eSpellType.Archery)
 			{
 				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
-			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != (byte)eSpellType.Archery)
+			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
 			{
 				MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1163,7 +1163,7 @@ namespace DOL.GS.Spells
 						//Fen - removed 08/18/2022. players only check LoS at start and end of cast, not mid-cast
 						/*
 						if (Caster is GamePlayer && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 64) &&
-							m_spell.SpellType != (byte)eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != (byte)eSpellType.Mesmerize))
+							m_spell.SpellType != eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != eSpellType.Mesmerize))
 						{
 							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
 							return false;
@@ -1187,7 +1187,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != (byte)eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != eSpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
@@ -1195,7 +1195,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != (byte)eSpellType.Archery)
+			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
@@ -1301,7 +1301,7 @@ namespace DOL.GS.Spells
 						CastState = eCastState.Interrupted;
 					if (_castStartTick + _calculatedCastTime < currentTick)
 					{
-						if (!(m_spell.IsPulsing && m_spell.SpellType == (byte)eSpellType.Mesmerize))
+						if (!(m_spell.IsPulsing && m_spell.SpellType == eSpellType.Mesmerize))
 						{
 							if (!CheckEndCast(Target))
 								CastState = eCastState.Interrupted;
@@ -1335,7 +1335,7 @@ namespace DOL.GS.Spells
 				FinishSpellCast(Target);
 				if (Spell.IsFocus)
 				{
-					if (Spell.SpellType != (byte)eSpellType.GatewayPersonalBind)
+					if (Spell.SpellType != eSpellType.GatewayPersonalBind)
 					{
 						CastState = eCastState.Focusing;
 					}
@@ -1593,7 +1593,7 @@ namespace DOL.GS.Spells
 			// Messages
 			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0)
 			{
-				if (Spell.SpellType != (byte)eSpellType.PveResurrectionIllness && Spell.SpellType != (byte)eSpellType.RvrResurrectionIllness)
+				if (Spell.SpellType != eSpellType.PveResurrectionIllness && Spell.SpellType != eSpellType.RvrResurrectionIllness)
 				{
 					if (playerCaster != null)
 						// Message: You cast a {0} spell!
@@ -1621,7 +1621,7 @@ namespace DOL.GS.Spells
 						EffectService.RequestImmediateCancelConcEffect(effect);
 				}
 
-				if (m_spell.SpellType != (byte)eSpellType.Mesmerize)
+				if (m_spell.SpellType != eSpellType.Mesmerize)
 				{
 					CreateECSPulseEffect(Caster, Caster.Effectiveness);
 					Caster.ActivePulseSpells.AddOrUpdate(m_spell.SpellType, m_spell, (x, y) => m_spell);
@@ -1636,7 +1636,7 @@ namespace DOL.GS.Spells
 			/*
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
 			//cancelling before the spell was fired.
-			if (m_spell.SpellType != (byte)eSpellType.Powerless && m_spell.SpellType != (byte)eSpellType.Range && m_spell.SpellType != (byte)eSpellType.Uninterruptable)
+			if (m_spell.SpellType != eSpellType.Powerless && m_spell.SpellType != eSpellType.Range && m_spell.SpellType != eSpellType.Uninterruptable)
 			{
 				GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_caster, "Powerless");
 				if (effect == null)
@@ -1724,7 +1724,7 @@ namespace DOL.GS.Spells
 				case "area":
 					//Dinberg - fix for animists turrets, where before a radius of zero meant that no targets were ever
 					//selected!
-					if (Spell.SpellType == (byte)eSpellType.SummonAnimistPet || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
+					if (Spell.SpellType == eSpellType.SummonAnimistPet || Spell.SpellType == eSpellType.SummonAnimistFnF)
 						list.Add(Caster);
 					else if (modifiedRadius > 0)
 					{
@@ -1869,7 +1869,7 @@ namespace DOL.GS.Spells
 				case "enemy":
 					if (modifiedRadius > 0)
 					{
-						if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && (target == null || Spell.Range == 0))
+						if (Spell.SpellType != eSpellType.TurretPBAoE && (target == null || Spell.Range == 0))
 							target = Caster;
 						if (target == null)
 							return null;
@@ -1981,7 +1981,7 @@ namespace DOL.GS.Spells
 							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
 							{
 								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
-								if (Spell.IsBuff || Spell.SpellType == (byte)eSpellType.PowerTransferPet || Spell.SpellType == (byte)eSpellType.UniPortal)
+								if (Spell.IsBuff || Spell.SpellType == eSpellType.PowerTransferPet || Spell.SpellType == eSpellType.UniPortal)
 									list.Add(player);
 								else
 									list.Add(player.ControlledBrain.Body);
@@ -2244,7 +2244,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (Spell.SpellType != (byte)eSpellType.TurretPBAoE && Spell.IsPBAoE)
+			if (Spell.SpellType != eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
 			else if (Target == null)
 				Target = target;
@@ -2270,8 +2270,8 @@ namespace DOL.GS.Spells
 				&& !Spell.IsConcentration
 				&& !Spell.IsHealing
 				&& Spell.IsBuff
-				&& Spell.SpellType != (byte)eSpellType.Bladeturn
-				&& Spell.SpellType != (byte)eSpellType.Bomber)
+				&& Spell.SpellType != eSpellType.Bladeturn
+				&& Spell.SpellType != eSpellType.Bomber)
 				targets = GetGroupAndPets(Spell);
 			else
 				targets = SelectTargets(Target);
@@ -2428,17 +2428,17 @@ namespace DOL.GS.Spells
 				{
 					switch (Spell.SpellType)
 					{
-						case (byte)eSpellType.Archery:
-						case (byte)eSpellType.Bolt:
-						case (byte)eSpellType.Bomber:
-						case (byte)eSpellType.DamageSpeedDecrease:
-						case (byte)eSpellType.DirectDamage:
-						case (byte)eSpellType.MagicalStrike:
-						case (byte)eSpellType.SiegeArrow:
-						case (byte)eSpellType.Lifedrain:
-						case (byte)eSpellType.SiegeDirectDamage:
-						case (byte)eSpellType.SummonTheurgistPet:
-						case (byte)eSpellType.DirectDamageWithDebuff:
+						case eSpellType.Archery:
+						case eSpellType.Bolt:
+						case eSpellType.Bomber:
+						case eSpellType.DamageSpeedDecrease:
+						case eSpellType.DirectDamage:
+						case eSpellType.MagicalStrike:
+						case eSpellType.SiegeArrow:
+						case eSpellType.Lifedrain:
+						case eSpellType.SiegeDirectDamage:
+						case eSpellType.SummonTheurgistPet:
+						case eSpellType.DirectDamageWithDebuff:
 							isAllowed = true;
 							break;
 					}
@@ -2521,7 +2521,7 @@ namespace DOL.GS.Spells
 				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
 				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
 				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
-				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != (byte)eSpellType.DamageOverTime)
+				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime)
 				{
 					target.OnAttackedByEnemy(ad);
 				}
@@ -3436,7 +3436,7 @@ namespace DOL.GS.Spells
 			double spellDamage = Spell.Damage;
 			GamePlayer player = Caster as GamePlayer;
 
-			if (Spell.SpellType == (byte)eSpellType.Lifedrain)
+			if (Spell.SpellType == eSpellType.Lifedrain)
 				spellDamage *= (1 + Spell.LifeDrainReturn * .001);
 
 			// For pets the stats of the owner have to be taken into account.
@@ -3698,7 +3698,7 @@ namespace DOL.GS.Spells
 			int resitPierce = Caster.GetModified(eProperty.ResistPierce);
 
 			// Substract max ItemBonus of property of target, but at least 0.
-			if (resitPierce > 0 && Spell.SpellType != (byte) eSpellType.Archery)
+			if (resitPierce > 0 && Spell.SpellType != eSpellType.Archery)
 				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int) property], resitPierce));
 
 			int resistModifier = 0;
@@ -3828,7 +3828,7 @@ namespace DOL.GS.Spells
 			if (dw == null)
 				return;
 
-			dw.AddKeyValuePair("Function", GetDelveType((eSpellType)Spell.SpellType));
+			dw.AddKeyValuePair("Function", GetDelveType(Spell.SpellType));
 			dw.AddKeyValuePair("Index", unchecked((ushort)Spell.InternalID));
 			dw.AddKeyValuePair("Name", Spell.Name);
 			
@@ -3887,7 +3887,7 @@ namespace DOL.GS.Spells
 			if (Spell.IsConcentration)
 				dw.AddKeyValuePair("concentration_points", Spell.Concentration);
 			if (Spell.Frequency > 0)
-				dw.AddKeyValuePair("frequency", Spell.SpellType == (byte)eSpellType.OffensiveProc || Spell.SpellType == (byte)eSpellType.OffensiveProc ? Spell.Frequency / 100 : Spell.Frequency);
+				dw.AddKeyValuePair("frequency", Spell.SpellType == eSpellType.OffensiveProc || Spell.SpellType == eSpellType.OffensiveProc ? Spell.Frequency / 100 : Spell.Frequency);
 
 			WriteBonus(ref dw);
 			WriteParm(ref dw);
@@ -3895,12 +3895,12 @@ namespace DOL.GS.Spells
 			WriteSpecial(ref dw);
 
 			if (Spell.HasSubSpell)
-				if (Spell.SpellType == (byte)eSpellType.Bomber || Spell.SpellType == (byte)eSpellType.SummonAnimistFnF)
+				if (Spell.SpellType == eSpellType.Bomber || Spell.SpellType == eSpellType.SummonAnimistFnF)
 					dw.AddKeyValuePair("delve_spell", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 				else
 					dw.AddKeyValuePair("parm", SkillBase.GetSpellByID(Spell.SubSpellID).InternalID);
 
-			if (!dw.Values.ContainsKey("parm") && (eSpellType)Spell.SpellType != eSpellType.MesmerizeDurationBuff)
+			if (!dw.Values.ContainsKey("parm") && Spell.SpellType != eSpellType.MesmerizeDurationBuff)
 				dw.AddKeyValuePair("parm", "1");
 		}
 
@@ -4072,7 +4072,7 @@ namespace DOL.GS.Spells
 
 		private void WriteBonus(ref MiniDelveWriter dw)
 		{
-			switch ((eSpellType)Spell.SpellType)
+			switch (Spell.SpellType)
 			{
 				case eSpellType.AblativeArmor:
 					dw.AddKeyValuePair("bonus", Spell.Damage > 0 ? Spell.Damage : 25);
@@ -4163,7 +4163,7 @@ namespace DOL.GS.Spells
 		private void WriteParm(ref MiniDelveWriter dw)
 		{
 			string parm = "parm";
-			switch ((eSpellType)Spell.SpellType)
+			switch (Spell.SpellType)
 			{
 				case eSpellType.CombatSpeedDebuff:
 				
@@ -4277,7 +4277,7 @@ namespace DOL.GS.Spells
 
 		private void WriteDamage(ref MiniDelveWriter dw)
 		{
-			switch ((eSpellType)Spell.SpellType)
+			switch (Spell.SpellType)
 			{
 				case eSpellType.AblativeArmor:
 				case eSpellType.CombatHeal:
@@ -4332,7 +4332,7 @@ namespace DOL.GS.Spells
 
 		private void WriteSpecial(ref MiniDelveWriter dw)
 		{
-			switch ((eSpellType)Spell.SpellType)
+			switch (Spell.SpellType)
 			{
 				case eSpellType.Bomber:
 					//dw.AddKeyValuePair("description_string", "Summon an elemental sprit to fight for the caster briefly.");

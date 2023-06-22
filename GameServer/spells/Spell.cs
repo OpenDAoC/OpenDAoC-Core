@@ -33,7 +33,7 @@ namespace DOL.GS
 	{
 		protected readonly string m_description = "";
 		protected readonly string m_target = "";
-        protected readonly byte m_spelltype;// = "-";
+        protected readonly eSpellType m_spelltype;// = "-";
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
 		protected double m_value = 0;
@@ -186,7 +186,7 @@ namespace DOL.GS
 
 		}
 
-		public virtual byte SpellType
+		public virtual eSpellType SpellType
 		{
 			get { return m_spelltype; }
 		}
@@ -320,7 +320,7 @@ namespace DOL.GS
 					case "ENEMY":						
 					case "AREA":
 					case "CONE":
-						if (SpellType == (byte)eSpellType.Charm)
+						if (SpellType == eSpellType.Charm)
 							return false;
 						else
 							return true;
@@ -358,17 +358,17 @@ namespace DOL.GS
 			{
 				switch (SpellType)//.ToUpper())
 				{
-                    case (byte)eSpellType.CurePoison: 
-                    case (byte)eSpellType.CureDisease:
-                    case (byte)eSpellType.CombatHeal:
-                    case (byte)eSpellType.Heal:
-                    case (byte)eSpellType.HealOverTime:
-                    case (byte)eSpellType.HealthRegenBuff:
-                    case (byte)eSpellType.MercHeal:
-                    case (byte)eSpellType.OmniHeal:
-                    case (byte)eSpellType.PBAoEHeal:
-                    case (byte)eSpellType.SpreadHeal:
-                    case (byte)eSpellType.SummonHealingElemental: 
+                    case eSpellType.CurePoison: 
+                    case eSpellType.CureDisease:
+                    case eSpellType.CombatHeal:
+                    case eSpellType.Heal:
+                    case eSpellType.HealOverTime:
+                    case eSpellType.HealthRegenBuff:
+                    case eSpellType.MercHeal:
+                    case eSpellType.OmniHeal:
+                    case eSpellType.PBAoEHeal:
+                    case eSpellType.SpreadHeal:
+                    case eSpellType.SummonHealingElemental: 
 						return true;
 					default:
 						return false;
@@ -401,7 +401,7 @@ namespace DOL.GS
 		{
 			m_description = dbspell.Description;
 			m_target = dbspell.Target;
-            m_spelltype = (byte)Enum.Parse(typeof (eSpellType), dbspell.Type);
+            m_spelltype = Enum.Parse<eSpellType>(dbspell.Type);
 			m_range = dbspell.Range;
 			m_radius = dbspell.Radius;
 			m_value = dbspell.Value;
@@ -452,7 +452,7 @@ namespace DOL.GS
 		{
 			m_description = spell.Description;
 			m_target = spell.Target;
-			m_spelltype = (byte)spellType; // replace SpellType
+			m_spelltype = spellType; // replace SpellType
 			m_range = spell.Range;
 			m_radius = spell.Radius;
 			m_value = spell.Value;

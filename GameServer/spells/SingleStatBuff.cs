@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
                 effectiveness = Math.Min(1.25, effectiveness);
                 effectiveness *= 1.0 + playerOwner.GetModified(eProperty.DebuffEffectivness) * 0.01;                
 
-                if (Spell.SpellType == (byte)eSpellType.ArmorFactorDebuff)
+                if (Spell.SpellType == eSpellType.ArmorFactorDebuff)
                     effectiveness *= 1 + target.GetArmorAbsorb(eArmorSlot.TORSO);
 
                 if (playerOwner.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)

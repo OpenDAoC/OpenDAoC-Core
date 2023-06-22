@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
         {
             Caster.Mana -= PowerCost(target);
 
-            if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != (byte) eSpellType.SiegeArrow && Spell.SpellType != (byte) eSpellType.SiegeDirectDamage)
+            if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != eSpellType.SiegeArrow && Spell.SpellType != eSpellType.SiegeDirectDamage)
             {
                 MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
                 return;

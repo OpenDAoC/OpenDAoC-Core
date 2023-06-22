@@ -70,7 +70,7 @@ namespace DOL.GS.PacketHandler
 						if (fx is GameSpellEffect)
 						{
 							GameSpellEffect effect = (GameSpellEffect)fx;
-							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == (byte)eSpellType.Chamber))
+							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == eSpellType.Chamber))
 							{
 								ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 								sortList[chamber.EffectSlot] = effect;
@@ -92,19 +92,19 @@ namespace DOL.GS.PacketHandler
 							}
 							else if (chamber.PrimarySpell != null && chamber.SecondarySpell != null)
 							{
-								if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Lifedrain)
+								if (chamber.SecondarySpell.SpellType == eSpellType.Lifedrain)
 									pak.WriteByte(0x11);
 								else if (chamber.SecondarySpell.SpellType.ToString().IndexOf("SpeedDecrease") != -1)
 									pak.WriteByte(0x33);
-								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.PowerRegenBuff)
+								else if (chamber.SecondarySpell.SpellType == eSpellType.PowerRegenBuff)
 									pak.WriteByte(0x77);
-								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DirectDamage)
+								else if (chamber.SecondarySpell.SpellType == eSpellType.DirectDamage)
 									pak.WriteByte(0x66);
-								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.SpreadHeal)
+								else if (chamber.SecondarySpell.SpellType == eSpellType.SpreadHeal)
 									pak.WriteByte(0x55);
-								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.Nearsight)
+								else if (chamber.SecondarySpell.SpellType == eSpellType.Nearsight)
 									pak.WriteByte(0x44);
-								else if (chamber.SecondarySpell.SpellType == (byte)eSpellType.DamageOverTime)
+								else if (chamber.SecondarySpell.SpellType == eSpellType.DamageOverTime)
 									pak.WriteByte(0x22);
 							}
 						}

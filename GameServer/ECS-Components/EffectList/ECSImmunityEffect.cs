@@ -31,16 +31,16 @@ namespace DOL.GS
         {
             switch (SpellHandler.Spell.SpellType)
             {
-                case (byte)eSpellType.Mesmerize:
+                case eSpellType.Mesmerize:
                     return eEffect.MezImmunity;
-                case (byte)eSpellType.StyleStun:
-                case (byte)eSpellType.Stun:
+                case eSpellType.StyleStun:
+                case eSpellType.Stun:
                     return eEffect.StunImmunity;
-                case (byte)eSpellType.SpeedDecrease:
-                case (byte)eSpellType.DamageSpeedDecreaseNoVariance:
-                case (byte)eSpellType.DamageSpeedDecrease:
+                case eSpellType.SpeedDecrease:
+                case eSpellType.DamageSpeedDecreaseNoVariance:
+                case eSpellType.DamageSpeedDecrease:
                     return eEffect.SnareImmunity;
-                case (byte)eSpellType.Nearsight:
+                case eSpellType.Nearsight:
                     return eEffect.NearsightImmunity;
                 default:
                     return eEffect.Unknown;

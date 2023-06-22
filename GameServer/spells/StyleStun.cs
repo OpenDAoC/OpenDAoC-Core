@@ -82,7 +82,7 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.Spell.EffectGroup;
-			if (compare.Spell.SpellType == (byte)eSpellType.Stun) return true;
+			if (compare.Spell.SpellType == eSpellType.Stun) return true;
 			return base.IsOverwritable(compare);
 		}
 

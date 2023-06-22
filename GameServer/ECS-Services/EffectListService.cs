@@ -109,7 +109,7 @@ namespace DOL.GS
                                 effect.ExpireTick += effect.PulseFreq;
                             }
 
-                            if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.Charm && effect.SpellHandler.Spell.SpellType != (byte)eSpellType.SpeedDecrease)
+                            if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != eSpellType.Charm && effect.SpellHandler.Spell.SpellType != eSpellType.SpeedDecrease)
                             {
                                 if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
                                     ((SpellHandler)effect.SpellHandler).SendCastAnimation();
@@ -129,7 +129,7 @@ namespace DOL.GS
                         }
                     }
 
-                    if (effect is not ECSImmunityEffect && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                    if (effect is not ECSImmunityEffect && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == eSpellType.SpeedDecrease)
                     {
                         if (tick > effect.NextTick)
                         {
@@ -158,7 +158,7 @@ namespace DOL.GS
                         //Check if player is too far away from Caster for Concentration buff.
                         if (!effect.SpellHandler.Caster.
                             IsWithinRadius(effect.Owner,
-                            effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                            effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                             && !effect.IsDisabled)
                         {
                             ECSGameSpellEffect disabled = null;
@@ -172,7 +172,7 @@ namespace DOL.GS
                         }
                         //Check if player is back in range of Caster for Concentration buff.
                         else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                            effect.SpellHandler.Spell.SpellType != (byte)eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
+                            effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
                             && effect.IsDisabled)
                         {
                             //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
@@ -222,7 +222,7 @@ namespace DOL.GS
                 if (effects != null && spellType == eSpellType.Null)
                     return effects.FirstOrDefault();
                 else if (effects != null)
-                    return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == (byte) spellType).FirstOrDefault();
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == spellType).FirstOrDefault();
                 else
                     return null;
             }
@@ -238,7 +238,7 @@ namespace DOL.GS
                 target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return effects.OfType<ECSGameSpellEffect>().Where(e => e != null && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == (byte) spellType)).FirstOrDefault();
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e != null && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == spellType)).FirstOrDefault();
                 else
                     return null;
             }

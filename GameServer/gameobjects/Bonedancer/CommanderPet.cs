@@ -778,20 +778,20 @@ namespace DOL.GS
 				{
 					switch (spell.SpellType)
 					{
-                        case (byte)eSpellType.DamageOverTime:
+                        case eSpellType.DamageOverTime:
 							CommSpellDot = spell;
 							break;
-                        case (byte)eSpellType.DirectDamage:
+                        case eSpellType.DirectDamage:
 							CommSpellDamage = spell;
 							break;
-                        case (byte)eSpellType.DirectDamageWithDebuff:
+                        case eSpellType.DirectDamageWithDebuff:
 							CommSpellDamageDebuff = spell;
 							break;
-                        case (byte)eSpellType.Disease:
+                        case eSpellType.Disease:
 							CommSpellDebuff = spell;
 							break;
-                        case (byte)eSpellType.Lifedrain:
-                        case (byte)eSpellType.DamageSpeedDecrease:
+                        case eSpellType.Lifedrain:
+                        case eSpellType.DamageSpeedDecrease:
 							CommSpellOther = spell;
 							break;
 					}

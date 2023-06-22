@@ -231,7 +231,7 @@ namespace DOL.GS.Spells
 
 	public class FocusSpell : Spell
 	{
-		public FocusSpell(Spell spell) : base(spell, (eSpellType)spell.SpellType) 
+		public FocusSpell(Spell spell) : base(spell, spell.SpellType) 
 		{
 			if (spell.Frequency == 0) Frequency = 5000;
 			else Frequency = spell.Frequency;

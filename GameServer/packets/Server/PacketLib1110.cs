@@ -238,7 +238,7 @@ namespace DOL.GS.PacketHandler
 								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
 						}
 
-						if (spell.SpellType == (byte)eSpellType.DefensiveProc || spell.SpellType == (byte)eSpellType.OffensiveProc)
+						if (spell.SpellType == eSpellType.DefensiveProc || spell.SpellType == eSpellType.OffensiveProc)
 							SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID((int)spell.Value)));
 					}
 				}

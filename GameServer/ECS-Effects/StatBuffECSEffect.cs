@@ -25,15 +25,15 @@ namespace DOL.GS
                     ApplyBonus(Owner, eBuffBonusCategory.SpecBuff, prop, SpellHandler.Spell.Value, Effectiveness, false);
                 }
             }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.ArmorFactorBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.ArmorFactorBuff)
             {
                 ApplyBonus(Owner, (SpellHandler as ArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, false);
             }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.PaladinArmorFactorBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.PaladinArmorFactorBuff)
             {
                 ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, false);
             }
-            else if (SpellHandler.Spell.SpellType == (byte) eSpellType.AllMagicResistBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.AllMagicResistBuff)
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
@@ -90,15 +90,15 @@ namespace DOL.GS
                     ApplyBonus(Owner, eBuffBonusCategory.SpecBuff, prop, SpellHandler.Spell.Value, Effectiveness, true);
                 }
             }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.ArmorFactorBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.ArmorFactorBuff)
             {
                 ApplyBonus(Owner, (SpellHandler as ArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
             }
-            else if (SpellHandler.Spell.SpellType == (byte)eSpellType.PaladinArmorFactorBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.PaladinArmorFactorBuff)
             {
                 ApplyBonus(Owner, (SpellHandler as PaladinArmorFactorBuff).BonusCategory1, eProperty.ArmorFactor, SpellHandler.Spell.Value, Effectiveness, true);
             }
-            else if (SpellHandler.Spell.SpellType == (byte) eSpellType.AllMagicResistBuff)
+            else if (SpellHandler.Spell.SpellType == eSpellType.AllMagicResistBuff)
             {
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {

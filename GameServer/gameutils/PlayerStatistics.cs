@@ -473,7 +473,7 @@ namespace DOL.GS.GameEvents
 			if (caster == null || fargs == null)
 				return;
 
-			if (fargs.SpellHandler.Spell.SpellType == (byte)eSpellType.Resurrect)
+			if (fargs.SpellHandler.Spell.SpellType == eSpellType.Resurrect)
 			{
 				PlayerStatistics stats = caster.Statistics as PlayerStatistics;
                 if (stats != null)

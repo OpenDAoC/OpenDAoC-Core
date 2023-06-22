@@ -508,15 +508,15 @@ namespace DOL.GS.ServerRules
 						{
 							switch (spell.SpellType)
 							{
-                                case (byte)eSpellType.Archery:
-								case (byte)eSpellType.Bolt:
-								case (byte)eSpellType.Bomber:
-                                case (byte)eSpellType.DamageSpeedDecrease:
-                                case (byte)eSpellType.DirectDamage:
-                                case (byte)eSpellType.MagicalStrike:
-                                case (byte)eSpellType.SiegeArrow:
-                                case (byte)eSpellType.SummonTheurgistPet:
-                                case (byte)eSpellType.DirectDamageWithDebuff:
+                                case eSpellType.Archery:
+								case eSpellType.Bolt:
+								case eSpellType.Bomber:
+                                case eSpellType.DamageSpeedDecrease:
+                                case eSpellType.DirectDamage:
+                                case eSpellType.MagicalStrike:
+                                case eSpellType.SiegeArrow:
+                                case eSpellType.SummonTheurgistPet:
+                                case eSpellType.DirectDamageWithDebuff:
 									isAllowed = true;
 									break;
 							}

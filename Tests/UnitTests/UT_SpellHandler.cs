@@ -99,7 +99,7 @@ namespace DOL.Tests.Unit.Gameserver
             spell.fakeTarget = "Realm";
             spell.Duration = 20;
             spell.fakeFrequency = 20;
-            spell.fakeSpellType = (byte)eSpellType.DamageShield;
+            spell.fakeSpellType = eSpellType.DamageShield;
             spell.fakePulse = 1;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -486,14 +486,14 @@ namespace DOL.Tests.Unit.Gameserver
             public bool fakeIsFocus = false;
             public string fakeTarget = "";
             public int fakeFrequency = 0;
-            public byte fakeSpellType = 0;
+            public eSpellType fakeSpellType = 0;
             public int fakePulse = 0;
             public int fakeRange = 0;
 
             public FakeSpell() : base(new DBSpell(), 0) { }
 
             public override int Pulse => fakePulse;
-            public override byte SpellType => fakeSpellType;
+            public override eSpellType SpellType => fakeSpellType;
             public override bool IsFocus => fakeIsFocus;
             public override string Target => fakeTarget;
             public override int Frequency => fakeFrequency;

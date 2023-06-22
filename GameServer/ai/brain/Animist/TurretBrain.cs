@@ -79,7 +79,7 @@ namespace DOL.AI.Brain
 
         protected override bool CheckDefensiveSpells(Spell spell)
         {
-            switch ((eSpellType)spell.SpellType)
+            switch (spell.SpellType)
             {
                 case eSpellType.HeatColdMatterBuff:
                 case eSpellType.BodySpiritEnergyBuff:
@@ -93,7 +93,7 @@ namespace DOL.AI.Brain
 
         protected override bool CheckOffensiveSpells(Spell spell)
         {
-            switch ((eSpellType)spell.SpellType)
+            switch (spell.SpellType)
             {
                 case eSpellType.DirectDamage:
                 case eSpellType.DamageSpeedDecrease:

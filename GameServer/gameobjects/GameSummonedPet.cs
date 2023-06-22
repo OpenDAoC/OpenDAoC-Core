@@ -248,7 +248,7 @@ namespace DOL.GS
 
 			double scalingFactor = (double) casterLevel / Properties.PET_SCALE_SPELL_MAX_LEVEL;
 
-			switch ((eSpellType)spell.SpellType)
+			switch (spell.SpellType)
 			{
 				// Scale Damage
 				case eSpellType.DamageOverTime:

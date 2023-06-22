@@ -901,7 +901,7 @@ namespace DOL.AI.Brain
                         // If we have no pets
                         if (Body.ControlledBrain == null)
                         {
-                            if (spell.SpellType == (byte)eSpellType.Pet) continue;
+                            if (spell.SpellType == eSpellType.Pet) continue;
 
                             // TODO: Need to fix this bit
                             //if (spell.SpellType.ToLower().Contains("summon"))
@@ -912,7 +912,7 @@ namespace DOL.AI.Brain
                         }
                         if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null)
                         {
-                            if (Util.Chance(30) && Body.ControlledBrain != null && spell.SpellType == (byte)eSpellType.Heal &&
+                            if (Util.Chance(30) && Body.ControlledBrain != null && spell.SpellType == eSpellType.Heal &&
                                 Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range &&
                                 Body.ControlledBrain.Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
                                 && spell.Target.ToLower() != "self")
@@ -994,58 +994,58 @@ namespace DOL.AI.Brain
             switch (spell.SpellType)
             {
                 #region Buffs
-                case (byte)eSpellType.AcuityBuff:
-                case (byte)eSpellType.AFHitsBuff:
-                case (byte)eSpellType.AllMagicResistBuff:
-                case (byte)eSpellType.ArmorAbsorptionBuff:
-                case (byte)eSpellType.ArmorFactorBuff:
-                case (byte)eSpellType.BodyResistBuff:
-                case (byte)eSpellType.BodySpiritEnergyBuff:
-                case (byte)eSpellType.Buff:
-                case (byte)eSpellType.CelerityBuff:
-                case (byte)eSpellType.ColdResistBuff:
-                case (byte)eSpellType.CombatSpeedBuff:
-                case (byte)eSpellType.ConstitutionBuff:
-                case (byte)eSpellType.CourageBuff:
-                case (byte)eSpellType.CrushSlashTrustBuff:
-                case (byte)eSpellType.DexterityBuff:
-                case (byte)eSpellType.DexterityQuicknessBuff:
-                case (byte)eSpellType.EffectivenessBuff:
-                case (byte)eSpellType.EnduranceRegenBuff:
-                case (byte)eSpellType.EnergyResistBuff:
-                case (byte)eSpellType.FatigueConsumptionBuff:
-                case (byte)eSpellType.FlexibleSkillBuff:
-                case (byte)eSpellType.HasteBuff:
-                case (byte)eSpellType.HealthRegenBuff:
-                case (byte)eSpellType.HeatColdMatterBuff:
-                case (byte)eSpellType.HeatResistBuff:
-                case (byte)eSpellType.HeroismBuff:
-                case (byte)eSpellType.KeepDamageBuff:
-                case (byte)eSpellType.MagicResistBuff:
-                case (byte)eSpellType.MatterResistBuff:
-                case (byte)eSpellType.MeleeDamageBuff:
-                case (byte)eSpellType.MesmerizeDurationBuff:
-                case (byte)eSpellType.MLABSBuff:
-                case (byte)eSpellType.PaladinArmorFactorBuff:
-                case (byte)eSpellType.ParryBuff:
-                case (byte)eSpellType.PowerHealthEnduranceRegenBuff:
-                case (byte)eSpellType.PowerRegenBuff:
-                case (byte)eSpellType.SavageCombatSpeedBuff:
-                case (byte)eSpellType.SavageCrushResistanceBuff:
-                case (byte)eSpellType.SavageDPSBuff:
-                case (byte)eSpellType.SavageParryBuff:
-                case (byte)eSpellType.SavageSlashResistanceBuff:
-                case (byte)eSpellType.SavageThrustResistanceBuff:
-                case (byte)eSpellType.SpiritResistBuff:
-                case (byte)eSpellType.StrengthBuff:
-                case (byte)eSpellType.StrengthConstitutionBuff:
-                case (byte)eSpellType.SuperiorCourageBuff:
-                case (byte)eSpellType.ToHitBuff:
-                case (byte)eSpellType.WeaponSkillBuff:
-                case (byte)eSpellType.DamageAdd:
-                case (byte)eSpellType.OffensiveProc:
-                case (byte)eSpellType.DefensiveProc:
-                case (byte)eSpellType.DamageShield:
+                case eSpellType.AcuityBuff:
+                case eSpellType.AFHitsBuff:
+                case eSpellType.AllMagicResistBuff:
+                case eSpellType.ArmorAbsorptionBuff:
+                case eSpellType.ArmorFactorBuff:
+                case eSpellType.BodyResistBuff:
+                case eSpellType.BodySpiritEnergyBuff:
+                case eSpellType.Buff:
+                case eSpellType.CelerityBuff:
+                case eSpellType.ColdResistBuff:
+                case eSpellType.CombatSpeedBuff:
+                case eSpellType.ConstitutionBuff:
+                case eSpellType.CourageBuff:
+                case eSpellType.CrushSlashTrustBuff:
+                case eSpellType.DexterityBuff:
+                case eSpellType.DexterityQuicknessBuff:
+                case eSpellType.EffectivenessBuff:
+                case eSpellType.EnduranceRegenBuff:
+                case eSpellType.EnergyResistBuff:
+                case eSpellType.FatigueConsumptionBuff:
+                case eSpellType.FlexibleSkillBuff:
+                case eSpellType.HasteBuff:
+                case eSpellType.HealthRegenBuff:
+                case eSpellType.HeatColdMatterBuff:
+                case eSpellType.HeatResistBuff:
+                case eSpellType.HeroismBuff:
+                case eSpellType.KeepDamageBuff:
+                case eSpellType.MagicResistBuff:
+                case eSpellType.MatterResistBuff:
+                case eSpellType.MeleeDamageBuff:
+                case eSpellType.MesmerizeDurationBuff:
+                case eSpellType.MLABSBuff:
+                case eSpellType.PaladinArmorFactorBuff:
+                case eSpellType.ParryBuff:
+                case eSpellType.PowerHealthEnduranceRegenBuff:
+                case eSpellType.PowerRegenBuff:
+                case eSpellType.SavageCombatSpeedBuff:
+                case eSpellType.SavageCrushResistanceBuff:
+                case eSpellType.SavageDPSBuff:
+                case eSpellType.SavageParryBuff:
+                case eSpellType.SavageSlashResistanceBuff:
+                case eSpellType.SavageThrustResistanceBuff:
+                case eSpellType.SpiritResistBuff:
+                case eSpellType.StrengthBuff:
+                case eSpellType.StrengthConstitutionBuff:
+                case eSpellType.SuperiorCourageBuff:
+                case eSpellType.ToHitBuff:
+                case eSpellType.WeaponSkillBuff:
+                case eSpellType.DamageAdd:
+                case eSpellType.OffensiveProc:
+                case eSpellType.DefensiveProc:
+                case eSpellType.DamageShield:
                     {
                         // Buff self, if not in melee, but not each and every mob
                         // at the same time, because it looks silly.
@@ -1064,7 +1064,7 @@ namespace DOL.AI.Brain
                 #endregion Buffs
 
                 #region Disease Cure/Poison Cure/Summon
-                case (byte)eSpellType.CureDisease:
+                case eSpellType.CureDisease:
                     if (Body.IsDiseased)
                     {
                         Body.TargetObject = Body;
@@ -1077,7 +1077,7 @@ namespace DOL.AI.Brain
                         break;
                     }
                     break;
-                case (byte)eSpellType.CurePoison:
+                case eSpellType.CurePoison:
                     if (LivingIsPoisoned(Body))
                     {
                         Body.TargetObject = Body;
@@ -1090,10 +1090,10 @@ namespace DOL.AI.Brain
                         break;
                     }
                     break;
-                case (byte)eSpellType.Summon:
+                case eSpellType.Summon:
                     Body.TargetObject = Body;
                     break;
-                case (byte)eSpellType.SummonMinion:
+                case eSpellType.SummonMinion:
                     //If the list is null, lets make sure it gets initialized!
                     if (Body.ControlledNpcList == null)
                         Body.InitControlledBrainArray(2);
@@ -1116,13 +1116,13 @@ namespace DOL.AI.Brain
                 #endregion Disease Cure/Poison Cure/Summon
 
                 #region Heals
-                case (byte)eSpellType.CombatHeal:
-                case (byte)eSpellType.Heal:
-                case (byte)eSpellType.HealOverTime:
-                case (byte)eSpellType.MercHeal:
-                case (byte)eSpellType.OmniHeal:
-                case (byte)eSpellType.PBAoEHeal:
-                case (byte)eSpellType.SpreadHeal:
+                case eSpellType.CombatHeal:
+                case eSpellType.Heal:
+                case eSpellType.HealOverTime:
+                case eSpellType.MercHeal:
+                case eSpellType.OmniHeal:
+                case eSpellType.PBAoEHeal:
+                case eSpellType.SpreadHeal:
                     if (spell.Target.ToLower() == "self")
                     {
                         // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
@@ -1154,13 +1154,13 @@ namespace DOL.AI.Brain
 
                 //case "SummonAnimistFnF":
                 //case "SummonAnimistPet":
-                case (byte)eSpellType.SummonCommander:
-                case (byte)eSpellType.SummonDruidPet:
-                case (byte)eSpellType.SummonHunterPet:
-                case (byte)eSpellType.SummonNecroPet:
-                case (byte)eSpellType.SummonUnderhill:
-                case (byte)eSpellType.SummonSimulacrum:
-                case (byte)eSpellType.SummonSpiritFighter:
+                case eSpellType.SummonCommander:
+                case eSpellType.SummonDruidPet:
+                case eSpellType.SummonHunterPet:
+                case eSpellType.SummonNecroPet:
+                case eSpellType.SummonUnderhill:
+                case eSpellType.SummonSimulacrum:
+                case eSpellType.SummonSpiritFighter:
                     //case "SummonTheurgistPet":
                     if (Body.ControlledBrain != null)
                         break;
@@ -1190,7 +1190,7 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == (byte)eSpellType.DirectDamageWithDebuff || spell.SpellType == (byte)eSpellType.DamageSpeedDecrease)))
+            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == eSpellType.DirectDamageWithDebuff || spell.SpellType == eSpellType.DamageSpeedDecrease)))
             {
                 // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)
@@ -1222,20 +1222,20 @@ namespace DOL.AI.Brain
             switch (spell.SpellType)
             {
                 #region Enemy Spells
-                case (byte)eSpellType.DirectDamage:
-                case (byte)eSpellType.Lifedrain:
-                case (byte)eSpellType.DexterityDebuff:
-                case (byte)eSpellType.StrengthConstitutionDebuff:
-                case (byte)eSpellType.CombatSpeedDebuff:
-                case (byte)eSpellType.DamageOverTime:
-                case (byte)eSpellType.MeleeDamageDebuff:
-                case (byte)eSpellType.AllStatsPercentDebuff:
-                case (byte)eSpellType.CrushSlashThrustDebuff:
-                case (byte)eSpellType.EffectivenessDebuff:
-                case (byte)eSpellType.Disease:
-                case (byte)eSpellType.Stun:
-                case (byte)eSpellType.Mez:
-                case (byte)eSpellType.Taunt:
+                case eSpellType.DirectDamage:
+                case eSpellType.Lifedrain:
+                case eSpellType.DexterityDebuff:
+                case eSpellType.StrengthConstitutionDebuff:
+                case eSpellType.CombatSpeedDebuff:
+                case eSpellType.DamageOverTime:
+                case eSpellType.MeleeDamageDebuff:
+                case eSpellType.AllStatsPercentDebuff:
+                case eSpellType.CrushSlashThrustDebuff:
+                case eSpellType.EffectivenessDebuff:
+                case eSpellType.Disease:
+                case eSpellType.Stun:
+                case eSpellType.Mez:
+                case eSpellType.Taunt:
                     if (!LivingHasEffect(lastTarget as GameLiving, spell))
                     {
                         Body.TargetObject = lastTarget;
@@ -1244,15 +1244,15 @@ namespace DOL.AI.Brain
                 #endregion
 
                 #region Combat Spells
-                case (byte)eSpellType.CombatHeal:
-                case (byte)eSpellType.DamageAdd:
-                case (byte)eSpellType.ArmorFactorBuff:
-                case (byte)eSpellType.DexterityQuicknessBuff:
-                case (byte)eSpellType.EnduranceRegenBuff:
-                case (byte)eSpellType.CombatSpeedBuff:
-                case (byte)eSpellType.AblativeArmor:
-                case (byte)eSpellType.Bladeturn:
-                case (byte)eSpellType.OffensiveProc:
+                case eSpellType.CombatHeal:
+                case eSpellType.DamageAdd:
+                case eSpellType.ArmorFactorBuff:
+                case eSpellType.DexterityQuicknessBuff:
+                case eSpellType.EnduranceRegenBuff:
+                case eSpellType.CombatSpeedBuff:
+                case eSpellType.AblativeArmor:
+                case eSpellType.Bladeturn:
+                case eSpellType.OffensiveProc:
                     if (!LivingHasEffect(Body, spell))
                     {
                         Body.TargetObject = Body;
@@ -1289,12 +1289,12 @@ namespace DOL.AI.Brain
             {
                 switch (spell.SpellType)
                 {
-                    case (byte)eSpellType.StrengthConstitutionBuff:
-                    case (byte)eSpellType.DexterityQuicknessBuff:
-                    case (byte)eSpellType.StrengthBuff:
-                    case (byte)eSpellType.DexterityBuff:
-                    case (byte)eSpellType.ConstitutionBuff:
-                    case (byte)eSpellType.AcuityBuff:
+                    case eSpellType.StrengthConstitutionBuff:
+                    case eSpellType.DexterityQuicknessBuff:
+                    case eSpellType.StrengthBuff:
+                    case eSpellType.DexterityBuff:
+                    case eSpellType.ConstitutionBuff:
+                    case eSpellType.AcuityBuff:
                         return true;
                 }
             }*/
@@ -1307,7 +1307,7 @@ namespace DOL.AI.Brain
                 return true;
 
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
-            if (spell.SpellType is (byte)eSpellType.OffensiveProc or (byte)eSpellType.DefensiveProc)
+            if (spell.SpellType is eSpellType.OffensiveProc or eSpellType.DefensiveProc)
             {
                 if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<ECSGameEffect> existingEffects))
                 {
@@ -1332,7 +1332,7 @@ namespace DOL.AI.Brain
                 GameSpellEffect speffect = effect as GameSpellEffect;
 
                 // if this is a DOT then target is poisoned
-                if (speffect.Spell.SpellType == (byte)eSpellType.DamageOverTime)
+                if (speffect.Spell.SpellType == eSpellType.DamageOverTime)
                     return true;
             }
 

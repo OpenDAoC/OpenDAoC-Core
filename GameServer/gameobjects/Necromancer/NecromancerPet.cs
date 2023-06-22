@@ -408,7 +408,7 @@ namespace DOL.GS
 			Spell tauntSpell = null;
 			foreach (Spell spell in chantsList)
 			{
-				if (spell.SpellType == (byte)eSpellType.Taunt && spell.Level <= Level)
+				if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
 					tauntSpell = spell;
 			}
 

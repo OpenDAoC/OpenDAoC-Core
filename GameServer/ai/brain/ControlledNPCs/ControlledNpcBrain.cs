@@ -566,59 +566,59 @@ namespace DOL.AI.Brain
             switch (spell.SpellType)
             {
                 #region Buffs
-                case (byte)eSpellType.AcuityBuff:
-                case (byte)eSpellType.AFHitsBuff:
-                case (byte)eSpellType.AllMagicResistBuff:
-                case (byte)eSpellType.ArmorAbsorptionBuff:
-                case (byte)eSpellType.ArmorFactorBuff:
-                case (byte)eSpellType.BodyResistBuff:
-                case (byte)eSpellType.BodySpiritEnergyBuff:
-                case (byte)eSpellType.Buff:
-                case (byte)eSpellType.CelerityBuff:
-                case (byte)eSpellType.ColdResistBuff:
-                case (byte)eSpellType.CombatSpeedBuff:
-                case (byte)eSpellType.ConstitutionBuff:
-                case (byte)eSpellType.CourageBuff:
-                case (byte)eSpellType.CrushSlashTrustBuff:
-                case (byte)eSpellType.DexterityBuff:
-                case (byte)eSpellType.DexterityQuicknessBuff:
-                case (byte)eSpellType.EffectivenessBuff:
-                case (byte)eSpellType.EnduranceRegenBuff:
-                case (byte)eSpellType.EnergyResistBuff:
-                case (byte)eSpellType.FatigueConsumptionBuff:
-                case (byte)eSpellType.FlexibleSkillBuff:
-                case (byte)eSpellType.HasteBuff:
-                case (byte)eSpellType.HealthRegenBuff:
-                case (byte)eSpellType.HeatColdMatterBuff:
-                case (byte)eSpellType.HeatResistBuff:
-                case (byte)eSpellType.HeroismBuff:
-                case (byte)eSpellType.KeepDamageBuff:
-                case (byte)eSpellType.MagicResistBuff:
-                case (byte)eSpellType.MatterResistBuff:
-                case (byte)eSpellType.MeleeDamageBuff:
-                case (byte)eSpellType.MesmerizeDurationBuff:
-                case (byte)eSpellType.MLABSBuff:
-                case (byte)eSpellType.PaladinArmorFactorBuff:
-                case (byte)eSpellType.ParryBuff:
-                case (byte)eSpellType.PowerHealthEnduranceRegenBuff:
-                case (byte)eSpellType.PowerRegenBuff:
-                case (byte)eSpellType.SavageCombatSpeedBuff:
-                case (byte)eSpellType.SavageCrushResistanceBuff:
-                case (byte)eSpellType.SavageDPSBuff:
-                case (byte)eSpellType.SavageParryBuff:
-                case (byte)eSpellType.SavageSlashResistanceBuff:
-                case (byte)eSpellType.SavageThrustResistanceBuff:
-                case (byte)eSpellType.SpiritResistBuff:
-                case (byte)eSpellType.StrengthBuff:
-                case (byte)eSpellType.StrengthConstitutionBuff:
-                case (byte)eSpellType.SuperiorCourageBuff:
-                case (byte)eSpellType.ToHitBuff:
-                case (byte)eSpellType.WeaponSkillBuff:
-                case (byte)eSpellType.DamageAdd:
-                case (byte)eSpellType.OffensiveProc:
-                case (byte)eSpellType.DefensiveProc:
-                case (byte)eSpellType.DamageShield:
-                case (byte)eSpellType.Bladeturn:
+                case eSpellType.AcuityBuff:
+                case eSpellType.AFHitsBuff:
+                case eSpellType.AllMagicResistBuff:
+                case eSpellType.ArmorAbsorptionBuff:
+                case eSpellType.ArmorFactorBuff:
+                case eSpellType.BodyResistBuff:
+                case eSpellType.BodySpiritEnergyBuff:
+                case eSpellType.Buff:
+                case eSpellType.CelerityBuff:
+                case eSpellType.ColdResistBuff:
+                case eSpellType.CombatSpeedBuff:
+                case eSpellType.ConstitutionBuff:
+                case eSpellType.CourageBuff:
+                case eSpellType.CrushSlashTrustBuff:
+                case eSpellType.DexterityBuff:
+                case eSpellType.DexterityQuicknessBuff:
+                case eSpellType.EffectivenessBuff:
+                case eSpellType.EnduranceRegenBuff:
+                case eSpellType.EnergyResistBuff:
+                case eSpellType.FatigueConsumptionBuff:
+                case eSpellType.FlexibleSkillBuff:
+                case eSpellType.HasteBuff:
+                case eSpellType.HealthRegenBuff:
+                case eSpellType.HeatColdMatterBuff:
+                case eSpellType.HeatResistBuff:
+                case eSpellType.HeroismBuff:
+                case eSpellType.KeepDamageBuff:
+                case eSpellType.MagicResistBuff:
+                case eSpellType.MatterResistBuff:
+                case eSpellType.MeleeDamageBuff:
+                case eSpellType.MesmerizeDurationBuff:
+                case eSpellType.MLABSBuff:
+                case eSpellType.PaladinArmorFactorBuff:
+                case eSpellType.ParryBuff:
+                case eSpellType.PowerHealthEnduranceRegenBuff:
+                case eSpellType.PowerRegenBuff:
+                case eSpellType.SavageCombatSpeedBuff:
+                case eSpellType.SavageCrushResistanceBuff:
+                case eSpellType.SavageDPSBuff:
+                case eSpellType.SavageParryBuff:
+                case eSpellType.SavageSlashResistanceBuff:
+                case eSpellType.SavageThrustResistanceBuff:
+                case eSpellType.SpiritResistBuff:
+                case eSpellType.StrengthBuff:
+                case eSpellType.StrengthConstitutionBuff:
+                case eSpellType.SuperiorCourageBuff:
+                case eSpellType.ToHitBuff:
+                case eSpellType.WeaponSkillBuff:
+                case eSpellType.DamageAdd:
+                case eSpellType.OffensiveProc:
+                case eSpellType.DefensiveProc:
+                case eSpellType.DamageShield:
+                case eSpellType.Bladeturn:
                     {
 						string target = spell.Target.ToUpper();
 
@@ -683,7 +683,7 @@ namespace DOL.AI.Brain
                 #endregion Buffs
 
                 #region Disease Cure/Poison Cure/Summon
-                case (byte)eSpellType.CureDisease:
+                case eSpellType.CureDisease:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (owner.IsDiseased)
@@ -715,7 +715,7 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-                case (byte)eSpellType.CurePoison:
+                case eSpellType.CurePoison:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (LivingIsPoisoned(owner))
@@ -747,19 +747,19 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-                case (byte)eSpellType.Summon:
+                case eSpellType.Summon:
 					Body.TargetObject = Body;
 					break;
                 #endregion
 
                 #region Heals
-                case (byte)eSpellType.CombatHeal:
-                case (byte)eSpellType.Heal:
-                case (byte)eSpellType.HealOverTime:
-                case (byte)eSpellType.MercHeal:
-                case (byte)eSpellType.OmniHeal:
-                case (byte)eSpellType.PBAoEHeal:
-                case (byte)eSpellType.SpreadHeal:
+                case eSpellType.CombatHeal:
+                case eSpellType.Heal:
+                case eSpellType.HealOverTime:
+                case eSpellType.MercHeal:
+                case eSpellType.OmniHeal:
+                case eSpellType.PBAoEHeal:
+                case eSpellType.SpreadHeal:
 					String spellTarget = spell.Target.ToUpper();
 					int bodyPercent = Body.HealthPercent;
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'

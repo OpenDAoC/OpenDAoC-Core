@@ -30,7 +30,7 @@ namespace DOL.GS
             PulseFreq = spell.Frequency;
             Caster = SpellHandler.Caster;
 
-            if (spell.SpellType is ((byte) eSpellType.SpeedDecrease) or ((byte) eSpellType.UnbreakableSpeedDecrease))
+            if (spell.SpellType is (eSpellType.SpeedDecrease) or (eSpellType.UnbreakableSpeedDecrease))
             {
                 TickInterval = 650;
                 NextTick = 1 + (Duration >> 1) + (int)StartTick;

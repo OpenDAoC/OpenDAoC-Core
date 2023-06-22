@@ -121,7 +121,7 @@ namespace DOL.GS
             {
                 if (EffectType == eEffect.MovementSpeedDebuff)
                 {
-                    //if (SpellHandler.Spell.SpellType == (byte)eSpellType.SpeedDecrease)
+                    //if (SpellHandler.Spell.SpellType == eSpellType.SpeedDecrease)
                     //{
                     //    new ECSImmunityEffect(Owner, SpellHandler, 60000, (int)PulseFreq, Effectiveness, Icon);
                     //}

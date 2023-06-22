@@ -537,7 +537,7 @@ namespace DOL.GS.Spells
             // Spell does not stop unless canceled manually by player
             //PulsingSpellEffect concEffect = FindPulsingSpellOnTarget(npc.Owner, this);
 
-            //var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == (byte)eSpellType.Charm).FirstOrDefault();
+            //var concEffect = npc.Owner.effectListComponent.GetSpellEffects(eEffect.Pulse).Where(e => e.SpellHandler.Spell.SpellType == eSpellType.Charm).FirstOrDefault();
 
             //if (concEffect != null)
             //    EffectService.RequestImmediateCancelConcEffect((ECSPulseEffect)concEffect);

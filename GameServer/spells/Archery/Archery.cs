@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
 			
 			// Is PS ?
 			GameSpellEffect Phaseshift = SpellHandler.FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == (byte)eSpellType.Mesmerize))
+			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == eSpellType.Mesmerize))
 			{
 				MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;

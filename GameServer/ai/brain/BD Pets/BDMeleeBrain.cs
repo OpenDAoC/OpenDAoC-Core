@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 			Body.TargetObject = null;
 			switch (spell.SpellType)
 			{
-				case (byte)eSpellType.Taunt:
+				case eSpellType.Taunt:
 					Body.TargetObject = lastTarget;
 					break;
 			}

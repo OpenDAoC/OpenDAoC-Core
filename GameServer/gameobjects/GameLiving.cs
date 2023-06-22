@@ -50,7 +50,7 @@ namespace DOL.GS
 
 		public int UsedConcentration;
 
-		public ConcurrentDictionary<byte, Spell> ActivePulseSpells { get; private set; } = new();
+		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; private set; } = new();
 
 		#region Combat
 		/// <summary>
@@ -2305,7 +2305,7 @@ namespace DOL.GS
             {
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
-				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != (byte)eSpellType.UnbreakableSpeedDecrease)
+				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
 
 				var ichor_effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);

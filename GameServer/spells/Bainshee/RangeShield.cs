@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
                     attackArgs.AttackData.Damage *= (int)value;
                     break;
                 case AttackData.eAttackType.Spell:
-                    if (attackArgs.AttackData.SpellHandler.Spell.SpellType == (byte)eSpellType.Archery)
+                    if (attackArgs.AttackData.SpellHandler.Spell.SpellType == eSpellType.Archery)
                     {
                         value = Spell.Value * .01;
                         attackArgs.AttackData.Damage *= (int)value;

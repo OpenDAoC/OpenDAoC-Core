@@ -72,9 +72,9 @@ namespace DOL.AI.Brain
 			switch (spell.SpellType)
 			{
 				#region Buffs
-				case (byte)eSpellType.CombatSpeedBuff:
-				case (byte)eSpellType.DamageShield:
-				case (byte)eSpellType.Bladeturn:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.DamageShield:
+				case eSpellType.Bladeturn:
 					{
 						if (!Body.IsAttacking)
 						{

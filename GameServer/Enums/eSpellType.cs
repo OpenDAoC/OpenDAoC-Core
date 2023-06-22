@@ -1,6 +1,6 @@
 namespace DOL.GS
 {
-    public enum eSpellType : byte
+    public enum eSpellType : short
     {
         SavageCombatSpeedBuff = 0,
         SavageEvadeBuff = 1,
