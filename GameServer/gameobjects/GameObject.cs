@@ -814,9 +814,12 @@ namespace DOL.GS
 				return false;
 
 			Region rgn = WorldMgr.GetRegion(regionID);
+
 			if (rgn == null)
 				return false;
-			if (rgn.GetZone(x, y) == null)
+
+			Zone newZone = rgn.GetZone(x, y);
+			if (newZone == null)
 				return false;
 
 			Notify(GameObjectEvent.MoveTo, this, new MoveToEventArgs(regionID, x, y, z, heading));
@@ -828,6 +831,7 @@ namespace DOL.GS
 			m_z = z;
 			_heading = heading;
 			CurrentRegionID = regionID;
+			CurrentZone = newZone;
 			return AddToWorld();
 		}
 

@@ -300,7 +300,7 @@ namespace DOL.GS
         /// <param name="x">X position</param>
         /// <param name="y">Y position</param>
         /// <returns>The SubZoneIndex</returns>
-        public short GetSubZoneIndex(int x, int y)
+        private short GetSubZoneIndex(int x, int y)
         {
             int xDiff = x - XOffset;
             int yDiff = y - YOffset;
@@ -317,9 +317,9 @@ namespace DOL.GS
             }
         }
 
-        public SubZone GetSubZone(int subZoneIndex)
+        private SubZone GetSubZone(int subZoneIndex)
         {
-            return _subZones[subZoneIndex];
+            return subZoneIndex < _subZones.Length && subZoneIndex > -1 ? _subZones[subZoneIndex] : null;
         }
 
         public void AddObjectToZone(GameObject gameObject)
@@ -342,7 +342,14 @@ namespace DOL.GS
                 return;
 
             SubZoneObject subZoneObject = new(gameObject, null);
-            SubZone subZone = _subZones[GetSubZoneIndex(gameObject.X, gameObject.Y)];
+            SubZone subZone = GetSubZone(GetSubZoneIndex(gameObject.X, gameObject.Y));
+
+            if (subZone == null)
+            {
+                log.Error($"Couldn't add an object to a zone (Object: {gameObject}) (Zone: {this})");
+                return;
+            }
+
             LightConcurrentLinkedList<SubZoneObject>.Node node = new(subZoneObject);
             ObjectChangingSubZone objectChangingSubZone = new(node, objectType, this, subZone);
             EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
@@ -397,7 +404,7 @@ namespace DOL.GS
                 for (int currentColumn = minColumn; currentColumn <= maxColumn; ++currentColumn)
                 {
                     currentSubZoneIndex = GetSubZoneOffset(currentLine, currentColumn);
-                    SubZone subZone = _subZones[currentSubZoneIndex];
+                    SubZone subZone = GetSubZone(currentSubZoneIndex);
                     objects = subZone.GetObjects(objectType);
 
                     if (objects.Count == 0)
