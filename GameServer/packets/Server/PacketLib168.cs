@@ -782,7 +782,7 @@ namespace DOL.GS.PacketHandler
 				if (npc.IsMoving && !npc.IsAtTargetPosition)
 				{
 					speed = npc.CurrentSpeed;
-					if (npc.IsTargetPositionSet)
+					if (npc.IsTargetPositionValid)
 					{
 						Zone tz = npc.CurrentRegion.GetZone(npc.TargetPosition.X, npc.TargetPosition.Y);
 						if (tz != null)

@@ -770,7 +770,7 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_x;
 
-				if (IsTargetPositionSet)
+				if (IsTargetPositionValid)
 				{
 					long expectedDistance = FastMath.Abs((long) TargetPosition.X - m_x);
 
@@ -801,7 +801,7 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_y;
 
-				if (IsTargetPositionSet)
+				if (IsTargetPositionValid)
 				{
 					long expectedDistance = FastMath.Abs((long) TargetPosition.Y - m_y);
 
@@ -832,7 +832,7 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_z;
 
-				if (IsTargetPositionSet)
+				if (IsTargetPositionValid)
 				{
 					long expectedDistance = FastMath.Abs(TargetPosition.Z - m_z);
 
@@ -936,7 +936,7 @@ namespace DOL.GS
 		}
 		public bool IsMovingOnPath => movementComponent.IsMovingOnPath;
 		public bool IsNearSpawn => movementComponent.IsNearSpawn;
-		public bool IsTargetPositionSet => movementComponent.IsTargetPositionSet;
+		public bool IsTargetPositionValid => movementComponent.IsTargetPositionValid;
 		public bool IsAtTargetPosition => movementComponent.IsAtTargetPosition;
 		public bool CanRoam => movementComponent.CanRoam;
 

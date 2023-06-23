@@ -25,7 +25,10 @@ namespace DOL.GS
         private Action<NpcMovementComponent> _goToNextPathingNodeCallback;
 
         public new GameNPC Owner { get; private set; }
-        public IPoint3D TargetPosition { get; private set; } = new Point3D();
+        // 'TargetPosition' is accessed from multiple threads simultaneously (from the current NPC being updated, others NPCs checking around them, and the world update thread).
+        // Actual synchronization would be expensive, so instead threads are expected to check 'IsTargetPositionValid' before using it, which is set to false when a NPC stops.
+        // This however means 'TargetPosition' might be slightly outdated.
+        public IPoint3D TargetPosition { get; private set; }
         public GameObject FollowTarget { get; private set; }
         public int FollowMaxDist { get; private set; } = 3000;
         public int FollowMinDist { get; private set; } = 100;
@@ -33,11 +36,11 @@ namespace DOL.GS
         public PathPoint CurrentWaypoint { get; set; }
         public bool IsReturningHome { get; private set; }
         public bool IsReturningToSpawnPoint { get; private set; }
+        public bool IsTargetPositionValid { get; private set; }
         public int RoamingRange { get; set; }
         public bool IsMovingOnPath => IsSet(MovementType.ON_PATH);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
-        public bool IsTargetPositionSet => TargetPosition.X != 0 || TargetPosition.Y != 0 || TargetPosition.X != 0;
-        public bool IsAtTargetPosition => Owner.X == TargetPosition.X && Owner.Y == TargetPosition.Y && Owner.Z == TargetPosition.Z;
+        public bool IsAtTargetPosition => IsTargetPositionValid && TargetPosition.X == Owner.X && TargetPosition.Y == Owner.Y && TargetPosition.Z == Owner.Z;
         public bool CanRoam => ServerProperties.Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
 
         public NpcMovementComponent(GameNPC npcOwner) : base(npcOwner)
@@ -90,6 +93,12 @@ namespace DOL.GS
             if (speed <= 0)
                 return;
 
+            if (targetPosition == null)
+            {
+                UpdateMovement(null, speed);
+                return;
+            }
+
             int ticksToArrive = Owner.GetDistanceTo(targetPosition) * 1000 / speed;
 
             if (ticksToArrive > 0)
@@ -111,6 +120,14 @@ namespace DOL.GS
 
         public bool PathTo(IPoint3D targetPosition, short speed)
         {
+            // Pathing with no target position isn't currently supported.
+            if (targetPosition == null)
+            {
+                _movementType &= ~MovementType.PATHING;
+                WalkTo(targetPosition, speed);
+                return false;
+            }
+
             Vector3 dest = new(targetPosition.X, targetPosition.Y, targetPosition.Z);
 
             if (_pathCalculator == null || !PathCalculator.ShouldPath(Owner, dest))
@@ -154,7 +171,7 @@ namespace DOL.GS
             StopFollowing();
             StopMovingOnPath();
             CancelReturnToSpawnPoint();
-            UpdateMovement(new Point3D(), 0);
+            UpdateMovement(null, 0);
         }
 
         public void Follow(GameObject target)
@@ -269,7 +286,7 @@ namespace DOL.GS
         {
             Owner.NeedsBroadcastUpdate = true;
 
-            if (IsTargetPositionSet)
+            if (IsTargetPositionValid)
             {
                 double dist = Owner.GetDistanceTo(TargetPosition);
 
@@ -367,7 +384,7 @@ namespace DOL.GS
             if (distance <= minAllowedFollowDistance)
             {
                 if (IsMoving)
-                    UpdateMovement(new Point3D(), 0);
+                    UpdateMovement(null, 0);
 
                 TurnTo(FollowTarget);
                 return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
@@ -391,8 +408,7 @@ namespace DOL.GS
         private void OnArrival()
         {
             if (IsMoving)
-                UpdateMovement(new Point3D(), 0);
-
+                UpdateMovement(null, 0);
             if (IsSet(MovementType.PATHING))
             {
                 _goToNextPathingNodeCallback(this);
@@ -477,7 +493,15 @@ namespace DOL.GS
             Owner.Y = Owner.Y;
             Owner.Z = Owner.Z;
             MovementStartTick = GameLoop.GameLoopTime;
-            TargetPosition = targetPosition;
+
+            if (targetPosition == null)
+                IsTargetPositionValid = false;
+            else
+            {
+                IsTargetPositionValid = true;
+                TargetPosition = targetPosition;
+            }
+
             CurrentSpeed = speed;
             UpdateTickSpeed();
         }
