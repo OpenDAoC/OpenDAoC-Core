@@ -275,6 +275,8 @@ namespace DOL.GS
 
                 if (target.HasValue)
                     PathOrWalkTo(new Point3D(target.Value.X, target.Value.Y, target.Value.Z), speed);
+
+                return;
             }
 
             double targetX = Owner.SpawnPoint.X + Util.Random(-maxRoamingRadius, maxRoamingRadius);
@@ -409,6 +411,7 @@ namespace DOL.GS
         {
             if (IsMoving)
                 UpdateMovement(null, 0);
+
             if (IsSet(MovementType.PATHING))
             {
                 _goToNextPathingNodeCallback(this);

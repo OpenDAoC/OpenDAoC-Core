@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -404,7 +405,7 @@ namespace DOL.GS
                 for (int currentColumn = minColumn; currentColumn <= maxColumn; ++currentColumn)
                 {
                     currentSubZoneIndex = GetSubZoneOffset(currentLine, currentColumn);
-                    SubZone subZone = GetSubZone(currentSubZoneIndex);
+                    SubZone subZone = _subZones[currentSubZoneIndex];
                     objects = subZone.GetObjects(objectType);
 
                     if (objects.Count == 0)
