@@ -152,17 +152,19 @@ namespace DOL.GS
 
             m_owner.TempProperties.setProperty(LAST_ATTACK_DATA, mainHandAD);
 
-            // Notify the target of our attack (sends damage messages, should be before damage)
-            // ...but certainly not if the attack never took place, like when the living is out of range.
-            if (mainHandAD.Target != null && 
-                mainHandAD.AttackResult != eAttackResult.OutOfRange && 
-                mainHandAD.AttackResult != eAttackResult.TargetNotVisible &&
-                mainHandAD.AttackResult != eAttackResult.NotAllowed_ServerRules &&
-                mainHandAD.AttackResult != eAttackResult.TargetDead)
+            if (mainHandAD.Target == null ||
+                mainHandAD.AttackResult == eAttackResult.OutOfRange ||
+                mainHandAD.AttackResult == eAttackResult.TargetNotVisible ||
+                mainHandAD.AttackResult == eAttackResult.NotAllowed_ServerRules ||
+                mainHandAD.AttackResult == eAttackResult.TargetDead)
             {
-                mainHandAD.Target.attackComponent.AddAttacker(m_owner);
-                mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
+                m_owner.SendAttackingCombatMessages(mainHandAD);
+                return;
             }
+
+            // Notify the target of our attack (sends damage messages, should be before damage)
+            mainHandAD.Target.attackComponent.AddAttacker(m_owner);
+            mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
 
             // Check if Reflex Attack RA should apply. This is checked once here and cached since it is used multiple times below (every swing triggers Reflex Attack).
             bool targetHasReflexAttackRA = false;
