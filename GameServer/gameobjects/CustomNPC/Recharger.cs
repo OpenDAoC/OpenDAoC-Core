@@ -34,8 +34,8 @@ public class Recharger : GameNPC
         if (!base.Interact(player))
             return false;
 
-        TurnTo(player.X, player.Y);
-        
+        TurnTo(player, 5000);
+
         // Message: "I can recharge weapons or armor for you, Just hand me the item you want recharged and I'll see what I can do, for a small fee."
         SayTo(player, eChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.Interact"));

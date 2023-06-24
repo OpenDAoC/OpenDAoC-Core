@@ -2766,7 +2766,7 @@ namespace DOL.GS
 			if (target == null)
 				return;
 
-			TurnTo(target);
+			TurnTo(target, 10000);
 			string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true, target.Client.Account.Language, this), message);
 
 			switch (loc)

@@ -6,9 +6,7 @@ namespace DOL.GS
     public class MovementComponent
     {
         private int _turningDisabledCount;
-        private ushort _oldHeading;
-        private long _oldMovementStartTick;
-        private long _restoreOldHeadingAtTick;
+        private AuxECSGameTimer _resetHeadingAction;
 
         public GameLiving Owner { get; private set; }
         public double TickSpeedX { get; private set; }
@@ -36,11 +34,7 @@ namespace DOL.GS
                 return new MovementComponent(gameLiving);
         }
 
-        public virtual void Tick(long tick)
-        {
-            if (_restoreOldHeadingAtTick <= tick)
-                RestoreOldHeading();
-        }
+        public virtual void Tick(long tick) { }
 
         public virtual void DisableTurning(bool add)
         {
@@ -73,14 +67,13 @@ namespace DOL.GS
 
             if (Owner.Heading != heading)
             {
-                Owner.Heading = heading;
-
-                if (duration > 0)
+                if (duration > 0 && _resetHeadingAction == null)
                 {
-                    _oldHeading = heading;
-                    _oldMovementStartTick = MovementStartTick;
-                    _restoreOldHeadingAtTick = GameLoop.GameLoopTime + duration;
+                    _resetHeadingAction = new ResetHeadingAction(Owner, this, () => _resetHeadingAction = null);
+                    _resetHeadingAction.Start(duration);
                 }
+
+                Owner.Heading = heading;
             }
         }
 
@@ -104,15 +97,36 @@ namespace DOL.GS
             TickSpeedZ = z;
         }
 
-        private void RestoreOldHeading()
+        private class ResetHeadingAction : AuxRegionECSAction
         {
-            if (_oldMovementStartTick == MovementStartTick &&
-                !IsMoving &&
-                Owner.IsAlive &&
-                Owner.ObjectState == eObjectState.Active &&
-                !Owner.attackComponent.AttackState)
+            private MovementComponent _movementComponent;
+            private ushort _oldHeading;
+            private long _oldMovementStartTick;
+            private Action _onCompletion;
+
+            public ResetHeadingAction(GameObject actionSource, MovementComponent movementComponent, Action onCompletion) : base(actionSource)
             {
-                TurnTo(_oldHeading);
+                _movementComponent = movementComponent;
+                _oldHeading = actionSource.Heading;
+                _oldMovementStartTick = movementComponent.MovementStartTick;
+                _onCompletion = onCompletion;
+            }
+
+            protected override int OnTick(AuxECSGameTimer timer)
+            {
+                GameLiving owner = _movementComponent.Owner;
+
+                if (_oldMovementStartTick == _movementComponent.MovementStartTick &&
+                    !_movementComponent.IsMoving &&
+                    owner.IsAlive &&
+                    owner.ObjectState == eObjectState.Active &&
+                    !owner.attackComponent.AttackState)
+                {
+                    _movementComponent.TurnTo(_oldHeading);
+                }
+
+                _onCompletion();
+                return 0;
             }
         }
     }
