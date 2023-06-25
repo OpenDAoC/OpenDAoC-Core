@@ -80,6 +80,8 @@ namespace DOL.GS
 
             if (Properties.WORLD_OBJECT_UPDATE_INTERVAL > 0)
                 UpdateHouses(player, tick);
+
+            player.LastWorldUpdate = tick;
         }
 
         private static void UpdateNpcs(GamePlayer player, long tick)
