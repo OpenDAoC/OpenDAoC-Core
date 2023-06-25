@@ -43,6 +43,7 @@ namespace DOL.GS
             _stopwatch.Restart();
             // ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
 
+            PlayerService.Tick(GameLoopTime);
             AuxTimerService.Tick(GameLoopTime);
 
             // ECS.Debug.Diagnostics.Tick();

@@ -16,30 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Reflection;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.ObjectUpdateRequest, "Update all GameObjects in Playerrange", eClientStatus.PlayerInGame)]
-	public class ObjectUpdateRequestHandler : IPacketHandler
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		public void HandlePacket(GameClient client, GSPacketIn packet)
-		{
-			foreach (GameStaticItem item in client.Player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-				client.Out.SendObjectCreate(item);
-
-			foreach (GameDoorBase door in client.Player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
-				client.Player.SendDoorUpdate(door);
-
-			//housing
-			if (client.Player.CurrentRegion.HousingEnabled)
-				WorldUpdateThread.UpdatePlayerHousing(client.Player, GameLoop.GetCurrentTime()+60000);
-		}
-	}
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.ObjectUpdateRequest, "Update all GameObjects in Playerrange", eClientStatus.PlayerInGame)]
+    public class ObjectUpdateRequestHandler : IPacketHandler
+    {
+        public void HandlePacket(GameClient client, GSPacketIn packet)
+        {
+            // Will be picked up by the player service.
+            client.Player.LastWorldUpdate = 0;
+        }
+    }
 }

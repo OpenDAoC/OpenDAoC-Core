@@ -198,12 +198,6 @@ namespace DOL.GS
 		private static Timer m_pingCheckTimer;
 
 		/// <summary>
-		/// This thread is used to update the NPCs around a player
-		/// as fast as possible
-		/// </summary>
-		private static Thread m_WorldUpdateThread;
-
-		/// <summary>
 		/// This constant defines the day constant
 		/// </summary>
 		private const int DAY = 86400000;
@@ -515,12 +509,6 @@ namespace DOL.GS
 					log.Info("Total Bind Points: " + bindpoints);
 				}
 
-				m_WorldUpdateThread = new Thread(new ThreadStart(WorldUpdateThread.WorldUpdateThreadStart));
-				m_WorldUpdateThread.Priority = ThreadPriority.AboveNormal;
-				m_WorldUpdateThread.Name = "NpcUpdate";
-				m_WorldUpdateThread.IsBackground = true;
-				m_WorldUpdateThread.Start();
-
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
 				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
@@ -701,18 +689,6 @@ namespace DOL.GS
 		}
 #endif
 
-		public static string GetFormattedWorldUpdateStackTrace()
-        {
-			return Util.GetFormattedStackTraceFrom(m_WorldUpdateThread);
-        }
-
-		private static uint m_lastWorldObjectUpdateTick = 0;
-		
-		public static uint LastWorldObjectUpdateTick {
-			get { return m_lastWorldObjectUpdateTick; }
-			set { m_lastWorldObjectUpdateTick = value; }
-		}
-
 		/// <summary>
 		/// Cleans up and stops all the RegionMgr tasks inside
 		/// the regions.
@@ -726,15 +702,11 @@ namespace DOL.GS
 					m_pingCheckTimer.Dispose();
 					m_pingCheckTimer = null;
 				}
+
 				if (m_dayResetTimer != null)
 				{
 					m_dayResetTimer.Dispose();
 					m_dayResetTimer = null;
-				}
-				if (m_WorldUpdateThread != null)
-				{
-					m_WorldUpdateThread.Interrupt();
-					m_WorldUpdateThread = null;
 				}
 
 				//Stop all mobMgrs

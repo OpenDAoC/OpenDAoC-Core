@@ -13,7 +13,7 @@ namespace DOL.GS
     public static class NpcService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "NPCThinkService";
+        private const string SERVICE_NAME = "NpcService";
 
         private static int _nonNullBrainCount;
         private static int _nullBrainCount;
@@ -65,8 +65,8 @@ namespace DOL.GS
                         brain.Think();
                         long stopTick = GameLoop.GetCurrentTime();
 
-                        if ((stopTick - startTick) > 25 && brain != null)
-                            log.Warn($"Long NPCThink for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
+                        if ((stopTick - startTick) > 25)
+                            log.Warn($"Long Think for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
                         brain.LastThinkTick = tick;
 
@@ -85,7 +85,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in NPC Think: {e}");
+                    log.Error($"Critical error encountered: {e}");
                 }
             });
 
