@@ -56,7 +56,7 @@ namespace DOL.GS
                     long stopTick = GameLoop.GetCurrentTime();
 
                     if ((stopTick - startTick) > 25)
-                        log.Warn($"Long NPCThink for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                        log.Warn($"Long UpdateWorld for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {
