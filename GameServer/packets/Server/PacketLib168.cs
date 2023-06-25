@@ -708,7 +708,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(playerToCreate.CurrentRegionID, (ushort)playerToCreate.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(playerToCreate.CurrentRegionID, (ushort)playerToCreate.ObjectID)] = GameLoop.GetCurrentTime();
 
 			//if (GameServer.ServerRules.GetColorHandling(m_gameClient) == 1) // PvP
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild);
@@ -852,7 +852,7 @@ namespace DOL.GS.PacketHandler
 				SendUDP(pak);
 			}
 			// Update Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
 
 			if (obj is GameNPC)
 			{
@@ -962,7 +962,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendDebugMode(bool on)
@@ -2156,7 +2156,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(player.CurrentRegionID, (ushort)player.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(player.CurrentRegionID, (ushort)player.ObjectID)] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendUpdatePlayer()
@@ -3220,7 +3220,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update cache
-			m_gameClient.HouseUpdateArray[new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber)] = GameTimer.GetTickCount();
+			m_gameClient.HouseUpdateArray[new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber)] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendRemoveHouse(House house)
@@ -3280,7 +3280,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update cache
-			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameTimer.GetTickCount());
+			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameLoop.GetCurrentTime());
 		}
 
 		public virtual void SendGarden(House house, int i)
@@ -3299,7 +3299,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update cache
-			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameTimer.GetTickCount());
+			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameLoop.GetCurrentTime());
 		}
 
 		public virtual void SendHouseOccupied(House house, bool flagHouseOccuped)
@@ -3314,7 +3314,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update cache
-			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameTimer.GetTickCount());
+			m_gameClient.HouseUpdateArray.UpdateIfExists(new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber), GameLoop.GetCurrentTime());
 		}
 
 		public virtual void SendEnterHouse(House house)
@@ -3519,7 +3519,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)

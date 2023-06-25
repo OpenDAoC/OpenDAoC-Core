@@ -28,9 +28,9 @@ namespace DOL.GS
                     if (a == null)
                         return;
 
-                    long startTick = GameTimer.GetTickCount();
+                    long startTick = GameLoop.GetCurrentTime();
                     a.Tick(tick);
-                    long stopTick = GameTimer.GetTickCount();
+                    long stopTick = GameLoop.GetCurrentTime();
 
                     if ((stopTick - startTick) > 25)
                         log.Warn($"Long AttackComponent.Tick for {a.owner.Name}({a.owner.ObjectID}) Time: {stopTick - startTick}ms");

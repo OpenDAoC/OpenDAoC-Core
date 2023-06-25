@@ -16,9 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Reflection;
-
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -41,7 +39,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			//housing
 			if (client.Player.CurrentRegion.HousingEnabled)
-				WorldUpdateThread.UpdatePlayerHousing(client.Player, GameTimer.GetTickCount()+60000);
+				WorldUpdateThread.UpdatePlayerHousing(client.Player, GameLoop.GetCurrentTime()+60000);
 		}
 	}
 }

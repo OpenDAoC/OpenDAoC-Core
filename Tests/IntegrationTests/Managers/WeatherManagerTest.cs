@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 
+using System;
 using DOL.GS;
 using DOL.GS.Scheduler;
 using NUnit.Framework;
@@ -52,7 +52,7 @@ namespace DOL.Tests.Integration.Managers
 		{
 			DOL.GS.ServerProperties.Properties.DISABLED_REGIONS = string.Empty;
 			DOL.GS.ServerProperties.Properties.DISABLED_EXPANSIONS = string.Empty;
-			var region = Region.Create(new GameTimer.TimeManager("TestWeather"), new RegionData { Id = 1 });
+			var region = Region.Create(new RegionData { Id = 1 });
 			region.Zones.Add(new Zone(region, 1, string.Empty, 0, 0, 65535, 65535, 1, false, 0, false, 0, 0, 0, 0, 1));
 			return region;
 		}

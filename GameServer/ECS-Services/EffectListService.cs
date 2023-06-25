@@ -28,9 +28,9 @@ namespace DOL.GS
                 if (e == null)
                     return;
 
-                long startTick = GameTimer.GetTickCount();
+                long startTick = GameLoop.GetCurrentTime();
                 HandleEffects(e, tick);
-                long stopTick = GameTimer.GetTickCount();
+                long stopTick = GameLoop.GetCurrentTime();
 
                 if ((stopTick - startTick) > 25)
                     log.Warn($"Long EffectListService.Tick for {e.Owner.Name}({e.Owner.ObjectID}) Time: {stopTick - startTick}ms");

@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Reflection;
-
-using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -525,10 +522,7 @@ namespace DOL.GS.Quests
     //system I've developed, and this script was partly finished so I adopted it ^^. 
     public class TaskDungeonInstance : Instance
     {
-        public TaskDungeonInstance(ushort ID, GameTimer.TimeManager time, RegionData dat)
-            : base(ID, time, dat)
-        {
-        }
+        public TaskDungeonInstance(ushort ID, RegionData dat) : base(ID, dat) { }
 
         private TaskDungeonMission m_mission;
         /// <summary>

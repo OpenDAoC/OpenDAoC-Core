@@ -33,7 +33,7 @@ namespace DOL.GS
                 if (effect == null)
                     return;
 
-                long startTick = GameTimer.GetTickCount();
+                long startTick = GameLoop.GetCurrentTime();
 
                 if (effect.CancelEffect || effect.IsDisabled)
                     HandleCancelEffect(effect);
@@ -42,7 +42,7 @@ namespace DOL.GS
 
                 EntityManager.Remove(EntityManager.EntityType.Effect, effect);
 
-                long stopTick = GameTimer.GetTickCount();
+                long stopTick = GameLoop.GetCurrentTime();
 
                 if ((stopTick - startTick) > 25 )
                     log.Warn($"Long EffectService.Tick for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");

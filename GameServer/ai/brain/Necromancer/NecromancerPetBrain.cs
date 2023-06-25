@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -546,7 +547,7 @@ namespace DOL.AI.Brain
         {
             if (GS.ServerProperties.Properties.ENABLE_DEBUG)
             {
-                long tick = GameTimer.GetTickCount();
+                long tick = GameLoop.GetCurrentTime();
                 long seconds = tick / 1000;
                 long minutes = seconds / 60;
 

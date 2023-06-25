@@ -48,7 +48,7 @@ namespace DOL.GS
             // ECS.Debug.Diagnostics.Tick();
             // ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
 
-            GameLoopTime = GameTimer.GetTickCount();
+            GameLoopTime = GameLoop.GetCurrentTime();
             _stopwatch.Stop();
 
             float elapsed = (float)_stopwatch.Elapsed.TotalMilliseconds;

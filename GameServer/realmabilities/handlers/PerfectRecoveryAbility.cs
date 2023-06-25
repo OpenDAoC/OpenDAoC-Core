@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Specialized;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.Events;
 using DOL.Database;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -100,10 +96,10 @@ namespace DOL.GS.RealmAbilities
         protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
         {
             //DOLConsole.WriteLine("resurrect responce: " + response);
-            GameTimer resurrectExpiredTimer = null;
+            ECSGameTimer resurrectExpiredTimer = null;
             lock (m_resTimersByLiving.SyncRoot)
             {
-                resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[player];
+                resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
                 m_resTimersByLiving.Remove(player);
             }
             if (resurrectExpiredTimer != null)
@@ -168,10 +164,10 @@ namespace DOL.GS.RealmAbilities
 			resurrectedPlayer.MoveTo(rezzer.CurrentRegionID, rezzer.X, rezzer.Y, rezzer.Z, rezzer.Heading);
 
             GameLiving living = resurrectedPlayer as GameLiving;
-            GameTimer resurrectExpiredTimer = null;
+            ECSGameTimer resurrectExpiredTimer = null;
             lock (m_resTimersByLiving.SyncRoot)
             {
-                resurrectExpiredTimer = (GameTimer)m_resTimersByLiving[living];
+                resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
                 m_resTimersByLiving.Remove(living);
             }
             if (resurrectExpiredTimer != null)

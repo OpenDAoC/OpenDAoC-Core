@@ -16,21 +16,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Network;
-
 using log4net;
 
 namespace DOL.GS
@@ -277,7 +276,7 @@ namespace DOL.GS
 	        m_tooltipRequestTimes.TryAdd(type, new ConcurrentDictionary<int, long>());
 
 			// Queries cleanup
-			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameTimer.GetTickCount()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
+			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GetCurrentTime()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
 			{
 				long dummy;
 				m_tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out dummy);
@@ -288,7 +287,7 @@ namespace DOL.GS
 				return false;
 		
 			// Query register
-	        m_tooltipRequestTimes[type].TryAdd(id, GameTimer.GetTickCount()+3600000);
+	        m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GetCurrentTime()+3600000);
 	        return true;
 		}
 

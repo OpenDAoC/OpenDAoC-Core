@@ -61,9 +61,9 @@ namespace DOL.GS
                             return;
                         }
 
-                        long startTick = GameTimer.GetTickCount();
+                        long startTick = GameLoop.GetCurrentTime();
                         brain.Think();
-                        long stopTick = GameTimer.GetTickCount();
+                        long stopTick = GameLoop.GetCurrentTime();
 
                         if ((stopTick - startTick) > 25 && brain != null)
                             log.Warn($"Long NPCThink for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");

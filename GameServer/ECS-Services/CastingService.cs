@@ -28,9 +28,9 @@ namespace DOL.GS
                     if (c == null)
                         return;
 
-                    long startTick = GameTimer.GetTickCount();
+                    long startTick = GameLoop.GetCurrentTime();
                     c.Tick(tick);
-                    long stopTick = GameTimer.GetTickCount();
+                    long stopTick = GameLoop.GetCurrentTime();
 
                     if ((stopTick - startTick) > 25)
                         log.Warn($"Long CastingComponent.Tick for: {c.Owner.Name}({c.Owner.ObjectID}) Spell: {c.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");

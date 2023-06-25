@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Threading;
 using DOL.Database;
@@ -44,7 +45,7 @@ namespace DOL.Tests.Integration.Server
 			data.Name = "reg data1";
 			data.Description = "reg test1";
 			data.Mobs = new Mob[0];
-			m_reg = WorldMgr.RegisterRegion(new GameTimer.TimeManager("RegTest1"), data);
+			m_reg = WorldMgr.RegisterRegion(data);
 			//WorldMgr.RegisterZone(5555, 5555, "test zone1", 0, 0, 16, 16);
 			m_reg.StartRegionMgr();
 		}

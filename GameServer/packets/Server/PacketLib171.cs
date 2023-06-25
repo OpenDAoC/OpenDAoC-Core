@@ -140,7 +140,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameTimer.GetTickCount();
+			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
 		}
 
 		public override void SendNPCCreate(GameNPC npc)

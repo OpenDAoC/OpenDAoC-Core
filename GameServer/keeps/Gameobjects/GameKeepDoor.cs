@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -615,7 +615,7 @@ namespace DOL.GS.Keeps
 			m_repairTimer.Start(repairInterval);
 			// Skip the first tick to avoid repairing on server start.
 			// Can't rely on GameLoop.GameLoopTime since it's 0. Is there a better way?
-			m_repairTimer.StartTick = GameTimer.GetTickCount() + repairInterval;
+			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + repairInterval;
 		}
 
 		public void DeleteObject()

@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Collections;
 
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -818,7 +816,7 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameTimer timer = (GameTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
+            ECSGameTimer timer = (ECSGameTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
             effect.Owner.TempProperties.removeProperty(effect);
             timer.Stop();
 

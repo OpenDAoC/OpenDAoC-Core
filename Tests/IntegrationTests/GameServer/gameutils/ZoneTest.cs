@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.GS;
 using NUnit.Framework;
@@ -73,7 +74,7 @@ namespace DOL.Tests.Integration.Server
 		// TODO(Blasnoc) these nullchecks are temporary fixes until I figure out the disparities between
 		// the appveyor env and local.
 		if(WorldMgr.GetRegion(testRegionData.Id) == null)
-			WorldMgr.RegisterRegion(new GameTimer.TimeManager("TEST"), testRegionData);
+			WorldMgr.RegisterRegion(testRegionData);
 		if(WorldMgr.GetZone(testZoneData.ZoneID) == null)
 			WorldMgr.RegisterZone(testZoneData, 0, 0, "TEST", 1, 1, 1, 1, (byte)eRealm.None);
 	}

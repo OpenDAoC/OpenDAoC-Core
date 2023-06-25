@@ -1,10 +1,9 @@
-﻿using DOL.Database;
-using DOL.Database.Transaction;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.Database;
+using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.Tests.Unit.Gameserver
 {
@@ -25,30 +24,11 @@ namespace DOL.Tests.Unit.Gameserver
 
     public class FakeRegion : Region
     {
-        public long fakeElapsedTime { get { return fakeTimeManager.fakeTime; } set { fakeTimeManager.fakeTime = value; } }
-        public FakeTimeManager fakeTimeManager = new FakeTimeManager();
+        public long FakeElapsedTime;
 
-        public FakeRegion() : base(null, new RegionData()) { }
-
-        public override long Time => TimeManager.CurrentTime;
+        public FakeRegion() : base(new RegionData()) { }
 
         public override ushort ID => 0;
-
-        public override GameTimer.TimeManager TimeManager => fakeTimeManager;
-    }
-
-    public class FakeTimeManager : GameTimer.TimeManager
-    {
-        public long fakeTime = -1;
-
-        public FakeTimeManager() : base("FakeTimer") { }
-
-        public override long CurrentTime => fakeTime;
-        public override bool Start() => true;
-        protected override void InsertTimer(GameTimer t, int offsetTick) { }
-        protected override void RemoveTimer(GameTimer t) { }
-
-        protected override void Init() { }
     }
 
     public class FakeServer : GameServer
