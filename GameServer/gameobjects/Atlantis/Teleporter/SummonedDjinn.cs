@@ -16,9 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DOL.Events;
 
 namespace DOL.GS
@@ -173,7 +172,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for summoning.
         /// </summary>
-        private class SummonTimer : GameTimer
+        private class SummonTimer : RegionECSAction
         {
             private GameObject m_owner;
             private int m_maxTicks = 0;
@@ -185,8 +184,7 @@ namespace DOL.GS
             /// Constructs a new SummonTimer.
             /// </summary>
             /// <param name="owner">The owner of this timer (the djinn).</param>
-            public SummonTimer(GameObject owner)
-                : base(owner.CurrentRegion.TimeManager)
+            public SummonTimer(GameObject owner) : base(owner)
             {
                 m_owner = owner;
             }
@@ -209,9 +207,8 @@ namespace DOL.GS
             {
                 if (IsRunning)
                 {
-                    this.Stop();
                     m_ticks = 0;
-                    this.Start(100);
+                    Start(100);
                 }
             }
 
@@ -229,14 +226,14 @@ namespace DOL.GS
                 m_smoke = smoke;
                 m_event = e;
                 m_ticks = 0;
-                this.Start(100);
+                Start(100);
                 IsRunning = true;
             }
 
             /// <summary>
             /// Called on every timer tick.
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 m_ticks++;
 
@@ -249,14 +246,14 @@ namespace DOL.GS
                         foreach (GamePlayer player in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             player.Out.SendSpellEffectAnimation(m_owner, m_owner, SummonSpellEffect, 0, false, 0x01);
                     }
+                    return Interval;
                 }
                 else
                 {
                     // We're done, stop the timer and notify owner.
-
-                    this.Stop();
                     IsRunning = false;
                     m_owner.Notify(m_event);
+                    return 0;
                 }
             }
         }

@@ -80,12 +80,6 @@ namespace DOL.GS.ServerProperties
 		public static bool ENABLE_DEBUG;
 
 		/// <summary>
-		/// Whether to use the sync timer utility or not
-		/// </summary>
-		[ServerProperty("system", "use_sync_timer", "Shall we use the sync timers utility?", true)]
-		public static bool USE_SYNC_UTILITY;
-
-		/// <summary>
 		/// Ignore too long outcoming packet or not
 		/// </summary>
 		[ServerProperty("system", "ignore_too_long_outcoming_packet", "Shall we ignore too long outcoming packet ?", false)]

@@ -17,18 +17,9 @@
  *
  */
 
-//Instance devised by Dinberg 
-//     - there will probably be questions, direct them to dinberg_darktouch@hotmail.co.uk ;)
 using System;
-using System.Text;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using log4net;
-
-using DOL.GS;
 using DOL.Database;
 
 namespace DOL.GS
@@ -48,7 +39,7 @@ namespace DOL.GS
         /// Creates an instance object. This shouldn't be used directly - Please use WorldMgr.CreateInstance
         /// to create an instance.
         /// </summary>
-        public BaseInstance(ushort ID, GameTimer.TimeManager time, RegionData data) :base(time, data)
+        public BaseInstance(ushort ID, RegionData data) : base(data)
         {
             m_regionID = ID;
             m_skinID = data.Id;
@@ -299,7 +290,7 @@ namespace DOL.GS
 				m_autoCloseRegionTimer = null;
 			}
 
-            m_autoCloseRegionTimer = new AutoCloseRegionTimer(TimeManager, this);
+            m_autoCloseRegionTimer = new AutoCloseRegionTimer(null, this);
             m_autoCloseRegionTimer.Interval = minutes * 60000;
             m_autoCloseRegionTimer.Start(minutes * 60000);
         }
@@ -324,7 +315,7 @@ namespace DOL.GS
 				m_delayCloseRegionTimer = null;
 			}
 
-			m_delayCloseRegionTimer = new DelayCloseRegionTimer(TimeManager, this);
+			m_delayCloseRegionTimer = new DelayCloseRegionTimer(null, this);
 			m_delayCloseRegionTimer.Interval = minutes * 60000;
 			m_delayCloseRegionTimer.Start(minutes * 60000);
 		}
@@ -332,10 +323,9 @@ namespace DOL.GS
 		/// <summary>
 		/// Automated Closing Timer for Instances
 		/// </summary>
-		protected class AutoCloseRegionTimer : GameTimer
+		protected class AutoCloseRegionTimer : RegionECSAction
         {
-            public AutoCloseRegionTimer(TimeManager time, BaseInstance i)
-                : base(time)
+            public AutoCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
             {
                 m_instance = i;
             }
@@ -345,19 +335,19 @@ namespace DOL.GS
 
             //When the timer ticks, it means there are no players in the region.
             //This, we remove the instance.
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 if (m_instance == null)
                 {
                     log.Warn("RegionRemovalTimer is not being stopped once the instance is destroyed!");
                     Stop();
-                    return;
+                    return 0;
                 }
+
                 //If there are players, someone has callously forgotten to include
                 //a base in one of their OnPlayerEnter/Exit overrides.
                 //When this is a case, keep the timer ticking - we will eventually have it cleanup the instance,
                 //it just wont be runnign at optimum speed.
-
                 if (WorldMgr.GetClientsOfRegion(m_instance.ID).Count > 0)
                     log.Warn("Players were still in the region on AutoRemoveregionTimer Tick! Please check the overridden voids OnPlayerEnter/Exit to ensure that a 'base.OnPlayerEnter/Exit' is included!");
                 else
@@ -367,7 +357,9 @@ namespace DOL.GS
                     log.Info(m_instance.Name + " (ID: " + m_instance.ID + ") just reached the timeout for the removal timer. The region is empty, and will now be demolished and removed from the world. Entering OnCollapse!");
                     Stop();
                     WorldMgr.RemoveInstance(m_instance);
-                }                
+                }
+
+                return 0;
             }
 
         }
@@ -375,10 +367,9 @@ namespace DOL.GS
 		/// <summary>
 		/// Delay Closing Timer for Instances
 		/// </summary>
-		protected class DelayCloseRegionTimer : GameTimer
+		protected class DelayCloseRegionTimer : RegionECSAction
 		{
-			public DelayCloseRegionTimer(TimeManager time, BaseInstance i)
-				: base(time)
+			public DelayCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
 			{
 				m_instance = i;
 			}
@@ -386,17 +377,18 @@ namespace DOL.GS
 			//The instance to remove...
 			BaseInstance m_instance;
 
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				if (m_instance == null)
 				{
 					log.Warn("DelayCloseRegionTimer is not being stopped once the instance is destroyed!");
 					Stop();
-					return;
+					return 0;
 				}
 
 				Stop();
 				m_instance.DestroyWhenEmpty = true;
+				return 0;
 			}
 
 		}

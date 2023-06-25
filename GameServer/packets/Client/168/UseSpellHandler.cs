@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -24,10 +25,10 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    /// <summary>
-    /// Handles spell cast requests from client
-    /// </summary>
-    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
+	/// <summary>
+	/// Handles spell cast requests from client
+	/// </summary>
+	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
 	public class UseSpellHandler : AbstractCommandHandler, IPacketHandler
 	{
 		/// <summary>
@@ -74,7 +75,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						client.Player.X = newZone.XOffset + xOffsetInZone;
 						client.Player.Y = newZone.YOffset + yOffsetInZone;
 						client.Player.Z = realZ;
-						client.Player.MovementStartTick = GameTimer.GetTickCount();
+						client.Player.MovementStartTick = GameLoop.GetCurrentTime();
 					}
 				}
 

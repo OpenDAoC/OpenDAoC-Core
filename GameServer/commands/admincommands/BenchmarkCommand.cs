@@ -90,7 +90,7 @@ namespace DOL.GS.Commands
 				// See the comments above 'using' about SendMessage translation IDs
 				case "listskills":
 				{
-					start = GameTimer.GetTickCount();
+					start = GameLoop.GetCurrentTime();
 
 					void ActionSkill(int inc)
 					{
@@ -101,7 +101,7 @@ namespace DOL.GS.Commands
 					Util.ForEach(Enumerable.Range(min, max).AsParallel(), ActionSkill);
 					
 					// Final duration to list full range of spells/skills
-					spent = GameTimer.GetTickCount() - start;
+					spent = GameLoop.GetCurrentTime() - start;
 					
 					// Message: "The skills benchmark took {0}ms to list {1} usable skills."
 					ChatUtil.SendErrorMessage(client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
@@ -116,7 +116,7 @@ namespace DOL.GS.Commands
 				// See the comments above 'using' about SendMessage translation IDs
 				case "listspells":
 				{
-					start = GameTimer.GetTickCount();
+					start = GameLoop.GetCurrentTime();
 
 					void ActionSpell(int inc)
 					{
@@ -125,7 +125,7 @@ namespace DOL.GS.Commands
 					
 					Util.ForEach(Enumerable.Range(min, max).AsParallel(), ActionSpell);
 					
-					spent = GameTimer.GetTickCount() - start;
+					spent = GameLoop.GetCurrentTime() - start;
 					
 					// Message: "The spells benchmark took {0}ms to list {1} usable spells."
 					ChatUtil.SendErrorMessage(client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);
@@ -133,8 +133,6 @@ namespace DOL.GS.Commands
 				}
 				#endregion Listspells
 			}
-	
 		}
-
 	}
 }

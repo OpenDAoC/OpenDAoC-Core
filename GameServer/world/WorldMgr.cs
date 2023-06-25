@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,6 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using DOL.GS.Utils;
 using log4net;
 using Timer = System.Threading.Timer;
 
@@ -296,11 +296,6 @@ namespace DOL.GS
 		private const string ENTRY_ZONE_LAVA = "IsLava";
 
 		/// <summary>
-		/// Holds all region timers
-		/// </summary>
-		private static GameTimer.TimeManager[] m_regionTimeManagers;
-
-		/// <summary>
 		/// Initializes the most important things that is needed for some code
 		/// </summary>
 		/// <param name="regionsData">The loaded regions data</param>
@@ -402,18 +397,10 @@ namespace DOL.GS
 			if (cpuCount < 1)
 				cpuCount = 1;
 
-			GameTimer.TimeManager[] timers = new GameTimer.TimeManager[cpuCount];
-			for (int i = 0; i < cpuCount; i++)
-			{
-				timers[i] = new GameTimer.TimeManager(string.Format("RegionTime{0}", (i + 1).ToString()));
-			}
-
-			m_regionTimeManagers = timers;
-
 			for (int i = 0; i < regions.Count; i++)
 			{
 				var region = regions[i];
-				RegisterRegion(timers[FastMath.Abs(i % (cpuCount * 2) - cpuCount) % cpuCount], region);
+				RegisterRegion(region);
 			}
 
 			log.DebugFormat("{0}MB - {1} Regions Loaded", GC.GetTotalMemory(true) / 1024 / 1024, m_regions.Count);
@@ -535,7 +522,7 @@ namespace DOL.GS
 				m_WorldUpdateThread.Start();
 
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
-				m_dayStartTick = (int)GameTimer.GetTickCount() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
+				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
 
 				m_pingCheckTimer = new Timer(new TimerCallback(PingCheck), null, 10 * 1000, 0); // every 10s a check
@@ -547,17 +534,6 @@ namespace DOL.GS
 				return false;
 			}
 			return true;
-		}
-
-		/// <summary>
-		/// Gets all region time managers
-		/// </summary>
-		/// <returns>A copy of region time managers array</returns>
-		public static GameTimer.TimeManager[] GetRegionTimeManagers()
-		{
-			GameTimer.TimeManager[] timers = m_regionTimeManagers;
-			if (timers == null) return new GameTimer.TimeManager[0];
-			return (GameTimer.TimeManager[])timers.Clone();
 		}
 
 		/// <summary>
@@ -626,7 +602,7 @@ namespace DOL.GS
 		/// <param name="sender"></param>
 		private static void DayReset(object sender)
 		{
-			m_dayStartTick = (int)GameTimer.GetTickCount();
+			m_dayStartTick = (int)GameLoop.GetCurrentTime();
 			foreach (GameClient client in GetAllPlayingClients())
 			{
 				if (client.Player != null && client.Player.CurrentRegion != null && client.Player.CurrentRegion.UseTimeManager)
@@ -654,7 +630,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				m_dayStartTick = (int)GameTimer.GetTickCount() - (int)(dayStart / m_dayIncrement); // set start time to ...
+				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(dayStart / m_dayIncrement); // set start time to ...
 				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
 			}
 
@@ -693,7 +669,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				long diff = GameTimer.GetTickCount() - m_dayStartTick;
+				long diff = GameLoop.GetCurrentTime() - m_dayStartTick;
 				long curTime = diff * m_dayIncrement;
 				return (uint)(curTime % DAY);
 			}
@@ -777,9 +753,9 @@ namespace DOL.GS
 		/// <param name="time">Time manager for the region</param>
 		/// <param name="data">The region data</param>
 		/// <returns>Registered region</returns>
-		public static Region RegisterRegion(GameTimer.TimeManager time, RegionData data)
+		public static Region RegisterRegion(RegionData data)
 		{
-			Region region =  Region.Create(time, data);
+			Region region =  Region.Create(data);
 			m_regions.Add(data.Id, region);
 			return region;
 		}
@@ -1802,23 +1778,8 @@ namespace DOL.GS
 				return null;
 			}
 
-			//Having selected the ID, we must select a time manager.
-			//For now, for simplicity so we can get the system running we will just take the first TimeManager
-			//in our list. This is because I don't want to risk causing an error by sharing an important resource
-			//like the TimeManager until I get some good testing and ensure work thus far is clean.
-
-			//Later, we will share the resources over the different threads.
-
-			GameTimer.TimeManager time = m_regionTimeManagers[0];
-
-			if (time == null)
-			{
-				log.Warn("TimeManager not found on instance create!");
-				return null;
-			}
-
 			//I've placed constructor info outside of the lock, to prevent a time delay on parallel threads.
-			ConstructorInfo info = instanceType.GetConstructor(new Type[] { typeof(ushort), typeof(GameTimer.TimeManager), typeof(RegionData)});
+			ConstructorInfo info = instanceType.GetConstructor(new Type[] { typeof(ushort), typeof(RegionData)});
 
 			if (info == null)
 			{
@@ -1866,7 +1827,7 @@ namespace DOL.GS
 			                                         	//Having selected the data we need, create the Instance.
 			                                         	try
 			                                         	{
-			                                         		instance = (BaseInstance)info.Invoke(new object[] { ID, time, data });//new Instance(ID, time, data);
+			                                         		instance = (BaseInstance)info.Invoke(new object[] { ID, data });
 			                                         		regions.Add(ID, instance);
 			                                         	}
 			                                         	catch (Exception e)

@@ -16,19 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
-
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Keeps;
-
-using log4net;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -425,7 +421,7 @@ namespace DOL.GS
 				if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
 					log.Warn("LOSMGR_D : Threshold hitted ("+GetDefaultThreshold(source, target)+") with - Player : "+player.Name+" Source : "+source.Name+" Target : "+target.Name+".");
 
-				notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameTimer.GetTickCount(), true));
+				notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), true));
 				return;
 			}
 			
@@ -435,7 +431,7 @@ namespace DOL.GS
 				try
 				{
 					bool los = GetLosCheckFromCache(source, target, timeout);
-					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameTimer.GetTickCount(), los));
+					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
 					return;
 					
 				}
@@ -535,7 +531,7 @@ namespace DOL.GS
 						if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
 							log.Warn("LOSMGR_D : Vincinity Hitted Treshold ("+GetDefaultThreshold(source, target)+") - Source : "+source.Name+" Target : "+target.Name+".");
 						
-						notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameTimer.GetTickCount(), true));
+						notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), true));
 						return;
 					}
 				}
@@ -552,7 +548,7 @@ namespace DOL.GS
 					{
 						if(player.ObjectState == GameNPC.eObjectState.Active) 
 						{
-							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameTimer.GetTickCount(), los));
+							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
 							return;
 						}
 						
@@ -644,7 +640,7 @@ namespace DOL.GS
 			// pending key to store this lookup
 			Tuple<GamePlayer, ushort, ushort> checkerKey = new Tuple<GamePlayer, ushort, ushort>(player, (ushort)source.ObjectID, (ushort)target.ObjectID);
 			
-			long time = GameTimer.GetTickCount();
+			long time = GameLoop.GetCurrentTime();
 			
 			// insert into pendings
 			lock(((ICollection)PendingChecks).SyncRoot)
@@ -675,7 +671,7 @@ namespace DOL.GS
 				return;
 			
 			// get time
-			long sent = GameTimer.GetTickCount();
+			long sent = GameLoop.GetCurrentTime();
 			long time = sent;
 			
 			// Check result
@@ -1094,7 +1090,7 @@ namespace DOL.GS
 			
 			lock(((ICollection)ClientStats).SyncRoot)
 			{
-				long currentTime = GameTimer.GetTickCount();
+				long currentTime = GameLoop.GetCurrentTime();
 				// We don't have player that aren't in cache try selecting available ones (lowest count && best instant checker)
 				IEnumerable<GamePlayer> bestavails = (from best in ClientStats.Keys where players.Contains(best) && 
 				                                      (ClientChecks.ContainsKey(best) && (currentTime-ClientChecks[best]) > LOSMGR_PLAYER_CHECK_FREQUENCY)
@@ -1158,7 +1154,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static long GetElapsedTicks(long time) 
 		{
-			long elapsed = ((long)GameTimer.GetTickCount())-time;
+			long elapsed = ((long)GameLoop.GetCurrentTime())-time;
 			return elapsed <= 0 ? 0 : elapsed;
 		}
 
@@ -1230,7 +1226,7 @@ namespace DOL.GS
 		/// </summary>
 		private void CleanUpCache()
 		{
-			long obsoleteTime = GameTimer.GetTickCount() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)ResponsesCache).SyncRoot)
 			{
@@ -1246,7 +1242,7 @@ namespace DOL.GS
 		/// </summary>				
 		private void CleanUpPending()
 		{
-			long obsoleteTime = GameTimer.GetTickCount() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)PendingChecks).SyncRoot)
 			{
@@ -1262,7 +1258,7 @@ namespace DOL.GS
 		/// </summary>
 		private void CleanUpClients()
 		{
-			long obsoleteTime = GameTimer.GetTickCount() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)ClientChecks).SyncRoot)
 			{
@@ -1306,7 +1302,7 @@ namespace DOL.GS
 			
 			LosCheckMgr chk = sender as LosCheckMgr;
 			
-			long currenTime = GameTimer.GetTickCount();
+			long currenTime = GameLoop.GetCurrentTime();
 			// Get Timing out Pending Los Check
 			IEnumerable<Tuple<GamePlayer, ushort, ushort>> pendingTimeout;
 			lock(((ICollection)chk.PendingChecks).SyncRoot)

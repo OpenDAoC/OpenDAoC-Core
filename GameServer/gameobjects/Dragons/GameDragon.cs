@@ -493,7 +493,7 @@ namespace DOL.GS
         /// Provides a timer to remove an NPC from the world after some
         /// time has passed.
         /// </summary>
-        protected class DespawnTimer : GameTimer
+        protected class DespawnTimer : RegionECSAction
         {
             private GameNPC m_npc;
 
@@ -503,8 +503,7 @@ namespace DOL.GS
             /// <param name="timerOwner">The owner of this timer.</param>
             /// <param name="npc">The GameNPC to despawn when the time is up.</param>
             /// <param name="delay">The time after which the add is supposed to despawn.</param>
-            public DespawnTimer(GameObject timerOwner, GameNPC npc, int delay)
-                : base(timerOwner.CurrentRegion.TimeManager)
+            public DespawnTimer(GameObject timerOwner, GameNPC npc, int delay) : base(timerOwner)
             {
                 m_npc = npc;
                 Start(delay);
@@ -513,15 +512,16 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick.
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 // Remove the NPC from the world.
-
                 if (m_npc != null)
                 {
                     m_npc.Delete();
                     m_npc = null;
                 }
+
+                return 0;
             }
         }
 

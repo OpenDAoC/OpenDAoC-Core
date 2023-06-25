@@ -20,13 +20,8 @@
 //Instance devised by Dinberg
 //     - there will probably be questions, direct them to dinberg_darktouch@hotmail.co.uk ;)
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using DOL.Database;
-using DOL.GS.Utils;
-using log4net;
 
 namespace DOL.GS
 {
@@ -42,7 +37,7 @@ namespace DOL.GS
 		/// Creates an instance object. This shouldn't be used directly - Please use WorldMgr.CreateInstance
 		/// to create an instance.
 		/// </summary>
-		public Instance(ushort ID, GameTimer.TimeManager time, RegionData data) :base(ID, time, data)
+		public Instance(ushort ID, RegionData data) :base(ID, data)
 		{
 		}
 

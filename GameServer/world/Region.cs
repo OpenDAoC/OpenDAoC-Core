@@ -16,12 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -139,11 +139,6 @@ namespace DOL.GS
         protected int m_numPlayer = 0;
 
         /// <summary>
-        /// The region time manager
-        /// </summary>
-        protected readonly GameTimer.TimeManager m_timeManager;
-        
-        /// <summary>
         /// The Region Mob's Respawn Timer Collection
         /// </summary>
         protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new ConcurrentDictionary<GameNPC, int>();
@@ -166,7 +161,7 @@ namespace DOL.GS
         /// <param name="time"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static Region Create(GameTimer.TimeManager time, RegionData data)
+        public static Region Create(RegionData data)
         {
             try
             {
@@ -183,9 +178,9 @@ namespace DOL.GS
 
                     if (t != null)
                     {
-                        ConstructorInfo info = t.GetConstructor(new Type[] { typeof(GameTimer.TimeManager), typeof(RegionData) });
+                        ConstructorInfo info = t.GetConstructor(new Type[] { typeof(RegionData) });
 
-                        Region r = (Region)info.Invoke(new object[] { time, data });
+                        Region r = (Region)info.Invoke(new object[] { data });
 
                         if (r != null)
                         {
@@ -208,7 +203,7 @@ namespace DOL.GS
             }
 
             // Create region using default type
-            return new Region(time, data);
+            return new Region(data);
         }
 
         /// <summary>
@@ -216,7 +211,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="time">The time manager for this region</param>
         /// <param name="data">The region data</param>
-        public Region(GameTimer.TimeManager time, RegionData data)
+        public Region(RegionData data)
         {
             m_regionData = data;
             m_objects = new GameObject[0];
@@ -235,9 +230,6 @@ namespace DOL.GS
             }
 
             m_Areas = new Dictionary<ushort, IArea>();
-
-            m_timeManager = time;
-
             List<string> list = null;
 
             if (ServerProperties.Properties.DEBUG_LOAD_REGIONS != string.Empty)
@@ -516,14 +508,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets the region time manager
-        /// </summary>
-        public virtual GameTimer.TimeManager TimeManager
-        {
-            get { return m_timeManager; }
-        }
-
-        /// <summary>
         /// Gets the current region time in milliseconds
         /// </summary>
         public virtual long Time
@@ -696,8 +680,7 @@ namespace DOL.GS
         /// </summary>
         public void StartRegionMgr()
         {
-            m_timeManager.Start();
-            this.Notify(RegionEvent.RegionStart, this);
+            Notify(RegionEvent.RegionStart, this);
         }
 
         /// <summary>
@@ -705,8 +688,7 @@ namespace DOL.GS
         /// </summary>
         public void StopRegionMgr()
         {
-            m_timeManager.Stop();
-            this.Notify(RegionEvent.RegionStop, this);
+            Notify(RegionEvent.RegionStop, this);
         }
 
         /// <summary>
@@ -912,7 +894,7 @@ namespace DOL.GS
             if (myMobCount + myItemCount + myMerchantCount + myBindCount > 0)
             {
                 if (log.IsInfoEnabled)
-                    log.Info(String.Format("Region: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items {5} bindpoints, from DB ({6})", Description, ID, myMobCount, myMerchantCount, myItemCount, myBindCount, TimeManager.Name));
+                    log.Info(string.Format("Region: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items {5} bindpoints", Description, ID, myMobCount, myMerchantCount, myItemCount, myBindCount));
 
                 log.Debug("Used Memory: " + GC.GetTotalMemory(false) / 1024 / 1024 + "MB");
 

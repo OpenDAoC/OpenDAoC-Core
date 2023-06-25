@@ -29,9 +29,9 @@ namespace DOL.GS
                 {
                     if (timer.NextTick < tick)
                     {
-                        long startTick = GameTimer.GetTickCount();
+                        long startTick = GameLoop.GetCurrentTime();
                         timer.Tick();
-                        long stopTick = GameTimer.GetTickCount();
+                        long stopTick = GameLoop.GetCurrentTime();
 
                         if ((stopTick - startTick) > 25)
                             log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");

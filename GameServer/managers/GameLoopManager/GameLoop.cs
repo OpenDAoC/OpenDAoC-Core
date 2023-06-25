@@ -13,6 +13,13 @@ namespace DOL.GS
         private static Thread _gameLoopThread;
         private static Timer _timerRef;
         private static Stopwatch _stopwatch = new();
+        private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
+
+        // Previously in 'GameTimer'. Not sure where this should be moved to.
+        public static long GetCurrentTime()
+        {
+            return Stopwatch.GetTimestamp() / _stopwatchFrequencyMilliseconds;
+        }
 
         public static bool Init()
         {
@@ -66,7 +73,7 @@ namespace DOL.GS
             ECS.Debug.Diagnostics.Tick();
             CurrentServiceTick = "";
             ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
-            GameLoopTime = GameTimer.GetTickCount();
+            GameLoopTime = GetCurrentTime();
             _stopwatch.Stop();
 
             float elapsed = (float)_stopwatch.Elapsed.TotalMilliseconds;

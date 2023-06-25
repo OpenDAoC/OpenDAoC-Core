@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-
-using DOL.GS;
 using DOL.Database;
-
 using log4net;
 
 namespace DOL.GS
@@ -95,11 +93,10 @@ namespace DOL.GS
 		/// RegionInstance Constructor
 		/// </summary>
 		/// <param name="player"></param>
-		public RegionInstance(ushort ID, GameTimer.TimeManager time, RegionData dat)
-			: base(ID, time, dat)
-		{	
-			this.m_players_in = new List<GamePlayer>();
-			this.DestroyWhenEmpty = false;
+		public RegionInstance(ushort ID, RegionData dat) : base(ID, dat)
+		{
+			m_players_in = new List<GamePlayer>();
+			DestroyWhenEmpty = false;
 		}
 		
 		/// <summary>
@@ -312,7 +309,7 @@ namespace DOL.GS
             if (myMobCount + myItemCount + myMerchantCount > 0)
             {
                 if (log.IsInfoEnabled)
-                    log.Info(String.Format("AdventureWingInstance: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items, {5}/{6} areas from DB ({7})", Description, ID, myMobCount, myMerchantCount, myItemCount, areaCnt, areaObjs.Count, TimeManager.Name));
+                    log.Info(string.Format("AdventureWingInstance: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items, {5}/{6}", Description, ID, myMobCount, myMerchantCount, myItemCount, areaCnt, areaObjs.Count));
 
                 log.Debug("Used Memory: " + GC.GetTotalMemory(false) / 1024 / 1024 + "MB");
 

@@ -16,9 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
@@ -31,8 +30,6 @@ namespace DOL.GS
     /// <author>Aredhel</author>
     public class PermanentDjinn : AncientBoundDjinn
     {
-        private object m_syncObject = new object();
-
         public PermanentDjinn(DjinnStone djinnStone) : base(djinnStone)
         {
             this.Model = VisibleModel;
@@ -106,7 +103,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for djinn emotes.
         /// </summary>
-        private class EmoteTimer : GameTimer
+        private class EmoteTimer : RegionECSAction
         {
             private GameObject m_owner;
 
@@ -114,19 +111,19 @@ namespace DOL.GS
             /// Constructs a new EmoteTimer.
             /// </summary>
             /// <param name="timerOwner">The owner of this timer (the djinn).</param>
-            public EmoteTimer(GameObject owner)
-                : base(owner.CurrentRegion.TimeManager)
+            public EmoteTimer(GameObject owner) : base(owner)
             {
                 m_owner = owner;
-                Interval = 60 * 1000;   // 60-second tick.
+                Interval = 60 * 1000; // 60-second tick.
             }
 
             /// <summary>
             /// Called on every timer tick.
             /// </summary>
-            protected override void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
                 m_owner.Notify(new EmoteEvent());
+                return Interval;
             }
         }
 

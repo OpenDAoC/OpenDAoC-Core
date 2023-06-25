@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.GS;
-using DOL.GS.Spells;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
+using DOL.GS.Spells;
 using NUnit.Framework;
 
 namespace DOL.Tests.Unit.Gameserver
@@ -105,7 +105,7 @@ namespace DOL.Tests.Unit.Gameserver
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
 
             Assert.IsTrue(spellHandler.StartSpell(target));
-            target.fakeRegion.fakeElapsedTime = 2;
+            target.fakeRegion.FakeElapsedTime = 2;
             spellHandler.StartSpell(target); //tick
             caster.OnPlayerMove();
 
@@ -508,7 +508,7 @@ namespace DOL.Tests.Unit.Gameserver
             public FakePlayerSpy() : base()
             {
                 fakeCharacterClass = new DefaultCharacterClass();
-                fakeRegion.fakeElapsedTime = 0;
+                fakeRegion.FakeElapsedTime = 0;
             }
 
             public override void Notify(DOLEvent e, object sender, EventArgs args)

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -23,14 +24,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using DOL.Events;
-using DOL.GS.PacketHandler;
 using log4net;
 
 namespace DOL.GS.GameEvents
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public class StatPrint
 	{
 		/// <summary>
@@ -49,8 +46,6 @@ namespace DOL.GS.GameEvents
 		private static PerformanceCounter m_processCpuUsedCounter;
 		private static PerformanceCounter m_memoryPages;
 		private static PerformanceCounter m_physycalDisk;
-
-		private static Hashtable m_timerStatsByMgr;
 
 		[GameServerStartedEvent]
 		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
@@ -162,24 +157,6 @@ namespace DOL.GS.GameEvents
 						.AppendFormat("  IOCP={0}/{1}({2})", iocpCurrent, iocpMax, iocpMin)
 						.AppendFormat("  GH/OH={0}/{1}", globalHandlers, objectHandlers);
 
-					lock (m_timerStatsByMgr.SyncRoot)
-					{
-						foreach (GameTimer.TimeManager mgr in WorldMgr.GetRegionTimeManagers())
-						{
-							TimerStats ts = (TimerStats)m_timerStatsByMgr[mgr];
-							if (ts == null)
-							{
-								ts = new TimerStats();
-								m_timerStatsByMgr.Add(mgr, ts);
-							}
-							long curInvoked = mgr.InvokedCount;
-							long invoked = curInvoked - ts.InvokedCount;
-							stats.Append("  ").Append(mgr.Name).Append('=').Append(invoked / time).Append("t/s (")
-								.Append(mgr.ActiveTimers).Append(')');
-							ts.InvokedCount = curInvoked;
-						}
-					}
-
 					if (m_systemCpuUsedCounter != null)
 						stats.Append("  CPU=").Append(m_systemCpuUsedCounter.NextValue().ToString("0.0")).Append('%');
 					if (m_processCpuUsedCounter != null)
@@ -190,28 +167,6 @@ namespace DOL.GS.GameEvents
 						stats.Append("  dsk/s=").Append(m_physycalDisk.NextValue().ToString("0.0"));
 
 					log.Info(stats);
-				}
-
-				if (log.IsFatalEnabled)
-				{
-					lock (m_timerStatsByMgr.SyncRoot)
-					{
-						foreach (GameTimer.TimeManager mgr in WorldMgr.GetRegionTimeManagers())
-						{
-							TimerStats ts = (TimerStats)m_timerStatsByMgr[mgr];
-							if (ts == null) continue;
-
-							long curTick = mgr.CurrentTime;
-							if (ts.Time == curTick)
-							{
-								log.FatalFormat("{0} stopped ticking; timer stacktrace:\n{1}\n", mgr.Name, mgr.GetFormattedStackTrace());
-								log.FatalFormat("NPC update stacktrace:\n{0}\n", WorldMgr.GetFormattedWorldUpdateStackTrace());
-								log.FatalFormat("Packethandlers stacktraces:\n{0}\n", PacketProcessor.GetConnectionThreadpoolStacks());
-							}
-
-							ts.Time = curTick;
-						}
-					}
 				}
 			}
 			catch (Exception e)

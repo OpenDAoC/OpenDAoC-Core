@@ -160,9 +160,6 @@ namespace DOL.GS
         /// <summary>
         /// Get distance to a point
         /// </summary>
-        /// <remarks>
-        /// If either Z-value is zero, the z-axis is ignored
-        /// </remarks>
         /// <param name="point">Target point</param>
         /// <returns>Distance or int.MaxValue if distance cannot be calculated</returns>
         public override int GetDistanceTo( IPoint3D point )
@@ -182,9 +179,6 @@ namespace DOL.GS
         /// <summary>
         /// Get distance to a point (with z-axis adjustment)
         /// </summary>
-        /// <remarks>
-        /// If either Z-value is zero, the z-axis is ignored
-        /// </remarks>
         /// <param name="point">Target point</param>
         /// <param name="zfactor">Z-axis factor - use values between 0 and 1 to decrease the influence of Z-axis</param>
         /// <returns>Adjusted distance or int.MaxValue if distance cannot be calculated</returns>

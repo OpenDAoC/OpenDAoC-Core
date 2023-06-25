@@ -16,13 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 
-using DOL.GS;
 using DOL.Database;
-
 using log4net;
 
 namespace DOL.GS
@@ -73,11 +68,8 @@ namespace DOL.GS
 		/// <summary>
 		/// AdventureWingInstance Constructor
 		/// </summary>
-		public AdventureWingInstance(ushort ID, GameTimer.TimeManager time, RegionData dat)
-			: base(ID, time, dat)
-		{
-		}
-				
+		public AdventureWingInstance(ushort ID, RegionData dat) : base(ID, dat) { }
+
 		/// <summary>
 		/// Update Instance Owner based on population still inside.
 		/// </summary>

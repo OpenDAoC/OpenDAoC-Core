@@ -16,11 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Text;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -73,7 +72,7 @@ namespace DOL.GS.Spells
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 
-			RestoreSpeedTimer timer = new RestoreSpeedTimer(effect);
+			RestoreSpeedTimer timer = new RestoreSpeedTimer(effect.Owner, effect);
 			effect.Owner.TempProperties.setProperty(effect, timer);
 			timer.Interval = 650;
 			timer.Start(1 + (effect.Duration >> 1));
@@ -92,7 +91,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			GameTimer timer = (GameTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
+			RestoreSpeedTimer timer = (RestoreSpeedTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
 			effect.Owner.TempProperties.removeProperty(effect);
 			if(timer!=null) timer.Stop();
 
@@ -152,7 +151,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		public sealed class RestoreSpeedTimer : GameTimer
+		public sealed class RestoreSpeedTimer : RegionECSAction
 		{
 			/// <summary>
 			/// The speed changing effect
@@ -163,7 +162,7 @@ namespace DOL.GS.Spells
 			/// Constructs a new RestoreSpeedTimer
 			/// </summary>
 			/// <param name="effect">The speed changing effect</param>
-			public RestoreSpeedTimer(GameSpellEffect effect) : base(effect.Owner.CurrentRegion.TimeManager)
+			public RestoreSpeedTimer(GameObject target, GameSpellEffect effect) : base(target)
 			{
 				m_effect = effect;
 			}
@@ -171,7 +170,7 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override void OnTick()
+			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameSpellEffect effect = m_effect;
 
@@ -183,8 +182,7 @@ namespace DOL.GS.Spells
 
 				SendUpdates(effect.Owner);
 
-				if (factor <= 0)
-					Stop();
+				return factor <= 0 ? 0 : Interval;
 			}
 
 

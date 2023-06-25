@@ -57,7 +57,7 @@ namespace ECS.Debug
 
             if (GameEventMgrNotifyProfilingEnabled)
             {
-                if ((GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
+                if ((GameLoop.GetCurrentTime() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
                     ReportGameEventMgrNotifyTimes();
             }
         }
@@ -161,7 +161,7 @@ namespace ECS.Debug
 
             GameEventMgrNotifyProfilingEnabled = true;
             GameEventMgrNotifyTimerInterval = IntervalMilliseconds;
-            GameEventMgrNotifyTimerStartTick = GameTimer.GetTickCount();
+            GameEventMgrNotifyTimerStartTick = GameLoop.GetCurrentTime();
         }
 
         public static void StopGameEventMgrNotifyTimeReporting()
@@ -175,7 +175,7 @@ namespace ECS.Debug
 
         private static void ReportGameEventMgrNotifyTimes()
         {
-            string ActualInterval = Util.TruncateString((GameTimer.GetTickCount() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
+            string ActualInterval = Util.TruncateString((GameLoop.GetCurrentTime() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
             Console.WriteLine($"==== GameEventMgr Notify() Costs (Requested Interval: {GameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
 
             lock (_GameEventMgrNotifyLock)
@@ -210,7 +210,7 @@ namespace ECS.Debug
                 }
 
                 GameEventMgrNotifyTimes.Clear();
-                GameEventMgrNotifyTimerStartTick = GameTimer.GetTickCount();
+                GameEventMgrNotifyTimerStartTick = GameLoop.GetCurrentTime();
                 Console.WriteLine("---------------------------------------------------------------------------");
             }
         }
