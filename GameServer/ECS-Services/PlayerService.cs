@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using ECS.Debug;
@@ -29,19 +27,7 @@ namespace DOL.GS
                 GamePlayer player = list[i];
 
                 if (player == null)
-                {
-                    GameClient client = player.Client;
-
-                    if (client.ClientState == GameClient.eClientState.Playing)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error("Account has no active player but is playing, disconnecting => " + client.Account.Name);
-
-                        GameServer.Instance.Disconnect(client);
-                    }
-
                     return;
-                }
 
                 if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL >= tick ||
                     player.Client.ClientState != GameClient.eClientState.Playing ||
