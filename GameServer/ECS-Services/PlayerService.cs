@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using ECS.Debug;
@@ -86,7 +87,7 @@ namespace DOL.GS
 
         private static void UpdateNpcs(GamePlayer player, long tick)
         {
-            IEnumerable<GameNPC> npcsInRange = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE).Where(n => n.IsVisibleTo(player));
+            HashSet<GameNPC> npcsInRange = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
             try
             {
@@ -125,6 +126,9 @@ namespace DOL.GS
                 // Now send remaining NPCs.
                 foreach (GameNPC npc in npcsInRange)
                 {
+                    if (!npc.IsVisibleTo(player))
+                        continue;
+
                     if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(npc.CurrentRegionID, (ushort) npc.ObjectID), out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_NPC_UPDATE_INTERVAL)
@@ -146,7 +150,7 @@ namespace DOL.GS
 
         private static void UpdateItems(GamePlayer player, long tick)
         {
-            IEnumerable<GameStaticItem> itemsInRange = player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).Where(i => i.IsVisibleTo(player));
+            HashSet<GameStaticItem> itemsInRange = player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE);
 
             try
             {
@@ -171,6 +175,9 @@ namespace DOL.GS
                 // Now send remaining items.
                 foreach (GameStaticItem item in itemsInRange)
                 {
+                    if (!item.IsVisibleTo(player))
+                        continue;
+
                     if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(item.CurrentRegionID, (ushort) item.ObjectID), out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
@@ -192,7 +199,7 @@ namespace DOL.GS
 
         private static void UpdateDoors(GamePlayer player, long tick)
         {
-            IEnumerable<GameDoorBase> doorsInRange = player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).Where(o => o.IsVisibleTo(player));
+            HashSet<GameDoorBase> doorsInRange = player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE);
 
             try
             {
@@ -217,6 +224,9 @@ namespace DOL.GS
                 // Now send remaining doors
                 foreach (GameDoorBase door in doorsInRange)
                 {
+                    if (!door.IsVisibleTo(player))
+                        continue;
+
                     if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(door.CurrentRegionID, (ushort) door.ObjectID), out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
@@ -241,8 +251,7 @@ namespace DOL.GS
             if (player.CurrentRegion == null || !player.CurrentRegion.HousingEnabled)
                 return;
 
-            IDictionary<int, House> housesDict = HouseMgr.GetHouses(player.CurrentRegionID);
-            IEnumerable<House> housesInRange = housesDict.Values.Where(h => player.IsWithinRadius(h, HousingConstants.HouseViewingDistance));
+            ICollection<House> houses = HouseMgr.GetHouses(player.CurrentRegionID).Values;
 
             try
             {
@@ -253,7 +262,7 @@ namespace DOL.GS
                     House house = HouseMgr.GetHouse(houseKey.Item1, houseKey.Item2);
 
                     // We have a House in cache that is not in vincinity.
-                    if (!housesInRange.Contains(house) && (tick - houseEntry.Value) >= (Properties.WORLD_OBJECT_UPDATE_INTERVAL >> 2))
+                    if (!houses.Contains(house) && (tick - houseEntry.Value) >= (Properties.WORLD_OBJECT_UPDATE_INTERVAL >> 2))
                         player.Client.HouseUpdateArray.TryRemove(houseKey, out _);
                 }
             }
@@ -265,8 +274,11 @@ namespace DOL.GS
 
             try
             {
-                foreach (House house in housesInRange)
+                foreach (House house in houses)
                 {
+                    if (!player.IsWithinRadius(house, HousingConstants.HouseViewingDistance))
+                        continue;
+
                     if (player.Client.HouseUpdateArray.TryGetValue(new Tuple<ushort, ushort>(house.RegionID, (ushort) house.HouseNumber), out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
