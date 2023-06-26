@@ -113,7 +113,7 @@ namespace DOL.GS.PacketHandler
 						else if ((texture & 0xFF) != 0)
 							pak.WriteByte((byte)texture);
 						if (item.Effect != 0)
-							pak.WriteByte((byte)item.Effect);
+							pak.WriteShort((ushort)item.Effect); // effect changed to short
 					}
 				}
 				else
