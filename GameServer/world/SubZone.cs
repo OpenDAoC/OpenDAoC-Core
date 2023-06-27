@@ -51,7 +51,7 @@ namespace DOL.GS
 
         public bool IsChangingSubZone
         {
-            get => Interlocked.Exchange(ref _isChangingSubZone, 1) == 1;
+            get => Interlocked.Exchange(ref _isChangingSubZone, 1) == 1; // Returns false the first time it's called.
             set => _isChangingSubZone = value ? 1 : 0;
         }
     }

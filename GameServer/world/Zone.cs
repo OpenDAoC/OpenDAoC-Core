@@ -365,7 +365,7 @@ namespace DOL.GS
         /// <param name="y">the y coordinate of the observation position</param>
         /// <param name="z">the z coordinate of the observation position</param>
         /// <param name="radius">the radius to check against</param>
-        /// <param name="partialList">an initial (eventually empty but initialized, i.e. never null !!) list of objects</param>
+        /// <param name="partialList">a non-null list</param>
         public void GetObjectsInRadius<T>(eGameObjectType objectType, int x, int y, int z, ushort radius, HashSet<T> partialList, bool ignoreZ) where T : GameObject
         {
             if (!_initialized)
@@ -405,33 +405,31 @@ namespace DOL.GS
                 for (int currentColumn = minColumn; currentColumn <= maxColumn; ++currentColumn)
                 {
                     currentSubZoneIndex = GetSubZoneOffset(currentLine, currentColumn);
-                    SubZone subZone = _subZones[currentSubZoneIndex];
-                    objects = subZone.GetObjects(objectType);
+                    objects = _subZones[currentSubZoneIndex].GetObjects(objectType);
 
                     if (objects.Count == 0)
                         continue;
 
-                    // The current subzone contains some objects.
                     if (currentSubZoneIndex == referenceSubzoneIndex)
-                        // We are in the subzone of the observation point. Check all distances for all objects in the subzone.
-                        AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
-                    else
                     {
-                        int xLeft = currentColumn << SUBZONE_SHIFT;
-                        int xRight = xLeft + SUBZONE_SIZE;
-                        int yTop = currentLine << SUBZONE_SHIFT;
-                        int yBottom = yTop + SUBZONE_SIZE;
-
-                        if (CheckMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
-                        {
-                            if (CheckMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
-                                // The current subzone is fully enclosed within the radius. Add all the objects of the current subzone.
-                                AddToListWithoutDistanceCheck(objects, objectType, currentSubZoneIndex, partialList);
-                            else
-                                // The current subzone is partially enclosed within the radius. Only add the objects within the right area.
-                                AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
-                        }
+                        AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
+                        continue;
                     }
+
+                    int xLeft = currentColumn << SUBZONE_SHIFT;
+                    int xRight = xLeft + SUBZONE_SIZE;
+                    int yTop = currentLine << SUBZONE_SHIFT;
+                    int yBottom = yTop + SUBZONE_SIZE;
+
+                    // Filter out subzones that are too far away.
+                    if (!CheckMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
+                        continue;
+
+                    // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
+                    if (ignoreZ && CheckMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
+                        AddToListWithoutDistanceCheck(objects, objectType, currentSubZoneIndex, partialList);
+                    else
+                        AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
                 }
             }
         }
@@ -443,7 +441,7 @@ namespace DOL.GS
             for (LightConcurrentLinkedList<SubZoneObject>.Node node = reader.Current(); node != null; node = reader.Next())
             {
                 if (!ShouldObjectChangeSubZone(node, objectType, subZoneIndex))
-                    partialList.Add((T)node.Item.Object);
+                    partialList.Add((T) node.Item.Object);
             }
         }
 
@@ -460,7 +458,7 @@ namespace DOL.GS
                     GameObject gameObject = subZoneObject.Object;
 
                     if (CheckSquareDistance(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
-                        partialList.Add((T)gameObject);
+                        partialList.Add((T) gameObject);
                 }
             }
         }
