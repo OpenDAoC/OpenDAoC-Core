@@ -372,7 +372,7 @@ namespace DOL.GS
                 InitializeZone();
 
             uint sqRadius = (uint)radius * radius;
-            int referenceSubzoneIndex = GetSubZoneIndex(x, y);
+            int referenceSubZoneIndex = GetSubZoneIndex(x, y);
 
             int xInZone = x - XOffset; // x in zone coordinates.
             int yInZone = y - YOffset; // y in zone coordinates.
@@ -397,25 +397,25 @@ namespace DOL.GS
             if (maxLine > (SUBZONE_NBR_ON_ZONE_SIDE - 1))
                 maxLine = SUBZONE_NBR_ON_ZONE_SIDE - 1;
 
-            int currentSubZoneIndex;
+            int subZoneIndex;
             LightConcurrentLinkedList<SubZoneObject> objects;
             bool ignoreDistance;
 
-            for (int currentLine = minLine; currentLine <= maxLine; ++currentLine)
+            for (int line = minLine; line <= maxLine; ++line)
             {
-                for (int currentColumn = minColumn; currentColumn <= maxColumn; ++currentColumn)
+                for (int column = minColumn; column <= maxColumn; ++column)
                 {
-                    currentSubZoneIndex = GetSubZoneOffset(currentLine, currentColumn);
-                    objects = _subZones[currentSubZoneIndex].GetObjects(objectType);
+                    subZoneIndex = GetSubZoneOffset(line, column);
+                    objects = _subZones[subZoneIndex].GetObjects(objectType);
 
                     if (objects.Count == 0)
                         continue;
 
-                    if (currentSubZoneIndex != referenceSubzoneIndex)
+                    if (subZoneIndex != referenceSubZoneIndex)
                     {
-                        int xLeft = currentColumn << SUBZONE_SHIFT;
+                        int xLeft = column << SUBZONE_SHIFT;
                         int xRight = xLeft + SUBZONE_SIZE;
-                        int yTop = currentLine << SUBZONE_SHIFT;
+                        int yTop = line << SUBZONE_SHIFT;
                         int yBottom = yTop + SUBZONE_SIZE;
 
                         // Filter out subzones that are too far away.
@@ -426,14 +426,14 @@ namespace DOL.GS
                         ignoreDistance = ignoreZ && CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
                     }
                     else
-                        ignoreDistance = true;
+                        ignoreDistance = false;
 
                     using LightConcurrentLinkedList<SubZoneObject>.Reader reader = objects.GetReader();
 
                     for (LightConcurrentLinkedList<SubZoneObject>.Node node = reader.Current(); node != null; node = reader.Next())
                     {
                         // If the object needs to be relocated, force a distance check. Relocation will be performed by the zone service.
-                        switch (Relocate(node, objectType, currentSubZoneIndex))
+                        switch (Relocate(node, objectType, subZoneIndex))
                         {
                             case SubZoneRelocationReason.DIFFERENT_ZONE:
                             case SubZoneRelocationReason.DIFFERENT_SUBZONE_IN_ZONE:
