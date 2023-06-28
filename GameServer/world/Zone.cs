@@ -330,7 +330,7 @@ namespace DOL.GS
 
             eGameObjectType objectType;
 
-            // Only GamePlayer, GameNPC and GameStaticItem classes are handled.
+            // Only GamePlayer, GameNPC, GameStaticItem, and GameDoorBase objects are handled.
             if (gameObject is GamePlayer)
                 objectType = eGameObjectType.PLAYER;
             else if (gameObject is GameNPC)
@@ -399,6 +399,7 @@ namespace DOL.GS
 
             int currentSubZoneIndex;
             LightConcurrentLinkedList<SubZoneObject> objects;
+            bool ignoreDistance;
 
             for (int currentLine = minLine; currentLine <= maxLine; ++currentLine)
             {
@@ -410,62 +411,51 @@ namespace DOL.GS
                     if (objects.Count == 0)
                         continue;
 
-                    if (currentSubZoneIndex == referenceSubzoneIndex)
+                    if (currentSubZoneIndex != referenceSubzoneIndex)
                     {
-                        AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
-                        continue;
+                        int xLeft = currentColumn << SUBZONE_SHIFT;
+                        int xRight = xLeft + SUBZONE_SIZE;
+                        int yTop = currentLine << SUBZONE_SHIFT;
+                        int yBottom = yTop + SUBZONE_SIZE;
+
+                        // Filter out subzones that are too far away.
+                        if (!CheckSubZoneMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
+                            continue;
+
+                        // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
+                        ignoreDistance = ignoreZ && CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
                     }
-
-                    int xLeft = currentColumn << SUBZONE_SHIFT;
-                    int xRight = xLeft + SUBZONE_SIZE;
-                    int yTop = currentLine << SUBZONE_SHIFT;
-                    int yBottom = yTop + SUBZONE_SIZE;
-
-                    // Filter out subzones that are too far away.
-                    if (!CheckMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
-                        continue;
-
-                    // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
-                    if (ignoreZ && CheckMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
-                        AddToListWithoutDistanceCheck(objects, objectType, currentSubZoneIndex, partialList);
                     else
-                        AddToListWithDistanceCheck(objects, x, y, z, sqRadius, objectType, currentSubZoneIndex, partialList, ignoreZ);
-                }
-            }
-        }
+                        ignoreDistance = true;
 
-        private void AddToListWithoutDistanceCheck<T>(LightConcurrentLinkedList<SubZoneObject> subZoneObjects, eGameObjectType objectType, int subZoneIndex, HashSet<T> partialList) where T : GameObject
-        {
-            using LightConcurrentLinkedList<SubZoneObject>.Reader reader = subZoneObjects.GetReader();
+                    using LightConcurrentLinkedList<SubZoneObject>.Reader reader = objects.GetReader();
 
-            for (LightConcurrentLinkedList<SubZoneObject>.Node node = reader.Current(); node != null; node = reader.Next())
-            {
-                if (!ShouldObjectChangeSubZone(node, objectType, subZoneIndex))
-                    partialList.Add((T) node.Item.Object);
-            }
-        }
+                    for (LightConcurrentLinkedList<SubZoneObject>.Node node = reader.Current(); node != null; node = reader.Next())
+                    {
+                        // If the object needs to be relocated, force a distance check. Relocation will be performed by the zone service.
+                        switch (Relocate(node, objectType, currentSubZoneIndex))
+                        {
+                            case SubZoneRelocationReason.DIFFERENT_ZONE:
+                            case SubZoneRelocationReason.DIFFERENT_SUBZONE_IN_ZONE:
+                                ignoreDistance = false;
+                                break;
+                            case SubZoneRelocationReason.INVALID_OBJECT_OR_DIFFERENT_REGION:
+                                continue;
+                        }
 
-        private void AddToListWithDistanceCheck<T>(LightConcurrentLinkedList<SubZoneObject> subZoneObjects, int x, int y, int z, uint sqRadius, eGameObjectType objectType, int subZoneIndex, HashSet<T> partialList, bool ignoreZ) where T : GameObject
-        {
-            using LightConcurrentLinkedList<SubZoneObject>.Reader reader = subZoneObjects.GetReader();
-
-            // Check all distances for all objects in the subzone.
-            for (LightConcurrentLinkedList<SubZoneObject>.Node node = reader.Current(); node != null; node = reader.Next())
-            {
-                if (!ShouldObjectChangeSubZone(node, objectType, subZoneIndex))
-                {
-                    SubZoneObject subZoneObject = node.Item;
-                    GameObject gameObject = subZoneObject.Object;
-
-                    if (CheckSquareDistance(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
-                        partialList.Add((T) gameObject);
+                        GameObject gameObject = node.Item.Object;
+                        bool added = false;
+  
+                        if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
+                            added = partialList.Add((T) gameObject);
+                    }
                 }
             }
         }
 
         #region Relocation
 
-        private bool ShouldObjectChangeSubZone(LightConcurrentLinkedList<SubZoneObject>.Node node, eGameObjectType objectType, int subZoneIndex)
+        private SubZoneRelocationReason Relocate(LightConcurrentLinkedList<SubZoneObject>.Node node, eGameObjectType objectType, int subZoneIndex)
         {
             SubZoneObject subZoneObject = node.Item;
             GameObject gameObject = subZoneObject.Object;
@@ -478,31 +468,29 @@ namespace DOL.GS
                 // Has the object moved to another zone in the same region, or to another subzone in the same zone?
                 if (objectSubZoneIndex == -1)
                 {
+                    Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
+                    SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
+
                     if (!subZoneObject.IsChangingSubZone)
-                    {
-                        Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
-                        SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
                         EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, newZone, newSubZone));
-                        return true;
-                    }
+
+                    return SubZoneRelocationReason.DIFFERENT_ZONE;
                 }
                 else if (objectSubZoneIndex != subZoneIndex)
                 {
                     if (!subZoneObject.IsChangingSubZone)
-                    {
                         EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, this, _subZones[objectSubZoneIndex]));
-                        return true;
-                    }
+
+                    return SubZoneRelocationReason.DIFFERENT_SUBZONE_IN_ZONE;
                 }
             }
             else if (!subZoneObject.IsChangingSubZone)
             {
-                // Ghost object.
                 EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, null, null));
-                return true;
+                return SubZoneRelocationReason.INVALID_OBJECT_OR_DIFFERENT_REGION;
             }
 
-            return false;
+            return SubZoneRelocationReason.NONE;
         }
 
         public void OnObjectAddedToZone()
@@ -513,6 +501,14 @@ namespace DOL.GS
         public void OnObjectRemovedFromZone()
         {
             Interlocked.Decrement(ref _objectCount);
+        }
+
+        private enum SubZoneRelocationReason
+        {
+            NONE,
+            DIFFERENT_ZONE,
+            DIFFERENT_SUBZONE_IN_ZONE,
+            INVALID_OBJECT_OR_DIFFERENT_REGION
         }
 
         #endregion
@@ -528,7 +524,7 @@ namespace DOL.GS
         /// <param name="z2">Z of Point2</param>
         /// <param name="sqDistance">the square distance to check for</param>
         /// <returns>The distance</returns>
-        public static bool CheckSquareDistance(int x1, int y1, int z1, int x2, int y2, int z2, uint sqDistance, bool ignoreZ)
+        public static bool IsWithinSquaredRadius(int x1, int y1, int z1, int x2, int y2, int z2, uint sqDistance, bool ignoreZ)
         {
             int xDiff = x1 - x2;
             long dist = (long)xDiff * xDiff;
@@ -563,7 +559,7 @@ namespace DOL.GS
         /// <param name="yBottom">Y value of the bottom side of the square</param>
         /// <param name="squareRadius">the square of the radius to check for</param>
         /// <returns>The distance</returns>
-        private static bool CheckMinDistance(int x, int y, int xLeft, int xRight, int yTop, int yBottom, uint squareRadius)
+        private static bool CheckSubZoneMinDistance(int x, int y, int xLeft, int xRight, int yTop, int yBottom, uint squareRadius)
         {
             long distance;
 
@@ -601,7 +597,7 @@ namespace DOL.GS
         /// <param name="yBottom">Y value of the bottom side of the square</param>
         /// <param name="squareRadius">the square of the radius to check for</param>
         /// <returns>The distance</returns>
-        private static bool CheckMaxDistance(int x, int y, int xLeft, int xRight, int yTop, int yBottom, uint squareRadius)
+        private static bool CheckSubZoneMaxDistance(int x, int y, int xLeft, int xRight, int yTop, int yBottom, uint squareRadius)
         {
             int xdiff = Math.Max(FastMath.Abs(x - xLeft), FastMath.Abs(x - xRight));
             int ydiff = Math.Max(FastMath.Abs(y - yTop), FastMath.Abs(y - yBottom));
