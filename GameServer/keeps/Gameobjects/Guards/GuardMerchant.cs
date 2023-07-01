@@ -15,23 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.Language;
 
+using DOL.AI.Brain;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS.Keeps
 {
 	public class GuardMerchant : GameGuardMerchant
 	{
-		public const int INTERVAL = 360 * 1000;
-
-		protected virtual int Timer(ECSGameTimer callingTimer)
-		{
-			return INTERVAL;
-		}
 		public override bool AddToWorld()
 		{
 			switch (Realm)
@@ -48,9 +39,7 @@ namespace DOL.GS.Keeps
 			}
 
 			GuildName = "Merchant";
-			bool success = base.AddToWorld();
-			if (success) new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Timer), INTERVAL);
-			return success;
+			return base.AddToWorld();
 		}
 
 		public override double GetArmorAbsorb(eArmorSlot slot)
