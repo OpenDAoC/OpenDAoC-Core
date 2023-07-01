@@ -603,12 +603,12 @@ namespace DOL.GS.Keeps
 				return;
 			if (m_repairTimer != null && m_repairTimer.IsAlive)
 				return; 
-			m_repairTimer = new ECSGameTimer(this);
-			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
-			m_repairTimer.Start(repairInterval);
+			m_repairTimer = new AuxECSGameTimer(this);
+			m_repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+			m_repairTimer.Start(REPAIR_INTERVAL);
 			// Skip the first tick to avoid repairing on server start.
 			// Can't rely on GameLoop.GameLoopTime since it's 0. Is there a better way?
-			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + repairInterval;
+			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL;
 		}
 
 		public void DeleteObject()
@@ -834,25 +834,22 @@ namespace DOL.GS.Keeps
 			{
 				player.SendDoorUpdate(this);
 			});
-
-			// foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
-			// {
-			// 	client.Player.SendDoorUpdate(this);
-			// }
 		}
 
-		protected ECSGameTimer m_repairTimer;
-		protected static int repairInterval = 30 * 60 * 1000;
+		protected AuxECSGameTimer m_repairTimer;
+		protected const int REPAIR_INTERVAL = 30 * 60 * 1000;
 
-		public int RepairTimerCallback(ECSGameTimer timer)
+		public int RepairTimerCallback(AuxECSGameTimer timer)
 		{
 			if (Component == null || Component.Keep == null)
 				return 0;
 
-			if (HealthPercent != 100 && !Component.Keep.InCombat)
+			if (HealthPercent == 100)
+				return 0;
+			else if (!Component.Keep.InCombat)
 				Repair(MaxHealth / 100 * 5);
 
-			return repairInterval;
+			return REPAIR_INTERVAL;
 		}
 
 		/// <summary>
