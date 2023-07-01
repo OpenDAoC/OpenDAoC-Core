@@ -428,9 +428,9 @@ namespace DOL.GS.Commands
 
 							// Sets the privilege level to the character's account, saves to DB, and refreshes world for character to reflect the change
 							GameServer.Database.SaveObject(target.Client.Account);
-							client.Player.RefreshWorld();
+							target.RefreshWorld();
 							// Refresh equipment for player so they don't appear naked after changing plvl
-							client.Player.UpdateEquipmentAppearance();
+							target.UpdateEquipmentAppearance();
 
 							// Message: "You have changed {0}'s account privilege level to {1}!"
 							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name,
@@ -439,7 +439,7 @@ namespace DOL.GS.Commands
 							if (target != client.Player)
 								// Message: "{0} has changed your account's privilege level to {1}!"
 								ChatUtil.SendErrorMessage(target.Client, "AdminCommands.Plvl.Msg.YourPlvlSet",
-									client.Player.Name, plvl.ToString());
+									client.Player?.Name ?? "Console", plvl.ToString());
 							return;
 						}
 						break;
