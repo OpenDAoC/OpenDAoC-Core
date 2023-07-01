@@ -51,19 +51,12 @@ namespace DOL.GS.Relics
 		}
 
 		/// <summary>
-		/// Get the ZoneID of this door
-		/// </summary>
-		public override ushort ZoneID
-		{
-			get { return (ushort)(DoorID / 1000000); }
-		}
-
-		/// <summary>
 		/// Pillars behave like regular doors.
 		/// </summary>
 		public override uint Flag
 		{
 			get { return 0; }
+			set { }
 		}
 
 		private eDoorState m_pillarState;

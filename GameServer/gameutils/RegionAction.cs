@@ -45,7 +45,6 @@ namespace DOL.GS
 
 		protected abstract int OnTick(ECSGameTimer timer);
 
-
 		/// <summary>
 		/// Returns short information about the timer
 		/// </summary>
@@ -81,7 +80,6 @@ namespace DOL.GS
 		}
 
 		protected abstract int OnTick(AuxECSGameTimer timer);
-
 
 		/// <summary>
 		/// Returns short information about the timer

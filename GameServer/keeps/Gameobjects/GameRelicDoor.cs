@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -43,14 +43,6 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-		/// Get the ZoneID of this door
-		/// </summary>
-		public override ushort ZoneID
-		{
-			get { return (ushort)(DoorID / 1000000); }
-		}
-
-		/// <summary>
 		/// This flag is send in packet(keep door = 4, regular door = 0)
 		/// </summary>
 		public override uint Flag
@@ -59,6 +51,7 @@ namespace DOL.GS.Keeps
 			{
 				return 4;
 			}
+			set { }
 		}
 
 		/// <summary>

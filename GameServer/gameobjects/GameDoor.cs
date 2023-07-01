@@ -16,428 +16,272 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Threading;
+
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// GameDoor is class for regular door
-	/// </summary>
-	public class GameDoor : GameDoorBase
-	{
-		private bool m_openDead = false;
-		private static Timer m_timer;
-		protected volatile uint m_lastUpdateTickCount = uint.MinValue;
-		private readonly object m_LockObject = new object();
-		private uint m_flags = 0;
+    /// <summary>
+    /// GameDoor is class for regular doors.
+    /// </summary>
+    public class GameDoor : GameDoorBase
+    {
+        private const int STAYS_OPEN_DURATION = 5000;
+        private const int REPAIR_INTERVAL = 30 * 1000;
 
-		/// <summary>
-		/// The time interval after which door will be closed, in milliseconds
-		/// On live this is usually 5 seconds
-		/// </summary>
-		protected const int CLOSE_DOOR_TIME = 5000;
-		/// <summary>
-		/// The timed action that will close the door
-		/// </summary>
-		protected ECSGameTimer m_closeDoorAction;
+        private bool _openDead = false;
+        private eDoorState _state;
+        private object _lock = new();
+        private AuxECSGameTimer _closeDoorAction;
+        private AuxECSGameTimer _repairTimer;
 
-		/// <summary>
-		/// Creates a new GameDoor object
-		/// </summary>
-		public GameDoor()
-			: base()
-		{
-			m_state = eDoorState.Closed;
-			m_model = 0xFFFF;
-		}
-		
-		/// <summary>
-		/// Loads this door from a door table slot
-		/// </summary>
-		/// <param name="obj">DBDoor</param>
-		public override void LoadFromDatabase(DataObject obj)
-		{
-			base.LoadFromDatabase(obj);
-			DBDoor m_dbdoor = obj as DBDoor;
-			if (m_dbdoor == null) return;
-			Zone curZone = WorldMgr.GetZone((ushort)(m_dbdoor.InternalID / 1000000));
-			if (curZone == null) return;
-			this.CurrentRegion = curZone.ZoneRegion;
-			m_name = m_dbdoor.Name;
-			_heading = (ushort)m_dbdoor.Heading;
-			m_x = m_dbdoor.X;
-			m_y = m_dbdoor.Y;
-			m_z = m_dbdoor.Z;
-			m_level = 0;
-			m_model = 0xFFFF;
-			m_doorID = m_dbdoor.InternalID;
-			m_guildName = m_dbdoor.Guild;
-			_realm = (eRealm)m_dbdoor.Realm;
-			m_level = m_dbdoor.Level;
-			m_health = m_dbdoor.MaxHealth;
-			m_maxHealth = m_dbdoor.MaxHealth;
-			m_locked = m_dbdoor.Locked;
-			m_flags = m_dbdoor.Flags;
-			m_isPostern = m_dbdoor.IsPostern;
+        public int Locked { get; set; }
+        public override int DoorID { get; set; }
+        public override uint Flag { get; set; }
+        public override eDoorState State
+        {
+            get => _state;
+            set
+            {
+                if (_state != value)
+                {
+                    lock (_lock)
+                    {
+                        _state = value;
 
-			// Open mile gates on PVE and PVP server types
-			if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE
-				|| GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP))
-				State = eDoorState.Open;
+                        foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            player.SendDoorUpdate(this);
+                    }
+                }
+            }
+        }
 
-			this.AddToWorld();
-		}
-		
-		/// <summary>
-		/// save this door to a door table slot
-		/// </summary>
-		public override void SaveIntoDatabase()
-		{
-			DBDoor obj = null;
-			if (InternalID != null)
-				obj = GameServer.Database.FindObjectByKey<DBDoor>(InternalID);
-			if (obj == null)
-				obj = new DBDoor();
-			obj.Name = this.Name;
-			obj.InternalID = this.DoorID;
-			obj.Type = DoorID / 100000000;
-			obj.Guild = this.GuildName;
-			obj.Flags = this.Flag;
-			obj.Realm = (byte)this.Realm;
-			obj.Level = this.Level;
-			obj.MaxHealth = this.MaxHealth;
-			obj.Health = this.MaxHealth;
-			obj.Locked = this.Locked;
-			if (InternalID == null)
-			{
-				GameServer.Database.AddObject(obj);
-				InternalID = obj.ObjectId;
-			}
-			else
-				GameServer.Database.SaveObject(obj);
-		}
+        public GameDoor() : base()
+        {
+            _state = eDoorState.Closed;
+            m_model = 0xFFFF;
+        }
 
-		#region Properties
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            base.LoadFromDatabase(obj);
 
-		private int m_locked;
-		/// <summary>
-		/// door open = 0 / lock = 1 
-		/// </summary>
-		public virtual int Locked
-		{
-			get { return m_locked; }
-			set { m_locked = value; }
-		}
+            DBDoor dbDoor = obj as DBDoor;
 
-		/// <summary>
-		/// this hold the door index which is unique
-		/// </summary>
-		private int m_doorID;
+            if (dbDoor == null)
+                return;
 
-		/// <summary>
-		/// door index which is unique
-		/// </summary>
-		public override int DoorID
-		{
-			get { return m_doorID; }
-			set { m_doorID = value; }
-		}
+            Zone curZone = WorldMgr.GetZone((ushort) (dbDoor.InternalID / 1000000));
 
-		private bool m_isPostern;
-		public bool IsPostern
-		{
-			get { return m_isPostern; }
-			set { m_isPostern = value; }
-		}
+            if (curZone == null)
+                return;
 
+            CurrentRegion = curZone.ZoneRegion;
+            m_name = dbDoor.Name;
+            _heading = (ushort) dbDoor.Heading;
+            m_x = dbDoor.X;
+            m_y = dbDoor.Y;
+            m_z = dbDoor.Z;
+            m_level = 0;
+            m_model = 0xFFFF;
+            DoorID = dbDoor.InternalID;
+            m_guildName = dbDoor.Guild;
+            _realm = (eRealm) dbDoor.Realm;
+            m_level = dbDoor.Level;
+            m_health = dbDoor.Health;
+            Locked = dbDoor.Locked;
+            Flag = dbDoor.Flags;
 
-		/// <summary>
-		/// Get the ZoneID of this door
-		/// </summary>
-		public override ushort ZoneID
-		{
-			get { return (ushort)(DoorID / 1000000); }
-		}
+            // Open mile gates on PVE and PVP server types.
+            if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType is eGameServerType.GST_PvE or eGameServerType.GST_PvP))
+                State = eDoorState.Open;
 
-		private int m_type;
+            AddToWorld();
+            StartHealthRegeneration();
+        }
 
-		/// <summary>
-		/// Door Type
-		/// </summary>
-		public virtual int Type
-		{
-			get { return m_type; }
-			set { m_type = value; }
-		}
-		/// <summary>
-		/// This is used to identify what sound a door makes when open / close
-		/// </summary>
-		public override uint Flag
-		{
-			get { return m_flags; }
-		}
+        public override void SaveIntoDatabase()
+        {
+            DBDoor obj = null;
 
-		public void SetFlag(uint flag)
-		{
-			m_flags = flag;
-		}
+            if (InternalID != null)
+                obj = GameServer.Database.FindObjectByKey<DBDoor>(InternalID);
 
-		/// <summary>
-		/// This hold the state of door
-		/// </summary>
-		protected eDoorState m_state;
+            if (obj == null)
+                obj = new DBDoor();
 
-		/// <summary>
-		/// The state of door (open or close)
-		/// </summary>
-		public override eDoorState State
-		{
-			get { return m_state; }
-			set
-			{
-				if (m_state != value)
-				{
-					lock (m_LockObject)
-					{
-						m_state = value;
-						foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						{
-							player.SendDoorUpdate(this);
-						}
-					}
-				}
-			}
-		}
+            obj.Name = Name;
+            obj.InternalID = DoorID;
+            obj.Type = DoorID / 100000000;
+            obj.Guild = GuildName;
+            obj.Flags = Flag;
+            obj.Realm = (byte) Realm;
+            obj.Level = Level;
+            obj.Health = Health;
+            obj.Locked = Locked;
 
-		#endregion
+            if (InternalID == null)
+            {
+                GameServer.Database.AddObject(obj);
+                InternalID = obj.ObjectId;
+            }
+            else
+                GameServer.Database.SaveObject(obj);
+        }
 
-		/// <summary>
-		/// Call this function to open the door
-		/// </summary>
-		public override void Open(GameLiving opener = null)
-		{
-			if (Locked == 0)
-				this.State = eDoorState.Open;
-			
-			if (HealthPercent > 40 || !m_openDead)
-			{
-				lock (m_LockObject)
-				{
-					if (m_closeDoorAction == null)
-					{
-						m_closeDoorAction = new CloseDoorAction(this);
-					}
-					m_closeDoorAction.Start(CLOSE_DOOR_TIME);
-				}
-			}
-		}
+        public override void Open(GameLiving opener = null)
+        {
+            if (Locked == 0)
+                State = eDoorState.Open;
 
-		public virtual byte Status
-		{
-			get
-			{
-			//	if( this.HealthPercent == 0 ) return 0x01;//broken
-				return 0x00;
-			}
-		}
+            if (HealthPercent > 40 || !_openDead)
+            {
+                lock (_lock)
+                {
+                    if (_closeDoorAction == null)
+                        _closeDoorAction = new CloseDoorAction(this);
 
-		/// <summary>
-		/// Call this function to close the door
-		/// </summary>
-		public override void Close(GameLiving closer = null)
-		{
-			if (!m_openDead)
-				this.State = eDoorState.Closed;
-			m_closeDoorAction?.Stop();
-			m_closeDoorAction = null;
-		}
+                    _closeDoorAction.Start(STAYS_OPEN_DURATION);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Allow a NPC to manipulate the door
-		/// </summary>
-		/// <param name="npc"></param>
-		/// <param name="open"></param>
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
-		{
-			npc.TurnTo(this.X, this.Y);
-			if (open && m_state != eDoorState.Open)
-				this.Open();
-			else if (!open && m_state != eDoorState.Closed)
-				this.Close();
+        public override void Close(GameLiving closer = null)
+        {
+            if (!_openDead)
+                State = eDoorState.Closed;
 
-		}
-		
-		public override int Health
-		{
-			get { return m_health; }
-			set
-			{
+            _closeDoorAction?.Stop();
+            _closeDoorAction = null;
+        }
 
-				int maxhealth = MaxHealth;
-				if( value >= maxhealth )
-				{
-					m_health = maxhealth;
+        public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
+        {
+            npc.TurnTo(X, Y);
 
-					lock( m_xpGainers.SyncRoot )
-					{
-						m_xpGainers.Clear( );
-					}
-				}
-				else if( value > 0 )
-				{
-					m_health = value;
-				}
-				else
-				{
-					m_health = 0;
-				}
+            if (open && _state != eDoorState.Open)
+                Open();
+            else if (!open && _state != eDoorState.Closed)
+                Close();
+        }
 
-				if( IsAlive && m_health < maxhealth )
-				{
-					StartHealthRegeneration( );
-				}
-			}
-		}
-		
-		/// <summary>
-		/// Get the solidity of the door
-		/// </summary>
-		public override int MaxHealth
-		{
-			get {	return 5 * GetModified(eProperty.MaxHealth);}
-		}
-		
-		/// <summary>
-		/// No regeneration over time of the door
-		/// </summary>
-		/// <param name="killer"></param>
-		public override void Die(GameObject killer)
-		{
-			base.Die(killer);
-			StartHealthRegeneration();
-		}
+        public override int Health
+        {
+            get => m_health;
+            set
+            {
+                int maxhealth = MaxHealth;
 
-		/// <summary>
-		/// Broadcasts the Door Update to all players around
-		/// </summary>
-		public override void BroadcastUpdate()
-		{
-			base.BroadcastUpdate();
-			
-			m_lastUpdateTickCount = (uint)GameLoop.GameLoopTime;
-		}
-		
-		private static long m_healthregentimer = 0;
-		
-		public virtual void RegenDoorHealth ()
-		{
-			Health = 0;
-			if (Locked == 0)
-				Open();
-			
-			m_healthregentimer = 9999;
-			m_timer = new Timer(new TimerCallback(StartHealthRegen), null, 0, 1000);
+                if (value >= maxhealth)
+                {
+                    m_health = maxhealth;
 
-		}
-		
-		public virtual void StartHealthRegen(object param)
-		{
-			if (HealthPercent >= 40)
-			{
-				m_timer.Dispose( );
-				m_openDead = false;
-				Close( );
-				return;
-			}
-				
-			if (Health == MaxHealth)
-			{
-				m_timer.Dispose( );
-				m_openDead = false;
-				Close();
-				return;
-			}
+                    lock (m_xpGainers.SyncRoot)
+                    {
+                        m_xpGainers.Clear();
+                    }
+                }
+                else
+                    m_health = value > 0 ? value : 0;
 
-			if( m_healthregentimer <= 0 )
-			{
-				m_timer.Dispose();
-				m_openDead = false;
-				Close( );
-				return;
-			}
-			this.Health += this.Level*2;
-			m_healthregentimer -= 10;
-		}
+                if (IsAlive && m_health < maxhealth)
+                    StartHealthRegeneration();
+            }
+        }
 
-		public override void TakeDamage ( GameObject source, eDamageType damageType, int damageAmount, int criticalAmount )
-		{
-			
-			if( !m_openDead && this.Realm != eRealm.Door )
-			{
-				base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        public override int MaxHealth => 5 * GetModified(eProperty.MaxHealth);
 
-				double damageDealt = damageAmount + criticalAmount;
-			}
-				
-			GamePlayer attackerPlayer = source as GamePlayer;
-			if( attackerPlayer != null)
-			{
-				if( !m_openDead && this.Realm != eRealm.Door )
-				{
-                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        public override void Die(GameObject killer)
+        {
+            base.Die(killer);
+            StartHealthRegeneration();
+        }
 
-				}
-				if( !m_openDead && this.Realm != eRealm.Door )
-				{
-					Health -= damageAmount + criticalAmount;
-			
-					if( !IsAlive )
-					{
-						attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						Die(source);
-						m_openDead = true;
-						RegenDoorHealth();
-						if( Locked == 0 )
-							Open( );
-								
-						Group attackerGroup = attackerPlayer.Group;
-						if( attackerGroup != null )
-						{
-							foreach( GameLiving living in attackerGroup.GetMembersInTheGroup( ) )
-							{
-                                ((GamePlayer)living).Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							}
-						}
-					}
-				}
-			}
-		}
-		/// <summary>
-		/// The action that closes the door after specified duration
-		/// </summary>
-		protected class CloseDoorAction : RegionECSAction
-		{
-			/// <summary>
-			/// Constructs a new close door action
-			/// </summary>
-			/// <param name="door">The door that should be closed</param>
-			public CloseDoorAction(GameDoor door)
-				: base(door)
-			{
-			}
+        public override void StartHealthRegeneration()
+        {
+            if (_repairTimer != null && _repairTimer.IsAlive)
+                return;
 
-			/// <summary>
-			/// This function is called to close the door 10 seconds after it was opened
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GameDoor door = (GameDoor)m_actionSource;
-				door.Close();
-				return 0;
-			}
-		}
-	}
+            _repairTimer = new AuxECSGameTimer(this);
+            _repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+            _repairTimer.Start(REPAIR_INTERVAL);
+            // Skip the first tick to avoid repairing on server start.
+            _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL;
+        }
+
+        private int RepairTimerCallback(AuxECSGameTimer timer)
+        {
+            if (HealthPercent != 100 && !InCombat)
+            {
+                Health += MaxHealth / 100 * 5;
+
+                if (HealthPercent >= 40)
+                {
+                    if (_openDead)
+                    {
+                        _openDead = false;
+                        Close();
+                    }
+
+                    if (HealthPercent >= 100)
+                        return 0;
+                }
+
+                SaveIntoDatabase();
+            }
+
+            return REPAIR_INTERVAL;
+        }
+
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (!_openDead && Realm != eRealm.Door)
+            {
+                base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            }
+
+            GamePlayer attackerPlayer = source as GamePlayer;
+
+            if (attackerPlayer != null)
+            {
+                if (!_openDead && Realm != eRealm.Door)
+                {
+                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Health -= damageAmount + criticalAmount;
+
+                    if (!IsAlive)
+                    {
+                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Die(source);
+                        _openDead = true;
+
+                        if (Locked == 0)
+                            Open();
+
+                        Group attackerGroup = attackerPlayer.Group;
+
+                        if (attackerGroup != null)
+                        {
+                            foreach (GameLiving living in attackerGroup.GetMembersInTheGroup())
+                                ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
+                    }
+                }
+            }
+        }
+
+        private class CloseDoorAction : AuxRegionECSAction
+        {
+            public CloseDoorAction(GameDoor door) : base(door) { }
+
+            protected override int OnTick(AuxECSGameTimer timer)
+            {
+                GameDoor door = (GameDoor) m_actionSource;
+                door.Close();
+                return 0;
+            }
+        }
+    }
 }

@@ -266,14 +266,14 @@ namespace DOL.GS.Commands
 
 		private void sound(GameClient client, GameDoor targetDoor, string[] args)
 		{
-			uint doorSound = 0;
+			uint doorSound;
 
 			try
 			{
 				if (args.Length > 2)
 				{
 					doorSound = Convert.ToUInt16(args[2]);
-					targetDoor.SetFlag(doorSound);
+					targetDoor.Flag = doorSound;
 					targetDoor.SaveIntoDatabase();
 					client.Out.SendMessage("You set the door sound to " + doorSound, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}

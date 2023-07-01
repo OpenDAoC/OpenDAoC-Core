@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.Database.Attributes;
 
 namespace DOL.Database
@@ -39,7 +40,6 @@ namespace DOL.Database
 		private uint m_flags;
 		private int m_locked;
 		private int m_health;
-		private int m_maxHealth; // Unused
 		private bool m_isPostern;
 		private int m_state; // DOL.GS.eDoorState
 
@@ -243,20 +243,6 @@ namespace DOL.Database
 			}
 		}
 
-		[DataElement(AllowDbNull = false)]
-		public int MaxHealth
-		{
-			get
-			{
-				return m_maxHealth;
-			}
-			set
-			{
-				Dirty = true;
-				m_maxHealth = value;
-			}
-		}
-		
 		[DataElement(AllowDbNull = false)]
 		public bool IsPostern
 		{

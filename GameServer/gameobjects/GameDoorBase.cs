@@ -8,8 +8,7 @@
 
     public abstract class GameDoorBase : GameLiving
     {
-        public abstract uint Flag { get; }
-        public abstract ushort ZoneID { get; }
+        public abstract uint Flag { get; set; } // Used to identify what sound a door makes when open / close.
         public abstract int DoorID { get; set; }
         public abstract eDoorState State { get; set; }
 

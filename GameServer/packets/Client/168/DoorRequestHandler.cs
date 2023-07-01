@@ -16,9 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Linq;
-using System.Collections.Generic;
 
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
@@ -189,9 +188,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				door.Type = m_handlerDoorID/100000000;
 				door.Level = 20;
 				door.Realm = 6;
-				door.MaxHealth = 2545;
-				door.Health = 2545;
-				door.Locked = 0;
 				door.X = player.X;
 				door.Y = player.Y;
 				door.Z = player.Z;
