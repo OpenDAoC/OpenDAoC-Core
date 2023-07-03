@@ -17,7 +17,7 @@ namespace DOL.GS
         {
 			m_protectSource = protectSource;
 			m_protectTarget = protectTarget;
-			m_playerGroup = protectSource.Group;
+			if (protectSource.Group != null) m_playerGroup = protectSource.Group;
             EffectType = eEffect.Protect;
             EffectService.RequestStartEffect(this);
 		}
@@ -70,7 +70,7 @@ namespace DOL.GS
 				return;
 
 
-			if (m_playerGroup != ProtectTarget.Group)
+			if (m_playerGroup != null && m_playerGroup != ProtectTarget.Group)
 				return;
 
 			if(m_playerGroup != null)
