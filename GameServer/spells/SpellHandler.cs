@@ -52,8 +52,8 @@ namespace DOL.GS.Spells
 		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = Array.Empty<int>();
 
 		public eCastState CastState { get; set; }
-
 		public GameLiving Target { get; set; }
+		public bool HasLos { get; set; }
 
 		/// <summary>
 		/// The spell that we want to handle
@@ -552,7 +552,7 @@ namespace DOL.GS.Spells
 			if (Caster is GameNPC npcOwner)
 			{
 				// Reset for LoS checks during cast.
-				m_caster.TargetInView = true;
+				HasLos = true;
 
 				if (!Spell.IsInstantCast)
 				{
@@ -783,7 +783,7 @@ namespace DOL.GS.Spells
 							return true;
 
 						// Pet spells (shade) don't require the target to be in front.
-						if ((m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)) || !Caster.TargetInView)
+						if (!HasLos || (m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)))
 						{
 							if (!quiet)
 								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
@@ -815,8 +815,7 @@ namespace DOL.GS.Spells
 						break;
 				}
 
-				//heals/buffs/rez need LOS only to start casting, TargetInView only works if selectedTarget == TargetObject
-				if (!Caster.TargetInView && m_spell.Target.ToLower() != "pet")
+				if (!HasLos && m_spell.Target.ToLower() != "pet")
 				{
 					if (!quiet)
 						MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
@@ -889,9 +888,9 @@ namespace DOL.GS.Spells
 			if (player == null || sourceOID == 0 || targetOID == 0)
 				return;
 			
-			player.TargetInView = (response & 0x100) == 0x100;
+			HasLos = (response & 0x100) == 0x100;
 
-			if (!player.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
 			{
 				if (IsInCastingPhase)
 					MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
@@ -905,9 +904,9 @@ namespace DOL.GS.Spells
 			if (living == null || sourceOID == 0 || targetOID == 0)
 				return;
 
-			m_caster.TargetInView = (response & 0x100) == 0x100;
+			HasLos = (response & 0x100) == 0x100;
 
-			if (!m_caster.TargetInView && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
 				InterruptCasting();
 		}
 
@@ -989,9 +988,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType != eSpellType.PetSpell)
 						{
 							// The target must be visible and in front of the caster
-							// Thankfully TargetInView seems to return false if the target hides behind a wall, even if the caster selects a new target during the animation
-							// We don't give a radius to IsObjectInFront. A check is already done in TargetInView
-							if (target.IsStealthed || !Caster.TargetInView || !Caster.IsObjectInFront(target, 180, 0))
+							if (target.IsStealthed || !HasLos || !Caster.IsObjectInFront(target, 180, Caster.TargetInViewAlwaysTrueMinRange))
 							{
 								// Avoid flute mez's chat log spam.
 								if (m_spell.IsPulsing && m_spell.SpellType == eSpellType.Mesmerize)
@@ -1138,13 +1135,6 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
-					//Removed mid-cast range check - SuiteJ
-					//if (Caster is GamePlayer && !m_caster.IsWithinRadius(target, CalculateSpellRange()))
-					//{
-					//	if (!quiet) MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
-					//	return false;
-					//}
-
 					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 					{
 						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
@@ -1159,16 +1149,6 @@ namespace DOL.GS.Spells
 				switch (m_spell.Target.ToLower())
 				{
 					case "enemy":
-						//enemys have to be in front and in view for targeted spells
-						//Fen - removed 08/18/2022. players only check LoS at start and end of cast, not mid-cast
-						/*
-						if (Caster is GamePlayer && !m_caster.TargetInView && !Caster.IsWithinRadius(target, 64) &&
-							m_spell.SpellType != eSpellType.PetSpell && (!m_spell.IsPulsing && m_spell.SpellType != eSpellType.Mesmerize))
-						{
-							if (!quiet) MessageToCaster("Your target is not in view. The spell fails.", eChatType.CT_SpellResisted);
-							return false;
-						}*/
-
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, quiet))
 							return false;
 
@@ -1258,6 +1238,9 @@ namespace DOL.GS.Spells
 						if (Target == null && Caster is NecromancerPet nPet)
 							Target = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
 					}
+
+					// Initial LoS state.
+					HasLos = Caster.TargetInView;
 
 					if (CheckBeginCast(Target))
 					{

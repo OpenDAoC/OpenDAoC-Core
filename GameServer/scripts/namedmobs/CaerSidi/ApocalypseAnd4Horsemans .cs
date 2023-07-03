@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using Timer = System.Timers.Timer;
-using System.Timers;
 
 #region Apoc Initializator
 namespace DOL.GS
@@ -2838,7 +2837,6 @@ namespace DOL.AI.Brain
             Body.TurnTo(DD_Target);
             if (Body.TargetObject != null)
             {
-                Body.TargetInView = true;            
                 Body.CastSpell(Apoc_Rain_of_Fire, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
                 if (reset_cast == false)
                 {

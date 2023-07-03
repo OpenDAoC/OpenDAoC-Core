@@ -1136,22 +1136,18 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool TargetInView
 		{
-			get
-			{
-				//always in view for mobs
-				return true;
-			}
-			set
-			{
-			}
+			get => true;
+			set { }
 		}
+
+		public virtual int TargetInViewAlwaysTrueMinRange => 0;
 
 		/// <summary>
 		/// Gets or sets the GroundTargetObject's visibility
 		/// </summary>
 		public virtual bool GroundTargetInView
 		{
-			get { return true; }
+			get => true;
 			set { }
 		}
 

@@ -173,15 +173,15 @@ namespace DOL.GS
         {
             get
             {
-                GamePlayer targetPlayer = TargetObject as GamePlayer;
-
-                if (targetPlayer != null && targetPlayer.IsMoving ? GetDistanceTo(targetPlayer) < 100 : GetDistanceTo(targetPlayer) < 64)
+                if (GetDistanceTo(TargetObject) <= TargetInViewAlwaysTrueMinRange)
                     return true;
 
                 return m_targetInView;
             }
-            set { m_targetInView = value; }
+            set => m_targetInView = value;
         }
+
+        public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
 
         public PlayerDeck RandomNumberDeck
         {

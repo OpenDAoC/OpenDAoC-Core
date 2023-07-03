@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -26,6 +27,8 @@ namespace DOL.GS.Spells
 	{
 		eCastState CastState { get; set; }
 		GameLiving Target { get; set; }
+		bool HasLos { get; set; }
+
 		void CreateECSEffect(ECSGameEffectInitParams initParams);
 
 		/// <summary>
