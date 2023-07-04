@@ -1992,13 +1992,12 @@ namespace DOL.GS
             int shieldSize = 0;
 
             if (leftHand != null)
+            {
+                guardchance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
                 shieldSize = leftHand.Type_Damage;
-
-            if (guard.GuardSource is GameNPC)
+            }
+            else if (guard.GuardSource is GameNPC)
                 shieldSize = 1;
-
-            double levelMod = (double) (leftHand.Level - 1) / 50 * 0.15;
-            guardchance += levelMod; // Up to 15% extra block chance based on shield level.
 
             if (m_attackers.Count > shieldSize)
                 guardchance *= shieldSize / (double) m_attackers.Count;
