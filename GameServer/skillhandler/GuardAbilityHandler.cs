@@ -73,15 +73,32 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            // Cancel all guard effects by this player before adding a new one.
-            foreach (GuardECSGameEffect existingEffectOnSource in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
-                existingEffectOnSource.Cancel();
+            GuardECSGameEffect existingGuard = null;
 
-            // Check if someone is already guarding the target.
-            if (EffectListService.GetAbilityEffectOnTarget(guardTarget, eEffect.Guard) is GuardECSGameEffect existingEffectOnTarget)
+            // Cancel our effect if it exists and check if someone is already guarding the target.
+            foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectOnTarget.GuardSource.GetName(0, true), existingEffectOnTarget.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                if (guard.GuardSource == player)
+                {
+                    guard.Cancel();
+                    return;
+                }
+
+                if (guard.GuardTarget == guardTarget)
+                    existingGuard = guard;
+            }
+
+            if (existingGuard != null)
+            {
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingGuard.GuardSource.GetName(0, true), existingGuard.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
+            }
+
+            // Cancel other guard effects by this player before adding a new one.
+            foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            {
+                if (guard.GuardSource == player)
+                    guard.Cancel();
             }
 
             new GuardECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null), player, guardTarget);
