@@ -120,8 +120,8 @@ namespace DOL.GS
 
         public bool PathTo(IPoint3D targetPosition, short speed)
         {
-            // Not optimal but we don't want to use the object directly since the value may get modified,
-            // because 'PathToInternal' calls itself multiple times over time.
+            // Not optimal but we don't want to use the object directly because its position is likely to change.
+            // This would break 'PathToInternal'.
             targetPosition = new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z);
             return PathToInternal(targetPosition, speed);
         }
@@ -187,7 +187,7 @@ namespace DOL.GS
             if (CurrentWaypoint != null)
             {
                 _movementType |= MovementType.ON_PATH;
-                PathTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
             }
             else
                 StopMovingOnPath();
@@ -485,7 +485,7 @@ namespace DOL.GS
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
             if (CurrentWaypoint != null)
-                PathTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }
