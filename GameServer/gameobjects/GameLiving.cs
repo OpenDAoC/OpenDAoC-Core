@@ -1696,45 +1696,42 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			double blockChance = 0;
+			InventoryItem lefthand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+
+			if (lefthand != null && lefthand.Object_Type != (int)eObjectType.Shield)
+				lefthand = null;
+
 			GamePlayer player = this as GamePlayer;
-			InventoryItem lefthand = null;
-			if ( this is GamePlayer && player != null && IsObjectInFront( ad.Attacker, 120 ) && player.HasAbility( Abilities.Shield ) )
+
+			if (IsObjectInFront(ad.Attacker, 120) && !ad.Target.IsStunned && !ad.Target.IsSitting)
 			{
-				lefthand = Inventory.GetItem( eInventorySlot.LeftHandWeapon );
-				if( lefthand != null && ( player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND ) )
+				if (player != null)
 				{
-					if (lefthand.Object_Type == (int)eObjectType.Shield && IsObjectInFront(ad.Attacker, 120))
+					if (player.HasAbility(Abilities.Shield) && lefthand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
 						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01 * lefthand.Condition / lefthand.MaxCondition;
 				}
+				else
+					blockChance = GetModified(eProperty.BlockChance);
 			}
-			else if( this is GameNPC && IsObjectInFront( ad.Attacker, 120 ) )
+
+			if (blockChance > 0)
 			{
-				int res = GetModified( eProperty.BlockChance );
-				if( res != 0 )
-					blockChance = res;
-			}
-			if( blockChance > 0 && IsObjectInFront( ad.Attacker, 120 ) && !ad.Target.IsStunned && !ad.Target.IsSitting )
-			{
-				// Reduce block chance if the shield used is too small (valable only for player because npc inventory does not store the shield size but only the model of item)
+				// Reduce block chance if the shield used is too small.
 				double shieldSize = 0.0;
-				if( lefthand != null )
-					shieldSize = (double)lefthand.Type_Damage;
-				if( player != null && attackerCount > shieldSize )
-					blockChance *= (shieldSize / attackerCount);
+
+				if (lefthand != null)
+				{
+					shieldSize = lefthand.Type_Damage;
+					blockChance *= shieldSize / attackerCount;
+				}
+
 				blockChance *= 0.001;
-				// no chance bonus with ranged attacks?
-				//					if (ad.Attacker.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-				//						blockChance += 0.25;
 				blockChance += attackerConLevel * 0.05;
 
-				if(lefthand != null && player.HasSpecialization(Abilities.Shield ))
-                {
-					double levelMod = (double)(lefthand.Level - 1) / 50 * 0.15;
-					blockChance += levelMod; //up to 15% extra block chance based on shield level (hidden mythic calc?)
-				}
-					
-				//Console.WriteLine($"block before {blockChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after block {blockChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
-				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
+				if (lefthand != null && player.HasSpecialization(Abilities.Shield))
+					blockChance += (double) (lefthand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+
+				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; // Reduce chance by attacker's defense penetration.
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
@@ -1742,81 +1739,46 @@ namespace DOL.GS
 					blockChance = ServerProperties.Properties.BLOCK_CAP;
 				
 				if (shieldSize == 1 && blockChance > .8)
-					blockChance = .8;
+					blockChance = 0.8;
 				else if (shieldSize == 2 && blockChance > .9)
-					blockChance = .9;
+					blockChance = 0.9;
 				else if (shieldSize == 3 && blockChance > .99)
-					blockChance = .99;
+					blockChance = 0.99;
 				
-				if (this.IsEngaging)
+				if (IsEngaging)
 				{
-					EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
-					if (engage != null && this.attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
+					EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
+
+					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
 					{
-						// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate							
-						// You cannot engage a mob that was attacked within the last X seconds...
 						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
-						{
-							if (engage.Owner is GamePlayer)
-								(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						}  // Check if player has enough endurance left to engage
-						else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
-						{
-							engage.Cancel(false); // if player ran out of endurance cancel engage effect
-						}
+							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						else if (Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
+							engage.Cancel(false);
 						else
 						{
-							engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
-							if (engage.Owner is GamePlayer)
-								(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+							Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
+							player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
 							if (blockChance < .95)
 								blockChance = .95;
 						}
 					}
 				}
-
-				/*
-				// KNutters - Removed the AttackState check because it is imposible to be in melee range
-				// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
-				if( engage != null  && engage.EngageTarget == ad.Attacker )
-				{
-					// You cannot engage a mob that was attacked within the last X seconds...
-					if( engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK )
-
-					{
-						if( engage.Owner is GamePlayer )
-							(engage.Owner as GamePlayer).Out.SendMessage(string.Format(LanguageMgr.GetTranslation((engage.Owner as GamePlayer).Client.Account.Language, "GameLiving.TryBlock.Engage"), engage.EngageTarget.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
-					// Check if player has enough endurance left to engage
-					else if( engage.Owner.Endurance >= EngageAbilityHandler.ENGAGE_DURATION_LOST )
-					{
-						engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
-						if( engage.Owner is GamePlayer )
-							(engage.Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((engage.Owner as GamePlayer).Client.Account.Language, "GameLiving.TryBlock.Blocking"), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-						if( blockChance < 0.95 )
-							blockChance = 0.95;
-					}
-					// if player ran out of endurance cancel engage effect
-					else
-						engage.Cancel( false );
-				}
-				*/
 			}
-			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-			{
+
+			if (ad.AttackType == eAttackType.MeleeDualWield)
 				blockChance = Math.Max(blockChance * 0.5, 0);
-			}
-			//Excalibur : infi RR5
-			GamePlayer p = ad.Attacker as GamePlayer;
-			if (p != null)
+
+			// Infi RR5
+			if (player != null)
 			{
-				OverwhelmEffect Overwhelm = (OverwhelmEffect)p.EffectList.GetOfType<OverwhelmEffect>();
+				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+
 				if (Overwhelm != null)
-				{
 					blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
-				}
 			}
+
 			return blockChance;
 		}
 
