@@ -17,7 +17,6 @@
  *
  */
 
-using System;
 using DOL.GS.Effects;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -113,10 +112,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (effect != null)
 				{
 					if (effect.EffectType == eEffect.Guard)
-						(effect as GuardECSGameEffect).Cancel(true);
+						(effect as GuardECSGameEffect).Cancel();
 					else
 						EffectService.RequestImmediateCancelEffect(effect, true);
-                }
+				}
 
 				return 0;
 			}

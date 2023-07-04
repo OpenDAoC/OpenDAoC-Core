@@ -115,7 +115,7 @@ namespace DOL.GS
 
         }
 
-		public void Cancel(bool playerCancel)
+		public void Cancel()
         {
 			if (m_guardSource is GamePlayer && m_guardTarget is GamePlayer && m_playerGroup != null)
 			{
@@ -148,7 +148,7 @@ namespace DOL.GS
 			if (eArgs == null) return;
 			if (eArgs.Member == GuardTarget || eArgs.Member == GuardSource)
 			{
-				Cancel(false);
+				Cancel();
 			}
 		}
 	}
