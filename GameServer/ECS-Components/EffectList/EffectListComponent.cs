@@ -43,6 +43,8 @@ namespace DOL.GS
                             Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
                         else if (effect.EffectType is eEffect.Protect or eEffect.Guard)
                             Effects[effect.EffectType].Add(effect);
+
+                        EffectIdToEffect.TryAdd(effect.Icon, effect);
                         return true;
                     }
 
