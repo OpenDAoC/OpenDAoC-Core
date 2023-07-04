@@ -201,14 +201,13 @@ namespace DOL.GS
 
         public override void StartHealthRegeneration()
         {
-            if (_repairTimer != null && _repairTimer.IsAlive)
+            if ((_repairTimer != null && _repairTimer.IsAlive) || Health >= MaxHealth)
                 return;
 
             _repairTimer = new AuxECSGameTimer(this);
             _repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
             _repairTimer.Start(REPAIR_INTERVAL);
-            // Skip the first tick to avoid repairing on server start.
-            _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL;
+            _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
         }
 
         private int RepairTimerCallback(AuxECSGameTimer timer)
@@ -217,19 +216,18 @@ namespace DOL.GS
             {
                 Health += MaxHealth / 100 * 5;
 
-                if (HealthPercent >= 40)
+                if (HealthPercent >= 40 && _openDead)
                 {
-                    if (_openDead)
-                    {
-                        _openDead = false;
-                        Close();
-                    }
-
-                    if (HealthPercent >= 100)
-                        return 0;
+                    _openDead = false;
+                    Close();
                 }
 
+                // This should normally be done by 'DoorMgr'.
+                // But for now it's here because basic doors aren't attackable anyway.
                 SaveIntoDatabase();
+
+                if (HealthPercent >= 100)
+                    return 0;
             }
 
             return REPAIR_INTERVAL;
@@ -248,7 +246,7 @@ namespace DOL.GS
             {
                 if (!_openDead && Realm != eRealm.Door)
                 {
-                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     Health -= damageAmount + criticalAmount;
 
                     if (!IsAlive)

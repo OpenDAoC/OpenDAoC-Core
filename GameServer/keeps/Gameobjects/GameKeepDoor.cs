@@ -598,17 +598,16 @@ namespace DOL.GS.Keeps
 
 		public override void StartHealthRegeneration()
 		{
-			// Doors don't regen health if they are not attackable
 			if (!IsAttackableDoor)
 				return;
-			if (m_repairTimer != null && m_repairTimer.IsAlive)
-				return; 
+
+			if ((m_repairTimer != null && m_repairTimer.IsAlive) || Health >= MaxHealth)
+				return;
+
 			m_repairTimer = new AuxECSGameTimer(this);
 			m_repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Start(REPAIR_INTERVAL);
-			// Skip the first tick to avoid repairing on server start.
-			// Can't rely on GameLoop.GameLoopTime since it's 0. Is there a better way?
-			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL;
+			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
 		}
 
 		public void DeleteObject()
