@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,9 +85,6 @@ namespace DOL.GS
 
 		// lookup table for styles, faster access when invoking a char styleID with classID
 		protected static readonly Dictionary<KeyValuePair<int, int>, Style> m_styleIndex = new();
-		
-		// Style X Spell Cache (Procs) Dict<"int StyleID", "List<"("Spell spell", "int classID", "int Chance")"> Proc Constraints"> list of procs">
-		protected static readonly Dictionary<int, List<(Spell, int, int)>> m_stylesProcs = new();
 
 		// Ability Action Handler Dictionary Index, typename to instanciate ondemande
 		protected static readonly Dictionary<string, Type> m_abilityActionHandler = new();
@@ -540,22 +538,19 @@ namespace DOL.GS
 				{
 					// Clear Spec Cache
 					m_specsByName.Clear();
-					
+
 					// Clear SpecXAbility Cache (Ability Career)
 					m_specsAbilities.Clear();
-					
+
 					// Clear SpecXSpellLine Cache (Spell Career)
 					m_specsSpellLines.Clear();
-					
+
 					// Clear Style Cache (Style Career)
 					m_specsStyles.Clear();
-					
+
 					// Clear Style ID Cache (Utils...)
 					m_styleIndex.Clear();
-					
-					// Clear Style X Spell Cache (Style Procs...)
-					m_stylesProcs.Clear();
-	
+
 					foreach (DBSpecialization spec in specs)
 					{
 						StringBuilder str = new("Specialization ");
@@ -668,19 +663,14 @@ namespace DOL.GS
 									if (log.IsWarnEnabled)
 										log.WarnFormat("Specialization {0} - Duplicate Style Key, StyleID {1} : ClassID {2}, Ignored...", spec.KeyName, newStyle.ID, specStyle.ClassId);
 								}
-								
+
 								// Load Procs.
 								if (specStyle.AttachedProcs != null)
 								{
 									foreach (DBStyleXSpell styleProc in specStyle.AttachedProcs)
 									{
-										if (m_spellIndex.ContainsKey(styleProc.SpellID))
-										{
-											if (!m_stylesProcs.ContainsKey(specStyle.ID))
-												m_stylesProcs.Add(specStyle.ID, new List<(Spell, int, int)>());
-											
-											m_stylesProcs[specStyle.ID].Add((m_spellIndex[styleProc.SpellID], styleProc.ClassID, styleProc.Chance));
-										}
+										if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
+											newStyle.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
 									}
 								}
 							}
@@ -2947,29 +2937,6 @@ namespace DOL.GS
 			return style;
 		}
 
-		/// <summary>
-		/// Get List of Spell, ClassId, Chance Constraints for this Style Procs...
-		/// </summary>
-		/// <param name="style"></param>
-		/// <returns></returns>
-		public static IList<(Spell, int, int)> GetStyleProcsByID(Style style)
-		{
-			m_syncLockUpdates.EnterReadLock();
-			List<(Spell, int, int)> entries = new();
-
-			try
-			{
-				if (m_stylesProcs.ContainsKey(style.ID))
-					entries = new List<(Spell, int, int)>(m_stylesProcs[style.ID]);
-			}
-			finally
-			{
-				m_syncLockUpdates.ExitReadLock();
-			}
-			
-			return entries;
-		}
-		
 		/// <summary>
 		/// Returns spell with id, level of spell is always 1
 		/// </summary>

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Collections.Generic;
 using DOL.Database;
 
@@ -123,27 +124,15 @@ namespace DOL.GS.Styles
             /// </summary>
             public const int AnyWeapon = 1001;
         }
+
         /// <summary>
         /// The database style object, used to retrieve information for this object
         /// </summary>
         protected DBStyle baseStyle = null;
 
-        /// <summary>
-        /// Constructs a new Style object based on a database Style object
-        /// </summary>
-        /// <param name="style">The database style object this object is based on</param>
-        public Style(DBStyle style, StyleExecutedCallback callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
-        {
-            baseStyle = style;
-            OnStyleExecuted = callback;
-        }
-
         public int ClassID => baseStyle.ClassId;
 
-        /// <summary>
-        /// (readonly)(procs) The list of procs available for this style
-        /// </summary>
-        public IList<(Spell, int, int)> Procs => SkillBase.GetStyleProcsByID(this);
+        public List<(Spell, int, int)> Procs { get; private set; } = new();
 
         /// <summary>
         /// (readonly) The Specialization's name required to execute this style
@@ -235,6 +224,16 @@ namespace DOL.GS.Styles
         public eArmorSlot ArmorHitLocation => (eArmorSlot) baseStyle.ArmorHitLocation;
 
         public StyleExecutedCallback OnStyleExecuted { get; private set; }
+
+        /// <summary>
+        /// Constructs a new Style object based on a database Style object
+        /// </summary>
+        /// <param name="style">The database style object this object is based on</param>
+        public Style(DBStyle style, StyleExecutedCallback callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
+        {
+            baseStyle = style;
+            OnStyleExecuted = callback;
+        }
 
         /// <summary>
         /// Gets name of required weapon type
