@@ -2181,24 +2181,33 @@ namespace DOL.GS
 		public static void AddScriptedStyle(Specialization spec, DBStyle style)
 		{
 			m_syncLockUpdates.EnterWriteLock();
+
 			try
 			{
 				if (!m_specsStyles.ContainsKey(spec.KeyName))
 					m_specsStyles.Add(spec.KeyName, new Dictionary<int, List<Tuple<Style, byte>>>());
-				
+
 				if (!m_specsStyles[spec.KeyName].ContainsKey(style.ClassId))
 					m_specsStyles[spec.KeyName].Add(style.ClassId, new List<Tuple<Style, byte>>());
-			
+
 				Style st = new(style, null);
-				
 				m_specsStyles[spec.KeyName][style.ClassId].Add(new Tuple<Style, byte>(st, (byte)style.SpecLevelRequirement));
-	
 				KeyValuePair<int, int> styleKey = new(st.ID, style.ClassId);
+
 				if (!m_styleIndex.ContainsKey(styleKey))
 					m_styleIndex.Add(styleKey, st);
-	
+
 				if (!m_specsByName.ContainsKey(spec.KeyName))
 					RegisterSpec(spec);
+
+				if (style.AttachedProcs != null)
+				{
+					foreach (DBStyleXSpell styleProc in style.AttachedProcs)
+					{
+						if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
+							st.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
+					}
+				}
 			}
 			finally
 			{
