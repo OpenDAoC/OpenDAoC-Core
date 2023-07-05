@@ -1719,7 +1719,7 @@ namespace DOL.GS
 				// Reduce block chance if the shield used is too small.
 				int shieldSize = 1;
 
-				if (leftHand != null)
+				if (leftHand != null && attackerCount > shieldSize)
 				{
 					shieldSize = Math.Max(leftHand.Type_Damage, 1);
 					blockChance *= shieldSize / (double) attackerCount;
@@ -1728,7 +1728,7 @@ namespace DOL.GS
 				blockChance *= 0.001;
 				blockChance += attackerConLevel * 0.05;
 
-				if (leftHand != null && player.HasSpecialization(Abilities.Shield))
+				if (leftHand != null && player != null && player.HasSpecialization(Abilities.Shield))
 					blockChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
 
 				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; // Reduce chance by attacker's defense penetration.

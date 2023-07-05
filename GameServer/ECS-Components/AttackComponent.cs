@@ -1990,7 +1990,9 @@ namespace DOL.GS
             if (leftHand != null)
             {
                 shieldSize = Math.Max(leftHand.Type_Damage, 1);
-                guardchance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+
+                if (guardSource is GamePlayer)
+                    guardchance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
             }
 
             if (m_attackers.Count > shieldSize)
