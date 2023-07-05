@@ -1165,26 +1165,19 @@ namespace DOL.GS
             IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == eSpellType.StyleRange);
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
-            if (dualWield && (ad.Attacker is GamePlayer gPlayer) &&
-                gPlayer.CharacterClass.ID != (int) eCharacterClass.Savage)
+            if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.CharacterClass.ID != (int) eCharacterClass.Savage)
                 ad.AttackType = AttackData.eAttackType.MeleeDualWield;
             else if (weapon == null)
                 ad.AttackType = AttackData.eAttackType.MeleeOneHand;
             else
-                switch (weapon.SlotPosition)
+            {
+                ad.AttackType = weapon.SlotPosition switch
                 {
-                    default:
-                    case Slot.RIGHTHAND:
-                    case Slot.LEFTHAND:
-                        ad.AttackType = AttackData.eAttackType.MeleeOneHand;
-                        break;
-                    case Slot.TWOHAND:
-                        ad.AttackType = AttackData.eAttackType.MeleeTwoHand;
-                        break;
-                    case Slot.RANGED:
-                        ad.AttackType = AttackData.eAttackType.Ranged;
-                        break;
-                }
+                    Slot.TWOHAND => AttackData.eAttackType.MeleeTwoHand,
+                    Slot.RANGED => AttackData.eAttackType.Ranged,
+                    _ => AttackData.eAttackType.MeleeOneHand,
+                };
+            }
 
             // No target.
             if (ad.Target == null)
@@ -1268,6 +1261,9 @@ namespace DOL.GS
                 SendAttackingCombatMessages(action, ad);
                 return ad;
             }
+
+            // Add ourself to the target's attackers list. Should be done before any enemy reaction for accurate calculation.
+            ad.Target.attackComponent.AddAttacker(owner);
 
             // Calculate our attack result and attack damage.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon);

@@ -163,7 +163,6 @@ namespace DOL.GS
             }
 
             // Notify the target of our attack (sends damage messages, should be before damage)
-            mainHandAD.Target.attackComponent.AddAttacker(m_owner);
             mainHandAD.Target.OnAttackedByEnemy(mainHandAD);
 
             // Check if Reflex Attack RA should apply. This is checked once here and cached since it is used multiple times below (every swing triggers Reflex Attack).
