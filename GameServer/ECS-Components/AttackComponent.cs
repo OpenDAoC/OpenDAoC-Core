@@ -1989,15 +1989,13 @@ namespace DOL.GS
 
             guardchance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
             guardchance += attackerConLevel * 0.05;
-            int shieldSize = 0;
+            int shieldSize = 1;
 
             if (leftHand != null)
             {
+                shieldSize = Math.Max(leftHand.Type_Damage, 1);
                 guardchance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
-                shieldSize = leftHand.Type_Damage;
             }
-            else if (guard.GuardSource is GameNPC)
-                shieldSize = 1;
 
             if (m_attackers.Count > shieldSize)
                 guardchance *= shieldSize / (double) m_attackers.Count;

@@ -1696,10 +1696,10 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			double blockChance = 0;
-			InventoryItem lefthand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+			InventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-			if (lefthand != null && lefthand.Object_Type != (int)eObjectType.Shield)
-				lefthand = null;
+			if (leftHand != null && leftHand.Object_Type != (int)eObjectType.Shield)
+				leftHand = null;
 
 			GamePlayer player = this as GamePlayer;
 
@@ -1707,8 +1707,8 @@ namespace DOL.GS
 			{
 				if (player != null)
 				{
-					if (player.HasAbility(Abilities.Shield) && lefthand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
-						blockChance = GetModified(eProperty.BlockChance) * lefthand.Quality * 0.01 * lefthand.Condition / lefthand.MaxCondition;
+					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
+						blockChance = GetModified(eProperty.BlockChance) * leftHand.Quality * 0.01 * leftHand.Condition / leftHand.MaxCondition;
 				}
 				else
 					blockChance = GetModified(eProperty.BlockChance);
@@ -1717,19 +1717,19 @@ namespace DOL.GS
 			if (blockChance > 0)
 			{
 				// Reduce block chance if the shield used is too small.
-				double shieldSize = 0.0;
+				int shieldSize = 1;
 
-				if (lefthand != null)
+				if (leftHand != null)
 				{
-					shieldSize = lefthand.Type_Damage;
-					blockChance *= shieldSize / attackerCount;
+					shieldSize = Math.Max(leftHand.Type_Damage, 1);
+					blockChance *= shieldSize / (double) attackerCount;
 				}
 
 				blockChance *= 0.001;
 				blockChance += attackerConLevel * 0.05;
 
-				if (lefthand != null && player.HasSpecialization(Abilities.Shield))
-					blockChance += (double) (lefthand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+				if (leftHand != null && player.HasSpecialization(Abilities.Shield))
+					blockChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
 
 				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; // Reduce chance by attacker's defense penetration.
 

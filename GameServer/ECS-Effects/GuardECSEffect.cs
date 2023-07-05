@@ -7,7 +7,7 @@ namespace DOL.GS
 {
     public class GuardECSGameEffect : ECSGameAbilityEffect
     {
-        public GuardECSGameEffect(ECSGameEffectInitParams initParams, GameLiving guardSource, GameLiving guardTarget) : base(initParams) 
+        public GuardECSGameEffect(ECSGameEffectInitParams initParams, GameLiving guardSource, GameLiving guardTarget) : base(initParams)
         {
             m_guardSource = guardSource;
             m_guardTarget = guardTarget;

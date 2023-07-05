@@ -85,10 +85,10 @@ namespace DOL.GS
 		// lookup table for styles, faster access when invoking a char styleID with classID
 		protected static readonly Dictionary<KeyValuePair<int, int>, Style> m_styleIndex = new();
 
-		// Ability Action Handler Dictionary Index, Delegate to instanciate on demande
+		// Ability Action Handler Dictionary Index, Delegate to instanciate on demand
 		protected static readonly Dictionary<string, Func<IAbilityActionHandler>> m_abilityActionHandler = new();
 
-		// Spec Action Handler Dictionary Index, Delegate to instanciate on demande
+		// Spec Action Handler Dictionary Index, Delegate to instanciate on demand
 		protected static readonly Dictionary<string, Func<ISpecActionHandler>> m_specActionHandler = new();
 
 		#endregion
