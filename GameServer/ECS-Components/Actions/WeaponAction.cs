@@ -158,7 +158,6 @@ namespace DOL.GS
                 mainHandAD.AttackResult == eAttackResult.NotAllowed_ServerRules ||
                 mainHandAD.AttackResult == eAttackResult.TargetDead)
             {
-                m_owner.SendAttackingCombatMessages(mainHandAD);
                 return;
             }
 
@@ -218,8 +217,6 @@ namespace DOL.GS
                 }
             }
 
-            m_owner.SendAttackingCombatMessages(mainHandAD);
-
             if (mainHandAD == null || mainHandAD.Target == null)
                 return;
 
@@ -266,9 +263,6 @@ namespace DOL.GS
                             }
 
                             m_owner.TempProperties.setProperty(LAST_ATTACK_DATA_LH, leftHandAD);
-
-                            // Send messages about our left hand attack.
-                            m_owner.SendAttackingCombatMessages(leftHandAD);
                             leftHandAD.Target.HandleDamageShields(leftHandAD);
 
                             // Reflex Attack - Offhand.

@@ -1287,15 +1287,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Sends the proper combat messages depending on our attack data
-		/// </summary>
-		/// <param name="ad">result of the attack</param>
-		public virtual void SendAttackingCombatMessages(AttackData ad)
-		{
-			//None for GameLiving - could be a GameNPC DO NOT ADD ANYTHING HERE
-		}
-
-		/// <summary>
 		/// Does this living allow procs to be cast on it?
 		/// </summary>
 		/// <param name="ad"></param>
