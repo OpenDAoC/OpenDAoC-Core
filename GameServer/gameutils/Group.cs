@@ -16,12 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Linq;
+
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -296,6 +297,13 @@ namespace DOL.GS
 				player.Out.SendGroupWindowUpdate();
 				player.Out.SendQuestListUpdate();
 
+				// Cancel Guard effects.
+				foreach (GuardECSGameEffect guard in living.effectListComponent.GetAbilityEffects().Where(x => x.EffectType == eEffect.Guard))
+				{
+					if (guard.GuardSource is GamePlayer && guard.GuardTarget is GamePlayer)
+						EffectService.RequestImmediateCancelEffect(guard);
+				}
+
 				// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
 				// We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
 				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
@@ -336,31 +344,26 @@ namespace DOL.GS
 					if (updateOneself)
 						player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
 				}
-			}
-			
-			UpdateGroupWindow();
-			
-			if (player != null)
-			{
+
 				player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				player.Notify(GamePlayerEvent.LeaveGroup, player);
 			}
-			
+
+			UpdateGroupWindow();
 			SendMessageToGroupMembers(string.Format("{0} has left the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			
-			
+
 			// only one member left?
 			if (MemberCount == 1)
 			{
 				// RR4: Group is disbanded, ending mission group if any
 				RemoveMember(m_groupMembers.First());
 			}
-			
+
 			// Update all members
 			if (MemberCount > 1 && LivingLeader == living)
 			{
 				var newLeader = m_groupMembers.OfType<GamePlayer>().First();
-				
+
 				if (newLeader != null)
 				{
 					LivingLeader = newLeader;
@@ -372,10 +375,9 @@ namespace DOL.GS
 					LivingLeader = m_groupMembers.First();
 				}
 			}
-			
+
 			UpdateGroupIndexes();
 			GameEventMgr.Notify(GroupEvent.MemberDisbanded, this, new MemberDisbandedEventArgs(living));
-
 			return true;
 		}
 

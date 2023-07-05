@@ -109,13 +109,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				GamePlayer player = (GamePlayer) m_actionSource;
 				EffectListComponent effectListComponent = player.effectListComponent;
 				ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
+
 				if (effect != null)
-				{
-					if (effect.EffectType == eEffect.Guard)
-						(effect as GuardECSGameEffect).Cancel();
-					else
-						EffectService.RequestImmediateCancelEffect(effect, true);
-				}
+					EffectService.RequestImmediateCancelEffect(effect, true);
 
 				return 0;
 			}
