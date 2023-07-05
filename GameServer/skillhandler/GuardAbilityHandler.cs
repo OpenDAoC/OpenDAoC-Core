@@ -73,35 +73,51 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            GuardECSGameEffect existingGuard = null;
-
             // Cancel our effect if it exists and check if someone is already guarding the target.
-            foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
-            {
-                if (guard.GuardSource == player)
-                {
-                    guard.Cancel();
-                    return;
-                }
+            CheckExistingEffectsOnTarget(player, guardTarget, true, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
 
-                if (guard.GuardTarget == guardTarget)
-                    existingGuard = guard;
-            }
+            if (foundOurEffect)
+                return;
 
-            if (existingGuard != null)
+            if (existingEffectFromAnotherSource != null)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingGuard.GuardSource.GetName(0, true), existingGuard.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectFromAnotherSource.GuardSource.GetName(0, true), existingEffectFromAnotherSource.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
             // Cancel other guard effects by this player before adding a new one.
-            foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            CancelOurEffectThenAddOnTarget(player, guardTarget);
+        }
+
+        public static void CheckExistingEffectsOnTarget(GameLiving guardSource, GameLiving guardTarget, bool cancelOurs, out bool foundOurEffect, out GuardECSGameEffect effectFromAnotherSource)
+        {
+            foundOurEffect = false;
+            effectFromAnotherSource = null;
+
+            foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
             {
-                if (guard.GuardSource == player)
+                if (guard.GuardSource == guardSource)
+                {
+                    foundOurEffect = true;
+
+                    if (cancelOurs)
+                        guard.Cancel();
+                }
+
+                if (guard.GuardTarget == guardTarget)
+                    effectFromAnotherSource = guard;
+            }
+        }
+
+        public static void CancelOurEffectThenAddOnTarget(GameLiving guardSource, GameLiving guardTarget)
+        {
+            foreach (GuardECSGameEffect guard in guardSource.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            {
+                if (guard.GuardSource == guardSource)
                     guard.Cancel();
             }
 
-            new GuardECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null), player, guardTarget);
+            new GuardECSGameEffect(new ECSGameEffectInitParams(guardSource, 0, 1, null), guardSource, guardTarget);
         }
     }
 }

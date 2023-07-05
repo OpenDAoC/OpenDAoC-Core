@@ -26,6 +26,7 @@ using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
+using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using log4net;
 
@@ -417,49 +418,62 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckAbilities()
 		{
-			//Console.WriteLine($"Loading abilities for {this}");
-			////load up abilities
-			if (Body.Abilities != null && Body.Abilities.Count > 0)
+			if (Body.Abilities == null || Body.Abilities.Count <= 0)
+				return;
+
+			foreach (Ability ab in Body.Abilities.Values)
 			{
-				foreach (Ability ab in Body.Abilities.Values)
+				switch (ab.KeyName)
 				{
-					//Console.WriteLine($"Ability: {ab}");
-					switch (ab.KeyName)
+					case Abilities.Intercept:
 					{
-						case Abilities.Intercept:
-							{
-								if (GetPlayerOwner() is GamePlayer player)
-									//the pet should intercept even if a player is till intercepting for the owner
-									new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, player);
+						// The pet should intercept even if a player is still intercepting for the owner.
+						GamePlayer playerOwner = GetPlayerOwner();
+
+						if (playerOwner != null)
+							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
+
+						break;
+					}
+					case Abilities.Guard:
+					{
+						GamePlayer playerOwner = GetPlayerOwner();
+
+						if (playerOwner != null)
+						{
+							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+
+							if (foundOurEffect)
 								break;
-							}
-						case Abilities.Guard:
-							{
-								if (GetPlayerOwner() is GamePlayer player)
-									new GuardECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, player);
-								break;
-							}
-						case Abilities.Protect:
-							{
-								if (GetPlayerOwner() is GamePlayer player)
-									//new ProtectEffect().Start(player);
-									new ProtectECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), null, player);
-								break;
-							}
-						case Abilities.ChargeAbility:
-							{
-								if ( Body.TargetObject is GameLiving target
-									&& GameServer.ServerRules.IsAllowedToAttack(Body, target, true) 
-									&& !Body.IsWithinRadius( target, 500 ) )
-								{
-									ChargeAbility charge = Body.GetAbility<ChargeAbility>();
-									if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
-									{
-										charge.Execute(Body);
-									}
-								}
-								break;
-							}
+
+							if (existingEffectFromAnotherSource == null)
+								GuardAbilityHandler.CancelOurEffectThenAddOnTarget(Body, playerOwner);
+						}
+
+						break;
+					}
+					case Abilities.Protect:
+					{
+						GamePlayer playerOwner = GetPlayerOwner();
+
+						if (playerOwner != null)
+							new ProtectECSGameEffect(new ECSGameEffectInitParams(playerOwner, 0, 1), null, playerOwner);
+
+						break;
+					}
+					case Abilities.ChargeAbility:
+					{
+						if (Body.TargetObject is GameLiving target &&
+							GameServer.ServerRules.IsAllowedToAttack(Body, target, true) &&
+							!Body.IsWithinRadius(target, 500))
+						{
+							ChargeAbility charge = Body.GetAbility<ChargeAbility>();
+
+							if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
+								charge.Execute(Body);
+						}
+
+						break;
 					}
 				}
 			}
