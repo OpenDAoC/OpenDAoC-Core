@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -31,9 +32,6 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	///
-	/// </summary>
 	public class SkillBase
 	{
 		/// <summary>
@@ -48,27 +46,27 @@ namespace DOL.GS
 
 		private static ReaderWriterLockSlim m_syncLockUpdates = new();
 		private static object m_loadingLock = new();
-		
+
 		#region caches and static indexes
-		
+
 		// Career Dictionary, Spec Attached to Character class ID, auto loaded on char creation !!
 		protected static readonly Dictionary<int, IDictionary<string, int>> m_specsByClass = new();
 
 		// Specialization dict KeyName => Spec Tuple to instanciate.
 		protected static readonly Dictionary<string, Tuple<Type, string, ushort, int>> m_specsByName = new();
-		
+
 		// Specialization X SpellLines Dict<"string spec keyname", "List<"Tuple<"SpellLine line", "int classid"> line constraint"> list of lines">
 		protected static readonly Dictionary<string, IList<Tuple<SpellLine, int>>> m_specsSpellLines = new();
-		
+
 		// global table for spec => List of styles, Dict <"string spec keyname", "Dict <"int classid", "List<"Tuple<"Style style", "byte requiredLevel"> Style Constraint" StyleByClass">
 		protected static readonly Dictionary<string, IDictionary<int, List<Tuple<Style, byte>>>> m_specsStyles = new();
-		
+
 		// Specialization X Ability Cache Dict<"string spec keyname", "List<"Tuple<"string abilitykey", "byte speclevel", "int ab Level", "int class hint"> ab constraint"> list ab's>">
 		protected static readonly Dictionary<string, List<Tuple<string, byte, int, int>>> m_specsAbilities = new();
 
 		// Ability Cache Dict KeyName => DBAbility Object (to instanciate)
 		protected static readonly Dictionary<string, DBAbility> m_abilityIndex = new();
-		
+
 		// class id => realm abilitykey list
 		protected static readonly Dictionary<int, IList<string>> m_classRealmAbilities = new();
 
@@ -77,20 +75,21 @@ namespace DOL.GS
 
 		// SpellLine X Spells Dict<"string spellline", "IList<"Spell spell"> spell list">
 		protected static readonly Dictionary<string, List<Spell>> m_lineSpells = new();
-		
+
 		// Spells Cache Dict SpellID => Spell
 		protected static readonly Dictionary<int, Spell> m_spellIndex = new();
+
 		// Spells Tooltip Dict ToolTipID => SpellID
 		protected static readonly Dictionary<ushort, int> m_spellToolTipIndex = new();
 
 		// lookup table for styles, faster access when invoking a char styleID with classID
 		protected static readonly Dictionary<KeyValuePair<int, int>, Style> m_styleIndex = new();
 
-		// Ability Action Handler Dictionary Index, typename to instanciate ondemande
-		protected static readonly Dictionary<string, Type> m_abilityActionHandler = new();
-		
-		// Spec Action Handler Dictionary Index, typename to instanciate ondemande
-		protected static readonly Dictionary<string, Type> m_specActionHandler = new();
+		// Ability Action Handler Dictionary Index, Delegate to instanciate on demande
+		protected static readonly Dictionary<string, Func<IAbilityActionHandler>> m_abilityActionHandler = new();
+
+		// Spec Action Handler Dictionary Index, Delegate to instanciate on demande
+		protected static readonly Dictionary<string, Func<ISpecActionHandler>> m_specActionHandler = new();
 
 		#endregion
 
@@ -106,7 +105,6 @@ namespace DOL.GS
 			InitializeSpecToFocus();
 			InitializeRaceResists();
 		}
-
 
 		public static void LoadSkills()
 		{
@@ -141,16 +139,16 @@ namespace DOL.GS
 				//load all spells
 				if (log.IsInfoEnabled)
 					log.Info("Loading spells...");
-	
+
 				IList<DBSpell> spelldb = GameServer.Database.SelectAllObjects<DBSpell>();
 
 				if (spelldb != null)
 				{
-		
+
 					// clean cache
 					m_spellIndex.Clear();
 					m_spellToolTipIndex.Clear();
-		
+
 					foreach (DBSpell spell in spelldb)
 					{
 						try
@@ -166,11 +164,9 @@ namespace DOL.GS
 								log.ErrorFormat("{0} with spellid = {1} spell.TS= {2}", e.Message, spell.SpellID, spell.ToString());
 						}
 					}
-					
+
 					if (log.IsInfoEnabled)
 						log.InfoFormat("Spells loaded: {0}", m_spellIndex.Count);
-					
-					spelldb = null;
 				}
 			}
 			finally
@@ -191,15 +187,15 @@ namespace DOL.GS
 				//load all spellline
 				if (log.IsInfoEnabled)
 					log.Info("Loading Spell Lines...");
-	
+
 				// load all spell lines
 				IList<DBSpellLine> dbo = GameServer.Database.SelectAllObjects<DBSpellLine>();
-				
+
 				if (dbo != null)
 				{
 					// clean cache
 					m_spellLineIndex.Clear();
-					
+
 					foreach(DBSpellLine line in dbo)
 					{
 						try
@@ -209,22 +205,20 @@ namespace DOL.GS
 						catch (Exception e)
 						{
 							if (log.IsErrorEnabled)
-								log.ErrorFormat("{0} with Spell Line = {1} line.TS= {2}", e.Message, line.KeyName, line.ToString());					
+								log.ErrorFormat("{0} with Spell Line = {1} line.TS= {2}", e.Message, line.KeyName, line.ToString());
 						}
-						
 					}
-					
+
 					dbo = null;
 				}
-	
+
 				if (log.IsInfoEnabled)
 					log.InfoFormat("Spell Lines loaded: {0}", m_spellLineIndex.Count);
-	
-				
+
 				//load spell relation
 				if (log.IsInfoEnabled)
 					log.Info("Loading Spell Lines X Spells Relation...");
-				
+
 				IList<DBLineXSpell> dbox = GameServer.Database.SelectAllObjects<DBLineXSpell>();
 
 				int count = 0;
@@ -233,18 +227,18 @@ namespace DOL.GS
 				{
 					// Clean cache
 					m_lineSpells.Clear();
-										
+
 					foreach (DBLineXSpell lxs in dbox)
 					{
 						try
 						{
 							if (!m_lineSpells.ContainsKey(lxs.LineName))
 								m_lineSpells.Add(lxs.LineName, new List<Spell>());
-													
+
 							Spell spl = (Spell)m_spellIndex[lxs.SpellID].Clone();
-							
+
 							spl.Level = Math.Max(1, lxs.Level);
-							
+
 							m_lineSpells[lxs.LineName].Add(spl);
 							count++;
 						}
@@ -252,17 +246,17 @@ namespace DOL.GS
 						{
 							if (log.IsErrorEnabled)
 								log.ErrorFormat("LineXSpell Spell Adding Error : {0}, Line {1}, Spell {2}, Level {3}", e.Message, lxs.LineName, lxs.SpellID, lxs.Level);
-								
+
 						}
 					}
-					
+
 					dbox = null;
 				}
-				
+
 				// sort spells
 				foreach (string sps in m_lineSpells.Keys.ToList())
 					m_lineSpells[sps] = m_lineSpells[sps].OrderBy(e => e.Level).ThenBy(e => e.ID).ToList();
-	
+
 				if (log.IsInfoEnabled)
 					log.InfoFormat("Total spell lines X Spell loaded: {0}", count);
 			}
@@ -273,7 +267,7 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Reload all the DB spells from the database. 
+		/// Reload all the DB spells from the database.
 		/// Useful to load new spells added in preperation for ReloadSpellLine(linename) to update a spell line live
 		/// We want to add any new spells in the DB to the global spell list, m_spells, but not remove any added by scripts
 		/// </summary>
@@ -286,14 +280,14 @@ namespace DOL.GS
 				//load all spells
 				if (log.IsInfoEnabled)
 					log.Info("Reloading DB spells...");
-	
+
 				IList<DBSpell> spelldb = GameServer.Database.SelectAllObjects<DBSpell>();
-				
+
 				if (spelldb != null)
 				{
-		
+
 					int count = 0;
-		
+
 					foreach (DBSpell spell in spelldb)
 					{
 						if (m_spellIndex.ContainsKey(spell.SpellID) == false)
@@ -307,7 +301,7 @@ namespace DOL.GS
 							// Replace Spell
 							m_spellIndex[spell.SpellID] = new Spell(spell, 1);
 						}
-						
+
 						// Update tooltip index
 						if (spell.TooltipId != 0)
 						{
@@ -319,9 +313,8 @@ namespace DOL.GS
 								count++;
 							}
 						}
-						
 					}
-		
+
 					if (log.IsInfoEnabled)
 					{
 						log.Info("Spells loaded from DB: " + spelldb.Count);
@@ -353,26 +346,25 @@ namespace DOL.GS
 				{
 					// Get SpellLine X Spell relation
 					var spells = DOLDB<DBLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
-					
+
 					// Load them if any records.
 					if (spells != null)
 					{
 						if (!m_lineSpells.ContainsKey(lineName))
 							m_lineSpells.Add(lineName, new List<Spell>());
-	
-						
+
 						foreach (DBLineXSpell lxs in spells)
 						{
 							try
 							{
 								// Clone Spell to change Level to relation Level's
 								Spell spl = (Spell)m_spellIndex[lxs.SpellID].Clone();
-								
+
 								spl.Level = Math.Max(1, lxs.Level);
-								
+
 								// Look for existing spell for replacement
 								bool added = false;
-								
+
 								for (int r = 0; r < m_lineSpells[lineName].Count; r++)
 								{
 									if (m_lineSpells[lineName][r] != null && m_lineSpells[lineName][r].ID == lxs.SpellID)
@@ -382,23 +374,22 @@ namespace DOL.GS
 										break;
 									}
 								}
-								
+
 								// no replacement then add this
 								if (!added)
 								{
 									m_lineSpells[lineName].Add(spl);
 									count++;
 								}
-								
 							}
 							catch (Exception e)
 							{
 								if (log.IsErrorEnabled)
 									log.ErrorFormat("LineXSpell Adding Error : {0}, Line {1}, Spell {2}, Level {3}", e.Message, lxs.LineName, lxs.SpellID, lxs.Level);
-									
+
 							}
 						}
-						
+
 						// Line can need a sort...
 						m_lineSpells[lineName] = m_lineSpells[lineName].OrderBy(e => e.Level).ThenBy(e => e.ID).ToList();
 					}
@@ -408,7 +399,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitWriteLock();
 			}
-			
+
 			return count;
 		}
 
@@ -424,9 +415,9 @@ namespace DOL.GS
 				// load Abilities
 				if (log.IsInfoEnabled)
 					log.Info("Loading Abilities...");
-	
+
 				IList<DBAbility> abilities = GameServer.Database.SelectAllObjects<DBAbility>();
-								
+
 				if (abilities != null)
 				{
 					// Clean Cache
@@ -440,7 +431,7 @@ namespace DOL.GS
 							Ability ability = GetNewAbilityInstance(dba);
 
 							m_abilityIndex.Add(ability.KeyName, dba);
-	
+
 							if (log.IsDebugEnabled)
 								log.DebugFormat("Ability {0} successfuly instanciated from {1} (expeted {2})", dba.KeyName, dba.Implementation, ability.GetType());
 
@@ -451,10 +442,8 @@ namespace DOL.GS
 								log.WarnFormat("Error while Loading Ability {0} with Class {1} : {2}", dba.KeyName, dba.Implementation, e);
 						}
 					}
-					
-					abilities = null;
 				}
-				
+
 				if (log.IsInfoEnabled)
 				{
 					log.InfoFormat("Total abilities loaded: {0}", m_abilityIndex.Count);
@@ -477,23 +466,23 @@ namespace DOL.GS
 			{
 				// load class RA
 				m_classRealmAbilities.Clear();
-				
+
 				if (log.IsInfoEnabled)
 					log.Info("Loading class to realm ability associations...");
-				
+
 				IList<ClassXRealmAbility> classxra = GameServer.Database.SelectAllObjects<ClassXRealmAbility>();
-	
+
 				if (classxra != null)
 				{
 					foreach (ClassXRealmAbility cxra in classxra)
 					{
 						if (!m_classRealmAbilities.ContainsKey(cxra.CharClass))
 							m_classRealmAbilities.Add(cxra.CharClass, new List<string>());
-						
+
 						try
 						{
 							DBAbility dba = m_abilityIndex[cxra.AbilityKey];
-							
+
 							if (!m_classRealmAbilities[cxra.CharClass].Contains(dba.KeyName))
 								m_classRealmAbilities[cxra.CharClass].Add(dba.KeyName);
 						}
@@ -504,10 +493,8 @@ namespace DOL.GS
 
 						}
 					}
-					
-					classxra = null;
 				}
-	
+
 				log.Info("Realm Abilities assigned to classes!");
 			}
 			finally
@@ -531,9 +518,9 @@ namespace DOL.GS
 			try
 			{
 				IList<DBSpecialization> specs = GameServer.Database.SelectAllObjects<DBSpecialization>();
-				
+
 				int count = 0;
-				
+
 				if (specs != null)
 				{
 					// Clear Spec Cache
@@ -555,7 +542,7 @@ namespace DOL.GS
 					{
 						StringBuilder str = new("Specialization ");
 						str.AppendFormat("{0} - ", spec.KeyName);
-						
+
 						Specialization gameSpec = null;
 						if (Util.IsEmpty(spec.Implementation, true) == false)
 						{
@@ -565,15 +552,15 @@ namespace DOL.GS
 						{
 							gameSpec = new Specialization(spec.KeyName, spec.Name, spec.Icon, spec.SpecializationID);
 						}
-						
+
 						if (log.IsDebugEnabled)
 							log.DebugFormat("Specialization {0} successfuly instanciated from {1} (expected {2})", spec.KeyName, gameSpec.GetType().FullName, spec.Implementation);
-						
+
 						Tuple<Type, string, ushort, int> entry = new(gameSpec.GetType(), spec.Name, spec.Icon, spec.SpecializationID);
-						
+
 						// Now we have an instanciated Specialization, Cache their properties in Skillbase to prevent using too much memory
 						// As most skill objects are duplicated for every game object use...
-						
+
 						// Load SpecXAbility
 						count = 0;
 						if (spec.AbilityConstraints != null)
@@ -583,7 +570,7 @@ namespace DOL.GS
 
 							foreach (DBSpecXAbility specx in spec.AbilityConstraints)
 							{
-								
+
 								try
 								{
 									m_specsAbilities[spec.KeyName].Add(new Tuple<string, byte, int, int>(m_abilityIndex[specx.AbilityKey].KeyName, (byte)specx.SpecLevel, specx.AbilityLevel, specx.ClassId));
@@ -594,16 +581,14 @@ namespace DOL.GS
 									if (log.IsWarnEnabled)
 										log.WarnFormat("Specialization : {0} while adding Spec X Ability {1}, from Spec {2}({3}), Level {4}", e.Message, specx.AbilityKey, specx.Spec, specx.SpecLevel, specx.AbilityLevel);
 								}
-								
 							}
-							
+
 							// sort them according to required levels
 							m_specsAbilities[spec.KeyName].Sort((i, j) => i.Item2.CompareTo(j.Item2));
 						}
-						
+
 						str.AppendFormat("{0} Ability Constraint, ", count);
-	
-						
+
 						// Load SpecXSpellLine
 						count = 0;
 						if (spec.SpellLines != null)
@@ -612,7 +597,7 @@ namespace DOL.GS
 							{
 								if (!m_specsSpellLines.ContainsKey(spec.KeyName))
 									m_specsSpellLines.Add(spec.KeyName, new List<Tuple<SpellLine, int>>());
-								
+
 								try
 								{
 									m_specsSpellLines[spec.KeyName].Add(new Tuple<SpellLine, int>(m_spellLineIndex[line.KeyName], line.ClassIDHint));
@@ -625,9 +610,9 @@ namespace DOL.GS
 								}
 							}
 						}
-	
+
 						str.AppendFormat("{0} Spell Line, ", count);
-						
+
 						// Load DBStyle
 						count = 0;
 						if (spec.Styles != null)
@@ -639,20 +624,20 @@ namespace DOL.GS
 								{
 									m_specsStyles.Add(spec.KeyName, new Dictionary<int, List<Tuple<Style, byte>>>());
 								}
-								
+
 								if (!m_specsStyles[spec.KeyName].ContainsKey(specStyle.ClassId))
 								{
 									m_specsStyles[spec.KeyName].Add(specStyle.ClassId, new List<Tuple<Style, byte>>());
 								}
-								
+
 								Style newStyle = new(specStyle, null);
-								
+
 								m_specsStyles[spec.KeyName][specStyle.ClassId].Add(new Tuple<Style, byte>(newStyle, (byte)specStyle.SpecLevelRequirement));
-								
+
 								// Update Style Index.
-								
+
 								KeyValuePair<int, int> styleKey = new(newStyle.ID, specStyle.ClassId);
-								
+
 								if (!m_styleIndex.ContainsKey(styleKey))
 								{
 									m_styleIndex.Add(styleKey, newStyle);
@@ -675,19 +660,19 @@ namespace DOL.GS
 								}
 							}
 						}
-	
-						// We've added all the styles to their respective lists.  Now lets go through and sort them by their level
+
+						// We've added all the styles to their respective lists. Now lets go through and sort them by their level.
 						foreach (string keyname in m_specsStyles.Keys)
 						{
 							foreach (int classid in m_specsStyles[keyname].Keys)
 								m_specsStyles[keyname][classid].Sort((i, j) => i.Item2.CompareTo(j.Item2));
 						}
-						
+
 						str.AppendFormat("{0} Styles", count);
-						
+
 						if (log.IsDebugEnabled)
 							log.Debug(str.ToString());
-	
+
 						// Add spec to global Spec Index Cache
 						if (!m_specsByName.ContainsKey(spec.KeyName))
 						{
@@ -698,13 +683,12 @@ namespace DOL.GS
 							if (log.IsWarnEnabled)
 								log.WarnFormat("Specialization {0} is duplicated ignoring...", spec.KeyName);
 						}
-						
 					}
-					
+
 					specs = null;
-	
+
 				}
-				
+
 				if (log.IsInfoEnabled)
 					log.InfoFormat("Total specializations loaded: {0}", m_specsByName.Count);
 			}
@@ -712,7 +696,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitWriteLock();
 			}
-	
+
 			return m_specsByName.Count;
 		}
 
@@ -727,16 +711,16 @@ namespace DOL.GS
 			{
 				if (log.IsInfoEnabled)
 					log.Info("Loading Class Specialization's Career...");
-				
+
 				//Retrieve from DB
 				IList<ClassXSpecialization> dbo = GameServer.Database.SelectAllObjects<ClassXSpecialization>();
 				Dictionary<int, StringBuilder> summary = new();
-				
+
 				if (dbo != null)
 				{
 					// clear
 					m_specsByClass.Clear();
-					
+
 					foreach (ClassXSpecialization career in dbo)
 					{
 						if (!m_specsByClass.ContainsKey(career.ClassID))
@@ -745,7 +729,7 @@ namespace DOL.GS
 							summary.Add(career.ClassID, new StringBuilder());
 							summary[career.ClassID].AppendFormat("Career for Class {0} - ", career.ClassID);
 						}
-						
+
 						if (!m_specsByClass[career.ClassID].ContainsKey(career.SpecKeyName))
 						{
 							m_specsByClass[career.ClassID].Add(career.SpecKeyName, career.LevelAcquired);
@@ -758,10 +742,10 @@ namespace DOL.GS
 						}
 					}
 				}
-				
+
 				if (log.IsInfoEnabled)
 					log.Info("Finished loading Class Specialization's Career !");
-				
+
 				if (log.IsDebugEnabled)
 				{
 					// print summary
@@ -774,24 +758,25 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitWriteLock();
 			}
 		}
-		
+
 		/// <summary>
 		/// Load Ability Handler for Action Ability.
 		/// </summary>
 		private static void LoadAbilityHandlers()
 		{
 			m_syncLockUpdates.EnterWriteLock();
+
 			try
 			{
 				// load Ability actions handlers
 				m_abilityActionHandler.Clear();
-				
+
 				//Search for ability handlers in the gameserver first
 				if (log.IsInfoEnabled)
 					log.Info("Searching ability handlers in GameServer");
-				
+
 				IList<KeyValuePair<string, Type>> ht = ScriptMgr.FindAllAbilityActionHandler(Assembly.GetExecutingAssembly());
-								
+
 				foreach (KeyValuePair<string, Type> entry in ht)
 				{
 					if (log.IsDebugEnabled)
@@ -806,11 +791,7 @@ namespace DOL.GS
 					{
 						try
 						{
-							// test only...
-							IAbilityActionHandler handler = GetNewAbilityActionHandler(entry.Value);
-							string test = handler.ToString();
-							
-							m_abilityActionHandler.Add(entry.Key, entry.Value);
+							m_abilityActionHandler.Add(entry.Key, GetNewAbilityActionHandlerConstructor(entry.Value));
 						}
 						catch (Exception ex)
 						{
@@ -819,46 +800,39 @@ namespace DOL.GS
 						}
 					}
 				}
-	
+
 				//Now search ability handlers in the scripts directory and overwrite the ones
 				//found from gameserver
 				if (log.IsInfoEnabled)
 					log.Info("Searching AbilityHandlers in Scripts");
-				
+
 				foreach (Assembly asm in ScriptMgr.Scripts)
 				{
 					ht = ScriptMgr.FindAllAbilityActionHandler(asm);
 					foreach (KeyValuePair<string, Type> entry in ht)
 					{
-						string message = "";	
+						string message = string.Empty;
+
 						try
 						{
-							// test only...
-							IAbilityActionHandler handler = GetNewAbilityActionHandler(entry.Value);
-							string test = handler.ToString();
-
 							if (m_abilityActionHandler.ContainsKey(entry.Key))
-							{
 								message = "\tFound new ability handler for " + entry.Key;
-								m_abilityActionHandler[entry.Key] = entry.Value;
-							}
 							else
-							{
 								message = "\tFound ability handler for " + entry.Key;
-								m_abilityActionHandler.Add(entry.Key, entry.Value);
-							}
+
+							m_abilityActionHandler[entry.Key] = GetNewAbilityActionHandlerConstructor(entry.Value);
 						}
 						catch (Exception ex)
 						{
 							if (log.IsErrorEnabled)
 								log.ErrorFormat("Error While instantiacting IAbilityHandler {0} using {1} in GameServerScripts : {2}", entry.Key, entry.Value, ex);
 						}
-	
+
 						if (log.IsDebugEnabled)
 							log.Debug(message);
 					}
 				}
-								
+
 				if (log.IsInfoEnabled)
 					log.Info("Total ability handlers loaded: " + m_abilityActionHandler.Count);
 			}
@@ -874,17 +848,18 @@ namespace DOL.GS
 		private static void LoadSkillHandlers()
 		{
 			m_syncLockUpdates.EnterWriteLock();
+
 			try
 			{
 				//load skill action handlers
 				m_specActionHandler.Clear();
-				
+
 				//Search for skill handlers in gameserver first
 				if (log.IsInfoEnabled)
 					log.Info("Searching skill handlers in GameServer.");
-				
+
 				IList<KeyValuePair<string, Type>> ht = ScriptMgr.FindAllSpecActionHandler(Assembly.GetExecutingAssembly());
-				
+
 				foreach (KeyValuePair<string, Type> entry in ht)
 				{
 					if (log.IsDebugEnabled)
@@ -899,11 +874,7 @@ namespace DOL.GS
 					{
 						try
 						{
-							// test only...
-							ISpecActionHandler handler = GetNewSpecActionHandler(entry.Value);
-							string test = handler.ToString();
-							
-							m_specActionHandler.Add(entry.Key, entry.Value);
+							m_specActionHandler.Add(entry.Key, GetNewSpecActionHandlerConstructor(entry.Value));
 						}
 						catch (Exception ex)
 						{
@@ -912,49 +883,41 @@ namespace DOL.GS
 						}
 					}
 				}
-				
+
 				//Now search skill handlers in the scripts directory and overwrite the ones
 				//found from the gameserver
-				
+
 				if (log.IsInfoEnabled)
 					log.Info("Searching skill handlers in Scripts.");
-				
+
 				foreach (Assembly asm in ScriptMgr.Scripts)
 				{
 					ht = ScriptMgr.FindAllSpecActionHandler(asm);
-					
+
 					foreach (KeyValuePair<string, Type> entry in ht)
 					{
-						string message = "";
-						
+						string message = string.Empty;
+
 						try
 						{
-							// test only
-							ISpecActionHandler handler = GetNewSpecActionHandler(entry.Value);
-							string test = handler.ToString();
-
 							if (m_specActionHandler.ContainsKey(entry.Key))
-							{
 								message = "\tFound new spec handler for " + entry.Key;
-								m_specActionHandler[entry.Key] = entry.Value;
-							}
 							else
-							{
 								message = "\tFound spec handler for " + entry.Key;
-								m_specActionHandler.Add(entry.Key, entry.Value);
-							}
+
+							m_specActionHandler[entry.Key] = GetNewSpecActionHandlerConstructor(entry.Value);
 						}
 						catch (Exception ex)
 						{
 							if (log.IsWarnEnabled)
 								log.WarnFormat("Error While instantiacting ISpecActionHandler {0} using {1} in GameServerScripts : {2}", entry.Key, entry.Value, ex);
 						}
-							
+
 						if (log.IsDebugEnabled)
 							log.Debug(message);
 					}
 				}
-				
+
 				if (log.IsInfoEnabled)
 					log.Info("Total skill handlers loaded: " + m_specActionHandler.Count);
 			}
@@ -963,8 +926,9 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitWriteLock();
 			}
 		}
+
 		#endregion
-		
+
 		#region Initialization Tables
 
 		/// <summary>
@@ -1016,7 +980,7 @@ namespace DOL.GS
 			m_objectTypeToSpec.Add(eObjectType.PolearmWeapon, Specs.Polearms);
 			m_objectTypeToSpec.Add(eObjectType.Flexible, Specs.Flexible);
 			m_objectTypeToSpec.Add(eObjectType.Crossbow, Specs.Crossbow);
-			
+
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
 			{
@@ -1027,7 +991,7 @@ namespace DOL.GS
 			{
 				m_objectTypeToSpec.Add(eObjectType.Longbow, Specs.Archery);
 			}
-			
+
 			//TODO: case 5: abilityCheck = Abilities.Weapon_Thrown); break);
 
 			//mid
@@ -1038,7 +1002,7 @@ namespace DOL.GS
 			m_objectTypeToSpec.Add(eObjectType.HandToHand, Specs.HandToHand);
 			m_objectTypeToSpec.Add(eObjectType.Spear, Specs.Spear);
 			m_objectTypeToSpec.Add(eObjectType.Thrown, Specs.Thrown_Weapons);
-			
+
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
 			{
@@ -1059,7 +1023,7 @@ namespace DOL.GS
 			m_objectTypeToSpec.Add(eObjectType.Scythe, Specs.Scythe);
 			m_objectTypeToSpec.Add(eObjectType.Shield, Specs.Shields);
 			m_objectTypeToSpec.Add(eObjectType.Poison, Specs.Envenom);
-			
+
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
 			{
@@ -1295,7 +1259,6 @@ namespace DOL.GS
 
 			#endregion
 
-
 			/*
 			 * http://www.camelotherald.com/more/1036.shtml
 			 * "- ALL melee weapon skills - This bonus will increase your
@@ -1434,7 +1397,7 @@ namespace DOL.GS
 			{
 				// http://camelot.allakhazam.com/Start_Stats.html
 				IList<Race> races;
-	
+
 				try
 				{
 					races = GameServer.Database.SelectAllObjects<Race>();
@@ -1444,12 +1407,12 @@ namespace DOL.GS
 					m_raceResists.Clear();
 					return;
 				}
-				
+
 				if (races != null)
 				{
-				
+
 					m_raceResists.Clear();
-		
+
 					foreach (Race race in races)
 					{
 						m_raceResists.Add(race.ID, new int[10]);
@@ -1464,8 +1427,6 @@ namespace DOL.GS
 						m_raceResists[race.ID][8] = race.ResistThrust;
 						m_raceResists[race.ID][9] = race.ResistNatural;
 					}
-					
-					races = null;
 				}
 			}
 			finally
@@ -1530,10 +1491,10 @@ namespace DOL.GS
 			m_propertyNames.Add(eProperty.SlashResCapBonus, "Slash cap");
 			m_propertyNames.Add(eProperty.SpiritResCapBonus, "Spirit cap");
 			m_propertyNames.Add(eProperty.ThrustResCapBonus, "Thrust cap");
-            m_propertyNames.Add(eProperty.MythicalSafeFall, "Mythical Safe Fall");
-            m_propertyNames.Add(eProperty.MythicalDiscumbering, "Mythical Discumbering");
-            m_propertyNames.Add(eProperty.MythicalCoin, "Mythical Coin");
-            m_propertyNames.Add(eProperty.SpellLevel, "Spell Focus");
+			m_propertyNames.Add(eProperty.MythicalSafeFall, "Mythical Safe Fall");
+			m_propertyNames.Add(eProperty.MythicalDiscumbering, "Mythical Discumbering");
+			m_propertyNames.Add(eProperty.MythicalCoin, "Mythical Coin");
+			m_propertyNames.Add(eProperty.SpellLevel, "Spell Focus");
 			//Eden - special actifacts bonus
 			m_propertyNames.Add(eProperty.Conversion, "Conversion");
 			m_propertyNames.Add(eProperty.ExtraHP, "Extra Health Points");
@@ -1715,7 +1676,6 @@ namespace DOL.GS
 			m_propertyNames.Add(eProperty.Skill_Aura_Manipulation, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                                  "SkillBase.RegisterPropertyNames.AuraManipulation"));
 
-
 			//Catacombs skills
 			m_propertyNames.Add(eProperty.Skill_Dementia, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                         "SkillBase.RegisterPropertyNames.Dementia"));
@@ -1739,7 +1699,6 @@ namespace DOL.GS
 			                                                                       "SkillBase.RegisterPropertyNames.Hexing"));
 			m_propertyNames.Add(eProperty.Skill_Witchcraft, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                           "SkillBase.RegisterPropertyNames.Witchcraft"));
-
 
 			// Classic Focii
 			m_propertyNames.Add(eProperty.Focus_Darkness, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
@@ -1845,7 +1804,6 @@ namespace DOL.GS
 			m_propertyNames.Add(eProperty.LivingEffectiveLevel, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                               "SkillBase.RegisterPropertyNames.EffectiveLevel"));
 
-
 			//Added by Fooljam : Missing TOA/Catacomb bonusses names in item properties.
 			//Date : 20-Jan-2005
 			//Missing bonusses begin
@@ -1944,7 +1902,7 @@ namespace DOL.GS
 			m_propertyNames.Add(eProperty.CriticalMeleeHitChance, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "SkillBase.RegisterPropertyNames.CriticalMeleeHit"));
 			m_propertyNames.Add(eProperty.CriticalSpellHitChance, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "SkillBase.RegisterPropertyNames.CriticalSpellHit"));
 			m_propertyNames.Add(eProperty.CriticalHealHitChance, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "SkillBase.RegisterPropertyNames.CriticalHealHit"));
-			
+
             //Forsaken Worlds: Mythical Stat Cap
             m_propertyNames.Add(eProperty.MythicalStrCapBonus, "Mythical Stat Cap (Strength)");
 			m_propertyNames.Add(eProperty.MythicalDexCapBonus, "Mythical Stat Cap (Dexterity)");
@@ -1960,7 +1918,7 @@ namespace DOL.GS
 		}
 
 		#endregion
-		
+
 		#region Armor resists
 
 		// lookup table for armor resists
@@ -1977,16 +1935,24 @@ namespace DOL.GS
 		/// <returns>resist value</returns>
 		public static int GetArmorResist(InventoryItem armor, eDamageType damageType)
 		{
-			if (armor == null) return 0;
+			if (armor == null)
+				return 0;
+
 			int realm = armor.Template.Realm - (int)eRealm._First;
 			int armorType = armor.Template.Object_Type - (int)eObjectType._FirstArmor;
 			int damage = damageType - eDamageType._FirstResist;
-			if (realm < 0 || realm > eRealm._LastPlayerRealm - eRealm._First) return 0;
-			if (armorType < 0 || armorType > eObjectType._LastArmor - eObjectType._FirstArmor) return 0;
-			if (damage < 0 || damage > eDamageType._LastResist - eDamageType._FirstResist) return 0;
+
+			if (realm < 0 || realm > eRealm._LastPlayerRealm - eRealm._First)
+				return 0;
+
+			if (armorType < 0 || armorType > eObjectType._LastArmor - eObjectType._FirstArmor)
+				return 0;
+
+			if (damage < 0 || damage > eDamageType._LastResist - eDamageType._FirstResist)
+				return 0;
 
 			const int realmBits = DAMAGETYPE_BITCOUNT + ARMORTYPE_BITCOUNT;
-			
+
 			//Console.WriteLine($"Realm {realm} armorType {armorType} damage {damage} input {(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage} resistoutput {m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage]}");
 
 			return m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage];
@@ -2007,7 +1973,6 @@ namespace DOL.GS
 			WriteMeleeResists(eRealm.Albion, eObjectType.Studded, 0, resistant,  vulnerable);
 			WriteMeleeResists(eRealm.Albion, eObjectType.Chain,   0, resistant,  vulnerable);
 
-
 			// hib armor - neutral to thrust
 			// reinforced and leather vulnerable to crush
 			// scale resistant to crush
@@ -2015,14 +1980,12 @@ namespace DOL.GS
 			WriteMeleeResists( eRealm.Hibernia, eObjectType.Reinforced, resistant,  vulnerable, 0 );
 			WriteMeleeResists(eRealm.Hibernia,  eObjectType.Scale,      vulnerable, resistant, 0);
 
-
 			// mid armor - neutral to crush
 			// studded and leather resistant to thrust
 			// chain vulnerabel to thrust
 			WriteMeleeResists(eRealm.Midgard, eObjectType.Studded, vulnerable, 0, resistant);
 			WriteMeleeResists(eRealm.Midgard, eObjectType.Leather, vulnerable, 0, resistant);
 			WriteMeleeResists(eRealm.Midgard, eObjectType.Chain,   resistant,  0, vulnerable);
-
 
 			// magical damage (Heat, Cold, Matter, Energy)
 			// Leather
@@ -2047,9 +2010,9 @@ namespace DOL.GS
 		private static void WriteMeleeResists(eRealm realm, eObjectType armorType, int slash, int crush, int thrust)
 		{
 			if (realm < eRealm._First || realm > eRealm._LastPlayerRealm)
-				throw new ArgumentOutOfRangeException("realm", realm, "Realm should be between _First and _LastPlayerRealm.");
+				throw new ArgumentOutOfRangeException(nameof(realm), realm, "Realm should be between _First and _LastPlayerRealm.");
 			if (armorType < eObjectType._FirstArmor || armorType > eObjectType._LastArmor)
-				throw new ArgumentOutOfRangeException("armorType", armorType, "Armor type should be between _FirstArmor and _LastArmor");
+				throw new ArgumentOutOfRangeException(nameof(armorType), armorType, "Armor type should be between _FirstArmor and _LastArmor");
 
 			int off = (realm - eRealm._First) << (DAMAGETYPE_BITCOUNT + ARMORTYPE_BITCOUNT);
 			off |= (armorType - eObjectType._FirstArmor) << DAMAGETYPE_BITCOUNT;
@@ -2061,9 +2024,9 @@ namespace DOL.GS
 		private static void WriteMagicResists(eRealm realm, eObjectType armorType, int heat, int cold, int matter, int energy)
 		{
 			if (realm < eRealm._First || realm > eRealm._LastPlayerRealm)
-				throw new ArgumentOutOfRangeException("realm", realm, "Realm should be between _First and _LastPlayerRealm.");
+				throw new ArgumentOutOfRangeException(nameof(realm), realm, "Realm should be between _First and _LastPlayerRealm.");
 			if (armorType < eObjectType._FirstArmor || armorType > eObjectType._LastArmor)
-				throw new ArgumentOutOfRangeException("armorType", armorType, "Armor type should be between _FirstArmor and _LastArmor");
+				throw new ArgumentOutOfRangeException(nameof(armorType), armorType, "Armor type should be between _FirstArmor and _LastArmor");
 
 			int off = (realm - eRealm._First) << (DAMAGETYPE_BITCOUNT + ARMORTYPE_BITCOUNT);
 			off |= (armorType - eObjectType._FirstArmor) << DAMAGETYPE_BITCOUNT;
@@ -2098,23 +2061,18 @@ namespace DOL.GS
 		public static IAbilityActionHandler GetAbilityActionHandler(string keyName)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			Type handlerType;
-			bool exists;
+			Func<IAbilityActionHandler> handlerConstructor;
+
 			try
 			{
-				exists = m_abilityActionHandler.TryGetValue(keyName, out handlerType);
+				m_abilityActionHandler.TryGetValue(keyName, out handlerConstructor);
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
-			if (exists)
-			{
-				return GetNewAbilityActionHandler(handlerType);
-			}
-			
-			return null;
+
+			return handlerConstructor != null ? handlerConstructor() : null;
 		}
 
 		/// <summary>
@@ -2125,32 +2083,18 @@ namespace DOL.GS
 		public static ISpecActionHandler GetSpecActionHandler(string keyName)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			Type handlerType;
-			bool exists;
+			Func<ISpecActionHandler> handlerConstructor;
+
 			try
 			{
-				exists = m_specActionHandler.TryGetValue(keyName, out handlerType);
+				m_specActionHandler.TryGetValue(keyName, out handlerConstructor);
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
-			if (exists)
-			{
-				try
-				{
-					ISpecActionHandler newHndl = GetNewSpecActionHandler(handlerType);
-					return newHndl;
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.ErrorFormat("Error while instanciating ISpecActionHandler {0} From Handler {2}: {1}", keyName, e, handlerType);
-				}
-			}
-			
-			return null;
+
+			return handlerConstructor != null ? handlerConstructor() : null;
 		}
 
 		/// <summary>
@@ -2174,7 +2118,7 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Add a new style to a specialization.  If the specialization does not exist it will be created.
+		/// Add a new style to a specialization. If the specialization does not exist it will be created.
 		/// After adding all styles call SortStyles to sort the list by level
 		/// </summary>
 		/// <param name="style"></param>
@@ -2225,7 +2169,7 @@ namespace DOL.GS
 			try
 			{
 				Tuple<Type, string, ushort, int> entry = new(spec.GetType(), spec.Name, spec.Icon, spec.ID);
-				
+
 				if (m_specsByName.ContainsKey(spec.KeyName))
 					m_specsByName[spec.KeyName] = entry;
 				else
@@ -2285,17 +2229,17 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-            /// [Atlas - Takii] Order RAs by their PrimaryKey in the DB so we have control over their order, instead of base DOL implementation.
-            //return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().OrderByDescending(el => el.MaxLevel).ThenBy(el => el.KeyName).ToList();
-            return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().ToList();
-        }
+			/// [Atlas - Takii] Order RAs by their PrimaryKey in the DB so we have control over their order, instead of base DOL implementation.
+			//return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().OrderByDescending(el => el.MaxLevel).ThenBy(el => el.KeyName).ToList();
+			return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().ToList();
+		}
 
-        /// <summary>
-        /// Return this character class RR5 Ability Level 1 or null
-        /// </summary>
-        /// <param name="charclass"></param>
-        /// <returns></returns>
-        public static Ability GetClassRR5Ability(int charclass)
+		/// <summary>
+		/// Return this character class RR5 Ability Level 1 or null
+		/// </summary>
+		/// <param name="charclass"></param>
+		/// <returns></returns>
+		public static Ability GetClassRR5Ability(int charclass)
 		{
 			return GetClassRealmAbilities(charclass).Where(ab => ab is RR5RealmAbility).FirstOrDefault();
 		}
@@ -2317,13 +2261,13 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (!Util.IsEmpty(ability, true))
 				return GetAbility(ability, 1);
 
 			return GetAbility(string.Format("INTERNALID:{0}", internalID), 1);
 		}
-		
+
 		/// <summary>
 		/// Get Ability by Keyname
 		/// </summary>
@@ -2333,7 +2277,7 @@ namespace DOL.GS
 		{
 			return GetAbility(keyname, 1);
 		}
-		
+
 		/// <summary>
 		/// Get Ability by dbid.
 		/// </summary>
@@ -2351,10 +2295,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (!Util.IsEmpty(ability, true))
 				return GetAbility(ability, 1);
-				
+
 			return GetAbility(string.Format("DBID:{0}", databaseID), 1);
 		}
 
@@ -2379,7 +2323,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (dbab != null)
 			{
 				Ability dba = GetNewAbilityInstance(dbab);
@@ -2415,12 +2359,12 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			return spellList;
 		}
 
 		/// <summary>
-		/// Update or add a spell to the global spell list.  Useful for adding procs and charges to items without restarting server.
+		/// Update or add a spell to the global spell list. Useful for adding procs and charges to items without restarting server.
 		/// This will not update a spell in a spell line.
 		/// </summary>
 		/// <param name="spellID"></param>
@@ -2431,11 +2375,11 @@ namespace DOL.GS
 			try
 			{
 				var dbSpell = DOLDB<DBSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
-	
+
 				if (dbSpell != null)
 				{
 					Spell spell = new(dbSpell, 1);
-	
+
 					if (m_spellIndex.ContainsKey(spellID))
 					{
 						m_spellIndex[spellID] = spell;
@@ -2444,7 +2388,7 @@ namespace DOL.GS
 					{
 						m_spellIndex.Add(spellID, spell);
 					}
-					
+
 					// Update tooltip index
 					if (spell.InternalID != 0)
 					{
@@ -2453,10 +2397,10 @@ namespace DOL.GS
 						else
 							m_spellToolTipIndex.Add((ushort)spell.InternalID, spell.ID);
 					}
-	
+
 					return true;
 				}
-	
+
 				return false;
 			}
 			finally
@@ -2464,7 +2408,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitWriteLock();
 			}
 		}
-		
+
 		/// <summary>
 		/// Get Spell Lines attached to a Spec (with class hint).
 		/// </summary>
@@ -2488,10 +2432,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			return list;
 		}
-		
+
 		/// <summary>
 		/// Return the spell line, creating a temporary one if not found
 		/// </summary>
@@ -2501,7 +2445,6 @@ namespace DOL.GS
 		{
 			return GetSpellLine(keyname, true);
 		}
-
 
 		/// <summary>
 		/// Return a spell line
@@ -2522,14 +2465,13 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
-			
+
 			if (result != null)
 				return result;
 
 			// Mob Spells is specifically scripted...
 			if (keyname == GlobalSpellsLines.Mob_Spells)
-                return new SpellLine(GlobalSpellsLines.Mob_Spells, GlobalSpellsLines.Mob_Spells, "", true);
+				return new SpellLine(GlobalSpellsLines.Mob_Spells, GlobalSpellsLines.Mob_Spells, "", true);
 
 			if (create)
 			{
@@ -2543,7 +2485,7 @@ namespace DOL.GS
 
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Add a scripted spell to a spellline
 		/// will try to add to global spell list if not exists (preventing obvious harcoded errors...)
@@ -2562,9 +2504,9 @@ namespace DOL.GS
 					spcp = (Spell)spell.Clone();
 					// Level 1 for storing...
 					spcp.Level = 1;
-					
+
 					m_spellIndex.Add(spell.ID, spcp);
-					
+
 					// Add Tooltip Index
 					if (spcp.InternalID != 0 && !m_spellToolTipIndex.ContainsKey((ushort)spcp.InternalID))
 						m_spellToolTipIndex.Add((ushort)spcp.InternalID, spcp.ID);
@@ -2574,7 +2516,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitWriteLock();
 			}
-			
+
 			// let the base handler do this...
 			if (spcp != null)
 			{
@@ -2588,15 +2530,15 @@ namespace DOL.GS
 				// Cannot store it in spell index !! ID could be wrongly set we can't rely on it !
 				if (!m_lineSpells.ContainsKey(spellLineID))
 					m_lineSpells.Add(spellLineID, new List<Spell>());
-				
+
 				// search for duplicates
 				bool added = false;
 				for (int r = 0; r < m_lineSpells[spellLineID].Count; r++)
 				{
 					try
 					{
-						if (m_lineSpells[spellLineID][r] != null && 
-						    (spell.ID > 0 && m_lineSpells[spellLineID][r].ID == spell.ID && m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower()))
+						if ((m_lineSpells[spellLineID][r] != null &&
+						    spell.ID > 0 && m_lineSpells[spellLineID][r].ID == spell.ID && m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower()))
 						    || (m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower())))
 						{
 							m_lineSpells[spellLineID][r] = spell;
@@ -2607,13 +2549,13 @@ namespace DOL.GS
 					{
 					}
 				}
-				
+
 				// try regular add (this could go wrong if duplicate detection is bad...)
 				if (!added)
 					m_lineSpells[spellLineID].Add(spell);
-				
+
 				m_lineSpells[spellLineID] = m_lineSpells[spellLineID].OrderBy(e => e.Level).ThenBy(e => e.ID).ToList();
-				    
+
 			}
 			finally
 			{
@@ -2637,12 +2579,12 @@ namespace DOL.GS
 				// Add Spell Line if needed (doesn't create the spellline index...)
 				if(!m_lineSpells.ContainsKey(spellLineID))
 					m_lineSpells.Add(spellLineID, new List<Spell>());
-							
+
 				try
 				{
 					Spell spl = (Spell)m_spellIndex[spellID].Clone();
 					spl.Level = level;
-					
+
 					// search if it exists
 					bool added = false;
 					for (int r = 0; r < m_lineSpells[spellLineID].Count ; r++)
@@ -2654,10 +2596,10 @@ namespace DOL.GS
 							added = true;
 						}
 					}
-					
+
 					if (!added)
 						m_lineSpells[spellLineID].Add(spl);
-					
+
 					m_lineSpells[spellLineID] = m_lineSpells[spellLineID].OrderBy(e => e.Level).ThenBy(e => e.ID).ToList();
 				}
 				catch (Exception e)
@@ -2689,13 +2631,13 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (!Util.IsEmpty(spec, true))
 				return GetSpecialization(spec, false);
-			
+
 			return GetSpecialization(string.Format("INTERNALID:{0}", internalID), true);
 		}
-		
+
 		/// <summary>
 		/// Get a loaded specialization, warn if not found and create a dummy entry
 		/// </summary>
@@ -2725,7 +2667,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (spec.KeyName == keyname)
 				return spec;
 
@@ -2747,6 +2689,7 @@ namespace DOL.GS
 		{
 			List<Specialization> result = null;
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
 				result = m_specsByName.Where(ts => type.IsAssignableFrom(ts.Value.Item1))
@@ -2756,13 +2699,11 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
-			if (result == null)
-				result = new List<Specialization>();
-			
+
+			result ??= new List<Specialization>();
 			return result;
 		}
-		
+
 		/// <summary>
 		/// Get a Class Specialization Career's to use data oriented Specialization Abilities and Skills.
 		/// </summary>
@@ -2784,7 +2725,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			foreach (KeyValuePair<string, int> constraint in entries)
 			{
 				try
@@ -2811,7 +2752,7 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			// all Character Career's (mainly for sprint...)
 			foreach (KeyValuePair<string, int> constraint in entries)
 			{
@@ -2825,10 +2766,10 @@ namespace DOL.GS
 				{
 				}
 			}
-			
+
 			return dictRes;
 		}
-		
+
 		/// <summary>
 		/// return all styles for a specific specialization
 		/// if no style are associated or spec is unknown the list will be empty
@@ -2851,12 +2792,12 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			List<Style> styleRes = new();
-				
+
 			foreach(Tuple<Style, byte> constraint in entries)
 				styleRes.Add((Style)constraint.Item1.Clone());
-				
+
 			return styleRes;
 		}
 
@@ -2880,19 +2821,19 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			List<Ability> abRes = new();
 			foreach (Tuple<string, byte, int, int> constraint in entries)
 			{
 				if (constraint.Item4 != 0 && constraint.Item4 != classID)
 					continue;
-				
+
 				Ability ab = GetNewAbilityInstance(constraint.Item1, constraint.Item3);
 				ab.Spec = specID;
 				ab.SpecLevelRequirement = constraint.Item2;
 				abRes.Add(ab);
 			}
-				
+
 			return abRes;
 		}
 
@@ -2913,10 +2854,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (style != null)
 				return (Style)style.Clone();
-			
+
 			return style;
 		}
 
@@ -2939,10 +2880,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (style != null)
 				return (Style)style.Clone();
-			
+
 			return style;
 		}
 
@@ -2963,10 +2904,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (spell != null)
 				return (Spell)spell.Clone();
-			
+
 			return null;
 		}
 
@@ -2981,8 +2922,7 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
-				int spellid;
-				if (m_spellToolTipIndex.TryGetValue(ttid, out spellid))
+				if (m_spellToolTipIndex.TryGetValue(ttid, out int spellid))
 				{
 					m_spellIndex.TryGetValue(spellid, out spell);
 				}
@@ -2995,10 +2935,10 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (spell != null)
 				return (Spell)spell.Clone();
-			
+
 			return null;
 		}
 
@@ -3025,14 +2965,9 @@ namespace DOL.GS
 				}
 			}
 
-			if (spell == null)
-			{
-				spell = GetSpellByID(spellID);
-			}
-
+			spell ??= GetSpellByID(spellID);
 			return spell;
 		}
-
 
 		/// <summary>
 		/// Get display name of property
@@ -3041,11 +2976,11 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static string GetPropertyName(eProperty prop)
 		{
-			string name;
-			if (!m_propertyNames.TryGetValue(prop, out name))
+			if (!m_propertyNames.TryGetValue(prop, out string name))
 			{
-				name = "Property" + ((int)prop);
+				name = "Property" + (int) prop;
 			}
+
 			return name;
 		}
 
@@ -3061,7 +2996,7 @@ namespace DOL.GS
 				return 0;
 
 			int resistValue = 0;
-			
+
 			if (m_raceResists.ContainsKey(race))
 			{
 				int resistIndex;
@@ -3077,12 +3012,12 @@ namespace DOL.GS
 				}
 				else
 				{
-					log.WarnFormat("No resists defined for type:  {0}", type.ToString());
+					log.WarnFormat("No resists defined for type: {0}", type.ToString());
 				}
 			}
 			else
 			{
-				log.WarnFormat("No resists defined for race:  {0}", race);
+				log.WarnFormat("No resists defined for race: {0}", race);
 			}
 
 			return resistValue;
@@ -3095,8 +3030,7 @@ namespace DOL.GS
 		/// <returns>spec names needed to use that object type</returns>
 		public static string ObjectTypeToSpec(eObjectType objectType)
 		{
-			string res = null;
-			if (!m_objectTypeToSpec.TryGetValue(objectType, out res))
+			if (!m_objectTypeToSpec.TryGetValue(objectType, out string res))
 				if (log.IsWarnEnabled)
 					log.Warn("Not found spec for object type " + objectType);
 			return res;
@@ -3109,13 +3043,13 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static eProperty SpecToSkill(string specKey)
 		{
-			eProperty res;
-			if (!m_specToSkill.TryGetValue(specKey, out res))
+			if (!m_specToSkill.TryGetValue(specKey, out eProperty res))
 			{
 				//if (log.IsWarnEnabled)
 				//log.Warn("No skill property found for spec " + specKey);
 				return eProperty.Undefined;
 			}
+
 			return res;
 		}
 
@@ -3126,48 +3060,28 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static eProperty SpecToFocus(string specKey)
 		{
-			eProperty res;
-			if (!m_specToFocus.TryGetValue(specKey, out res))
+			if (!m_specToFocus.TryGetValue(specKey, out eProperty res))
 			{
 				//if (log.IsWarnEnabled)
 				//log.Warn("No skill property found for spec " + specKey);
 				return eProperty.Undefined;
 			}
+
 			return res;
 		}
-		
-		private static ISpecActionHandler GetNewSpecActionHandler(Type type)
+
+		private static Func<ISpecActionHandler> GetNewSpecActionHandlerConstructor(Type type)
 		{
-			ISpecActionHandler handl = null;
-			
-			try
-			{
-				handl = (ISpecActionHandler)type.Assembly.CreateInstance(type.FullName);
-				return handl;
-			}
-			catch
-			{
-			}
-			
-			return handl;
+			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
+			return Expression.Lambda<Func<ISpecActionHandler>>(Expression.New(constructor, null), null).Compile();
 		}
-		
-		private static IAbilityActionHandler GetNewAbilityActionHandler(Type type)
+
+		private static Func<IAbilityActionHandler> GetNewAbilityActionHandlerConstructor(Type type)
 		{
-			IAbilityActionHandler handl = null;
-			
-			try
-			{
-				handl = (IAbilityActionHandler)type.Assembly.CreateInstance(type.FullName);
-				return handl;
-			}
-			catch
-			{
-			}
-			
-			return handl;
+			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
+			return Expression.Lambda<Func<IAbilityActionHandler>>(Expression.New(constructor, null), null).Compile();
 		}
-		
+
 		private static Ability GetNewAbilityInstance(string keyname, int level)
 		{
 			Ability ab = null;
@@ -3184,21 +3098,21 @@ namespace DOL.GS
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
-			
+
 			if (dba != null)
 			{
 				ab = GetNewAbilityInstance(dba);
 				ab.Level = level;
 			}
-			
+
 			return ab;
 		}
-		
+
 		private static Ability GetNewAbilityInstance(DBAbility dba)
 		{
 			// try instanciating ability
 			Ability ab = null;
-			
+
 			if (Util.IsEmpty(dba.Implementation, true) == false)
 			{
 				// Try instanciating Ability
@@ -3214,10 +3128,10 @@ namespace DOL.GS
 							args: new object[] { dba, 0 },
 							culture: null,
 							activationAttributes: null);
-						
+
 						// instanciation worked
-						if (ab != null) 
-						{								
+						if (ab != null)
+						{
 							break;
 						}
 					}
@@ -3225,12 +3139,12 @@ namespace DOL.GS
 					{
 					}
 				}
-				
+
 				if (ab == null)
 				{
 					// Something Went Wrong when instanciating
 					ab = new Ability(dba, 0);
-					
+
 					if (log.IsWarnEnabled)
 						log.WarnFormat("Could not Instanciate Ability {0} from {1} reverting to default Ability...", dba.KeyName, dba.Implementation);
 				}
@@ -3239,14 +3153,14 @@ namespace DOL.GS
 			{
 				ab = new Ability(dba, 0);
 			}
-			
+
 			return ab;
 		}
-		
+
 		private static Specialization GetNewSpecializationInstance(string keyname, Tuple<Type, string, ushort, int> entry)
 		{
-			Specialization gameSpec = null;
-			
+			Specialization gameSpec;
+
 			try
 			{
 				gameSpec = (Specialization)entry.Item1.Assembly.CreateInstance(
@@ -3257,21 +3171,20 @@ namespace DOL.GS
 						args: new object[] { keyname, entry.Item2, entry.Item3, entry.Item4 },
 						culture: null,
 						activationAttributes: null);
-					
+
 					// instanciation worked
-					if (gameSpec != null) 
-					{	
+					if (gameSpec != null)
+					{
 						return gameSpec;
 					}
-
 			}
 			catch
 			{
 			}
-			
+
 			return GetNewSpecializationInstance(keyname, entry.Item1.FullName, entry.Item2, entry.Item3, entry.Item4);
 		}
-		
+
 		private static Specialization GetNewSpecializationInstance(string keyname, string type, string name, ushort icon, int id)
 		{
 			Specialization gameSpec = null;
@@ -3288,10 +3201,10 @@ namespace DOL.GS
 						args: new object[] { keyname, name, icon, id },
 						culture: null,
 						activationAttributes: null);
-					
+
 					// instanciation worked
-					if (gameSpec != null) 
-					{						
+					if (gameSpec != null)
+					{
 						break;
 					}
 				}
@@ -3299,18 +3212,17 @@ namespace DOL.GS
 				{
 				}
 			}
-			
+
 			if (gameSpec == null)
 			{
 				// Something Went Wrong when instanciating
 				gameSpec = new Specialization(keyname, name, icon, id);
-				
+
 				if (log.IsErrorEnabled)
 					log.ErrorFormat("Could not Instanciate Specialization {0} from {1} reverting to default Specialization...", keyname, type);
 			}
-			
-			return gameSpec;
 
+			return gameSpec;
 		}
 	}
 }
