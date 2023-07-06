@@ -83,8 +83,7 @@ namespace DOL.GS
             }
             else
             {
-                // Must be done here because 'RangeAttackTarget' is changed in 'CheckRangeAttackState'.
-                _target = _owner.rangeAttackComponent.Target;
+                _target = _owner.rangeAttackComponent.Target ?? _owner.TargetObject;
 
                 if (PrepareRangedAttack())
                 {
@@ -95,7 +94,7 @@ namespace DOL.GS
 
             StartTime = _interval;
         }
-        
+
         public virtual bool CheckInterruptTimer()
         {
             return false;
@@ -129,13 +128,10 @@ namespace DOL.GS
 
         protected virtual bool CanPerformAction()
         {
-            if (_owner.IsMezzed || _owner.IsStunned)
+            if (_owner.IsMezzed || _owner.IsStunned || _owner.IsEngaging)
                 return false;
 
             if (_owner.IsCasting && !_owner.CurrentSpellHandler?.Spell.Uninterruptible != true)
-                return false;
-
-            if (_owner.IsEngaging || _owner.TargetObject == null)
                 return false;
 
             return true;

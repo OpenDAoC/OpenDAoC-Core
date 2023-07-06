@@ -2,7 +2,6 @@
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
@@ -21,34 +20,12 @@ namespace DOL.GS
         public const int VOLLEY_ENDURANCE_COST = 15;
         public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
         public const int MAX_DRAW_DURATION = 15000;
-        protected eRangedAttackState m_rangedAttackState;
-        protected eRangedAttackType m_rangedAttackType;
-        protected eActiveQuiverSlot m_activeQuiverSlot;
-        protected WeakReference m_rangeAttackAmmo = new WeakRef(null);
-        protected WeakReference m_rangeAttackTarget = new WeakRef(null);
-        protected InventoryItem m_ammo;
-        protected bool m_isAmmoCompatible;
-
-        public eRangedAttackState RangedAttackState
-        {
-            get => m_rangedAttackState;
-            set => m_rangedAttackState = value;
-        }
-
-        public eRangedAttackType RangedAttackType
-        {
-            get => m_rangedAttackType;
-            set => m_rangedAttackType = value;
-        }
-
-        public eActiveQuiverSlot ActiveQuiverSlot
-        {
-            get => m_activeQuiverSlot;
-            set => m_activeQuiverSlot = value;
-        }
-
-        public InventoryItem Ammo => m_ammo;
-        public bool IsAmmoCompatible => m_isAmmoCompatible;
+        public GameObject Target { get; set; }
+        public eRangedAttackState RangedAttackState { get; set; }
+        public eRangedAttackType RangedAttackType { get; set; }
+        public eActiveQuiverSlot ActiveQuiverSlot { get; set; }
+        public InventoryItem Ammo { get; private set; }
+        public bool IsAmmoCompatible { get; private set; }
 
         private InventoryItem GetAmmoFromInventory(eObjectType ammoType)
         {
@@ -71,8 +48,8 @@ namespace DOL.GS
 
         public InventoryItem UpdateAmmo(InventoryItem weapon)
         {
-            m_ammo = null;
-            m_isAmmoCompatible = true;
+            Ammo = null;
+            IsAmmoCompatible = true;
 
             if (m_owner is not GamePlayer || weapon == null)
                 return null;
@@ -80,41 +57,22 @@ namespace DOL.GS
             switch (weapon.Object_Type)
             {
                 case (int)eObjectType.Thrown:
-                    m_ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                    Ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
                     break;
                 case (int)eObjectType.Crossbow:
-                    m_ammo = GetAmmoFromInventory(eObjectType.Bolt);
-                    m_isAmmoCompatible = m_ammo?.Object_Type == (int)eObjectType.Bolt;
+                    Ammo = GetAmmoFromInventory(eObjectType.Bolt);
+                    IsAmmoCompatible = Ammo?.Object_Type == (int)eObjectType.Bolt;
                     break;
                 case (int)eObjectType.Longbow:
                 case (int)eObjectType.CompositeBow:
                 case (int)eObjectType.RecurvedBow:
                 case (int)eObjectType.Fired:
-                    m_ammo = GetAmmoFromInventory(eObjectType.Arrow);
-                    m_isAmmoCompatible = m_ammo?.Object_Type == (int)eObjectType.Arrow;
+                    Ammo = GetAmmoFromInventory(eObjectType.Arrow);
+                    IsAmmoCompatible = Ammo?.Object_Type == (int)eObjectType.Arrow;
                     break;
             }
 
-            return m_ammo;
-        }
-
-        public GameObject Target
-        {
-            get
-            {
-                if (m_owner is GamePlayer)
-                {
-                    GameObject target = (GameObject)m_rangeAttackTarget.Target;
-
-                    if (target == null || target.ObjectState != eObjectState.Active)
-                        target = m_owner.TargetObject;
-
-                    return target;
-                }
-                else
-                    return m_owner.TargetObject;
-            }
-            set => m_rangeAttackTarget.Target = value;
+            return Ammo;
         }
 
         /// <summary>
@@ -162,7 +120,7 @@ namespace DOL.GS
                     else if (UpdateAmmo(playerOwner.ActiveWeapon) == null)
                         // Another check for ammo just before firing.
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    else if (!m_isAmmoCompatible)
+                    else if (!IsAmmoCompatible)
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving)target, false))
                     {
@@ -233,7 +191,7 @@ namespace DOL.GS
             int arrowRecoveryChance = m_owner.GetModified(eProperty.ArrowRecovery);
 
             if (arrowRecoveryChance == 0 || Util.Chance(100 - arrowRecoveryChance))
-                m_owner.Inventory.RemoveCountFromStack(m_ammo, 1);
+                m_owner.Inventory.RemoveCountFromStack(Ammo, 1);
 
             if (RangedAttackType == eRangedAttackType.Critical)
                 m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE_COST;
