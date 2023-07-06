@@ -1224,7 +1224,7 @@ namespace DOL.GS
                 }
             }
 
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, false))
+            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
             {
                 ad.AttackResult = eAttackResult.NotAllowed_ServerRules;
                 SendAttackingCombatMessages(action, ad);
@@ -2455,7 +2455,6 @@ namespace DOL.GS
         /// <summary>
         /// Send the messages to the GamePlayer
         /// </summary>
-        /// <param name="ad"></param>
         public void SendAttackingCombatMessages(WeaponAction action, AttackData ad)
         {
             // Used to prevent combat log spam when the target is out of range, dead, not visible, etc.
@@ -2471,10 +2470,10 @@ namespace DOL.GS
                     and not eAttackResult.Blocked
                     and not eAttackResult.Parried)
                 {
-                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime > 1500)
-                        attackAction.RoundWithNoAttackTime = 0;
-                    else
+                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
                         return;
+
+                    attackAction.RoundWithNoAttackTime = 0;
                 }
             }
 
