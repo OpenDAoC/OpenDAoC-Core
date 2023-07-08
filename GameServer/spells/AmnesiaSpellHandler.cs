@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
 			if (target.CurrentSpellHandler?.Spell.InstrumentRequirement == 0)
 				target.castingComponent.ClearUpSpellHandlers(); //stop even if MoC or QC
 
-			target.rangeAttackComponent.Target = null;
+			target.rangeAttackComponent.AutoFireTarget = null;
 			//if(target is GamePlayer)
 				//target.TargetObject = null;
 

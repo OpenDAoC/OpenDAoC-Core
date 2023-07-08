@@ -83,7 +83,7 @@ namespace DOL.GS
             }
             else
             {
-                _target = _owner.rangeAttackComponent.Target ?? _owner.TargetObject;
+                _target = _owner.rangeAttackComponent.AutoFireTarget ?? _owner.TargetObject;
 
                 if (PrepareRangedAttack())
                 {

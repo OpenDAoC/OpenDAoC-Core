@@ -854,10 +854,10 @@ namespace DOL.GS
             if (speed <= 0)
                 return false;
 
-            // Npcs aren't allowed to prepare their ranged attack while moving or out of range.
+            // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
             if (owner is not GamePlayer && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                if (owner.IsMoving || !owner.IsWithinRadius(owner.rangeAttackComponent.Target, owner.attackComponent.AttackRange))
+                if (owner.IsMoving || !owner.IsWithinRadius(owner.TargetObject, owner.attackComponent.AttackRange))
                     return false;
             }
 

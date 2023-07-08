@@ -20,7 +20,7 @@ namespace DOL.GS
         public const int VOLLEY_ENDURANCE_COST = 15;
         public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
         public const int MAX_DRAW_DURATION = 15000;
-        public GameObject Target { get; set; }
+        public GameObject AutoFireTarget { get; set; } // Used to shoot at a different target than the one currently selected. Always null for NPCs.
         public eRangedAttackState RangedAttackState { get; set; }
         public eRangedAttackType RangedAttackType { get; set; }
         public eActiveQuiverSlot ActiveQuiverSlot { get; set; }
@@ -101,7 +101,7 @@ namespace DOL.GS
                 if (RangedAttackState is eRangedAttackState.Fire or eRangedAttackState.AimFire or eRangedAttackState.AimFireReload)
                 {
                     // Clean the RangeAttackTarget at the first shot try even if failed.
-                    Target = null;
+                    AutoFireTarget = null;
 
                     if (target is null or not GameLiving)
                     {

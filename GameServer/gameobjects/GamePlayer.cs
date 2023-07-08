@@ -8004,10 +8004,10 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    if (rangeAttackComponent.Target == null)
+                                    if (rangeAttackComponent.AutoFireTarget == null)
                                     {
                                         //set new target only if there was no target before
-                                        rangeAttackComponent.Target = TargetObject;
+                                        rangeAttackComponent.AutoFireTarget = TargetObject;
                                     }
 
                                     rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;
