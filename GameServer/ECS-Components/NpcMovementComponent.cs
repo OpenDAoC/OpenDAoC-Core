@@ -199,7 +199,7 @@ namespace DOL.GS
 
             if (Owner is GameTaxi or GameTaxiBoat)
             {
-                StopMoving();
+                UpdateMovement(null, 0);
                 Owner.RemoveFromWorld();
             }
         }
@@ -470,13 +470,14 @@ namespace DOL.GS
                             CurrentWaypoint = CurrentWaypoint.Next;
                         else
                             CurrentWaypoint = CurrentWaypoint.Prev;
+
                         break;
                     }
                 }
             }
             else
             {
-                if ((CurrentWaypoint.Type == ePathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
+                if (CurrentWaypoint.Type == ePathType.Path_Reverse && CurrentWaypoint.FiredFlag)
                     CurrentWaypoint = CurrentWaypoint.Prev;
                 else
                     CurrentWaypoint = CurrentWaypoint.Next;
