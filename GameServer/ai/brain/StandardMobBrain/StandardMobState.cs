@@ -20,21 +20,6 @@ public class StandardMobState : State
     {
         _brain = brain;
     }
-
-    public override void Enter()
-    {
-        base.Enter();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
-    }
-
-    public override void Think()
-    {
-        base.Think();
-    }
 }
 
 public class StandardMobState_IDLE : StandardMobState
@@ -90,11 +75,6 @@ public class StandardMobState_WAKING_UP : StandardMobState
         _id = eFSMStateType.WAKING_UP;
     }
 
-    public override void Enter()
-    {
-        base.Enter();
-    }
-
     public override void Think()
     {
         if (!_brain.Body.attackComponent.AttackState && _brain.Body.CanRoam)
@@ -146,16 +126,19 @@ public class StandardMobState_AGGRO : StandardMobState
 
     public override void Think()
     {
-        if (_brain is not KeepGuardBrain && _brain.IsBeyondTetherRange() && !_brain.Body.InCombatInLast(25000))
+        if (!_brain.Body.InCombatInLast(25000) || _brain.Body.IsNearSpawn)
         {
-            _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-            return;
-        }
+            if (_brain is not KeepGuardBrain && _brain.IsBeyondTetherRange())
+            {
+                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                return;
+            }
 
-        if (!_brain.CheckProximityAggro())
-        {
-            _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-            return;
+            if (!_brain.CheckProximityAggro())
+            {
+                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                return;
+            }
         }
 
         if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
@@ -229,21 +212,14 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
             _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
 
         _brain.ClearAggroList();
-        _brain.IsReturningToSpawn = true;
         _brain.Body.ReturnToSpawnPoint();
         base.Enter();
     }
 
-    public override void Exit()
-    {
-        _brain.IsReturningToSpawn = false;
-        base.Exit();
-    }
-
     public override void Think()
     {
-        if(!_brain.Body.IsNearSpawn &&
-            (_brain.AggroTable.Count == 0 || !_brain.Body.IsEngaging) &&
+        if (!_brain.Body.IsNearSpawn &&
+            (!_brain.HasAggro || !_brain.Body.IsEngaging) &&
             (!_brain.Body.IsReturningHome || !_brain.Body.IsReturningToSpawnPoint) &&
             _brain.Body.CurrentSpeed == 0)
         {
@@ -257,12 +233,6 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
             _brain.Body.TurnTo(_brain.Body.SpawnHeading);
             return;
-        }
-
-        if (_brain.CheckProximityAggro())
-        {
-            _brain.Body.CancelReturnToSpawnPoint();
-            _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
         }
 
         base.Think();

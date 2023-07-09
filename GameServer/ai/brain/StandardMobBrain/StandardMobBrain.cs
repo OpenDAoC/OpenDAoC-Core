@@ -97,14 +97,12 @@ namespace DOL.AI.Brain
             FSM.Think();
         }
 
-        public bool IsReturningToSpawn;
-
         public virtual bool CheckProximityAggro()
         {
             FireAmbientSentence();
 
-            // Check aggro only if we're not in combat.
-            if (AggroRange > 0 && !IsReturningToSpawn && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null)
+            // Check aggro only if our aggro list is empty and we're not in combat.
+            if (AggroRange > 0 && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null)
             {
                 // Don't check aggro if we spawned less than X seconds ago. This is to prevent clients from sending positive LoS check
                 // when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
