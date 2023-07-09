@@ -168,7 +168,7 @@ public class StandardMobState_AGGRO : StandardMobState
 
 public class StandardMobState_ROAMING : StandardMobState
 {
-    private int _roamCooldown = 45 * 1000;
+    private const int ROAM_COOLDOWN = 45 * 1000;
     private long _lastRoamTick = 0;
 
     public StandardMobState_ROAMING(FSM fsm, StandardMobBrain brain) : base(fsm, brain)
@@ -200,7 +200,7 @@ public class StandardMobState_ROAMING : StandardMobState
 
         if (!_brain.Body.IsCasting)
         {
-            if (_lastRoamTick + _roamCooldown <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
+            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
                 _brain.Body.Roam(50);
                 _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
