@@ -67,13 +67,18 @@ namespace DOL.AI.Brain
 					Body.SwitchToRanged(target);
 			}
 
+			return base.CheckProximityAggro();
+		}
+
+		public override bool IsBeyondTetherRange()
+		{
 			// Eden - Portal Keeps Guards max distance
 			if (Body.Level > 200 && !Body.IsWithinRadius(Body.SpawnPoint, 2000))
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				return true;
 			else if (!Body.InCombat && !Body.IsWithinRadius(Body.SpawnPoint, 6000))
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				return true;
 
-			return base.CheckProximityAggro();
+			return false;
 		}
 
 		protected override void CheckPlayerAggro()

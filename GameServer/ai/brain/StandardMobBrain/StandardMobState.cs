@@ -128,13 +128,7 @@ public class StandardMobState_AGGRO : StandardMobState
     {
         if (!_brain.Body.InCombatInLast(25000) || _brain.Body.IsNearSpawn)
         {
-            if (_brain is not KeepGuardBrain && _brain.IsBeyondTetherRange())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                return;
-            }
-
-            if (!_brain.CheckProximityAggro())
+            if (_brain.IsBeyondTetherRange() || !_brain.CheckProximityAggro())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 return;
