@@ -792,12 +792,10 @@ namespace DOL.GS
                 }*/
                 if (LivingStartAttack())
                 {
-                    if (player.IsCasting && !player.castingComponent.SpellHandler.Spell.Uninterruptible)
+                    if (player.castingComponent.SpellHandler?.Spell.Uninterruptible == false)
                     {
                         player.StopCurrentSpellcast();
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"),
-                            eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
 
                     if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)

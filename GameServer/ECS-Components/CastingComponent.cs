@@ -17,7 +17,7 @@ namespace DOL.GS
         public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool IsCasting => SpellHandler != null || !_startCastSpellRequests.IsEmpty;
+        public bool IsCasting => SpellHandler != null;
 
         public CastingComponent(GameLiving owner)
         {

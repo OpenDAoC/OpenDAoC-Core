@@ -70,7 +70,7 @@ namespace DOL.GS.SkillHandler
 				}
 
 				// Can't stealth if in attack mode
-				if(player.attackComponent.AttackState || (player.CurrentSpellHandler != null && player.CurrentSpellHandler.IsInCastingPhase))
+				if(player.attackComponent.AttackState || player.IsCasting)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseCombatState"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
