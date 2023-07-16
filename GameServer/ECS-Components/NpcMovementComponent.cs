@@ -98,12 +98,15 @@ namespace DOL.GS
                 return;
             }
 
-            int ticksToArrive = Owner.GetDistanceTo(targetPosition) * 1000 / speed;
+            int distanceToTarget = Owner.GetDistanceTo(targetPosition);
+            int ticksToArrive = distanceToTarget * 1000 / speed;
 
             if (ticksToArrive > 0)
             {
                 UpdateMovement(targetPosition, speed);
-                TurnTo(targetPosition.X, targetPosition.Y);
+
+                if (distanceToTarget > 25)
+                    TurnTo(targetPosition.X, targetPosition.Y);
 
                 // Cancel the ranged attack if the NPC is moving.
                 if (Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
