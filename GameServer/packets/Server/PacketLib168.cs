@@ -843,12 +843,18 @@ namespace DOL.GS.PacketHandler
 				{
 					pak.WriteByte(0);
 				}
+
+				// Following code is temporarily disabled since it is the cause for janky NPC movement.
+				// It makes them pause at waypoints and teleport instead of walk when their destination is very close.
+				// Need to figure out how it's actually supposed to work.
+				// Possibly broken anyway since those values don't seem to match what the official server sends.
+
 				//Dinberg:Instances - zoneskinID for positioning of objects clientside.
-				flags |= (byte) (((z.ZoneSkinID & 0x100) >> 6) | ((targetZone & 0x100) >> 5));
+				//flags |= (byte) (((z.ZoneSkinID & 0x100) >> 6) | ((targetZone & 0x100) >> 5));
 				pak.WriteByte(flags);
 				pak.WriteByte((byte) z.ZoneSkinID);
 				//Dinberg:Instances - targetZone already accomodates for this feat.
-				pak.WriteByte((byte) targetZone);
+				pak.WriteByte(0/*(byte) targetZone*/);
 				SendUDP(pak);
 			}
 			// Update Cache
