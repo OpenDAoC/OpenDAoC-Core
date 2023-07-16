@@ -274,9 +274,8 @@ namespace DOL.GS.Commands
 				*/
 					info.Add("");
 					info.Add(" ------ State ------");
-					if (target.IsReturningHome || target.IsReturningToSpawnPoint)
+					if (target.IsReturningToSpawnPoint)
 					{
-						info.Add("IsReturningHome: " + target.IsReturningHome);
 						info.Add("IsReturningToSpawnPoint: " + target.IsReturningToSpawnPoint);
 						info.Add("");
 					}

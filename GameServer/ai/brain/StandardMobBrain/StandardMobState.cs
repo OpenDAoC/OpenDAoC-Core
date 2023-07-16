@@ -218,7 +218,7 @@ public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
         if (!_brain.Body.IsNearSpawn &&
             (!_brain.HasAggro || !_brain.Body.IsEngaging) &&
-            (!_brain.Body.IsReturningHome || !_brain.Body.IsReturningToSpawnPoint) &&
+            (!_brain.Body.IsReturningToSpawnPoint) &&
             _brain.Body.CurrentSpeed == 0)
         {
             _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);

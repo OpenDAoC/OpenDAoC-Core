@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -35,7 +34,6 @@ namespace DOL.GS
         public int FollowMinDist { get; private set; } = 100;
         public string PathID { get; set; }
         public PathPoint CurrentWaypoint { get; set; }
-        public bool IsReturningHome { get; private set; }
         public bool IsReturningToSpawnPoint { get; private set; }
         public bool IsTargetPositionValid { get; private set; }
         public int RoamingRange { get; set; }
@@ -239,14 +237,12 @@ namespace DOL.GS
             Owner.TargetObject = null;
             Owner.attackComponent.StopAttack();
             (Owner.Brain as StandardMobBrain)?.ClearAggroList();
-            IsReturningHome = true;
             IsReturningToSpawnPoint = true;
             PathTo(Owner.SpawnPoint, speed);
         }
 
         public void CancelReturnToSpawnPoint()
         {
-            IsReturningHome = false;
             IsReturningToSpawnPoint = false;
         }
 

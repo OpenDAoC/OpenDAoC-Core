@@ -85,7 +85,7 @@ namespace DOL.GS.Scripts
         }
         public override bool HasAbility(string keyName)
         {
-            if (IsReturningHome && keyName == GS.Abilities.CCImmunity)
+            if (IsReturningToSpawnPoint && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);

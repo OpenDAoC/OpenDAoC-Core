@@ -927,7 +927,6 @@ namespace DOL.GS
 			get => movementComponent.CurrentWaypoint;
 			set => movementComponent.CurrentWaypoint = value;
 		}
-		public bool IsReturningHome => movementComponent.IsReturningHome;
 		public bool IsReturningToSpawnPoint => movementComponent.IsReturningToSpawnPoint;
 		public int RoamingRange
 		{

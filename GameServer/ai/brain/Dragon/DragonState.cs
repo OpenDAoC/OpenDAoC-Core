@@ -42,7 +42,7 @@ public class DragonState_IDLE : DragonState
     public override void Think()
     {
         //if we're walking home, do nothing else
-        if (_brain.Body.IsReturningHome) return;
+        if (_brain.Body.IsReturningToSpawnPoint) return;
 
         //if dragon is full health, reset the encounter stages
         if (_brain.Body.HealthPercent == 100 && _brain.Stage < 10)

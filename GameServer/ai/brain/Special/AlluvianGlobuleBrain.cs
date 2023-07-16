@@ -35,7 +35,7 @@ namespace DOL.AI.Brain
 					Grow();
 				}
 			}
-			if (!Body.IsReturningHome)
+			if (!Body.IsReturningToSpawnPoint)
 			{
 				if (!Body.attackComponent.AttackState && AggroRange > 0)
 				{
