@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -12,14 +13,14 @@ namespace DOL.GS
     {
         private const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
         private const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
-        private const short DEFAULT_WALK_TO_SPAWN_POINT_SPEED = 50;
+        private const short DEFAULT_WALK_SPEED = 50;
         private const double FOLLOW_SPEED_SCALAR = 2.5;
 
         private MovementType _movementType;
         private long _followLastTick;
         private int _followTickInterval;
         private long _walkingToEstimatedArrivalTime;
-        private short _moveOnPathMinSpeed;
+        private short _moveOnPathSpeed;
         private long _stopAtWaypointUntil;
         private PathCalculator _pathCalculator;
         private Action<NpcMovementComponent> _goToNextPathingNodeCallback;
@@ -77,7 +78,7 @@ namespace DOL.GS
                 if (_stopAtWaypointUntil <= tick)
                 {
                     _movementType &= ~MovementType.AT_WAYPOINT;
-                    ResumePath();
+                    MoveToNextWaypoint();
                 }
             }
         }
@@ -116,6 +117,8 @@ namespace DOL.GS
                 _movementType |= MovementType.WALK_TO;
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
+            else
+                OnArrival();
         }
 
         public bool PathTo(IPoint3D targetPosition, short speed)
@@ -157,56 +160,77 @@ namespace DOL.GS
             _movementType &= ~MovementType.FOLLOW;
         }
 
-        public void MoveOnPath(short minSpeed)
+        public void MoveOnPath()
         {
+            MoveOnPath(DEFAULT_WALK_SPEED);
+        }
+
+        public void MoveOnPath(short speed)
+        {
+            StopMoving();
+            _moveOnPathSpeed = speed;
+
+            // Move to the first waypoint if we don't have any.
+            // Otherwise and if we're not currently moving on path, move to the previous one (current waypoint if none).
             if (CurrentWaypoint == null)
             {
-                if (log.IsWarnEnabled)
-                    log.Error("No path to travel on for " + Owner.Name);
+                if (PathID == null)
+                {
+                    log.Error($"Called MoveOnPath but PathID is null (NPC: {Owner})");
+                    return;
+                }
 
+                CurrentWaypoint = MovementMgr.LoadPath(PathID);
+
+                if (CurrentWaypoint == null)
+                {
+                    log.Error($"Called MoveOnPath but LoadPath returned null (PathID: {PathID}) (NPC: {Owner})");
+                    return;
+                }
+
+                _movementType |= MovementType.ON_PATH;
+                PathTo(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
                 return;
             }
-
-            _moveOnPathMinSpeed = minSpeed;
-
-            if (Owner.IsWithinRadius(CurrentWaypoint, 100))
-            {
-                Owner.FireAmbientSentence(eAmbientTrigger.moving, Owner);
-
-                if (CurrentWaypoint.Type == ePathType.Path_Reverse && CurrentWaypoint.FiredFlag)
-                    CurrentWaypoint = CurrentWaypoint.Prev;
-                else
-                {
-                    if ((CurrentWaypoint.Type == ePathType.Loop) && (CurrentWaypoint.Next == null))
-                        CurrentWaypoint = MovementMgr.FindFirstPathPoint(CurrentWaypoint);
-                    else
-                        CurrentWaypoint = CurrentWaypoint.Next;
-                }
-            }
-
-            if (CurrentWaypoint != null)
+            else if (!IsSet(MovementType.ON_PATH))
             {
                 _movementType |= MovementType.ON_PATH;
-                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+
+                if (Owner.IsWithinRadius(CurrentWaypoint, 25))
+                {
+                    MoveToNextWaypoint();
+                    return;
+                }
+
+                if (CurrentWaypoint.Type == ePathType.Path_Reverse && CurrentWaypoint.FiredFlag)
+                    CurrentWaypoint = CurrentWaypoint.Next;
+                else if (CurrentWaypoint.Prev != null)
+                    CurrentWaypoint = CurrentWaypoint.Prev;
+
+                PathTo(CurrentWaypoint, Owner.MaxSpeed);
             }
             else
-                StopMovingOnPath();
+                log.Error($"Called MoveOnPath but both CurrentWaypoint and ON_PATH are already set. (NPC: {Owner})");
         }
 
         public void StopMovingOnPath()
         {
-            _movementType &= ~MovementType.ON_PATH;
-
-            if (Owner is GameTaxi or GameTaxiBoat)
+            // Without this, horses would be immediately removed since 'MoveOnPath' immediately calls 'StopMoving', which calls 'StopMovingOnPath'.
+            if (IsSet(MovementType.ON_PATH))
             {
-                UpdateMovement(null, 0);
-                Owner.RemoveFromWorld();
+                if (Owner is GameTaxi or GameTaxiBoat)
+                {
+                    UpdateMovement(null, 0);
+                    Owner.RemoveFromWorld();
+                }
+
+                _movementType &= ~MovementType.ON_PATH;
             }
         }
 
         public void ReturnToSpawnPoint()
         {
-            ReturnToSpawnPoint(DEFAULT_WALK_TO_SPAWN_POINT_SPEED);
+            ReturnToSpawnPoint(DEFAULT_WALK_SPEED);
         }
 
         public void ReturnToSpawnPoint(short speed)
@@ -224,6 +248,11 @@ namespace DOL.GS
         {
             IsReturningHome = false;
             IsReturningToSpawnPoint = false;
+        }
+
+        public void Roam()
+        {
+            Roam(DEFAULT_WALK_SPEED);
         }
 
         public void Roam(short speed)
@@ -430,7 +459,7 @@ namespace DOL.GS
                 if (CurrentWaypoint != null)
                 {
                     if (CurrentWaypoint.WaitTime == 0)
-                        ResumePath();
+                        MoveToNextWaypoint();
                     else
                     {
                         _movementType |= MovementType.AT_WAYPOINT;
@@ -442,7 +471,7 @@ namespace DOL.GS
             }
         }
 
-        private void ResumePath()
+        private void MoveToNextWaypoint()
         {
             PathPoint oldPathPoint = CurrentWaypoint;
             PathPoint nextPathPoint = CurrentWaypoint.Next;
@@ -462,6 +491,7 @@ namespace DOL.GS
                     case ePathType.Once:
                     {
                         CurrentWaypoint = null;
+                        PathID = null; // Unset the path ID, otherwise the brain will re-enter patrolling state and restart it.
                         break;
                     }
                     case ePathType.Path_Reverse:
@@ -486,7 +516,7 @@ namespace DOL.GS
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
             if (CurrentWaypoint != null)
-                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathMinSpeed, CurrentWaypoint.MaxSpeed));
+                WalkTo(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }

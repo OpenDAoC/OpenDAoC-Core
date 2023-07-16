@@ -975,9 +975,14 @@ namespace DOL.GS
 			movementComponent.StopFollowing();
 		}
 
-		public virtual void MoveOnPath(short minSpeed)
+		public virtual void MoveOnPath()
 		{
-			movementComponent.MoveOnPath(minSpeed);
+			movementComponent.MoveOnPath();
+		}
+
+		public virtual void MoveOnPath(short speed)
+		{
+			movementComponent.MoveOnPath(speed);
 		}
 
 		public virtual void StopMovingOnPath()
@@ -998,6 +1003,11 @@ namespace DOL.GS
 		public virtual void CancelReturnToSpawnPoint()
 		{
 			movementComponent.CancelReturnToSpawnPoint();
+		}
+
+		public virtual void Roam()
+		{
+			movementComponent.Roam();
 		}
 
 		public virtual void Roam(short speed)
@@ -2056,19 +2066,6 @@ namespace DOL.GS
 			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)
 				StartPowerRegeneration();
 
-			// If a path is assigned, walk on it.
-			if (MaxSpeedBase > 0 && CurrentSpellHandler == null && !IsMoving
-				&& !attackComponent.AttackState && !InCombat && !IsMovingOnPath && !IsReturningHome
-				&& PathID != null && PathID != "" && PathID != "NULL")
-			{
-				CurrentWaypoint = MovementMgr.LoadPath(PathID);
-
-				if (CurrentWaypoint == null)
-					log.Error($"'MovementMgr.LoadPath' couldn't find the path (PathID: {PathID}) for (NPC: {this})");
-				else
-					MoveOnPath(CurrentWaypoint.MaxSpeed);
-			}
-
 			if (m_houseNumber > 0 && this is not GameConsignmentMerchant)
 			{
 				log.Info("NPC '" + Name + "' added to house " + m_houseNumber);
@@ -2129,9 +2126,6 @@ namespace DOL.GS
 		/// <returns>true if the npc has been successfully removed</returns>
 		public override bool RemoveFromWorld()
 		{
-			if (IsMovingOnPath)
-				StopMovingOnPath();
-
 			if (MAX_PASSENGERS > 0)
 			{
 				foreach (GamePlayer player in CurrentRiders)

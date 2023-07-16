@@ -130,7 +130,11 @@ public class StandardMobState_AGGRO : StandardMobState
         {
             if (_brain.IsBeyondTetherRange() || !_brain.CheckProximityAggro())
             {
-                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                if (_brain.Body.CurrentWaypoint != null)
+                    _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
+                else
+                    _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+
                 return;
             }
         }
@@ -179,7 +183,7 @@ public class StandardMobState_ROAMING : StandardMobState
         {
             if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
-                _brain.Body.Roam(50);
+                _brain.Body.Roam();
                 _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
                 _lastRoamTick = GameLoop.GameLoopTime;
             }
@@ -245,6 +249,7 @@ public class StandardMobState_PATROLLING : StandardMobState
         if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is PATROLLING");
 
+        _brain.Body.MoveOnPath(_brain.Body.MaxSpeed);
         _brain.ClearAggroList();
         base.Enter();
     }
@@ -260,19 +265,6 @@ public class StandardMobState_PATROLLING : StandardMobState
         {
             _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             return;
-        }
-
-        PathPoint path = MovementMgr.LoadPath(_brain.Body.PathID);
-
-        if (path != null)
-        {
-            _brain.Body.CurrentWaypoint = path;
-            _brain.Body.MoveOnPath(path.MaxSpeed);
-        }
-        else
-        {
-            log.ErrorFormat("Path {0} not found for mob {1}.", _brain.Body.PathID, _brain.Body.Name);
-            _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         base.Think();

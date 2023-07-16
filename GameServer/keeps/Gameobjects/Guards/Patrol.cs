@@ -178,7 +178,7 @@ namespace DOL.GS.Keeps
 
 			for (int i = 0; i < PatrolGuards.Count; i++)
 			{
-				GameKeepGuard guard = PatrolGuards[i] as GameKeepGuard;
+				GameKeepGuard guard = PatrolGuards[i];
 
 				// Console.WriteLine(PatrolID + " loading guard " + guard.Name);
 
@@ -198,10 +198,7 @@ namespace DOL.GS.Keeps
 
 					if (guard.IsAlive)
 					{
-
-						if (guard.IsMovingOnPath)
-							guard.StopMovingOnPath();
-
+						guard.StopMovingOnPath();
 						guard.MoveTo(guard.CurrentRegionID, x, y, guard.SpawnPoint.Z, guard.SpawnHeading);
 					}
 
