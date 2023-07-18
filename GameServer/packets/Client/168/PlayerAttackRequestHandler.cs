@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles change attack mode requests
 		/// </summary>
-		protected class AttackRequestHandler : RegionECSAction
+		protected class AttackRequestHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// True if attack should be started
@@ -63,7 +63,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				{

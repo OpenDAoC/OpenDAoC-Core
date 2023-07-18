@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player cancel effect requests
 		/// </summary>
-		protected class CancelEffectHandler : RegionECSAction
+		protected class CancelEffectHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The effect index
@@ -59,7 +59,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				IConcentrationEffect effect = null;
 				lock (player.effectListComponent.EffectsLock)

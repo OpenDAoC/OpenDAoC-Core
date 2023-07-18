@@ -34,7 +34,7 @@ namespace DOL.GS
                         long stopTick = GameLoop.GetCurrentTime();
 
                         if ((stopTick - startTick) > 25)
-                            log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");
+                            log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
                 catch (Exception e)
@@ -54,7 +54,7 @@ namespace DOL.GS
         /// </summary>
         public delegate int AuxECSTimerCallback(AuxECSGameTimer timer);
 
-        public GameObject TimerOwner { get; set; }
+        public GameObject Owner { get; set; }
         public AuxECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public long StartTick { get; set; }
@@ -64,20 +64,20 @@ namespace DOL.GS
         public EntityManagerId EntityManagerId { get; set; } = new();
         private PropertyCollection _properties;
 
-        public AuxECSGameTimer(GameObject target)
+        public AuxECSGameTimer(GameObject owner)
         {
-            TimerOwner = target;
+            Owner = owner;
         }
 
-        public AuxECSGameTimer(GameObject target, AuxECSTimerCallback callback)
+        public AuxECSGameTimer(GameObject owner, AuxECSTimerCallback callback)
         {
-            TimerOwner = target;
+            Owner = owner;
             Callback = callback;
         }
 
-        public AuxECSGameTimer(GameObject target, AuxECSTimerCallback callback, int interval)
+        public AuxECSGameTimer(GameObject owner, AuxECSTimerCallback callback, int interval)
         {
-            TimerOwner = target;
+            Owner = owner;
             Callback = callback;
             Interval = interval;
             Start();
@@ -135,5 +135,16 @@ namespace DOL.GS
                 return _properties;
             }
         }
+    }
+
+    public abstract class AuxECSGameTimerWrapperBase : AuxECSGameTimer
+    {
+        public AuxECSGameTimerWrapperBase(GameObject owner) : base(owner)
+        {
+            Owner = owner;
+            Callback = new AuxECSTimerCallback(OnTick);
+        }
+
+        protected abstract int OnTick(AuxECSGameTimer timer);
     }
 }

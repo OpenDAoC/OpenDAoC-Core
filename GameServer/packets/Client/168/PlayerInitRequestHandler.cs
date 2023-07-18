@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player init requests
 		/// </summary>
-		protected class PlayerInitRequestAction : AuxRegionECSAction
+		protected class PlayerInitRequestAction : AuxECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new PlayerInitRequestHandler
@@ -61,7 +61,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(AuxECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				player.Out.SendUpdatePoints();
 				player.TargetObject = null;

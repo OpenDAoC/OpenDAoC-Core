@@ -38,7 +38,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles item apprise actions
 		/// </summary>
-		protected class AppraiseActionHandler : RegionECSAction
+		protected class AppraiseActionHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The item slot
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (player.TargetObject == null)
 					return 0;

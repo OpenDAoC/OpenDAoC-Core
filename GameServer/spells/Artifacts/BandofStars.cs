@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
         
-        protected class BoltOnTargetAction : RegionECSAction
+        protected class BoltOnTargetAction : ECSGameTimerWrapperBase
         {
             protected readonly GameLiving m_boltTarget;
             protected readonly StarsProc m_handler;
@@ -82,7 +82,7 @@ namespace DOL.GS.Spells
             protected override int OnTick(ECSGameTimer timer)
             {
                 GameLiving target = m_boltTarget;
-                GameLiving caster = (GameLiving) timer.TimerOwner;
+                GameLiving caster = (GameLiving) timer.Owner;
 
                 if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID)
                     return 0;

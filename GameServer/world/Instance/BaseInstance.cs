@@ -323,7 +323,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Automated Closing Timer for Instances
 		/// </summary>
-		protected class AutoCloseRegionTimer : RegionECSAction
+		protected class AutoCloseRegionTimer : ECSGameTimerWrapperBase
         {
             public AutoCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
             {
@@ -367,7 +367,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delay Closing Timer for Instances
 		/// </summary>
-		protected class DelayCloseRegionTimer : RegionECSAction
+		protected class DelayCloseRegionTimer : ECSGameTimerWrapperBase
 		{
 			public DelayCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
 			{

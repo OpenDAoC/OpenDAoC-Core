@@ -30,7 +30,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles group invlite actions
 		/// </summary>
-		protected class HandleGroupInviteAction : RegionECSAction
+		protected class HandleGroupInviteAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// constructs a new HandleGroupInviteAction
@@ -43,7 +43,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (player.TargetObject == null || player.TargetObject == player)
 				{

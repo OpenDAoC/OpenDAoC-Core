@@ -151,7 +151,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		public sealed class RestoreSpeedTimer : RegionECSAction
+		public sealed class RestoreSpeedTimer : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed changing effect

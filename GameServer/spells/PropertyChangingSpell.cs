@@ -530,7 +530,7 @@ namespace DOL.GS.Spells
 		}
 	}
 
-	public class BuffCheckAction : RegionECSAction
+	public class BuffCheckAction : ECSGameTimerWrapperBase
 	{
 		public const int BUFFCHECKINTERVAL = 60000;//60 seconds
 

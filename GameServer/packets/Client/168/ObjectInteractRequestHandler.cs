@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player interact actions
 		/// </summary>
-		protected class InteractActionHandler : AuxRegionECSAction
+		protected class InteractActionHandler : AuxECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The interact target OID
@@ -59,7 +59,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(AuxECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 				Region region = player.CurrentRegion;
 
 				if (region == null)

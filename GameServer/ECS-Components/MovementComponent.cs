@@ -97,7 +97,7 @@ namespace DOL.GS
             TickSpeedZ = z;
         }
 
-        private class ResetHeadingAction : AuxRegionECSAction
+        private class ResetHeadingAction : AuxECSGameTimerWrapperBase
         {
             private MovementComponent _movementComponent;
             private ushort _oldHeading;

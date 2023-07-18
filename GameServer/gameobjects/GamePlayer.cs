@@ -12473,7 +12473,7 @@ namespace DOL.GS
         /// <summary>
         /// Uncovers the player if a mob is too close
         /// </summary>
-        protected class UncoverStealthAction : RegionECSAction
+        protected class UncoverStealthAction : ECSGameTimerWrapperBase
         {
             /// <summary>
             /// Constructs a new uncover stealth action
@@ -12486,7 +12486,7 @@ namespace DOL.GS
             /// </summary>
             protected override int OnTick(ECSGameTimer timer)
             {
-                GamePlayer player = (GamePlayer) timer.TimerOwner;
+                GamePlayer player = (GamePlayer) timer.Owner;
 
                 if (player.Client.Account.PrivLevel > 1)
                     return 0;
@@ -13963,7 +13963,7 @@ namespace DOL.GS
         /// <summary>
         /// The timer to call invulnerability expired callbacks
         /// </summary>
-        protected class InvulnerabilityTimer : RegionECSAction
+        protected class InvulnerabilityTimer : ECSGameTimerWrapperBase
         {
             /// <summary>
             /// Defines a logger for this class.
@@ -13994,7 +13994,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    m_callback((GamePlayer) timer.TimerOwner);
+                    m_callback((GamePlayer) timer.Owner);
                 }
                 catch (Exception e)
                 {

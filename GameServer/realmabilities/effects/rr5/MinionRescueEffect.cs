@@ -140,14 +140,14 @@ namespace DOL.GS.Effects
         // Check distance between spirit and target
         private int spiritCallBack(ECSGameTimer timer)
         {
-            if (timer.TimerOwner == null || !(timer.TimerOwner is GameNPC))
+            if (timer.Owner == null || !(timer.Owner is GameNPC))
             {
                 timer.Stop();
                 timer = null;
                 return 0;
             }
 
-            GameNPC spirit = timer.TimerOwner as GameNPC;
+            GameNPC spirit = timer.Owner as GameNPC;
             GamePlayer targetPlayer = spirit.TargetObject as GamePlayer;
 
             if (targetPlayer == null || !targetPlayer.IsAlive)

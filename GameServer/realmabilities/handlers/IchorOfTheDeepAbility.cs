@@ -170,7 +170,7 @@ namespace DOL.GS.RealmAbilities
 
 		protected virtual int RootExpires(ECSGameTimer timer)
 		{
-			GameLiving living = timer.TimerOwner as GameLiving;
+			GameLiving living = timer.Owner as GameLiving;
 			if (living != null)
 			{
 				living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);

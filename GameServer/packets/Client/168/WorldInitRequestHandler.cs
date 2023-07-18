@@ -80,7 +80,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Handles player world init requests
         /// </summary>
-        protected class WorldInitAction : AuxRegionECSAction
+        protected class WorldInitAction : AuxECSGameTimerWrapperBase
         {
             /// <summary>
             /// Constructs a new WorldInitAction
@@ -93,7 +93,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             /// </summary>
             protected override int OnTick(AuxECSGameTimer timer)
             {
-                GamePlayer player = (GamePlayer) timer.TimerOwner;
+                GamePlayer player = (GamePlayer) timer.Owner;
 
                 //check emblems at world load before any updates
                 if (player.Inventory != null) 

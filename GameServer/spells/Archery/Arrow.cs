@@ -103,7 +103,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Delayed action when arrow reach the target
 		/// </summary>
-		protected class ArrowOnTargetAction : RegionECSAction
+		protected class ArrowOnTargetAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The arrow target
@@ -135,7 +135,7 @@ namespace DOL.GS.Spells
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_arrowTarget;
-				GameLiving caster = (GameLiving) timer.TimerOwner;
+				GameLiving caster = (GameLiving) timer.Owner;
 
 				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID)
 					return 0;

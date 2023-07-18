@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles house enter/leave events
 		/// </summary>
-		private class EnterLeaveHouseAction : RegionECSAction
+		private class EnterLeaveHouseAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The enter house flag
@@ -69,7 +69,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				switch (_enter)
 				{

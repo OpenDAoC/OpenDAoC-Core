@@ -53,7 +53,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Send dialog response via Notify().
 		/// </summary>
-		protected class QuestRewardChosenAction : RegionECSAction
+		protected class QuestRewardChosenAction : ECSGameTimerWrapperBase
 		{
 			private readonly int m_countChosen;
 			private readonly int[] m_itemsChosen;
@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 				player.Notify(GamePlayerEvent.QuestRewardChosen, player, new QuestRewardChosenEventArgs(m_questGiverID, m_questID, m_countChosen, m_itemsChosen));
 				return 0;
 			}

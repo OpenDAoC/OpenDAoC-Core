@@ -156,7 +156,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Checks effect owner distance and cancels the effect if too far
 		/// </summary>
-		private sealed class RangeCheckAction : RegionECSAction
+		private sealed class RangeCheckAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The list of effects
@@ -179,7 +179,7 @@ namespace DOL.GS.Spells
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				IDictionary effects = m_handler.m_concEffects;
-				GameLiving caster = (GameLiving) timer.TimerOwner;
+				GameLiving caster = (GameLiving) timer.Owner;
 
 				lock (effects)
 				{

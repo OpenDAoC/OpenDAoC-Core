@@ -604,7 +604,7 @@ public class PredatorManager
 
     private static int TimeoutTimerCallback(ECSGameTimer timer)
     {
-        if (timer.TimerOwner is GamePlayer pl)
+        if (timer.Owner is GamePlayer pl)
         {
             if (!PredatorManager.PlayerIsActive(pl)) return 0;
             

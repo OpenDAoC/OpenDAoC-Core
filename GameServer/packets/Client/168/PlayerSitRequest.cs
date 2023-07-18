@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player sit requests
 		/// </summary>
-		protected class SitRequestHandler : RegionECSAction
+		protected class SitRequestHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The new sit state
@@ -54,7 +54,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 				player.Sit(m_sit);
 				return 0;
 			}

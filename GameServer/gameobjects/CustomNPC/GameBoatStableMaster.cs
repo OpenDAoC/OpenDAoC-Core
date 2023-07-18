@@ -176,7 +176,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Handles delayed player mount on horse
 		/// </summary>
-		protected class MountHorseAction : RegionECSAction
+		protected class MountHorseAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The target horse
@@ -201,7 +201,7 @@ namespace DOL.GS
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 				player.MountSteed(m_horse, true);
 				return 0;
 			}
@@ -210,7 +210,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Handles delayed horse ride actions
 		/// </summary>
-		protected class HorseRideAction : RegionECSAction
+		protected class HorseRideAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new HorseStartAction
@@ -223,7 +223,7 @@ namespace DOL.GS
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GameNPC horse = (GameNPC) timer.TimerOwner;
+				GameNPC horse = (GameNPC) timer.Owner;
 				horse.MoveOnPath(horse.MaxSpeed);
 				return 0;
 			}

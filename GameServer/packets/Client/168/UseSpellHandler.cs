@@ -163,7 +163,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use spell actions
 		/// </summary>
-		protected class UseSpellAction : RegionECSAction
+		protected class UseSpellAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Defines a logger for this class.
@@ -205,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if ((m_flagSpeedData & 0x200) != 0)
 				{

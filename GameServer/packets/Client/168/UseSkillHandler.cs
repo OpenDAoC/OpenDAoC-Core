@@ -190,7 +190,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use skill actions
 		/// </summary>
-		protected class UseSkillAction : RegionECSAction
+		protected class UseSkillAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed and flags data
@@ -226,7 +226,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (player == null)
 					return 0;

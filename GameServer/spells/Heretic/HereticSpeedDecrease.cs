@@ -223,7 +223,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		private sealed class RestoreSpeedTimer : RegionECSAction
+		private sealed class RestoreSpeedTimer : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed changing effect

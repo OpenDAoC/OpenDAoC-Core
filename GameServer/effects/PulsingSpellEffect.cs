@@ -142,7 +142,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The pulsing effect action
 		/// </summary>
-		private sealed class SpellPulseAction : RegionECSAction
+		private sealed class SpellPulseAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The pulsing effect

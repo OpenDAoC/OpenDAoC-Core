@@ -493,7 +493,7 @@ namespace DOL.GS
         /// Provides a timer to remove an NPC from the world after some
         /// time has passed.
         /// </summary>
-        protected class DespawnTimer : RegionECSAction
+        protected class DespawnTimer : ECSGameTimerWrapperBase
         {
             private GameNPC m_npc;
 

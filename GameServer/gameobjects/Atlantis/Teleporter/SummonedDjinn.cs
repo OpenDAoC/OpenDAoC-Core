@@ -172,7 +172,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for summoning.
         /// </summary>
-        private class SummonTimer : RegionECSAction
+        private class SummonTimer : ECSGameTimerWrapperBase
         {
             private GameObject m_owner;
             private int m_maxTicks = 0;

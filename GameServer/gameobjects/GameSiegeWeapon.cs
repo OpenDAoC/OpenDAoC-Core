@@ -758,7 +758,7 @@ namespace DOL.GS
 	}
 	#endregion
 	#region siegeTimer
-	public class SiegeTimer : RegionECSAction
+	public class SiegeTimer : ECSGameTimerWrapperBase
 	{
 		public enum eAction : byte
 		{

@@ -103,7 +103,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for djinn emotes.
         /// </summary>
-        private class EmoteTimer : RegionECSAction
+        private class EmoteTimer : ECSGameTimerWrapperBase
         {
             private GameObject m_owner;
 

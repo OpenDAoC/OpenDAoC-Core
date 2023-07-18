@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles dialog responses from players
 		/// </summary>
-		protected class DialogBoxResponseAction : AuxRegionECSAction
+		protected class DialogBoxResponseAction : AuxECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The general data field
@@ -93,7 +93,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(AuxECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				// log.DebugFormat("Dialog - response: {0}, messageType: {1}, data1: {2}, data2: {3}, data3: {4}", m_response, m_messageType, m_data1, m_data2, m_data3);
 

@@ -204,7 +204,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles the door state change actions
 		/// </summary>
-		protected class ChangeDoorAction : RegionECSAction
+		protected class ChangeDoorAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The target door Id
@@ -240,7 +240,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 				List<GameDoorBase> doorList = DoorMgr.getDoorByID(m_doorId);
 
 				if (doorList.Count > 0)

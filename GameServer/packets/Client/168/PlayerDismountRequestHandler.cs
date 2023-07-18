@@ -30,7 +30,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player dismount requests
 		/// </summary>
-		protected class DismountRequestHandler : RegionECSAction
+		protected class DismountRequestHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new DismountRequestHandler
@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (!player.IsRiding)
 				{

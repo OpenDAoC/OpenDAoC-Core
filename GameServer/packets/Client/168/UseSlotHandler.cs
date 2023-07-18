@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use slot actions
 		/// </summary>
-		protected class UseSlotAction : RegionECSAction
+		protected class UseSlotAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed and flags data
@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				// Commenting out. 'flagSpeedData' doesn't vary with movement speed, and this stops the player for a fraction of a second.
 				//if ((m_flagSpeedData & 0x200) != 0)

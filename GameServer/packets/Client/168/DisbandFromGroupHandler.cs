@@ -33,7 +33,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles players disband actions
 		/// </summary>
-		protected class PlayerDisbandAction : RegionECSAction
+		protected class PlayerDisbandAction : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new PlayerDisbandAction
@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				if (player.Group == null)
 					return 0;

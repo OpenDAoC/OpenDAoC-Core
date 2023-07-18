@@ -406,7 +406,7 @@ namespace DOL.GS.Quests
 
 		protected virtual int QuestActionCallback(ECSGameTimer timer)
 		{
-            GamePlayer player = timer.TimerOwner as GamePlayer;
+            GamePlayer player = timer.Owner as GamePlayer;
 
             if (player != null)
             {

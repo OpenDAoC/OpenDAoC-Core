@@ -56,7 +56,7 @@ namespace DOL.GS
                         long stopTick = GameLoop.GetCurrentTime();
 
                         if ((stopTick - startTick) > 25)
-                            log.Warn($"Long TimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.TimerOwner?.Name} Time: {stopTick - startTick}ms");
+                            log.Warn($"Long TimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
                 catch (Exception e)
@@ -80,7 +80,7 @@ namespace DOL.GS
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
-        public GameObject TimerOwner { get; set; }
+        public GameObject Owner { get; set; }
         public ECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public long StartTick { get; set; }
@@ -90,20 +90,20 @@ namespace DOL.GS
         public EntityManagerId EntityManagerId { get; set; } = new();
         private PropertyCollection _properties;
 
-        public ECSGameTimer(GameObject target)
+        public ECSGameTimer(GameObject timerOwner)
         {
-            TimerOwner = target;
+            Owner = timerOwner;
         }
 
-        public ECSGameTimer(GameObject target, ECSTimerCallback callback)
+        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback)
         {
-            TimerOwner = target;
+            Owner = timerOwner;
             Callback = callback;
         }
 
-        public ECSGameTimer(GameObject target, ECSTimerCallback callback, int interval)
+        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback, int interval)
         {
-            TimerOwner = target;
+            Owner = timerOwner;
             Callback = callback;
             Interval = interval;
             Start();
@@ -162,5 +162,16 @@ namespace DOL.GS
                 return _properties;
             }
         }
+    }
+
+    public abstract class ECSGameTimerWrapperBase : ECSGameTimer
+    {
+        public ECSGameTimerWrapperBase(GameObject owner) : base(owner)
+        {
+            Owner = owner;
+            Callback = new ECSTimerCallback(OnTick);
+        }
+
+        protected abstract int OnTick(ECSGameTimer timer);
     }
 }

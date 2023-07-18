@@ -270,13 +270,13 @@ namespace DOL.GS
             }
         }
 
-        private class CloseDoorAction : AuxRegionECSAction
+        private class CloseDoorAction : AuxECSGameTimerWrapperBase
         {
             public CloseDoorAction(GameDoor door) : base(door) { }
 
             protected override int OnTick(AuxECSGameTimer timer)
             {
-                GameDoor door = (GameDoor) timer.TimerOwner;
+                GameDoor door = (GameDoor) timer.Owner;
                 door.Close();
                 return 0;
             }

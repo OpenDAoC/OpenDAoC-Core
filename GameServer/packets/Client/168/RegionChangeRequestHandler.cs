@@ -164,7 +164,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player region change requests
 		/// </summary>
-		protected class RegionChangeRequestHandler : RegionECSAction
+		protected class RegionChangeRequestHandler : ECSGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Checks whether player is allowed to jump
@@ -196,7 +196,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) timer.TimerOwner;
+				GamePlayer player = (GamePlayer) timer.Owner;
 
 				Region reg = WorldMgr.GetRegion(m_zonePoint.TargetRegion);
 				if (reg != null && reg.Expansion > (int)player.Client.ClientType)

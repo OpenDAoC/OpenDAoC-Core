@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
 
 		public int RemoveAttackBlock(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.TimerOwner as GamePlayer;
+			GamePlayer player = timer.Owner as GamePlayer;
 			if (player != null)
 				player.TempProperties.removeProperty(VANISH_BLOCK_ATTACK_TIME_KEY);
 			return 0;
