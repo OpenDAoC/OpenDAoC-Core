@@ -46,7 +46,7 @@ namespace DOL.GS.Commands
 		protected string TEMP_PATH_LAST = "TEMP_PATH_LAST";
 		protected string TEMP_PATH_OBJS = "TEMP_PATH_OBJS";
 
-		private void CreateTempPathObject(GameClient client, PathPoint pp, String name)
+		private void CreatePathPointObject(GameClient client, PathPoint pp, int id)
 		{
 			//Create a new object
 			GameStaticItem obj = new GameStaticItem();
@@ -56,8 +56,8 @@ namespace DOL.GS.Commands
 			obj.Z = pp.Z + 1; // raise a bit off of ground level
 			obj.CurrentRegion = client.Player.CurrentRegion;
 			obj.Heading = client.Player.Heading;
-			obj.Name = name;
-            obj.Model = 488;
+			obj.Name = $"PP ({id})";
+			obj.Model = 488;
 			obj.Emblem = 0;
 			obj.AddToWorld();
 
@@ -68,7 +68,7 @@ namespace DOL.GS.Commands
 			client.Player.TempProperties.setProperty(TEMP_PATH_OBJS, objs);
 		}
 
-		private void RemoveAllTempPathObjects(GameClient client)
+		private void RemoveAllPathPointObjects(GameClient client)
 		{
 			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
 			if (objs == null)
@@ -101,13 +101,13 @@ namespace DOL.GS.Commands
 		private void PathCreate(GameClient client)
 		{
 			//Remove old temp objects
-			RemoveAllTempPathObjects(client);
+			RemoveAllPathPointObjects(client);
 
-			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 5000, ePathType.Once);
+			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, ePathType.Once);
 			client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, startpoint);
 			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, startpoint);
 			client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			CreateTempPathObject(client, startpoint, "TMP PP 1");
+			CreatePathPointObject(client, startpoint, 1);
 		}
 
 		private void PathAdd(GameClient client, string[] args)
@@ -159,7 +159,7 @@ namespace DOL.GS.Commands
 				path = path.Prev;
 			}
 			len += 2;
-			CreateTempPathObject(client, newpp, "TMP PP " + len);
+			CreatePathPointObject(client, newpp, len);
 			DisplayMessage(client, "Pathpoint added. Current pathlength = {0}", len);
 		}
 
@@ -292,24 +292,27 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, "Usage: /path load <pathname>");
 				return;
 			}
-			string pathname = String.Join(" ", args, 2, args.Length - 2);
-			PathPoint path = MovementMgr.LoadPath(pathname);
-			if (path != null)
+
+			string pathName = string.Join(" ", args, 2, args.Length - 2);
+			PathPoint pathPoint = MovementMgr.LoadPath(pathName);
+
+			if (pathPoint == null)
+				DisplayMessage(client, "Path '{0}' not found!", pathName);
+
+			RemoveAllPathPointObjects(client);
+			DisplayMessage(client, "Path '{0}' loaded.", pathName);
+			client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, pathPoint);
+			int len = 0;
+			PathPoint lastPathPoint;
+
+			do
 			{
-				RemoveAllTempPathObjects(client);
-				DisplayMessage(client, "Path '{0}' loaded.", pathname);
-				client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, path);
-				int len = 1;
-				while (path.Next != null)
-				{
-					CreateTempPathObject(client, path, "TMP PP " + len);
-					path = path.Next;
-					len++;
-				}
-				client.Player.TempProperties.setProperty(TEMP_PATH_LAST, path);
-				return;
-			}
-			DisplayMessage(client, "Path '{0}' not found!", pathname);
+				lastPathPoint = pathPoint;
+				CreatePathPointObject(client, pathPoint, ++len);
+				pathPoint = pathPoint.Next;
+			} while (pathPoint != null);
+
+			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, lastPathPoint);
 		}
 
 		private void PathSave(GameClient client, string[] args)
@@ -449,7 +452,7 @@ namespace DOL.GS.Commands
 					}
 				case "delete":
 					{
-						RemoveAllTempPathObjects(client);
+						RemoveAllPathPointObjects(client);
 						break;
 					}
 				default:
