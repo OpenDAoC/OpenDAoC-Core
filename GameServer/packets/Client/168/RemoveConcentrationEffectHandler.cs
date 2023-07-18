@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.Effects;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -58,12 +59,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				IConcentrationEffect effect = null;
-                lock (player.effectListComponent.EffectsLock)
-                {
-                    if (m_index < player.effectListComponent.ConcentrationEffects.Count)
+				lock (player.effectListComponent.EffectsLock)
+				{
+					if (m_index < player.effectListComponent.ConcentrationEffects.Count)
 					{
 						effect = player.effectListComponent.ConcentrationEffects[m_index];
 					}

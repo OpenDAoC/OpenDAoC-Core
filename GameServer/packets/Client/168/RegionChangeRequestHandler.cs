@@ -16,15 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Linq;
 using System.Collections;
 using System.Reflection;
-
 using DOL.Database;
 using DOL.GS.Quests;
 using DOL.GS.ServerRules;
-
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -184,8 +182,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <param name="actionSource">The action source</param>
 			/// <param name="zonePoint">The target zone point</param>
 			/// <param name="checker">The jump point checker instance</param>
-			public RegionChangeRequestHandler(GamePlayer actionSource, ZonePoint zonePoint, IJumpPointHandler checkHandler)
-				: base(actionSource)
+			public RegionChangeRequestHandler(GamePlayer actionSource, ZonePoint zonePoint, IJumpPointHandler checkHandler) : base(actionSource)
 			{
 				if (zonePoint == null)
 					throw new ArgumentNullException("zonePoint");
@@ -199,7 +196,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer)m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				Region reg = WorldMgr.GetRegion(m_zonePoint.TargetRegion);
 				if (reg != null && reg.Expansion > (int)player.Client.ClientType)

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Reflection;
 using DOL.AI.Brain;
 using log4net;
@@ -109,7 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer)m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				switch (_aggroState)
 				{

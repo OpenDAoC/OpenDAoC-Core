@@ -276,7 +276,7 @@ namespace DOL.GS
 
             protected override int OnTick(AuxECSGameTimer timer)
             {
-                GameDoor door = (GameDoor) m_actionSource;
+                GameDoor door = (GameDoor) timer.TimerOwner;
                 door.Close();
                 return 0;
             }

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Reflection;
 using DOL.Database;
 using log4net;
@@ -85,18 +86,15 @@ namespace DOL.GS.PacketHandler.Client.v168
             /// Constructs a new WorldInitAction
             /// </summary>
             /// <param name="actionSource">The action source</param>
-            public WorldInitAction(GamePlayer actionSource)
-                : base(actionSource)
-            {
-            }
+            public WorldInitAction(GamePlayer actionSource) : base(actionSource) { }
 
             /// <summary>
             /// Called on every timer tick
             /// </summary>
             protected override int OnTick(AuxECSGameTimer timer)
             {
-                GamePlayer player = (GamePlayer)m_actionSource;
-                if (player == null) return 0;
+                GamePlayer player = (GamePlayer) timer.TimerOwner;
+
                 //check emblems at world load before any updates
                 if (player.Inventory != null) 
                 {

@@ -16,15 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
 using DOL.GS.SkillHandler;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace DOL.GS.Spells
 {
@@ -138,8 +135,10 @@ namespace DOL.GS.Spells
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				GameLiving target = m_arrowTarget;
-				GameLiving caster = (GameLiving)m_actionSource;
-				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID) return 0;
+				GameLiving caster = (GameLiving) timer.TimerOwner;
+
+				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID)
+					return 0;
 
 				int missrate = 100 - m_handler.CalculateToHitChance(target);
 				// add defence bonus from last executed style if any
@@ -342,7 +341,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		// constructor
 		public ArrowSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

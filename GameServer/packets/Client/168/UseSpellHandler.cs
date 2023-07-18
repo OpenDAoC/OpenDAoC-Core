@@ -205,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer)m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				if ((m_flagSpeedData & 0x200) != 0)
 				{

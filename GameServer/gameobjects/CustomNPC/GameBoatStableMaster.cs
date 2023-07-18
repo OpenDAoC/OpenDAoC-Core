@@ -201,7 +201,7 @@ namespace DOL.GS
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer)m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 				player.MountSteed(m_horse, true);
 				return 0;
 			}
@@ -216,17 +216,14 @@ namespace DOL.GS
 			/// Constructs a new HorseStartAction
 			/// </summary>
 			/// <param name="actionSource"></param>
-			public HorseRideAction(GameNPC actionSource)
-				: base(actionSource)
-			{
-			}
+			public HorseRideAction(GameNPC actionSource) : base(actionSource) { }
 
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GameNPC horse = (GameNPC)m_actionSource;
+				GameNPC horse = (GameNPC) timer.TimerOwner;
 				horse.MoveOnPath(horse.MaxSpeed);
 				return 0;
 			}

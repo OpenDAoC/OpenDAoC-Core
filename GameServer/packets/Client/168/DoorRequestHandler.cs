@@ -240,7 +240,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 				List<GameDoorBase> doorList = DoorMgr.getDoorByID(m_doorId);
 
 				if (doorList.Count > 0)

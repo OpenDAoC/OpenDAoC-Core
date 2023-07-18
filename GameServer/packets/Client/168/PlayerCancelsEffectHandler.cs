@@ -61,7 +61,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				IGameEffect found = null;
 				lock (player.EffectList)
@@ -106,7 +106,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 				EffectListComponent effectListComponent = player.effectListComponent;
 				ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
 

@@ -98,7 +98,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				// Check for Old Callback first
-				GamePlayer player = (GamePlayer)m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				string key = $"LOS C:0x{m_checkerOid} T:0x{m_targetOid}";
 

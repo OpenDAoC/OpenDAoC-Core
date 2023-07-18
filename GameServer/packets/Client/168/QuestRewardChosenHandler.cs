@@ -68,9 +68,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <param name="itemsChosen">List of items chosen from the dialog.</param>
 			/// <param name="questGiverID">ID of the quest NPC.</param>
 			/// <param name="questID">ID of the quest.</param>
-			public QuestRewardChosenAction(GamePlayer actionSource, int countChosen, int[] itemsChosen,
-			                               int questGiverID, int questID)
-				: base(actionSource)
+			public QuestRewardChosenAction(GamePlayer actionSource, int countChosen, int[] itemsChosen, int questGiverID, int questID) : base(actionSource)
 			{
 				m_countChosen = countChosen;
 				m_itemsChosen = itemsChosen;
@@ -83,10 +81,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer)m_actionSource;
-
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 				player.Notify(GamePlayerEvent.QuestRewardChosen, player, new QuestRewardChosenEventArgs(m_questGiverID, m_questID, m_countChosen, m_itemsChosen));
-
 				return 0;
 			}
 		}

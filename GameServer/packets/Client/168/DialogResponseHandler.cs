@@ -93,10 +93,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(AuxECSGameTimer timer)
 			{
-				var player = (GamePlayer) m_actionSource;
-
-				if (player == null)
-					return 0;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				// log.DebugFormat("Dialog - response: {0}, messageType: {1}, data1: {2}, data2: {3}, data3: {4}", m_response, m_messageType, m_data1, m_data2, m_data3);
 

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerGroundTarget, "Handles Player Ground Target Settings", eClientStatus.PlayerInGame)]
@@ -75,7 +76,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				var player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 				player.GroundTargetInView = ((m_flag & 0x100) != 0);
 				player.SetGroundTarget(m_x, m_y, (ushort) m_z);
 

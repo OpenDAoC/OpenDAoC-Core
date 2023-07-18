@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -213,8 +214,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <param name="flagSpeedData">The skill type</param>
 			/// <param name="index">The skill index</param>
 			/// <param name="type">The skill type</param>
-			public UseSkillAction(GamePlayer actionSource, int flagSpeedData, int index, int type)
-				: base(actionSource)
+			public UseSkillAction(GamePlayer actionSource, int flagSpeedData, int index, int type) : base(actionSource)
 			{
 				m_flagSpeedData = flagSpeedData;
 				m_index = index;
@@ -226,7 +226,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				GamePlayer player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
+
 				if (player == null)
 					return 0;
 
@@ -244,10 +245,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.GroundTargetInView = ((m_flagSpeedData & 0x1000) != 0);
 
 				List<Tuple<Skill, Skill>> snap = player.GetAllUsableSkills();
-				
+
 				Skill sk = null;
 				Skill sksib = null;
-				
+
 				// we're not using a spec !
 				if (m_type > 0)
 				{
@@ -329,7 +330,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.styleComponent.ExecuteWeaponStyle((Style)sk);
 					}
-						
 				}
 
 				if (sk == null)

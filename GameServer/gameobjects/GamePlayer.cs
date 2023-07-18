@@ -12479,17 +12479,14 @@ namespace DOL.GS
             /// Constructs a new uncover stealth action
             /// </summary>
             /// <param name="actionSource">The action source</param>
-            public UncoverStealthAction(GamePlayer actionSource)
-                : base(actionSource)
-            {
-            }
+            public UncoverStealthAction(GamePlayer actionSource) : base(actionSource) { }
 
             /// <summary>
             /// Called on every timer tick
             /// </summary>
             protected override int OnTick(ECSGameTimer timer)
             {
-                GamePlayer player = (GamePlayer)m_actionSource;
+                GamePlayer player = (GamePlayer) timer.TimerOwner;
 
                 if (player.Client.Account.PrivLevel > 1)
                     return 0;
@@ -13983,8 +13980,7 @@ namespace DOL.GS
             /// </summary>
             /// <param name="actionSource"></param>
             /// <param name="callback"></param>
-            public InvulnerabilityTimer(GamePlayer actionSource, InvulnerabilityExpiredCallback callback)
-                : base(actionSource)
+            public InvulnerabilityTimer(GamePlayer actionSource, InvulnerabilityExpiredCallback callback) : base(actionSource)
             {
                 if (callback == null)
                     throw new ArgumentNullException("callback");
@@ -13998,7 +13994,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    m_callback((GamePlayer)m_actionSource);
+                    m_callback((GamePlayer) timer.TimerOwner);
                 }
                 catch (Exception e)
                 {

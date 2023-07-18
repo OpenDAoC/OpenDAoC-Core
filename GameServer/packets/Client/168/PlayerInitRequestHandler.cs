@@ -61,7 +61,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// </summary>
 			protected override int OnTick(AuxECSGameTimer timer)
 			{
-				var player = (GamePlayer) m_actionSource;
+				GamePlayer player = (GamePlayer) timer.TimerOwner;
 
 				player.Out.SendUpdatePoints();
 				player.TargetObject = null;
