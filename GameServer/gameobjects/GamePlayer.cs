@@ -1093,7 +1093,7 @@ namespace DOL.GS
 
             // Dinberg: this will eventually need to be changed so that it moves them to the location they TP'ed in.
             // DamienOphyr: Overwrite current position with Bind position in database, MoveTo() is inoperant
-            if (CurrentRegion.IsInstance)
+            if (CurrentRegion?.IsInstance == true)
             {
                 DBCharacter.Region = BindRegion;
                 DBCharacter.Xpos = BindXpos;
