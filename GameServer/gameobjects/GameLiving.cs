@@ -4721,15 +4721,15 @@ namespace DOL.GS
 		#endregion
 		#region ControlledNpc
 
-		private byte m_petCount = 0;
+		private int m_petCount;
+		public int PetCount { get; private set; }
 
-		/// <summary>
-		/// Gets the pet count for this living
-		/// </summary>
-		public byte PetCount
+		public void UpdatePetCount(bool add)
 		{
-			get { return m_petCount; }
-			set { m_petCount = value; }
+			if (add)
+				Interlocked.Increment(ref m_petCount);
+			else
+				Interlocked.Decrement(ref m_petCount);
 		}
 
 		/// <summary>

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -870,7 +871,7 @@ namespace DOL.GS
 			if (i >= m_controlledBrain.Length)
 				return false;
 			m_controlledBrain[i] = controlledNpc;
-			PetCount++;
+			UpdatePetCount(true);
 			return base.AddControlledNpc(controlledNpc);
 		}
 
@@ -906,7 +907,7 @@ namespace DOL.GS
 						controlledNpcBrain.StripCastedBuffs();
 
 					m_controlledBrain[i] = null;
-					PetCount--;
+					UpdatePetCount(false);
 
 					return base.RemoveControlledNpc(controlledNpc);
 				}
