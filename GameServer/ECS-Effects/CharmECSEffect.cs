@@ -9,65 +9,55 @@ namespace DOL.GS
 {
     public class CharmECSGameEffect : ECSGameSpellEffect
     {
-        public CharmECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+        public CharmECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {
-            GamePlayer casterPlayer = SpellHandler.Caster as GamePlayer;
-            GameNPC charmMob = Owner as GameNPC;
+            if (SpellHandler.Caster is not GamePlayer casterPlayer || Owner is not GameNPC charmMob)
+                return;
 
-            if (casterPlayer != null && charmMob != null)
+            CharmSpellHandler charmSpellHandler = (CharmSpellHandler) SpellHandler;
+
+            if (charmSpellHandler.m_controlledBrain == null && charmMob.Brain is not ControlledNpcBrain)
+                charmSpellHandler.m_controlledBrain = new ControlledNpcBrain(casterPlayer);
+            else
             {
-                if (((CharmSpellHandler)SpellHandler).m_controlledBrain == null && !(charmMob.Brain is ControlledNpcBrain))
-                {
-                    ((CharmSpellHandler)SpellHandler).m_controlledBrain = new ControlledNpcBrain(casterPlayer);
-                }
-                else
-                {
-                    ((CharmSpellHandler)SpellHandler).m_controlledBrain = charmMob.Brain as ControlledNpcBrain;
-                    ((CharmSpellHandler)SpellHandler).m_isBrainSet = true;
-                }
-
-                if (!((CharmSpellHandler)SpellHandler).m_isBrainSet &&
-                    !((CharmSpellHandler)SpellHandler).m_controlledBrain.IsActive)
-                {
-
-                    charmMob.AddBrain(((CharmSpellHandler)SpellHandler).m_controlledBrain);
-                    ((CharmSpellHandler)SpellHandler).m_isBrainSet = true;
-
-                    GameEventMgr.AddHandler(charmMob, GameLivingEvent.PetReleased, (((CharmSpellHandler)SpellHandler).ReleaseEventHandler));
-                }
-
-                if (casterPlayer.ControlledBrain != ((CharmSpellHandler)SpellHandler).m_controlledBrain)
-                {
-
-                    if (!string.IsNullOrEmpty(SpellHandler.Spell.Message1))
-                        // Message: "{0}The slough serpent} is now enthralled!"
-                        Message.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), eChatType.CT_System, charmMob, casterPlayer);
-
-                    if (!string.IsNullOrEmpty(SpellHandler.Spell.Message2))
-                        // Message: {0} is now under your control.
-                        ((CharmSpellHandler)SpellHandler).MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, charmMob.GetName(0, true)), eChatType.CT_Spell);
-                    else
-                        // Message: {0} is now under your control.
-                        ((CharmSpellHandler)SpellHandler).MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
-                    
-                    casterPlayer.SetControlledBrain(((CharmSpellHandler)SpellHandler).m_controlledBrain);
-
-                    foreach (GamePlayer player in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    {
-                        player.Out.SendNPCCreate(charmMob);
-
-                        if (charmMob.Inventory != null)
-                            player.Out.SendLivingEquipmentUpdate(charmMob);
-
-                        // 'SendNPCCreate' should already call 'SendObjectGuildID'
-                        //player.Out.SendObjectGuildID(charmMob, casterPlayer.Guild);
-                    }
-                }
-                ((CharmSpellHandler)SpellHandler).SendEffectAnimation(charmMob, 0, false, 1);
+                charmSpellHandler.m_controlledBrain = charmMob.Brain as ControlledNpcBrain;
+                charmSpellHandler.m_isBrainSet = true;
             }
+
+            if (!charmSpellHandler.m_isBrainSet && !charmSpellHandler.m_controlledBrain.IsActive)
+            {
+                charmMob.AddBrain(charmSpellHandler.m_controlledBrain);
+                charmMob.TargetObject = null;
+                charmSpellHandler.m_isBrainSet = true;
+                GameEventMgr.AddHandler(charmMob, GameLivingEvent.PetReleased, charmSpellHandler.ReleaseEventHandler);
+            }
+
+            if (casterPlayer.ControlledBrain != charmSpellHandler.m_controlledBrain)
+            {
+                // Message: "{0}The slough serpent} is now enthralled!"
+                if (!string.IsNullOrEmpty(SpellHandler.Spell.Message1))
+                    Message.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), eChatType.CT_System, charmMob, casterPlayer);
+
+                // Message: {0} is now under your control.
+                if (!string.IsNullOrEmpty(SpellHandler.Spell.Message2))
+                    charmSpellHandler.MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, charmMob.GetName(0, true)), eChatType.CT_Spell);
+                else
+                    charmSpellHandler.MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
+
+                casterPlayer.SetControlledBrain(charmSpellHandler.m_controlledBrain);
+
+                foreach (GamePlayer player in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Out.SendNPCCreate(charmMob);
+
+                    if (charmMob.Inventory != null)
+                        player.Out.SendLivingEquipmentUpdate(charmMob);
+                }
+            }
+
+            charmSpellHandler.SendEffectAnimation(charmMob, 0, false, 1);
         }
 
         public override void OnStopEffect()
@@ -79,7 +69,7 @@ namespace DOL.GS
             if (casterPlayer != null && charmMob != null)
             {
                 GameEventMgr.RemoveHandler(charmMob, GameLivingEvent.PetReleased, charmSpellHandler.ReleaseEventHandler);
-                ControlledNpcBrain oldBrain = (ControlledNpcBrain)casterPlayer.ControlledBrain;
+                ControlledNpcBrain oldBrain = (ControlledNpcBrain) casterPlayer.ControlledBrain;
                 casterPlayer.SetControlledBrain(null);
 
                 lock (charmMob.BrainSync)

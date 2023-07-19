@@ -741,14 +741,18 @@ namespace DOL.GS
 		/// <returns>true if object was created</returns>
 		public virtual bool AddToWorld()
 		{
+			if (m_ObjectState == eObjectState.Active)
+				return false;
+
 			Zone currentZone = CurrentZone;
-			if (currentZone == null || m_ObjectState == eObjectState.Active)
+
+			if (currentZone == null)
 				return false;
 
 			if (!_currentRegion.AddObject(this))
 				return false;
 
-			CurrentZone?.AddObjectToZone(this);
+			CurrentZone.AddObjectToZone(this);
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
 			m_spawnTick = GameLoop.GameLoopTime;

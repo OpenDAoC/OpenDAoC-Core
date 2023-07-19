@@ -23,7 +23,7 @@ namespace DOL.AI.Brain
 {
 	public class TheurgistPetBrain : ControlledNpcBrain
 	{
-		private GameObject m_target;
+		private GameObject _target;
 
 		public TheurgistPetBrain(GameLiving owner) : base(owner)
 		{
@@ -32,22 +32,22 @@ namespace DOL.AI.Brain
 
 		public override void Think()
 		{
-			m_target = Body.TargetObject;
+			_target = Body.TargetObject;
 
-			if (m_target == null || m_target.Health <= 0)
+			if (_target == null || _target.Health <= 0)
 			{
 				Body.Die(null);
 				return;
 			}
 
-			if (Body.FollowTarget != m_target)
+			if (Body.FollowTarget != _target)
 			{
 				Body.StopFollowing();
-				Body.Follow(m_target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
+				Body.Follow(_target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
 			}
 
 			if (!CheckSpells(eCheckSpellType.Offensive))
-				Body.StartAttack(m_target);
+				Body.StartAttack(_target);
 		}
 
 		public override eWalkState WalkState { get => eWalkState.Stay; set { } }

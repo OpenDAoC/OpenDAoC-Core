@@ -387,8 +387,6 @@ namespace DOL.AI.Brain
 			if (WalkState == eWalkState.Follow)
 				FollowOwner();
 
-			Body.TargetObject = null;
-
 			return true;
 		}
 
