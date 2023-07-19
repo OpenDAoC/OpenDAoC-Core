@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-
 using DOL.Database;
 using DOL.GS;
 using log4net;
@@ -32,26 +31,23 @@ namespace DOL.Language
 {
     public class LanguageMgr
     {
-        private static LanguageMgr soleInstance = new LanguageMgr();
+        private static LanguageMgr soleInstance = new();
 
         public static void LoadTestDouble(LanguageMgr testDouble) { soleInstance = testDouble; }
 
         protected virtual bool TryGetTranslationImpl(out string translation, ref string language, string translationId, ref object[] args)
         {
-            translation = "";
-
             if (Util.IsEmpty(translationId))
             {
                 translation = TRANSLATION_ID_EMPTY;
                 return false;
             }
 
-            if (Util.IsEmpty(language) || !m_translations.ContainsKey(language))
-            {
+            if (Util.IsEmpty(language))
                 language = DefaultLanguage;
-            }
 
             LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
+
             if (result == null)
             {
                 translation = GetTranslationErrorText(language, translationId);
@@ -59,10 +55,8 @@ namespace DOL.Language
             }
             else
             {
-                if (!Util.IsEmpty(((DBLanguageSystem)result).Text))
-                {
-                    translation = ((DBLanguageSystem)result).Text;
-                }
+                if (!Util.IsEmpty(((DBLanguageSystem) result).Text))
+                    translation = ((DBLanguageSystem) result).Text;
                 else
                 {
                     translation = GetTranslationErrorText(language, translationId);
@@ -70,10 +64,7 @@ namespace DOL.Language
                 }
             }
 
-            if (args == null)
-            {
-                args = new object[0];
-            }
+            args ??= Array.Empty<object>();
 
             try
             {
@@ -84,6 +75,7 @@ namespace DOL.Language
             {
                 log.ErrorFormat("[Language-Manager] Parameter number incorrect: {0} for language {1}, Arg count = {2}, sentence = '{3}', args[0] = '{4}'", translationId, language, args.Length, translation, args.Length > 0 ? args[0] : "null");
             }
+
             return true;
         }
 
@@ -112,20 +104,14 @@ namespace DOL.Language
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
-        /// Holds all translations (object translations and system sentence translations).
-        /// </summary>
-        private static IDictionary<string, IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>> m_translations;
-
-        /// <summary>
         /// Give a way to change or relocate the lang files
         /// </summary>
-        private static string LangPath { 
+        private static string LangPath {
             get
             {
                 if (soleInstance.LangPathImpl == "")
-                {
                     soleInstance.LangPathImpl = Path.Combine(GameServer.Instance.Configuration.RootDirectory, "languages");
-                }
+
                 return soleInstance.LangPathImpl;
             }
         }
@@ -136,10 +122,7 @@ namespace DOL.Language
         /// <summary>
         /// Returns the default language.
         /// </summary>
-        public static string DefaultLanguage
-        {
-            get { return GS.ServerProperties.Properties.SERV_LANGUAGE; } // EN by default.
-        }
+        public static string DefaultLanguage => GS.ServerProperties.Properties.SERV_LANGUAGE;
 
         /// <summary>
         /// Returns all registered languages.
@@ -148,7 +131,7 @@ namespace DOL.Language
         {
             get
             {
-                foreach (string language in m_translations.Keys)
+                foreach (string language in Translations.Keys)
                     yield return language;
 
                 yield break;
@@ -158,10 +141,7 @@ namespace DOL.Language
         /// <summary>
         /// Returns the translations collection. MODIFY AT YOUR OWN RISK!!!
         /// </summary>
-        public static IDictionary<string, IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>> Translations
-        {
-            get { return m_translations; }
-        }
+        public static Dictionary<string, Dictionary<LanguageDataObject.eTranslationIdentifier, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
         #endregion Properties
 
         #region Initialization
@@ -171,7 +151,7 @@ namespace DOL.Language
         /// <returns></returns>
         public static bool Init()
         {
-            m_translations = new Dictionary<string, IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>>();
+            Translations = new();
             return LoadTranslations();
         }
 
@@ -182,12 +162,12 @@ namespace DOL.Language
             if (log.IsDebugEnabled)
                 log.Info("[Language-Manager] Loading system sentences...");
 
-            ArrayList fileSentences = new ArrayList();
+            ArrayList fileSentences = new();
             bool defaultLanguageDirectoryFound = false;
             bool defaultLanguageFilesFound = false;
             foreach (string langDir in Directory.GetDirectories(LangPath, "*", SearchOption.TopDirectoryOnly))
             {
-                string language = (langDir.Substring(langDir.LastIndexOf(Path.DirectorySeparatorChar) + 1)).ToUpper();
+                string language = langDir[(langDir.LastIndexOf(Path.DirectorySeparatorChar) + 1)..].ToUpper();
                 if (language != DefaultLanguage)
                 {
                     if (language != "CU") // Ignore the custom language folder. This check should be removed in the future! (code written: may 2012)
@@ -258,10 +238,12 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new DBLanguageSystem();
-                            dbo.TranslationId = sentence[ID];
-                            dbo.Text = sentence[TEXT];
-                            dbo.Language = sentence[LANGUAGE];
+                            DBLanguageSystem dbo = new()
+                            {
+                                TranslationId = sentence[ID],
+                                Text = sentence[TEXT],
+                                Language = sentence[LANGUAGE]
+                            };
 
                             GameServer.Database.AddObject(dbo);
                             RegisterLanguageDataObject(dbo);
@@ -291,10 +273,12 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new DBLanguageSystem();
-                            dbo.TranslationId = sentence[ID];
-                            dbo.Text = sentence[TEXT];
-                            dbo.Language = sentence[LANGUAGE];
+                            DBLanguageSystem dbo = new()
+                            {
+                                TranslationId = sentence[ID],
+                                Text = sentence[TEXT],
+                                Language = sentence[LANGUAGE]
+                            };
 
                             GameServer.Database.AddObject(dbo);
                             RegisterLanguageDataObject(dbo);
@@ -331,73 +315,48 @@ namespace DOL.Language
             {
                 foreach (string[] sentence in fileSentences)
                 {
-                    DBLanguageSystem obj = new DBLanguageSystem();
-                    obj.TranslationId = sentence[ID];
-                    obj.Text = sentence[TEXT];
-                    obj.Language = sentence[LANGUAGE];
+                    DBLanguageSystem obj = new()
+                    {
+                        TranslationId = sentence[ID],
+                        Text = sentence[TEXT],
+                        Language = sentence[LANGUAGE]
+                    };
+
                     RegisterLanguageDataObject(obj);
                 }
             }
 
-            fileSentences = null;
             #endregion Load system translations
 
             #region Load object translations
             if (log.IsDebugEnabled)
                 log.Info("[Language-Manager] Loading object translations...");
 
-            IList<LanguageDataObject> lngObjs = new List<LanguageDataObject>();
-			Util.AddRange(lngObjs, (IList<LanguageDataObject>)GameServer.Database.SelectAllObjects<DBLanguageArea>());
-			Util.AddRange(lngObjs, (IList<LanguageDataObject>)GameServer.Database.SelectAllObjects<DBLanguageGameObject>());
-			Util.AddRange(lngObjs, (IList<LanguageDataObject>)GameServer.Database.SelectAllObjects<DBLanguageNPC>());
-			Util.AddRange(lngObjs, (IList<LanguageDataObject>)GameServer.Database.SelectAllObjects<DBLanguageZone>());
+            List<LanguageDataObject> lngObjs = new();
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageArea>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageGameObject>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageNPC>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageZone>());
 
             foreach (LanguageDataObject lngObj in lngObjs)
                 RegisterLanguageDataObject(lngObj);
 
-            lngObjs = null;
             #endregion Load object translations
             return true;
         }
         #endregion LoadTranslations
 
-        #region CountLanguageFiles
-        /// <summary>
-        /// Count files in a language directory
-        /// </summary>
-        /// <param name="abrev"></param>
-        /// <returns></returns>
-        private static int CountLanguageFiles(string language)
-        {
-            int count = 0;
-            string langPath = Path.Combine(LangPath, language);
-
-            if (!Directory.Exists(langPath))
-                return count;
-
-            foreach (string file in Directory.GetFiles(langPath, "*", SearchOption.AllDirectories))
-            {
-                if (!file.EndsWith(".txt"))
-                    continue;
-
-                count++;
-            }
-
-            return count;
-        }
-        #endregion CountLanguageFiles
-
         #region ReadLanguageDirectory
         private static ArrayList ReadLanguageDirectory(string path, string language)
         {
-		    ArrayList sentences = new ArrayList();
+            ArrayList sentences = new();
             foreach (string languageFile in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
             {
                 if (!languageFile.EndsWith(".txt"))
                     continue;
 
                 string[] lines = File.ReadAllLines(languageFile, Encoding.GetEncoding("utf-8"));
-                IList textList = new ArrayList(lines);
+                ArrayList textList = new(lines);
 
                 foreach (string line in textList)
                 {
@@ -406,14 +365,14 @@ namespace DOL.Language
                         continue;
 
                     // ignore any line that is not formatted  'identifier: sentence'
-                    if (line.IndexOf(':') == -1)
+                    if (!line.Contains(':'))
                         continue;
 
                     string[] translation = new string[3];
 
                     // 0 is the identifier for the sentence
-                    translation[ID] = line.Substring(0, line.IndexOf(':'));
-                    translation[TEXT] = line.Substring(line.IndexOf(':') + 1);
+                    translation[ID] = line[..line.IndexOf(':')];
+                    translation[TEXT] = line[(line.IndexOf(':') + 1)..];
 
                     // 1 is the sentence with any tabs (used for readability in language file) removed
                     translation[TEXT] = translation[TEXT].Replace("\t", " ");
@@ -442,6 +401,7 @@ namespace DOL.Language
                     sentences.Add(translation);
                 }
             }
+
             return sentences;
         }
         #endregion ReadLanguageDirectory
@@ -451,48 +411,32 @@ namespace DOL.Language
         #region GetLanguageDataObject
         public static LanguageDataObject GetLanguageDataObject(string language, string translationId, LanguageDataObject.eTranslationIdentifier translationIdentifier)
         {
-            if (Util.IsEmpty(language) || Util.IsEmpty(translationId))
+            if (Util.IsEmpty(translationId))
                 return null;
 
-            if (!m_translations.ContainsKey(language))
-                return null;
+            if (!Translations.TryGetValue(language, out var languages) && language != DefaultLanguage)
+                Translations.TryGetValue(DefaultLanguage, out languages);
 
-            if (m_translations[language] == null)
+            if (languages == null)
             {
-                lock (m_translations)
-                    m_translations.Remove(language);
+                lock (Translations)
+                    Translations.Remove(language);
 
                 return null;
             }
 
-            if (!m_translations[language].ContainsKey(translationIdentifier))
+            if (!languages.TryGetValue(translationIdentifier, out var translationIdentifiers))
                 return null;
 
-            if (m_translations[language][translationIdentifier] == null)
+            if (translationIdentifiers == null)
             {
-                lock (m_translations)
-                    m_translations[language].Remove(translationIdentifier);
+                lock (Translations)
+                    languages.Remove(translationIdentifier);
 
                 return null;
             }
 
-            LanguageDataObject result = null;
-            foreach (LanguageDataObject colObj in m_translations[language][translationIdentifier])
-            {
-                if (colObj.TranslationIdentifier != translationIdentifier)
-                    continue;
-
-                if (colObj.TranslationId != translationId)
-                    continue;
-
-                if (colObj.Language != language)
-                    continue;
-
-                result = colObj;
-                break;
-            }
-
-            return result;
+            return !translationIdentifiers.TryGetValue(translationId, out LanguageDataObject result) ? null : result;
         }
         #endregion GetLanguageDataObject
 
@@ -501,34 +445,30 @@ namespace DOL.Language
         #region GetTranslation
         public static LanguageDataObject GetTranslation(GameClient client, ITranslatableObject obj)
         {
-            LanguageDataObject translation;
-			TryGetTranslation(out translation, client, obj);
+            TryGetTranslation(out LanguageDataObject translation, client, obj);
             return translation;
         }
         
         public static LanguageDataObject GetTranslation(GamePlayer player, ITranslatableObject obj)
         {
-        	return GetTranslation(player.Client, obj);
+            return GetTranslation(player.Client, obj);
         }
 
         public static LanguageDataObject GetTranslation(string language, ITranslatableObject obj)
         {
-            LanguageDataObject translation; 
-			TryGetTranslation(out translation, language, obj);
+            TryGetTranslation(out LanguageDataObject translation, language, obj);
             return translation;
         }
 
         public static string GetTranslation(GameClient client, string translationId, params object[] args)
         {
-            string translation; 
-			TryGetTranslation(out translation, client, translationId, args);
+            TryGetTranslation(out string translation, client, translationId, args);
             return translation;
         }
 
         public static string GetTranslation(string language, string translationId, params object[] args)
         {
-            string translation; 
-			TryGetTranslation(out translation, language, translationId, args);
+            TryGetTranslation(out string translation, language, translationId, args);
             return translation;
         }
         #endregion GetTranslation
@@ -542,7 +482,7 @@ namespace DOL.Language
                 return false;
             }
 
-            return TryGetTranslation(out translation, (client.Account == null ? String.Empty : client.Account.Language), obj);
+            return TryGetTranslation(out translation, client.Account == null ? string.Empty : client.Account.Language, obj);
         }
 
         public static bool TryGetTranslation(out LanguageDataObject translation, string language, ITranslatableObject obj)
@@ -560,7 +500,7 @@ namespace DOL.Language
             }
 
             translation = GetLanguageDataObject(language, obj.TranslationId, obj.TranslationIdentifier);
-            return (translation == null ? false : true);
+            return translation != null;
         }
 
         public static bool TryGetTranslation(out string translation, GameClient client, string translationId, params object[] args)
@@ -571,7 +511,7 @@ namespace DOL.Language
                 return true;
             }
 
-            bool result = TryGetTranslation(out translation, (client.Account == null ? DefaultLanguage : client.Account.Language), translationId, args);
+            bool result = TryGetTranslation(out translation, client.Account == null ? DefaultLanguage : client.Account.Language, translationId, args);
 
             if (client.Account != null)
             {
@@ -579,9 +519,8 @@ namespace DOL.Language
                 {
                     if (client.ClientState == GameClient.eClientState.Playing)
                     {
-                        bool debug = client.Player.TempProperties.getProperty("LANGUAGEMGR-DEBUG", false);
-                        if (debug)
-                            translation = ("Id is " + translationId + " " + translation);
+                        if (client.Player.TempProperties.getProperty("LANGUAGEMGR-DEBUG", false))
+                            translation = "Id is " + translationId + " " + translation;
                     }
                 }
             }
@@ -589,38 +528,29 @@ namespace DOL.Language
             return result;
         }
 
+        /// <summary>
+        /// This returns the last part of the translation text id if actual translation fails
+        /// This helps to avoid returning strings that are too long and overflow the client
+        /// When the name overflows players my not be targetable or even visible!
+        /// PLEASE DO NOT REMOVE THIS FUNCTIONALITY  - tolakram
+        /// </summary>
+        public static string GetTranslationErrorText(string lang, string TranslationID)
+        {
+            try
+            {
+                if (TranslationID.Contains('.') && TranslationID.TrimEnd().EndsWith('.') == false && TranslationID.StartsWith('\'') == false)
+                    return string.Concat(lang, " ", TranslationID.AsSpan(TranslationID.LastIndexOf('.') + 1));
+                else
+                    return TranslationID; // Odds are a literal string was passed with no translation, so just return the string unmodified
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error Getting Translation Error Text for " + lang + ":" + TranslationID, ex);
+            }
 
-
-		/// <summary>
-		/// This returns the last part of the translation text id if actual translation fails
-		/// This helps to avoid returning strings that are too long and overflow the client
-		/// When the name overflows players my not be targetable or even visible!
-		/// PLEASE DO NOT REMOVE THIS FUNCTIONALITY  - tolakram
-		/// </summary>
-		/// <param name="TranslationID"></param>
-		/// <returns></returns>
-		public static string GetTranslationErrorText(string lang, string TranslationID)
-		{
-			try
-			{
-				if (TranslationID.Contains(".") && TranslationID.TrimEnd().EndsWith(".") == false && TranslationID.StartsWith("'") == false)
-				{
-					return lang + " " + TranslationID.Substring(TranslationID.LastIndexOf(".") + 1);
-				}
-				else
-				{
-					// Odds are a literal string was passed with no translation, so just return the string unmodified
-					return TranslationID;
-				}
-			}
-			catch (Exception ex)
-			{
-				log.Error("Error Getting Translation Error Text for " + lang + ":" + TranslationID, ex);
-			}
-
-			return lang + " Translation Error!";
-		}
-		
+            return lang + " Translation Error!";
+        }
+        
 
         public static bool TryGetTranslation(out string translation, string language, string translationId, params object[] args)
         {
@@ -642,157 +572,53 @@ namespace DOL.Language
         /// <returns>Translated Sentence or Default string.</returns>
         public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId, params object[] args)
         {
-        	string missing = missingDefault;
-        	
-        	if (args.Length > 0)
-        	{
-	        	try
-	        	{
-	        		missing = string.Format(missingDefault, args);
-	        	}
-	        	catch
-	        	{
-	        	}
-        	}
-        	
-        	if (player == null || player.Client == null || player.Client.Account == null)
-        		return missing;
-        	
-        	string retval;
-        	if (TryGetTranslation(out retval, player.Client.Account.Language, translationId, args))
-        	{
-        		return retval;
-        	}
-        	
-        	return missing;
-        }
-        
-        #endregion
+            string missing = missingDefault;
 
-        #region RegisterLanguageDataObject / UnregisterLanguageDataObject
+            if (args.Length > 0)
+            {
+                try
+                {
+                    missing = string.Format(missingDefault, args);
+                }
+                catch { }
+            }
+
+            return player == null || player.Client == null || player.Client.Account == null || !TryGetTranslation(out string retval, player.Client.Account.Language, translationId, args)
+                ? missing
+                : retval;
+        }
+
+        #endregion
 
         #region RegisterLanguageDataObject
         public static bool RegisterLanguageDataObject(LanguageDataObject obj)
         {
-            if (obj != null)
+            if (obj == null)
+                return false;
+
+            lock (Translations)
             {
-                lock (m_translations)
+                if (!Translations.TryGetValue(obj.Language, out var languages))
                 {
-                    if (!m_translations.ContainsKey(obj.Language))
-                    {
-                        IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>> col = new Dictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>();
-                        IList<LanguageDataObject> objs = new List<LanguageDataObject>();
-                        objs.Add(obj);
-                        col.Add(obj.TranslationIdentifier, objs);
-                        m_translations.Add(obj.Language, col);
-                        return true;
-                    }
-                    else if (m_translations[obj.Language] == null)
-                    {
-                        IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>> col = new Dictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>();
-                        IList<LanguageDataObject> objs = new List<LanguageDataObject>();
-                        objs.Add(obj);
-                        col.Add(obj.TranslationIdentifier, objs);
-                        m_translations[obj.Language] = col;
-                        return true;
-                    }
-                    else if (!m_translations[obj.Language].ContainsKey(obj.TranslationIdentifier))
-                    {
-                        IDictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>> col = new Dictionary<LanguageDataObject.eTranslationIdentifier, IList<LanguageDataObject>>();
-                        IList<LanguageDataObject> objs = new List<LanguageDataObject>();
-                        objs.Add(obj);
-                        m_translations[obj.Language].Add(obj.TranslationIdentifier, objs);
-                        return true;
-                    }
-                    else if (m_translations[obj.Language][obj.TranslationIdentifier] == null)
-                    {
-                        IList<LanguageDataObject> objs = new List<LanguageDataObject>();
-                        objs.Add(obj);
-                        m_translations[obj.Language][obj.TranslationIdentifier] = objs;
-                    }
-                    else if (!m_translations[obj.Language][obj.TranslationIdentifier].Contains(obj))
-                    {
-                        lock (m_translations[obj.Language][obj.TranslationIdentifier])
-                        {
-                            if (!m_translations[obj.Language][obj.TranslationIdentifier].Contains(obj))
-                            {
-                                m_translations[obj.Language][obj.TranslationIdentifier].Add(obj);
-                                return true;
-                            }
-                        }
-                    }
+                    languages = new();
+                    Translations.Add(obj.Language, languages);
+                }
+
+                if (!languages.TryGetValue(obj.TranslationIdentifier, out var translationIdentifiers))
+                {
+                    translationIdentifiers = new();
+                    languages.Add(obj.TranslationIdentifier, translationIdentifiers);
+                }
+
+                if (!translationIdentifiers.TryGetValue(obj.TranslationId, out LanguageDataObject languageDataObject))
+                {
+                    translationIdentifiers.Add(obj.TranslationId, obj);
+                    return true;
                 }
             }
+
             return false; // Object is 'NULL' or already in list.
         }
         #endregion RegisterLanguageDataObject
-
-        #region UnregisterLanguageDataObject
-        public static void UnregisterLanguageDataObject(LanguageDataObject obj)
-        {
-            lock (m_translations)
-            {
-                if (!m_translations.ContainsKey(obj.Language))
-                    return;
-
-                if (m_translations[obj.Language] == null)
-                {
-                    lock (m_translations)
-                        m_translations.Remove(obj.Language);
-
-                    return;
-                }
-
-                if (!m_translations[obj.Language].ContainsKey(obj.TranslationIdentifier))
-                {
-                    if (m_translations[obj.Language].Count < 1)
-                    {
-                        lock (m_translations)
-                            m_translations.Remove(obj.Language);
-                    }
-
-                    return;
-                }
-
-                if (m_translations[obj.Language][obj.TranslationIdentifier] == null)
-                {
-                    lock (m_translations)
-                        m_translations[obj.Language].Remove(obj.TranslationIdentifier);
-
-                    return;
-                }
-
-                if (!m_translations[obj.Language][obj.TranslationIdentifier].Contains(obj))
-                {
-                    if (m_translations[obj.Language][obj.TranslationIdentifier].Count < 1)
-                    {
-                        lock (m_translations)
-                            m_translations[obj.Language].Remove(obj.TranslationIdentifier);
-                    }
-
-                    return;
-                }
-
-                lock (m_translations[obj.Language][obj.TranslationIdentifier])
-                    m_translations[obj.Language][obj.TranslationIdentifier].Remove(obj);
-
-                if (m_translations[obj.Language][obj.TranslationIdentifier].Count < 1)
-                {
-                    lock (m_translations)
-                        m_translations[obj.Language].Remove(obj.TranslationIdentifier);
-
-                    return;
-                }
-
-                if (m_translations[obj.Language].Count < 1)
-                {
-                    lock (m_translations)
-                        m_translations.Remove(obj.Language);
-                }
-            }
-        }
-        #endregion UnregisterLanguageDataObject
-
-        #endregion RegisterLanguageDataObject / UnregisterLanguageDataObject
     }
 }
