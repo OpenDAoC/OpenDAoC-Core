@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -71,7 +72,7 @@ namespace DOL.GS.Spells
             if (target == null || target.CurrentRegion == null)
                 return;
 
-            foreach (GameNPC npc in target.CurrentRegion.GetNPCsInRadius(target.X, target.Y, target.Z, (ushort)Spell.Radius, true))
+            foreach (GameNPC npc in target.CurrentRegion.GetNPCsInRadius(target, (ushort) Spell.Radius, true))
             {
                 if (npc is not TurretPet || !npc.IsAlive)
                     continue;

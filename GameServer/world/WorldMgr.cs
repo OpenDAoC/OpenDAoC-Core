@@ -1575,57 +1575,26 @@ namespace DOL.GS
 			return obj;
 		}
 
-		/// <summary>
-		/// Returns an IEnumerator of GamePlayers that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="x">X inside region</param>
-		/// <param name="y">Y inside region</param>
-		/// <param name="z">Z inside region</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
 		public static HashSet<GamePlayer> GetPlayersCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
+		{
+			return GetPlayersCloseToSpot(regionid, new Point3D(x, y ,z), radiusToCheck);
+		}
+
+		public static HashSet<GamePlayer> GetPlayersCloseToSpot(IGameLocation location, ushort radiusToCheck)
+		{
+			return GetPlayersCloseToSpot(location.RegionID, location.X, location.Y, location.Z, radiusToCheck);
+		}
+
+		public static HashSet<GamePlayer> GetPlayersCloseToSpot(ushort regionid, Point3D point, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
 
 			if (reg == null)
 				return new();
 
-			return reg.GetPlayersInRadius(x, y, z, radiusToCheck);
+			return reg.GetPlayersInRadius(point, radiusToCheck);
 		}
 
-		/// <summary>
-		/// Returns an IEnumerator of GamePlayers that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="location">the game location to search from</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		public static HashSet<GamePlayer> GetPlayersCloseToSpot(IGameLocation location, ushort radiusToCheck)
-		{
-			return GetPlayersCloseToSpot(location.RegionID, location.X, location.Y, location.Z, radiusToCheck);
-		}
-
-		/// <summary>
-		/// Returns an IEnumerator of GamePlayers that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="point">the 3D point to search from</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameClients</param>
-		public static HashSet<GamePlayer> GetPlayersCloseToSpot(ushort regionid, IPoint3D point, ushort radiusToCheck)
-		{
-			return GetPlayersCloseToSpot(regionid, point.X, point.Y, point.Z, radiusToCheck);
-		}
-
-		/// <summary>
-		/// Returns an IEnumerator of GameNPCs that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="x">X inside region</param>
-		/// <param name="y">Y inside region</param>
-		/// <param name="z">Z inside region</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameNPCs</param>
 		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
@@ -1633,18 +1602,9 @@ namespace DOL.GS
 			if (reg == null)
 				return new();
 
-			return reg.GetNPCsInRadius(x, y, z, radiusToCheck);
+			return reg.GetNPCsInRadius(new Point3D(x, y ,z), radiusToCheck);
 		}
 
-		/// <summary>
-		/// Returns an IEnumerator of GameItems that are close to a certain
-		/// spot in the region
-		/// </summary>
-		/// <param name="regionid">Region to search</param>
-		/// <param name="x">X inside region</param>
-		/// <param name="y">Y inside region</param>
-		/// <param name="z">Z inside region</param>
-		/// <param name="radiusToCheck">Radius to sarch for GameItems</param>
 		public static HashSet<GameStaticItem> GetItemsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
 			Region reg = GetRegion(regionid);
@@ -1652,7 +1612,7 @@ namespace DOL.GS
 			if (reg == null)
 				return new();
 
-			return reg.GetItemsInRadius(x, y, z, radiusToCheck);
+			return reg.GetItemsInRadius(new Point3D(x, y ,z), radiusToCheck);
 		}
 
 		/// <summary>

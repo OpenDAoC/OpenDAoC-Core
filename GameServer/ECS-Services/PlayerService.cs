@@ -26,10 +26,7 @@ namespace DOL.GS
             {
                 GamePlayer player = list[i];
 
-                if (player == null)
-                    return;
-
-                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL >= tick ||
+                if (player == null||
                     player.Client.ClientState != GameClient.eClientState.Playing ||
                     player.ObjectState != GameObject.eObjectState.Active)
                 {
@@ -38,12 +35,17 @@ namespace DOL.GS
 
                 try
                 {
-                    long startTick = GameLoop.GetCurrentTime();
-                    UpdateWorld(player, tick);
-                    long stopTick = GameLoop.GetCurrentTime();
+                    if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < tick)
+                    {
+                        long startTick = GameLoop.GetCurrentTime();
+                        UpdateWorld(player, tick);
+                        long stopTick = GameLoop.GetCurrentTime();
 
-                    if ((stopTick - startTick) > 25)
-                        log.Warn($"Long UpdateWorld for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                        if ((stopTick - startTick) > 25)
+                            log.Warn($"Long UpdateWorld for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                    }
+
+                    player.movementComponent.Tick(tick);
                 }
                 catch (Exception e)
                 {
@@ -60,13 +62,11 @@ namespace DOL.GS
                 UpdateNpcs(player, tick);
 
             if (Properties.WORLD_OBJECT_UPDATE_INTERVAL > 0)
+            {
                 UpdateItems(player, tick);
-
-            if (Properties.WORLD_OBJECT_UPDATE_INTERVAL > 0)
                 UpdateDoors(player, tick);
-
-            if (Properties.WORLD_OBJECT_UPDATE_INTERVAL > 0)
                 UpdateHouses(player, tick);
+            }
 
             player.LastWorldUpdate = tick;
         }

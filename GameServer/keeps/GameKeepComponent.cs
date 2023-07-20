@@ -121,7 +121,7 @@ namespace DOL.GS.Keeps
 
 		public override eRealm Realm
 		{
-			get 
+			get
 			{
 				if (Keep != null) return Keep.Realm;
 				return eRealm.None;

@@ -16,15 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
-using DOL.GS.Keeps;
 using DOL.GS.Commands;
+using DOL.GS.Effects;
+using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -355,7 +355,7 @@ namespace DOL.GS
 			}
    
 			//let's check if we are trying to move too close to a door, if we are, don't move
-			foreach (GameDoorBase door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget.X, Owner.GroundTarget.Y, Owner.GroundTarget.Z, (ushort)(AttackRange - 50)))
+			foreach (GameDoorBase door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget, (ushort)(AttackRange - 50)))
 			{
 				if (door is GameKeepDoor)
 				{

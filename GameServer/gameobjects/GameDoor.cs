@@ -88,7 +88,7 @@ namespace DOL.GS
             m_model = 0xFFFF;
             DoorID = dbDoor.InternalID;
             m_guildName = dbDoor.Guild;
-            _realm = (eRealm) dbDoor.Realm;
+            Realm = (eRealm) dbDoor.Realm;
             m_level = dbDoor.Level;
             m_health = dbDoor.Health;
             Locked = dbDoor.Locked;

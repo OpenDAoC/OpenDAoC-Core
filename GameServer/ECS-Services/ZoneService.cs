@@ -31,8 +31,9 @@ namespace DOL.GS
                     return;
 
                 eGameObjectType objectType = objectChangingSubZone.ObjectType;
-                LightConcurrentLinkedList<SubZoneObject>.Node node = objectChangingSubZone.SubZoneObject;
-                SubZoneObject subZoneObject = node.Item;
+                LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;
+                GameObject gameObject = node.Item;
+                SubZoneObject subZoneObject = gameObject.SubZoneObject;
                 Zone currentZone = subZoneObject.CurrentSubZone?.ParentZone;
                 Zone destinationZone = objectChangingSubZone.DestinationZone;
                 bool changingZone = currentZone != destinationZone;
@@ -48,10 +49,7 @@ namespace DOL.GS
                     }
 
                     if (changingZone)
-                    {
-                        subZoneObject.Object.CurrentZone = null;
                         currentZone.OnObjectRemovedFromZone();
-                    }
 
                     subZoneObject.CurrentSubZone = null;
                 }
@@ -69,13 +67,10 @@ namespace DOL.GS
                     }
 
                     subZoneObject.CurrentSubZone = destinationSubZone;
-                    subZoneObject.IsChangingSubZone = false;
+                    subZoneObject.IsSubZoneChangeBeingHandled = false;
 
                     if (changingZone)
-                    {
-                        subZoneObject.Object.CurrentZone = destinationZone;
                         destinationZone.OnObjectAddedToZone();
-                    }
                 }
 
                 EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);

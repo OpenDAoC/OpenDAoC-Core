@@ -4361,7 +4361,7 @@ namespace DOL.GS
 			{
 				case "b": // Broadcast message without "[Broadcast] {0}:" string start
 				{
-					foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(X, Y, Z, 25000, false))
+					foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(this, 25000, false))
 					{
 					  player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 					}
@@ -4636,7 +4636,7 @@ namespace DOL.GS
 
 			Level = 1;
 			m_health = MaxHealth;
-			_realm = 0;
+			Realm = 0;
 			m_name = "new mob";
 			m_model = 408;
 			MaxSpeedBase = 200;
@@ -4646,7 +4646,7 @@ namespace DOL.GS
 			m_flags = 0;
 			m_maxdistance = 0;
 			RoamingRange = 0;
-			_ownerID = "";
+			OwnerID = "";
 			m_spawnPoint = new Point3D();
 			LinkedFactions = new ArrayList(1);
 

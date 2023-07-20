@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Collections;
-using DOL.GS.PacketHandler;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -170,7 +170,7 @@ namespace DOL.GS
 		{
 			ArrayList list = new ArrayList(20);
 
-			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(this.CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius))
+			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius))
 			{
 				if (Owner != null && GameServer.ServerRules.IsAllowedToAttack(Owner, player, true))
 				{
@@ -182,7 +182,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameDoorBase door in this.CurrentRegion.GetDoorsInRadius(GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius, false))
+			foreach (GameDoorBase door in CurrentRegion.GetDoorsInRadius(GroundTarget, (ushort)AttackRadius, false))
 			{
 				if (Owner != null && door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(Owner, (GameKeepDoor)door, true))
 				{
@@ -194,7 +194,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(this.CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius))
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort)AttackRadius))
 			{
 				if (Owner != null &&GameServer.ServerRules.IsAllowedToAttack(Owner, npc, true))
 				{
@@ -279,4 +279,3 @@ namespace DOL.GS
 		}
 	}
 }
-

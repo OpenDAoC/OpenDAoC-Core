@@ -16,7 +16,7 @@ namespace DOL.GS
         private const double FOLLOW_SPEED_SCALAR = 2.5;
 
         private MovementType _movementType;
-        private long _followLastTick;
+        private long _lastFollowTick;
         private int _followTickInterval;
         private long _walkingToEstimatedArrivalTime;
         private short _moveOnPathSpeed;
@@ -52,10 +52,10 @@ namespace DOL.GS
         {
             if (IsSet(MovementType.FOLLOW))
             {
-                if (_followLastTick + _followTickInterval < tick)
+                if (_lastFollowTick + _followTickInterval < tick)
                 {
                     _followTickInterval = FollowTick();
-                    _followLastTick = tick;
+                    _lastFollowTick = tick;
 
                     if (_followTickInterval == 0)
                         _movementType &= ~MovementType.FOLLOW;
@@ -79,6 +79,8 @@ namespace DOL.GS
                     MoveToNextWaypoint();
                 }
             }
+
+            base.Tick(tick);
         }
 
         public void WalkTo(IPoint3D targetPosition, short speed)

@@ -916,14 +916,6 @@ namespace DOL.GS
         /// <returns>success</returns>
         internal bool AddObject(GameObject obj)
         {
-            //Thread.Sleep(10000);
-            Zone zone = GetZone(obj.X, obj.Y);
-            if (zone == null)
-            {
-                if (log.IsWarnEnabled)
-                    log.Warn("Zone not found for Object: " + obj.Name + "(ID=" + obj.InternalID + ")");
-            }
-
             //Assign a new id
             lock (ObjectsSyncLock)
             {
@@ -1067,8 +1059,6 @@ namespace DOL.GS
                             }
                         }
                     }
-
-                    return true;
                 }
                 else
                 {
@@ -1078,6 +1068,8 @@ namespace DOL.GS
                     return false;
                 }
             }
+
+            return true;
         }
 
         /// <summary>
@@ -1334,8 +1326,6 @@ namespace DOL.GS
         /// Gets the areas for given location,
         /// less performant than getAreasOfZone so use other on if possible
         /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
         public virtual IList<IArea> GetAreasOfSpot(IPoint3D point)
         {
             Zone zone = GetZone(point.X, point.Y);
@@ -1346,10 +1336,6 @@ namespace DOL.GS
         /// Gets the areas for a certain spot,
         /// less performant than getAreasOfZone so use other on if possible
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        /// <returns></returns>
         public virtual IList<IArea> GetAreasOfSpot(int x, int y, int z)
         {
             Zone zone = GetZone(x, y);
@@ -1454,21 +1440,21 @@ namespace DOL.GS
 
         #region Get in radius
 
-        protected HashSet<T> GetInRadius<T>(Zone.eGameObjectType type, int x, int y, int z, ushort radius, bool ignoreZ) where T : GameObject
+        protected HashSet<T> GetInRadius<T>(Point3D point, Zone.eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
         {
             // Check if we are around borders of a zone.
-            Zone startingZone = GetZone(x, y);
+            Zone startingZone = GetZone(point.X, point.Y);
 
             if (startingZone != null)
             {
                 HashSet<T> list = new();
-                startingZone.GetObjectsInRadius(type, x, y, z, radius, list, ignoreZ);
-                uint sqRadius = (uint)radius * radius;
+                startingZone.GetObjectsInRadius(point, objectType, radius, list, ignoreZ);
+                uint sqRadius = (uint) radius * radius;
 
                 foreach (Zone currentZone in m_zones)
                 {
-                    if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, x, y, sqRadius))
-                        currentZone.GetObjectsInRadius(type, x, y, z, radius, list, ignoreZ);
+                    if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, point.X, point.Y, sqRadius))
+                        currentZone.GetObjectsInRadius(point, objectType, radius, list, ignoreZ);
                 }
 
                 return list;
@@ -1476,7 +1462,7 @@ namespace DOL.GS
             else
             {
                 if (log.IsDebugEnabled)
-                    log.Error("GetInRadius starting zone is null for (" + type + ", " + x + ", " + y + ", " + z + ", " + radius + ") in Region ID=" + ID);
+                    log.Error("GetInRadius starting zone is null for (" + objectType + ", " + point.X + ", " + point.Y + ", " + point.Z + ", " + radius + ") in Region ID=" + ID);
 
                 return new();
             }
@@ -1522,24 +1508,24 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
-        public HashSet<GameStaticItem> GetItemsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
+        public HashSet<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameStaticItem>(Zone.eGameObjectType.ITEM, x, y, z, radius, ignoreZ);
+            return GetInRadius<GameStaticItem>(point, Zone.eGameObjectType.ITEM, radius, ignoreZ);
         }
 
-        public HashSet<GameNPC> GetNPCsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
+        public HashSet<GameNPC> GetNPCsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameNPC>(Zone.eGameObjectType.NPC, x, y, z, radius, ignoreZ);
+            return GetInRadius<GameNPC>(point, Zone.eGameObjectType.NPC, radius, ignoreZ);
         }
 
-        public HashSet<GamePlayer> GetPlayersInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
+        public HashSet<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GamePlayer>(Zone.eGameObjectType.PLAYER, x, y, z, radius, ignoreZ);
+            return GetInRadius<GamePlayer>(point, Zone.eGameObjectType.PLAYER, radius, ignoreZ);
         }
 
-        public HashSet<GameDoorBase> GetDoorsInRadius(int x, int y, int z, ushort radius, bool ignoreZ = false)
+        public HashSet<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameDoorBase>(Zone.eGameObjectType.DOOR, x, y, z, radius, ignoreZ);
+            return GetInRadius<GameDoorBase>(point, Zone.eGameObjectType.DOOR, radius, ignoreZ);
         }
 
         #endregion

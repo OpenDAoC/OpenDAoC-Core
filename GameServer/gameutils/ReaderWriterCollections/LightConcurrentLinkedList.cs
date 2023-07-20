@@ -163,9 +163,13 @@ namespace DOL.GS
                 return _current;
             }
 
-            public void Dispose()
+            public void MoveTo(Node node)
             {
-                _lock?.ExitRead();
+                if (_lock != null)
+                    _lock.ExitRead();
+
+                _current = node;
+                Lock(_current);
             }
 
             private void Lock(INode node)
@@ -175,6 +179,11 @@ namespace DOL.GS
 
                 _lock = node.Lock;
                 _lock.EnterRead();
+            }
+
+            public void Dispose()
+            {
+                _lock?.ExitRead();
             }
         }
 
@@ -205,13 +214,13 @@ namespace DOL.GS
             INode INode.InnerNext
             {
                 get => _next;
-                set => _next = (Node)value;
+                set => _next = (Node) value;
             }
 
             INode INode.InnerPrevious
             {
                 get => _previous;
-                set => _previous = (Node)value;
+                set => _previous = (Node) value;
             }
         }
 

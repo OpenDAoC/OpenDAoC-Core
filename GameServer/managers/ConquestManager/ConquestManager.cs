@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using Microsoft.AspNetCore.Components.Server;
 
 namespace DOL.GS;
 
@@ -626,7 +623,7 @@ public class ConquestManager
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
 
-        ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.PLAYER, ActiveObjective.Keep.X, ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, 10000, playerCount, true);
+        ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(ActiveObjective.Keep.X, ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, Zone.eGameObjectType.PLAYER, 10000, playerCount, true);
 
         temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()} - {ActiveObjective.Keep.CurrentZone.Description}");
         temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");
