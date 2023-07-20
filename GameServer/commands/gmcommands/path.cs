@@ -297,7 +297,10 @@ namespace DOL.GS.Commands
 			PathPoint pathPoint = MovementMgr.LoadPath(pathName);
 
 			if (pathPoint == null)
+			{
 				DisplayMessage(client, "Path '{0}' not found!", pathName);
+				return;
+			}
 
 			RemoveAllPathPointObjects(client);
 			DisplayMessage(client, "Path '{0}' loaded.", pathName);
