@@ -16,7 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,14 +29,8 @@ namespace DOL.GS
 	/// </summary>
 	public static class GroupMgr
 	{
-		/// <summary>
-		/// Dictionary of all groups in the game
-		/// </summary>
-		static readonly ReaderWriterDictionary<Group, bool> m_groups = new ReaderWriterDictionary<Group, bool>();
-		/// <summary>
-		/// ArrayList of all players looking for a group
-		/// </summary>
-		static readonly ReaderWriterDictionary<GamePlayer, bool> m_lfgPlayers = new ReaderWriterDictionary<GamePlayer, bool>();
+		static readonly ConcurrentDictionary<Group, bool> m_groups = new();
+		static readonly ConcurrentDictionary<GamePlayer, bool> m_lfgPlayers = new();
 
 		/// <summary>
 		/// Adds a group to the list of groups
@@ -44,7 +39,7 @@ namespace DOL.GS
 		/// <returns>True if the function succeeded, otherwise false</returns>
 		public static bool AddGroup(Group group)
 		{
-			return m_groups.AddIfNotExists(group, true);
+			return m_groups.TryAdd(group, true);
 		}
 
 		/// <summary>
@@ -54,8 +49,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool RemoveGroup(Group group)
 		{
-			bool dummy;
-			return m_groups.TryRemove(group, out dummy);
+			return m_groups.TryRemove(group, out _);
 		}
 
 		/// <summary>
@@ -64,10 +58,8 @@ namespace DOL.GS
 		/// <param name="member">player to add to the list</param>
 		public static void SetPlayerLooking(GamePlayer member)
 		{
-			if (member.LookingForGroup == false && m_lfgPlayers.AddIfNotExists(member, true))
-			{
+			if (member.LookingForGroup == false && m_lfgPlayers.TryAdd(member, true))
 				member.LookingForGroup = true;
-			}
 		}
 
 		/// <summary>

@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 
@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Dictionary to Keep Track of Fear Brains attached to NPCs
 		/// </summary>
-		private readonly ReaderWriterDictionary<GameNPC, FearBrain> m_NPCFearBrains = new ReaderWriterDictionary<GameNPC, FearBrain>();
+		private readonly ConcurrentDictionary<GameNPC, FearBrain> m_NPCFearBrains = new();
 		
 		/// <summary>
 		/// Consume Power on Spell Start
@@ -80,7 +80,7 @@ namespace DOL.GS.Spells
 			var npcTarget = effect.Owner as GameNPC;
 			
 			var fearBrain = new FearBrain();
-			m_NPCFearBrains.AddOrReplace(npcTarget, fearBrain);
+			m_NPCFearBrains[npcTarget] = fearBrain;
 			
 			npcTarget.AddBrain(fearBrain);
 			fearBrain.Think();
@@ -127,6 +127,6 @@ namespace DOL.GS.Spells
 		/// <param name="caster"></param>
 		/// <param name="spell"></param>
 		/// <param name="line"></param>
-		public FearSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public FearSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

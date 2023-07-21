@@ -179,7 +179,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This variable holds the active charindex
 		/// </summary>
-		protected int m_activeCharIndex;
+		protected int m_activeCharIndex = -1;
 
 		/// <summary>
 		/// Holds installed client addons
@@ -196,7 +196,7 @@ namespace DOL.GS
 		/// </summary>
 		protected eClientType m_clientType = eClientType.Unknown;
 
-		protected eClientVersion m_clientVersion;
+		protected eClientVersion m_clientVersion = eClientVersion.VersionNotChecked;
 
 		/// <summary>
 		/// Holds the time of the last UDP ping
@@ -251,18 +251,18 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the Player Collection of Updated Object with last update time.
 		/// </summary>
-		protected ReaderWriterDictionary<Tuple<ushort, ushort>, long> m_GameObjectUpdateArray;
+		protected ConcurrentDictionary<Tuple<ushort, ushort>, long> m_GameObjectUpdateArray = new();
 
 		/// <summary>
 		/// Holds the Player Collection of Updated House with last update time.
 		/// </summary>
-		protected ReaderWriterDictionary<Tuple<ushort, ushort>, long> m_HouseUpdateArray;
+		protected ConcurrentDictionary<Tuple<ushort, ushort>, long> m_HouseUpdateArray = new();
 
 		// Trainer window Cache, (Object Type, Object ID) => Skill
 		public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache = null;
 		
 		// Tooltip Request Time Cache, (Object Type => (Object ID => expires))
-		private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> m_tooltipRequestTimes = new ConcurrentDictionary<int, ConcurrentDictionary<int, long>>();
+		private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> m_tooltipRequestTimes = new();
 		
 		/// <summary>
 		/// Try to Send Tooltip to Client, return false if cache hit.
@@ -273,38 +273,26 @@ namespace DOL.GS
 		/// <returns></returns>
 		public bool CanSendTooltip(int type, int id)
 		{
-	        m_tooltipRequestTimes.TryAdd(type, new ConcurrentDictionary<int, long>());
+			m_tooltipRequestTimes.TryAdd(type, new());
 
 			// Queries cleanup
 			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GetCurrentTime()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
-			{
-				long dummy;
-				m_tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out dummy);
-			}
+				m_tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out _);
 			
 			// Query hit ?
 			if (m_tooltipRequestTimes[type].ContainsKey(id))
 				return false;
 		
 			// Query register
-	        m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GetCurrentTime()+3600000);
-	        return true;
+			m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GetCurrentTime()+3600000);
+			return true;
 		}
 
-		
 		/// <summary>
 		/// Constructor for a game client
 		/// </summary>
 		/// <param name="srvr">The server that's communicating with this client</param>
-		public GameClient(BaseServer srvr)
-			: base(srvr)
-		{
-			m_clientVersion = eClientVersion.VersionNotChecked;
-			m_player = null;
-			m_activeCharIndex = -1; //No character loaded yet!
-			m_GameObjectUpdateArray = new ReaderWriterDictionary<Tuple<ushort, ushort>, long>();
-			m_HouseUpdateArray = new ReaderWriterDictionary<Tuple<ushort, ushort>, long>();
-		}
+		public GameClient(BaseServer srvr) : base(srvr) { }
 
 		/// <summary>
 		/// UDP address for this client
@@ -338,15 +326,15 @@ namespace DOL.GS
 			}
 		}
 
-        /// <summary>
-        /// When the linkdeath occured. 0 if there wasn't any
-        /// </summary>
+		/// <summary>
+		/// When the linkdeath occured. 0 if there wasn't any
+		/// </summary>
 		public long LinkDeathTime { get; set; }
 
-        /// <summary>
-        /// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
-        /// </summary>
-        public bool IsConnected = true;
+		/// <summary>
+		/// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
+		/// </summary>
+		public bool IsConnected = true;
 
 		/// <summary>
 		/// Gets whether or not the client is playing
@@ -512,7 +500,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the Game Object Update Array (Read/Write)
 		/// </summary>
-		public ReaderWriterDictionary<Tuple<ushort, ushort>, long> GameObjectUpdateArray
+		public ConcurrentDictionary<Tuple<ushort, ushort>, long> GameObjectUpdateArray
 		{
 			get { return m_GameObjectUpdateArray; }
 		}
@@ -520,7 +508,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the House Update Array (Read/Write)
 		/// </summary>
-		public ReaderWriterDictionary<Tuple<ushort, ushort>, long> HouseUpdateArray
+		public ConcurrentDictionary<Tuple<ushort, ushort>, long> HouseUpdateArray
 		{
 			get { return m_HouseUpdateArray; }
 		}
@@ -798,7 +786,6 @@ namespace DOL.GS
 				curPlayer.OnLinkdeath();
 			}
 		}
-
 
 		/// <summary>
 		/// Quits a client from the world

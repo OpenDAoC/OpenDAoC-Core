@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -170,7 +171,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This hashtable holds all regions in the world
 		/// </summary>
-		private static readonly ReaderWriterDictionary<ushort, Region> m_regions = new ReaderWriterDictionary<ushort, Region>();
+		private static readonly ConcurrentDictionary<ushort, Region> m_regions = new();
 
 		public static IDictionary<ushort, Region> Regions
 		{
@@ -180,7 +181,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This hashtable holds all zones in the world, for easy access
 		/// </summary>
-		private static readonly ReaderWriterDictionary<ushort, Zone> m_zones = new ReaderWriterDictionary<ushort, Zone>();
+		private static readonly ConcurrentDictionary<ushort, Zone> m_zones = new();
 
 		public static IDictionary<ushort, Zone> Zones
 		{
@@ -386,10 +387,6 @@ namespace DOL.GS
 			regions.Sort();
 
 			log.DebugFormat("{0}MB - Region Data Loaded", GC.GetTotalMemory(true) / 1024 / 1024);
-
-			int cpuCount = GameServer.Instance.Configuration.CPUUse;
-			if (cpuCount < 1)
-				cpuCount = 1;
 
 			for (int i = 0; i < regions.Count; i++)
 			{
@@ -728,8 +725,7 @@ namespace DOL.GS
 		public static Region RegisterRegion(RegionData data)
 		{
 			Region region =  Region.Create(data);
-			m_regions.Add(data.Id, region);
-			return region;
+			return m_regions.TryAdd(data.Id, region) ? region : null;
 		}
 
 		/// <summary>
@@ -815,23 +811,18 @@ namespace DOL.GS
                     height * 8192);*/
 
 			region.Zones.Add(zone);
-			
-			m_zones.AddOrReplace(zoneID, zone);
-
+			m_zones[zoneID] = zone;
 			log.InfoFormat("Added a zone, {0}, to region {1}", zoneData.Description, region.Name);
 		}
 
 		/// <summary>
 		/// Starts all RegionMgrs inside the Regions
 		/// </summary>
-		/// <returns>true</returns>
 		public static bool StartRegionMgrs()
 		{
-			m_regions.FreezeWhile(dict => {
-			                      	foreach (Region reg in dict.Values)
-			                      		reg.StartRegionMgr();
+			foreach (Region region in m_regions.Values)
+				region.StartRegionMgr();
 
-			                      });			
 			return true;
 		}
 
@@ -843,11 +834,8 @@ namespace DOL.GS
 			if (log.IsDebugEnabled)
 				log.Debug("Stopping region managers...");
 			
-			m_regions.FreezeWhile(dict => {
-			                      	foreach (Region reg in dict.Values)
-			                      		reg.StopRegionMgr();
-
-			                      });			
+			foreach (Region region in m_regions.Values)
+				region.StopRegionMgr();
 
 			if (log.IsDebugEnabled)
 				log.Debug("Region managers stopped.");
@@ -1686,13 +1674,8 @@ namespace DOL.GS
 		/// <summary>
 		/// Tries to create an instance with the suggested ID and a given 'skin' (the regionID to display client side).
 		/// </summary>
-		/// <param name="requestedID">0 for random</param>
-		/// <param name="skinID"></param>
-		/// <param name="instanceType"></param>
-		/// <returns></returns>
 		public static BaseInstance CreateInstance(ushort requestedID, ushort skinID, Type instanceType)
 		{
-			//TODO: Typeof field so TaskDungeonInstance, QuestInstance etc can be created.
 			if ((instanceType.IsSubclassOf(typeof(BaseInstance)) || instanceType == typeof(BaseInstance)) == false)
 			{
 				log.Error("Invalid type given for instance creation: " + instanceType + ". Returning null instance now.");
@@ -1700,9 +1683,7 @@ namespace DOL.GS
 			}
 
 			BaseInstance instance = null;
-
-			//To create the instance, we need to select the region relevant to the SkinID.
-			var data = m_regionData[skinID];
+			RegionData data = m_regionData[skinID];
 
 			if (data == null)
 			{
@@ -1710,7 +1691,6 @@ namespace DOL.GS
 				return null;
 			}
 
-			//I've placed constructor info outside of the lock, to prevent a time delay on parallel threads.
 			ConstructorInfo info = instanceType.GetConstructor(new Type[] { typeof(ushort), typeof(RegionData)});
 
 			if (info == null)
@@ -1720,66 +1700,44 @@ namespace DOL.GS
 			}
 
 			bool RequestedAnID = requestedID == 0 ? false : true;
-
 			ushort ID = requestedID;
+			bool success = false;
 
-			//Get the unique ID for this instance or try to create an instance at the requested ID
+			if (RequestedAnID)
+				success = m_regions.TryAdd(ID, instance);
+			else
+			{
+				for (ID = DEFAULT_VALUE_FOR_INSTANCE_ID_SEARCH_START; ID <= ushort.MaxValue; ID++)
+				{
+					if (m_regions.TryAdd(ID, instance))
+					{
+						success = true;
+						break;
+					}
+				}
+			}
 
-			//We need to keep the lock over this whole area until we have successfully inserted the instance,
-			//incase a parallel thread also receives a request to create an instance. We cant have the two colliding!
-			//If they did, one instance generation would fail.
-
-			//I'm welcome to suggestions on how to improve this
-			//              -Dinberg.
-			if (!m_regions.FreezeWhile<bool>(regions => {
-			                                         	if (!RequestedAnID)
-			                                         	{
-			                                         		ID = DEFAULT_VALUE_FOR_INSTANCE_ID_SEARCH_START;
-			                                         		while (ID < ushort.MaxValue)
-			                                         		{
-			                                         			//Look for a space in the regions table...
-			                                         			if (!regions.ContainsKey(ID))
-			                                         				break;
-			                                         			
-			                                         			//If no space here, no worries - move quickly to the next ID and continue.
-			                                         			ID++;
-			                                         		}
-			                                         	}
-			                                         	else if (regions.ContainsKey(ID))
-			                                         	{
-			                                         		// requested ID is in use
-			                                         		return false;
-			                                         	}
-			                                         	//In the unlikely event of 65535 regions, I'd still like to be warned!
-			                                         	if (ID == ushort.MaxValue)
-			                                         	{
-			                                         		log.Warn("ID was ushort.MaxValue - Region Table is full upon instance creation! Aborting now.");
-			                                         		return false;
-			                                         	}
-			                                         	//Having selected the data we need, create the Instance.
-			                                         	try
-			                                         	{
-			                                         		instance = (BaseInstance)info.Invoke(new object[] { ID, data });
-			                                         		regions.Add(ID, instance);
-			                                         	}
-			                                         	catch (Exception e)
-			                                         	{
-			                                         		log.ErrorFormat("Error on instance creation - {0}{1}", e.Message, e.StackTrace);
-			                                         		return false;
-			                                         	}
-			                                         	
-			                                         	return true;
-			                                 }))
+			if (!success)
+			{
+				log.Error($"Failed to add new instance to region table (ID: {ID})");
 				return null;
-			
-			// But its not over there. We need to put a zone into the instance.
+			}
+
+			try
+			{
+				instance = (BaseInstance) info.Invoke(new object[] { ID, data });
+			}
+			catch (Exception e)
+			{
+				log.ErrorFormat("Error on instance creation - {0} {1}", e.Message, e.StackTrace);
+				return null;
+			}
+
 
 			List<ZoneData> list = null;
 
 			if (m_zonesData.ContainsKey(data.Id))
-			{
 				list = m_zonesData[data.Id];
-			}
 
 			if (list == null)
 			{
@@ -1787,63 +1745,36 @@ namespace DOL.GS
 				return null;
 			}
 
-			int zoneID = 0;
+			ushort zoneID = 0;
 
 			foreach (ZoneData dat in list)
 			{
-				//we need to get an id for each one.
-				if (m_zones.FreezeWhile<bool>(zones =>
-				                              {
-				                              	while (zoneID <= ushort.MaxValue && zones.ContainsKey((ushort)zoneID))
-				                              		zoneID++;
-				                              	
-				                              	if (zoneID >= ushort.MaxValue)
-				                              		log.Error("Zone limit reached in instance creation!");
-				                              	
-				                              	if (zoneID > ushort.MaxValue)
-				                              		return false;
-				                              	
-				                              	// register id
-				                              	zones.Add((ushort)zoneID, null);
-				                              	return true;
-				                              }))
+				for (; zoneID <= ushort.MaxValue; ID++)
 				{
-	            	RegisterZone(dat, (ushort)zoneID, ID, string.Format("{0} (Instance)", dat.Description), 0, 0, 0, 0, 0);
+					if (m_zones.TryAdd(zoneID, null))
+					{
+						RegisterZone(dat, zoneID, ID, string.Format("{0} (Instance)", dat.Description), 0, 0, 0, 0, 0);
+						break;
+					}
 				}
 			}
 
-			// Start the instance and execute any final startup tasks
 			instance.Start();
-
 			return instance;
 		}
 
 		/// <summary>
 		/// Removes the given instance from the server.
 		/// </summary>
-		/// <param name="instance"></param>
 		public static void RemoveInstance(BaseInstance instance)
 		{
-			//Remove the region
-			Region reg;
-			m_regions.TryRemove(instance.ID, out reg);
+			m_regions.TryRemove(instance.ID, out _);
 
-			//Remove zones
-			m_zones.FreezeWhile(zones =>
-			                    {
-			                    	foreach (Zone zn in instance.Zones)
-			                    	{
-			                    		if (zones.ContainsKey(zn.ID))
-			                    			zones.Remove(zn.ID);
-			                    	}
-			                    });
+			foreach (Zone zn in instance.Zones)
+				m_zones.TryRemove(zn.ID, out _);
 
 			instance.OnCollapse();
-
-			//Destroy the region once and for all.
-			instance = null;
 		}
-
 
 		#endregion
 	}

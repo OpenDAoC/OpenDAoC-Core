@@ -141,7 +141,7 @@ namespace DOL.GS
         /// <summary>
         /// The Region Mob's Respawn Timer Collection
         /// </summary>
-        protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new ConcurrentDictionary<GameNPC, int>();
+        protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new();
 
         #endregion
 

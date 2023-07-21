@@ -16,14 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Reflection;
-using System.Linq;
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using DOL.Database;
-
 using log4net;
 
 namespace DOL.GS.Friends
@@ -41,12 +42,12 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Players Indexed Friends Lists Cache.
 		/// </summary>
-		private ReaderWriterDictionary<GamePlayer, string[]> PlayersFriendsListsCache { get; set; }
+		private ConcurrentDictionary<GamePlayer, string[]> PlayersFriendsListsCache { get; set; } = new();
 
 		/// <summary>
 		/// Players Indexed Friends Offline Status Cache.
 		/// </summary>
-		private ReaderWriterDictionary<GamePlayer, FriendStatus[]> PlayersFriendsStatusCache { get; set; }
+		private ConcurrentDictionary<GamePlayer, FriendStatus[]> PlayersFriendsStatusCache { get; set; } = new();
 
 		/// <summary>
 		/// Server Database Reference.
@@ -74,8 +75,6 @@ namespace DOL.GS.Friends
 		public FriendsManager(IObjectDatabase Database)
 		{
 			this.Database = Database;
-			PlayersFriendsListsCache = new ReaderWriterDictionary<GamePlayer, string[]>();
-			PlayersFriendsStatusCache = new ReaderWriterDictionary<GamePlayer, FriendStatus[]>();
 			GameEventMgr.AddHandler(GameClientEvent.StateChanged, OnClientStateChanged);
 			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, OnPlayerGameEntered);
 			GameEventMgr.AddHandler(GamePlayerEvent.Quit, OnPlayerQuit);
@@ -89,29 +88,26 @@ namespace DOL.GS.Friends
 		public void AddPlayerFriendsListToCache(GamePlayer Player)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 
-			var friends = Player.SerializedFriendsList;
+			string[] friends = Player.SerializedFriendsList;
 
-			if (!PlayersFriendsListsCache.AddIfNotExists(Player, friends))
+			if (!PlayersFriendsListsCache.TryAdd(Player, friends))
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) is already registered in Friends Manager Cache while adding!", Player);
 			}
 
-			var offlineFriends = new FriendStatus[0];
-			if (friends.Any())
-			{
-				offlineFriends = Database.SelectObjects<DOLCharacters>(DB.Column("Name").IsIn(friends))
-					.Select(chr => new FriendStatus(chr.Name, chr.Level, chr.Class, chr.LastPlayed)).ToArray();
-			}
+			FriendStatus[] offlineFriends = Array.Empty<FriendStatus>();
 
-			if (!PlayersFriendsStatusCache.AddIfNotExists(Player, offlineFriends))
+			if (friends.Any())
+				offlineFriends = Database.SelectObjects<DOLCharacters>(DB.Column("Name").IsIn(friends)).Select(chr => new FriendStatus(chr.Name, chr.Level, chr.Class, chr.LastPlayed)).ToArray();
+
+			if (!PlayersFriendsStatusCache.TryAdd(Player, offlineFriends))
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) is already registered in Friends Manager Status Cache while adding!", Player);
 			}
-
 		}
 
 		/// <summary>
@@ -121,17 +117,15 @@ namespace DOL.GS.Friends
 		public void RemovePlayerFriendsListFromCache(GamePlayer Player)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 
-			string[] friends;
-			if (!PlayersFriendsListsCache.TryRemove(Player, out friends))
+			if (!PlayersFriendsListsCache.TryRemove(Player, out _))
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Cache while trying to remove!", Player);
 			}
 
-			FriendStatus[] offlineFriends;
-			if (!PlayersFriendsStatusCache.TryRemove(Player, out offlineFriends))
+			if (!PlayersFriendsStatusCache.TryRemove(Player, out _))
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to remove!", Player);
@@ -147,48 +141,55 @@ namespace DOL.GS.Friends
 		public bool AddFriendToPlayerList(GamePlayer Player, string Friend)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 			if (Friend == null)
-				throw new ArgumentNullException("Friend");
+				throw new ArgumentNullException(nameof(Friend));
 
 			Friend = Friend.Trim();
 
 			if (string.IsNullOrEmpty(Friend))
-				throw new ArgumentException("Friend need to be a valid non-empty or white space string!", "Friend");
+				throw new ArgumentException("Friend need to be a valid non-empty or white space string!", nameof(Friend));
 
-			var success = false;
-			if (!PlayersFriendsListsCache.TryUpdate(Player, list => {
-				if (list.Contains(Friend))
-					return list;
+			string[] currentFriendsList;
 
-				success = true;
-				return list.Concat(new[] { Friend }).ToArray();
-			}))
+			while (PlayersFriendsListsCache.TryGetValue(Player, out currentFriendsList))
+			{
+				if (PlayersFriendsListsCache.TryUpdate(Player, currentFriendsList.Contains(Friend) ? currentFriendsList : currentFriendsList.Concat(new[] { Friend }).ToArray(), currentFriendsList))
+					break;
+			}
+
+			if (currentFriendsList == null)
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Cache while trying to Add a new Friend ({1})", Player, Friend);
+
+				return false;
 			}
 
-			if (success)
+			Player.Out.SendAddFriends(new[] { Friend });
+			Player.SerializedFriendsList = this[Player];
+			DOLCharacters offlineFriend = Database.SelectObjects<DOLCharacters>(DB.Column("Name").IsEqualTo(Friend)).FirstOrDefault();
+			FriendStatus[] currentFriendsStatus;
+
+
+			if (offlineFriend != null)
 			{
-				Player.Out.SendAddFriends(new[] { Friend });
-				Player.SerializedFriendsList = this[Player];
-
-				var offlineFriend = Database.SelectObjects<DOLCharacters>(DB.Column("Name").IsEqualTo(Friend)).FirstOrDefault();
-
-				if (offlineFriend != null)
+				while (PlayersFriendsStatusCache.TryGetValue(Player, out currentFriendsStatus))
 				{
-					if (!PlayersFriendsStatusCache.TryUpdate(Player, list => list.Where(frd => frd.Name != Friend)
-															 .Concat(new[] { new FriendStatus(offlineFriend.Name, offlineFriend.Level, offlineFriend.Class, offlineFriend.LastPlayed) })
-															 .ToArray()))
-					{
+					if (PlayersFriendsStatusCache.TryUpdate(Player, currentFriendsStatus.Where(frd => frd.Name != Friend)
+																						.Concat(new[] { new FriendStatus(offlineFriend.Name, offlineFriend.Level, offlineFriend.Class, offlineFriend.LastPlayed) })
+																						.ToArray(), currentFriendsStatus))
+						break;
+				}
+
+				if (currentFriendsStatus == null)
+				{
 						if (log.IsWarnEnabled)
 							log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Add a new Friend ({1})", Player, Friend);
-					}
 				}
 			}
 
-			return success;
+			return true;
 		}
 
 		/// <summary>
@@ -200,44 +201,48 @@ namespace DOL.GS.Friends
 		public bool RemoveFriendFromPlayerList(GamePlayer Player, string Friend)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 			if (Friend == null)
-				throw new ArgumentNullException("Friend");
+				throw new ArgumentNullException(nameof(Friend));
 
 			Friend = Friend.Trim();
 
 			if (string.IsNullOrEmpty(Friend))
-				throw new ArgumentException("Friend need to be a valid non-empty or white space string!", "Friend");
+				throw new ArgumentException("Friend need to be a valid non-empty or white space string!", nameof(Friend));
 
-			var success = false;
-			if (!PlayersFriendsListsCache.TryUpdate(Player, list => {
-				var result = list.Except(new[] { Friend }, StringComparer.OrdinalIgnoreCase).ToArray();
-				if (result.Length < list.Length)
-				{
-					success = true;
-					return result;
-				}
+			string[] currentFriendsList;
 
-				return list;
-			}))
+			while (PlayersFriendsListsCache.TryGetValue(Player, out currentFriendsList))
+			{
+				if (PlayersFriendsListsCache.TryUpdate(Player, currentFriendsList.Except(new[] { Friend }, StringComparer.OrdinalIgnoreCase).ToArray(), currentFriendsList))
+					break;
+			}
+
+			if (currentFriendsList == null)
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Cache while trying to Remove a Friend ({1})", Player, Friend);
+
+				return false;
 			}
 
-			if (success)
+			Player.Out.SendRemoveFriends(new[] { Friend });
+			Player.SerializedFriendsList = this[Player];
+			FriendStatus[] currentFriendStatus;
+
+			while (PlayersFriendsStatusCache.TryGetValue(Player, out currentFriendStatus))
 			{
-				Player.Out.SendRemoveFriends(new[] { Friend });
-				Player.SerializedFriendsList = this[Player];
-
-				if (!PlayersFriendsStatusCache.TryUpdate(Player, list => list.Where(frd => frd.Name != Friend).ToArray()))
-				{
-					if (log.IsWarnEnabled)
-						log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Remove a Friend ({1})", Player, Friend);
-				}
+				if (PlayersFriendsStatusCache.TryUpdate(Player, currentFriendStatus.Where(frd => frd.Name != Friend).ToArray(), currentFriendStatus))
+					break;
 			}
 
-			return success;
+			if (currentFriendStatus == null)
+			{
+				if (log.IsWarnEnabled)
+						log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Remove a Friend ({1})", Player, Friend);
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -247,7 +252,7 @@ namespace DOL.GS.Friends
 		public void SendPlayerFriendsSnapshot(GamePlayer Player)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 
 			Player.Out.SendCustomTextWindow("Friends (snapshot)", this[Player]);
 		}
@@ -259,7 +264,7 @@ namespace DOL.GS.Friends
 		public void SendPlayerFriendsSocial(GamePlayer Player)
 		{
 			if (Player == null)
-				throw new ArgumentNullException("Player");
+				throw new ArgumentNullException(nameof(Player));
 
 			// "TF" - clear friend list in social
 			Player.Out.SendMessage("TF", eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
@@ -295,7 +300,6 @@ namespace DOL.GS.Friends
 						eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
 				}
 			}
-
 		}
 
 		/// <summary>
@@ -341,10 +345,8 @@ namespace DOL.GS.Friends
 
 			var offline = new FriendStatus(Player.Name, Player.Level, Player.CharacterClass.ID, DateTime.Now);
 
-			PlayersFriendsStatusCache.FreezeWhile(dict => {
-				foreach (var list in dict.Where(kv => kv.Value.Any(frd => frd.Name == Player.Name)).ToArray())
-					dict[list.Key] = list.Value.Where(frd => frd.Name != Player.Name).Concat(new[] { offline }).ToArray();
-			});
+			foreach (var cache in PlayersFriendsStatusCache.Where(kv => kv.Value.Any(frd => frd.Name == Player.Name)).ToArray())
+				PlayersFriendsStatusCache[cache.Key] = cache.Value.Where(frd => frd.Name != Player.Name).Concat(new[] { offline }).ToArray();
 		}
 
 		/// <summary>

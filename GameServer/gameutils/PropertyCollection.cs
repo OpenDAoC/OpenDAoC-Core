@@ -16,10 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using log4net;
 
 namespace DOL.GS
@@ -37,7 +38,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Container of properties
 		/// </summary>
-		private readonly ReaderWriterDictionary<object, object> _props = new ReaderWriterDictionary<object, object>();
+		private readonly ConcurrentDictionary<object, object> _props = new();
 
 		/// <summary>
 		/// Retrieve a property

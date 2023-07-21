@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Dictionary to Keep track of Friend Brains Attached to NPC
 		/// </summary>
-		private readonly ReaderWriterDictionary<GameNPC, FriendBrain> m_NPCFriendBrain = new ReaderWriterDictionary<GameNPC, FriendBrain>();
+		private readonly ConcurrentDictionary<GameNPC, FriendBrain> m_NPCFriendBrain = new();
 		
 		/// <summary>
 		/// Consume Power on Spell Start
@@ -90,7 +90,7 @@ namespace DOL.GS.Spells
 			
 			var currentBrain = npcTarget.Brain as IOldAggressiveBrain;
 			var friendBrain = new FriendBrain(this);
-			m_NPCFriendBrain.AddOrReplace(npcTarget, friendBrain);
+			m_NPCFriendBrain[npcTarget] = friendBrain;
 			
 			npcTarget.AddBrain(friendBrain);
 			friendBrain.Think();
