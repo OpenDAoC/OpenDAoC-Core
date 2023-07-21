@@ -17,7 +17,6 @@
  *
  */
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
@@ -164,7 +163,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
+			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
@@ -389,7 +388,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update cache
-			m_gameClient.HouseUpdateArray[new Tuple<ushort, ushort>(house.RegionID, (ushort)house.HouseNumber)] = GameLoop.GetCurrentTime();
+			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public override void SendEnterHouse(House house)
@@ -478,6 +477,5 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.GuildBanner != null)
 				playerToCreate.Out.SendRvRGuildBanner(playerToCreate, true);
 		}
-
 	}
 }

@@ -140,7 +140,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(obj.CurrentRegionID, (ushort)obj.ObjectID)] = GameLoop.GetCurrentTime();
+			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		public override void SendNPCCreate(GameNPC npc)
@@ -271,7 +271,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Update Cache
-			m_gameClient.GameObjectUpdateArray[new Tuple<ushort, ushort>(npc.CurrentRegionID, (ushort)npc.ObjectID)] = 0;
+			m_gameClient.GameObjectUpdateArray[npc] = 0;
 		}
 
 		public override void SendFindGroupWindowUpdate(GamePlayer[] list)

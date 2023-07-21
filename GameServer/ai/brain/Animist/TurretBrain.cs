@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS;
@@ -37,14 +37,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            GamePlayer playerowner = GetPlayerOwner();
-
-            if (!playerowner.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), out long lastUpdate))
-                playerowner.Client.GameObjectUpdateArray.TryAdd(new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID), lastUpdate);
-
-            if (playerowner != null && (GameLoop.GameLoopTime - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
-                playerowner.Out.SendObjectUpdate(Body);
-
             if (AggressionState == eAggressionState.Aggressive)
                 CheckProximityAggro();
 

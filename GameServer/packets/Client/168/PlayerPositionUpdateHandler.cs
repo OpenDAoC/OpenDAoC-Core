@@ -767,7 +767,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (player == client.Player)
 				{
 					// Update Player Cache (Client sending Packet is admitting he's already having it)
-					player.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(client.Player.CurrentRegionID, (ushort)client.Player.ObjectID)] = GameLoop.GetCurrentTime();
+					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
 					continue;
 				}
 				//no position updates in different houses
@@ -787,7 +787,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 				{
 					// Update Player Cache
-					player.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(client.Player.CurrentRegionID, (ushort)client.Player.ObjectID)] = GameLoop.GetCurrentTime();
+					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
 
 					//forward the position packet like normal!
 					if (player.Client.Version >= GameClient.eClientVersion.Version1124)
@@ -1336,7 +1336,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (player == client.Player)
 				{
 					// Update Player Cache (Client sending Packet is admitting he's already having it)
-					player.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(client.Player.CurrentRegionID, (ushort)client.Player.ObjectID)] = GameLoop.GetCurrentTime();
+					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
 					continue;
 				}
 				//no position updates in different houses
@@ -1346,7 +1346,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 				{
 					// Update Player Cache
-					player.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(client.Player.CurrentRegionID, (ushort)client.Player.ObjectID)] = GameLoop.GetCurrentTime();
+					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
 
 					if (player.Client.Version >= GameClient.eClientVersion.Version1127)
 						player.Out.SendUDP(outpak1127);

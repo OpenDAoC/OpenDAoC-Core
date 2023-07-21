@@ -80,9 +80,9 @@ namespace DOL.GS
                 // Clean up cache.
                 foreach (var objEntry in player.Client.GameObjectUpdateArray)
                 {
-                    Tuple<ushort, ushort> objKey = objEntry.Key;
+                    GameObject gameObject = objEntry.Key;
 
-                    if (WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2) is not GameNPC npc)
+                    if (gameObject is not GameNPC npc)
                         continue;
 
                     // Brain is updating to its master, no need to handle it.
@@ -97,7 +97,7 @@ namespace DOL.GS
                             player.Client.Out.SendObjectUpdate(npc);
 
                         // This will add the object to the cache again, remove it after sending.
-                        player.Client.GameObjectUpdateArray.TryRemove(objKey, out _);
+                        player.Client.GameObjectUpdateArray.TryRemove(gameObject, out _);
                     }
                 }
             }
@@ -115,7 +115,7 @@ namespace DOL.GS
                     if (!npc.IsVisibleTo(player))
                         continue;
 
-                    if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(npc.CurrentRegionID, (ushort) npc.ObjectID), out long lastUpdate))
+                    if (player.Client.GameObjectUpdateArray.TryGetValue(npc, out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_NPC_UPDATE_INTERVAL)
                             player.Client.Out.SendObjectUpdate(npc);
@@ -143,11 +143,11 @@ namespace DOL.GS
                 // Clean up cache.
                 foreach (var objEntry in player.Client.GameObjectUpdateArray)
                 {
-                    Tuple<ushort, ushort> objKey = objEntry.Key;
+                    GameObject gameObject = objEntry.Key;
 
                     // We have an item in cache that is not in vincinity.
-                    if (WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2) is GameStaticItem item && !itemsInRange.Contains(item) && (tick - objEntry.Value) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
-                        player.Client.GameObjectUpdateArray.TryRemove(objKey, out _);
+                    if (gameObject is GameStaticItem item && !itemsInRange.Contains(item) && (tick - objEntry.Value) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
+                        player.Client.GameObjectUpdateArray.TryRemove(gameObject, out _);
                 }
             }
             catch (Exception e)
@@ -164,7 +164,7 @@ namespace DOL.GS
                     if (!item.IsVisibleTo(player))
                         continue;
 
-                    if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(item.CurrentRegionID, (ushort) item.ObjectID), out long lastUpdate))
+                    if (player.Client.GameObjectUpdateArray.TryGetValue(item, out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
                             player.Client.Out.SendObjectCreate(item);
@@ -192,11 +192,11 @@ namespace DOL.GS
                 // Clean up cache.
                 foreach (var objEntry in player.Client.GameObjectUpdateArray)
                 {
-                    Tuple<ushort, ushort> objKey = objEntry.Key;
+                    GameObject gameObject = objEntry.Key;
 
                     // We have a door in cache that is not in vincinity.
-                    if (WorldMgr.GetRegion(objKey.Item1).GetObject(objKey.Item2) is GameDoorBase door && !doorsInRange.Contains(door) && (tick - objEntry.Value) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
-                        player.Client.GameObjectUpdateArray.TryRemove(objKey, out _);
+                    if (gameObject is GameDoorBase door && !doorsInRange.Contains(door) && (tick - objEntry.Value) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
+                        player.Client.GameObjectUpdateArray.TryRemove(gameObject, out _);
                 }
             }
             catch (Exception e)
@@ -213,7 +213,7 @@ namespace DOL.GS
                     if (!door.IsVisibleTo(player))
                         continue;
 
-                    if (player.Client.GameObjectUpdateArray.TryGetValue(new Tuple<ushort, ushort>(door.CurrentRegionID, (ushort) door.ObjectID), out long lastUpdate))
+                    if (player.Client.GameObjectUpdateArray.TryGetValue(door, out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
                             player.SendDoorUpdate(door);
@@ -244,12 +244,11 @@ namespace DOL.GS
                 // Clean up cache.
                 foreach (var houseEntry in player.Client.HouseUpdateArray)
                 {
-                    Tuple<ushort, ushort> houseKey = houseEntry.Key;
-                    House house = HouseMgr.GetHouse(houseKey.Item1, houseKey.Item2);
+                    House house = houseEntry.Key;
 
                     // We have a House in cache that is not in vincinity.
                     if (!houses.Contains(house) && (tick - houseEntry.Value) >= (Properties.WORLD_OBJECT_UPDATE_INTERVAL >> 2))
-                        player.Client.HouseUpdateArray.TryRemove(houseKey, out _);
+                        player.Client.HouseUpdateArray.TryRemove(house, out _);
                 }
             }
             catch (Exception e)
@@ -265,7 +264,7 @@ namespace DOL.GS
                     if (!player.IsWithinRadius(house, HousingConstants.HouseViewingDistance))
                         continue;
 
-                    if (player.Client.HouseUpdateArray.TryGetValue(new Tuple<ushort, ushort>(house.RegionID, (ushort) house.HouseNumber), out long lastUpdate))
+                    if (player.Client.HouseUpdateArray.TryGetValue(house, out long lastUpdate))
                     {
                         if ((tick - lastUpdate) >= Properties.WORLD_OBJECT_UPDATE_INTERVAL)
                             player.Client.Out.SendHouseOccupied(house, house.IsOccupied);

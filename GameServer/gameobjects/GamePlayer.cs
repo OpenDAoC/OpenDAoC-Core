@@ -5195,7 +5195,7 @@ namespace DOL.GS
 
             int numCurrentLoyalDays = this.TempProperties.getProperty<int>(CURRENT_LOYALTY_KEY);
             //check for cached loyalty days, and grab value if needed
-            if (numCurrentLoyalDays == null || numCurrentLoyalDays == 0)
+            if (numCurrentLoyalDays == 0)
             {
                 AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
                 if (realmLoyalty == null)

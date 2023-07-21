@@ -2,7 +2,6 @@
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.GS;
-using DOL.GS.Movement;
 using FiniteStateMachine;
 using log4net;
 using static DOL.AI.Brain.StandardMobBrain;
