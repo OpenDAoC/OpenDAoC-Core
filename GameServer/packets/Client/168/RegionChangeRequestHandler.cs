@@ -42,49 +42,55 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			ushort jumpSpotId = packet.ReadShort();
+			ushort zonePoindId = packet.ReadShort();
 
-			eRealm targetRealm = client.Player.Realm;
+			eRealm playerRealm = client.Player.Realm;
 
-			if (client.Player.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis && client.Player.CurrentZone.Realm != eRealm.None)
+			// If we are in TrialsOfAtlantis then base the target jump on the current region realm instead of the players realm.
+			// This is only used if zone table has the proper realms defined, otherwise it reverts to old behavior.
+			if (client.Player.CurrentRegion.Expansion == (int) eClientExpansion.TrialsOfAtlantis && client.Player.CurrentZone.Realm != eRealm.None)
+				playerRealm = client.Player.CurrentZone.Realm;
+
+			WhereClause whereClause = DB.Column("Id").IsEqualTo(zonePoindId);
+
+			if (client.Account.PrivLevel == 1)
 			{
-				// if we are in TrialsOfAtlantis then base the target jump on the current region realm instead of the players realm
-				// this is only used if zone table has the proper realms defined, otherwise it reverts to old behavior - Tolakram
-                targetRealm = client.Player.CurrentZone.Realm;
+				WhereClause realmFilter = DB.Column("Realm").IsEqualTo((byte) playerRealm).Or(DB.Column("Realm").IsEqualTo(0)).Or(DB.Column("Realm").IsNull());
+				whereClause = whereClause.And(realmFilter);
 			}
 
-			var filterRealm = DB.Column("Realm").IsEqualTo((byte)targetRealm).Or(DB.Column("Realm").IsEqualTo(0)).Or(DB.Column("Realm").IsNull());
-			var zonePoint = DOLDB<ZonePoint>.SelectObject(DB.Column("Id").IsEqualTo(jumpSpotId).And(filterRealm));
+			ZonePoint zonePoint = DOLDB<ZonePoint>.SelectObject(whereClause);
 
-			if (zonePoint == null || zonePoint.TargetRegion == 0)
+			if (zonePoint == null)
 			{
-				ChatUtil.SendDebugMessage(client, $"Invalid Jump (ZonePoint table): [{jumpSpotId}]{((zonePoint == null) ? ". Entry missing!" : ". TargetRegion is 0!")}");
-				zonePoint = new ZonePoint();
-				zonePoint.Id = jumpSpotId;
+				ChatUtil.SendDebugMessage(client, $"Invalid ZonePoint. Wrong ID or mismatching realm. (ID: {zonePoindId}) (playerRealm: {(byte) playerRealm})");
+				return;
+			}
+
+			// Some jump points are handled code side, such as instances. As such, region may be zero in the database.
+			if (zonePoint.TargetRegion == 0)
+			{
+				zonePoint = new()
+				{
+					Id = zonePoindId
+				};
 			}
 
 			if (client.Account.PrivLevel > 1)
-			{
-				client.Out.SendMessage($"JumpSpotID = {jumpSpotId}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage($"ZonePoint Target: Region = {zonePoint.TargetRegion}, ClassType = \'{zonePoint.ClassType}\'", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-
-			//Dinberg: Fix - some jump points are handled code side, such as instances.
-			//As such, region MAY be zero in the database, so this causes an issue.
+				ChatUtil.SendDebugMessage(client, $"ZonePoint (ID: {zonePoindId}) (TargetRegion: {zonePoint.TargetRegion}) (ClassType: {zonePoint.ClassType})");
 
 			if (zonePoint.TargetRegion != 0)
 			{
 				Region reg = WorldMgr.GetRegion(zonePoint.TargetRegion);
+
 				if (reg != null)
 				{
-					// check for target region disabled if player is in a standard region
-					// otherwise the custom region should handle OnZonePoint for this check
 					if (client.Player.CurrentRegion.IsCustom == false && reg.IsDisabled)
 					{
-						if ((client.Player.Mission is TaskDungeonMission &&
-						     (client.Player.Mission as TaskDungeonMission).TaskRegion.Skin == reg.Skin) == false)
+						if (client.Player.Mission is not TaskDungeonMission taskDungeonMission || taskDungeonMission.TaskRegion.Skin != reg.Skin)
 						{
 							client.Out.SendMessage("This region has been disabled!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
 							if (client.Account.PrivLevel == 1)
 								return;
 						}
@@ -92,70 +98,51 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 			}
 
-			// Allow the region to either deny exit or handle the zonepoint in a custom way
+			// Allow the region to either deny exit or handle the zonepoint in a custom way.
 			if (client.Player.CurrentRegion.OnZonePoint(client.Player, zonePoint) == false)
-			{
 				return;
-			}
 
-			//check caps for battleground
 			Battleground bg = GameServer.KeepManager.GetBattleground(zonePoint.TargetRegion);
-			if (bg != null)
-			{
-				if (client.Player.Level < bg.MinLevel && client.Player.Level > bg.MaxLevel &&
-				    client.Player.RealmLevel >= bg.MaxRealmLevel)
-					return;
-			}
+
+			if (bg != null && client.Player.Level < bg.MinLevel && client.Player.Level > bg.MaxLevel && client.Player.RealmLevel >= bg.MaxRealmLevel)
+				return;
 
 			IJumpPointHandler customHandler = null;
-			if (string.IsNullOrEmpty(zonePoint.ClassType) == false)
-			{
-				customHandler = (IJumpPointHandler)m_customJumpPointHandlers[zonePoint.ClassType];
 
-				// check for db change to update cached handler
+			if (!string.IsNullOrEmpty(zonePoint.ClassType))
+			{
+				customHandler = (IJumpPointHandler) m_customJumpPointHandlers[zonePoint.ClassType];
+
+				// Check for db change to update cached handler.
 				if (customHandler != null && customHandler.GetType().FullName != zonePoint.ClassType)
-				{
 					customHandler = null;
-				}
 
 				if (customHandler == null)
 				{
-					//Dinberg - Instances need to use a special handler. This is because some instances will result
-					//in duplicated zonepoints, such as if Tir Na Nog were to be instanced for a quest.
-					string type = (client.Player.CurrentRegion.IsInstance)
-						? "DOL.GS.ServerRules.InstanceDoorJumpPoint"
-						: zonePoint.ClassType;
-					Type t = ScriptMgr.GetType(type);
+					// Instances need to use a special handler. This is because some instances will result in duplicated zonepoints, such as if Tir Na Nog were to be instanced for a quest.
+					string typeName = client.Player.CurrentRegion.IsInstance ? "DOL.GS.ServerRules.InstanceDoorJumpPoint" : zonePoint.ClassType;
+					Type type = ScriptMgr.GetType(typeName);
 
-					if (t == null)
-					{
-						Log.ErrorFormat("jump point {0}: class {1} not found!", zonePoint.Id, zonePoint.ClassType);
-					}
-					else if (!typeof(IJumpPointHandler).IsAssignableFrom(t))
-					{
-						Log.ErrorFormat("jump point {0}: class {1} must implement IJumpPointHandler interface!", zonePoint.Id,
-						                zonePoint.ClassType);
-					}
+					if (type == null)
+						Log.Error($"ZonePoint not found (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})");
+					else if (!typeof(IJumpPointHandler).IsAssignableFrom(type))
+						Log.Error($"ZonePoint must implement IJumpPointHandler interface (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})");
 					else
 					{
 						try
 						{
-							customHandler = (IJumpPointHandler)Activator.CreateInstance(t);
+							customHandler = (IJumpPointHandler) Activator.CreateInstance(type);
 						}
 						catch (Exception e)
 						{
 							customHandler = null;
-							Log.Error(
-								string.Format("jump point {0}: error creating a new instance of jump point handler {1}", zonePoint.Id,
-								              zonePoint.ClassType), e);
+							Log.Error($"Error when creating a new instance of jump point handler (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})", e);
 						}
 					}
 				}
 
 				if (customHandler != null)
-				{
 					m_customJumpPointHandlers[zonePoint.ClassType] = customHandler;
-				}
 			}
 
 			new RegionChangeRequestHandler(client.Player, zonePoint, customHandler).Start(1);
@@ -184,10 +171,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <param name="checker">The jump point checker instance</param>
 			public RegionChangeRequestHandler(GamePlayer actionSource, ZonePoint zonePoint, IJumpPointHandler checkHandler) : base(actionSource)
 			{
-				if (zonePoint == null)
-					throw new ArgumentNullException("zonePoint");
-
-				m_zonePoint = zonePoint;
+				m_zonePoint = zonePoint ?? throw new ArgumentNullException(nameof(zonePoint));
 				m_checkHandler = checkHandler;
 			}
 
@@ -197,19 +181,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 			protected override int OnTick(ECSGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
-
 				Region reg = WorldMgr.GetRegion(m_zonePoint.TargetRegion);
+
 				if (reg != null && reg.Expansion > (int)player.Client.ClientType)
 				{
-					player.Out.SendMessage("Destination region (" + reg.Description + ") is not supported by your client type.",
-					                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Destination region (" + reg.Description + ") is not supported by your client type.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return 0;
 				}
 
 				try
 				{
-
-					//check if the zonepoint has source locations set  Check prior to any zonepoint modification by handlers
+					// Check if the zonepoint has source locations set  Check prior to any zonepoint modification by handlers.
 					if (m_zonePoint.SourceRegion == 0)
 					{
 						m_zonePoint.SourceRegion = player.CurrentRegionID;
@@ -225,8 +207,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Error("Can't save updated ZonePoint with source info.", ex);
 				}
 
-			
-
 				if (m_checkHandler != null)
 				{
 					try
@@ -239,14 +219,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (Log.IsErrorEnabled)
 							Log.Error("Jump point handler (" + m_zonePoint.ClassType + ")", e);
 
-						player.Out.SendMessage("exception in jump point (" + m_zonePoint.Id + ") handler...", eChatType.CT_System,
-						                       eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("exception in jump point (" + m_zonePoint.Id + ") handler...", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return 0;
 					}
 				}
 
-				//move the player
-				player?.MoveTo(m_zonePoint.TargetRegion, m_zonePoint.TargetX, m_zonePoint.TargetY, m_zonePoint.TargetZ, m_zonePoint.TargetHeading);
+				player.MoveTo(m_zonePoint.TargetRegion, m_zonePoint.TargetX, m_zonePoint.TargetY, m_zonePoint.TargetZ, m_zonePoint.TargetHeading);
 				return 0;
 			}
 		}
