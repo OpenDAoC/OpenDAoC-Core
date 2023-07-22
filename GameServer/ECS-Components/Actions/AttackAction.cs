@@ -139,22 +139,38 @@ namespace DOL.GS
 
         protected virtual bool PrepareMeleeAttack()
         {
-            if (_attackData != null && _attackData.AttackResult is eAttackResult.Fumbled)
+            bool clearOldStyles = false;
+
+            if (_attackData != null)
             {
-                // Skip this attack if the last one fumbled.
-                _styleComponent.NextCombatStyle = null;
-                _styleComponent.NextCombatBackupStyle = null;
-                _attackData.AttackResult = eAttackResult.Missed;
-                _interval = _attackComponent.AttackSpeed(_weapon) * 2;
-                return false;
+                switch (_attackData.AttackResult)
+                {
+                    case eAttackResult.Fumbled:
+                    {
+                        // Skip this attack if the last one fumbled.
+                        _styleComponent.NextCombatStyle = null;
+                        _styleComponent.NextCombatBackupStyle = null;
+                        _attackData.AttackResult = eAttackResult.Missed;
+                        _interval = _attackComponent.AttackSpeed(_weapon) * 2;
+                        return false;
+                    }
+                    case eAttackResult.OutOfRange:
+                    case eAttackResult.TargetNotVisible:
+                    case eAttackResult.NotAllowed_ServerRules:
+                    case eAttackResult.TargetDead:
+                    {
+                        clearOldStyles = true;
+                        break;
+                    }
+                }
             }
 
-            if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
+            if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
                 _weapon = _leftWeapon;
 
             int mainHandAttackSpeed = _attackComponent.AttackSpeed(_weapon);
 
-            if (GameLoop.GameLoopTime > _styleComponent.NextCombatStyleTime + mainHandAttackSpeed)
+            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
@@ -178,7 +194,6 @@ namespace DOL.GS
                 _effectiveness *= 2;
 
             _interruptDuration = mainHandAttackSpeed;
-
             return true;
         }
 
