@@ -146,7 +146,6 @@ namespace DOL.GS
                 _styleComponent.NextCombatBackupStyle = null;
                 _attackData.AttackResult = eAttackResult.Missed;
                 _interval = _attackComponent.AttackSpeed(_weapon) * 2;
-                StartTime = _interval;
                 return false;
             }
 
@@ -167,7 +166,14 @@ namespace DOL.GS
                 _styleComponent.NextCombatBackupStyle = null;
             }
 
-            // Damage is doubled on sitting players, but only with melee weapons; arrows and magic does normal damage.
+            // Styles must be checked before the target.
+            if (_target == null)
+            {
+                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                return false;
+            }
+
+            // Damage is doubled on sitting players, but only with melee weapons; arrows and magic do normal damage.
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
