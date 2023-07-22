@@ -623,7 +623,7 @@ public class ConquestManager
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s
 
-        ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(ActiveObjective.Keep.X, ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, Zone.eGameObjectType.PLAYER, 10000, playerCount, true);
+        ActiveObjective.Keep.CurrentZone.GetObjectsInRadius(ActiveObjective.Keep.X, ActiveObjective.Keep.Y, ActiveObjective.Keep.Z, eGameObjectType.PLAYER, 10000, playerCount, true);
 
         temp.Add($"{GetStringFromRealm(ActiveObjective.Keep.OriginalRealm).ToUpper()} - {ActiveObjective.Keep.CurrentZone.Description}");
         temp.Add($"{ActiveObjective.Keep.Name} | Owner: {GetStringFromRealm(ActiveObjective.Keep.Realm)}");

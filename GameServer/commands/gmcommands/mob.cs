@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1205,7 +1206,7 @@ namespace DOL.GS.Commands
 			{
 				targetMob.Health = targetMob.MaxHealth;
 				targetMob.SaveIntoDatabase();
-				client.Out.SendObjectUpdate(targetMob);
+				PlayerService.UpdateObjectForPlayer(client.Player, targetMob);
 				client.Out.SendMessage("Mob '" + targetMob.Name + "' healed (" + targetMob.Health + "/" + targetMob.MaxHealth + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			catch (Exception e)

@@ -71,7 +71,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					rider.Heading = steed.Heading;
 					rider.MovementStartTick = GameLoop.GameLoopTime;
 					rider.Out.SendPlayerJump(false);
-					rider.Out.SendObjectUpdate(steed);
+					PlayerService.UpdateObjectForPlayer(rider, steed);
 					return;
 				}
 			}
@@ -761,16 +761,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				if (player == null)
+				if (player == null || player == client.Player)
 					continue;
-				//No position updates for ourselves
-				if (player == client.Player)
-				{
-					// Update Player Cache (Client sending Packet is admitting he's already having it)
-					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
-					continue;
-				}
-				//no position updates in different houses
+
 				if ((client.Player.InHouse || player.InHouse) && player.CurrentHouse != client.Player.CurrentHouse)
 					continue;
 
@@ -786,9 +779,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 				{
-					// Update Player Cache
-					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
-
 					//forward the position packet like normal!
 					if (player.Client.Version >= GameClient.eClientVersion.Version1124)
 						player.Out.SendUDP(outpak1124);
@@ -1330,24 +1320,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				if (player == null)
+				if (player == null || player == client.Player)
 					continue;
-				//No position updates for ourselves
-				if (player == client.Player)
-				{
-					// Update Player Cache (Client sending Packet is admitting he's already having it)
-					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
-					continue;
-				}
-				//no position updates in different houses
+
 				if ((client.Player.InHouse || player.InHouse) && player.CurrentHouse != client.Player.CurrentHouse)
 					continue;
 
 				if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 				{
-					// Update Player Cache
-					player.Client.GameObjectUpdateArray[client.Player] = GameLoop.GetCurrentTime();
-
 					if (player.Client.Version >= GameClient.eClientVersion.Version1127)
 						player.Out.SendUDP(outpak1127);
 					else if (player.Client.Version >= GameClient.eClientVersion.Version1124)

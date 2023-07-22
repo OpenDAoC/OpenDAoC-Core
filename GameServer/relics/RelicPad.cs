@@ -16,9 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DOL.GS.Relics
 {
@@ -32,6 +29,8 @@ namespace DOL.GS.Relics
 		/// The pillar this pad triggers.
 		/// </summary>
 		private RelicPillar m_relicPillar;
+
+		public override eGameObjectType GameObjectType => eGameObjectType.KEEP_COMPONENT;
 
 		public RelicPad(RelicPillar relicPillar)
 		{

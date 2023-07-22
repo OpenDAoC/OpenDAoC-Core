@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
@@ -46,6 +46,8 @@ namespace DOL.GS
 			get { return m_respawnInterval; }
 			set	{ m_respawnInterval = value; }
 		}
+
+		public override eGameObjectType GameObjectType => eGameObjectType.ITEM;
 
 		/// <summary>
 		/// Constructs a new GameStaticItem

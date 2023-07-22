@@ -52,7 +52,7 @@ namespace DOL.GS
                         _state = value;
 
                         foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.SendDoorUpdate(this);
+                            PlayerService.UpdateObjectForPlayer(player, this);
                     }
                 }
             }

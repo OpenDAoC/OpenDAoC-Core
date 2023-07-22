@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ECS.Debug;
 using log4net;
-using static DOL.GS.Zone;
 
 namespace DOL.GS
 {
@@ -30,7 +29,6 @@ namespace DOL.GS
                 if (objectChangingSubZone == null)
                     return;
 
-                eGameObjectType objectType = objectChangingSubZone.ObjectType;
                 LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;
                 GameObject gameObject = node.Item;
                 SubZoneObject subZoneObject = gameObject.SubZoneObject;
@@ -42,7 +40,7 @@ namespace DOL.GS
                 if (currentZone != null)
                 {
                     // Abord if we can't remove this node (due to a lock timeout), but keep the object in the entity manager.
-                    if (!subZoneObject.CurrentSubZone.RemoveObjectNode(node, objectType))
+                    if (!subZoneObject.CurrentSubZone.RemoveObjectNode(node))
                     {
                         Interlocked.Increment(ref _failedRemove);
                         return;
@@ -60,7 +58,7 @@ namespace DOL.GS
                     SubZone destinationSubZone = objectChangingSubZone.DestinationSubZone;
 
                     // Abord if we can't add this node (due to a lock timeout), but keep the object in the entity manager.
-                    if (!destinationSubZone.AddObjectNode(node, objectType))
+                    if (!destinationSubZone.AddObjectNode(node))
                     {
                         Interlocked.Increment(ref _failedAdd);
                         return;

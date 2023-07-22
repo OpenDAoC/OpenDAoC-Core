@@ -428,15 +428,10 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[playerToCreate] = GameLoop.GetCurrentTime();
-
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
 
 			if (playerToCreate.GuildBanner != null)
-			{
 				SendRvRGuildBanner(playerToCreate, true);
-			}
 		}
 
 		/// <summary>

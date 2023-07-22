@@ -298,7 +298,7 @@ namespace DOL.GS.Keeps
 					m_oldHealthPercent = HealthPercent;
 					Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 					{
-						player?.Client.Out.SendObjectUpdate(this);
+						PlayerService.UpdateObjectForPlayer(player, this);
 					});
 				}
 			}
@@ -567,7 +567,7 @@ namespace DOL.GS.Keeps
 				}
 				else if (State == eDoorState.Open)
 				{
-					player.SendDoorUpdate(this, true);
+					PlayerService.UpdateObjectForPlayer(player, this);
 				}
 			}
 
@@ -831,7 +831,7 @@ namespace DOL.GS.Keeps
 		{
 			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
 			{
-				player.SendDoorUpdate(this);
+				PlayerService.UpdateObjectForPlayer(player, this);
 			});
 		}
 

@@ -1,9 +1,10 @@
-﻿using DOL.Database;
-using DOL.GS.PacketHandler;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using DOL.Database;
+using DOL.GS.PacketHandler;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     public class DPSDummy : GameTrainingDummy {
         Int32 Damage = 0;
         DateTime StartTime;
@@ -193,7 +194,7 @@ namespace DOL.GS {
 
             this.ItemBonus[eProperty.ArmorAbsorption] += GetAbsorb(armorType);
             BroadcastLivingEquipmentUpdate();
-            BroadcastUpdate();
+            PlayerService.UpdateObjectForPlayers(this);
         }
 
         private InventoryItem GenerateArmorStats(InventoryItem item)

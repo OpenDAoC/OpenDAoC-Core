@@ -90,6 +90,8 @@ namespace DOL.GS
 			}
 		}
 
+		public abstract eGameObjectType GameObjectType { get; }
+
 		#endregion
 
 		#region Position
@@ -1278,27 +1280,6 @@ namespace DOL.GS
             set { }
         }
 
-		#region Broadcast Utils
-
-		/// <summary>
-		/// Broadcasts the Object Update to all players around
-		/// </summary>
-		public virtual void BroadcastUpdate()
-		{
-			if (ObjectState != eObjectState.Active)
-				return;
-
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				if (player == null)
-					continue;
-				
-				player.Out.SendObjectUpdate(this);
-			}
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Constructs a new empty GameObject
 		/// </summary>
@@ -1327,5 +1308,7 @@ namespace DOL.GS
 			else
 				return m_boat_ownerid;
 		}
+
+		public virtual void OnUpdateByPlayerService() { }
 	}
 }

@@ -707,9 +707,6 @@ namespace DOL.GS.PacketHandler
 				 */
 			}
 
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[playerToCreate] = GameLoop.GetCurrentTime();
-
 			//if (GameServer.ServerRules.GetColorHandling(m_gameClient) == 1) // PvP
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild);
 			//used for nearest friendly/enemy object buttons and name colors on PvP server
@@ -851,13 +848,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte) targetZone);
 				SendUDP(pak);
 			}
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
-
-			if (obj is GameNPC)
-			{
-				(obj as GameNPC).NPCUpdatedCallback();
-			}
 		}
 
 		public virtual void SendPlayerQuit(bool totalOut)
@@ -875,10 +865,6 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendObjectRemove(GameObject obj)
 		{
-			// Remove from cache
-			if (m_gameClient.GameObjectUpdateArray.ContainsKey(obj))
-				m_gameClient.GameObjectUpdateArray.TryRemove(obj, out _);
-
 			int oType = 0;
 			if (obj is GamePlayer)
 				oType = 2;
@@ -957,9 +943,6 @@ namespace DOL.GS.PacketHandler
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-
-			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendDebugMode(bool on)
@@ -1092,9 +1075,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[npc] = 0;
 		}
 
 		public virtual void SendLivingEquipmentUpdate(GameLiving living)
@@ -2150,9 +2130,6 @@ namespace DOL.GS.PacketHandler
 
 				SendUDP(pak);
 			}
-
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[player] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendUpdatePlayer()
@@ -3004,10 +2981,6 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendObjectDelete(GameObject obj)
 		{
-			// Remove from Cache
-			if (m_gameClient.GameObjectUpdateArray.ContainsKey(obj))
-				m_gameClient.GameObjectUpdateArray.TryRemove(obj, out _);
-
 			SendObjectDelete((ushort)obj.ObjectID);
 		}
 
@@ -3214,17 +3187,10 @@ namespace DOL.GS.PacketHandler
 
 				SendTCP(pak);
 			}
-
-			// Update cache
-			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendRemoveHouse(House house)
 		{
-			// Remove from cache
-			if (m_gameClient.HouseUpdateArray.ContainsKey(house))
-				m_gameClient.HouseUpdateArray.TryRemove(house, out _);
-
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
@@ -3274,9 +3240,6 @@ namespace DOL.GS.PacketHandler
 
 				SendTCP(pak);
 			}
-
-			// Update cache
-			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendGarden(House house, int i)
@@ -3293,9 +3256,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte) item.Rotation);
 				SendTCP(pak);
 			}
-
-			// Update cache
-			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendHouseOccupied(House house, bool flagHouseOccuped)
@@ -3308,9 +3268,6 @@ namespace DOL.GS.PacketHandler
 
 				SendTCP(pak);
 			}
-
-			// Update cache
-			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendEnterHouse(House house)
@@ -3513,9 +3470,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0); // trailing ?
 				SendTCP(pak);
 			}
-
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		public virtual void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)

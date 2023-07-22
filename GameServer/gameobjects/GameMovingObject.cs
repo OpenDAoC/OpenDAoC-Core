@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 
 namespace DOL.GS
 {
@@ -51,7 +50,7 @@ namespace DOL.GS
 			{
 				base.Model = value;
 				if(ObjectState==eObjectState.Active)
-					BroadcastUpdate();
+					PlayerService.UpdateObjectForPlayers(this);
 			}
 		}
 		public override bool IsWorthReward

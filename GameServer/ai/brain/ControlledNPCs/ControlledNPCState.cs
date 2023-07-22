@@ -52,8 +52,6 @@ public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
             // See if the pet is too far away, if so release it!
             if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
                 playerOwner.CommandNpcRelease();
-
-            playerOwner.Out.SendObjectUpdate(brain.Body);
         }
 
         // Handle state changes.
@@ -98,8 +96,6 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             // See if the pet is too far away, if so release it!
             if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
                 playerOwner.CommandNpcRelease();
-
-            playerOwner.Out.SendObjectUpdate(brain.Body);
         }
 
         if (brain.AggressionState == eAggressionState.Passive)
@@ -168,8 +164,6 @@ public class ControlledNPCState_PASSIVE : StandardMobState
             // See if the pet is too far away, if so release it!
             if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
                 playerOwner.CommandNpcRelease();
-
-            playerOwner.Out.SendObjectUpdate(brain.Body);
         }
 
         // Handle state changes.

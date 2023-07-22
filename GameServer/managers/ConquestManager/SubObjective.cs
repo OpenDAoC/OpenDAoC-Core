@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DOL.Database;
-using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
@@ -88,7 +85,7 @@ public class SubObjective
         OwningRealm = CapturingRealm;
         FlagObject.Realm = CapturingRealm;
         FlagObject.Model = GetModelIDForRealm(CapturingRealm);
-        FlagObject.BroadcastUpdate();
+        PlayerService.UpdateObjectForPlayers(FlagObject);
         CaptureTimer = null;
         BroadcastCapture();
         var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true).Where(player => player.Realm == CapturingRealm).ToList();
@@ -120,7 +117,7 @@ public class SubObjective
         }
         
         if(secondsLeft%5 == 0)
-            FlagObject.BroadcastUpdate();
+            PlayerService.UpdateObjectForPlayers(FlagObject);
     }
     
     private void BroadcastCapture()

@@ -10,16 +10,13 @@
 //plus i added changing of speed and color
 //what could be done is trimming the prefixes from the name instead of looking at the db, but i dont know how to do that :)
 
-using System;
-using DOL;
-using DOL.GS;
-using DOL.Events;
-using DOL.Database;
 using System.Collections;
-using DOL.GS.PacketHandler;
+using DOL.Database;
 using DOL.Database.UniqueID;
+using DOL.GS.PacketHandler;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     [NPCGuildScript("Effect Master")]
     public class EffectNPC : GameNPC {
         private string EFFECTNPC_ITEM_WEAK = "DOL.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
@@ -1189,7 +1186,7 @@ namespace DOL.GS {
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;
             display.BroadcastLivingEquipmentUpdate();
-            player.Out.SendObjectUpdate(display);
+            PlayerService.UpdateObjectForPlayer(player, display);
 
             //Uncomment this if you want animations
             // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
@@ -1224,4 +1221,3 @@ namespace DOL.GS {
         }
     }
 }
-

@@ -110,6 +110,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         public override bool IsAlive => fakeIsAlive;
         public override eObjectState ObjectState => fakeObjectState;
+        public override eGameObjectType GameObjectType => throw new System.NotImplementedException();
     }
 
     public class FakeControlledBrain : ABrain, IControlledBrain

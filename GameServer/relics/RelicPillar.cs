@@ -76,9 +76,7 @@ namespace DOL.GS.Relics
 						m_pillarState = value;
 
 						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						{
-							player.SendDoorUpdate(this);
-						}
+							PlayerService.UpdateObjectForPlayer(player, this);
 					}
 				}
 			}

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -58,6 +59,7 @@ namespace DOL.GS
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
         private readonly object m_LockObject = new object();
         public int Regen { get; set; }
         public int Endchant { get; set; }
@@ -376,35 +378,9 @@ namespace DOL.GS
             set { m_wasmovedbycorpsesummoner = value; }
         }
 
-        #region DoorCache
-        protected Dictionary<int, eDoorState> m_doorUpdateList = null;
-
-        protected ushort m_doorUpdateRegionID;
-
-        /// <summary>
-        /// Send a door state to this client
-        /// </summary>
-        /// <param name="door">the door</param>
-        /// <param name="forceUpdate">force a send of the door state regardless of status</param>
-        public void SendDoorUpdate(GameDoorBase door, bool forceUpdate = false)
-        {
-            Out.SendObjectCreate(door);
-
-            if (m_doorUpdateList == null || m_doorUpdateRegionID != CurrentRegionID)
-            {
-                m_doorUpdateList = new Dictionary<int,eDoorState>();
-                m_doorUpdateRegionID = CurrentRegionID;
-                m_doorUpdateList.Add(door.ObjectID, door.State);
-                Out.SendDoorState(CurrentRegion, door);
-            }
-            else if (forceUpdate || m_doorUpdateList.ContainsKey(door.ObjectID) == false || m_doorUpdateList[door.ObjectID] != door.State)
-            {
-                Out.SendDoorState(CurrentRegion, door);
-                m_doorUpdateList[door.ObjectID] = door.State;
-            }
-
-            Out.SendObjectUpdate(door);
-        }
+        #region Object Caches
+        public ConcurrentDictionary<GameObject, long>[] ObjectUpdateCaches { get; private set; } = new ConcurrentDictionary<GameObject, long>[Enum.GetValues(typeof(eGameObjectType)).Length];
+        public ConcurrentDictionary<House, long> HouseUpdateCache { get; private set; } = new();
         #endregion
 
         #region Database Accessor
@@ -15223,6 +15199,10 @@ namespace DOL.GS
 
             LoadFromDatabase(dbChar);
             CreateStatistics();
+
+            for (int i = 0; i < ObjectUpdateCaches.Length; i++)
+                ObjectUpdateCaches[i] = new();
+
             EntityManager.Add(EntityManager.EntityType.Player, this);
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>

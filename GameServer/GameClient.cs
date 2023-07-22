@@ -27,7 +27,6 @@ using System.Text;
 using System.Threading;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Network;
@@ -248,16 +247,6 @@ namespace DOL.GS
 		/// Custom Account Params
 		/// </summary>
 		protected Dictionary<string, List<string>> m_customParams = new Dictionary<string, List<string>>();
-
-		/// <summary>
-		/// Holds the Player Collection of Updated Object with last update time.
-		/// </summary>
-		protected ConcurrentDictionary<GameObject, long> m_GameObjectUpdateArray = new();
-
-		/// <summary>
-		/// Holds the Player Collection of Updated House with last update time.
-		/// </summary>
-		protected ConcurrentDictionary<House, long> m_HouseUpdateArray = new();
 
 		// Trainer window Cache, (Object Type, Object ID) => Skill
 		public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache = null;
@@ -496,22 +485,6 @@ namespace DOL.GS
 				Account.CustomParams = value.SelectMany(kv => kv.Value.Select(val => new AccountXCustomParam(Account.Name, kv.Key, val))).ToArray();
 				m_customParams = value;
 			}
-		}
-		
-		/// <summary>
-		/// Get the Game Object Update Array (Read/Write)
-		/// </summary>
-		public ConcurrentDictionary<GameObject, long> GameObjectUpdateArray
-		{
-			get { return m_GameObjectUpdateArray; }
-		}
-		
-		/// <summary>
-		/// Get the House Update Array (Read/Write)
-		/// </summary>
-		public ConcurrentDictionary<House, long> HouseUpdateArray
-		{
-			get { return m_HouseUpdateArray; }
 		}
 
 		/// <summary>

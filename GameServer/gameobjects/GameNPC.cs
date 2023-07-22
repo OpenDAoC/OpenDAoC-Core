@@ -53,6 +53,7 @@ namespace DOL.GS
 
 		private int m_databaseLevel;
 
+		public override eGameObjectType GameObjectType => eGameObjectType.NPC;
 		public bool NeedsBroadcastUpdate { get; set; }
 
 		#region Formations/Spacing
@@ -2006,18 +2007,12 @@ namespace DOL.GS
 
 		#region Add/Remove/Create/Remove/Update
 
-		/// <summary>
-		/// callback that npc was updated to the world
-		/// so it must be visible to at least one player
-		/// </summary>
-		public void NPCUpdatedCallback()
+		public override void OnUpdateByPlayerService()
 		{
 			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
 
-			lock (BrainSync)
-			{
-				Brain?.Start();
-			}
+			if (Brain != null && !Brain.EntityManagerId.IsSet)
+				Brain.Start();
 		}
 
 		/// <summary>
@@ -2055,10 +2050,7 @@ namespace DOL.GS
 			m_spawnPoint.Z = Z;
 			m_spawnHeading = Heading;
 
-			lock (BrainSync)
-			{
-				Brain?.Start();
-			}
+			Brain?.Start();
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
@@ -2134,11 +2126,7 @@ namespace DOL.GS
 			if (!base.RemoveFromWorld())
 				return false;
 
-			lock (BrainSync)
-			{
-				Brain.Stop();
-			}
-
+			Brain.Stop();
 			EffectList.CancelAll();
 
 			if (ShowTeleporterIndicator && m_teleporterIndicator != null)
@@ -2239,11 +2227,7 @@ namespace DOL.GS
 				}
 			}
 
-			lock (BrainSync)
-			{
-				Brain.Stop();
-			}
-
+			Brain.Stop();
 			StopFollowing();
 			TempProperties.removeProperty(CHARMED_TICK_PROP);
 			base.Delete();
@@ -2262,19 +2246,6 @@ namespace DOL.GS
 		/// Holds the all added to this npc brains
 		/// </summary>
 		private ArrayList m_brains = new ArrayList(1);
-
-		/// <summary>
-		/// The sync object for brain changes
-		/// </summary>
-		private readonly object m_brainSync = new object();
-
-		/// <summary>
-		/// Gets the brain sync object
-		/// </summary>
-		public object BrainSync
-		{
-			get { return m_brainSync; }
-		}
 
 		/// <summary>
 		/// Gets the current brain of this NPC
@@ -2302,19 +2273,16 @@ namespace DOL.GS
 			if (brain.IsActive)
 				throw new ArgumentException("The new brain is already active.", "brain");
 
-			lock (BrainSync)
-			{
-				ABrain oldBrain = m_ownBrain;
-				bool activate = oldBrain.IsActive;
-				if (activate)
-					oldBrain.Stop();
-				m_ownBrain = brain;
-				m_ownBrain.Body = this;
-				if (activate)
-					m_ownBrain.Start();
+			ABrain oldBrain = m_ownBrain;
+			bool activate = oldBrain.IsActive;
+			if (activate)
+				oldBrain.Stop();
+			m_ownBrain = brain;
+			m_ownBrain.Body = this;
+			if (activate)
+				m_ownBrain.Start();
 
-				return oldBrain;
-			}
+			return oldBrain;
 		}
 
 		/// <summary>
@@ -2328,15 +2296,12 @@ namespace DOL.GS
 			if (newBrain.IsActive)
 				throw new ArgumentException("The new brain is already active.", "newBrain");
 
-			lock (BrainSync)
-			{
-				Brain.Stop();
-				ArrayList brains = new ArrayList(m_brains);
-				brains.Add(newBrain);
-				m_brains = brains; // make new array list to avoid locks in the Brain property
-				newBrain.Body = this;
-				newBrain.Start();
-			}
+			Brain.Stop();
+			ArrayList brains = new ArrayList(m_brains);
+			brains.Add(newBrain);
+			m_brains = brains; // make new array list to avoid locks in the Brain property
+			newBrain.Body = this;
+			newBrain.Start();
 		}
 
 		/// <summary>
@@ -2352,25 +2317,22 @@ namespace DOL.GS
 				return false;
 			}
 
-			lock (BrainSync)
+			ArrayList brains = new ArrayList(m_brains);
+			int index = brains.IndexOf(removeBrain);
+			if (index < 0)
 			{
-				ArrayList brains = new ArrayList(m_brains);
-				int index = brains.IndexOf(removeBrain);
-				if (index < 0)
-				{
-					//Console.WriteLine("Brain index < 0");
-					return false;
-				}
-				bool active = brains[index] == Brain;
-				if (active)
-					removeBrain.Stop();
-				brains.RemoveAt(index);
-				m_brains = brains;
-				if (active)
-					Brain.Start();
-
-				return true;
+				//Console.WriteLine("Brain index < 0");
+				return false;
 			}
+			bool active = brains[index] == Brain;
+			if (active)
+				removeBrain.Stop();
+			brains.RemoveAt(index);
+			m_brains = brains;
+			if (active)
+				Brain.Start();
+
+			return true;
 		}
 		#endregion
 
@@ -4641,7 +4603,6 @@ namespace DOL.GS
 			m_model = 408;
 			MaxSpeedBase = 200;
 			GuildName = "";
-			m_brainSync = m_brains.SyncRoot;
 			m_size = 50;
 			m_flags = 0;
 			m_maxdistance = 0;

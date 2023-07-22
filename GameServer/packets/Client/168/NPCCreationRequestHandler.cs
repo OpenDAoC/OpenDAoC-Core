@@ -44,14 +44,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (npc != null)
 			{
-				if (!client.GameObjectUpdateArray.TryGetValue(npc, out long updatetime))
-					updatetime = 0;
-				
 				client.Out.SendNPCCreate(npc);
-
-				// override update from npc create as this is a client request !
-				if (updatetime > 0)
-					client.GameObjectUpdateArray[npc] = updatetime;
 				
 				if (npc.Inventory != null)
 					client.Out.SendLivingEquipmentUpdate(npc);

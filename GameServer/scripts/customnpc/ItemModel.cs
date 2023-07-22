@@ -1,18 +1,10 @@
-﻿//edited by loki for current SVN 2018
-
-
+﻿using System;
+using System.Text;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DOL.GS.Spells;
-using Microsoft.CodeAnalysis;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     public class ItemModel : GameNPC {
         public string TempProperty = "ItemModel";
         public string DisplayedItem = "ItemDisplay";
@@ -6870,14 +6862,7 @@ namespace DOL.GS {
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;
             display.BroadcastLivingEquipmentUpdate();
-            player.Out.SendObjectUpdate(display);
-            
-            //Uncomment this if you want animations
-            // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));
-            // animationThread.IsBackground = true;
-            // animationThread.Start();
-            
-
+            PlayerService.UpdateObjectForPlayer(player, display);
         }
 
         private void LoopAnimation(GamePlayer player, InventoryItem item, GameNPC display,AttackData ad)

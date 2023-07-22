@@ -328,22 +328,8 @@ namespace DOL.GS
             if (!_initialized)
                 InitializeZone();
 
-            eGameObjectType objectType;
-
-            // Only 'GamePlayer', 'GameNPC', 'GameStaticItem', and 'GameDoorBase' objects are handled.
-            if (gameObject is GamePlayer)
-                objectType = eGameObjectType.PLAYER;
-            else if (gameObject is GameNPC)
-                objectType = eGameObjectType.NPC;
-            else if (gameObject is GameStaticItem)
-                objectType = eGameObjectType.ITEM;
-            else if (gameObject is GameDoorBase)
-                objectType = eGameObjectType.DOOR;
-            else
-                return false;
-
             LightConcurrentLinkedList<GameObject>.Node node = new(gameObject);
-            SubZoneObject subZoneObject = new(node, objectType, null);
+            SubZoneObject subZoneObject = new(node, null);
             gameObject.SubZoneObject = subZoneObject;
             SubZone subZone = GetSubZone(GetSubZoneIndex(gameObject.X, gameObject.Y));
 
@@ -353,7 +339,7 @@ namespace DOL.GS
                 return false;
             }
 
-            ObjectChangingSubZone objectChangingSubZone = new(node, objectType, this, subZone);
+            ObjectChangingSubZone objectChangingSubZone = new(node, this, subZone);
             EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
             return true;
         }
@@ -465,13 +451,13 @@ namespace DOL.GS
             if (subZoneIndex != -1 && _subZones[subZoneIndex] == subZone)
                 return;
 
-            using LightConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(subZoneObject.ObjectType).GetReader();
+            using LightConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
             reader.MoveTo(node);
-            Relocate(node, subZoneObject.ObjectType, -1);
+            Relocate(node, -1);
             return;
         }
 
-        private void Relocate(LightConcurrentLinkedList<GameObject>.Node node, eGameObjectType objectType, int newSubZoneIndex)
+        private void Relocate(LightConcurrentLinkedList<GameObject>.Node node, int newSubZoneIndex)
         {
             GameObject gameObject = node.Item;
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
@@ -488,16 +474,16 @@ namespace DOL.GS
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
 
                     if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, newZone, newSubZone));
+                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, newZone, newSubZone));
                 }
                 else if (objectSubZoneIndex != newSubZoneIndex)
                 {
                     if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, this, _subZones[objectSubZoneIndex]));
+                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, this, _subZones[objectSubZoneIndex]));
                 }
             }
             else if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, objectType, null, null));;
+                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));;
         }
 
         public void OnObjectAddedToZone()
@@ -731,13 +717,5 @@ namespace DOL.GS
         }
 
         #endregion
-
-        public enum eGameObjectType : byte
-        {
-            ITEM = 0,
-            NPC = 1,
-            PLAYER = 2,
-            DOOR = 3,
-        }
     }
 }

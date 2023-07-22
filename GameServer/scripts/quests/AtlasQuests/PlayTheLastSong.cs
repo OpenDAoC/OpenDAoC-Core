@@ -15,17 +15,12 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
-using DOL.GS.Quests.Actions;
-using DOL.GS.Quests.Triggers;
 using log4net;
 
 namespace DOL.GS.Quests.Midgard
@@ -473,7 +468,7 @@ namespace DOL.GS.Quests.Midgard
 			CastResistance();
 			IsSinging = false;
 			quest.FinishQuest();
-			player.Out.SendObjectUpdate(Freeya);
+			PlayerService.UpdateObjectForPlayer(player, Freeya);
 
 			return 0;
 		}

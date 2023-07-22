@@ -72,43 +72,38 @@ namespace DOL.GS
                 ControlledNpcBrain oldBrain = (ControlledNpcBrain) casterPlayer.ControlledBrain;
                 casterPlayer.SetControlledBrain(null);
 
-                lock (charmMob.BrainSync)
+                var immunityEffects = charmMob.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
+
+                for (int i = 0; i < immunityEffects.Length; i++)
+                    EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
+
+                charmMob.StopAttack();
+                charmMob.StopCurrentSpellcast();
+                charmMob.RemoveBrain(oldBrain);
+                StandardMobBrain newBrain = new();
+                charmMob.AddBrain(newBrain);
+                charmSpellHandler.m_isBrainSet = false;
+
+                if (newBrain is IOldAggressiveBrain)
                 {
-                    var immunityEffects = charmMob.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
+                    newBrain.ClearAggroList();
 
-                    for (int i = 0; i < immunityEffects.Length; i++)
-                        EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
-
-                    charmMob.StopAttack();
-                    charmMob.StopCurrentSpellcast();
-                    charmMob.RemoveBrain(oldBrain);
-
-                    StandardMobBrain newBrain = new();
-                    charmMob.AddBrain(newBrain);
-
-                    charmSpellHandler.m_isBrainSet = false;
-
-                    if (newBrain is IOldAggressiveBrain)
+                    if (SpellHandler.Spell.Pulse != 0 &&
+                        SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active &&
+                        SpellHandler.Caster.IsAlive &&
+                        !SpellHandler.Caster.IsStealthed)
                     {
-                        newBrain.ClearAggroList();
-
-                        if (SpellHandler.Spell.Pulse != 0 &&
-                            SpellHandler.Caster.ObjectState == GameObject.eObjectState.Active &&
-                            SpellHandler.Caster.IsAlive &&
-                            !SpellHandler.Caster.IsStealthed)
-                        {
-                            newBrain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-                            newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
-                            charmMob.StartAttack(SpellHandler.Caster);
-                            charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                        }
-                        else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
-                            charmMob.ReturnToSpawnPoint();
-                        else
-                        {
-                            newBrain.Stop();
-                            charmMob.Die(null);
-                        }
+                        newBrain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+                        newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
+                        charmMob.StartAttack(SpellHandler.Caster);
+                        charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    }
+                    else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
+                        charmMob.ReturnToSpawnPoint();
+                    else
+                    {
+                        newBrain.Stop();
+                        charmMob.Die(null);
                     }
                 }
 

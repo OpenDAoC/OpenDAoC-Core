@@ -138,9 +138,6 @@ namespace DOL.GS.PacketHandler
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-
-			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		public override void SendNPCCreate(GameNPC npc)
@@ -269,9 +266,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-
-			// Update Cache
-			m_gameClient.GameObjectUpdateArray[npc] = 0;
 		}
 
 		public override void SendFindGroupWindowUpdate(GamePlayer[] list)

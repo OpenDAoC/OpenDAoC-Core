@@ -1440,7 +1440,7 @@ namespace DOL.GS
 
         #region Get in radius
 
-        protected HashSet<T> GetInRadius<T>(Point3D point, Zone.eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
+        public HashSet<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
         {
             // Check if we are around borders of a zone.
             Zone startingZone = GetZone(point.X, point.Y);
@@ -1510,22 +1510,22 @@ namespace DOL.GS
 
         public HashSet<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameStaticItem>(point, Zone.eGameObjectType.ITEM, radius, ignoreZ);
+            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius, ignoreZ);
         }
 
         public HashSet<GameNPC> GetNPCsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameNPC>(point, Zone.eGameObjectType.NPC, radius, ignoreZ);
+            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius, ignoreZ);
         }
 
         public HashSet<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GamePlayer>(point, Zone.eGameObjectType.PLAYER, radius, ignoreZ);
+            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius, ignoreZ);
         }
 
         public HashSet<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
-            return GetInRadius<GameDoorBase>(point, Zone.eGameObjectType.DOOR, radius, ignoreZ);
+            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius, ignoreZ);
         }
 
         #endregion

@@ -161,9 +161,6 @@ namespace DOL.GS.PacketHandler
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
 			}
-
-			// Update Object Cache
-			m_gameClient.GameObjectUpdateArray[obj] = GameLoop.GetCurrentTime();
 		}
 
 		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
@@ -386,9 +383,6 @@ namespace DOL.GS.PacketHandler
 
 				SendTCP(pak);
 			}
-
-			// Update cache
-			m_gameClient.HouseUpdateArray[house] = GameLoop.GetCurrentTime();
 		}
 
 		public override void SendEnterHouse(House house)

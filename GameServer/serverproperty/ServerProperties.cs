@@ -711,10 +711,10 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "world_day_increment", "Day Increment (0 to 512, default is 24).  Larger increments make shorter days.", (uint)24)]
 		public static uint WORLD_DAY_INCREMENT;
 
-		[ServerProperty("world", "world_npc_update_interval", "How often (milliseconds) will npc's broadcast updates to the clients. 0 will disable this update.", (uint)8000)]
+		[ServerProperty("world", "world_npc_update_interval", "How often (milliseconds) will npc's broadcast updates to the clients.", (uint)5000)]
 		public static uint WORLD_NPC_UPDATE_INTERVAL;
 
-		[ServerProperty("world", "world_object_update_interval", "How often (milliseconds) will objects (static, housing, doors, broadcast updates to the clients. 0 will disable this update.", (uint)30000)]
+		[ServerProperty("world", "world_object_update_interval", "How often (milliseconds) will objects (static, housing, doors) broadcast updates to the clients.", (uint)30000)]
 		public static uint WORLD_OBJECT_UPDATE_INTERVAL;
 
 		[ServerProperty("world", "world_player_update_interval", "How often (milliseconds) will players be checked for updates.", (uint)300)]

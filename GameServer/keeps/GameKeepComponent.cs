@@ -78,6 +78,8 @@ namespace DOL.GS.Keeps
 
 		public AbstractGameKeep Keep { get; set; }
 
+		public override eGameObjectType GameObjectType => eGameObjectType.KEEP_COMPONENT;
+
 		public int ID { get; set; }
 
 		public int Height => Keep.Height;
@@ -475,8 +477,8 @@ namespace DOL.GS.Keeps
 					m_oldHealthPercent = HealthPercent;
 					foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
 					{
-						client.Out.SendObjectUpdate(this);
-						client.Out.SendKeepComponentDetailUpdate(this); // I knwo this works, not sure if ObjectUpdate is needed - Tolakram
+						PlayerService.UpdateObjectForPlayer(client.Player, this);
+						client.Out.SendKeepComponentDetailUpdate(this); // I knoiw this works, not sure if ObjectUpdate is needed - Tolakram
 					}
 				}
 			}

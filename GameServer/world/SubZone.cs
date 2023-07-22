@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using static DOL.GS.Zone;
 
 namespace DOL.GS
 {
@@ -17,17 +16,17 @@ namespace DOL.GS
             ParentZone = parentZone;
 
             for (int i = 0; i < _objects.Length; i++)
-                _objects[i] = new LightConcurrentLinkedList<GameObject>();
+                _objects[i] = new();
         }
 
-        public bool AddObjectNode(LightConcurrentLinkedList<GameObject>.Node node, eGameObjectType objectType)
+        public bool AddObjectNode(LightConcurrentLinkedList<GameObject>.Node node)
         {
-            return _objects[(byte) objectType].AddLast(node);
+            return _objects[(byte) node.Item.GameObjectType].AddLast(node);
         }
 
-        public bool RemoveObjectNode(LightConcurrentLinkedList<GameObject>.Node node, eGameObjectType objectType)
+        public bool RemoveObjectNode(LightConcurrentLinkedList<GameObject>.Node node)
         {
-            return _objects[(byte) objectType].Remove(node);
+            return _objects[(byte) node.Item.GameObjectType].Remove(node);
         }
 
         public LightConcurrentLinkedList<GameObject> GetObjects(eGameObjectType objectType)
@@ -45,13 +44,11 @@ namespace DOL.GS
     public class SubZoneObject
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
-        public eGameObjectType ObjectType { get; private set; }
         public SubZone CurrentSubZone { get; set; }
         private int _isSubZoneChangeBeingHandled; // Used to prevent multiple reader threads from adding it to the 'EntityManager' more than once.
 
-        public SubZoneObject(LightConcurrentLinkedList<GameObject>.Node node, eGameObjectType objectType, SubZone currentSubZone)
+        public SubZoneObject(LightConcurrentLinkedList<GameObject>.Node node, SubZone currentSubZone)
         {
-            ObjectType = objectType;
             Node = node;
             CurrentSubZone = currentSubZone;
         }
@@ -72,15 +69,13 @@ namespace DOL.GS
     public class ObjectChangingSubZone : IManagedEntity
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
-        public eGameObjectType ObjectType { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
 
-        public ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, eGameObjectType objectType, Zone destinationZone, SubZone destinationSubZone)
+        public ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
         {
             Node = node;
-            ObjectType = objectType;
             DestinationZone = destinationZone;
             DestinationSubZone = destinationSubZone;
         }
