@@ -16,11 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -1068,23 +1068,18 @@ namespace DOL.GS
 
 		public void UpdateGuildWindow()
 		{
-			List<GamePlayer> guildPlayers = new List<GamePlayer>();
+			List<GamePlayer> guildPlayers;
+
 			lock (m_memberListLock)
 			{
 				guildPlayers = m_onlineGuildPlayers.Values.ToList();
 			}
 			
-			Parallel.ForEach(guildPlayers, player =>
-			{
-				player.Guild.UpdateMember(player);
-			});
-			
-			/*
 			foreach (GamePlayer player in guildPlayers)
-			{
 				player.Guild.UpdateMember(player);
-			}*/
-			if(guildPlayers.Count > 0 && guildPlayers[0] != null) guildPlayers[0].Guild.SaveIntoDatabase();
+
+			if (guildPlayers.Count > 0 && guildPlayers[0] != null)
+				guildPlayers[0].Guild.SaveIntoDatabase();
 		}
 	}
 }

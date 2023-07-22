@@ -17,9 +17,7 @@
  *
  */
 
-using System;
 using System.Collections;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -283,17 +281,8 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void BroadcastDoorStatus()
 		{
-			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
-				try
-				{
-					PlayerService.UpdateObjectForPlayer(player, this);
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine($"Critical error encountered in Relic Door health broadcast: {e}");
-				}
-			});
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				PlayerService.UpdateObjectForPlayer(player, this);
 		}
 
 		/*

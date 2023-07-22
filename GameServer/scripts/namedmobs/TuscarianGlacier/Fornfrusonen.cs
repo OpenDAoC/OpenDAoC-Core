@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -98,24 +95,22 @@ namespace DOL.GS
             }
             return success;
         }
-        #region Show Effects
+
         protected int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
-                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
-                    if (player == null) return;
                     player.Out.SendSpellEffectAnimation(this, this, 6160, 0, false, 0x01);//left hand glow
                     player.Out.SendSpellEffectAnimation(this, this, 6161, 0, false, 0x01);//right hand glow
-                });
+                }
 
                 return 3000;
             }
+
             return 0;
         }
-        
-        #endregion
 
         //boss does not move so he will not take damage if enemys hit him from far away
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)

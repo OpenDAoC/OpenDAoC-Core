@@ -22,7 +22,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -1494,14 +1493,14 @@ namespace DOL.GS.Spells
 		public virtual void SendCastAnimation(ushort castTime)
 		{
 			_calculatedCastTime = castTime * 100;
-			//Console.WriteLine($"Cast Animation - CastTime Sent to Clients: {castTime} CalcTime: {_calculatedCastTime} Predicted Tick: {GameLoop.GameLoopTime + _calculatedCastTime}");
 
-			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)
 					return;
+
 				player.Out.SendSpellCastAnimation(m_caster, m_spell.ClientEffect, castTime);
-			});
+			}
 		}
 
 		/// <summary>
@@ -1516,14 +1515,8 @@ namespace DOL.GS.Spells
 			if (target == null)
 				target = m_caster;
 
-			//foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			//{
-			//	player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, boltDuration, noSound, success);
-			//}
-			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
+			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, boltDuration, noSound, success);
-			});
 		}
 
 		/// <summary>
@@ -1531,10 +1524,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void SendInterruptCastAnimation()
 		{
-			Parallel.ForEach(m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
+			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendInterruptAnimation(m_caster);
-			});
 		}
 
 		public virtual void SendEffectAnimation(GameObject target, ushort clientEffect, ushort boltDuration, bool noSound, byte success)
@@ -1542,10 +1533,8 @@ namespace DOL.GS.Spells
 			if (target == null)
 				target = m_caster;
 
-			Parallel.ForEach(target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
+			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendSpellEffectAnimation(m_caster, target, clientEffect, boltDuration, noSound, success);
-			});
 		}
 		#endregion
 
@@ -1699,20 +1688,18 @@ namespace DOL.GS.Spells
 			if (modifiedTarget == "pet" && !HasPositiveEffect)
 				modifiedTarget = "enemy";
 
-			#region Process the targets
 			switch (modifiedTarget)
 			{
-					#region GTAoE
-					// GTAoE
 				case "area":
-					//Dinberg - fix for animists turrets, where before a radius of zero meant that no targets were ever
-					//selected!
+				{
+					//Dinberg - fix for animists turrets, where before a radius of zero meant that no targets were ever selected!
 					if (Spell.SpellType == eSpellType.SummonAnimistPet || Spell.SpellType == eSpellType.SummonAnimistFnF)
 						list.Add(Caster);
 					else if (modifiedRadius > 0)
 					{
 						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius), player =>
+
+						foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget, modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 							{
@@ -1732,11 +1719,12 @@ namespace DOL.GS.Spells
 								else
 									aoePlayers.Add(player);
 							}
-						});
-						list.AddRange(aoePlayers);
+						}
 
+						list.AddRange(aoePlayers);
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, modifiedRadius), npc =>
+
+						foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget, modifiedRadius))
 						{
 							if (npc is GameStorm)
 								aoeMobs.Add(npc);
@@ -1745,111 +1733,113 @@ namespace DOL.GS.Spells
 								if (!npc.HasAbility("DamageImmunity"))
 									aoeMobs.Add(npc);
 							}
-						});
+						}
+
 						list.AddRange(aoeMobs);
 					}
+
 					break;
-					#endregion
-					#region Corpse
+				}
 				case "corpse":
+				{
 					if (target != null && !target.IsAlive)
 						list.Add(target);
+
 					break;
-					#endregion
-					#region Pet
+				}
 				case "pet":
+				{
+					// PBAE spells.
+					if (modifiedRadius > 0 && Spell.Range == 0)
 					{
-						// PBAE spells.
-						if (modifiedRadius > 0 && Spell.Range == 0)
+						foreach (GameNPC npcInRadius in Caster.GetNPCsInRadius(modifiedRadius))
 						{
-							foreach (GameNPC npcInRadius in Caster.GetNPCsInRadius(modifiedRadius))
-							{
-								if (Caster.IsControlledNPC(npcInRadius))
-									list.Add(npcInRadius);
-							}
-
-							return list;
+							if (Caster.IsControlledNPC(npcInRadius))
+								list.Add(npcInRadius);
 						}
 
-						if (target == null)
-							break;
+						return list;
+					}
 
-						GameNPC pet = target as GameNPC;
+					if (target == null)
+						break;
 
-						if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+					GameNPC pet = target as GameNPC;
+
+					if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+					{
+						if (Caster.IsControlledNPC(pet))
+							list.Add(pet);
+					}
+
+					// Check 'ControlledBrain' if 'target' isn't a valid target.
+					if (!list.Any() && Caster.ControlledBrain != null)
+					{
+						if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
 						{
-							if (Caster.IsControlledNPC(pet))
-								list.Add(pet);
-						}
-
-						// Check 'ControlledBrain' if 'target' isn't a valid target.
-						if (!list.Any() && Caster.ControlledBrain != null)
-						{
-							if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
+							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
 							{
-								foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
+								if (npcInRadius is CommanderPet commander && commander.Owner == player)
+									list.Add(commander);
+								else if (npcInRadius is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
 								{
-									if (npcInRadius is CommanderPet commander && commander.Owner == player)
-										list.Add(commander);
-									else if (npcInRadius is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
-									{
-										if (!Spell.IsHealing)
-											list.Add(subpet);
-									}
+									if (!Spell.IsHealing)
+										list.Add(subpet);
 								}
 							}
-							else
-							{
-								pet = Caster.ControlledBrain.Body;
-
-								if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
-									list.Add(pet);
-							}
 						}
-
-						if (Spell.Radius == 0)
-							return list;
-
-						// Buffs affect every pet around the targetted pet (same owner).
-						if (pet != null)
+						else
 						{
-							foreach (GameNPC npcInRadius in pet.GetNPCsInRadius(modifiedRadius))
-							{
-								if (npcInRadius == pet || !Caster.IsControlledNPC(npcInRadius) || npcInRadius.Brain is BomberBrain)
-									continue;
+							pet = Caster.ControlledBrain.Body;
 
-								list.Add(npcInRadius);
-							}
+							if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+								list.Add(pet);
+						}
+					}
+
+					if (Spell.Radius == 0)
+						return list;
+
+					// Buffs affect every pet around the targetted pet (same owner).
+					if (pet != null)
+					{
+						foreach (GameNPC npcInRadius in pet.GetNPCsInRadius(modifiedRadius))
+						{
+							if (npcInRadius == pet || !Caster.IsControlledNPC(npcInRadius) || npcInRadius.Brain is BomberBrain)
+								continue;
+
+							list.Add(npcInRadius);
 						}
 					}
 
 					break;
+				}
 				case "bdsubpet":
-					{ 
-						var player = Caster as GamePlayer;
-						if (player == null)
-							return null;
-						var petBody = player.ControlledBrain?.Body;
-						if (petBody != null)
+				{ 
+					var player = Caster as GamePlayer;
+					if (player == null)
+						return null;
+					var petBody = player.ControlledBrain?.Body;
+					if (petBody != null)
+					{
+						foreach (var pet in petBody.GetNPCsInRadius(modifiedRadius))
 						{
-							foreach (var pet in petBody.GetNPCsInRadius(modifiedRadius))
-							{
-								if (pet is not BDSubPet {Brain: IControlledBrain brain} subpet ||
-									brain.GetPlayerOwner() != player) continue;
-								if (!Spell.IsHealing)
-									list.Add(subpet);
-							}
+							if (pet is not BDSubPet {Brain: IControlledBrain brain} subpet ||
+								brain.GetPlayerOwner() != player) continue;
+							if (!Spell.IsHealing)
+								list.Add(subpet);
+						}
 
-							if (list.Count < 1)
-							{
-								player.Out.SendMessage("You don't have any subpet to cast this spell on!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							}
+						if (list.Count < 1)
+						{
+							player.Out.SendMessage("You don't have any subpet to cast this spell on!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 						}
 					}
+
 					break;
-					#endregion
-					#region Enemy
+				}
 				case "enemy":
+				{
 					if (modifiedRadius > 0)
 					{
 						if (Spell.SpellType != eSpellType.TurretPBAoE && (target == null || Spell.Range == 0))
@@ -1858,11 +1848,13 @@ namespace DOL.GS.Spells
 							return null;
 
 						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
+
+						foreach (GamePlayer player in  target.GetPlayersInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 							{
 								SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
+
 								if (SelectiveBlindness != null)
 								{
 									GameLiving EffectOwner = SelectiveBlindness.EffectSource;
@@ -1877,18 +1869,20 @@ namespace DOL.GS.Spells
 								else
 									aoePlayers.Add(player);
 							}
-						});
-						list.AddRange(aoePlayers);
+						}
 
+						list.AddRange(aoePlayers);
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
+
+						foreach (GameNPC npc in  target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
 								if (!npc.HasAbility("DamageImmunity"))
 									aoeMobs.Add(npc);
 							}
-						});
+						}
+
 						list.AddRange(aoeMobs);
 					}
 					else
@@ -1917,17 +1911,19 @@ namespace DOL.GS.Spells
 								list.Add(target);
 						}
 					}
+
 					break;
-					#endregion
-					#region Realm
+				}
 				case "realm":
+				{
 					if (modifiedRadius > 0)
 					{
 						if (target == null || Spell.Range == 0)
 							target = Caster;
 
 						ConcurrentBag<GameLiving> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
+
+						foreach (GamePlayer player in target.GetPlayersInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
@@ -1941,20 +1937,22 @@ namespace DOL.GS.Spells
 								else
 									aoePlayers.Add(player);
 							}
-						});
-						list.AddRange(aoePlayers);
+						}
 
+						list.AddRange(aoePlayers);
 						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
+
+						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, npc, true))
 							{
 								if (npc.Brain is BomberBrain)
-									return;
+									continue;
 
 								aoeMobs.Add(npc);
 							}
-						});
+						}
+
 						list.AddRange(aoeMobs);
 					}
 					else
@@ -1973,55 +1971,111 @@ namespace DOL.GS.Spells
 								list.Add(target);
 						}
 					}
+
 					break;
-					#endregion
-					#region Self
+				}
 				case "self":
+				{
+					if (modifiedRadius > 0)
 					{
-						if (modifiedRadius > 0)
+						if (target == null || Spell.Range == 0)
+							target = Caster;
+
+						ConcurrentBag<GamePlayer> aoePlayers = new();
+
+						foreach (GamePlayer player in target.GetPlayersInRadius(modifiedRadius))
 						{
-							if (target == null || Spell.Range == 0)
-								target = Caster;
-
-							ConcurrentBag<GamePlayer> aoePlayers = new();
-							Parallel.ForEach(target.GetPlayersInRadius(modifiedRadius), player =>
-							{
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-									aoePlayers.Add(player);
-							});
-							list.AddRange(aoePlayers);
-
-							ConcurrentBag<GameNPC> aoeMobs = new();
-							Parallel.ForEach(target.GetNPCsInRadius(modifiedRadius), npc =>
-							{
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) == false)
-									aoeMobs.Add(npc);
-							});
-							list.AddRange(aoeMobs);
+							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
+								aoePlayers.Add(player);
 						}
-						else
-							list.Add(Caster);
-						break;
-					}
-					#endregion
-					#region Group
-				case "group":
-					{
-						Group group = m_caster.Group;
-						
-						int spellRange;
-						if (Spell.Range == 0)
-							spellRange = modifiedRadius;
-						else
-							spellRange = CalculateSpellRange();
 
-						if (group == null)
+						list.AddRange(aoePlayers);
+						ConcurrentBag<GameNPC> aoeMobs = new();
+
+						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
 						{
-							if (m_caster is GamePlayer)
-							{
-								list.Add(m_caster);
+							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) == false)
+								aoeMobs.Add(npc);
+						}
 
-								IControlledBrain npc = m_caster.ControlledBrain;
+						list.AddRange(aoeMobs);
+					}
+					else
+						list.Add(Caster);
+
+					break;
+				}
+				case "group":
+				{
+					Group group = m_caster.Group;
+						
+					int spellRange;
+					if (Spell.Range == 0)
+						spellRange = modifiedRadius;
+					else
+						spellRange = CalculateSpellRange();
+
+					if (group == null)
+					{
+						if (m_caster is GamePlayer)
+						{
+							list.Add(m_caster);
+
+							IControlledBrain npc = m_caster.ControlledBrain;
+							if (npc != null)
+							{
+								//Add our first pet
+								GameNPC petBody2 = npc.Body;
+								if (m_caster.IsWithinRadius(petBody2, spellRange))
+									list.Add(petBody2);
+
+								//Now lets add any subpets!
+								if (petBody2 != null && petBody2.ControlledNpcList != null)
+								{
+									foreach (IControlledBrain icb in petBody2.ControlledNpcList)
+									{
+										if (icb != null && m_caster.IsWithinRadius(icb.Body, spellRange))
+											list.Add(icb.Body);
+									}
+								}
+							}
+						}// if (m_caster is GamePlayer)
+						else if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledNpcBrain)
+						{
+							IControlledBrain casterbrain = (m_caster as GameNPC).Brain as IControlledBrain;
+
+							GamePlayer player = casterbrain.GetPlayerOwner();
+
+							if (player != null)
+							{
+								if (player.Group == null)
+								{
+									// No group, add both the pet and owner to the list
+									list.Add(player);
+									list.Add(m_caster);
+								}
+								else
+									// Assign the owner's group so they are added to the list
+									group = player.Group;
+							}
+							else
+								list.Add(m_caster);
+						}// else if (m_caster is GameNPC...
+						else
+							list.Add(m_caster);
+					}// if (group == null)
+						
+					//We need to add the entire group
+					if (group != null)
+					{
+						foreach (GameLiving living in group.GetMembersInTheGroup())
+						{
+							// only players in range
+							if (m_caster.IsWithinRadius(living, spellRange))
+							{
+								list.Add(living);
+
+								IControlledBrain npc = living.ControlledBrain;
 								if (npc != null)
 								{
 									//Add our first pet
@@ -2039,109 +2093,54 @@ namespace DOL.GS.Spells
 										}
 									}
 								}
-							}// if (m_caster is GamePlayer)
-							else if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledNpcBrain)
-							{
-								IControlledBrain casterbrain = (m_caster as GameNPC).Brain as IControlledBrain;
-
-								GamePlayer player = casterbrain.GetPlayerOwner();
-
-								if (player != null)
-								{
-									if (player.Group == null)
-									{
-										// No group, add both the pet and owner to the list
-										list.Add(player);
-										list.Add(m_caster);
-									}
-									else
-										// Assign the owner's group so they are added to the list
-										group = player.Group;
-								}
-								else
-									list.Add(m_caster);
-							}// else if (m_caster is GameNPC...
-							else
-								list.Add(m_caster);
-						}// if (group == null)
-						
-						//We need to add the entire group
-						if (group != null)
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-								{
-									list.Add(living);
-
-									IControlledBrain npc = living.ControlledBrain;
-									if (npc != null)
-									{
-										//Add our first pet
-										GameNPC petBody2 = npc.Body;
-										if (m_caster.IsWithinRadius(petBody2, spellRange))
-											list.Add(petBody2);
-
-										//Now lets add any subpets!
-										if (petBody2 != null && petBody2.ControlledNpcList != null)
-										{
-											foreach (IControlledBrain icb in petBody2.ControlledNpcList)
-											{
-												if (icb != null && m_caster.IsWithinRadius(icb.Body, spellRange))
-													list.Add(icb.Body);
-											}
-										}
-									}
-								}
 							}
 						}
-
-						break;
 					}
-					#endregion
-					#region Cone AoE
+
+					break;
+				}
 				case "cone":
+				{
+					target = Caster;
+
+					ConcurrentBag<GamePlayer> aoePlayers = new();
+
+					foreach (GamePlayer player in target.GetPlayersInRadius((ushort) Spell.Range))
 					{
-						target = Caster;
+						if (player == Caster)
+							continue;
 
-						ConcurrentBag<GamePlayer> aoePlayers = new();
-						Parallel.ForEach(target.GetPlayersInRadius((ushort)Spell.Range), player =>
-						{
-							if (player == Caster)
-								return;
+						if (!m_caster.IsObjectInFront(player, (Spell.Radius != 0 ? Spell.Radius : 100)))
+							continue;
 
-							if (!m_caster.IsObjectInFront(player, (Spell.Radius != 0 ? Spell.Radius : 100)))
-								return;
+						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
+							continue;
 
-							if (!GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-								return;
-
-							aoePlayers.Add(player);
-						});
-						list.AddRange(aoePlayers);
-
-						ConcurrentBag<GameNPC> aoeMobs = new();
-						Parallel.ForEach(target.GetNPCsInRadius((ushort)Spell.Range), npc =>
-						{
-							if (npc == Caster)
-								return;
-
-							if (!m_caster.IsObjectInFront(npc, (Spell.Radius != 0 ? Spell.Radius : 100)))
-								return;
-
-							if (!GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
-								return;
-
-							if (!npc.HasAbility("DamageImmunity"))
-								aoeMobs.Add(npc);
-						});
-						list.AddRange(aoeMobs);
-						break;
+						aoePlayers.Add(player);
 					}
-					#endregion
+
+					list.AddRange(aoePlayers);
+					ConcurrentBag<GameNPC> aoeMobs = new();
+
+					foreach (GameNPC npc in target.GetNPCsInRadius((ushort) Spell.Range))
+					{
+						if (npc == Caster)
+							continue;
+
+						if (!m_caster.IsObjectInFront(npc, (Spell.Radius != 0 ? Spell.Radius : 100)))
+							continue;
+
+						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
+							continue;
+
+						if (!npc.HasAbility("DamageImmunity"))
+							aoeMobs.Add(npc);
+					}
+
+					list.AddRange(aoeMobs);
+					break;
+				}
 			}
-			#endregion
 
 			return list;
 		}
@@ -2299,14 +2298,14 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			Parallel.ForEach(targets, t =>
+			foreach (GameLiving t in targets)
 			{
 				// Aggressive NPCs will aggro on every target they hit with an AoE spell, whether it landed or was resisted.
-				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy" && Caster is GameNPC && (Caster as GameNPC).Brain is IOldAggressiveBrain)
-					((Caster as GameNPC).Brain as IOldAggressiveBrain).AddToAggroList(t, 1);
+				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy" && Caster is GameNPC casterNpc && casterNpc.Brain is IOldAggressiveBrain casterNpcBrain)
+					casterNpcBrain.AddToAggroList(t, 1);
 
 				if (CheckSpellResist(t))
-					return;
+					continue;
 
 				if (Spell.Radius == 0 || HasPositiveEffect)
 					ApplyEffectOnTarget(t, effectiveness);
@@ -2332,7 +2331,7 @@ namespace DOL.GS.Spells
 
 				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
 					npcBrain.AddBuffedTarget(Target);
-			});
+			}
 
 			if (Spell.Target.ToLower() == "ground")
 				ApplyEffectOnTarget(null, 1);
@@ -3774,10 +3773,8 @@ namespace DOL.GS.Spells
 
 			if (ad.Damage > 0)
 			{
-				Parallel.ForEach(ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
+				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, (byte) attackResult, ad.Target.HealthPercent);
-				});
 			}
 
 			m_lastAttackData = ad;

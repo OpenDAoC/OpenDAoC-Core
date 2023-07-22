@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -8,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-	public class RisnirCruss : GameEpicBoss
+    public class RisnirCruss : GameEpicBoss
 	{
 		public RisnirCruss() : base() { }
 
@@ -124,7 +122,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class RisnirCrussBrain : StandardMobBrain
+    public class RisnirCrussBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RisnirCrussBrain() : base()
@@ -177,19 +175,20 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
+
 		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (Body.IsAlive && !HasAggro)
 			{
-				Parallel.ForEach(Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(Body, Body, 6085, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(Body, Body, 6085, 0, false, 0x01);
 
 				return 3000;
 			}
+
 			return 0;
 		}
+
 		private Spell m_Boss_PBAOE;
 		private Spell Boss_PBAOE
 		{
@@ -252,4 +251,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-

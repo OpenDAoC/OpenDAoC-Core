@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -144,10 +143,8 @@ namespace DOL.GS
         {
             if (SpellHandler?.IsInCastingPhase == true)
             {
-                Parallel.ForEach(Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-                {
+                foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     player.Out.SendInterruptAnimation(Owner);
-                });
             }
 
             ClearUpSpellHandlers();

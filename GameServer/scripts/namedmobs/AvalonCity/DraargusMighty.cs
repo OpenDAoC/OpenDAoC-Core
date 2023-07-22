@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
 
@@ -107,7 +104,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class DraargusMightyBrain : StandardMobBrain
+    public class DraargusMightyBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DraargusMightyBrain() : base()
@@ -167,7 +164,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////////////////Sphere////////////////////////////////////////
 namespace DOL.GS
 {
-	public class DraugynSphere : GameEpicNPC
+    public class DraugynSphere : GameEpicNPC
 	{
 		public DraugynSphere() : base() { }
 
@@ -248,13 +245,12 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 55, 0, false, 0x01);
 
 				return 3000;
 			}
+
 			return 0;
 		}
 		
@@ -265,7 +261,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class DraugynSphereBrain : StandardMobBrain
+    public class DraugynSphereBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DraugynSphereBrain() : base()
@@ -334,5 +330,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-
-

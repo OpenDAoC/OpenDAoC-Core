@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
 using DOL.Language;
@@ -332,13 +331,12 @@ namespace DOL.GS
 		/// <returns>true when created</returns>
 		public override bool AddToWorld()
 		{
-			if(!base.AddToWorld()) return false;
-			// foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			if (!base.AddToWorld())
+				return false;
 			
-			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendObjectCreate(this);
-			});
+
 			return true;
 		}
 

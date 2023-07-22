@@ -25,7 +25,7 @@ namespace DOL.GS.GameEvents
         [GameServerStartedEvent]
         public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
         {
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            //GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace DOL.GS.GameEvents
         [GameServerStoppedEvent]
         public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
         {
-            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            //GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
         }
         
         /// <summary>

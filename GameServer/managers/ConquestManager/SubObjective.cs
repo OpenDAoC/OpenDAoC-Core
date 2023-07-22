@@ -119,10 +119,10 @@ public class SubObjective
         if(secondsLeft%5 == 0)
             PlayerService.UpdateObjectForPlayers(FlagObject);
     }
-    
+
     private void BroadcastCapture()
     {
-        Parallel.ForEach(FlagObject.GetPlayersInRadius(750, false), player =>
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750))
         {
             switch (player.Realm)
             {
@@ -136,21 +136,17 @@ public class SubObjective
                     player.Out.SendSoundEffect(2595, 0, 0, 0, 0, 0);
                     break;
             }
-        });
-        
-        Parallel.ForEach(FlagObject.GetPlayersInRadius(50000, false), player =>
+        }
+
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(50000))
         {
             if (player.Realm == CapturingRealm)
-            {
-                player.Out.SendMessage($"An ally has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);    
-            }
+                player.Out.SendMessage($"An ally has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
             else
-            {
                 player.Out.SendMessage($"An enemy has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-            }
-        });
+        }
     }
-    
+
     private ushort GetModelIDForRealm(eRealm realm)
     {
         ushort modelID = 0;

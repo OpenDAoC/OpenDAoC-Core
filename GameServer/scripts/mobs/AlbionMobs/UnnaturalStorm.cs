@@ -1,14 +1,12 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DOL.GS;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.Database;
+using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class UnnaturalStorm : GameNPC
+    public class UnnaturalStorm : GameNPC
 	{
 		public UnnaturalStorm() : base() { }
         #region Stats
@@ -38,24 +36,23 @@ namespace DOL.GS
 			}
 			return success;
 		}
-		#region Effects
+
 		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					if (player == null) return;
 					player.Out.SendSpellCastAnimation(this, 14323, 1);
 					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-				});
+				}
 
 				return 3000;
 			}
+
 			return 0;
 		}
-		
-		#endregion
+
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -92,7 +89,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class UnnaturalStormBrain : StandardMobBrain
+    public class UnnaturalStormBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UnnaturalStormBrain() : base()
@@ -147,7 +144,7 @@ namespace DOL.AI.Brain
 #region Additional Storm effect mobs
 namespace DOL.GS
 {
-	public class UnnaturalStormAdds : GameNPC
+    public class UnnaturalStormAdds : GameNPC
 	{
 		public UnnaturalStormAdds() : base() { }
 		public override bool AddToWorld()
@@ -172,24 +169,23 @@ namespace DOL.GS
 			}
 			return success;
 		}
-		#region Effects
+
 		private protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					if (player == null) return;
 					player.Out.SendSpellCastAnimation(this, 14323, 1);
 					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-				});
+				}
 
 				return 3000;
 			}
+
 			return 0;
 		}
-		
-		#endregion
+
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
@@ -204,7 +200,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class UnnaturalStormAddsBrain : StandardMobBrain
+    public class UnnaturalStormAddsBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UnnaturalStormAddsBrain() : base()
@@ -224,7 +220,7 @@ namespace DOL.AI.Brain
 #region Unnatural Storm Controller - controll when storm will appear
 namespace DOL.GS
 {
-	public class UnnaturalStormController : GameNPC
+    public class UnnaturalStormController : GameNPC
 	{
 		public UnnaturalStormController() : base()
 		{
@@ -249,7 +245,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class UnnaturalStormControllerBrain : APlayerVicinityBrain
+    public class UnnaturalStormControllerBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

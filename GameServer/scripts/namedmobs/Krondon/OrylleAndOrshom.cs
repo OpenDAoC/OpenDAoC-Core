@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -95,7 +93,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class OrylleBrain : StandardMobBrain
+    public class OrylleBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrylleBrain() : base()
@@ -189,7 +187,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////////////////////////Orshom////////////////////////////////
 namespace DOL.GS
 {
-	public class Orshom : GameEpicBoss
+    public class Orshom : GameEpicBoss
 	{
 		public Orshom() : base() { }
 
@@ -274,7 +272,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class OrshomBrain : StandardMobBrain
+    public class OrshomBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrshomBrain() : base()
@@ -358,7 +356,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////Fire pit mob///////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class OrshomFire : GameEpicNPC
+    public class OrshomFire : GameEpicNPC
 	{
 		public OrshomFire() : base() { }
 
@@ -459,22 +457,22 @@ namespace DOL.GS
 			}
 			return success;
 		}
+
 		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 7025, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 7025, 0, false, 0x01);
 				
 				SetGroundTarget(X, Y, Z);
 				CastSpell(Fire_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				return 3000;
 			}
+
 			return 0;
 		}
-		
+
 		private Spell m_Fire_aoe;
 		private Spell Fire_aoe
 		{
@@ -510,7 +508,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class OrshomFireBrain : StandardMobBrain
+    public class OrshomFireBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrshomFireBrain() : base()

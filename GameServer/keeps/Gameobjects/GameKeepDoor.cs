@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
@@ -296,10 +295,9 @@ namespace DOL.GS.Keeps
 				if (m_oldHealthPercent != HealthPercent)
 				{
 					m_oldHealthPercent = HealthPercent;
-					Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-					{
+
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						PlayerService.UpdateObjectForPlayer(player, this);
-					});
 				}
 			}
 
@@ -336,12 +334,14 @@ namespace DOL.GS.Keeps
 		private void BroadcastRelicGateDamage()
 		{
 			var message = $"{Component.Keep.Name} is under attack!";
-			Parallel.ForEach(WorldMgr.GetClientsOfRealm(Realm), cl =>
+
+			foreach (GameClient cl in WorldMgr.GetClientsOfRealm(Realm))
 			{
-				if (cl.Player.ObjectState != eObjectState.Active) return;
+				if (cl.Player.ObjectState != eObjectState.Active)
+					return;
 				cl.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 				cl.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			});
+			}
 			
 			/*
 			foreach (var cl in WorldMgr.GetClientsOfRealm(Realm))
@@ -829,10 +829,8 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void BroadcastDoorStatus()
 		{
-			Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-			{
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				PlayerService.UpdateObjectForPlayer(player, this);
-			});
 		}
 
 		protected AuxECSGameTimer m_repairTimer;

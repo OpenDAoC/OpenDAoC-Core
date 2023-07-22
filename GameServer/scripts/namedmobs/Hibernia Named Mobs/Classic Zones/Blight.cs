@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -106,22 +104,20 @@ namespace DOL.GS
 			}
 			return success;
 		}
-		#region Show Effects
+
 		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 5117, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 5117, 0, false, 0x01);
 
 				return 4000;
 			}
+
 			return 0;
 		}
-		
-		#endregion
+
 		public override void Die(GameObject killer)
         {
 			int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
@@ -197,7 +193,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class BlightBrain : StandardMobBrain
+    public class BlightBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BlightBrain() : base()
@@ -245,7 +241,7 @@ namespace DOL.AI.Brain
 #region Fire Blight
 namespace DOL.GS
 {
-	public class FireBlight : GameNPC
+    public class FireBlight : GameNPC
 	{
 		public FireBlight() : base()
 		{
@@ -304,13 +300,12 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
 
 				return 3000;
 			}
+
 			return 0;
 		}
 		
@@ -324,7 +319,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class FireBlightBrain : StandardMobBrain
+    public class FireBlightBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FireBlightBrain() : base()
@@ -356,7 +351,7 @@ namespace DOL.AI.Brain
 #region Late Blight
 namespace DOL.GS
 {
-	public class LateBlight : GameNPC
+    public class LateBlight : GameNPC
 	{
 		public LateBlight() : base()
 		{
@@ -415,10 +410,8 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
 
 				return 3000;
 			}
@@ -435,7 +428,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class LateBlightBrain : StandardMobBrain
+    public class LateBlightBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public LateBlightBrain() : base()
@@ -467,7 +460,7 @@ namespace DOL.AI.Brain
 #region Flesh Blight
 namespace DOL.GS
 {
-	public class FleshBlight : GameNPC
+    public class FleshBlight : GameNPC
 	{
 		public FleshBlight() : base()
 		{
@@ -526,13 +519,12 @@ namespace DOL.GS
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					player?.Out.SendSpellEffectAnimation(this, this, 4216, 0, false, 0x01);
-				});
 
 				return 3000;
 			}
+
 			return 0;
 		}
 		#endregion
@@ -545,7 +537,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class FleshBlightBrain : StandardMobBrain
+    public class FleshBlightBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FleshBlightBrain() : base()
@@ -580,7 +572,7 @@ namespace DOL.AI.Brain
 #region Blight Controller - control when and what kind of blights will spawn
 namespace DOL.GS
 {
-	public class BlightController : GameNPC
+    public class BlightController : GameNPC
 	{
 		public BlightController() : base()
 		{
@@ -631,7 +623,7 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-	public class BlightControllerBrain : APlayerVicinityBrain
+    public class BlightControllerBrain : APlayerVicinityBrain
 	{
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

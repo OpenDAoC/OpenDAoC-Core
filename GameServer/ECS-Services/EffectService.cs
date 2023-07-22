@@ -378,10 +378,8 @@ namespace DOL.GS
                 else
                     target = e.Owner;
 
-                Parallel.ForEach(e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-                {
+                foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     player.Out.SendSpellEffectAnimation(spellHandler.Caster, target, spell.ClientEffect, 0, false, 1);
-                });
             }
         }
 
@@ -616,10 +614,8 @@ namespace DOL.GS
             if (e is null)
                 return;
 
-            Parallel.ForEach(e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-            {
+            foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
-            });
         }
 
         private static void SendPlayerUpdates(GamePlayer player)

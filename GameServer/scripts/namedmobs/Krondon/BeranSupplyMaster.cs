@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS;
 using DOL.Events;
+using DOL.GS;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class BeranSupplyMaster : GameEpicBoss
+    public class BeranSupplyMaster : GameEpicBoss
 	{
 		public BeranSupplyMaster() : base() { }
 
@@ -93,7 +91,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class BeranSupplyMasterBrain : StandardMobBrain
+    public class BeranSupplyMasterBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BeranSupplyMasterBrain() : base()
@@ -230,7 +228,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////////////////////////////////////////Barrel-Explosion-Mob///////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class BarrelExplosive : GameNPC
+    public class BarrelExplosive : GameNPC
 	{
 		public BarrelExplosive() : base() { }
 
@@ -271,17 +269,16 @@ namespace DOL.GS
 			return success;
 		}
 
-        protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 5976, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 5976, 0, false, 0x01);
 
 				return 2400;
 			}
+
 			return 0;
 		}
 		
@@ -335,7 +332,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class BarrelExplosiveBrain : StandardMobBrain
+    public class BarrelExplosiveBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BarrelExplosiveBrain() : base()

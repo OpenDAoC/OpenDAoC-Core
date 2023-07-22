@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 
@@ -74,7 +72,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class DoobenBrain : StandardMobBrain
+    public class DoobenBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DoobenBrain() : base()
@@ -102,19 +100,15 @@ namespace DOL.AI.Brain
 		{
 			if (Body.IsAlive && !HasAggro)
 			{
-				Parallel.ForEach(Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(Body, Body, 479, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(Body, Body, 479, 0, false, 0x01);
 
 				return 1600;
 			}
+
 			return 0;
 		}
 		
 		#endregion
 	}
 }
-
-
-

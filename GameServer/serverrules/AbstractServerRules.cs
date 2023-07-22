@@ -16,26 +16,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.API;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
 using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.Language;
-using log4net;
 using ECS.Debug;
+using log4net;
+
 namespace DOL.GS.ServerRules
 {
 	public abstract class AbstractServerRules : IServerRules
@@ -1100,6 +1099,7 @@ namespace DOL.GS.ServerRules
 		{
 			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
 			HybridDictionary XPGainerList = new HybridDictionary();
+
 			lock (killedNPC.XPGainers.SyncRoot)
 			{
 				foreach (DictionaryEntry gainer in killedNPC.XPGainers)
@@ -1180,9 +1180,9 @@ namespace DOL.GS.ServerRules
 
 			#endregion
 
-			HashSet<GameObject> livingsToAward = new HashSet<GameObject>();
-			//Now deal the XP to all livings
+			HashSet<GameLiving> livingsToAward = new();
 			Diagnostics.StartPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
+
 			foreach (DictionaryEntry de in XPGainerList)
 			{
 				if (de.Key is GameLiving living)
@@ -1214,10 +1214,11 @@ namespace DOL.GS.ServerRules
 				}
 			}
 
-			Parallel.ForEach(livingsToAward, living =>
+			foreach (GameLiving living in livingsToAward)
 			{
-				var de = new DictionaryEntry(living, XPGainerList[living]);
+				DictionaryEntry de = new(living, XPGainerList[living]);
 				AwardExperience(de, killedNPC, killer, totalDamage, plrGrpExp, isGroupInRange);
+
 				if (living.Level > 36)
 				{
 					int min = (int) Math.Round(killedNPC.Level / 10d) - 3;
@@ -1234,11 +1235,10 @@ namespace DOL.GS.ServerRules
 						min *= 5;
 						max *= 5;
 					}
-					//Console.WriteLine($"min {min} max {max}");
-					AtlasROGManager.GenerateReward(living as GameLiving, Util.Random(min, max));
+
+					AtlasROGManager.GenerateReward(living, Util.Random(min, max));
 				}
-					
-			});
+			}
 
 			Diagnostics.StopPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
 		}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Styles;
 using static DOL.GS.GameLiving;
@@ -220,11 +219,8 @@ namespace DOL.GS
             byte flightDuration = (byte)(_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
             bool cancelPrepareAnimation = _owner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown;
 
-            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
+            foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == null)
-                    return;
-
                 // Special case for thrown weapons (bows and crossbows don't need this).
                 // For some obscure reason, their 'BowShoot' animation doesn't cancel their 'BowPrepare', and 'BowPrepare' resumes after 'BowShoot'.
                 if (cancelPrepareAnimation)
@@ -235,7 +231,7 @@ namespace DOL.GS
                 // 1 means roughly 350ms (the lowest time possible), then each increment adds about 75ms (needs testing).
                 // Using ticksToTarget, we can make the arrow take more time to reach its target the farther it is.
                 player.Out.SendCombatAnimation(_owner, _target, (ushort)model, 0x00, player.Out.BowShoot, flightDuration, 0x00, ((GameLiving)_target).HealthPercent);
-            });
+            }
 
             switch (_owner.rangeAttackComponent.RangedAttackType)
             {
@@ -380,14 +376,9 @@ namespace DOL.GS
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
 
-            Parallel.ForEach(_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-            {
-                if (player == null)
-                    return;
-
-                // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+            // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+            foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendCombatAnimation(_owner, null, (ushort)(_weapon != null ? _weapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
-            });
 
             return true;
         }

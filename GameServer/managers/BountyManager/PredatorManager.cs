@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DOL.Events;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
-using DOL.Language;
 
 namespace DOL.GS;
 
@@ -577,11 +574,8 @@ public class PredatorManager
 
     public static void BroadcastKill(GamePlayer deadGuy)
     {
-        Parallel.ForEach(deadGuy.GetPlayersInRadius(10000), player =>
-        {
-            player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.",
-                eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
-        });
+        foreach (GamePlayer player in deadGuy.GetPlayersInRadius(10000))
+            player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
     }
 
     private static void JoinedGroup(DOLEvent dolEvent, object sender, EventArgs arguments)

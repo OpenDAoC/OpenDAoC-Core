@@ -1389,7 +1389,6 @@ namespace DOL.GS
 				return potentialMatches;
 
 			}
-			return null;
 		}
 
 		/// <summary>
@@ -1585,12 +1584,17 @@ namespace DOL.GS
 
 		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
+			return GetNPCsCloseToSpot(regionid, x, y, z, radiusToCheck);
+		}
+
+		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, Point3D point, ushort radiusToCheck)
+		{
 			Region reg = GetRegion(regionid);
 
 			if (reg == null)
 				return new();
 
-			return reg.GetNPCsInRadius(new Point3D(x, y ,z), radiusToCheck);
+			return reg.GetNPCsInRadius(point, radiusToCheck);
 		}
 
 		public static HashSet<GameStaticItem> GetItemsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)

@@ -1,9 +1,7 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -35,22 +33,20 @@ namespace DOL.GS
 			}
 			return success;
 		}
-		#region Show Effects
+
 		protected int Show_Effect(ECSGameTimer timer)
 		{
 			if (IsAlive)
 			{
-				Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-				{
-					player?.Out.SendSpellEffectAnimation(this, this, 5920, 0, false, 0x01);
-				});
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					player.Out.SendSpellEffectAnimation(this, this, 5920, 0, false, 0x01);
 
 				return 2000;
 			}
+
 			return 0;
 		}
-		
-		#endregion
+
 		public override void Die(GameObject killer)
         {
 			foreach(GameNPC npc in GetNPCsInRadius(5000))
@@ -84,7 +80,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class AmminusPilusBrain : StandardMobBrain
+    public class AmminusPilusBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AmminusPilusBrain() : base()
@@ -156,7 +152,7 @@ namespace DOL.AI.Brain
 #region Pilus adds
 namespace DOL.GS
 {
-	public class PilusAdd : GameNPC
+    public class PilusAdd : GameNPC
 	{
 		public PilusAdd() : base() { }
         #region Stats
@@ -185,7 +181,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class PilusAddBrain : StandardMobBrain
+    public class PilusAddBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public PilusAddBrain() : base()

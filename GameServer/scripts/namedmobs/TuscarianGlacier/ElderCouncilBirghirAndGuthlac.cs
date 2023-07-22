@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -837,20 +834,20 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
+
         protected int Show_Effect(ECSGameTimer timer)
         {
             if (IsAlive)
             {
-                Parallel.ForEach(GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE), player =>
-                {
-                    player?.Out.SendSpellEffectAnimation(this, this, 177, 0, false, 0x01);
-                });
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    player.Out.SendSpellEffectAnimation(this, this, 177, 0, false, 0x01);
 
                 return 3000;
             }
+
             return 0;
         }
-     
+
         protected int Explode(ECSGameTimer timer)
         {
             if (IsAlive && TargetObject != null)
