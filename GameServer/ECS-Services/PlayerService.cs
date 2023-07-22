@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using DOL.GS.API;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using ECS.Debug;
@@ -74,8 +75,8 @@ namespace DOL.GS
             // Players aren't updated here on purpose.
             UpdateObjects(player, eGameObjectType.NPC, Properties.WORLD_NPC_UPDATE_INTERVAL, tick);
             UpdateObjects(player, eGameObjectType.ITEM, Properties.WORLD_OBJECT_UPDATE_INTERVAL, tick);
-            UpdateObjects(player, eGameObjectType.DOOR, Properties.WORLD_OBJECT_UPDATE_INTERVAL, tick);
-            UpdateObjects(player, eGameObjectType.KEEP_COMPONENT, Properties.WORLD_OBJECT_UPDATE_INTERVAL, tick);
+            UpdateDoors(player, tick);
+            UpdateObjects(player, eGameObjectType.KEEP_COMPONENT, Properties.WORLD_OBJECT_UPDATE_INTERVAL, tick); // Unsure if needed.
             UpdateHouses(player, tick);
             player.LastWorldUpdate = tick;
         }
@@ -83,14 +84,14 @@ namespace DOL.GS
         private static void UpdateObjects(GamePlayer player, eGameObjectType objectType, uint updateInterval, long tick)
         {
             HashSet<GameObject> objectsInRange = player.CurrentRegion.GetInRadius<GameObject>(player, objectType, WorldMgr.VISIBILITY_DISTANCE, false);
-            ConcurrentDictionary<GameObject, long> objectsCache = player.ObjectUpdateCaches[(byte) objectType];
+            ConcurrentDictionary<GameObject, long> objectCache = player.ObjectUpdateCaches[(byte) objectType];
 
-            foreach (var objectInCache in objectsCache)
+            foreach (var objectInCache in objectCache)
             {
                 GameObject gameObject = objectInCache.Key;
 
                 if (!objectsInRange.Contains(gameObject) || !gameObject.IsVisibleTo(player))
-                    objectsCache.Remove(gameObject, out _);
+                    objectCache.Remove(gameObject, out _);
             }
 
             foreach (GameObject objectInRange in objectsInRange)
@@ -98,10 +99,39 @@ namespace DOL.GS
                 if (!objectInRange.IsVisibleTo(player))
                     continue;
 
-                if (!objectsCache.TryGetValue(objectInRange, out long lastUpdate))
+                if (!objectCache.TryGetValue(objectInRange, out long lastUpdate))
                     UpdateObjectForPlayer(player, objectInRange);
                 else if (lastUpdate + updateInterval < tick)
                     UpdateObjectForPlayer(player, objectInRange);
+            }
+        }
+
+        private static void UpdateDoors(GamePlayer player, long tick)
+        {
+            HashSet<GameDoorBase> doorsInRange = player.CurrentRegion.GetInRadius<GameDoorBase>(player, eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE, false);
+            ConcurrentDictionary<GameObject, long> doorCache = player.ObjectUpdateCaches[(byte) eGameObjectType.DOOR];
+
+            foreach (var doorInCache in doorCache)
+            {
+                GameDoorBase door = (GameDoorBase) doorInCache.Key;
+
+                if (!doorsInRange.Contains(door) || !door.IsVisibleTo(player))
+                    doorCache.Remove(door, out _);
+            }
+
+            foreach (GameDoorBase doorInRange in doorsInRange)
+            {
+                if (!doorInRange.IsVisibleTo(player))
+                    continue;
+
+                if (!doorCache.TryGetValue(doorInRange, out long lastUpdate))
+                {
+                    player.Out.SendObjectCreate(doorInRange);
+                    player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
+                    UpdateObjectForPlayer(player, doorInRange);
+                }
+                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < tick)
+                    UpdateObjectForPlayer(player, doorInRange);
             }
         }
 

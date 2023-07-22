@@ -23,6 +23,7 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using log4net;
+using static DOL.GS.GameSiegeWeapon;
 
 namespace DOL.GS.Keeps
 {
@@ -118,13 +119,15 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override eDoorState State
 		{
-			get { return m_state; }
+			get => m_state;
 			set
 			{
 				if (m_state != value)
 				{
 					m_state = value;
-					BroadcastDoorStatus();
+
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						player.Out.SendDoorState(CurrentRegion, this);
 				}
 			}
 		}
@@ -134,7 +137,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override byte Level
 		{
-			get 
+			get
 			{
 				if (Component == null || Component.Keep == null)
 				{
@@ -561,14 +564,9 @@ namespace DOL.GS.Keeps
 				// if you target a door it will re-broadcast it's state
 
 				if (Health <= 0 && State != eDoorState.Open)
-				{
 					State = eDoorState.Open;
-					BroadcastDoorStatus();
-				}
-				else if (State == eDoorState.Open)
-				{
-					PlayerService.UpdateObjectForPlayer(player, this);
-				}
+
+				PlayerService.UpdateObjectForPlayer(player, this);
 			}
 
 			return list;
@@ -830,7 +828,10 @@ namespace DOL.GS.Keeps
 		public virtual void BroadcastDoorStatus()
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
 				PlayerService.UpdateObjectForPlayer(player, this);
+				player.Out.SendDoorState(CurrentRegion, this);
+			}
 		}
 
 		protected AuxECSGameTimer m_repairTimer;
