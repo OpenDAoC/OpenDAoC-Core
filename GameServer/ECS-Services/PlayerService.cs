@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.GS.API;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using ECS.Debug;

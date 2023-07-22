@@ -2947,7 +2947,7 @@ namespace DOL.GS
 					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
 				}
 
-				StopFollowing();
+				StopMoving();
 
 				if (Group != null)
 					Group.RemoveMember(this);
