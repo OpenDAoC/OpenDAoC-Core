@@ -427,6 +427,15 @@ namespace DOL.GS
                     {
                         GameObject gameObject = node.Item;
 
+                        // Inactive or deleted objects can't remove themselves.
+                        if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
+                        {
+                            if (!gameObject.SubZoneObject.IsSubZoneChangeBeingHandled)
+                                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));
+
+                            continue;
+                        }
+
                         if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
                             partialList.Add((T) gameObject);
                     }
@@ -463,7 +472,7 @@ namespace DOL.GS
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
             // Does the current object exists, is active and still in the region where this zone is located?
-            if (gameObject != null && gameObject.ObjectState == GameObject.eObjectState.Active && gameObject.CurrentRegion == ZoneRegion)
+            if (gameObject.ObjectState == GameObject.eObjectState.Active && gameObject.CurrentRegion == ZoneRegion)
             {
                 int objectSubZoneIndex = GetSubZoneIndex(gameObject.X, gameObject.Y);
 
@@ -483,7 +492,7 @@ namespace DOL.GS
                 }
             }
             else if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));;
+                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));
         }
 
         public void OnObjectAddedToZone()
