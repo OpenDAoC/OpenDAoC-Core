@@ -65,16 +65,32 @@ namespace DOL.GS
         }
     }
 
-    // Temporary objects to be added to the 'EntityManager' and consummed by the 'ZoneService', representing an object to be moved from one 'SubZone' to another.
+    // Temporary objects to be added to 'EntityManager' and consummed by 'ZoneService', representing an object to be moved from one 'SubZone' to another.
     public class ObjectChangingSubZone : IManagedEntity
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public bool AllowReuseByEntityManager => true;
 
-        public ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        private ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        {
+            Initialize(node, destinationZone, destinationSubZone);
+        }
+
+        public static void Create(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        {
+            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
+                objectChangingSubZone.Initialize(node, destinationZone, destinationSubZone);
+            else
+            {
+                objectChangingSubZone = new(node, destinationZone, destinationSubZone);
+                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
+            }
+        }
+
+        private void Initialize(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
         {
             Node = node;
             DestinationZone = destinationZone;

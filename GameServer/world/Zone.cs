@@ -339,8 +339,7 @@ namespace DOL.GS
                 return false;
             }
 
-            ObjectChangingSubZone objectChangingSubZone = new(node, this, subZone);
-            EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
+            ObjectChangingSubZone.Create(node, this, subZone);
             return true;
         }
 
@@ -431,7 +430,7 @@ namespace DOL.GS
                         if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
                         {
                             if (!gameObject.SubZoneObject.IsSubZoneChangeBeingHandled)
-                                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));
+                                ObjectChangingSubZone.Create(node, null, null);
 
                             continue;
                         }
@@ -483,16 +482,16 @@ namespace DOL.GS
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
 
                     if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, newZone, newSubZone));
+                        ObjectChangingSubZone.Create(node, newZone, newSubZone);
                 }
                 else if (objectSubZoneIndex != newSubZoneIndex)
                 {
                     if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, this, _subZones[objectSubZoneIndex]));
+                        ObjectChangingSubZone.Create(node, this, _subZones[objectSubZoneIndex]);
                 }
             }
             else if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, new ObjectChangingSubZone(node, null, null));
+                ObjectChangingSubZone.Create(node, null, null);
         }
 
         public void OnObjectAddedToZone()
