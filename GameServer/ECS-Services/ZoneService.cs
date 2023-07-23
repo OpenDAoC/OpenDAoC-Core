@@ -42,7 +42,9 @@ namespace DOL.GS
                     // Abord if we can't remove this node (due to a lock timeout), but keep the object in the entity manager.
                     if (!subZoneObject.CurrentSubZone.RemoveObjectNode(node))
                     {
-                        Interlocked.Increment(ref _failedRemove);
+                        if (log.IsWarnEnabled)
+                            Interlocked.Increment(ref _failedRemove);
+
                         return;
                     }
 
@@ -60,7 +62,9 @@ namespace DOL.GS
                     // Abord if we can't add this node (due to a lock timeout), but keep the object in the entity manager.
                     if (!destinationSubZone.AddObjectNode(node))
                     {
-                        Interlocked.Increment(ref _failedAdd);
+                        if (log.IsWarnEnabled)
+                            Interlocked.Increment(ref _failedAdd);
+
                         return;
                     }
 
@@ -74,16 +78,19 @@ namespace DOL.GS
                 EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
             });
 
-            if (_failedRemove > 0)
+            if (log.IsWarnEnabled)
             {
-                log.Error($"'{nameof(SubZone)}.{nameof(SubZone.AddObjectNode)}' has failed {_failedRemove} time{(_failedRemove > 1 ? "s" : "")} during this tick.");
-                _failedRemove = 0;
-            }
+                if (_failedRemove > 0)
+                {
+                    log.Warn($"'{nameof(SubZone)}.{nameof(SubZone.AddObjectNode)}' has failed {_failedRemove} time{(_failedRemove > 1 ? "s" : "")} during this tick.");
+                    _failedRemove = 0;
+                }
 
-            if (_failedAdd > 0)
-            {
-                log.Error($"'{nameof(SubZone)}.{nameof(SubZone.RemoveObjectNode)}' has failed {_failedAdd} time{(_failedAdd > 1 ? "s" : "")} during this tick.");
-                _failedAdd = 0;
+                if (_failedAdd > 0)
+                {
+                    log.Warn($"'{nameof(SubZone)}.{nameof(SubZone.RemoveObjectNode)}' has failed {_failedAdd} time{(_failedAdd > 1 ? "s" : "")} during this tick.");
+                    _failedAdd = 0;
+                }
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
