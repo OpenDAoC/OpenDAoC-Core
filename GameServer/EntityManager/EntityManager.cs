@@ -35,7 +35,7 @@ namespace DOL.GS
             { EntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
             { EntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
             { EntityType.Timer, new EntityArray<ECSGameTimer>(500) },
-            { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(250) }
+            { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
 
         public static bool Add<T>(EntityType type, T entity) where T : IManagedEntity
@@ -67,7 +67,7 @@ namespace DOL.GS
             return true;
         }
 
-        // Applies pending additions and removals then returns the list alongside the last non-null index.
+        // Applies pending additions and removals then returns the list alongside the last valid index.
         // Thread unsafe. The returned list should not be modified.
         public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : IManagedEntity
         {
@@ -78,9 +78,7 @@ namespace DOL.GS
 
         private class EntityArray<T> where T : class, IManagedEntity
         {
-            private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
-
-            private SortedSet<int> _invalidIndexes = new(_descendingOrder);
+            private SortedSet<int> _invalidIndexes = new();
             private Stack<T> _entitiesToAdd  = new();
             private Stack<T> _entitiesToRemove = new();
             private object _invalidIndexesLock = new();
@@ -112,10 +110,10 @@ namespace DOL.GS
 
                 lock (_invalidIndexesLock)
                 {
-                    if (!_invalidIndexes.Any())
+                    if (_invalidIndexes.Count == 0)
                         return false;
 
-                    index = _invalidIndexes.Max;
+                    index = _invalidIndexes.Min;
                     _invalidIndexes.Remove(index);
                     entity = Entities[index];
                     entity.EntityManagerId.Value = index;
@@ -139,32 +137,38 @@ namespace DOL.GS
 
             public int Update()
             {
-                lock (_entitiesToRemoveLock)
+                lock (_invalidIndexesLock)
                 {
-                    while (_entitiesToRemove.Count > 0)
+                    lock (_entitiesToRemoveLock)
                     {
-                        T entity = _entitiesToRemove.Pop();
-                        EntityManagerId id = entity.EntityManagerId;
-
-                        if (id.IsPendingRemoval)
+                        while (_entitiesToRemove.Count > 0)
                         {
-                            if (id.IsSet)
-                                RemoveInternal(id.Value);
+                            T entity = _entitiesToRemove.Pop();
+                            EntityManagerId id = entity.EntityManagerId;
 
-                            id.Unset();
+                            if (id.IsPendingRemoval && id.IsSet)
+                                RemoveInternal(id.Value);
                         }
                     }
-                }
 
-                lock (_entitiesToAddLock)
-                {
-                    while (_entitiesToAdd.Count > 0)
+                    while (_lastValidIndex > -1)
                     {
-                        T entity = _entitiesToAdd.Pop();
-                        EntityManagerId id = entity.EntityManagerId;
+                        if (Entities[_lastValidIndex]?.EntityManagerId.IsSet == true)
+                            break;
 
-                        if (id.IsPendingAddition && !id.IsSet)
-                            id.Value = AddInternal(entity);
+                        _lastValidIndex--;
+                    }
+
+                    lock (_entitiesToAddLock)
+                    {
+                        while (_entitiesToAdd.Count > 0)
+                        {
+                            T entity = _entitiesToAdd.Pop();
+                            EntityManagerId id = entity.EntityManagerId;
+
+                            if (id.IsPendingAddition && !id.IsSet)
+                                id.Value = AddInternal(entity);
+                        }
                     }
                 }
 
@@ -173,28 +177,28 @@ namespace DOL.GS
 
             private int AddInternal(T entity)
             {
-                lock (_invalidIndexesLock)
+                if (_invalidIndexes.Count > 0)
                 {
-                    if (_invalidIndexes.Any())
-                    {
-                        int index = _invalidIndexes.Max;
-                        _invalidIndexes.Remove(index);
-                        Entities[index] = entity;
+                    int index = _invalidIndexes.Min;
+                    _invalidIndexes.Remove(index);
+                    Entities[index] = entity;
 
-                        if (index > _lastValidIndex)
-                            _lastValidIndex = index;
+                    if (index > _lastValidIndex)
+                        _lastValidIndex = index;
 
-                        return index;
-                    }
+                    return index;
+                }
 
-                    // Increase the capacity of the list in the event that it's too small. This is a costly operation.
-                    // 'Add' already does it, but we want to know when it happens and control by how much it grows (instead of doubling it).
-                    if (++_lastValidIndex >= Entities.Capacity)
-                    {
-                        int newCapacity = Entities.Capacity + 100;
+                // Increase the capacity of the list in the event that it's too small. This is a costly operation.
+                // 'Add' already does it, but we nay want to know when it happens and control by how much it grows ('Add' would double it).
+                if (++_lastValidIndex >= Entities.Capacity)
+                {
+                    int newCapacity = (int) (Entities.Capacity * 1.2);
+
+                    if (log.IsWarnEnabled)
                         log.Warn($"{typeof(T)} {nameof(Entities)} is too short. Resizing it to {newCapacity}.");
-                        ListExtras.Resize(Entities, newCapacity);
-                    }
+
+                    ListExtras.Resize(Entities, newCapacity);
                 }
 
                 Entities.Add(entity);
@@ -205,35 +209,14 @@ namespace DOL.GS
             {
                 T entity = Entities[id];
 
-                lock (_invalidIndexesLock)
-                {
-                    _invalidIndexes.Add(id);
+                if (id == Entities.Count)
+                    _lastValidIndex--;
 
-                    if (!entity.AllowReuseByEntityManager)
-                        Entities[id] = null;
+                entity.EntityManagerId.Unset();
+                _invalidIndexes.Add(id);
 
-                    if (id != _lastValidIndex)
-                        return;
-
-                    if (!_invalidIndexes.Any())
-                    {
-                        _lastValidIndex--;
-                        return;
-                    }
-
-                    int lastIndex = _invalidIndexes.Min;
-
-                    // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
-                    foreach (int index in _invalidIndexes)
-                    {
-                        if (lastIndex - index > 0)
-                            break;
-
-                        lastIndex--;
-                    }
-
-                    _lastValidIndex = lastIndex;
-                }
+                if (!entity.AllowReuseByEntityManager)
+                    Entities[id] = null;
             }
         }
     }
