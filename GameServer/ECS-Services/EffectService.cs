@@ -24,13 +24,13 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<ECSGameEffect> list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastNonNullIndex);
+            List<ECSGameEffect> list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 ECSGameEffect effect = list[i];
 
-                if (effect == null)
+                if (effect?.EntityManagerId.IsSet != true)
                     return;
 
                 long startTick = GameLoop.GetCurrentTime();

@@ -43,17 +43,18 @@ namespace DOL.GS
         public long NextTick;
         public int PreviousPosition = -1;
         public EntityManagerId EntityManagerId { get; set; } = new();
+        public bool AllowReuseByEntityManager => false;
         public ISpellHandler SpellHandler { get; protected set; }
 
         /// <summary>
         /// The icon for this effect.
         /// </summary>
-        public virtual ushort Icon { get { return (ushort)0; } }
+        public virtual ushort Icon => 0;
 
         /// <summary>
         /// The name of this effect.
         /// </summary>
-        public virtual string Name { get { return "Default Effect Name"; } }
+        public virtual string Name => "Default Effect Name";
 
         /// <summary>
         /// The name of the owner
@@ -72,7 +73,7 @@ namespace DOL.GS
         /// <summary>
         /// Whether this effect is positive.
         /// </summary>
-        public virtual bool HasPositiveEffect { get { return false; } }
+        public virtual bool HasPositiveEffect => false;
 
         /// Whether this effect should trigger an immunity when it expires.
         public bool TriggersImmunity = false;
@@ -102,10 +103,7 @@ namespace DOL.GS
 
         public virtual long GetRemainingTimeForClient()
         {
-            if (Duration > 0)
-                return (ExpireTick - GameLoop.GameLoopTime);
-            else
-                return 0;
+            return Duration > 0 ? ExpireTick - GameLoop.GameLoopTime : 0;
         }
 
         public virtual bool IsConcentrationEffect() { return false; }

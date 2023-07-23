@@ -49,13 +49,13 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newTime);
                 }
 
-                List<GamePlayer> players = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastNonNullIndex);
+                List<GamePlayer> players = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastValidIndex);
 
-                for (int i = 0; i < lastNonNullIndex + 1; i++)
+                for (int i = 0; i < lastValidIndex + 1; i++)
                 {
                     GamePlayer player = players[i];
 
-                    if (player == null)
+                    if (!player.EntityManagerId.IsSet)
                         continue;
 
                     List<AbstractQuest> questsToRemove = new();

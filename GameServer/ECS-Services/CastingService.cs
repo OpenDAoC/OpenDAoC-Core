@@ -17,23 +17,23 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<CastingComponent> list = EntityManager.UpdateAndGetAll<CastingComponent>(EntityManager.EntityType.CastingComponent, out int lastNonNullIndex);
+            List<CastingComponent> list = EntityManager.UpdateAndGetAll<CastingComponent>(EntityManager.EntityType.CastingComponent, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 try
                 {
-                    CastingComponent c = list[i];
+                    CastingComponent castingComponent = list[i];
 
-                    if (c == null)
+                    if (castingComponent?.EntityManagerId.IsSet != true)
                         return;
 
                     long startTick = GameLoop.GetCurrentTime();
-                    c.Tick(tick);
+                    castingComponent.Tick(tick);
                     long stopTick = GameLoop.GetCurrentTime();
 
-                    if ((stopTick - startTick) > 25)
-                        log.Warn($"Long CastingComponent.Tick for: {c.Owner.Name}({c.Owner.ObjectID}) Spell: {c.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long CastingComponent.Tick for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {

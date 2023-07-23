@@ -50,6 +50,11 @@ namespace DOL.GS
             return true;
         }
 
+        public static bool TryReuse<T>(EntityType type, out T entity) where T : IManagedEntity
+        {
+            return _entityArrays[type].TryReuse(out entity);
+        }
+
         public static bool Remove<T>(EntityType type, T entity) where T : IManagedEntity
         {
             EntityManagerId id = entity.EntityManagerId;
@@ -64,10 +69,10 @@ namespace DOL.GS
 
         // Applies pending additions and removals then returns the list alongside the last non-null index.
         // Thread unsafe. The returned list should not be modified.
-        public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastNonNullIndex) where T : IManagedEntity
+        public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : IManagedEntity
         {
             dynamic array = _entityArrays[type];
-            lastNonNullIndex = array.Update();
+            lastValidIndex = array.Update();
             return array.Entities;
         }
 
@@ -75,12 +80,13 @@ namespace DOL.GS
         {
             private static Comparer<int> _descendingOrder = Comparer<int>.Create((x, y) => x < y ? 1 : x > y ? -1 : 0);
 
-            private SortedSet<int> _deletedIndexes = new(_descendingOrder);
+            private SortedSet<int> _invalidIndexes = new(_descendingOrder);
             private Stack<T> _entitiesToAdd  = new();
             private Stack<T> _entitiesToRemove = new();
+            private object _invalidIndexesLock = new();
             private object _entitiesToAddLock = new();
             private object _entitiesToRemoveLock = new();
-            private int _lastNonNullIndex = -1;
+            private int _lastValidIndex = -1;
 
             public List<T> Entities { get; private set; }
 
@@ -91,19 +97,43 @@ namespace DOL.GS
 
             public void Add(T entity)
             {
+                entity.EntityManagerId.OnPreAdd();
+
                 lock (_entitiesToAddLock)
                 {
                     _entitiesToAdd.Push(entity);
-                    entity.EntityManagerId.OnPreAdd();
                 }
+            }
+
+            public bool TryReuse(out T entity)
+            {
+                int index;
+                entity = null;
+
+                lock (_invalidIndexesLock)
+                {
+                    if (!_invalidIndexes.Any())
+                        return false;
+
+                    index = _invalidIndexes.Max;
+                    _invalidIndexes.Remove(index);
+                    entity = Entities[index];
+                    entity.EntityManagerId.Value = index;
+
+                    if (_lastValidIndex < index)
+                        _lastValidIndex = index;
+                }
+
+                return true;
             }
 
             public void Remove(T entity)
             {
+                entity.EntityManagerId.OnPreRemove();
+
                 lock (_entitiesToRemoveLock)
                 {
                     _entitiesToRemove.Push(entity);
-                    entity.EntityManagerId.OnPreRemove();
                 }
             }
 
@@ -138,62 +168,71 @@ namespace DOL.GS
                     }
                 }
 
-                return _lastNonNullIndex;
+                return _lastValidIndex;
             }
 
             private int AddInternal(T entity)
             {
-                if (_deletedIndexes.Any())
+                lock (_invalidIndexesLock)
                 {
-                    int index = _deletedIndexes.Max;
-                    _deletedIndexes.Remove(index);
-                    Entities[index] = entity;
+                    if (_invalidIndexes.Any())
+                    {
+                        int index = _invalidIndexes.Max;
+                        _invalidIndexes.Remove(index);
+                        Entities[index] = entity;
 
-                    if (index > _lastNonNullIndex)
-                        _lastNonNullIndex = index;
+                        if (index > _lastValidIndex)
+                            _lastValidIndex = index;
 
-                    return index;
-                }
-                else
-                {
+                        return index;
+                    }
+
                     // Increase the capacity of the list in the event that it's too small. This is a costly operation.
                     // 'Add' already does it, but we want to know when it happens and control by how much it grows (instead of doubling it).
-                    if (++_lastNonNullIndex >= Entities.Capacity)
+                    if (++_lastValidIndex >= Entities.Capacity)
                     {
                         int newCapacity = Entities.Capacity + 100;
                         log.Warn($"{typeof(T)} {nameof(Entities)} is too short. Resizing it to {newCapacity}.");
                         ListExtras.Resize(Entities, newCapacity);
                     }
-
-                    Entities.Add(entity);
-                    return _lastNonNullIndex;
                 }
+
+                Entities.Add(entity);
+                return _lastValidIndex;
             }
 
             private void RemoveInternal(int id)
             {
-                Entities[id] = null;
-                _deletedIndexes.Add(id);
+                T entity = Entities[id];
 
-                if (id == _lastNonNullIndex)
+                lock (_invalidIndexesLock)
                 {
-                    if (_deletedIndexes.Any())
+                    _invalidIndexes.Add(id);
+
+                    if (!entity.AllowReuseByEntityManager)
+                        Entities[id] = null;
+
+                    if (id != _lastValidIndex)
+                        return;
+
+                    if (!_invalidIndexes.Any())
                     {
-                        int lastIndex = _deletedIndexes.Min;
-
-                        // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
-                        foreach (int index in _deletedIndexes)
-                        {
-                            if (lastIndex - index > 0)
-                                break;
-
-                            lastIndex--;
-                        }
-
-                        _lastNonNullIndex = lastIndex;
+                        _lastValidIndex--;
+                        return;
                     }
-                    else
-                        _lastNonNullIndex--;
+
+                    int lastIndex = _invalidIndexes.Min;
+
+                    // Find the first non-contiguous number. For example if the collection contains 7 6 3 1, we should return 5.
+                    foreach (int index in _invalidIndexes)
+                    {
+                        if (lastIndex - index > 0)
+                            break;
+
+                        lastIndex--;
+                    }
+
+                    _lastValidIndex = lastIndex;
                 }
             }
         }
@@ -245,6 +284,7 @@ namespace DOL.GS
     public interface IManagedEntity
     {
         public EntityManagerId EntityManagerId { get; set; }
+        public bool AllowReuseByEntityManager { get; }
     }
 
     // Extension methods for 'List<T>' that could be moved elsewhere.

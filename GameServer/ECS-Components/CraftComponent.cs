@@ -7,6 +7,7 @@ namespace DOL.GS
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
+        public bool AllowReuseByEntityManager => false;
         public List<Recipe> Recipes { get; private set; } = new();
         private GamePlayer _owner;
         private object _recipesLock = new();

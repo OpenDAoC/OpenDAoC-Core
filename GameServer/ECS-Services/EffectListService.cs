@@ -19,21 +19,21 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<EffectListComponent> list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastNonNullIndex);
+            List<EffectListComponent> list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
-                EffectListComponent e = list[i];
+                EffectListComponent effectListComponent = list[i];
 
-                if (e == null)
+                if (effectListComponent?.EntityManagerId.IsSet != true)
                     return;
 
                 long startTick = GameLoop.GetCurrentTime();
-                HandleEffects(e, tick);
+                HandleEffects(effectListComponent, tick);
                 long stopTick = GameLoop.GetCurrentTime();
 
-                if ((stopTick - startTick) > 25)
-                    log.Warn($"Long EffectListService.Tick for {e.Owner.Name}({e.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                if (stopTick - startTick > 25)
+                    log.Warn($"Long EffectListService.Tick for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

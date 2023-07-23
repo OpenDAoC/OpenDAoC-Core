@@ -13,11 +13,16 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<CraftComponent> list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastNonNullIndex);
+            List<CraftComponent> list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
-                list[i]?.Tick(tick);
+                CraftComponent craftComponent = list[i];
+
+                if (craftComponent?.EntityManagerId.IsSet != true)
+                    return;
+
+                craftComponent.Tick(tick);
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

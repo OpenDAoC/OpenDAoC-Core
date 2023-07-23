@@ -19,14 +19,14 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<ObjectChangingSubZone> list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastNonNullIndex);
+            List<ObjectChangingSubZone> list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastValidIndex);
 
             // Remove objects from one sub zone, and add them to another.
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 ObjectChangingSubZone objectChangingSubZone = list[i];
 
-                if (objectChangingSubZone == null)
+                if (objectChangingSubZone?.EntityManagerId.IsSet != true)
                     return;
 
                 LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;

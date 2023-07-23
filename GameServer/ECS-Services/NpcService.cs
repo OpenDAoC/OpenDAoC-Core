@@ -32,13 +32,13 @@ namespace DOL.GS
                 _nullBrainCount = 0;
             }
 
-            List<ABrain> list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastNonNullIndex);
+            List<ABrain> list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 ABrain brain = list[i];
 
-                if (brain == null)
+                if (brain?.EntityManagerId.IsSet != true)
                 {
                     if (Debug)
                         Interlocked.Increment(ref _nullBrainCount);

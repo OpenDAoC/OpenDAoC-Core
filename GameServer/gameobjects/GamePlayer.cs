@@ -72,6 +72,7 @@ namespace DOL.GS
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
+        public bool AllowReuseByEntityManager => false;
         public long LastWorldUpdate { get; set; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }

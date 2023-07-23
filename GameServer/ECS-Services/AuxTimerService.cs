@@ -16,13 +16,13 @@ namespace DOL.GS
         {
             // Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<AuxECSGameTimer> list = EntityManager.UpdateAndGetAll<AuxECSGameTimer>(EntityManager.EntityType.AuxTimer, out int lastNonNullIndex);
+            List<AuxECSGameTimer> list = EntityManager.UpdateAndGetAll<AuxECSGameTimer>(EntityManager.EntityType.AuxTimer, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 AuxECSGameTimer timer = list[i];
 
-                if (timer == null)
+                if (timer?.EntityManagerId.IsSet != true)
                     return;
 
                 try
@@ -33,7 +33,7 @@ namespace DOL.GS
                         timer.Tick();
                         long stopTick = GameLoop.GetCurrentTime();
 
-                        if ((stopTick - startTick) > 25)
+                        if (stopTick - startTick > 25)
                             log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
@@ -62,6 +62,7 @@ namespace DOL.GS
         public bool IsAlive { get; set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
         public EntityManagerId EntityManagerId { get; set; } = new();
+        public bool AllowReuseByEntityManager => false;
         private PropertyCollection _properties;
 
         public AuxECSGameTimer(GameObject owner)

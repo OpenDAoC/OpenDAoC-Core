@@ -25,6 +25,7 @@ namespace DOL.GS
         public WeaponAction weaponAction;
         public AttackAction attackAction;
         public EntityManagerId EntityManagerId { get; set; } = new();
+        public bool AllowReuseByEntityManager => false;
 
         /// <summary>
         /// The objects currently attacking this living

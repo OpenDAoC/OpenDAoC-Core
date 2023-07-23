@@ -20,13 +20,13 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<GamePlayer> list = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastNonNullIndex);
+            List<GamePlayer> list = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastValidIndex);
 
-            Parallel.For(0, lastNonNullIndex + 1, i =>
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
                 GamePlayer player = list[i];
 
-                if (player == null||
+                if (player?.EntityManagerId.IsSet != true ||
                     player.Client.ClientState != GameClient.eClientState.Playing ||
                     player.ObjectState != GameObject.eObjectState.Active)
                 {
