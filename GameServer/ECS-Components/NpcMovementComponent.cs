@@ -110,13 +110,6 @@ namespace DOL.GS
                 if (distanceToTarget > 25)
                     TurnTo(targetPosition.X, targetPosition.Y);
 
-                // Cancel the ranged attack if the NPC is moving.
-                if (Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                {
-                    Owner.StopAttack();
-                    Owner.attackComponent.attackAction?.CleanUp();
-                }
-
                 _movementType |= MovementType.WALK_TO;
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
@@ -341,8 +334,16 @@ namespace DOL.GS
 
         private int FollowTick()
         {
-            if (Owner.IsCasting)
+            // Stop moving if the NPC is casting or attacking with a ranged weapon.
+            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
+            {
+                TurnTo(FollowTarget);
+
+                if (IsMoving)
+                    StopMoving();
+
                 return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+            }
 
             GameLiving followLiving = FollowTarget as GameLiving;
 
