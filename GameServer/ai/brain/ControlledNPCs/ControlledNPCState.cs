@@ -125,11 +125,10 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
         // Check for buffs, heals, etc, interrupting melee if not being interrupted.
         // Only prevent casting if we are ordering pet to come to us or go to target.
         if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && brain.WalkState != eWalkState.ComeHere && brain.WalkState != eWalkState.GoTarget))
-            brain.CheckSpells(eCheckSpellType.Defensive);
-
-        // Always check offensive spells, or pets in melee will keep blindly melee attacking, when they should be stopping to cast offensive spells.
-        if (brain.Body.CurrentSpellHandler != null)
-            return;
+        {
+            if (brain.CheckSpells(eCheckSpellType.Defensive))
+                return;
+        }
 
         // Return to defensive if our target(s) are dead.
         if (!brain.HasAggro && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
