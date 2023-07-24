@@ -249,14 +249,14 @@ namespace DOL.AI.Brain
         /// <param name="target"></param>
         public virtual void Attack(GameObject target)
 		{
-			if (m_orderAttackTarget == target)
-				return;
-
 			if (AggressionState == eAggressionState.Passive)
 			{
 				AggressionState = eAggressionState.Defensive;
 				UpdatePetWindow();
 			}
+
+			if (m_orderAttackTarget == target)
+				return;
 
 			m_orderAttackTarget = target as GameLiving;
 			FSM.SetCurrentState(eFSMStateType.AGGRO);

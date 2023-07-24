@@ -86,7 +86,6 @@ namespace DOL.AI.Brain
 		public override void Attack(GameObject target)
 		{
 			base.Attack(target);
-			//Check for any abilities
 			CheckAbilities();
 
 			if (MinionsAssisting && Body.ControlledNpcList != null)
@@ -94,10 +93,7 @@ namespace DOL.AI.Brain
 				lock (Body.ControlledNpcList)
 				{
 					foreach (BDPetBrain icb in Body.ControlledNpcList)
-					{
-						if (icb != null)
-							icb.Attack(target);
-					}
+						icb?.Attack(target);
 				}
 			}
 		}

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Reflection;
 using DOL.GS;
 using log4net;
@@ -46,6 +47,9 @@ namespace DOL.AI.Brain
 		{
 			// Don't stop casting. Buffers should prioritize buffing.
 			// 'AttackMostWanted()' will be called automatically once the pet is done buffing.
+			if (m_orderAttackTarget == target)
+				return;
+
 			m_orderAttackTarget = target as GameLiving;
 			FSM.SetCurrentState(eFSMStateType.AGGRO);
 		}
