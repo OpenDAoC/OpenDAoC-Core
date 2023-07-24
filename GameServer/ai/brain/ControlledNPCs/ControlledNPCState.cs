@@ -122,19 +122,23 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             brain.previousIsStealthed = player.IsStealthed;
         }*/
 
+        bool hasTarget = brain.HasAggro || brain.OrderedAttackTarget != null;
+
         // Check for buffs, heals, etc, interrupting melee if not being interrupted.
-        // Only prevent casting if we are ordering pet to come to us or go to target.
-        if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && brain.WalkState != eWalkState.ComeHere && brain.WalkState != eWalkState.GoTarget))
+        if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && !hasTarget))
         {
             if (brain.CheckSpells(eCheckSpellType.Defensive))
                 return;
         }
 
-        // Return to defensive if our target(s) are dead.
-        if (!brain.HasAggro && brain.OrderedAttackTarget == null && brain.AggressionState != eAggressionState.Aggressive)
+        // Return to defensive if there's no valid target.
+        if (!hasTarget && brain.AggressionState != eAggressionState.Aggressive)
+        {
             brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-        else
-            brain.AttackMostWanted();
+            return;
+        }
+
+        brain.AttackMostWanted();
     }
 }
 
