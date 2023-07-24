@@ -854,10 +854,12 @@ namespace DOL.GS
                 return false;
 
             // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-            if (owner is not GamePlayer && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            if (owner is GameNPC npcOwner && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                if (owner.IsMoving || !owner.IsWithinRadius(owner.TargetObject, owner.attackComponent.AttackRange))
+                if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, npcOwner.attackComponent.AttackRange))
                     return false;
+                else if (npcOwner.IsMoving)
+                    npcOwner.StopMoving();
             }
 
             attackAction = owner.CreateAttackAction();
