@@ -104,7 +104,7 @@ public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
             return;
         }
 
-        brain.CheckSpells(eCheckSpellType.Offensive);
+        //brain.CheckSpells(eCheckSpellType.Offensive);
 
         if (brain.AggressionState == eAggressionState.Aggressive)
             brain.CheckProximityAggro();
