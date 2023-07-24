@@ -3678,8 +3678,9 @@ namespace DOL.GS
 
 		#region Spell
 
-		private List<Spell> m_spells = new List<Spell>(0);
-		private ConcurrentDictionary<GameObject, Tuple<Spell, SpellLine, long>> m_spellTargetLosChecks = new();
+		private List<Spell> m_spells = new(0);
+		private ConcurrentDictionary<GameObject, (Spell, SpellLine, long)> m_castSpellLosChecks = new();
+		private bool m_spellCastedFromLosCheck;
 
 		/// <summary>
 		/// property of spell array of NPC
@@ -3906,12 +3907,12 @@ namespace DOL.GS
 		{
 			// Good opportunity to clean up our 'm_spellTargetLosChecks'.
 			// Entries older than 3 seconds are removed, so that another check can be performed in case the previous one never was.
-			for (int i = m_spellTargetLosChecks.Count - 1 ; i >= 0 ; i--)
+			for (int i = m_castSpellLosChecks.Count - 1; i >= 0; i--)
 			{
-				var element = m_spellTargetLosChecks.ElementAt(i);
+				var element = m_castSpellLosChecks.ElementAt(i);
 
 				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
-					m_spellTargetLosChecks.TryRemove(element.Key, out _);
+					m_castSpellLosChecks.TryRemove(element.Key, out _);
 			}
 
 			if (IsIncapacitated)
@@ -3922,7 +3923,7 @@ namespace DOL.GS
 			if (line.KeyName == GlobalSpellsLines.Mob_Spells)
 			{
 				// NPC spells will get the level equal to their caster
-				spellToCast = (Spell)spell.Clone();
+				spellToCast = (Spell) spell.Clone();
 				spellToCast.Level = Level;
 			}
 			else
@@ -3954,13 +3955,18 @@ namespace DOL.GS
 			if (LosChecker == null)
 				return base.CastSpell(spellToCast, line);
 
-			if (m_spellTargetLosChecks.TryAdd(TargetObject, new Tuple<Spell, SpellLine, long>(spellToCast, line, GameLoop.GameLoopTime)))
-				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(StartSpellAttackCheckLos));
+			bool spellCastedFromLosCheck = m_spellCastedFromLosCheck;
 
-			return false;
+			if (spellCastedFromLosCheck)
+				m_spellCastedFromLosCheck = false;
+
+			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoop.GameLoopTime)))
+				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(CastSpellLosCheckReply));
+
+			return spellCastedFromLosCheck;
 		}
 
-		public void StartSpellAttackCheckLos(GamePlayer player, ushort response, ushort targetOID)
+		public void CastSpellLosCheckReply(GamePlayer player, ushort response, ushort targetOID)
 		{
 			if (targetOID == 0)
 				return;
@@ -3970,7 +3976,7 @@ namespace DOL.GS
 			if (target == null)
 				return;
 
-			if (m_spellTargetLosChecks.TryRemove(target, out Tuple<Spell, SpellLine, long> value))
+			if (m_castSpellLosChecks.TryRemove(target, out (Spell, SpellLine, long) value))
 			{
 				Spell spell = value.Item1;
 				SpellLine line = value.Item2;
@@ -3980,10 +3986,13 @@ namespace DOL.GS
 					if (target is GameLiving livingTarget && livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
 						target = livingTarget.ControlledBrain?.Body;
 
-					CastSpell(spell, line, target as GameLiving);
+					m_spellCastedFromLosCheck = CastSpell(spell, line, target as GameLiving);
 				}
 				else
+				{
+					m_spellCastedFromLosCheck = false;
 					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
+				}
 			}
 		}
 

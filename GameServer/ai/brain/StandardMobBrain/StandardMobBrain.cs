@@ -484,7 +484,9 @@ namespace DOL.AI.Brain
 
             if (Body.TargetObject != null)
             {
-                if (!CheckSpells(eCheckSpellType.Offensive))
+                if (CheckSpells(eCheckSpellType.Offensive))
+                    Body.StopAttack();
+                else
                     Body.StartAttack(Body.TargetObject);
             }
         }
@@ -987,8 +989,8 @@ namespace DOL.AI.Brain
 
             // clear current target, set target based on spell type, cast spell, return target to original target
             GameObject lastTarget = Body.TargetObject;
-
             Body.TargetObject = null;
+
             switch (spell.SpellType)
             {
                 #region Buffs
@@ -1174,7 +1176,6 @@ namespace DOL.AI.Brain
                 casted = Body.CastSpell(spell, m_mobSpellLine);
 
             Body.TargetObject = lastTarget;
-
             return casted;
         }
 
@@ -1188,24 +1189,22 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || (!LivingHasEffect(living,spell) || spell.SpellType == eSpellType.DirectDamageWithDebuff || spell.SpellType == eSpellType.DamageSpeedDecrease)))
+            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || !LivingHasEffect(living,spell) || spell.SpellType == eSpellType.DirectDamageWithDebuff || spell.SpellType == eSpellType.DamageSpeedDecrease))
             {
-                // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)
                     Body.TurnTo(Body.TargetObject);
 
                 casted = Body.CastSpell(spell, m_mobSpellLine);
 
-                // if (casted && spell.CastTime > 0 && Body.IsMoving)
-                //Stopfollowing if spell casted and the cast time > 0 (non-instant spells)
-                if (casted && spell.CastTime > 0)
-                    Body.StopFollowing();
-                //If instant cast and spell casted, and current follow target is not the target object, then switch follow target to current TargetObject
-                else if(casted && (spell.CastTime == 0 && Body.FollowTarget != Body.TargetObject))
+                if (casted)
                 {
-                    Body.Follow(Body.TargetObject, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
+                    if (spell.CastTime > 0)
+                        Body.StopFollowing();
+                    else if (Body.FollowTarget != Body.TargetObject)
+                        Body.Follow(Body.TargetObject, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
                 }
             }
+
             return casted;
         }
 
