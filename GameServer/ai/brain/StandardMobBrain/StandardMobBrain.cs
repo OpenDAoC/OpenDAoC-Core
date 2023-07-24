@@ -648,7 +648,7 @@ namespace DOL.AI.Brain
 				// Ensure that non damaging hits still result in the mob reacting.
 				ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
 				FSM.SetCurrentState(eFSMStateType.AGGRO);
-				FSM.Think();
+				Think();
 			}
 			else if (damage > 0)
 				ConvertDamageToAggroAmount(ad.Attacker, damage);

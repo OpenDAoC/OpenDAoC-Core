@@ -60,5 +60,6 @@ namespace DOL.AI.Brain
 		public override void ComeHere() { }
 		public override void Goto(GameObject target) { }
 		public override void UpdatePetWindow() { }
+		public override void OnAttackedByEnemy(AttackData ad) { }
 	}
 }
