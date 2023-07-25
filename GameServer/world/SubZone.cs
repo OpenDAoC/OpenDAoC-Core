@@ -45,7 +45,8 @@ namespace DOL.GS
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
         public SubZone CurrentSubZone { get; set; }
-        private int _isSubZoneChangeBeingHandled; // Used to prevent multiple reader threads from adding it to the 'EntityManager' more than once.
+        private int _isChangingSubZone;
+        public bool StartSubZoneChange => Interlocked.Exchange(ref _isChangingSubZone, 1) == 0; // Returns true the first time it's called.
 
         public SubZoneObject(LightConcurrentLinkedList<GameObject>.Node node, SubZone currentSubZone)
         {
@@ -53,10 +54,9 @@ namespace DOL.GS
             CurrentSubZone = currentSubZone;
         }
 
-        public bool IsSubZoneChangeBeingHandled
+        public void ResetSubZoneChange()
         {
-            get => Interlocked.Exchange(ref _isSubZoneChangeBeingHandled, 1) == 1; // Returns false the first time it's called.
-            set => _isSubZoneChangeBeingHandled = value ? 1 : 0;
+            _isChangingSubZone = 0;
         }
 
         public void CheckForRelocation()
@@ -69,30 +69,32 @@ namespace DOL.GS
     public class ObjectChangingSubZone : IManagedEntity
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
+        public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new();
         public bool AllowReuseByEntityManager => true;
 
-        private ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        private ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
-            Initialize(node, destinationZone, destinationSubZone);
+            Initialize(node, subZoneObject, destinationZone, destinationSubZone);
         }
 
-        public static void Create(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        public static void Create(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
             if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
-                objectChangingSubZone.Initialize(node, destinationZone, destinationSubZone);
+                objectChangingSubZone.Initialize(node, subZoneObject, destinationZone, destinationSubZone);
             else
             {
-                objectChangingSubZone = new(node, destinationZone, destinationSubZone);
+                objectChangingSubZone = new(node, subZoneObject, destinationZone, destinationSubZone);
                 EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
             }
         }
 
-        private void Initialize(LightConcurrentLinkedList<GameObject>.Node node, Zone destinationZone, SubZone destinationSubZone)
+        private void Initialize(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
             Node = node;
+            SubZoneObject = subZoneObject;
             DestinationZone = destinationZone;
             DestinationSubZone = destinationSubZone;
         }

@@ -30,8 +30,7 @@ namespace DOL.GS
                     return;
 
                 LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;
-                GameObject gameObject = node.Item;
-                SubZoneObject subZoneObject = gameObject.SubZoneObject;
+                SubZoneObject subZoneObject = objectChangingSubZone.SubZoneObject;
                 Zone currentZone = subZoneObject.CurrentSubZone?.ParentZone;
                 Zone destinationZone = objectChangingSubZone.DestinationZone;
                 bool changingZone = currentZone != destinationZone;
@@ -69,12 +68,12 @@ namespace DOL.GS
                     }
 
                     subZoneObject.CurrentSubZone = destinationSubZone;
-                    subZoneObject.IsSubZoneChangeBeingHandled = false;
 
                     if (changingZone)
                         destinationZone.OnObjectAddedToZone();
                 }
 
+                subZoneObject.ResetSubZoneChange();
                 EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
             });
 

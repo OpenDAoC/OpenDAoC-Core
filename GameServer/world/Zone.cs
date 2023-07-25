@@ -328,18 +328,23 @@ namespace DOL.GS
             if (!_initialized)
                 InitializeZone();
 
-            LightConcurrentLinkedList<GameObject>.Node node = new(gameObject);
-            SubZoneObject subZoneObject = new(node, null);
-            gameObject.SubZoneObject = subZoneObject;
             SubZone subZone = GetSubZone(GetSubZoneIndex(gameObject.X, gameObject.Y));
 
             if (subZone == null)
             {
-                log.Error($"Couldn't add an object to a zone (Name: {gameObject.Name}) (ID: {gameObject.InternalID})");
+                if (log.IsErrorEnabled)
+                    log.Error($"Couldn't find a valid subzone for an object (Object: {gameObject})");
+
                 return false;
             }
 
-            ObjectChangingSubZone.Create(node, this, subZone);
+            LightConcurrentLinkedList<GameObject>.Node node = new(gameObject);
+            SubZoneObject subZoneObject= new(node, null);
+            gameObject.SubZoneObject = subZoneObject;
+
+            if (subZoneObject.StartSubZoneChange)
+                ObjectChangingSubZone.Create(node, subZoneObject, this, subZone);
+
             return true;
         }
 
@@ -429,8 +434,10 @@ namespace DOL.GS
                         // Inactive or deleted objects can't remove themselves.
                         if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
                         {
-                            if (!gameObject.SubZoneObject.IsSubZoneChangeBeingHandled)
-                                ObjectChangingSubZone.Create(node, null, null);
+                            SubZoneObject subZoneObject = gameObject.SubZoneObject;
+
+                            if (subZoneObject.StartSubZoneChange)
+                                ObjectChangingSubZone.Create(node, subZoneObject, null, null);
 
                             continue;
                         }
@@ -481,17 +488,17 @@ namespace DOL.GS
                     Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
 
-                    if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        ObjectChangingSubZone.Create(node, newZone, newSubZone);
+                    if (subZoneObject.StartSubZoneChange)
+                        ObjectChangingSubZone.Create(node, subZoneObject, newZone, newSubZone);
                 }
                 else if (objectSubZoneIndex != newSubZoneIndex)
                 {
-                    if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                        ObjectChangingSubZone.Create(node, this, _subZones[objectSubZoneIndex]);
+                    if (subZoneObject.StartSubZoneChange)
+                        ObjectChangingSubZone.Create(node, subZoneObject, this, _subZones[objectSubZoneIndex]);
                 }
             }
-            else if (!subZoneObject.IsSubZoneChangeBeingHandled)
-                ObjectChangingSubZone.Create(node, null, null);
+            else if (subZoneObject.StartSubZoneChange)
+                ObjectChangingSubZone.Create(node, subZoneObject, null, null);
         }
 
         public void OnObjectAddedToZone()

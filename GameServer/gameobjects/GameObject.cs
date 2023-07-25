@@ -710,7 +710,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (!zone.AddObject(this) || !CurrentRegion.AddObject(this))
+			if (!CurrentRegion.AddObject(this) || !zone.AddObject(this))
 				return false;
 
 			Notify(GameObjectEvent.AddToWorld, this);
