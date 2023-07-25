@@ -419,8 +419,8 @@ namespace DOL.GS.Styles
 					
 					if (player != null)
 					{
-						//modify style damage by property value
-						attackData.StyleDamage *= 1 + player.GetModified(eProperty.StyleDamage);
+						// Modify style damage by property value.
+						attackData.StyleDamage = (int) (attackData.StyleDamage * (1 + player.GetModified(eProperty.StyleDamage) / 100.0));
 					}
 
 					// Style absorb bonus.
