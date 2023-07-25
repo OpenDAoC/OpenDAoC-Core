@@ -18,11 +18,9 @@
  */
 
 using System;
-using DOL.GS;
-using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 using DOL.GS.Effects;
+using DOL.GS.Spells;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -111,25 +109,26 @@ namespace DOL.GS.Commands
 				case "spell":
 					{
 						Spell spell = SkillBase.GetSpellByID(id);
-						SpellLine line = new SpellLine("GMCast", "GM Cast", "unknown", false);
+						SpellLine line = new("GMCast", "GM Cast", "unknown", false);
+
 						if (spell != null)
 						{
-							if ((target is GamePlayer) && (target != client.Player) && (spell.Target.ToLower() != "self"))
+							if (target is GamePlayer targetPlayer && targetPlayer != client.Player && spell.Target.ToLower() != "self")
 							{
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Cast.Spell.CastOnLiving", spell.Name, target.Name));
-								DisplayMessage(((GamePlayer)target).Client, LanguageMgr.GetTranslation(((GamePlayer)target).Client, "GMCommands.Cast.Spell.GMCastOnYou", ((client.Account.PrivLevel == 2) ? "GM" : "Admin"), client.Player.Name));
+								DisplayMessage(targetPlayer.Client, LanguageMgr.GetTranslation(targetPlayer.Client, "GMCommands.Cast.Spell.GMCastOnYou", client.Account.PrivLevel == 2 ? "GM" : "Admin", client.Player.Name, spell.Name));
 							}
-							else if ((target == client.Player) || (spell.Target.ToLower() == "self"))
+							else if (target == client.Player || spell.Target.ToLower() == "self")
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Cast.Spell.CastOnSelf", spell.Name));
 
 							ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, line);
+
 							if (spellHandler != null)
 								spellHandler.StartSpell(target);
 						}
 						else
-						{
 							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Cast.Spell.Inexistent", id.ToString()));
-						}
+
 						break;
 					}
 					#endregion Spell
