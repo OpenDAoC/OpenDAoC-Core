@@ -416,6 +416,12 @@ namespace DOL.GS.Styles
 					}
 					else
 						attackData.StyleDamage = (int)(talyGrowth * talySpec * talySpeed / talyCap * attackData.Damage);
+					
+					if (player != null)
+					{
+						//modify style damage by property value
+						attackData.StyleDamage *= 1 + player.GetModified(eProperty.StyleDamage);
+					}
 
 					// Style absorb bonus.
 					int absorb = 0;
