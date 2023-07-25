@@ -17,59 +17,75 @@
  *
  */
 
-using DOL.Events;
+using System.Reflection;
 using DOL.GS;
+using DOL.GS.Spells;
+using log4net;
 
 namespace DOL.AI.Brain
 {
-	public class BomberBrain : ControlledNpcBrain
-	{
-		const string BOMBERSPAWNTICK = "bomberspawntick";
+    public class BomberBrain : ControlledNpcBrain
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public BomberBrain(GameLiving owner) : base(owner) { }
+        private Spell _spell;
+        private SpellLine _spellLine;
+        private long _expireTime = GameLoop.GameLoopTime + 60 * 1000;
 
-		public override int ThinkInterval
-		{
-			get { return 700; }
-		}
+        public BomberBrain(GameLiving owner, Spell spell, SpellLine spellLine) : base(owner)
+        {
+            _spell = spell;
+            _spellLine = spellLine;
+        }
 
-		protected override bool CheckDefensiveSpells(Spell spell)
-		{
-			return true;
-		}
+        public override int ThinkInterval => 300;
 
-		protected override bool CheckOffensiveSpells(Spell spell)
-		{
-			return true;
-		}
+        protected override bool CheckDefensiveSpells(Spell spell)
+        {
+            return true;
+        }
 
-		#region Think
-		public override void Think()
-		{
-			var spawnTick = Body.TempProperties.getProperty<long>(BOMBERSPAWNTICK);
+        protected override bool CheckOffensiveSpells(Spell spell)
+        {
+            return true;
+        }
 
-			if (GameLoop.GameLoopTime - spawnTick > 60 * 1000)
-			{
-				Body.Delete();
-			}
-			
-			GameLiving living = Body.TempProperties.getProperty<object>("bombertarget", null) as GameLiving;
-			if(living == null) return;
-			if(Body.IsWithinRadius( living, 150 ))
-			{
-				Body.Notify(GameNPCEvent.ArriveAtTarget, Body);
-			}
-		}
-		
-		/// <summary>
-		/// Don't follow owner
-		/// </summary>
-		public override void FollowOwner() { }
-		#endregion
+        public override void Think()
+        {
+            if (GameLoop.GameLoopTime >= _expireTime)
+                Body.Delete();
 
-		/// <summary>
-		/// Updates the pet window
-		/// </summary>
-		public override void UpdatePetWindow() { }
-	}
+            if (Body.IsWithinRadius(Body.TargetObject, 150))
+                DeliverPayload();
+        }
+
+        private void DeliverPayload()
+        {
+            Spell subSpell = SkillBase.GetSpellByID(_spell.SubSpellID);
+
+            if (subSpell == null)
+            {
+                if (log.IsErrorEnabled && subSpell == null)
+                    log.Error("Bomber SubspellID for Bomber SpellID: " + _spell.ID + " is not implemented yet");
+
+                Body.Health = 0;
+                Body.Delete();
+                return;
+            }
+
+            subSpell.Level = _spell.Level;
+
+            if (Body.IsWithinRadius(Body.TargetObject, 350))
+            {
+                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(m_owner, subSpell, SkillBase.GetSpellLine(_spellLine.KeyName));
+                spellHandler.StartSpell(Body.TargetObject as GameLiving);
+            }
+
+            Body.Health = 0;
+            Body.Delete();
+        }
+
+        public override void FollowOwner() { }
+        public override void UpdatePetWindow() { }
+    }
 }

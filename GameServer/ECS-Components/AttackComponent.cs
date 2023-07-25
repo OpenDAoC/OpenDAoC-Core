@@ -2901,19 +2901,11 @@ namespace DOL.GS
         /// <param name="weapon">attack weapon</param>
         public double UnstyledDamageCap(InventoryItem weapon)
         {
-            if (owner is GameEpicBoss) //damage cap for epic encounters if they use melee weapons,if errors appear remove from here
+            if (owner is GameEpicBoss) // Damage cap for epic encounters if they use melee weapons.
             {
                 var p = owner as GameEpicBoss;
-                return AttackDamage(weapon) * ((double) p.Empathy / 100) *
-                       ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-            } ///////////////////////////remove until here if errors appear
-              
-            if (owner is GameDragon) //damage cap for dragon encounter
-            {
-                var p = owner as GameDragon;
-                return AttackDamage(weapon) * ((double) p.Empathy / 100) *
-                       ServerProperties.Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-            } 
+                return AttackDamage(weapon) * ((double) p.Empathy / 100) * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+            }
 
             if (owner is GamePlayer)
             {

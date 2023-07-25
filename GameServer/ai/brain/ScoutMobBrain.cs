@@ -16,14 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS;
 using System.Collections;
-using DOL.Events;
-using log4net;
 using System.Reflection;
+using DOL.Events;
+using DOL.GS;
+using DOL.GS.Effects;
+using log4net;
 
 namespace DOL.AI.Brain
 {
@@ -45,8 +45,25 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
-			if (IsGettingHelp) return;      // Ignore everyone while running for help.
-			base.Think();
+			if (IsGettingHelp && Body.IsWithinRadius(m_helperNPC, 200))
+			{
+				// We arrived at our target mob, let's have a look around
+				// and see if we can get multiple adds.
+				foreach (GameNPC npc in Body.GetNPCsInRadius(600))
+				{
+					if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
+						ReportTargets(npc);
+				}
+
+				// Once that's done, aggro on targets ourselves and run back.
+				ReportTargets(Body);
+				m_targetList.Clear();
+				m_helperNPC = null;
+				IsGettingHelp = false;
+				AttackMostWanted();
+			}
+			else
+				base.Think();
 		}
 
 		private bool m_scouting = true;
@@ -89,9 +106,20 @@ namespace DOL.AI.Brain
 			// will report all these players to any potential adds.
 
 			m_targetList.Clear();
+
 			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
-				if (!m_targetList.Contains(player))
-					m_targetList.Add(player);
+			{
+				if (!CanAggroTarget(player))
+					continue;
+
+				if (player.IsStealthed || player.Steed != null)
+					continue;
+
+				if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+					continue;
+
+				m_targetList.Add(player);
+			}
 
 			// Once we got at least one player we stop scouting and run for help.
 
@@ -143,8 +171,10 @@ namespace DOL.AI.Brain
 
 			ArrayList addList = new ArrayList();
 			foreach (GameNPC npc in Body.GetNPCsInRadius(ScoutRange))
+			{
 				if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
 					addList.Add(npc);
+			}
 
 			// If there is no help available, fall back on standard mob
 			// behaviour.
@@ -161,7 +191,7 @@ namespace DOL.AI.Brain
 
 			IsGettingHelp = true;
 			m_helperNPC = (GameNPC) addList[Util.Random(1, addList.Count)-1];
-			Body.Follow(m_helperNPC, 90, ScoutRange);
+			Body.Follow(m_helperNPC, 90, int.MaxValue);
 		}
 
 		/// <summary>
@@ -189,23 +219,8 @@ namespace DOL.AI.Brain
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
-			if (e == GameNPCEvent.ArriveAtTarget && IsGettingHelp && m_targetList.Count > 0)
-			{
-				// We arrived at our target mob, let's have a look around
-				// and see if we can get multiple adds.
 
-				foreach (GameNPC npc in Body.GetNPCsInRadius(500))
-					if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
-						ReportTargets(npc);
-
-				// Once that's done, aggro on targets ourselves and run back.
-
-				ReportTargets(Body);
-				m_targetList.Clear();
-				IsGettingHelp = false;
-				AttackMostWanted();
-			}
-			else if (e == GameNPCEvent.TakeDamage)
+			if (e == GameObjectEvent.TakeDamage)
 			{
 				// If we are attacked at any point we'll stop scouting or
 				// running for help.

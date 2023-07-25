@@ -16,14 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Events;
+using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -258,8 +259,6 @@ namespace DOL.GS.Spells
 			        if (charmMob is Enchanter) // Item enchanter NPCs
 				        isCharmable = false;
 			        if (charmMob is Recharger) // Item recharge NPCs
-				        isCharmable = false;
-			        if (charmMob is GameDragon) // Any endgame Dragon (e.g., Gjal)
 				        isCharmable = false;
 			        if (charmMob is GameEpicBoss or GameEpicNPC) // Any epic mobs or bosses
 				        isCharmable = false;

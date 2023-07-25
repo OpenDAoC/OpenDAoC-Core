@@ -19,7 +19,6 @@
 
 using System;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -156,21 +155,6 @@ namespace DOL.GS
 			}
 
 			return base.ReceiveItem(source, item);
-		}
-
-		/// <summary>
-		/// Handles 'horse route end' events
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
-		public void OnHorseAtPathEnd(DOLEvent e, object o, EventArgs args)
-		{
-			if (!(o is GameNPC)) return;
-			GameNPC npc = (GameNPC)o;
-			GameEventMgr.RemoveHandler(npc, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
-			npc.StopMoving();
-			npc.RemoveFromWorld();
 		}
 
 		/// <summary>

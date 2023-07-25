@@ -65,7 +65,7 @@ namespace DOL.GS
         }
     }
 
-    // Temporary objects to be added to 'EntityManager' and consummed by 'ZoneService', representing an object to be moved from one 'SubZone' to another.
+    // Temporary objects to be added to 'EntityManager' and consumed by 'ZoneService', representing an object to be moved from one 'SubZone' to another.
     public class ObjectChangingSubZone : IManagedEntity
     {
         public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }

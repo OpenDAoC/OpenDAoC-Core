@@ -870,14 +870,14 @@ namespace DOL.GS.Spells
 			// Cancel engage if user starts attack
 			if (m_caster.IsEngaging)
 			{
-				EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(m_caster, eEffect.Engage);
+				EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(m_caster, eEffect.Engage);
 
 				if (engage != null)
 					engage.Cancel(false);
 			}
 
-			if (Caster is not GamePlayer)
-				Caster.Notify(GameLivingEvent.CastSucceeded, this, new PetSpellEventArgs(Spell, SpellLine, selectedTarget));
+			if (Caster is NecromancerPet necromancerPet && necromancerPet.Brain is NecromancerPetBrain necromancerPetBrain)
+				necromancerPetBrain.OnPetBeginCast(Spell, SpellLine);
 
 			return true;
 		}

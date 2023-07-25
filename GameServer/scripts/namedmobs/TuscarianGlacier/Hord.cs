@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
         {
             base.Notify(e, sender, args);
 
-            if (e == GameNPCEvent.TakeDamage)
+            if (e == GameObjectEvent.TakeDamage)
             {
                 if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
                 {

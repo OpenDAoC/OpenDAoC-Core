@@ -101,7 +101,7 @@ namespace DOL.GS
 			if (item.Name.ToUpper().Contains("TICKET TO") || item.Description.ToUpper() == "TICKET")
 			{
 				// Give the ticket to the merchant
-				InventoryItem ticket = player.Inventory.GetFirstItemByName(item.Name, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) as InventoryItem;
+				InventoryItem ticket = player.Inventory.GetFirstItemByName(item.Name, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 				if (ticket != null)
 					ReceiveItem(player, ticket);
 			}
@@ -242,7 +242,6 @@ namespace DOL.GS
 						mount.MaxSpeedBase = 1500;
 						mount.AddToWorld();
 						mount.CurrentWaypoint = path;
-						//GameEventMgr.AddHandler(mount, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						new MountHorseAction(player, mount).Start(400);
 						new HorseRideAction(mount).Start(4000);
 						return true;
@@ -273,30 +272,6 @@ namespace DOL.GS
 				}
 			}
 			return false;
-		}
-
-
-		private void SendReply(GamePlayer target, string msg)
-		{
-			target.Out.SendMessage(
-				msg,
-				eChatType.CT_System, eChatLoc.CL_PopupWindow);
-		}
-
-		/// <summary>
-		/// Handles 'horse route end' events
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="o"></param>
-		/// <param name="args"></param>
-		public void OnHorseAtPathEnd(DOLEvent e, object o, EventArgs args)
-		{
-			if (!(o is GameNPC)) return;
-			GameNPC npc = (GameNPC)o;
-
-			GameEventMgr.RemoveHandler(npc, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
-			npc.StopMoving();
-			npc.RemoveFromWorld();
 		}
 
 		/// <summary>

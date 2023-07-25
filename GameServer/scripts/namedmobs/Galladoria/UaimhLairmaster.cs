@@ -5,16 +5,11 @@
  */
 
 using System;
-using System.Collections;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
-using DOL.GS;
-using DOL.GS.Behaviour.Actions;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.DOL.AI.Brain;
-using DOL.GS.Styles;
-using FiniteStateMachine;
 
 namespace DOL.GS.Scripts
 {
@@ -144,13 +139,12 @@ namespace DOL.GS.Scripts
             StopAttack();
             StopFollowing();
             brain.AggroTable.Clear();
-            EvadeChance = 100;
             ReturnToSpawnPoint(MaxSpeed);
         }
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (EvadeChance == 100)
+            if (IsReturningToSpawnPoint)
                 return;
 
             base.OnAttackedByEnemy(ad);
@@ -178,11 +172,9 @@ namespace DOL.GS.Scripts
 
             if (e == GameObjectEvent.TakeDamage)
             {
-                if (CheckHealth()) return;
+                if (CheckHealth())
+                    return;
             }
-
-            if (e == GameNPCEvent.ArriveAtTarget)
-                EvadeChance = 0;
         }
 
         #endregion

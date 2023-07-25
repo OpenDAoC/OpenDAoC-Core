@@ -4,10 +4,10 @@ using System;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Class to override default respawn behaviour
-    /// </summary>
-    public class Alluvian : GameNPC
+	/// <summary>
+	/// Class to override default respawn behaviour
+	/// </summary>
+	public class Alluvian : GameNPC
 	{
 		public Alluvian() : base()
 		{
@@ -60,7 +60,7 @@ namespace DOL.GS
 			globulespawn.AddToWorld();
 			GlobuleNumber++;
 			brain.WalkFromSpawn();
-			GameEventMgr.AddHandler(globulespawn, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
+			GameEventMgr.AddHandler(globulespawn, GameLivingEvent.Dying, new DOLEventHandler(GlobuleHasDied));
 			return 0;
 		}
 
@@ -73,7 +73,7 @@ namespace DOL.GS
 		public static void GlobuleHasDied(DOLEvent e, object sender, EventArgs args)
 		{
 			GlobuleNumber--;
-			GameEventMgr.RemoveHandler(sender, GameNPCEvent.Dying, new DOLEventHandler(GlobuleHasDied));
+			GameEventMgr.RemoveHandler(sender, GameLivingEvent.Dying, new DOLEventHandler(GlobuleHasDied));
 			return;
 		}
 	}

@@ -1,13 +1,14 @@
 /*
 <author>Kelt</author>
  */
+
+using System;
+using System.Reflection;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using System;
-using System.Reflection;
 
 namespace DOL.GS.Scripts
 {
@@ -165,28 +166,14 @@ namespace DOL.GS.Scripts
         /// </summary>
         public override void ReturnToSpawnPoint()
         {
-            EvadeChance = 100;
             ReturnToSpawnPoint(MaxSpeed);
         }
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (EvadeChance == 100)
+            if (IsReturningToSpawnPoint)
                 return;
 
             base.OnAttackedByEnemy(ad);
-        }
-        /// <summary>
-        /// Handle event notifications.
-        /// </summary>
-        /// <param name="e">The event that occured.</param>
-        /// <param name="sender">The sender of the event.</param>
-        public override void Notify(DOLEvent e, object sender)
-        {
-            base.Notify(e, sender);
-            // When Aros the Spiritmaster arrives at its spawn point, make it vulnerable again.
-
-            if (e == GameNPCEvent.ArriveAtTarget)
-                EvadeChance = 0;
         }
 
         #region Health

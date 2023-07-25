@@ -1854,10 +1854,11 @@ namespace DOL.GS
 				return false;
 
 			rider.MoveTo(CurrentRegionID, X, Y, Z, Heading);
-
-			Notify(GameNPCEvent.RiderMount, this, new RiderMountEventArgs(rider, this));
 			int slot = GetFreeArrayLocation();
-			if(slot == -1) return false; //full
+
+			if (slot == -1)
+				return false; //full
+
 			Riders[slot] = rider;
 			rider.Steed = this;
 			return true;
@@ -1882,9 +1883,6 @@ namespace DOL.GS
 			if (Riders[slot] != null)
 				return false;
 
-			//rider.MoveTo(CurrentRegionID, X, Y, Z, Heading);
-
-			Notify(GameNPCEvent.RiderMount, this, new RiderMountEventArgs(rider, this));
 			Riders[slot] = rider;
 			rider.Steed = this;
 			return true;
@@ -1905,15 +1903,12 @@ namespace DOL.GS
 				return false;
 
 			int slot = RiderArrayLocation(player);
+
 			if (slot < 0)
-			{
 				return false;
-			}
+
 			Riders[slot] = null;
-
-			Notify(GameNPCEvent.RiderDismount, this, new RiderDismountEventArgs(player, this));
 			player.Steed = null;
-
 			return true;
 		}
 
