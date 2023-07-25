@@ -16,13 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -349,10 +348,8 @@ namespace DOL.GS
 		/// <returns>true if successfull</returns>
 		public bool PromotePlayer(GamePlayer player, int classid, string messageToPlayer, InventoryItem[] gifts)
 		{
-
-			if (player == null) return false;
-
-			ICharacterClass oldClass = player.CharacterClass;
+			if (player == null)
+				return false;
 
 			// Player was promoted
 			if (player.SetCharacterClass(classid))
@@ -384,12 +381,10 @@ namespace DOL.GS
 
 				// after gifts
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Accepted", player.CharacterClass.Profession), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-				Notify(GameTrainerEvent.PlayerPromoted, this, new PlayerPromotedEventArgs(player, oldClass));
-
 				player.SaveIntoDatabase();
 				return true;
 			}
+
 			return false;
 		}
 
