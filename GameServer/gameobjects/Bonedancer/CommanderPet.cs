@@ -173,10 +173,10 @@ namespace DOL.GS
 		/// <returns>True, if string needs further processing.</returns>
 		public override bool WhisperReceive(GameLiving source, string str)
 		{
-			return false;
 			// Everything below this comment is added in 1.83, and should not exist in a strict 1.65 level. Feel free to add it back in if desired.
+			return false;
 
-			if (!(source is GamePlayer player) || player != Owner)
+			if (source is not GamePlayer player || player != Owner)
 				return false;
 
 			string[] strargs = str.ToUpper().Split(new char[] { ' ', '-' });

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -35,11 +36,22 @@ namespace DOL.GS
 			get => base.TargetObject;
 			set
 			{
-				// 1.60:
-				// - A Necromancer's target window will now update to reflect a target his pet has acquired, if he does not already have a target.
-				if (TargetObject != value && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
-					playerOwner.Client.Out.SendChangeTarget(value);
+				if (TargetObject == value)
+					return;
+
+				bool newTarget = value != null;
 				base.TargetObject = value;
+
+				if (newTarget)
+				{
+					// 1.60:
+					// - A Necromancer's target window will now update to reflect a target his pet has acquired, if he does not already have a target.
+					if (newTarget && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
+						playerOwner.Client.Out.SendChangeTarget(value);
+
+					if (newTarget && EffectList.GetOfType<TauntEffect>() != null)
+						Taunt();
+				}
 			}
 		}
 
@@ -59,7 +71,7 @@ namespace DOL.GS
 			Heat = 32053,
 			Poison = 32013,
 			Stun = 2165
-		};
+		}
 
 		/// <summary>
 		/// Create necromancer pet from template. Con and hit bonuses from
@@ -388,6 +400,53 @@ namespace DOL.GS
 			}
 		}
 
+		private void Empower()
+		{
+			if (attackComponent.AttackState)
+				return;
+
+			SpellLine buffLine = SkillBase.GetSpellLine(PetInstaSpellLine);
+
+			if (buffLine == null)
+				return;
+
+			List<Spell> buffList = SkillBase.GetSpellList(PetInstaSpellLine);
+
+			if (buffList.Count == 0)
+				return;
+
+			int maxLevel = Level;
+			Spell strBuff = null;
+			Spell dexBuff = null;
+
+			// Find the best baseline buffs for this level.
+			foreach (Spell spell in buffList)
+			{
+				if (spell.Level <= maxLevel)
+				{
+					switch (spell.SpellType)
+					{
+						case eSpellType.StrengthBuff:
+						{
+							strBuff = strBuff == null ? spell : (strBuff.Level < spell.Level) ? spell : strBuff;
+							break;
+						}
+						case eSpellType.DexterityBuff:
+						{
+							dexBuff = dexBuff == null ? spell : (dexBuff.Level < spell.Level) ? spell : dexBuff;
+							break;
+						}
+					}
+				}
+			}
+
+			if (strBuff != null)
+				CastSpell(strBuff, buffLine);
+
+			if (dexBuff != null)
+				CastSpell(dexBuff, buffLine);
+		}
+
 		/// <summary>
 		/// Taunt the current target.
 		/// </summary>
@@ -397,15 +456,18 @@ namespace DOL.GS
 				return;
 
 			SpellLine chantsLine = SkillBase.GetSpellLine("Chants");
+
 			if (chantsLine == null)
 				return;
 
 			List<Spell> chantsList = SkillBase.GetSpellList("Chants");
+
 			if (chantsList.Count == 0)
 				return;
 
-			// Find the best paladin taunt for this level.
 			Spell tauntSpell = null;
+
+			// Find the best paladin taunt for this level.
 			foreach (Spell spell in chantsList)
 			{
 				if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
@@ -426,6 +488,112 @@ namespace DOL.GS
 		public override bool Interact(GamePlayer player)
 		{
 			return WhisperReceive(player, "arawn");
+		}
+
+		public override bool WhisperReceive(GameLiving source, string text)
+		{
+			// Everything below this comment should not exist in a strict 1.65 level. Feel free to add it back in if desired.
+			return false;
+			GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
+
+			if (source == null || source != owner)
+				return false;
+
+			switch (text.ToLower())
+			{
+				case "arawn":
+				{
+					string taunt = "As one of the many cadaverous servants of Arawn, I am able to [taunt] your enemies so that they will focus on me instead of you.";
+					string empower = "You may also [empower] me with just a word.";
+
+					switch (Name.ToLower())
+					{
+						case "minor zombie servant":
+						case "lesser zombie servant":
+						case "zombie servant":
+						case "reanimated servant":
+						case "necroservant":
+						{
+							SayTo(owner, taunt);
+							return true;
+						}
+						case "greater necroservant":
+						{
+							SayTo(owner, $"{taunt} I can also inflict [poison] or [disease] on your enemies. {empower}");
+							return true;
+						}
+						case "abomination":
+						{
+							SayTo(owner, $"As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. {empower}");
+							return true;
+						}
+						default:
+							return false;
+					}
+				}
+				case "disease":
+				{
+					InventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+
+					if (item != null)
+					{
+						item.ProcSpellID = (int)Procs.Disease;
+						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+					}
+
+					return true;
+				}
+				case "empower":
+				{
+					SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+					Empower();
+					return true;
+				}
+				case "poison":
+				{
+					InventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+
+					if (item != null)
+					{
+						item.ProcSpellID = (int)Procs.Poison;
+						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+					}
+
+					return true;
+				}
+				case "taunt":
+				{
+					ToggleTauntMode();
+					return true;
+				}
+				case "weapons":
+				{
+					if (Name != "abomination")
+						return false;
+
+					SayTo(owner, "What weapon do you command me to wield? A [fiery sword], [icy sword], [poisonous sword] or a [flaming mace], [frozen mace], [venomous mace]?");
+					return true;
+				}
+				case "fiery sword":
+				case "icy sword":
+				case "poisonous sword":
+				case "flaming mace":
+				case "frozen mace":
+				case "venomous mace":
+				{
+					if (Name != "abomination")
+						return false;
+
+					string templateID = string.Format("{0}_{1}", Name, text.Replace(" ", "_"));
+
+					if (LoadEquipmentTemplate(templateID))
+						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+
+					return true;
+				}
+				default:
+					return false;
+			}
 		}
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)

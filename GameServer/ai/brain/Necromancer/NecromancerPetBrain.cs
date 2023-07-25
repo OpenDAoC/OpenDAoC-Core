@@ -173,12 +173,6 @@ namespace DOL.AI.Brain
                     MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), eChatType.CT_System, Owner as GamePlayer);
                 }
             }
-            else if (e == GameNPCEvent.SwitchedTarget && sender == Body.TargetObject && sender is GameNPC && !(sender as GameNPC).IsCrowdControlled)
-            {
-                // Target has started attacking someone else.
-                if (Body.EffectList.GetOfType<TauntEffect>() != null)
-                    (Body as NecromancerPet).Taunt();
-            }
             else if (e == GameLivingEvent.AttackFinished)
                 Owner.Notify(GameLivingEvent.AttackFinished, Owner, args);
         }
