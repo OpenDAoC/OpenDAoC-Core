@@ -3,13 +3,14 @@ using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Movement;
-using static DOL.GS.GameNPC;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
     public class NpcMovementComponent : MovementComponent
     {
+        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public const short DEFAULT_WALK_SPEED = 50;
         public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
         public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
