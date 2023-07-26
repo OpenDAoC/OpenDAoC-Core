@@ -413,11 +413,9 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint();
+			return;
 		}
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }

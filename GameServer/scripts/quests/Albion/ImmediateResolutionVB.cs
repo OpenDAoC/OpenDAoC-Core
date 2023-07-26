@@ -90,12 +90,12 @@ namespace DOL.GS.Quests.Albion
                                 mob.AddToWorld();
                                 if (i <= 5)
                                 {                                    
-                                    mob.WalkTo(_gaurdsman2.X, _gaurdsman2.Y, _gaurdsman2.Z, 180);
+                                    mob.WalkTo(_gaurdsman2, 180);
                                     (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman2, 1000);
                                 }
                                 else
                                 {
-                                    mob.WalkTo(_gaurdsman1.X, _gaurdsman1.Y, _gaurdsman1.Z, 180);
+                                    mob.WalkTo(_gaurdsman1, 180);
                                     (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman1, 1000);
                                 }
                             }
@@ -118,12 +118,12 @@ namespace DOL.GS.Quests.Albion
                                 mob.AddToWorld();
                                 if (i <= 5)
                                 {
-                                    mob.WalkTo(_gaurdsman4.X, _gaurdsman4.Y, _gaurdsman4.Z, 180);
+                                    mob.WalkTo(_gaurdsman4, 180);
                                     (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman4, 1000);
                                 }
                                 else
                                 {
-                                    mob.WalkTo(_gaurdsman3.X, _gaurdsman3.Y, _gaurdsman3.Z, 180);
+                                    mob.WalkTo(_gaurdsman3, 180);
                                     (mob.Brain as StandardMobBrain).AddToAggroList(_gaurdsman3, 1000);
                                 }
                             }

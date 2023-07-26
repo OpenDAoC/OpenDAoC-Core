@@ -284,11 +284,9 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void ReturnToSpawnPoint() //dont walk to spawn
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint();
+            return;
         }
         public override void DealDamage(AttackData ad)
         {
@@ -512,11 +510,9 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void ReturnToSpawnPoint() //dont walk to spawn
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint();
+            return;
         }
         public override int MaxHealth
         {

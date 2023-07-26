@@ -940,11 +940,6 @@ namespace DOL.GS
 		public bool IsAtTargetPosition => movementComponent.IsAtTargetPosition;
 		public bool CanRoam => movementComponent.CanRoam;
 
-		public virtual void WalkTo(int x, int y, int z, short speed)
-		{
-			movementComponent.WalkTo(new Point3D(x, y, z), speed);
-		}
-
 		public virtual void WalkTo(IPoint3D target, short speed)
 		{
 			movementComponent.WalkTo(target, speed);
@@ -960,11 +955,6 @@ namespace DOL.GS
 			movementComponent.StopMoving();
 		}
 
-		public virtual void Follow(GameObject target)
-		{
-			movementComponent.Follow(target);
-		}
-
 		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
 		{
 			movementComponent.Follow(target, minDistance, maxDistance);
@@ -973,11 +963,6 @@ namespace DOL.GS
 		public virtual void StopFollowing()
 		{
 			movementComponent.StopFollowing();
-		}
-
-		public virtual void MoveOnPath()
-		{
-			movementComponent.MoveOnPath();
 		}
 
 		public virtual void MoveOnPath(short speed)
@@ -990,11 +975,6 @@ namespace DOL.GS
 			movementComponent.StopMovingOnPath();
 		}
 
-		public virtual void ReturnToSpawnPoint()
-		{
-			movementComponent.ReturnToSpawnPoint();
-		}
-
 		public virtual void ReturnToSpawnPoint(short speed)
 		{
 			movementComponent.ReturnToSpawnPoint(speed);
@@ -1003,11 +983,6 @@ namespace DOL.GS
 		public virtual void CancelReturnToSpawnPoint()
 		{
 			movementComponent.CancelReturnToSpawnPoint();
-		}
-
-		public virtual void Roam()
-		{
-			movementComponent.Roam();
 		}
 
 		public virtual void Roam(short speed)
@@ -2766,7 +2741,7 @@ namespace DOL.GS
 			if (FollowTarget != target)
 			{
 				StopFollowing();
-				Follow(target);
+				Follow(target, movementComponent.FollowMinDistance, movementComponent.FollowMaxDistance);
 			}
 
 			FireAmbientSentence(eAmbientTrigger.fighting, target);

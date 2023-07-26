@@ -150,11 +150,9 @@ namespace DOL.GS
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint();
+			return;
 		}
 		public override double AttackDamage(InventoryItem weapon)
 		{
@@ -243,4 +241,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-

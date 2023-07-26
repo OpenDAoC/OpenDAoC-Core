@@ -10,9 +10,9 @@ namespace DOL.GS
 {
     public class NpcMovementComponent : MovementComponent
     {
-        private const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
-        private const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
-        private const short DEFAULT_WALK_SPEED = 50;
+        public const short DEFAULT_WALK_SPEED = 50;
+        public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
+        public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
         private const double FOLLOW_SPEED_SCALAR = 2.5;
 
         private MovementType _movementType;
@@ -30,8 +30,8 @@ namespace DOL.GS
         // This however means 'TargetPosition' might be slightly outdated.
         public IPoint3D TargetPosition { get; private set; }
         public GameObject FollowTarget { get; private set; }
-        public int FollowMaxDist { get; private set; } = 3000;
-        public int FollowMinDist { get; private set; } = 100;
+        public int FollowMinDistance { get; private set; } = 100;
+        public int FollowMaxDistance { get; private set; } = 3000;
         public string PathID { get; set; }
         public PathPoint CurrentWaypoint { get; set; }
         public bool IsReturningToSpawnPoint { get; private set; }
@@ -134,19 +134,14 @@ namespace DOL.GS
             UpdateMovement(null, 0);
         }
 
-        public void Follow(GameObject target)
-        {
-            Follow(target, FollowMinDist, FollowMaxDist);
-        }
-
         public void Follow(GameObject target, int minDistance, int maxDistance)
         {
             if (target == null || target.ObjectState != eObjectState.Active)
                 return;
 
             FollowTarget = target;
-            FollowMaxDist = maxDistance;
-            FollowMinDist = minDistance;
+            FollowMinDistance = minDistance;
+            FollowMaxDistance = maxDistance;
             _movementType |= MovementType.FOLLOW;
         }
 
@@ -154,11 +149,6 @@ namespace DOL.GS
         {
             FollowTarget = null;
             _movementType &= ~MovementType.FOLLOW;
-        }
-
-        public void MoveOnPath()
-        {
-            MoveOnPath(DEFAULT_WALK_SPEED);
         }
 
         public void MoveOnPath(short speed)
@@ -242,11 +232,6 @@ namespace DOL.GS
         public void CancelReturnToSpawnPoint()
         {
             IsReturningToSpawnPoint = false;
-        }
-
-        public void Roam()
-        {
-            Roam(DEFAULT_WALK_SPEED);
         }
 
         public void Roam(short speed)
@@ -359,7 +344,7 @@ namespace DOL.GS
             double distance = Math.Sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
             // If distance is greater then the max follow distance, stop following and return home.
-            if (distance > FollowMaxDist)
+            if (distance > FollowMaxDistance)
             {
                 ReturnToSpawnPoint();
                 return 0;
@@ -411,8 +396,8 @@ namespace DOL.GS
             // Pets can follow closer. Need to implement /fdistance command to make this adjustable.
             int minAllowedFollowDistance = Owner.Brain is IControlledBrain ? MIN_ALLOWED_PET_FOLLOW_DISTANCE : MIN_ALLOWED_FOLLOW_DISTANCE;
 
-            if (FollowMinDist > minAllowedFollowDistance)
-                minAllowedFollowDistance = FollowMinDist;
+            if (FollowMinDistance > minAllowedFollowDistance)
+                minAllowedFollowDistance = FollowMinDistance;
 
             if (distance <= minAllowedFollowDistance)
             {

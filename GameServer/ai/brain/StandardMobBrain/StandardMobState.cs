@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using DOL.GS;
+using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.AI.Brain
@@ -180,9 +181,9 @@ namespace DOL.AI.Brain
 
             if (!_brain.Body.IsCasting)
             {
-                if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(DOL.GS.ServerProperties.Properties.GAMENPC_RANDOMWALK_CHANCE))
+                if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
                 {
-                    _brain.Body.Roam();
+                    _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
                     _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
                     _lastRoamTick = GameLoop.GameLoopTime;
                 }
@@ -209,7 +210,7 @@ namespace DOL.AI.Brain
                 _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
 
             _brain.ClearAggroList();
-            _brain.Body.ReturnToSpawnPoint();
+            _brain.Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
             base.Enter();
         }
 

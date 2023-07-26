@@ -52,14 +52,9 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (CurrentRegionID == 160) //if region is tuscaran glacier
-            {
-                if (IsAlive)
-                    return;
-            }
-            base.ReturnToSpawnPoint();
+            return;
         }
         #region Stats
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
@@ -436,14 +431,9 @@ namespace DOL.GS
             }
         }
 
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (CurrentRegionID == 160) //if region is tuscaran glacier
-            {
-                if (IsAlive)
-                    return;
-            }
-            base.ReturnToSpawnPoint();
+            return;
         }
 
         public override double AttackDamage(InventoryItem weapon)

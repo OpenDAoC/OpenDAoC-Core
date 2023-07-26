@@ -1929,11 +1929,9 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint();
+            return;
         }
         public override void Die(GameObject killer)
         {

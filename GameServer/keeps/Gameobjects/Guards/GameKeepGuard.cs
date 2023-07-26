@@ -766,10 +766,10 @@ namespace DOL.GS.Keeps
 			if (IsMovingOnPath && PatrolGroup != null)
 				PatrolGroup.GetMovementOffset(this, out offX, out offY);
 
-			base.WalkTo(target.X - offX, target.Y - offY, target.Z, speed);
+			base.WalkTo(new Point3D(target.X - offX, target.Y - offY, target.Z), speed);
 		}
 
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
 			if (PatrolGroup != null)
 			{
@@ -783,11 +783,10 @@ namespace DOL.GS.Keeps
 				}
 
 				PatrolGroup.StartPatrol();
+				return;
 			}
-			else
-			{
-				ReturnToSpawnPoint(MaxSpeed);
-			}
+
+			base.ReturnToSpawnPoint(MaxSpeed);
 		}
 
 		public void RefreshTemplate()

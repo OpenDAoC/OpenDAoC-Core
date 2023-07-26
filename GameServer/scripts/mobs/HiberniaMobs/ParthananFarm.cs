@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
-using System.Collections.Generic;
 
 #region Amalgamate Parthanan
 namespace DOL.GS
@@ -603,7 +603,7 @@ namespace DOL.AI.Brain
 							if (npc.Brain is ParthananFarmController1Brain)
 							{
 								if (!Body.IsWithinRadius(npc, 50))
-									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
+									Body.WalkTo(npc, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
 							}
@@ -664,7 +664,7 @@ namespace DOL.AI.Brain
 							if (npc.Brain is ParthananFarmController2Brain)
 							{
 								if (!Body.IsWithinRadius(npc, 50))
-									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
+									Body.WalkTo(npc, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
 							}
@@ -726,7 +726,7 @@ namespace DOL.AI.Brain
 							if (npc.Brain is ParthananFarmController2bBrain)
 							{
 								if (!Body.IsWithinRadius(npc, 50))
-									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
+									Body.WalkTo(npc, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
 							}
@@ -848,7 +848,7 @@ namespace DOL.AI.Brain
 							if (npc.Brain is ParthananFarmController3bBrain)
 							{
 								if (!Body.IsWithinRadius(npc, 50))
-									Body.WalkTo(npc.X, npc.Y, npc.Z, Body.MaxSpeedBase);
+									Body.WalkTo(npc, Body.MaxSpeedBase);
 								else
 									Body.Die(npc);
 							}
@@ -881,7 +881,7 @@ namespace DOL.AI.Brain
 #region Lough Derg
 namespace DOL.GS
 {
-	public class ParthananFarmController1 : GameNPC
+    public class ParthananFarmController1 : GameNPC
 	{
 		public ParthananFarmController1() : base()
 		{

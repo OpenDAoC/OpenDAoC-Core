@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.ServerProperties;
 using Timer = System.Timers.Timer;
-using System.Timers;
 
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!
@@ -292,11 +291,9 @@ namespace DOL.GS
             }
         }
 
-        public override void ReturnToSpawnPoint() //dont walk to spawn
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint();
+            return;
         }
         public static int HostCount = 0;
 

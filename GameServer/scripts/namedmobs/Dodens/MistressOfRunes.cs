@@ -1,9 +1,4 @@
-﻿/*
-Mistress of Runes.
-<author>Kelt</author>
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -91,9 +86,9 @@ namespace DOL.GS.Scripts
 		/// Return to spawn point, Mistress of Runes can't be attacked while it's
 		/// on it's way.
 		/// </summary>
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			ReturnToSpawnPoint(MaxSpeed);
+			base.ReturnToSpawnPoint(MaxSpeed);
 		}
 
 		public override void OnAttackedByEnemy(AttackData ad)

@@ -118,13 +118,13 @@ namespace DOL.AI.Brain
                 if(_lastRoamIndex >= _roamingPathPoints.Count)
                 {
                     _lastRoamIndex = 0;
-                    Body.ReturnToSpawnPoint();
+                    Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
                 }
-                else if(!Body.IsMoving) Body.WalkTo(_roamingPathPoints[_lastRoamIndex], (short)Util.Random(195, 250));
-                
+                else if(!Body.IsMoving)
+                    Body.WalkTo(_roamingPathPoints[_lastRoamIndex], (short)Util.Random(195, 250));
             }
-            
-            if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
+
+            if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 ClearAggroList();
                 Body.Health = Body.MaxHealth;

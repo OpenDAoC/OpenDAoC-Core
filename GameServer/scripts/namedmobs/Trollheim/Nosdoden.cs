@@ -1,14 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS;
 using DOL.Events;
+using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
-using System.Text.RegularExpressions;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -2743,11 +2742,9 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint();
+			return;
 		}
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -2893,11 +2890,9 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint();
+			return;
 		}
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -3024,11 +3019,9 @@ namespace DOL.GS
 		{
 			return 200;
 		}
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint();
+			return;
 		}
 		public override void StartAttack(GameObject target)
 		{

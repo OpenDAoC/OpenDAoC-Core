@@ -16,13 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.PacketHandler;
 using DOL.Events;
-using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
-using DOL.Database;
+using DOL.GS.Behaviour.Attributes;
 
 namespace DOL.GS.Behaviour.Actions
 {
@@ -43,7 +40,7 @@ namespace DOL.GS.Behaviour.Actions
 
         public override void Perform(DOLEvent e, object sender, EventArgs args)
         {
-            P.ReturnToSpawnPoint();
+            P.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
         }
     }
 }

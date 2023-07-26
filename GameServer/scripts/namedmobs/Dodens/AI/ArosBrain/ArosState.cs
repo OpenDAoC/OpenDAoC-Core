@@ -117,7 +117,7 @@ namespace DOL.AI.Brain
             }
             _brain.Body.StopFollowing();
             _brain.ClearAggroList();
-            _brain.Body.ReturnToSpawnPoint();
+            _brain.Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
         }
 
         public override void Think()

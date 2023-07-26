@@ -238,8 +238,9 @@ namespace DOL.GS.Commands
 			}
 
 			// clear any current path
-			((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
-			((GameNPC)client.Player.TargetObject).ReturnToSpawnPoint();
+			GameNPC npcTarget = (GameNPC) client.Player.TargetObject;
+			npcTarget.CurrentWaypoint = null;
+			npcTarget.ReturnToSpawnPoint(npcTarget.MaxSpeed);
 
 			DisplayMessage(client, "{0} told to walk to spawn!", client.Player.TargetObject.Name);
 		}

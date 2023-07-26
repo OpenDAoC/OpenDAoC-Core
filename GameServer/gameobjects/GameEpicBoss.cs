@@ -1,19 +1,21 @@
+using System;
 using System.Text.RegularExpressions;
-using DOL.GS.ServerProperties;
-using DOL.GS.Scripts;
 using DOL.GS;
+using DOL.GS.Scripts;
+using DOL.GS.ServerProperties;
 
-namespace DOL.GS {
-    public class GameEpicBoss : GameNPC {
+namespace DOL.GS
+{
+    public class GameEpicBoss : GameNPC
+    {
         public GameEpicBoss() : base()
         {
             ScalingFactor = 80;
-            OrbsReward = Properties.EPICBOSS_ORBS;         
+            OrbsReward = Properties.EPICBOSS_ORBS;
         }
         public override void ReturnToSpawnPoint(short speed)
         {
-            speed = 350;
-            base.ReturnToSpawnPoint(speed);
+            base.ReturnToSpawnPoint(Math.Max((short) 350, speed));
         }
         public override bool HasAbility(string keyName)
         {

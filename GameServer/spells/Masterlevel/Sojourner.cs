@@ -216,7 +216,7 @@ namespace DOL.GS.Spells
             npc.Flags |= GameNPC.eFlags.CANTTARGET;
             npc.SetOwnBrain(new ZephyrBrain(ArriveAtTarget));
             npc.AddToWorld();
-            npc.Follow(target);
+            npc.Follow(target, npc.movementComponent.FollowMinDistance, npc.movementComponent.FollowMaxDistance);
             m_npc = npc;
             m_target = target;
             StartTimer();
@@ -293,10 +293,14 @@ namespace DOL.GS.Spells
 				playerCaster.Out.SendCheckLOS(playerCaster, m_npc, new CheckLOSResponse(ZephyrCheckLOS));
             }
         }
-		public void ZephyrCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+
+        public void ZephyrCheckLOS(GamePlayer player, ushort response, ushort targetOID)
         {
+            if (targetOID == 0)
+                return;
+
             if ((response & 0x100) == 0x100)
-				m_npc.WalkTo(m_loc.X, m_loc.Y, m_loc.Z, 100);
+                m_npc.WalkTo(m_loc, 100);
         }
 
         public virtual IPoint3D GetTargetLoc()

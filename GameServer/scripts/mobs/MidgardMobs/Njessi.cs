@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS;
 
 namespace DOL.GS
@@ -32,11 +30,9 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint();
+            return;
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
@@ -179,4 +175,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-

@@ -1,10 +1,4 @@
-﻿/*
- * author: Kelt
- * Name: Uaimh Lairmaster
- * Server: Atlas Freeshard
- */
-
-using System;
+﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -133,13 +127,13 @@ namespace DOL.GS.Scripts
         /// Return to spawn point, Uaimh Lairmaster can't be attacked while it's
         /// on it's way.
         /// </summary>
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
             UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
             StopAttack();
             StopFollowing();
             brain.AggroTable.Clear();
-            ReturnToSpawnPoint(MaxSpeed);
+            base.ReturnToSpawnPoint(MaxSpeed);
         }
 
         public override void OnAttackedByEnemy(AttackData ad)
@@ -189,8 +183,8 @@ namespace DOL.GS.Scripts
         {
             if (HealthPercent <= 60 && IsFleeing)
             {
-                BroadcastMessage(String.Format(m_FleeingAnnounce, Name));
-                ReturnToSpawnPoint();
+                BroadcastMessage(string.Format(m_FleeingAnnounce, Name));
+                ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
                 IsFleeing = false;
                 return true;
             }

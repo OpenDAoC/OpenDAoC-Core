@@ -18,13 +18,11 @@
  */
 
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.Events;
-using System.Collections;
-using System.Collections.Generic;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -153,10 +151,9 @@ namespace DOL.GS.Spells
             {
                 if (targetStorm.Movable)
                 {
-                    GameNPC targetNPC = targetStorm as GameNPC;
                     int range = Util.Random(0, 750);
                     double angle = Util.RandomDouble() * 2 * Math.PI;
-                    targetNPC.WalkTo(targetNPC.X + (int)(range * Math.Cos(angle)), targetNPC.Y + (int)(range * Math.Sin(angle)), targetNPC.Z, targetNPC.MaxSpeed);
+                    targetStorm.WalkTo(new Point3D(targetStorm.X + (int) (range * Math.Cos(angle)), targetStorm.Y + (int) (range * Math.Sin(angle)), targetStorm.Z), targetStorm.MaxSpeed);
                 }
             }
         }

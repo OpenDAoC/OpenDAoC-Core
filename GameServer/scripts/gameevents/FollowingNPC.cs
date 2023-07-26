@@ -16,17 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*
- * Author:	SmallHorse
- * Date:	15.10.2003
- * This is a really simple example of game events
- * This script creates a NPC (a spider) that stands 
- * around and when a player right-clicks on it will
- * run to the player and keep following this player
- * like a dog. The speed of the spider is based on
- * the distance to the player, the further away the
- * spider is, the faster it will run :-)
- */
+
 using System;
 using System.Reflection;
 using System.Timers;
@@ -146,13 +136,13 @@ namespace DOL.GS.GameEvents
 				//Our speed is based on the distance to the player
 				//We will walk faster to the player if the player
 				//is further away and slower if it is close
-				ushort speed = (ushort) (distance/5);
+				short speed = (short) (distance/5);
 				//But we have a base minimum speed
 				if (speed < 50)
 					speed = 50;
 
 				//Make the mob walk to the new spot
-				WalkTo(newX, newY, 0, (short)speed);
+				WalkTo(new Point3D(newX, newY, m_playerToFollow.Z), speed);
 			}
 		}
 

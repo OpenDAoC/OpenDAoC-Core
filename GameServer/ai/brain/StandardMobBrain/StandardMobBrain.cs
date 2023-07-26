@@ -623,8 +623,9 @@ namespace DOL.AI.Brain
         protected virtual void OnFollowLostTarget(GameObject target)
         {
             AttackMostWanted();
+
             if (!Body.attackComponent.AttackState)
-                Body.ReturnToSpawnPoint();
+                Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
         }
 
 		public virtual void OnAttackedByEnemy(AttackData ad)

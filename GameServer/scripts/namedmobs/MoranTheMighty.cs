@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 namespace DOL.GS
 {
@@ -128,7 +125,7 @@ namespace DOL.AI.Brain
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                Body.ReturnToSpawnPoint();
+                Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
             }
 
             if (HasAggro && Body.InCombat)

@@ -141,7 +141,7 @@ namespace DOL.AI.Brain
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                Body.ReturnToSpawnPoint();
+                Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
             }
 
             base.Think();

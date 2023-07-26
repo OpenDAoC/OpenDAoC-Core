@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS
 {
@@ -539,14 +538,9 @@ namespace DOL.GS
             }
         }
 
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            if (CurrentRegionID == 160) //if region is TG
-            {
-                if (IsAlive)
-                    return;
-            }
-            base.ReturnToSpawnPoint();
+            return;
         }
 
         public override double AttackDamage(InventoryItem weapon)

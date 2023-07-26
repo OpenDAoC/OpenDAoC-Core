@@ -1341,11 +1341,12 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
             if (MorbusBrain.IsBug)
                 return;
-            base.ReturnToSpawnPoint();
+
+            base.ReturnToSpawnPoint(speed);
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {

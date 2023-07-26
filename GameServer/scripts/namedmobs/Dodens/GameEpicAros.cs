@@ -1,7 +1,3 @@
-/*
-<author>Kelt</author>
- */
-
 using System;
 using System.Reflection;
 using DOL.AI;
@@ -164,9 +160,9 @@ namespace DOL.GS.Scripts
         /// Return to spawn point, Aros the Spiritmaster can't be attacked while it's
         /// on it's way.
         /// </summary>
-        public override void ReturnToSpawnPoint()
+        public override void ReturnToSpawnPoint(short speed)
         {
-            ReturnToSpawnPoint(MaxSpeed);
+            base.ReturnToSpawnPoint(MaxSpeed);
         }
         public override void OnAttackedByEnemy(AttackData ad)
         {

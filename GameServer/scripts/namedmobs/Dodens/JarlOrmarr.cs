@@ -1,8 +1,3 @@
-/*
-Jarl Ormarr
-<author>Kelt</author>
- */
-
 using System;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -95,9 +90,9 @@ namespace DOL.GS.Scripts
 		/// Return to spawn point, Jarl Ormarr can't be attacked while it's
 		/// on it's way.
 		/// </summary>
-		public override void ReturnToSpawnPoint()
+		public override void ReturnToSpawnPoint(short speed)
 		{
-			ReturnToSpawnPoint(MaxSpeed);
+			base.ReturnToSpawnPoint(MaxSpeed);
 		}
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
