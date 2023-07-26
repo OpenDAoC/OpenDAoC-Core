@@ -3101,10 +3101,12 @@ namespace DOL.GS.Commands
 
 			var text = new List<string>();
 
-			if (targetMob.Brain != null && targetMob.Brain.IsActive)
+			if (targetMob.Brain != null)
 			{
-				text.Add(targetMob.Brain.GetType().FullName);
 				text.Add(targetMob.Brain.ToString());
+				text.Add("");
+				text.Add($"Brain: {targetMob.Brain.GetType().FullName}");
+				text.Add($"FSM State: {targetMob.Brain.FSM.GetCurrentState()?.GetType().FullName}");
 				text.Add("");
 			}
 
