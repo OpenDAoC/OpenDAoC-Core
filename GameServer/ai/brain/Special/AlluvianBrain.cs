@@ -6,7 +6,7 @@ namespace DOL.AI.Brain
 	/// The brains for alluvian mobs. No need to manually assign this.
 	/// /mob create DOL.GS.Alluvian and this will be attached automatically.
 	/// </summary>
-    public class AlluvianBrain : StandardMobBrain
+	public class AlluvianBrain : StandardMobBrain
 	{
 		/// <summary>
 		/// Determine if we have less than 12, if not, spawn one.

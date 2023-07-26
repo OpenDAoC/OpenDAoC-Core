@@ -7,15 +7,14 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// Brains for Alluvian mob in Albion SI Avalon Isle
 	/// </summary>
-    public class AlluvianGlobuleBrain : StandardMobBrain
+	public class AlluvianGlobuleBrain : StandardMobBrain
 	{
 		internal bool hasGrown = false;
 
 		/// <summary>
 		/// Put on lower think cycle so mobs spawn a little slower.
 		/// </summary>
-		public AlluvianGlobuleBrain()
-			: base()
+		public AlluvianGlobuleBrain() : base()
 		{
 			ThinkInterval = 3000;
 			hasGrown = false;

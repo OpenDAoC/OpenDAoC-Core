@@ -43,24 +43,19 @@ namespace DOL.AI.Brain
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new List<GamePlayer>();
 
-        public new StandardMobFSM FSM { get; private set; }
-
         /// <summary>
         /// Constructs a new StandardMobBrain
         /// </summary>
         public StandardMobBrain() : base()
         {
-            AggroLevel = 0;
-            AggroRange = 0;
-
-            FSM = new StandardMobFSM();
-            FSM.Add(new StandardMobState_IDLE(FSM, this));
-            FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
-            FSM.Add(new StandardMobState_AGGRO(FSM, this));
-            FSM.Add(new StandardMobState_RETURN_TO_SPAWN(FSM, this));
-            FSM.Add(new StandardMobState_PATROLLING(FSM, this));
-            FSM.Add(new StandardMobState_ROAMING(FSM, this));
-            FSM.Add(new StandardMobState_DEAD(FSM, this));
+            FSM = new FSM();
+            FSM.Add(new StandardMobState_IDLE(this));
+            FSM.Add(new StandardMobState_WAKING_UP(this));
+            FSM.Add(new StandardMobState_AGGRO(this));
+            FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
+            FSM.Add(new StandardMobState_PATROLLING(this));
+            FSM.Add(new StandardMobState_ROAMING(this));
+            FSM.Add(new StandardMobState_DEAD(this));
 
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }

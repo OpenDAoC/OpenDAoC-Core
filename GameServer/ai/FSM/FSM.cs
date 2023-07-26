@@ -1,68 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using DOL.GS;
 
-namespace FiniteStateMachine
+namespace DOL.AI
 {
     public class FSM
     {
-        protected Dictionary<int, State> m_states = new Dictionary<int, State>();
-        protected State m_currentState;
+        protected Dictionary<eFSMStateType, FSMState> _states = new();
+        protected FSMState _state;
 
-        public FSM()
+        public FSM() { }
+
+        public virtual void Add(FSMState state)
         {
-
+            _states.Add(state.StateType, state);
         }
 
-        public void Add(int key, State state)
+        public virtual void ClearStates()
         {
-            m_states.Add(key, state);
+            _states.Clear();
         }
 
-        public void ClearStates()
+        public virtual FSMState GetState(eFSMStateType stateType)
         {
-            m_states.Clear();
+            _states.TryGetValue(stateType, out FSMState state);
+            return state;
         }
 
-        public State GetState(int key)
+        public virtual void SetCurrentState(eFSMStateType stateType)
         {
-            if (m_states.ContainsKey(key)){ return m_states[key];} 
-            else { return null; }
-            
+            if (_state != null)
+                _state.Exit();
+
+            _states.TryGetValue(stateType, out _state);
+
+            if (_state != null)
+                _state.Enter();
         }
 
-        public void SetCurrentState(State state)
+        public virtual FSMState GetCurrentState()
         {
-            if(m_currentState != null)
-            {
-                m_currentState.Exit();
-            }
-
-            m_currentState = state;
-            if(m_currentState != null)
-            {
-                m_currentState.Enter();
-            }
+            return _state;
         }
 
-        public State GetCurrentState()
+        public virtual void Think()
         {
-            return m_currentState;
+            if (_state != null)
+                _state.Think();
         }
 
-        public void Think()
-        {
-            if (m_currentState != null)
-            {
-                m_currentState.Think();
-            }
-        }
-
-        public virtual void KillFSM()
-        {
-          
-        }
+        public virtual void KillFSM() { }
     }
 }

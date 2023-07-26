@@ -1,5 +1,6 @@
 ﻿using DOL.AI.Brain;
 using DOL.Database;
+using DOL.GS;
 
 #region WoW scorp
 namespace DOL.GS

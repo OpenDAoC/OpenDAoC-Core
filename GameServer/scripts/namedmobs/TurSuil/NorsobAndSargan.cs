@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using DOL.GS;
 
 namespace DOL.GS
 {

@@ -90,11 +90,11 @@ namespace DOL.AI.Brain
 
 			FSM.ClearStates();
 
-			FSM.Add(new ControlledNPCState_WAKING_UP(FSM, this));
-			FSM.Add(new ControlledNPCState_PASSIVE(FSM, this));
-			FSM.Add(new ControlledNPCState_DEFENSIVE(FSM, this));
-			FSM.Add(new ControlledNPCState_AGGRO(FSM, this));
-			FSM.Add(new StandardMobState_DEAD(FSM, this));
+			FSM.Add(new ControlledNPCState_WAKING_UP(this));
+			FSM.Add(new ControlledNPCState_PASSIVE(this));
+			FSM.Add(new ControlledNPCState_DEFENSIVE(this));
+			FSM.Add(new ControlledNPCState_AGGRO(this));
+			FSM.Add(new StandardMobState_DEAD(this));
 
 			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}

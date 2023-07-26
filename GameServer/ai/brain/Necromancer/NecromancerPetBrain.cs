@@ -38,11 +38,11 @@ namespace DOL.AI.Brain
         {
             FSM.ClearStates();
 
-            FSM.Add(new NecromancerPetState_WAKING_UP(FSM, this));
-            FSM.Add(new NecromancerPetState_DEFENSIVE(FSM, this));
-            FSM.Add(new NecromancerPetState_AGGRO(FSM, this));
-            FSM.Add(new NecromancerPetState_PASSIVE(FSM, this));
-            FSM.Add(new StandardMobState_DEAD(FSM, this));
+            FSM.Add(new NecromancerPetState_WAKING_UP(this));
+            FSM.Add(new NecromancerPetState_DEFENSIVE(this));
+            FSM.Add(new NecromancerPetState_AGGRO(this));
+            FSM.Add(new NecromancerPetState_PASSIVE(this));
+            FSM.Add(new StandardMobState_DEAD(this));
 
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
@@ -187,8 +187,10 @@ namespace DOL.AI.Brain
                     shadeEffect.SetTetherTimer(seconds);
                 }
 
-                ArrayList effectList = new(1);
-                effectList.Add(shadeEffect);
+                ArrayList effectList = new(1)
+                {
+                    shadeEffect
+                };
 
                 int effectsCount = 1;
 

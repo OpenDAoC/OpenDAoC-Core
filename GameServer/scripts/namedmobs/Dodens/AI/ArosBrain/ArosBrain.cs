@@ -2,15 +2,16 @@
 AI for Aros The Spiritmaster like NPCs.
 <author>Kelt</author>
  */
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Scripts;
 using log4net;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace DOL.AI.Brain
 {
@@ -24,8 +25,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Create a new ArosBrain.
         /// </summary>
-        public ArosBrain()
-            : base()
+        public ArosBrain() : base()
         {
             AggroLevel = 200;
             AggroRange = 500;
@@ -33,11 +33,11 @@ namespace DOL.AI.Brain
 
             FSM.ClearStates();
 
-            FSM.Add(new StandardMobState_WAKING_UP(FSM, this));
-            FSM.Add(new ArosState_RETURN_TO_SPAWN(FSM, this));
-            FSM.Add(new ArosState_IDLE(FSM, this));
-            FSM.Add(new ArosState_AGGRO(FSM, this));
-            FSM.Add(new StandardMobState_DEAD(FSM, this));
+            FSM.Add(new StandardMobState_WAKING_UP(this));
+            FSM.Add(new ArosState_RETURN_TO_SPAWN(this));
+            FSM.Add(new ArosState_IDLE(this));
+            FSM.Add(new ArosState_AGGRO(this));
+            FSM.Add(new StandardMobState_DEAD(this));
 
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }

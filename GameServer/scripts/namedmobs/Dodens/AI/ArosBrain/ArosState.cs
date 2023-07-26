@@ -1,129 +1,132 @@
 ﻿using System;
-using DOL.AI.Brain;
-using FiniteStateMachine;
+using DOL.GS;
 
-public class ArosState : StandardMobState
+namespace DOL.AI.Brain
 {
-    protected new ArosBrain _brain = null;
-    public ArosState(FSM fsm, ArosBrain brain) : base(fsm, brain)
+    public class ArosState : StandardMobState
     {
-        _brain = brain;
-    }
-}
+        protected new ArosBrain _brain = null;
 
-public class ArosState_IDLE : ArosState
-{
-    public ArosState_IDLE(FSM fsm, ArosBrain brain) : base(fsm, brain)
-    {
-        _id = eFSMStateType.IDLE;
-    }
-
-    public override void Enter()
-    {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        public ArosState(ArosBrain brain) : base(brain)
         {
-            Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered IDLE");
+            _brain = brain;
         }
-        base.Enter();
     }
 
-    public override void Think()
+    public class ArosState_IDLE : ArosState
     {
-        //if we're walking home, do nothing else
-        if (_brain.Body.IsReturningToSpawnPoint) return;
-
-        //if Aros is full health, reset the encounter stages
-        if (_brain.Body.HealthPercent == 100 && _brain.Stage < 10)
-            _brain.Stage = 10;
-
-        // If we aren't already aggroing something, look out for
-        // someone we can aggro on and attack right away.
-        if (!_brain.HasAggro && _brain.AggroLevel > 0)
+        public ArosState_IDLE(ArosBrain brain) : base(brain)
         {
-            _brain.CheckProximityAggro();
+            StateType = eFSMStateType.IDLE;
+        }
 
-            if (_brain.HasAggro)
+        public override void Enter()
+        {
+            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
             {
-                //Set state to AGGRO
-                _brain.AttackMostWanted();
-                _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-                return;
+                Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered IDLE");
             }
-            else
+            base.Enter();
+        }
+
+        public override void Think()
+        {
+            //if we're walking home, do nothing else
+            if (_brain.Body.IsReturningToSpawnPoint) return;
+
+            //if Aros is full health, reset the encounter stages
+            if (_brain.Body.HealthPercent == 100 && _brain.Stage < 10)
+                _brain.Stage = 10;
+
+            // If we aren't already aggroing something, look out for
+            // someone we can aggro on and attack right away.
+            if (!_brain.HasAggro && _brain.AggroLevel > 0)
             {
-                if (_brain.Body.attackComponent.AttackState)
-                    _brain.Body.StopAttack();
+                _brain.CheckProximityAggro();
 
-                _brain.Body.TargetObject = null;
+                if (_brain.HasAggro)
+                {
+                    //Set state to AGGRO
+                    _brain.AttackMostWanted();
+                    _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
+                    return;
+                }
+                else
+                {
+                    if (_brain.Body.attackComponent.AttackState)
+                        _brain.Body.StopAttack();
+
+                    _brain.Body.TargetObject = null;
+                }
+            }
+
+            // If Aros the Spiritmaster has run out of tether range, clear aggro list and let it 
+            // return to its spawn point.
+            if (_brain.CheckTether())
+            {
+                //set state to RETURN TO SPAWN
+                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            }
+        }
+    }
+
+    public class ArosState_AGGRO : ArosState
+    {
+        public ArosState_AGGRO(ArosBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.AGGRO;
+        }
+
+        public override void Enter()
+        {
+            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+            {
+                Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered AGGRO on target {_brain.Body.TargetObject}");
+            }
+            base.Enter();
+        }
+
+        public override void Think()
+        {
+            if (_brain.CheckHealth()) return;
+            if (_brain.PickDebuffTarget()) return;
+
+            // If Aros the Spiritmaster has run out of tether range, or has clear aggro list, 
+            // let it return to its spawn point.
+            if (_brain.CheckTether() || !_brain.CheckProximityAggro())
+            {
+                //set state to RETURN TO SPAWN
+                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
         }
 
-        // If Aros the Spiritmaster has run out of tether range, clear aggro list and let it 
-        // return to its spawn point.
-        if (_brain.CheckTether())
+    }
+
+    public class ArosState_RETURN_TO_SPAWN : ArosState
+    {
+        public ArosState_RETURN_TO_SPAWN(ArosBrain brain) : base(brain)
         {
-            //set state to RETURN TO SPAWN
-            _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            StateType = eFSMStateType.RETURN_TO_SPAWN;
         }
-    }
-}
 
-public class ArosState_AGGRO : ArosState
-{
-    public ArosState_AGGRO(FSM fsm, ArosBrain brain) : base(fsm, brain)
-    {
-        _id = eFSMStateType.AGGRO;
-    }
-
-    public override void Enter()
-    {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        public override void Enter()
         {
-            Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered AGGRO on target {_brain.Body.TargetObject}");
+            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+            {
+                Console.WriteLine($"Aros the Spiritmaster {_brain.Body} is returning to spawn");
+            }
+            _brain.Body.StopFollowing();
+            _brain.ClearAggroList();
+            _brain.Body.ReturnToSpawnPoint();
         }
-        base.Enter();
-    }
 
-    public override void Think()
-    {
-        if (_brain.CheckHealth()) return;
-        if (_brain.PickDebuffTarget()) return;
-
-        // If Aros the Spiritmaster has run out of tether range, or has clear aggro list, 
-        // let it return to its spawn point.
-        if (_brain.CheckTether() || !_brain.CheckProximityAggro())
+        public override void Think()
         {
-            //set state to RETURN TO SPAWN
-            _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-        }
-    }
-
-}
-
-public class ArosState_RETURN_TO_SPAWN : ArosState
-{
-    public ArosState_RETURN_TO_SPAWN(FSM fsm, ArosBrain brain) : base(fsm, brain)
-    {
-        _id = eFSMStateType.RETURN_TO_SPAWN;
-    }
-
-    public override void Enter()
-    {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-        {
-            Console.WriteLine($"Aros the Spiritmaster {_brain.Body} is returning to spawn");
-        }
-        _brain.Body.StopFollowing();
-        _brain.ClearAggroList();
-        _brain.Body.ReturnToSpawnPoint();
-    }
-
-    public override void Think()
-    {
-        if (_brain.Body.IsNearSpawn)
-        {
-            _brain.Body.CancelReturnToSpawnPoint();
-            _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+            if (_brain.Body.IsNearSpawn)
+            {
+                _brain.Body.CancelReturnToSpawnPoint();
+                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+            }
         }
     }
 }

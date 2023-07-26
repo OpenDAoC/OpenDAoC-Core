@@ -4,13 +4,13 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using log4net;
+using DOL.GS;
 
 namespace DOL.GS
 {
     public class PrinceAbdin : GameEpicBoss
     {
-        private static new readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -22,8 +22,7 @@ namespace DOL.GS
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
         }
-        public PrinceAbdin()
-            : base()
+        public PrinceAbdin() : base()
         {
         }
         public override int GetResist(eDamageType damageType)
@@ -100,8 +99,7 @@ namespace DOL.AI.Brain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AbdinBrain()
-            : base()
+        public AbdinBrain() : base()
         {
             AggroLevel = 100;
             AggroRange = 850;

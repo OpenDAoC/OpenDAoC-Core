@@ -20,12 +20,11 @@ using System;
 using System.Text;
 using DOL.Events;
 using DOL.GS;
-using FiniteStateMachine;
 
 namespace DOL.AI
 {
 	/// <summary>
-	/// This class is the base of all arteficial intelligence in game objects
+	/// This class is the base of all artificial intelligence in game objects
 	/// </summary>
 	public abstract class ABrain : IManagedEntity
 	{

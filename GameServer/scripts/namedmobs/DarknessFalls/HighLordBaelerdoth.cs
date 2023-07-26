@@ -3,14 +3,14 @@ using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 using log4net;
 
 namespace DOL.GS
 {
     public class HighLordBaelerdoth : GameEpicBoss
     {
-        private static new readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -18,8 +18,7 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info("High Lord Baelerdoth initialized..");
         }
-        public HighLordBaelerdoth()
-            : base()
+        public HighLordBaelerdoth() : base()
         {
         }
         public override int GetResist(eDamageType damageType)
@@ -152,8 +151,7 @@ namespace DOL.AI.Brain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public BaelerdothBrain()
-            : base()
+        public BaelerdothBrain() : base()
         {
             AggroLevel = 100;
             AggroRange = 850;
