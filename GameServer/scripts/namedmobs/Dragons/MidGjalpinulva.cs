@@ -1011,6 +1011,8 @@ namespace DOL.GS
 {
 	public class GjalpinulvaMessenger : GameNPC
 	{
+		public override bool IsVisibleToPlayers => true;
+
 		public override int MaxHealth
 		{
 			get { return 1500; }
@@ -1079,6 +1081,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 500;
 		}
+
 		private protected bool ChoosePath = false;
 		private protected bool ChoosePath1 = false;
 		private protected bool ChoosePath2 = false;
@@ -1323,6 +1326,8 @@ namespace DOL.GS
 {
 	public class GjalpinulvaSpawnedAdd : GameNPC
 	{
+		public override bool IsVisibleToPlayers => true;
+
 		public GjalpinulvaSpawnedAdd() : base() { }
 
 		public override int GetResist(eDamageType damageType)
@@ -1392,7 +1397,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override bool IsVisibleToPlayers => true;
     }
 }
 namespace DOL.AI.Brain
@@ -1400,20 +1404,14 @@ namespace DOL.AI.Brain
 	public class GjalpinulvaSpawnedAdBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public GjalpinulvaSpawnedAdBrain()
-			: base()
+
+		public GjalpinulvaSpawnedAdBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 1000;
 			ThinkInterval = 1500;
 		}
-        public override bool Start()
-        {
-			if (Body.IsAlive)
-				return true;
 
-            return base.Start();
-        }
         public override void Think()
 		{
 			if (Body.PackageID == "ChoosePath1" && !Body.InCombat && !HasAggro)

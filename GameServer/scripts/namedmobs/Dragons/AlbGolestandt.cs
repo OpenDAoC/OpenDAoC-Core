@@ -1014,6 +1014,8 @@ namespace DOL.GS
 {
 	public class GolestandtMessenger : GameNPC
 	{
+		public override bool IsVisibleToPlayers => true;
+
 		public override int MaxHealth
 		{
 			get { return 1500; }
@@ -1082,6 +1084,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 500;
 		}
+
 		private protected bool ChoosePath = false;
 		private protected bool ChoosePath1 = false;
 		private protected bool ChoosePath2 = false;
@@ -1337,6 +1340,8 @@ namespace DOL.GS
 {
 	public class GolestandtSpawnedAdd : GameNPC
 	{
+		public override bool IsVisibleToPlayers => true;
+
 		public GolestandtSpawnedAdd() : base() { }
 
 		public override int GetResist(eDamageType damageType)
@@ -1406,7 +1411,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public override bool IsVisibleToPlayers => true;
 	}
 }
 namespace DOL.AI.Brain
@@ -1414,20 +1418,14 @@ namespace DOL.AI.Brain
 	public class GolestandtSpawnedAdBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public GolestandtSpawnedAdBrain()
-			: base()
+
+		public GolestandtSpawnedAdBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 1000;
 			ThinkInterval = 1500;
 		}
-		public override bool Start()
-		{
-			if (Body.IsAlive)
-				return true;
 
-			return base.Start();
-		}
 		public override void Think()
 		{
 			if (Body.PackageID == "ChoosePath1" && !Body.InCombat && !HasAggro)
