@@ -863,7 +863,7 @@ namespace DOL.GS
 		/// The Mob's max distance from its spawn before return automatically
 		/// if MaxDistance > 0 ... the amount is the normal value
 		/// if MaxDistance = 0 ... no maxdistance check
-		/// if MaxDistance less than 0 ... the amount is calculated in procent of the value and the aggrorange (in StandardMobBrain)
+		/// if MaxDistance less than 0 ... the amount is calculated in percent of the value and the aggrorange (in StandardMobBrain)
 		/// </summary>
 		public int MaxDistance
 		{
@@ -3259,9 +3259,7 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
 		{
-			int dummy;
-			// remove Mob from "respawning"
-			CurrentRegion.MobsRespawning.TryRemove(this, out dummy);
+			CurrentRegion.MobsRespawning.TryRemove(this, out _);
 
 			lock (m_respawnTimerLock)
 			{
@@ -3272,11 +3270,9 @@ namespace DOL.GS
 				}
 			}
 
-			//DOLConsole.WriteLine("respawn");
-			//TODO some real respawn handling
-			if (IsAlive) return 0;
-			if (ObjectState == eObjectState.Active) return 0;
-			
+			if (IsAlive || ObjectState == eObjectState.Active)
+				return 0;
+
 			/*
 			if (m_level >= 5 && m_databaseLevel < 60)
 			{
@@ -3285,22 +3281,26 @@ namespace DOL.GS
 				this.Level = (byte)  Util.Random(minBound, maxBound);
 			}*/
 
-			//Heal this mob, move it to the spawnlocation
+			SpawnTick = GameLoop.GameLoopTime;
+
+			// Heal this NPC and move it to the spawn location.
 			Health = MaxHealth;
 			Mana = MaxMana;
 			Endurance = MaxEndurance;
+
 			int origSpawnX = m_spawnPoint.X;
 			int origSpawnY = m_spawnPoint.Y;
-			//X=(m_spawnX+Random(750)-350); //new SpawnX = oldSpawn +- 350 coords
-			//Y=(m_spawnY+Random(750)-350);	//new SpawnX = oldSpawn +- 350 coords
 			X = m_spawnPoint.X;
 			Y = m_spawnPoint.Y;
 			Z = m_spawnPoint.Z;
 			Heading = m_spawnHeading;
-			SpawnTick = GameLoop.GameLoopTime;
 			AddToWorld();
 			m_spawnPoint.X = origSpawnX;
 			m_spawnPoint.Y = origSpawnY;
+
+			// Delay the first think tick a bit to prevent clients from sending positive LoS check
+			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
+			Brain.LastThinkTick = GameLoop.GameLoopTime + 1250;
 			return 0;
 		}
 

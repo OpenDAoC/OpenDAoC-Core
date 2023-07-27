@@ -99,18 +99,12 @@ namespace DOL.AI.Brain
             // Check aggro only if our aggro list is empty and we're not in combat.
             if (AggroRange > 0 && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null)
             {
-                // Don't check aggro if we spawned less than X seconds ago. This is to prevent clients from sending positive LoS check
-                // when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-                // TODO: Find a way to delay the first tick of 'Think()' instead.
-                if (GameLoop.GameLoopTime - Body.SpawnTick < 1250)
-                    return false;
-
                 CheckPlayerAggro();
                 CheckNPCAggro();
             }
 
-            // Some calls rely on this method to return if there's something in the aggro list, not necesarilly to perform a proximity aggro check.
-            // But this doesn't necessarily return wheter or not the check was positive, only the current state (LoS checks take time).
+            // Some calls rely on this method to return if there's something in the aggro list, not necessarily to perform a proximity aggro check.
+            // But this doesn't necessarily return whether or not the check was positive, only the current state (LoS checks take time).
             return HasAggro;
         }
 

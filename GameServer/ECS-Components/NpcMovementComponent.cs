@@ -416,7 +416,7 @@ namespace DOL.GS
             targetPosition = new((int) (FollowTarget.X - diffX), (int) (FollowTarget.Y - diffY), (int) (FollowTarget.Z - diffZ));
 
             // Slow down out of combat pets when they're close.
-            if (!Owner.InCombat && Owner.Brain is ControlledNpcBrain controledBrain && controledBrain.Owner == Owner.FollowTarget)
+            if (!Owner.InCombat && Owner.Brain is ControlledNpcBrain controlledBrain && controlledBrain.Owner == Owner.FollowTarget)
                 PathTo(targetPosition, (short) Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50));
             else
                 PathTo(targetPosition, MaxSpeed);
