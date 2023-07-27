@@ -33,6 +33,7 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.RealmAbilities;
+using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using DOL.Language;
@@ -1227,12 +1228,12 @@ namespace DOL.GS
 		/// <summary>
 		/// How long does an interrupt last?
 		/// </summary>
-		public virtual int SpellInterruptDuration => ServerProperties.Properties.SPELL_INTERRUPT_DURATION;
+		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
 
 		/// <summary>
 		/// Additional interrupt time if interrupted again
 		/// </summary>
-		public virtual int SpellInterruptRecastAgain => ServerProperties.Properties.SPELL_INTERRUPT_AGAIN;
+		public virtual int SpellInterruptRecastAgain => Properties.SPELL_INTERRUPT_AGAIN;
 
 		public virtual bool InterruptChance(GameLiving attacker)
 		{
@@ -1461,9 +1462,8 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual double TryEvade( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount )
+		public virtual double TryEvade(AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
 		{
-			// Evade
 			// 1. A: It isn't possible to give a simple answer. The formula includes such elements
 			// as your level, your target's level, your level of evade, your QUI, your DEX, your
 			// buffs to QUI and DEX, the number of people attacking you, your target's weapon
@@ -1474,198 +1474,166 @@ namespace DOL.GS
 
 			double evadeChance = 0;
 			GamePlayer player = this as GamePlayer;
-
-			//GameSpellEffect evadeBuff = SpellHandler.FindEffectOnTarget( this, "EvadeBuff");
 			ECSGameEffect evadeBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
-			//if ( evadeBuff == null )
-			//	evadeBuff = SpellHandler.FindEffectOnTarget( this, "SavageEvadeBuff" );
 
-			if( player != null )
+			if (player != null)
 			{
 				if (player.HasAbility(Abilities.Advanced_Evade) ||
 					player.HasAbility(Abilities.Enhanced_Evade) ||
-				    player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
-				    player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
-					evadeChance = GetModified( eProperty.EvadeChance );
-				else if( IsObjectInFront( ad.Attacker, 180 ) && ( evadeBuff != null || player.HasAbility( Abilities.Evade ) ) )
-				{
-					int res = GetModified( eProperty.EvadeChance );
-					if( res > 0 )
-						evadeChance = res;
-				}
+					player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
+					player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+					evadeChance = GetModified(eProperty.EvadeChance);
+				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
+					evadeChance = Math.Max(GetModified(eProperty.EvadeChance), 0);
 			}
-			else if( this is GameNPC && IsObjectInFront( ad.Attacker, 180 ) )
-				evadeChance = GetModified( eProperty.EvadeChance );
+			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 180))
+				evadeChance = GetModified(eProperty.EvadeChance);
 
-			if( evadeChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting )
+			if (evadeChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting)
 			{
-				if( attackerCount > 1 )
-					evadeChance -= ( attackerCount - 1 ) * 0.03;
+				if (attackerCount > 1)
+					evadeChance -= (attackerCount - 1) * 0.03;
 
 				evadeChance *= 0.001;
-				evadeChance += 0.01 * attackerConLevel; // 1% per con level distance multiplied by evade level
+				evadeChance += 0.01 * attackerConLevel;
 
-				// Kelgor's Claw 15% evade 
-                if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
-                {
-                    evadeChance += 15 * 0.01;
-                }
+				// Kelgor's Claw 15% evade.
+				if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
+					evadeChance += 15 * 0.01;
 
-                //Console.WriteLine($"evade before {evadeChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after evade {evadeChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
-                evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100; //reduce chance by attacker's defense penetration
+				// Reduce chance by attacker's defense penetration.
+				evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
 
-				if ( ad.AttackType == AttackData.eAttackType.Ranged )
+				if (ad.AttackType == eAttackType.Ranged)
 					evadeChance /= 5.0;
 
-				if( evadeChance < 0.01 )
+				if (evadeChance < 0.01)
 					evadeChance = 0.01;
-				else if( evadeChance > ServerProperties.Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
-					evadeChance = ServerProperties.Properties.EVADE_CAP; //50% evade cap RvR only; http://www.camelotherald.com/more/664.shtml
-				else if( evadeChance > 0.995 )
+				else if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					evadeChance = Properties.EVADE_CAP; // 50% evade cap RvR only. http://www.camelotherald.com/more/664.shtml
+
+				if (evadeChance > 0.995)
 					evadeChance = 0.995;
 				
-				if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-				{
-					evadeChance = Math.Max(evadeChance * 0.5, 0);
-				}
+				if (ad.AttackType == eAttackType.MeleeDualWield)
+					evadeChance = Math.Max(evadeChance * 0.5, 0.01);
 			
-				//do a second check to prevent dual wield from halving below the floor
-				if( evadeChance < 0.01 )
-					evadeChance = 0.01;
-				else if (IsObjectInFront( ad.Attacker, 180 ) 
-				         && ( evadeBuff != null || (player != null && player.HasAbility( Abilities.Evade )))
-				         && evadeChance < 0.05
-				         && ad.AttackType != AttackData.eAttackType.Ranged)
+				if (IsObjectInFront(ad.Attacker, 180) &&
+					(evadeBuff != null || (player != null && player.HasAbility(Abilities.Evade))) &&
+					evadeChance < 0.05 &&
+					ad.AttackType != eAttackType.Ranged)
 				{
-					//if player has a hard evade source, 5% miniumum evade chance
+					// If player has a hard evade source, 5% minimum evade chance.
 					evadeChance = 0.05;
 				}
 			}
 
-			//Excalibur : infi RR5
-			GamePlayer p = ad.Attacker as GamePlayer;
-			if (p != null)
+			// Infiltrator RR5.
+			if (ad.Attacker is GamePlayer playerAttacker)
 			{
-				OverwhelmEffect Overwhelm = (OverwhelmEffect)p.EffectList.GetOfType<OverwhelmEffect>();
-				if (Overwhelm != null)
-				{
-					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
-				}
-			}
+				OverwhelmEffect Overwhelm = playerAttacker.EffectList.GetOfType<OverwhelmEffect>();
 
-			
+				if (Overwhelm != null)
+					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
+			}
 
 			return evadeChance;
 		}
 
-		public virtual double TryParry( AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount )
+		public virtual double TryParry(AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
 		{
-			// Parry
-
 			//1.  Dual wielding does not grant more chances to parry than a single weapon.  Grab Bag 9/12/03
 			//2.  There is no hard cap on ability to Parry.  Grab Bag 8/13/02
 			//3.  Your chances of doing so are best when you are solo, trying to block or parry a style from someone who is also solo. The chances of doing so decrease with grouped, simultaneous attackers.  Grab Bag 7/19/02
 			//4.  The parry chance is divided up amongst the attackers, such that if you had a 50% chance to parry normally, and were under attack by two targets, you would get a 25% chance to parry one, and a 25% chance to parry the other. So, the more people or monsters attacking you, the lower your chances to parry any one attacker. -   Grab Bag 11/05/04
 			//Your chance to parry is affected by the number of attackers, the size of the weapon youre using, and your spec in parry.
 
-      //Parry % = (5% + 0.5% * Parry) / # of Attackers
+			//Parry % = (5% + 0.5% * Parry) / # of Attackers
 			//Parry: (((Dex*2)-100)/40)+(Parry/2)+(Mastery of P*3)+5. < Possible relation to buffs
 			//So, if you have parry of 20 you will have a chance of parrying 15% if there is one attacker. If you have parry of 20 you will have a chance of parrying 7.5%, if there are two attackers.
 			//From Grab Bag: "Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon. Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon."
 			//So, when facing a 2H weapon, you may see a penalty to your evade.
-			//
+
 			//http://www.camelotherald.com/more/453.php
 
-      //Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
+			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
 
 			double parryChance = 0;
 
-			if( ad.IsMeleeAttack )
+			if (ad.IsMeleeAttack)
 			{
-				GamePlayer player = this as GamePlayer;
 				BladeBarrierEffect BladeBarrier = null;
-
-				//GameSpellEffect parryBuff = SpellHandler.FindEffectOnTarget( this, "ParryBuff");
 				ECSGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
-				//if ( parryBuff == null )
-				//	parryBuff = SpellHandler.FindEffectOnTarget( this, "SavageParryBuff");
 
-				if( player != null )
+				if (this is GamePlayer player)
 				{
-					//BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry
+					// BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry.
+					// They still need an active weapon to parry with BladeBarrier
 					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
-					//They still need an active weapon to parry with BladeBarrier
-					if( BladeBarrier != null && (ActiveWeapon != null ) )
-					{
+					
+					if (BladeBarrier != null && ActiveWeapon != null)
 						parryChance = 0.90;
-					}
-					else if( IsObjectInFront( ad.Attacker, 120 ) )
+					else if (IsObjectInFront(ad.Attacker, 120))
 					{
-						if( ( player.HasSpecialization( Specs.Parry ) || parryBuff != null ) && (ActiveWeapon != null 
-							   && ActiveWeapon.Object_Type != (int)eObjectType.RecurvedBow
-								&& ActiveWeapon.Object_Type != (int)eObjectType.Longbow
-							   && ActiveWeapon.Object_Type != (int)eObjectType.CompositeBow
-							   && ActiveWeapon.Object_Type != (int)eObjectType.Crossbow
-							   && ActiveWeapon.Object_Type != (int)eObjectType.Fired))
+						if ((player.HasSpecialization(Specs.Parry) || parryBuff != null) && ActiveWeapon != null &&
+							ActiveWeapon.Object_Type != (int)eObjectType.RecurvedBow &&
+							ActiveWeapon.Object_Type != (int)eObjectType.Longbow &&
+							ActiveWeapon.Object_Type != (int)eObjectType.CompositeBow &&
+							ActiveWeapon.Object_Type != (int)eObjectType.Crossbow &&
+							ActiveWeapon.Object_Type != (int)eObjectType.Fired)
+						{
 							parryChance = GetModified( eProperty.ParryChance );
+						}
 					}
 				}
-				else if( this is GameNPC && IsObjectInFront( ad.Attacker, 120 ) )
-					parryChance = GetModified( eProperty.ParryChance );
+				else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
+					parryChance = GetModified(eProperty.ParryChance);
 
-				//If BladeBarrier is up, do not adjust the parry chance.
-				if( BladeBarrier != null && !ad.Target.IsStunned && !ad.Target.IsSitting )
-				{
+				if (BladeBarrier != null && !ad.Target.IsStunned && !ad.Target.IsSitting)
 					return parryChance;
-				}
-				else if( parryChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting )
+
+				if (parryChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting)
 				{
-					if( attackerCount > 1 )
+					if (attackerCount > 1)
 						parryChance /= attackerCount / 2;
 
 					parryChance *= 0.001;
 					parryChance += 0.05 * attackerConLevel;
 
-					// Tribal Wrath 25% evade 
+					// Tribal Wrath 25% evade.
 					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
-					{
 						parryChance += 25 * 0.01;
-					}
 
-					//Console.WriteLine($"parry before {parryChance} defPen {GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100} after parry {parryChance * (1 - (GetAttackerDefensePenetration(ad.Attacker, ad.Weapon)/100))}");
-					parryChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; //reduce chance by attacker's defense penetration
+					// Reduce chance by attacker's defense penetration.
+					parryChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
 
-					if ( parryChance < 0.01 )
+					if (parryChance < 0.01)
 						parryChance = 0.01;
-					else if( parryChance > ServerProperties.Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer )
-						parryChance = ServerProperties.Properties.PARRY_CAP;
-					else if( parryChance > 0.995 )
+					else if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+						parryChance = Properties.PARRY_CAP;
+
+					if (parryChance > 0.995)
 						parryChance = 0.995;
 				}
 			}
 
-			if (ad.AttackType == AttackData.eAttackType.MeleeTwoHand)
-			{
+			if (ad.AttackType == eAttackType.MeleeTwoHand)
 				parryChance = Math.Max(parryChance * 0.5, 0);
+
+			// Infiltrator RR5.
+			if (ad.Attacker is GamePlayer attackerPlayer)
+			{
+				OverwhelmEffect Overwhelm = attackerPlayer.EffectList.GetOfType<OverwhelmEffect>();
+
+				if (Overwhelm != null)
+					parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
 			}
 
-			//Excalibur : infi RR5
-			GamePlayer p = ad.Attacker as GamePlayer;
-			if (p != null)
-			{
-				OverwhelmEffect Overwhelm = (OverwhelmEffect)p.EffectList.GetOfType<OverwhelmEffect>();
-				if (Overwhelm != null)
-				{
-					parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
-				}
-			}
 			return parryChance;
 		}
 
 		public virtual double TryBlock(AttackData ad, double attackerConLevel, int attackerCount)
 		{
-			// Block
-
 			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
 			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
 			//3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02
@@ -1680,7 +1648,7 @@ namespace DOL.GS
 			//Each attacker above these numbers will reduce your chance to block.
 			//From Grab Bag: "Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon. Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon."
 			//Block: (((Dex*2)-100)/40)+(Shield/2)+(Mastery of B*3)+5. < Possible relation to buffs
-			//
+
 			//http://www.camelotherald.com/more/453.php
 
 			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
@@ -1689,7 +1657,7 @@ namespace DOL.GS
 			double blockChance = 0;
 			InventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-			if (leftHand != null && leftHand.Object_Type != (int)eObjectType.Shield)
+			if (leftHand != null && leftHand.Object_Type != (int) eObjectType.Shield)
 				leftHand = null;
 
 			GamePlayer player = this as GamePlayer;
@@ -1719,21 +1687,23 @@ namespace DOL.GS
 				blockChance *= 0.001;
 				blockChance += attackerConLevel * 0.05;
 
+				// Up to 15% extra block chance based on shield level.
 				if (leftHand != null && player != null && player.HasSpecialization(Abilities.Shield))
-					blockChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+					blockChance += (double) (leftHand.Level - 1) / 50 * 0.15;
 
-				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100; // Reduce chance by attacker's defense penetration.
+				// Reduce chance by attacker's defense penetration.
+				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
-				else if (blockChance > ServerProperties.Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
-					blockChance = ServerProperties.Properties.BLOCK_CAP;
+				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
+					blockChance = Properties.BLOCK_CAP;
 				
-				if (shieldSize == 1 && blockChance > .8)
+				if (shieldSize == 1 && blockChance > 0.8)
 					blockChance = 0.8;
-				else if (shieldSize == 2 && blockChance > .9)
+				else if (shieldSize == 2 && blockChance > 0.9)
 					blockChance = 0.9;
-				else if (shieldSize == 3 && blockChance > .99)
+				else if (shieldSize == 3 && blockChance > 0.99)
 					blockChance = 0.99;
 				
 				if (IsEngaging)
@@ -1751,8 +1721,8 @@ namespace DOL.GS
 							Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
 							player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
-							if (blockChance < .95)
-								blockChance = .95;
+							if (blockChance < 0.95)
+								blockChance = 0.95;
 						}
 					}
 				}
@@ -1761,7 +1731,7 @@ namespace DOL.GS
 			if (ad.AttackType == eAttackType.MeleeDualWield)
 				blockChance = Math.Max(blockChance * 0.5, 0);
 
-			// Infi RR5
+			// Infiltrator RR5.
 			if (player != null)
 			{
 				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
