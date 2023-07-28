@@ -1689,10 +1689,6 @@ namespace DOL.GS
 				blockChance *= 0.001;
 				blockChance += attackerConLevel * 0.05;
 
-				// Up to 15% extra block chance based on shield level.
-				if (leftHand != null && player != null && player.HasSpecialization(Abilities.Shield))
-					blockChance += (double) (leftHand.Level - 1) / 50 * 0.15;
-
 				// Reduce chance by attacker's defense penetration.
 				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
 
