@@ -1678,10 +1678,12 @@ namespace DOL.GS
 				// Reduce block chance if the shield used is too small.
 				int shieldSize = 1;
 
-				if (leftHand != null && attackerCount > shieldSize)
+				if (leftHand != null)
 				{
 					shieldSize = Math.Max(leftHand.Type_Damage, 1);
-					blockChance *= shieldSize / (double) attackerCount;
+
+					if (attackerCount > shieldSize)
+						blockChance *= shieldSize / (double) attackerCount;
 				}
 
 				blockChance *= 0.001;
