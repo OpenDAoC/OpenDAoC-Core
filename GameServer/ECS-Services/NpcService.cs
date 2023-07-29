@@ -85,7 +85,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.Brain, brain, brain.Body);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, brain, brain.Body);
                 }
             });
 

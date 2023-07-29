@@ -7,8 +7,7 @@ namespace DOL.GS
         public GamePlayer Owner { get; private set; }
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CraftComponent, false);
         public List<Recipe> Recipes { get; private set; } = new();
         private object _recipesLock = new();
 
@@ -45,7 +44,7 @@ namespace DOL.GS
             CraftAction?.Tick(time);
 
             if (CraftAction == null)
-                EntityManager.Remove(EntityManager.EntityType.CraftComponent, this);
+                EntityManager.Remove(this);
         }
 
         public void StartCraft(Recipe recipe, AbstractCraftingSkill skill, int craftingTime)
@@ -53,7 +52,7 @@ namespace DOL.GS
             if (CraftAction == null)
             {
                 CraftAction = new CraftAction(Owner, craftingTime, recipe, skill);
-                EntityManager.Add(EntityManager.EntityType.CraftComponent, this);
+                EntityManager.Add(this);
             }
         }
 

@@ -42,8 +42,7 @@ namespace DOL.GS
         public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Effect, false);
         public ISpellHandler SpellHandler { get; protected set; }
 
         /// <summary>

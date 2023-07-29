@@ -49,7 +49,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.Player, player, player);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, player, player);
                 }
             });
 

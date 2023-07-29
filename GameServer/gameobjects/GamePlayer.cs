@@ -71,8 +71,7 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Player, false);
         public long LastWorldUpdate { get; set; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
@@ -1023,7 +1022,7 @@ namespace DOL.GS
                 IsOnHorse = false;
 
             GameEventMgr.RemoveAllHandlersForObject(m_inventory);
-            EntityManager.Remove(EntityManager.EntityType.Player, this);
+            EntityManager.Remove(this);
 
             if (CraftTimer != null)
             {
@@ -15204,7 +15203,7 @@ namespace DOL.GS
             for (int i = 0; i < ObjectUpdateCaches.Length; i++)
                 ObjectUpdateCaches[i] = new();
 
-            EntityManager.Add(EntityManager.EntityType.Player, this);
+            EntityManager.Add(this);
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
             {

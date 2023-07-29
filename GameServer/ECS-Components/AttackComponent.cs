@@ -24,8 +24,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent, false);
 
         /// <summary>
         /// The objects currently attacking this living
@@ -109,7 +108,7 @@ namespace DOL.GS
                 weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-                EntityManager.Remove(EntityManager.EntityType.AttackComponent, this);
+                EntityManager.Remove(this);
         }
 
         /// <summary>
@@ -577,7 +576,7 @@ namespace DOL.GS
             {
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
-                EntityManager.Add(EntityManager.EntityType.AttackComponent, this);
+                EntityManager.Add(this);
             }
         }
 

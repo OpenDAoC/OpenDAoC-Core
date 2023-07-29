@@ -15,8 +15,7 @@ namespace DOL.GS
         public ISpellHandler SpellHandler { get; private set; }
         public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CastingComponent, false);
         public bool IsCasting => SpellHandler != null;
 
         public CastingComponent(GameLiving owner)
@@ -46,7 +45,7 @@ namespace DOL.GS
             SpellHandler?.Tick(time);
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.Count == 0)
-                EntityManager.Remove(EntityManager.EntityType.CastingComponent, this);
+                EntityManager.Remove(this);
         }
 
         public bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
@@ -64,7 +63,7 @@ namespace DOL.GS
             }
 
             _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
-            EntityManager.Add(EntityManager.EntityType.CastingComponent, this);
+            EntityManager.Add(this);
             return true;
         }
 

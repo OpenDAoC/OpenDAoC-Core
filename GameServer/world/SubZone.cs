@@ -72,8 +72,7 @@ namespace DOL.GS
         public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => true;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.ObjectChangingSubZone, true);
 
         private ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
@@ -87,7 +86,7 @@ namespace DOL.GS
             else
             {
                 objectChangingSubZone = new(node, subZoneObject, destinationZone, destinationSubZone);
-                EntityManager.Add(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
+                EntityManager.Add(objectChangingSubZone);
             }
         }
 

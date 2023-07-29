@@ -36,7 +36,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AttackComponent, attackComponent, attackComponent.owner);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, attackComponent, attackComponent.owner);
                 }
             });
 

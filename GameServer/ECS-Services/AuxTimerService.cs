@@ -39,7 +39,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, timer, timer.Owner);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
                 }
             });
 
@@ -61,8 +61,7 @@ namespace DOL.GS
         public long NextTick => StartTick + Interval;
         public bool IsAlive { get; set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AuxTimer, false);
         private PropertyCollection _properties;
 
         public AuxECSGameTimer(GameObject owner)
@@ -95,13 +94,13 @@ namespace DOL.GS
             StartTick = AuxGameLoop.GameLoopTime;
             Interval = interval;
 
-            if (EntityManager.Add(EntityManager.EntityType.AuxTimer, this))
+            if (EntityManager.Add(this))
                 IsAlive = true;
         }
 
         public void Stop()
         {
-            if (EntityManager.Remove(EntityManager.EntityType.AuxTimer, this))
+            if (EntityManager.Remove(this))
                IsAlive = false;
         }
 

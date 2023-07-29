@@ -40,7 +40,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, effectListComponent, effectListComponent.Owner);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, effectListComponent, effectListComponent.Owner);
                 }
             });
 
@@ -51,7 +51,7 @@ namespace DOL.GS
         {
             if (!effectListComponent.Effects.Any())
             {
-                EntityManager.Remove(EntityManager.EntityType.EffectListComponent, effectListComponent);
+                EntityManager.Remove(effectListComponent);
                 return;
             }
 

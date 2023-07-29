@@ -61,7 +61,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.Timer, timer, timer.Owner);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
                 }
             });
 
@@ -87,8 +87,7 @@ namespace DOL.GS
         public long NextTick => StartTick + Interval;
         public bool IsAlive { get; set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-        public EntityManagerId EntityManagerId { get; set; } = new();
-        public bool AllowReuseByEntityManager => false;
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer, false);
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject timerOwner)
@@ -122,13 +121,13 @@ namespace DOL.GS
             Interval = interval;
             IsAlive = true;
 
-            if (EntityManager.Add(EntityManager.EntityType.Timer, this))
+            if (EntityManager.Add(this))
                 IsAlive = true;
         }
 
         public void Stop()
         {
-            if (EntityManager.Remove(EntityManager.EntityType.Timer, this))
+            if (EntityManager.Remove(this))
                IsAlive = false;
         }
 

@@ -77,11 +77,11 @@ namespace DOL.GS
                     }
 
                     subZoneObject.ResetSubZoneChange();
-                    EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
+                    EntityManager.Remove(objectChangingSubZone);
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Item);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Item);
                 }
             });
 

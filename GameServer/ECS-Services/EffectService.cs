@@ -42,7 +42,7 @@ namespace DOL.GS
                     else
                         HandlePropertyModification(effect);
 
-                    EntityManager.Remove(EntityManager.EntityType.Effect, effect);
+                    EntityManager.Remove(effect);
 
                     long stopTick = GameLoop.GetCurrentTime();
 
@@ -51,7 +51,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, effect, effect.Owner);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, effect, effect.Owner);
                 }
             });
 
@@ -286,7 +286,7 @@ namespace DOL.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.Add(EntityManager.EntityType.Effect, effect);
+            EntityManager.Add(effect);
         }
 
         /// <summary>

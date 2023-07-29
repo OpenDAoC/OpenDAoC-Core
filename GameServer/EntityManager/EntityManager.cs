@@ -38,7 +38,7 @@ namespace DOL.GS
             { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
 
-        public static bool Add<T>(EntityType type, T entity) where T : IManagedEntity
+        public static bool Add<T>(T entity) where T : IManagedEntity
         {
             EntityManagerId id = entity.EntityManagerId;
 
@@ -46,7 +46,7 @@ namespace DOL.GS
             if (id.IsSet && !id.IsPendingRemoval)
                 return false;
 
-            _entityArrays[type].Add(entity);
+            _entityArrays[entity.EntityManagerId.Type].Add(entity);
             return true;
         }
 
@@ -55,7 +55,7 @@ namespace DOL.GS
             return _entityArrays[type].TryReuse(out entity);
         }
 
-        public static bool Remove<T>(EntityType type, T entity) where T : IManagedEntity
+        public static bool Remove<T>(T entity) where T : IManagedEntity
         {
             EntityManagerId id = entity.EntityManagerId;
 
@@ -63,7 +63,7 @@ namespace DOL.GS
             if (!id.IsSet && !id.IsPendingAddition)
                 return false;
 
-            _entityArrays[type].Remove(entity);
+            _entityArrays[entity.EntityManagerId.Type].Remove(entity);
             return true;
         }
 
@@ -212,10 +212,11 @@ namespace DOL.GS
                 if (id == Entities.Count)
                     _lastValidIndex--;
 
-                entity.EntityManagerId.Unset();
+                EntityManagerId entityManagerId = entity.EntityManagerId;
+                entityManagerId.Unset();
                 _invalidIndexes.Add(id);
 
-                if (!entity.AllowReuseByEntityManager)
+                if (!entityManagerId.AllowReuseByEntityManager)
                     Entities[id] = null;
             }
         }
@@ -236,9 +237,17 @@ namespace DOL.GS
                 _pendingState = PendingState.NONE;
             }
         }
+        public EntityManager.EntityType Type { get; private set; }
+        public bool AllowReuseByEntityManager { get; private set; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
         public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;
+
+        public EntityManagerId(EntityManager.EntityType type, bool allowReuseByEntityManager)
+        {
+            Type = type;
+            AllowReuseByEntityManager = allowReuseByEntityManager;
+        }
 
         public void OnPreAdd()
         {
@@ -267,7 +276,6 @@ namespace DOL.GS
     public interface IManagedEntity
     {
         public EntityManagerId EntityManagerId { get; set; }
-        public bool AllowReuseByEntityManager { get; }
     }
 
     // Extension methods for 'List<T>' that could be moved elsewhere.
