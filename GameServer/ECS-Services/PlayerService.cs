@@ -13,7 +13,7 @@ namespace DOL.GS
     public static class PlayerService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "PlayerService";
+        private const string SERVICE_NAME = nameof(PlayerService);
 
         public static void Tick(long tick)
         {
@@ -41,15 +41,15 @@ namespace DOL.GS
                         UpdateWorld(player, tick);
                         long stopTick = GameLoop.GetCurrentTime();
 
-                        if ((stopTick - startTick) > 25)
-                            log.Warn($"Long UpdateWorld for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                        if (stopTick - startTick > 25)
+                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                     }
 
                     player.movementComponent.Tick(tick);
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered: {e}");
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.Player, player, player);
                 }
             });
 

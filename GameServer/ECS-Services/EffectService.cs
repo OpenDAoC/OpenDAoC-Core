@@ -17,7 +17,7 @@ namespace DOL.GS
     public static class EffectService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "EffectService";
+        private const string SERVICE_NAME = nameof(EffectService);
 
         public static void Tick()
         {
@@ -30,22 +30,29 @@ namespace DOL.GS
             {
                 ECSGameEffect effect = list[i];
 
-                if (effect?.EntityManagerId.IsSet != true)
-                    return;
+                try
+                {
+                    if (effect?.EntityManagerId.IsSet != true)
+                        return;
 
-                long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoop.GetCurrentTime();
 
-                if (effect.CancelEffect || effect.IsDisabled)
-                    HandleCancelEffect(effect);
-                else
-                    HandlePropertyModification(effect);
+                    if (effect.CancelEffect || effect.IsDisabled)
+                        HandleCancelEffect(effect);
+                    else
+                        HandlePropertyModification(effect);
 
-                EntityManager.Remove(EntityManager.EntityType.Effect, effect);
+                    EntityManager.Remove(EntityManager.EntityType.Effect, effect);
 
-                long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoop.GetCurrentTime();
 
-                if ((stopTick - startTick) > 25 )
-                    log.Warn($"Long EffectService.Tick for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
+                }
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, effect, effect.Owner);
+                }
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

@@ -10,7 +10,7 @@ namespace DOL.GS
     public class AuxTimerService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "AuxTimerService";
+        private const string SERVICE_NAME = nameof(AuxTimerService);
 
         public static void Tick(long tick)
         {
@@ -22,11 +22,11 @@ namespace DOL.GS
             {
                 AuxECSGameTimer timer = list[i];
 
-                if (timer?.EntityManagerId.IsSet != true)
-                    return;
-
                 try
                 {
+                    if (timer?.EntityManagerId.IsSet != true)
+                        return;
+
                     if (timer.NextTick < tick)
                     {
                         long startTick = GameLoop.GetCurrentTime();
@@ -34,12 +34,12 @@ namespace DOL.GS
                         long stopTick = GameLoop.GetCurrentTime();
 
                         if (stopTick - startTick > 25)
-                            log.Warn($"Long AuxTimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in AuxTimerService: {e}");
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, timer, timer.Owner);
                 }
             });
 

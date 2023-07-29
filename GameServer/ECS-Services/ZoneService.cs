@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace DOL.GS
 {
     public static class ZoneService
     {
-        private const string SERVICE_NAME = "ZoneService";
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private const string SERVICE_NAME = nameof(ZoneService);
         private static int _failedAdd;
         private static int _failedRemove;
 
@@ -29,52 +30,59 @@ namespace DOL.GS
                 if (objectChangingSubZone?.EntityManagerId.IsSet != true)
                     return;
 
-                LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;
-                SubZoneObject subZoneObject = objectChangingSubZone.SubZoneObject;
-                Zone currentZone = subZoneObject.CurrentSubZone?.ParentZone;
-                Zone destinationZone = objectChangingSubZone.DestinationZone;
-                bool changingZone = currentZone != destinationZone;
-
-                // Remove object from subzone.
-                if (currentZone != null)
+                try
                 {
-                    // Abord if we can't remove this node (due to a lock timeout), but keep the object in the entity manager.
-                    if (!subZoneObject.CurrentSubZone.RemoveObjectNode(node))
-                    {
-                        if (log.IsWarnEnabled)
-                            Interlocked.Increment(ref _failedRemove);
+                    LightConcurrentLinkedList<GameObject>.Node node = objectChangingSubZone.Node;
+                    SubZoneObject subZoneObject = objectChangingSubZone.SubZoneObject;
+                    Zone currentZone = subZoneObject.CurrentSubZone?.ParentZone;
+                    Zone destinationZone = objectChangingSubZone.DestinationZone;
+                    bool changingZone = currentZone != destinationZone;
 
-                        return;
+                    // Remove object from subzone.
+                    if (currentZone != null)
+                    {
+                        // Abord if we can't remove this node (due to a lock timeout), but keep the object in the entity manager.
+                        if (!subZoneObject.CurrentSubZone.RemoveObjectNode(node))
+                        {
+                            if (log.IsWarnEnabled)
+                                Interlocked.Increment(ref _failedRemove);
+
+                            return;
+                        }
+
+                        if (changingZone)
+                            currentZone.OnObjectRemovedFromZone();
+
+                        subZoneObject.CurrentSubZone = null;
                     }
 
-                    if (changingZone)
-                        currentZone.OnObjectRemovedFromZone();
-
-                    subZoneObject.CurrentSubZone = null;
-                }
-
-                // Add object to subzone.
-                if (destinationZone != null)
-                {
-                    SubZone destinationSubZone = objectChangingSubZone.DestinationSubZone;
-
-                    // Abord if we can't add this node (due to a lock timeout), but keep the object in the entity manager.
-                    if (!destinationSubZone.AddObjectNode(node))
+                    // Add object to subzone.
+                    if (destinationZone != null)
                     {
-                        if (log.IsWarnEnabled)
-                            Interlocked.Increment(ref _failedAdd);
+                        SubZone destinationSubZone = objectChangingSubZone.DestinationSubZone;
 
-                        return;
+                        // Abord if we can't add this node (due to a lock timeout), but keep the object in the entity manager.
+                        if (!destinationSubZone.AddObjectNode(node))
+                        {
+                            if (log.IsWarnEnabled)
+                                Interlocked.Increment(ref _failedAdd);
+
+                            return;
+                        }
+
+                        subZoneObject.CurrentSubZone = destinationSubZone;
+
+                        if (changingZone)
+                            destinationZone.OnObjectAddedToZone();
                     }
 
-                    subZoneObject.CurrentSubZone = destinationSubZone;
-
-                    if (changingZone)
-                        destinationZone.OnObjectAddedToZone();
+                    subZoneObject.ResetSubZoneChange();
+                    EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
                 }
-
-                subZoneObject.ResetSubZoneChange();
-                EntityManager.Remove(EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone);
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.ObjectChangingSubZone, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Item);
+                }
             });
 
             if (log.IsWarnEnabled)

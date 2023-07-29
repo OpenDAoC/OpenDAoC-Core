@@ -10,7 +10,7 @@ namespace DOL.GS
     public static class CastingService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "CastingService";
+        private const string SERVICE_NAME = nameof(CastingService);
 
         public static void Tick(long tick)
         {
@@ -21,10 +21,10 @@ namespace DOL.GS
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
+                CastingComponent castingComponent = list[i];
+
                 try
                 {
-                    CastingComponent castingComponent = list[i];
-
                     if (castingComponent?.EntityManagerId.IsSet != true)
                         return;
 
@@ -33,11 +33,11 @@ namespace DOL.GS
                     long stopTick = GameLoop.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
-                        log.Warn($"Long CastingComponent.Tick for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in CastingService: {e}");
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, castingComponent, castingComponent.Owner);
                 }
             });
 

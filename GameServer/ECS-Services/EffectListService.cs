@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ namespace DOL.GS
     public static class EffectListService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "EffectListService";
+        private const string SERVICE_NAME = nameof(EffectListService);
 
         public static void Tick(long tick)
         {
@@ -25,15 +26,22 @@ namespace DOL.GS
             {
                 EffectListComponent effectListComponent = list[i];
 
-                if (effectListComponent?.EntityManagerId.IsSet != true)
-                    return;
+                try
+                {
+                    if (effectListComponent?.EntityManagerId.IsSet != true)
+                        return;
 
-                long startTick = GameLoop.GetCurrentTime();
-                HandleEffects(effectListComponent, tick);
-                long stopTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoop.GetCurrentTime();
+                    HandleEffects(effectListComponent, tick);
+                    long stopTick = GameLoop.GetCurrentTime();
 
-                if (stopTick - startTick > 25)
-                    log.Warn($"Long EffectListService.Tick for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                }
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, effectListComponent, effectListComponent.Owner);
+                }
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

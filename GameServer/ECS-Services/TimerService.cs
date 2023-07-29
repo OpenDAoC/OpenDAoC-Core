@@ -11,7 +11,7 @@ namespace DOL.GS
     public class TimerService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "TimerService";
+        private const string SERVICE_NAME = nameof(TimerService);
 
         private static int _nonNullTimerCount;
         private static int _nullTimerCount;
@@ -55,13 +55,13 @@ namespace DOL.GS
                         timer.Tick();
                         long stopTick = GameLoop.GetCurrentTime();
 
-                        if ((stopTick - startTick) > 25)
-                            log.Warn($"Long TimerService.Tick for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                        if (stopTick - startTick > 25)
+                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                     }
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in TimerService: {e}");
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.Timer, timer, timer.Owner);
                 }
             });
 

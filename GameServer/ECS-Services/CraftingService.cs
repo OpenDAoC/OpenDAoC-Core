@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using ECS.Debug;
+using log4net;
 
 namespace DOL.GS
 {
     public static class CraftingService
     {
-        private const string SERVICE_NAME = "CraftingService";
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private const string SERVICE_NAME = nameof(CraftingService);
 
         public static void Tick(long tick)
         {
@@ -19,10 +23,17 @@ namespace DOL.GS
             {
                 CraftComponent craftComponent = list[i];
 
-                if (craftComponent?.EntityManagerId.IsSet != true)
-                    return;
+                try
+                {
+                    if (craftComponent?.EntityManagerId.IsSet != true)
+                        return;
 
-                craftComponent.Tick(tick);
+                    craftComponent.Tick(tick);
+                }
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, EntityManager.EntityType.AuxTimer, craftComponent, craftComponent.Owner);
+                }
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

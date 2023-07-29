@@ -1,12 +1,16 @@
+using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using DOL.GS.Scripts;
+using log4net;
 
 namespace DOL.GS
 {
     public static class GameLoop
     {
-        public const long TICK_RATE = 50; // GameLoop tick timer. Will adjust based on the performance.
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        public const long TICK_RATE = 50;
         private const string THREAD_NAME = "GameLoop";
         public static long GameLoopTime;
         public static string CurrentServiceTick;
@@ -36,7 +40,7 @@ namespace DOL.GS
 
         public static void Exit()
         {
-            _gameLoopThread.Interrupt();
+            _gameLoopThread?.Interrupt();
             _gameLoopThread = null;
         }
 
@@ -50,20 +54,29 @@ namespace DOL.GS
             _stopwatch.Restart();
             ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
 
-            NpcService.Tick(GameLoopTime);
-            AttackService.Tick(GameLoopTime);
-            CastingService.Tick(GameLoopTime);
-            EffectService.Tick();
-            EffectListService.Tick(GameLoopTime);
-            ZoneService.Tick();
-            CraftingService.Tick(GameLoopTime);
-            TimerService.Tick(GameLoopTime);
-            ReaperService.Tick();
-            DailyQuestService.Tick();
-            WeeklyQuestService.Tick();
-            ConquestService.Tick();
-            BountyService.Tick(GameLoopTime);
-            PredatorService.Tick(GameLoopTime);
+            try
+            {
+                NpcService.Tick(GameLoopTime);
+                AttackService.Tick(GameLoopTime);
+                CastingService.Tick(GameLoopTime);
+                EffectService.Tick();
+                EffectListService.Tick(GameLoopTime);
+                ZoneService.Tick();
+                CraftingService.Tick(GameLoopTime);
+                TimerService.Tick(GameLoopTime);
+                ReaperService.Tick();
+                DailyQuestService.Tick();
+                WeeklyQuestService.Tick();
+                ConquestService.Tick();
+                BountyService.Tick(GameLoopTime);
+                PredatorService.Tick(GameLoopTime);
+            }
+            catch (Exception e)
+            {
+                log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
+                GameServer.Instance.Stop();
+                return;
+            }
 
             if (ZoneBonusRotator._lastPvEChangeTick == 0)
                 ZoneBonusRotator._lastPvEChangeTick = GameLoopTime;
@@ -76,9 +89,9 @@ namespace DOL.GS
             GameLoopTime = GetCurrentTime();
             _stopwatch.Stop();
 
-            float elapsed = (float)_stopwatch.Elapsed.TotalMilliseconds;
+            float elapsed = (float) _stopwatch.Elapsed.TotalMilliseconds;
             // We need to delay our next threading time to the default tick time. If this is > 0, we delay the next tick until its met to maintain consistent tick rate.
-            int diff = (int)(TICK_RATE - elapsed);
+            int diff = (int) (TICK_RATE - elapsed);
 
             if (diff <= 0)
             {
