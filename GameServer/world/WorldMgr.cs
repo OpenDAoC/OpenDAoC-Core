@@ -1713,7 +1713,7 @@ namespace DOL.GS
 			{
 				for (ID = DEFAULT_VALUE_FOR_INSTANCE_ID_SEARCH_START; ID <= ushort.MaxValue; ID++)
 				{
-					if (m_regions.TryAdd(ID, instance))
+					if (!m_regions.ContainsKey(ID))
 					{
 						success = true;
 						break;
@@ -1730,13 +1730,13 @@ namespace DOL.GS
 			try
 			{
 				instance = (BaseInstance) info.Invoke(new object[] { ID, data });
+				m_regions[ID] = instance;
 			}
 			catch (Exception e)
 			{
 				log.ErrorFormat("Error on instance creation - {0} {1}", e.Message, e.StackTrace);
 				return null;
 			}
-
 
 			List<ZoneData> list = null;
 
@@ -1753,7 +1753,7 @@ namespace DOL.GS
 
 			foreach (ZoneData dat in list)
 			{
-				for (; zoneID <= ushort.MaxValue; ID++)
+				for (; zoneID <= ushort.MaxValue; zoneID++)
 				{
 					if (m_zones.TryAdd(zoneID, null))
 					{
