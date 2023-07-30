@@ -63,15 +63,25 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				// The rider and their steed are never at the exact same position (made worse by a high latency).
 				// So the radius is arbitrary and must not be too low to avoid spamming packets.
-				if (!rider.IsWithinRadius(steed, 500))
+				if (!rider.IsWithinRadius(steed, 1000))
 				{
 					rider.X = steed.X;
 					rider.Y = steed.Y;
 					rider.Z = steed.Z;
 					rider.Heading = steed.Heading;
 					rider.MovementStartTick = GameLoop.GameLoopTime;
-					rider.Out.SendPlayerJump(false);
-					PlayerService.UpdateObjectForPlayer(rider, steed);
+
+					// The client appears to get confused and teleports the player to the opposite edge of the current zone if we teleport it to a different one while it thinks it's still mounted.
+					// For this reason, we force it to dismount first.
+					if (rider.CurrentZone != steed.CurrentZone)
+					{
+						rider.Out.SendRiding(rider, steed, true);
+						rider.Out.SendPlayerJump(false);
+						rider.Out.SendRiding(rider, steed, false);
+					}
+					else
+						rider.Out.SendPlayerJump(false);
+
 					return;
 				}
 			}
