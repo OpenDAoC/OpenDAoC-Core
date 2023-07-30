@@ -105,8 +105,7 @@ namespace DOL.GS
 			get => CurrentRegion == null ? (ushort) 0 : CurrentRegion.ID;
 			set => CurrentRegion = WorldMgr.GetRegion(value);
 		}
-		// This is silly and needs to be changed. Some objects access 'CurrentZone' before they're added to the world.
-		public Zone CurrentZone => SubZoneObject?.CurrentSubZone?.ParentZone ?? CurrentRegion?.GetZone(X, Y);
+		public Zone CurrentZone => CurrentRegion?.GetZone(X, Y);
 		public SubZoneObject SubZoneObject { get; set; }
 		public virtual ushort Heading
 		{
