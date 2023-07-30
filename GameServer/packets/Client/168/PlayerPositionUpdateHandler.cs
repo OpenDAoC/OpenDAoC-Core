@@ -70,18 +70,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					rider.Z = steed.Z;
 					rider.Heading = steed.Heading;
 					rider.MovementStartTick = GameLoop.GameLoopTime;
-
-					// The client appears to get confused and teleports the player to the opposite edge of the current zone if we teleport it to a different one while it thinks it's still mounted.
-					// For this reason, we force it to dismount first.
-					if (rider.CurrentZone != steed.CurrentZone)
-					{
-						rider.Out.SendRiding(rider, steed, true);
-						rider.Out.SendPlayerJump(false);
-						rider.Out.SendRiding(rider, steed, false);
-					}
-					else
-						rider.Out.SendPlayerJump(false);
-
+					rider.Out.SendPlayerJump(false);
 					return;
 				}
 			}
