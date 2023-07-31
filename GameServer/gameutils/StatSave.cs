@@ -17,19 +17,17 @@ namespace DOL.GS.GameEvents
         private static long _lastBytesIn;
         private static long _lastBytesOut;
         private static long _lastMeasureTick = DateTime.Now.Ticks;
-        private static int _statFrequency;
         private static IPerformanceStatistic _programCpuUsagePercent;
         private static object _lock  = new();
 
         [GameServerStartedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            if (ServerProperties.Properties.STATSAVE_INTERVAL == -1)
+            if (ServerProperties.Properties.STATSAVE_INTERVAL <= 0)
                 return;
 
             lock (_lock)
             {
-                _statFrequency *= ServerProperties.Properties.STATSAVE_INTERVAL;
                 _timer = new(new TimerCallback(SaveStats), null, INITIAL_DELAY, Timeout.Infinite);
                 _programCpuUsagePercent = new CurrentProcessCpuUsagePercentStatistic();
             }
@@ -92,7 +90,7 @@ namespace DOL.GS.GameEvents
             {
                 lock (_lock)
                 {
-                    _timer?.Change(_statFrequency, Timeout.Infinite);
+                    _timer?.Change(60 * 1000 * ServerProperties.Properties.STATSAVE_INTERVAL, Timeout.Infinite);
                 }
             }
         }

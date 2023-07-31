@@ -27,6 +27,9 @@ namespace DOL.GS.GameEvents
         [GameServerStartedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
+            if (ServerProperties.Properties.STATPRINT_FREQUENCY <= 0)
+                return;
+
             lock (_lock)
             {
                 _timer = new(new TimerCallback(PrintStats), null, 10000, 0);

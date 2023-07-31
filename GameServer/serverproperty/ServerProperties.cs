@@ -219,7 +219,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// StatSave Interval
 		/// </summary>
-		[ServerProperty("system", "statsave_interval", "Interval between each DB Stats store in minutes. -1 for deactivated.", -1)]
+		[ServerProperty("system", "statsave_interval", "Interval (in minutes) at which performance statistics are saved to the database. 0 or less to deactivate.", 0)]
 		public static int STATSAVE_INTERVAL;
 
 		/// <summary>
@@ -240,7 +240,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("system", "db_language", "What language is the DB", "EN")]
 		public static string DB_LANGUAGE;
 
-		[ServerProperty("system", "statprint_frequency", "How often (milliseconds) should statistics be printed on the server console.", 30000)]
+		[ServerProperty("system", "statprint_frequency", "Interval (in milliseconds) at which performance statistics are gathered and print to the server console. 0 or less to deactivate.", 30000)]
 		public static int STATPRINT_FREQUENCY;
 
 		/// <summary>
