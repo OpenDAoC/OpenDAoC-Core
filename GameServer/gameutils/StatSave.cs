@@ -1,183 +1,100 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using DOL.Database;
-using DOL.Database.Attributes;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using DOL.GS.PerformanceStatistics;
 using log4net;
 
 namespace DOL.GS.GameEvents
 {
-	class StatSave
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public class StatSave
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly int INITIAL_DELAY = 60000;
 
-		private static readonly int INITIAL_DELAY = 60000;
-		
-		private static long m_lastBytesIn = 0;
-		private static long m_lastBytesOut = 0;
-		private static long m_lastMeasureTick = DateTime.Now.Ticks;
-		private static int m_statFrequency = 60 * 1000; // 1 minute
-		private static PerformanceCounter m_systemCpuUsedCounter = null;
-		private static PerformanceCounter m_processCpuUsedCounter = null;
-		
-		private static volatile Timer m_timer = null;
-		
-		[GameServerStartedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
-		{
-			// Desactivated
-			if (ServerProperties.Properties.STATSAVE_INTERVAL == -1)
-				return;
-			
-			// try
-			// {
-			// 	m_systemCpuUsedCounter = new PerformanceCounter("Processor", "% processor time", "_total");
-			// 	m_systemCpuUsedCounter.NextValue();
-			// }
-			// catch (Exception ex)
-			// {
-			// 	m_systemCpuUsedCounter = null;
-			// 	if (log.IsWarnEnabled)
-			// 		log.Warn(ex.GetType().Name + " SystemCpuUsedCounter won't be available: " + ex.Message);
-			// }
-			// try
-			// {
-			// 	m_processCpuUsedCounter = new PerformanceCounter("Process", "% processor time", GetProcessCounterName());
-			// 	m_processCpuUsedCounter.NextValue();
-			// }
-			// catch (Exception ex)
-			// {
-			// 	m_processCpuUsedCounter = null;
-			// 	if (log.IsWarnEnabled)
-			// 		log.Warn(ex.GetType().Name + " ProcessCpuUsedCounter won't be available: " + ex.Message);
-			// }
-			// 1 min * INTERVAL
-			m_statFrequency *= ServerProperties.Properties.STATSAVE_INTERVAL;
-			lock (typeof(StatSave))
-			{
-				m_timer = new Timer(new TimerCallback(SaveStats), null, INITIAL_DELAY, Timeout.Infinite);
-			}
-		}
+        private static volatile Timer _timer;
+        private static long _lastBytesIn;
+        private static long _lastBytesOut;
+        private static long _lastMeasureTick = DateTime.Now.Ticks;
+        private static int _statFrequency;
+        private static IPerformanceStatistic _programCpuUsagePercent;
+        private static object _lock  = new();
 
-		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
-		{
-			lock (typeof(StatPrint))
-			{
-				if (m_timer != null)
-				{
-					m_timer.Change(Timeout.Infinite, Timeout.Infinite);
-					m_timer.Dispose();
-					m_timer = null;
-				}
-			}
-		}
+        [GameServerStartedEvent]
+        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        {
+            if (ServerProperties.Properties.STATSAVE_INTERVAL == -1)
+                return;
 
-		/// <summary>
-		/// Find the process counter name
-		/// </summary>
-		/// <returns></returns>
-		public static string GetProcessCounterName()
-		{
-			Process process = Process.GetCurrentProcess();
-			int id = process.Id;
-			PerformanceCounterCategory perfCounterCat = new PerformanceCounterCategory("Process");
-			foreach (DictionaryEntry entry in perfCounterCat.ReadCategory()["id process"])
-			{
-				string processCounterName = (string)entry.Key;
-				if (((InstanceData)entry.Value).RawValue == id)
-					return processCounterName;
-			}
-			return "";
-		}
-		
-		public static void SaveStats(object state)
-		{
-			try
-			{
-				long ticks = DateTime.Now.Ticks;
-				long time = ticks - m_lastMeasureTick;
-				m_lastMeasureTick = ticks;
-				time /= 10000000L;
-				if (time < 1)
-				{
-					log.Warn("Time has not changed since last call of SaveStats");
-					time = 1; // prevent division by zero?
-				}
-				long inRate = (Statistics.BytesIn - m_lastBytesIn) / time;
-				long outRate = (Statistics.BytesOut - m_lastBytesOut) / time;
+            lock (_lock)
+            {
+                _statFrequency *= ServerProperties.Properties.STATSAVE_INTERVAL;
+                _timer = new(new TimerCallback(SaveStats), null, INITIAL_DELAY, Timeout.Infinite);
+                _programCpuUsagePercent = new CurrentProcessCpuUsagePercentStatistic();
+            }
+        }
 
-				m_lastBytesIn = Statistics.BytesIn;
-				m_lastBytesOut = Statistics.BytesOut;
+        [ScriptUnloadedEvent]
+        public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        {
+            lock (_lock)
+            {
+                if (_timer == null)
+                    return;
 
-				int clients = WorldMgr.GetAllPlayingClientsCount();
-				int AlbPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
-				int MidPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
-				int HibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
+                _timer = null;
+            }
+        }
 
-				float cpu = 0;
-				// if (m_systemCpuUsedCounter != null)
-				// 	cpu = m_systemCpuUsedCounter.NextValue(); 
-				// if (m_processCpuUsedCounter != null)
-				// 	cpu = m_processCpuUsedCounter.NextValue();
+        public static void SaveStats(object state)
+        {
+            try
+            {
+                long ticks = DateTime.Now.Ticks;
+                long time = ticks - _lastMeasureTick;
+                _lastMeasureTick = ticks;
+                time /= 10000000L;
 
-				// long totalmem = GC.GetTotalMemory(false);
+                if (time < 1)
+                {
+                    log.Warn("Time has not changed since last call of SaveStats");
+                    time = 1;
+                }
 
-				long totalmem = 0;
-				
-				ServerStats newstat = new ServerStats();
-				newstat.CPU = cpu;
-				newstat.Clients = clients;
-				newstat.Upload = (int)outRate/1024;
-				newstat.Download = (int)inRate / 1024;
-				newstat.Memory = totalmem;
-				newstat.AlbionPlayers = AlbPlayers;
-				newstat.MidgardPlayers = MidPlayers;
-				newstat.HiberniaPlayers = HibPlayers;
-				GameServer.Database.AddObject(newstat);
-				GameServer.Database.SaveObject(newstat);
-			}
-			catch (Exception e)
-			{
-				log.Error("Updating server stats", e);
-			}
-			finally
-			{
-				lock (typeof(StatSave))
-				{
-					if (m_timer != null)
-					{
-						m_timer.Change(m_statFrequency, Timeout.Infinite);
-					}
-				}
-			}
-		}
-	}
+                double serverCpuUsage = _programCpuUsagePercent.GetNextValue();
+
+                ServerStats newStat = new()
+                {
+                    CPU = (float) (serverCpuUsage >= 0 ? serverCpuUsage : 0),
+                    Clients = WorldMgr.GetAllPlayingClientsCount(),
+                    Upload = (int) ((Statistics.BytesOut - _lastBytesOut) / time / 1024),
+                    Download = (int) ((Statistics.BytesIn - _lastBytesIn) / time / 1024),
+                    Memory = GC.GetTotalMemory(false) / 1024,
+                    AlbionPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion),
+                    MidgardPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard),
+                    HiberniaPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia)
+                };
+
+                _lastBytesIn = Statistics.BytesIn;
+                _lastBytesOut = Statistics.BytesOut;
+
+                GameServer.Database.AddObject(newStat);
+                GameServer.Database.SaveObject(newStat);
+            }
+            catch (Exception e)
+            {
+                log.Error("Updating server stats", e);
+            }
+            finally
+            {
+                lock (_lock)
+                {
+                    _timer?.Change(_statFrequency, Timeout.Infinite);
+                }
+            }
+        }
+    }
 }
