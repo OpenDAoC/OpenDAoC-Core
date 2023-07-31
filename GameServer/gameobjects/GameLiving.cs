@@ -1439,7 +1439,7 @@ namespace DOL.GS
 			EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
 
 			if (effect != null)
-				effect.Cancel(false);
+				effect.Cancel(false, false);
 
 			IsEngaging = false;
 		}
@@ -1713,7 +1713,7 @@ namespace DOL.GS
 						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						else if (Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
-							engage.Cancel(false);
+							engage.Cancel(false, true);
 						else
 						{
 							Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;

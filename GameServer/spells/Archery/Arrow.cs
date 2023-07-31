@@ -210,7 +210,7 @@ namespace DOL.GS.Spells
 									}  // Check if player has enough endurance left to engage
 									else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
 									{
-										engage.Cancel(false); // if player ran out of endurance cancel engage effect
+										engage.Cancel(false, true); // if player ran out of endurance cancel engage effect
 									}
 									else
 									{

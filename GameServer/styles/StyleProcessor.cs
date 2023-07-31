@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.Database;
@@ -253,7 +254,7 @@ namespace DOL.GS.Styles
 							EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(living, eEffect.Engage);
 
 							if (effect != null)
-								effect.Cancel(false);
+								effect.Cancel(false, true);
 						}
 
 						// Unstealth only on primary style to not break stealth with non-stealth backup styles.

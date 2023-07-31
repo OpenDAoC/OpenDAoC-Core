@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Reflection;
 using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using log4net;
 using DOL.Language;
-using System.Linq;
+using log4net;
 
 namespace DOL.GS.SkillHandler
 {
@@ -66,7 +65,7 @@ namespace DOL.GS.SkillHandler
 				EngageECSGameEffect engage = EffectListService.GetEffectOnTarget(player, eEffect.Engage) as EngageECSGameEffect;
 				if (engage != null)
 				{
-					engage.Cancel(true);
+					engage.Cancel(true, true);
 					return;
 				}
 			}

@@ -873,7 +873,7 @@ namespace DOL.GS.Spells
 				EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(m_caster, eEffect.Engage);
 
 				if (engage != null)
-					engage.Cancel(false);
+					engage.Cancel(false, false);
 			}
 
 			if (Caster is NecromancerPet necromancerPet && necromancerPet.Brain is NecromancerPetBrain necromancerPetBrain)
