@@ -103,4 +103,38 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
     }
+
+    // Temporary objects to be added to 'EntityManager' and consumed by 'ZoneService', representing an object to be moved from one 'SubZone' to another.
+    public class ObjectChangingSubZone : IManagedEntity
+    {
+        public LightConcurrentLinkedList<GameObject>.Node Node { get; private set; }
+        public SubZoneObject SubZoneObject { get; private set; }
+        public Zone DestinationZone { get; private set; }
+        public SubZone DestinationSubZone { get; private set; }
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.ObjectChangingSubZone, true);
+
+        private ObjectChangingSubZone(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
+        {
+            Initialize(node, subZoneObject, destinationZone, destinationSubZone);
+        }
+
+        public static void Create(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
+        {
+            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
+                objectChangingSubZone.Initialize(node, subZoneObject, destinationZone, destinationSubZone);
+            else
+            {
+                objectChangingSubZone = new(node, subZoneObject, destinationZone, destinationSubZone);
+                EntityManager.Add(objectChangingSubZone);
+            }
+        }
+
+        private void Initialize(LightConcurrentLinkedList<GameObject>.Node node, SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
+        {
+            Node = node;
+            SubZoneObject = subZoneObject;
+            DestinationZone = destinationZone;
+            DestinationSubZone = destinationSubZone;
+        }
+    }
 }

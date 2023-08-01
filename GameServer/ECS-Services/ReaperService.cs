@@ -1,90 +1,79 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ECS.Debug;
+using log4net;
 
-namespace DOL.GS;
-
-public class ReaperService
+namespace DOL.GS
 {
-    private const string SERVICE_NAME = "ReaperService";
-
-    //primary key is living that needs to die, value is the object that killed it.
-    //THIS SHOULD ONLY BE OPERATED ON BY THE TICK() FUNCTION! This keeps it thread safe
-    private static Dictionary<GameLiving, GameObject> KilledToKillerDict;
-    
-    //this is our buffer of things to add to our list before Reaping
-    //this can be added to by any number of threads
-    private static Dictionary<GameLiving, GameObject> KillsToAdd;
-
-    static ReaperService()
+    public class ReaperService
     {
-        KilledToKillerDict = new Dictionary<GameLiving, GameObject>();
-        KillsToAdd = new Dictionary<GameLiving, GameObject>();
-    }
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private const string SERVICE_NAME = nameof(ReaperService);
 
-    public static void Tick()
-    {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
-        Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-        //cant modify the KilledToKillerDict while iteration is in progress, so
-        //make a list to store all the dead livings to remove afterwards
-        List<GameLiving> DeadLivings = new List<GameLiving>();
-
-        if (KillsToAdd != null && KillsToAdd.Count > 0)
+        public static void Tick()
         {
-            lock (NewKillLock)
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
+
+            List<LivingBeingKilled> list = EntityManager.UpdateAndGetAll<LivingBeingKilled>(EntityManager.EntityType.LivingBeingKilled, out int lastValidIndex);
+
+            // Remove objects from one sub zone, and add them to another.
+            Parallel.For(0, lastValidIndex + 1, i =>
             {
-                lock (KillerDictLock)
+                LivingBeingKilled livingBeingKilled = list[i];
+
+                if (livingBeingKilled?.EntityManagerId.IsSet != true)
+                    return;
+
+                try
                 {
-                    Diagnostics.StartPerfCounter(SERVICE_NAME+"-KillsToAdd");
-                    foreach (var newDeath in KillsToAdd)
-                    {
-                        if (!KilledToKillerDict.ContainsKey(newDeath.Key))
-                            KilledToKillerDict.Add(newDeath.Key, newDeath.Value);
-                    }
-
-                    KillsToAdd.Clear();
-                    Diagnostics.StopPerfCounter(SERVICE_NAME+"-KillsToAdd");
+                    livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
+                    EntityManager.Remove(livingBeingKilled);
                 }
-            }
-        }
-
-        if (KilledToKillerDict.Keys.Count > 0)
-        {
-            int killsToProcess = KilledToKillerDict.Keys.Count;
-            Diagnostics.StartPerfCounter(SERVICE_NAME+"-ProcessDeaths("+killsToProcess+")");
-
-            Parallel.ForEach(KilledToKillerDict, killed =>
-            {
-                killed.Key.ProcessDeath(killed.Value);
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, livingBeingKilled, livingBeingKilled.Killed);
+                }
             });
 
-            Diagnostics.StopPerfCounter(SERVICE_NAME+"-ProcessDeaths("+killsToProcess+")");
-            Diagnostics.StartPerfCounter(SERVICE_NAME+"-RemoveKills");
-
-            lock (KillerDictLock)
-            {
-                foreach (GameLiving deadLiving in KilledToKillerDict.Keys.ToList().Where(x=> x.isDeadOrDying == false))
-                    KilledToKillerDict.Remove(deadLiving);
-            }
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME+"-RemoveKills");
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        Diagnostics.StopPerfCounter(SERVICE_NAME);
+        public static void KillLiving(GameLiving killed, GameObject killer)
+        {
+            LivingBeingKilled.Create(killed, killer);
+        }
     }
 
-    public static object KillerDictLock = new object();
-    public static object NewKillLock = new object();
-
-    public static void KillLiving(GameLiving living, GameObject killer)
+    // Temporary objects to be added to 'EntityManager' and consumed by 'ReaperService', representing a living object being killed and waiting to be processed.
+    public class LivingBeingKilled : IManagedEntity
     {
-        lock (NewKillLock)
+        public GameLiving Killed { get; private set; }
+        public GameObject Killer { get; private set; }
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.LivingBeingKilled, true);
+
+        private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
-            if(KillsToAdd != null && living != null && !KillsToAdd.ContainsKey(living))
-                KillsToAdd.Add(living, killer);
+            Initialize(killed, killer);
+        }
+
+        public static void Create(GameLiving killed, GameObject killer)
+        {
+            if (EntityManager.TryReuse(EntityManager.EntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled))
+                livingBeingKilled.Initialize(killed, killer);
+            else
+            {
+                livingBeingKilled = new(killed, killer);
+                EntityManager.Add(livingBeingKilled);
+            }
+        }
+
+        private void Initialize(GameLiving killed, GameObject killer)
+        {
+            Killed = killed;
+            Killer = killer;
         }
     }
 }

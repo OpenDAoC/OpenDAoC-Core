@@ -20,6 +20,7 @@ namespace DOL.GS
             EffectListComponent,
             CraftComponent,
             ObjectChangingSubZone,
+            LivingBeingKilled,
             Timer,
             AuxTimer
         }
@@ -34,6 +35,7 @@ namespace DOL.GS
             { EntityType.EffectListComponent, new EntityArray<EffectListComponent>(3000) },
             { EntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
             { EntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
             { EntityType.Timer, new EntityArray<ECSGameTimer>(500) },
             { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
