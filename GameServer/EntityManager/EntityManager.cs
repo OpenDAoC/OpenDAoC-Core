@@ -25,7 +25,7 @@ namespace DOL.GS
             AuxTimer
         }
 
-        private static Dictionary<EntityType, dynamic> _entityArrays = new()
+        private static Dictionary<EntityType, object> _entityArrays = new()
         {
             { EntityType.Player, new EntityArray<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
@@ -40,7 +40,7 @@ namespace DOL.GS
             { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
 
-        public static bool Add<T>(T entity) where T : IManagedEntity
+        public static bool Add<T>(T entity) where T : class, IManagedEntity
         {
             EntityManagerId id = entity.EntityManagerId;
 
@@ -48,16 +48,16 @@ namespace DOL.GS
             if (id.IsSet && !id.IsPendingRemoval)
                 return false;
 
-            _entityArrays[entity.EntityManagerId.Type].Add(entity);
+            (_entityArrays[entity.EntityManagerId.Type] as EntityArray<T>).Add(entity);
             return true;
         }
 
-        public static bool TryReuse<T>(EntityType type, out T entity) where T : IManagedEntity
+        public static bool TryReuse<T>(EntityType type, out T entity) where T : class, IManagedEntity
         {
-            return _entityArrays[type].TryReuse(out entity);
+            return (_entityArrays[type] as EntityArray<T>).TryReuse(out entity);
         }
 
-        public static bool Remove<T>(T entity) where T : IManagedEntity
+        public static bool Remove<T>(T entity) where T : class, IManagedEntity
         {
             EntityManagerId id = entity.EntityManagerId;
 
@@ -65,7 +65,7 @@ namespace DOL.GS
             if (!id.IsSet && !id.IsPendingAddition)
                 return false;
 
-            _entityArrays[entity.EntityManagerId.Type].Remove(entity);
+            (_entityArrays[entity.EntityManagerId.Type] as EntityArray<T>).Remove(entity);
             return true;
         }
 

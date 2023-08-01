@@ -443,7 +443,7 @@ namespace DOL.GS
                         }
 
                         if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
-                            partialList.Add((T) gameObject);
+                            partialList.Add(gameObject as T);
                     }
                 }
             }
