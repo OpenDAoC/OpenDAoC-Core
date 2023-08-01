@@ -16,9 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Reflection;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -29,16 +26,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 	public class UDPPingRequestHandler : IPacketHandler
 	{
 		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		/// <summary>
 		/// Called when the packet has been received
 		/// </summary>
 		/// <param name="client">Client that sent the packet</param>
 		/// <param name="packet">Packet data</param>
-		/// <returns>Non zero if function was successfull</returns>
+		/// <returns>Non zero if function was successful</returns>
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
 			if (client.Version < GameClient.eClientVersion.Version1124)
@@ -50,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			// unsure what this value is now thats sent in 1.125
 			// Its just a ping back letting the server know that UDP connection is still alive
-			client.UdpPingTime = DateTime.Now.Ticks;
+			client.UdpPingTime = GameLoop.GetCurrentTime();
 			client.UdpConfirm = true;
 		}
 	}

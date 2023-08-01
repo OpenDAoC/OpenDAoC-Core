@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -25,8 +24,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 	{
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			int flag = packet.ReadByte();
-			client.UdpPingTime = DateTime.Now.Ticks;
+			int flag = packet.ReadByte(); // Always 0? (1.127)
+			client.UdpPingTime = GameLoop.GetCurrentTime();
 			client.UdpConfirm = flag == 1;
 			client.Out.SendGameOpenReply();
 			client.Out.SendStatusUpdate(); // based on 1.74 logs

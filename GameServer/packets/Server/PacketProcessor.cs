@@ -570,67 +570,57 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Send the packet via UDP
 		/// </summary>
-		/// <param name="buf">Packet to be sent</param>
+		/// <param name="buffer">Packet to be sent</param>
 		/// <param name="isForced">Force UDP packet if <code>true</code>, else packet can be sent over TCP</param>
-		public void SendUDP(byte[] buf, bool isForced)
+		public void SendUDP(byte[] buffer, bool isForced)
 		{
-//			Log.FatalFormat("Send UDP: {0}", isForced);
-
-			//No udp available, send via TCP instead!
-			//bool flagLostUDP = false;
-			if (m_client.UdpEndPoint == null || !(isForced || m_client.UdpConfirm))
-			{
-//				Log.FatalFormat("UDP sent over TCP");
-				//DOLConsole.WriteWarning("Trying to send UDP when UDP isn't initialized!");
-				var newbuf = new byte[buf.Length - 2];
-				newbuf[0] = buf[0];
-				newbuf[1] = buf[1];
-
-				Buffer.BlockCopy(buf, 4, newbuf, 2, buf.Length - 4);
-				SendTCP(newbuf);
-				return;
-			}
-			
 			if (m_client.ClientState == GameClient.eClientState.Playing)
 			{
-				if ((DateTime.Now.Ticks - m_client.UdpPingTime) > 500000000L) // really 24s, not 50s
-				{
-					//flagLostUDP = true;
+				// Would previously timeout after 50 seconds, but clients (1.127) send 'UDPInitRequestHandler' every 65 seconds.
+				// May vary depending on the client version.
+				if (GameLoop.GetCurrentTime() - m_client.UdpPingTime > 70000)
 					m_client.UdpConfirm = false;
-				}
+			}
+
+			// If UDP is unavailable, send via TCP instead.
+			if (m_client.UdpEndPoint == null || !isForced || !m_client.UdpConfirm)
+			{
+				byte[] newBuffer = new byte[buffer.Length - 2];
+				newBuffer[0] = buffer[0];
+				newBuffer[1] = buffer[1];
+				Buffer.BlockCopy(buffer, 4, newBuffer, 2, buffer.Length - 4);
+				SendTCP(newBuffer);
+				return;
 			}
 
 			if (m_udpSendBuffer == null)
 				return;
 
-			//increase our UDP counter when it reaches 0xFFFF
-			//and increases, it will automaticallys switch back to 0x00
+			// Let it overflow.
 			m_udpCounter++;
 
-			//fill the udpCounter
-			buf[2] = (byte) (m_udpCounter >> 8);
-			buf[3] = (byte) m_udpCounter;
-			//buf = m_encoding.EncryptPacket(buf, true);
+			buffer[2] = (byte) (m_udpCounter >> 8);
+			buffer[3] = (byte) m_udpCounter;
 
-			Statistics.BytesOut += buf.Length;
+			Statistics.BytesOut += buffer.Length;
 			Statistics.PacketsOut++;
 
-			lock (((ICollection)m_udpQueue).SyncRoot)
+			lock (((ICollection) m_udpQueue).SyncRoot)
 			{
 				if (m_sendingUdp)
 				{
-					m_udpQueue.Enqueue(buf);
+					m_udpQueue.Enqueue(buffer);
 					return;
 				}
-				
+
 				m_sendingUdp = true;
 			}
 
-			Buffer.BlockCopy(buf, 0, m_udpSendBuffer, 0, buf.Length);
+			Buffer.BlockCopy(buffer, 0, m_udpSendBuffer, 0, buffer.Length);
 
 			try
 			{
-				GameServer.Instance.SendUDP(m_udpSendBuffer, buf.Length, m_client.UdpEndPoint, m_asyncUdpCallback);
+				GameServer.Instance.SendUDP(m_udpSendBuffer, buffer.Length, m_client.UdpEndPoint, m_asyncUdpCallback);
 			}
 			catch (Exception e)
 			{
@@ -639,11 +629,11 @@ namespace DOL.GS.PacketHandler
 				lock (m_udpQueue)
 				{
 					m_udpQueue.Clear();
-
 					m_sendingUdp = false;
 				}
+
 				if (log.IsErrorEnabled)
-					log.ErrorFormat("trying to send UDP (" + count + ")", e);
+					log.ErrorFormat($"Failed sending UDP (Queue size: {count})", e);
 			}
 		}
 
