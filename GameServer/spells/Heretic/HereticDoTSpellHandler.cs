@@ -24,12 +24,12 @@ namespace DOL.GS.Spells
 		}
 
 
-		public override bool IsOverwritable(GameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameSpellEffect compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.Spell.EffectGroup;
+			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
 			if (base.IsOverwritable(compare) == false) return false;
-			if (compare.Spell.Duration != Spell.Duration) return false;
+			if (compare.SpellHandler.Spell.Duration != Spell.Duration) return false;
 			return true;
 		}
 

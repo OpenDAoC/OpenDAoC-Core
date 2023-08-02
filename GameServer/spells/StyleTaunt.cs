@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(GameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameSpellEffect compare)
 		{
             return false;
 		}

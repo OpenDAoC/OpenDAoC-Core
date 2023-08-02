@@ -78,11 +78,11 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(GameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameSpellEffect compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.Spell.EffectGroup;
-			if (compare.Spell.SpellType == eSpellType.Stun) return true;
+			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
+			if (compare.SpellHandler.Spell.SpellType == eSpellType.Stun) return true;
 			return base.IsOverwritable(compare);
 		}
 

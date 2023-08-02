@@ -2548,14 +2548,6 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public virtual bool IsOverwritable(GameSpellEffect compare)
-		{
-			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.Spell.EffectGroup;
-			if (compare.Spell.SpellType != Spell.SpellType)
-				return false;
-			return true;
-		}
 		public virtual bool IsOverwritable(ECSGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
@@ -2623,40 +2615,6 @@ namespace DOL.GS.Spells
 		/// <param name="overwrite"></param>
 		public virtual void OnEffectRemove(GameSpellEffect effect, bool overwrite)
 		{
-			if (!overwrite)
-			{
-				if (Spell.IsFocus)
-				{
-					FocusSpellAction(/*null, Caster, null*/);
-				}
-				// Re-Enable Cancellable Effects.
-				var enableEffect = effect.Owner.EffectList.OfType<GameSpellEffect>()
-					.Where(eff => eff != effect && eff.SpellHandler != null && eff.SpellHandler.IsOverwritable(effect) && eff.SpellHandler.IsCancellable(effect));
-				
-				// Find Best Remaining Effect
-				GameSpellEffect best = null;
-				foreach (var eff in enableEffect)
-				{
-					if (best == null)
-						best = eff;
-					else if (best.SpellHandler.IsCancellableEffectBetter(best, eff))
-						best = eff;
-				}
-				
-				if (best != null)
-				{
-					effect.Owner.EffectList.BeginChanges();
-					try
-					{
-						// Enable Best Effect
-						best.EnableEffect();						
-					}
-					finally
-					{
-						effect.Owner.EffectList.CommitChanges();
-					}
-				}
-			}
 		}
 		
 		/// <summary>

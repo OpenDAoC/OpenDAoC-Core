@@ -466,11 +466,11 @@ namespace DOL.GS.Spells
         /// and therefore overwritable by better versions
         /// spells that are overwritable cannot stack
         /// </summary>
-        public override bool IsOverwritable(GameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
-            if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
-                return Spell.EffectGroup == compare.Spell.EffectGroup;
-            if (compare.Spell.SpellType == eSpellType.StyleStun) return true;
+            if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
+                return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
+            if (compare.SpellHandler.Spell.SpellType == eSpellType.StyleStun) return true;
             return base.IsOverwritable(compare);
         }
 

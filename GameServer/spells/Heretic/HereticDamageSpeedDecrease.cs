@@ -25,10 +25,10 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override bool IsOverwritable(GameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
             if (base.IsOverwritable(compare) == false) return false;
-            if (compare.Spell.Duration != Spell.Duration) return false;
+            if (compare.SpellHandler.Spell.Duration != Spell.Duration) return false;
             return true;
         }
 

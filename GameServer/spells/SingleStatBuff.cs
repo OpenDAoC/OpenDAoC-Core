@@ -126,14 +126,14 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="compare"></param>
         /// <returns></returns>
-        public override bool IsOverwritable(GameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
-            if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
-                return Spell.EffectGroup == compare.Spell.EffectGroup;
+            if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
+                return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
             if (!base.IsOverwritable(compare))
                 return false;
-            if (Spell.Duration > 0 && compare.Concentration > 0)
-                return compare.Spell.Value >= Spell.Value;
+            if (Spell.Duration > 0 && compare.SpellHandler.Spell.Concentration > 0)
+                return compare.SpellHandler.Spell.Value >= Spell.Value;
             return compare.SpellHandler.SpellLine.IsBaseLine == SpellLine.IsBaseLine;
         }
 

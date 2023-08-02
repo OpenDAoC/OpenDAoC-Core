@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
             m_caster.Mana -= PowerCost(target);
             base.FinishSpellCast(target);
         }
-        public override bool IsOverwritable(GameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
             return false;
         }
