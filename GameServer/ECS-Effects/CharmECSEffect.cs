@@ -9,6 +9,8 @@ namespace DOL.GS
 {
     public class CharmECSGameEffect : ECSGameSpellEffect
     {
+        private bool _keepSongAlive;
+
         public CharmECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
@@ -16,7 +18,7 @@ namespace DOL.GS
             if (SpellHandler.Caster is not GamePlayer casterPlayer || Owner is not GameNPC charmMob)
                 return;
 
-            CharmSpellHandler charmSpellHandler = (CharmSpellHandler) SpellHandler;
+            CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
 
             if (charmSpellHandler.m_controlledBrain == null && charmMob.Brain is not ControlledNpcBrain)
                 charmSpellHandler.m_controlledBrain = new ControlledNpcBrain(casterPlayer);
@@ -48,12 +50,12 @@ namespace DOL.GS
 
                 casterPlayer.SetControlledBrain(charmSpellHandler.m_controlledBrain);
 
-                foreach (GamePlayer player in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer playerInRadius in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
-                    player.Out.SendNPCCreate(charmMob);
+                    playerInRadius.Out.SendNPCCreate(charmMob);
 
                     if (charmMob.Inventory != null)
-                        player.Out.SendLivingEquipmentUpdate(charmMob);
+                        playerInRadius.Out.SendLivingEquipmentUpdate(charmMob);
                 }
             }
 
@@ -69,7 +71,7 @@ namespace DOL.GS
             if (casterPlayer != null && charmMob != null)
             {
                 GameEventMgr.RemoveHandler(charmMob, GameLivingEvent.PetReleased, charmSpellHandler.ReleaseEventHandler);
-                ControlledNpcBrain oldBrain = (ControlledNpcBrain) casterPlayer.ControlledBrain;
+                ControlledNpcBrain oldBrain = casterPlayer.ControlledBrain as ControlledNpcBrain;
                 casterPlayer.SetControlledBrain(null);
 
                 var immunityEffects = charmMob.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
@@ -126,26 +128,35 @@ namespace DOL.GS
                 charmMob.StopFollowing();
                 charmMob.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
 
-                foreach (GamePlayer ply in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer playerInRadius in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
                     if (charmMob.IsAlive)
                     {
-                        ply.Out.SendNPCCreate(charmMob);
+                        playerInRadius.Out.SendNPCCreate(charmMob);
 
                         if (charmMob.Inventory != null)
-                            ply.Out.SendLivingEquipmentUpdate(charmMob);
+                            playerInRadius.Out.SendLivingEquipmentUpdate(charmMob);
 
-                        ply.Out.SendObjectGuildID(charmMob, null);
+                        playerInRadius.Out.SendObjectGuildID(charmMob, null);
                     }
                 }
             }
 
-            ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer, SpellHandler.Spell);
+            if (!_keepSongAlive)
+            {
+                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer, SpellHandler.Spell);
 
-            if (charmMob != null && song != null)
-                EffectService.RequestImmediateCancelConcEffect(song);
+                if (song != null)
+                    EffectService.RequestImmediateCancelConcEffect(song);
+            }
 
             charmSpellHandler.m_controlledBrain = null;
+        }
+
+        public void Cancel(bool keepSongAlive)
+        {
+            _keepSongAlive = keepSongAlive;
+            EffectService.RequestImmediateCancelEffect(this);
         }
     }
 }
