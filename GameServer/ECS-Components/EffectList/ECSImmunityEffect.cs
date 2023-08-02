@@ -27,6 +27,11 @@ namespace DOL.GS
             EffectService.RequestStartEffect(this);
         }
 
+        protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        {
+            
+        }
+
         protected eEffect MapImmunityEffect()
         {
             switch (SpellHandler.Spell.SpellType)
@@ -47,10 +52,10 @@ namespace DOL.GS
             }
         }
     }
-    public class NPCECSStunImmunityEffect : ECSGameEffect
+    public class NPCECSStunImmunityEffect : ECSImmunityEffect
     {
         private int timesStunned = 1;
-        public NPCECSStunImmunityEffect(ECSGameEffectInitParams initParams) : base()
+        public NPCECSStunImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
             Duration = 60000;
@@ -66,10 +71,10 @@ namespace DOL.GS
         }
     }
 
-    public class NPCECSMezImmunityEffect : ECSGameEffect
+    public class NPCECSMezImmunityEffect : ECSImmunityEffect
     {
-        private int timesStunned = 1;
-        public NPCECSMezImmunityEffect(ECSGameEffectInitParams initParams) : base()
+        private int timesMezzed = 1;
+        public NPCECSMezImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
             Duration = 60000;
@@ -79,8 +84,8 @@ namespace DOL.GS
 
         public long CalclulateStunDuration(long duration)
         {
-            var retVal = duration / (2 * timesStunned);
-            timesStunned++;
+            var retVal = duration / (2 * timesMezzed);
+            timesMezzed++;
             return retVal;
         }
     }
