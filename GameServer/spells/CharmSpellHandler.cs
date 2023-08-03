@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -83,26 +82,6 @@ namespace DOL.GS.Spells
         {
             Caster.Mana -= PowerCost(target);
             base.FinishSpellCast(target);
-        }
-
-        /// <summary>
-        /// Sets the seed for random results
-        /// </summary>
-        private static Random randomizer = new Random();
-
-        /// <summary>
-        /// Sets a call for random results to encourage more varied resist chances
-        /// </summary>
-        /// <returns>A value between 0 and 1</returns>
-        public static double Roll()
-        {
-            var roll1 = randomizer.NextDouble() * 100;
-            var roll1String = String.Format("{0:0.##}", roll1);
-            var roll2 = randomizer.NextDouble() * 100;
-            var roll2String = String.Format("{0:0.##}", roll2);
-
-            // log.Warn("Roll1=" + roll1String + "; Roll2=" + roll2String);
-            return Math.Max(roll1, roll2);
         }
 
         /// <summary>
@@ -474,9 +453,9 @@ namespace DOL.GS.Spells
                 }
 
                 double spellResistChance = resistChance;
-                var resistResult = Roll();
-                var resistString = string.Format("{0:0.##}", spellResistChance);
-                var rollString = string.Format("{0:0.##}", resistResult);
+                double resistResult = Util.RandomDouble() * 100;
+                string resistString = string.Format("{0:0.##}", spellResistChance);
+                string rollString = string.Format("{0:0.##}", resistResult);
 
                 if (target.IsWithinRadius(playerCaster, 2000))
                 {
