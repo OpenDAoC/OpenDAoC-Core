@@ -1,21 +1,14 @@
-﻿using DOL.GS.Spells;
-using DOL.GS.Effects;
+﻿using DOL.GS.Effects;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
     public class ECSPulseEffect : ECSGameSpellEffect, IConcentrationEffect
     {
-        string IConcentrationEffect.Name => Name;
-        ushort IConcentrationEffect.Icon => Icon;
-        byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
-
         /// <summary>
         /// The name of the owner
         /// </summary>
-        public override string OwnerName
-        {
-            get { return "Pulse: " + SpellHandler.Spell.Name; }
-        }
+        public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
 
         public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
             : base (new ECSGameEffectInitParams(owner, duration, effectiveness, handler))

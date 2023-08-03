@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
 			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 			if (npcImmune != null)
 			{
-				int duration = (int)npcImmune.CalclulateStunDuration(Spell.Duration);
+				int duration = (int)npcImmune.CalculateStunDuration(Spell.Duration);
 				return  duration > 1 ? duration : 1;
 			}
 			else

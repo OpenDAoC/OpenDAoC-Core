@@ -1,13 +1,9 @@
-﻿using System;
-using DOL.GS.Spells;
+﻿using DOL.GS.Spells;
 
 namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameSpellEffect
     {
-        public override ushort Icon { get { return SpellHandler.Spell.Icon; } }
-        public override string Name { get { return SpellHandler.Spell.Name; } }
-
         public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
             : base(new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
         {
@@ -27,10 +23,7 @@ namespace DOL.GS
             EffectService.RequestStartEffect(this);
         }
 
-        protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
-        {
-            
-        }
+        protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
 
         protected eEffect MapImmunityEffect()
         {
@@ -52,9 +45,11 @@ namespace DOL.GS
             }
         }
     }
+
     public class NPCECSStunImmunityEffect : ECSImmunityEffect
     {
-        private int timesStunned = 1;
+        private int _timesStunned = 1;
+
         public NPCECSStunImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
@@ -63,17 +58,18 @@ namespace DOL.GS
             EffectService.RequestStartEffect(this);
         }
 
-        public long CalclulateStunDuration(long duration)
+        public long CalculateStunDuration(long duration)
         {
-            var retVal = duration / (2 * timesStunned);
-            timesStunned++;
+            var retVal = duration / (2 * _timesStunned);
+            _timesStunned++;
             return retVal;
         }
     }
 
     public class NPCECSMezImmunityEffect : ECSImmunityEffect
     {
-        private int timesMezzed = 1;
+        private int _timesMezzed = 1;
+
         public NPCECSMezImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
@@ -82,10 +78,10 @@ namespace DOL.GS
             EffectService.RequestStartEffect(this);
         }
 
-        public long CalclulateStunDuration(long duration)
+        public long CalculateMezDuration(long duration)
         {
-            var retVal = duration / (2 * timesMezzed);
-            timesMezzed++;
+            var retVal = duration / (2 * _timesMezzed);
+            _timesMezzed++;
             return retVal;
         }
     }

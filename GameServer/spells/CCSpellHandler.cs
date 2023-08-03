@@ -335,7 +335,7 @@ namespace DOL.GS.Spells
             NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 
             if (npcImmune != null)
-                duration = npcImmune.CalclulateStunDuration((long)duration);
+                duration = npcImmune.CalculateMezDuration((long)duration);
 
             if (duration < 1)
                 duration = 1;
@@ -451,7 +451,7 @@ namespace DOL.GS.Spells
             NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 
             if (npcImmune != null)
-                duration = npcImmune.CalclulateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
+                duration = npcImmune.CalculateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
 
             if (duration < 1)
                 duration = 1;
