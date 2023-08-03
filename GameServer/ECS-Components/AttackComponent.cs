@@ -1020,107 +1020,73 @@ namespace DOL.GS
                         // Multiple Hit check.
                         if (ad.AttackResult == eAttackResult.HitStyle)
                         {
-                            int numTargetsCanHit;
-                            int index;
                             List<GameObject> extraTargets = new();
                             List<GameObject> listAvailableTargets = new();
                             InventoryItem attackWeapon = owner.ActiveWeapon;
                             InventoryItem leftWeapon = playerOwner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-                            switch (style.ID)
+                            int numTargetsCanHit = style.ID switch
                             {
-                                case 374:
-                                    numTargetsCanHit = 1;
-                                    break; // Tribal Assault: Hits 2 targets.
-                                case 377:
-                                    numTargetsCanHit = 1;
-                                    break; // Clan's Might: Hits 2 targets.
-                                case 379:
-                                    numTargetsCanHit = 2;
-                                    break; // Totemic Wrath: Hits 3 targets.
-                                case 384:
-                                    numTargetsCanHit = 3;
-                                    break; // Totemic Sacrifice: Hits 4 targets.
-                                case 600:
-                                    numTargetsCanHit = 255;
-                                    break; // Shield Swipe: No cap.
-                                default:
-                                    numTargetsCanHit = 0;
-                                    break;
+                                374 => 1, // Tribal Assault: Hits 2 targets.
+                                377 => 1, // Clan's Might: Hits 2 targets.
+                                379 => 2, // Totemic Wrath: Hits 3 targets.
+                                384 => 3, // Totemic Sacrifice: Hits 4 targets.
+                                600 => 255, // Shield Swipe: No cap.
+                                _ => 0
+                            };
+
+                            if (numTargetsCanHit <= 0)
+                                break;
+
+                            bool IsNotShieldSwipe = style.ID != 600;
+
+                            if (IsNotShieldSwipe)
+                            {
+                                foreach (GamePlayer playerInRange in owner.GetPlayersInRadius((ushort) AttackRange))
+                                {
+                                    if (GameServer.ServerRules.IsAllowedToAttack(owner, playerInRange, true))
+                                        listAvailableTargets.Add(playerInRange);
+                                }
                             }
 
-                            if (numTargetsCanHit > 0)
+                            foreach (GameNPC npcInRange in owner.GetNPCsInRadius((ushort) AttackRange))
                             {
-                                if (style.ID != 600) // Not Shield Swipe.
+                                if (GameServer.ServerRules.IsAllowedToAttack(owner, npcInRange, true))
+                                    listAvailableTargets.Add(npcInRange);
+                            }
+
+                            // Remove primary target.
+                            listAvailableTargets.Remove(target);
+
+                            if (numTargetsCanHit >= listAvailableTargets.Count)
+                                extraTargets = listAvailableTargets;
+                            else
+                            {
+                                int index;
+                                GameObject availableTarget;
+
+                                for (int i = numTargetsCanHit; i > 0; i--)
                                 {
-                                    foreach (GamePlayer pl in playerOwner.GetPlayersInRadius((ushort) AttackRange))
-                                    {
-                                        if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, pl, true))
-                                            listAvailableTargets.Add(pl);
-                                    }
+                                    index = Util.Random(listAvailableTargets.Count - 1);
+                                    availableTarget = listAvailableTargets[index];
+                                    listAvailableTargets.RemoveAt(index);
+                                    extraTargets.Add(availableTarget);
+                                }
+                            }
 
-                                    foreach (GameNPC npc in playerOwner.GetNPCsInRadius((ushort) AttackRange))
-                                    {
-                                        if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, npc, true))
-                                            listAvailableTargets.Add(npc);
-                                    }
+                            foreach (GameObject extraTarget in extraTargets)
+                            {
+                                if (extraTarget is GamePlayer player && player.IsSitting)
+                                    effectiveness *= 2;
 
-                                    // Remove primary target.
-                                    numTargetsCanHit = Math.Min(numTargetsCanHit, listAvailableTargets.Count);
-
-                                    if (listAvailableTargets.Count > 0)
-                                    {
-                                        while (extraTargets.Count < numTargetsCanHit)
-                                        {
-                                            index = Util.Random(listAvailableTargets.Count - 1);
-                                            GameObject availableTarget = listAvailableTargets[index];
-
-                                            if (target != availableTarget && !extraTargets.Contains(availableTarget))
-                                                extraTargets.Add(availableTarget);
-
-                                            listAvailableTargets.RemoveAt(index);
-                                        }
-
-                                        foreach (GameObject obj in extraTargets)
-                                        {
-                                            if (obj is GamePlayer player && player.IsSitting)
-                                                effectiveness *= 2;
-
-                                            weaponAction = new WeaponAction(playerOwner, obj, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
-                                            weaponAction.Execute();
-                                        }
-                                    }
+                                // TODO: Figure out why Shield Swipe is handled differently here.
+                                if (IsNotShieldSwipe)
+                                {
+                                    weaponAction = new WeaponAction(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
+                                    weaponAction.Execute();
                                 }
                                 else
-                                {
-                                    foreach (GameNPC npc in playerOwner.GetNPCsInRadius((ushort) AttackRange))
-                                    {
-                                        if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, npc, true))
-                                            listAvailableTargets.Add(npc);
-                                    }
-
-                                    numTargetsCanHit = Math.Min(numTargetsCanHit, listAvailableTargets.Count);
-
-                                    if (listAvailableTargets.Count > 1)
-                                    {
-                                        while (extraTargets.Count < numTargetsCanHit)
-                                        {
-                                            index = Util.Random(listAvailableTargets.Count - 1);
-                                            GameObject availableTarget = listAvailableTargets[index];
-
-                                            if (target != availableTarget && !extraTargets.Contains(availableTarget))
-                                                extraTargets.Add(availableTarget);
-
-                                            listAvailableTargets.RemoveAt(index);
-                                        }
-
-                                        foreach (GameNPC obj in extraTargets)
-                                        {
-                                            if (obj != ad.Target)
-                                                LivingMakeAttack(action, obj, attackWeapon, null, 1, Properties.SPELL_INTERRUPT_DURATION, false);
-                                        }
-                                    }
-                                }
+                                    LivingMakeAttack(action, extraTarget, attackWeapon, null, 1, Properties.SPELL_INTERRUPT_DURATION, false);
                             }
                         }
 
