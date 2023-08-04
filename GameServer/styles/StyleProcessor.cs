@@ -412,7 +412,7 @@ namespace DOL.GS.Styles
 					}
 					else
 						attackData.StyleDamage = (int)(talyGrowth * talySpec * talySpeed / talyCap * attackData.Damage);
-                    
+
                     //calculate resists
                     InventoryItem armor = attackData.Target.Inventory?.GetItem((eInventorySlot)attackData.ArmorHitLocation);
                     int preDamage = attackData.StyleDamage;
@@ -422,12 +422,10 @@ namespace DOL.GS.Styles
                     int postDamage = attackData.StyleDamage;
                     // Update the modifier as well, otherwise we will show the player the damage resisted of the unstyled hit only (wouldn't it be better to calculate it just once?)
                     attackData.Modifier -= (preDamage - postDamage);
-					
+
+					// Modify style damage by property value.
 					if (player != null)
-					{
-						// Modify style damage by property value.
-						attackData.StyleDamage = (int) (attackData.StyleDamage * (1 + player.GetModified(eProperty.StyleDamage) / 100.0));
-					}
+						attackData.StyleDamage = (int) (attackData.StyleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
 
 					// Style absorb bonus.
 					int absorb = 0;
