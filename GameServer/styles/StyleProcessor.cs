@@ -419,30 +419,29 @@ namespace DOL.GS.Styles
 						attackData.StyleDamage = (int)(talyGrowth * talySpec * talySpeed / talyCap * attackData.Damage);
 
 					if (player != null)
+					{
+						player.Endurance -= fatCost;
 						attackData.StyleDamage = (int) (attackData.StyleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
+					}
 
 					// Style absorb bonus.
-					int absorb = 0;
-
-					if (attackData.Target is GamePlayer && attackData.Target.GetModified(eProperty.StyleAbsorb) > 0)
+					if (attackData.Target is GamePlayer)
 					{
-						absorb= (int)Math.Floor(attackData.StyleDamage * ((double)attackData.Target.GetModified(eProperty.StyleAbsorb) / 100));
-						attackData.StyleDamage -= absorb;
-					}
-
-					// Increase regular damage by styledamage.
-					attackData.Damage += attackData.StyleDamage;
-					// Update the modifier as well, otherwise we will show the player the damage resisted of the unstyled hit only (wouldn't it be better to calculate it just once?)
-					attackData.Modifier = (int)(attackData.Damage * attackData.Modifier / (double)(attackData.Damage - attackData.StyleDamage + attackData.Modifier));
-
-					if (player != null)
-					{
-						// Reduce players endurance.
-						player.Endurance -= fatCost;
+						int absorb = attackData.Target.GetModified(eProperty.StyleAbsorb);
 
 						if (absorb > 0)
-							player.Out.SendMessage("A barrier absorbs " + absorb + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+						{
+							absorb = (int) Math.Floor(attackData.StyleDamage * absorb / 100.0);
+							attackData.StyleDamage -= absorb;
+
+							if (player != null)
+								player.Out.SendMessage($"A barrier absorbs {absorb} damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+						}
 					}
+
+					// Increase regular damage by style damage.
+					attackData.Damage += attackData.StyleDamage;
+					attackData.Modifier = (int)(attackData.Damage * attackData.Modifier / (double)(attackData.Damage - attackData.StyleDamage + attackData.Modifier));
 
 					#region StyleProcs
 
