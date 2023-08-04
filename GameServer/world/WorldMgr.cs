@@ -1584,7 +1584,7 @@ namespace DOL.GS
 
 		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, int x, int y, int z, ushort radiusToCheck)
 		{
-			return GetNPCsCloseToSpot(regionid, x, y, z, radiusToCheck);
+			return GetNPCsCloseToSpot(regionid, new Point3D( x, y, z), radiusToCheck);
 		}
 
 		public static HashSet<GameNPC> GetNPCsCloseToSpot(ushort regionid, Point3D point, ushort radiusToCheck)
