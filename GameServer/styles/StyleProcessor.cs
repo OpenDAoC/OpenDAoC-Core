@@ -409,14 +409,19 @@ namespace DOL.GS.Styles
 								}
 								break;
 						}
-
-						InventoryItem armor = attackData.Target.Inventory?.GetItem((eInventorySlot)attackData.ArmorHitLocation);
-						attackData.StyleDamage = (int)(attackData.StyleDamage * (1.0 - Math.Min(0.85, attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation))));
-						attackData.StyleDamage -= (int)(attackData.StyleDamage * (attackData.Target.GetResist(attackData.DamageType) + SkillBase.GetArmorResist(armor, attackData.DamageType)) * 0.01);
-						attackData.StyleDamage -= (int)(attackData.StyleDamage * attackData.Target.GetDamageResist(attackData.Target.GetResistTypeForDamage(attackData.DamageType)) * 0.01);
 					}
 					else
 						attackData.StyleDamage = (int)(talyGrowth * talySpec * talySpeed / talyCap * attackData.Damage);
+                    
+                    //calculate resists
+                    InventoryItem armor = attackData.Target.Inventory?.GetItem((eInventorySlot)attackData.ArmorHitLocation);
+                    int preDamage = attackData.StyleDamage;
+                    attackData.StyleDamage = (int)(attackData.StyleDamage * (1.0 - Math.Min(0.85, attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation))));
+                    attackData.StyleDamage -= (int)(attackData.StyleDamage * (attackData.Target.GetResist(attackData.DamageType) + SkillBase.GetArmorResist(armor, attackData.DamageType)) * 0.01);
+                    attackData.StyleDamage -= (int)(attackData.StyleDamage * attackData.Target.GetDamageResist(attackData.Target.GetResistTypeForDamage(attackData.DamageType)) * 0.01);
+                    int postDamage = attackData.StyleDamage;
+                    // Update the modifier as well, otherwise we will show the player the damage resisted of the unstyled hit only (wouldn't it be better to calculate it just once?)
+                    attackData.Modifier -= (preDamage - postDamage);
 					
 					if (player != null)
 					{
@@ -435,8 +440,6 @@ namespace DOL.GS.Styles
 
 					// Increase regular damage by styledamage.
 					attackData.Damage += attackData.StyleDamage;
-					// Update the modifier as well, otherwise we will show the player the damage resisted of the unstyled hit only (wouldn't it be better to calculate it just once?)
-					attackData.Modifier = (int)(attackData.Damage * attackData.Modifier / (double)(attackData.Damage - attackData.StyleDamage + attackData.Modifier));
 
 					if (player != null)
 					{
