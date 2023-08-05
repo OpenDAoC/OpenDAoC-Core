@@ -3563,6 +3563,11 @@ namespace DOL.GS.Spells
 			else
 				finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 
+			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target, finalDamage);
+			int preConversionDamage = finalDamage;
+			finalDamage = (int) (finalDamage * conversionMod);
+			ad.Modifier += finalDamage - preConversionDamage;
+
 			// Apply damage cap (this can be raised by effectiveness).
 			if (finalDamage > DamageCap(effectiveness))
 				finalDamage = (int)DamageCap(effectiveness);
@@ -3570,19 +3575,19 @@ namespace DOL.GS.Spells
 			if (finalDamage < 0)
 				finalDamage = 0;
 
-			int criticalchance;
+			int criticalChance;
 
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
 			if (this is not DoTSpellHandler)
-				criticalchance = m_caster.SpellCriticalChance;
+				criticalChance = m_caster.SpellCriticalChance;
 			else
 			{
-				criticalchance = 0;
+				criticalChance = 0;
 				critDamage = 0;
 			}
 
 			int randNum = Util.CryptoNextInt(1, 100);
-			int critCap = Math.Min(50, criticalchance);
+			int critCap = Math.Min(50, criticalChance);
 
 			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -3591,21 +3596,6 @@ namespace DOL.GS.Spells
 			{
 				int critmax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
 				critDamage = Util.Random(finalDamage / 10, critmax);
-			}
-
-			if (ad.Target is GamePlayer && ad.Target.GetModified(eProperty.Conversion) > 0)
-			{
-				int manaconversion=(int)Math.Round(((double)ad.Damage+(double)ad.CriticalDamage)*(double)ad.Target.GetModified(eProperty.Conversion)/200);
-				//int enduconversion=(int)Math.Round((double)manaconversion*(double)ad.Target.MaxEndurance/(double)ad.Target.MaxMana);
-				int enduconversion=(int)Math.Round(((double)ad.Damage+(double)ad.CriticalDamage)*(double)ad.Target.GetModified(eProperty.Conversion)/200);
-				if(ad.Target.Mana+manaconversion>ad.Target.MaxMana) manaconversion=ad.Target.MaxMana-ad.Target.Mana;
-				if(ad.Target.Endurance+enduconversion>ad.Target.MaxEndurance) enduconversion=ad.Target.MaxEndurance-ad.Target.Endurance;
-				if(manaconversion<1) manaconversion=0;
-				if(enduconversion<1) enduconversion=0;
-				if(manaconversion>=1) (ad.Target as GamePlayer).Out.SendMessage("You gain "+manaconversion+" power points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				if(enduconversion>=1) (ad.Target as GamePlayer).Out.SendMessage("You gain "+enduconversion+" endurance points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-				ad.Target.Endurance+=enduconversion; if(ad.Target.Endurance>ad.Target.MaxEndurance) ad.Target.Endurance=ad.Target.MaxEndurance;
-				ad.Target.Mana+=manaconversion; if(ad.Target.Mana>ad.Target.MaxMana) ad.Target.Mana=ad.Target.MaxMana;
 			}
 
 			ad.Damage = finalDamage;
