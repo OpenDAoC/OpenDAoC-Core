@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using DOL.Events;
 
 namespace DOL.GS.Spells
 {
@@ -604,8 +603,10 @@ namespace DOL.GS.Spells
                 ad.Damage = (int)damage;
                 ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.UnstyledDamageCap(weapon) * effectiveness));
                 ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
-                if (ad.Damage == 0) ad.AttackResult = DOL.GS.eAttackResult.Missed;
-                ad.CriticalDamage = player.attackComponent.GetMeleeCriticalDamage(ad, null, weapon);
+                if (ad.Damage == 0)
+                    ad.AttackResult = eAttackResult.Missed;
+                else
+                    ad.CriticalDamage = player.attackComponent.CalculateMeleeCriticalDamage(ad, null, weapon);
             }
             else
             {

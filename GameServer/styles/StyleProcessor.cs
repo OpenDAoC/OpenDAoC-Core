@@ -308,163 +308,157 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		/// <summary>
-		/// Executes the style of the given player. Prints
-		/// out messages to the player notifying him of his success or failure.
-		/// </summary>
-		/// <param name="living">The living executing the styles</param>
-		/// <param name="attackData">The AttackData that will be modified to contain the new damage and the executed style.</param>
-		/// <param name="weapon">The weapon used to execute the style</param>
-		/// <returns>true if a style was performed, false if not</returns>
-		public static bool ExecuteStyle(GameLiving living, AttackData attackData, InventoryItem weapon)
+		public static int ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, eAttackResult attackResult, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int animationId)
 		{
+			animationId = 0;
+			int styleDamage = 0;
+
 			// First thing in processors, lock the objects you modify.
 			// This way it makes sure the objects are not modified by several different threads at the same time.
 			GamePlayer player = living as GamePlayer;
 
 			lock (living)
 			{
-				Style style = attackData.Style;
-
 				// Does the player want to execute a style at all?
 				if (style == null)
-					return false;
+					return styleDamage;
 
 				// Used to disable RA styles when they're actually firing.
 				style.OnStyleExecuted?.Invoke(living);
 
-				if (weapon != null && weapon.Object_Type == (int)eObjectType.Shield)
-					attackData.AnimationId = (weapon.Hand != 1) ? attackData.Style.Icon : attackData.Style.TwoHandAnimation; // 2h shield?
+				if (weapon != null && weapon.Object_Type == (int) eObjectType.Shield)
+					animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // 2h shield?
 
 				int fatCost = 0;
 
 				if (weapon != null)
-					fatCost = CalculateEnduranceCost(living, attackData.Style, weapon.SPD_ABS);
+					fatCost = CalculateEnduranceCost(living, style, weapon.SPD_ABS);
 
 				// Reduce endurance if styled attack missed.
-				switch (attackData.AttackResult)
+				switch (attackResult)
 				{
 					case eAttackResult.Blocked:
 					case eAttackResult.Evaded:
 					case eAttackResult.Missed:
 					case eAttackResult.Parried:
+					{
 						if (player != null)
 							living.Endurance -= Math.Max(1, fatCost / 2);
-						return false;
+
+						return styleDamage;
+					}
 				}
 
 				// Ignore all other attack results.
-				if (attackData.AttackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle)
-					return false;
+				if (attackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle)
+					return styleDamage;
 
 				// Did primary and backup style fail?
-				if (!CanUseStyle(living, attackData.Style, weapon))
+				if (!CanUseStyle(living, style, weapon))
 				{
 					if (player != null)
 					{
 						// Reduce players endurance, full endurance if failed style.
 						player.Endurance -= fatCost;
 						// "You must be hidden to perform this style!"
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", attackData.Style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					}
 
-					return false;
+					return styleDamage;
 				}
 				else
 				{
-					bool staticGrowth = attackData.Style.StealthRequirement; // Static growth is not a function of (effective) weapon speed.
-					double talyGrowth = attackData.Style.GrowthRate;
-					double talySpec = living.GetModifiedSpecLevel(attackData.Style.Spec);
+					bool staticGrowth = style.StealthRequirement; // Static growth is not a function of (effective) weapon speed.
+					double talyGrowth = style.GrowthRate;
+					double talySpec = living.GetModifiedSpecLevel(style.Spec);
 					double talySpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 					double talyCap = living.attackComponent.UnstyledDamageCap(weapon);
 
 					if (staticGrowth)
 					{
-						int spec = Math.Min(living.Level, living.GetModifiedSpecLevel(attackData.Style.Spec));
+						int spec = Math.Min(living.Level, living.GetModifiedSpecLevel(style.Spec));
 
-						switch (attackData.Style.ID)
+						switch (style.ID)
 						{
 							case 335: //Backstab I
-								{
-									//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
-									attackData.StyleDamage = Math.Min(5, spec / 10) + spec * 14 / 3;
-								}
-								break;
+							{
+								//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
+								styleDamage = Math.Min(5, spec / 10) + spec * 14 / 3;
+							}
+							break;
 							case 339: //Backstab II
-								{
-									//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
-									attackData.StyleDamage = Math.Min(45, spec) + spec * 6;
-								}
-								break;
+							{
+								//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
+								styleDamage = Math.Min(45, spec) + spec * 6;
+							}
+							break;
 							case 343: //Perforate Artery
+							{
 								if (living.ActiveWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-									attackData.StyleDamage = (int)Math.Min(75, spec * 1.5) + spec * 12;
+									styleDamage = (int) (Math.Min(75, spec * 1.5) + spec * 12);
 								}
 								else
 								{
 									//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-									attackData.StyleDamage = (int)Math.Min(75, spec * 1.5) + spec * 9;
+									styleDamage = (int) (Math.Min(75, spec * 1.5) + spec * 9);
 								}
 								break;
+							}
 						}
 
-						InventoryItem armor = attackData.Target.Inventory?.GetItem((eInventorySlot)attackData.ArmorHitLocation);
-						attackData.StyleDamage = (int)(attackData.StyleDamage * (1.0 - Math.Min(0.85, attackData.Target.GetArmorAbsorb(attackData.ArmorHitLocation))));
-						attackData.StyleDamage -= (int)(attackData.StyleDamage * (attackData.Target.GetResist(attackData.DamageType) + SkillBase.GetArmorResist(armor, attackData.DamageType)) * 0.01);
-						attackData.StyleDamage -= (int)(attackData.StyleDamage * attackData.Target.GetDamageResist(attackData.Target.GetResistTypeForDamage(attackData.DamageType)) * 0.01);
+						// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
+						// TODO: Check if ignoring AF is indeed intended.
+						InventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
+						styleDamage = (int) (styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation))));
 					}
 					else
-						attackData.StyleDamage = (int)(talyGrowth * talySpec * talySpeed / talyCap * attackData.Damage);
+						styleDamage = (int) (talyGrowth * talySpec * talySpeed / talyCap * unstyledDamage);
 
 					if (player != null)
 					{
 						player.Endurance -= fatCost;
-						attackData.StyleDamage = (int) (attackData.StyleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
+						styleDamage = (int) (styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
 					}
 
 					// Style absorb bonus.
-					if (attackData.Target is GamePlayer)
+					if (target is GamePlayer)
 					{
-						int absorb = attackData.Target.GetModified(eProperty.StyleAbsorb);
+						int absorb = target.GetModified(eProperty.StyleAbsorb);
 
 						if (absorb > 0)
 						{
-							absorb = (int) Math.Floor(attackData.StyleDamage * absorb / 100.0);
-							attackData.StyleDamage -= absorb;
+							absorb = (int) Math.Floor(styleDamage * absorb / 100.0);
+							styleDamage -= absorb;
 
 							if (player != null)
 								player.Out.SendMessage($"A barrier absorbs {absorb} damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 						}
 					}
 
-					// Increase regular damage by style damage.
-					attackData.Damage += attackData.StyleDamage;
-					attackData.Modifier = (int)(attackData.Damage * attackData.Modifier / (double)(attackData.Damage - attackData.StyleDamage + attackData.Modifier));
-
 					#region StyleProcs
 
-					if (attackData.Style.Procs.Count > 0)
+					if (style.Procs.Count > 0)
 					{
 						ISpellHandler effect;
 
 						// If ClassID = 0, use the proc for any class, unless there is also a proc with a ClassID
 						// that matches the player's CharacterClass.ID, or for mobs, the style's ClassID - then use
 						// the class-specific proc instead of the ClassID=0 proc
-						if (!attackData.Style.RandomProc)
+						if (!style.RandomProc)
 						{
 							List<(Spell, int, int)> procsToExecute = new();
 							bool onlyExecuteClassSpecific = false;
 
-							foreach ((Spell, int, int) proc in attackData.Style.Procs)
+							foreach ((Spell, int, int) proc in style.Procs)
 							{
 								if (player != null && proc.Item2 == player.CharacterClass.ID)
 								{
 									procsToExecute.Add(proc);
 									onlyExecuteClassSpecific = true;
 								}
-								else if (proc.Item2 == attackData.Style.ClassID || proc.Item2 == 0)
+								else if (proc.Item2 == style.ClassID || proc.Item2 == 0)
 									procsToExecute.Add(proc);
 							}
 
@@ -475,15 +469,15 @@ namespace DOL.GS.Styles
 
 								if (Util.Chance(procToExecute.Item3))
 								{
-									effect = CreateMagicEffect(living, attackData.Target, procToExecute.Item1.ID);
+									effect = CreateMagicEffect(living, target, procToExecute.Item1.ID);
 
 									// Effect could be null if the SpellID is bigger than ushort.
 									if (effect != null)
 									{
-										attackData.StyleEffects.Add(effect);
-										if ((attackData.Style.OpeningRequirementType == Style.eOpening.Offensive && attackData.Style.OpeningRequirementValue > 0) 
-											|| attackData.Style.OpeningRequirementType == Style.eOpening.Defensive
-											|| attackData.Style.ClassID == 19) // Reaver styles have no variance.
+										styleEffects.Add(effect);
+										if ((style.OpeningRequirementType == Style.eOpening.Offensive && style.OpeningRequirementValue > 0) 
+											|| style.OpeningRequirementType == Style.eOpening.Defensive
+											|| style.ClassID == 19) // Reaver styles have no variance.
 											effect.UseMinVariance = true;
 									}
 								}
@@ -492,15 +486,15 @@ namespace DOL.GS.Styles
 						else
 						{
 							// Add one proc randomly.
-							int random = Util.Random(attackData.Style.Procs.Count - 1);
-							effect = CreateMagicEffect(living, attackData.Target, attackData.Style.Procs[random].Item1.ID);
+							int random = Util.Random(style.Procs.Count - 1);
+							effect = CreateMagicEffect(living, target, style.Procs[random].Item1.ID);
 
 							// Effect could be null if the SpellID is bigger than ushort.
 							if (effect != null)
 							{
-								attackData.StyleEffects.Add(effect);
-								if ((attackData.Style.OpeningRequirementType == Style.eOpening.Offensive && attackData.Style.OpeningRequirementValue > 0) 
-									|| attackData.Style.OpeningRequirementType == Style.eOpening.Defensive)
+								styleEffects.Add(effect);
+								if ((style.OpeningRequirementType == Style.eOpening.Offensive && style.OpeningRequirementValue > 0) 
+									|| style.OpeningRequirementType == Style.eOpening.Defensive)
 									effect.UseMinVariance = true;
 							}
 						}
@@ -511,15 +505,15 @@ namespace DOL.GS.Styles
 					#region Animation
 
 					if (weapon != null)
-						attackData.AnimationId = (weapon.Hand != 1) ? attackData.Style.Icon : attackData.Style.TwoHandAnimation; // special animation for two-hand
+						animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
 					else if (living.Inventory != null)
-						attackData.AnimationId = (living.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null) ? attackData.Style.Icon : attackData.Style.TwoHandAnimation; // special animation for two-hand
+						animationId = (living.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
 					else
-						attackData.AnimationId = attackData.Style.Icon;
+						animationId = style.Icon;
 
 					#endregion Animation
 
-					return true;
+					return styleDamage;
 				}
 			}
 		}

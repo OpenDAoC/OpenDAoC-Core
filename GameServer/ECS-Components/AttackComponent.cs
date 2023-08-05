@@ -1321,81 +1321,41 @@ namespace DOL.GS
                 if (ad.IsOffHand)
                     damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
 
-                // Against NPC targets this just doubles the resists. Applying only to player targets as a fix.
-                if (ad.Target is GamePlayer)
-                    ad.Modifier = (int) (damage * (ad.Target.GetResist(ad.DamageType) + SkillBase.GetArmorResist(armor, ad.DamageType)) * -0.01);
-
-                // RA resist check.
-                int resist = (int) (damage * ad.Target.GetDamageResist(owner.GetResistTypeForDamage(ad.DamageType)) * -0.01);
-                eProperty property = ad.Target.GetResistTypeForDamage(ad.DamageType);
-                int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[(int) property];
-                int resistModifier = 0;
-                resistModifier += (int) ((ad.Damage + (double) resist) * secondaryResistModifier * -0.01);
-                damage += resist;
-                damage += resistModifier;
-                ad.Modifier += resist;
-                damage += ad.Modifier;
-                ad.Damage = (int) damage;
-
-                if (action.RangedAttackType == eRangedAttackType.Critical)
-                    ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) * 2));
-                else
-                    ad.Damage = Math.Min(ad.Damage, (int) (UnstyledDamageCap(weapon) /* * effectiveness*/));
-
                 // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
                 if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                 {
                     if (target is GamePlayer)
-                        ad.Damage = (int) (ad.Damage * Properties.PVP_MELEE_DAMAGE);
+                        damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
                     else if (target is GameNPC)
-                        ad.Damage = (int) (ad.Damage * Properties.PVE_MELEE_DAMAGE);
+                        damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
                 }
 
-                // Conversion.
-                if (ad.Target is GamePlayer playerTarget && ad.Target.GetModified(eProperty.Conversion) > 0)
+                double preResistDamage = damage;
+                double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
+                double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
+                double resistMod = primarySecondaryResistMod * conversionMod;
+                damage = (int) (damage * resistMod);
+
+                if (action.RangedAttackType == eRangedAttackType.Critical)
+                    damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) * 2));
+                else
+                    damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) /* * effectiveness*/));
+
+                ad.StyleDamage = StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, ad.AttackResult, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int animationId);
+
+                if (ad.StyleDamage > 0)
                 {
-                    int manaconversion = (int) Math.Round((ad.Damage + ad.CriticalDamage) * ad.Target.GetModified(eProperty.Conversion) / 100.0);
-                    int enduconversion = (int) Math.Round((ad.Damage + ad.CriticalDamage) * ad.Target.GetModified(eProperty.Conversion) / 100.0);
-
-                    if (ad.Target.Mana + manaconversion > ad.Target.MaxMana)
-                        manaconversion = ad.Target.MaxMana - ad.Target.Mana;
-
-                    if (ad.Target.Endurance + enduconversion > ad.Target.MaxEndurance)
-                        enduconversion = ad.Target.MaxEndurance - ad.Target.Endurance;
-
-                    if (manaconversion < 1)
-                        manaconversion = 0;
-
-                    if (enduconversion < 1)
-                        enduconversion = 0;
-
-                    if (manaconversion >= 1)
-                        playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.AttackData.GainPowerPoints"), manaconversion), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-                    if (enduconversion >= 1)
-                        playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.AttackData.GainEndurancePoints"), enduconversion), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-                    ad.Target.Endurance += enduconversion;
-
-                    if (ad.Target.Endurance > ad.Target.MaxEndurance)
-                        ad.Target.Endurance = ad.Target.MaxEndurance;
-
-                    ad.Target.Mana += manaconversion;
-
-                    if (ad.Target.Mana > ad.Target.MaxMana)
-                        ad.Target.Mana = ad.Target.MaxMana;
+                    preResistDamage += ad.StyleDamage;
+                    ad.StyleDamage = (int) (ad.StyleDamage * resistMod);
+                    damage += ad.StyleDamage;
+                    ad.AnimationId = animationId;
+                    ad.AttackResult = eAttackResult.HitStyle;
                 }
 
-                if (ad.Damage == 0)
-                    ad.Damage = 1;
+                ad.Modifier = (int) (damage - preResistDamage);
+                ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
+                ad.Damage = (int) damage;
             }
-
-            // Add styled damage if style hits and remove endurance if missed.
-            if (StyleProcessor.ExecuteStyle(owner, ad, weapon))
-                ad.AttackResult = eAttackResult.HitStyle;
-
-            if (ad.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
-                ad.CriticalDamage = GetMeleeCriticalDamage(ad, action, weapon);
 
             // Attacked living may modify the attack data. Primarily used for keep doors and components.
             ad.Target.ModifyAttack(ad);
@@ -1865,6 +1825,52 @@ namespace DOL.GS
                 armorMod = 0.1;
 
             return armorMod;
+        }
+
+        public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, InventoryItem armor)
+        {
+            eProperty resistType = target.GetResistTypeForDamage(damageType);
+            double damageModifier = 1.0;
+
+            // Against NPC targets this just doubles the resists. Applying only to player targets as a fix.
+            // TODO: Figure out why and fix the mess that resists are.
+            if (target is GamePlayer)
+                damageModifier *= 1.0 - (target.GetResist(damageType) + SkillBase.GetArmorResist(armor, damageType)) * 0.01;
+
+            damageModifier *= 1.0 - target.GetDamageResist(resistType) * 0.01;
+            damageModifier *= 1.0 - target.SpecBuffBonusCategory[(int) resistType];
+            return damageModifier;
+        }
+
+        public static double CalculateTargetConversion(GameLiving target, double damage)
+        {
+            if (target is not GamePlayer playerTarget)
+                return 1.0;
+
+            double conversionMod = 1 - target.GetModified(eProperty.Conversion) / 100.0;
+
+            if (conversionMod >= 1.0)
+                return 1.0;
+
+            int conversionAmount = (int) (damage - (int) (damage * conversionMod));
+            int powerConversion = conversionAmount;
+            int enduranceConversion = conversionAmount;
+
+            if (target.Mana + conversionAmount > target.MaxMana)
+                powerConversion = target.MaxMana - target.Mana;
+
+            if (target.Endurance + conversionAmount > target.MaxEndurance)
+                enduranceConversion = target.MaxEndurance - target.Endurance;
+
+            if (powerConversion > 0)
+                playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.AttackData.GainPowerPoints"), powerConversion), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+            if (enduranceConversion > 0)
+                playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.AttackData.GainEndurancePoints"), enduranceConversion), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+            target.Mana = Math.Min(target.MaxMana, target.Mana + powerConversion);
+            target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
+            return conversionMod;
         }
 
         public virtual bool CheckBlock(AttackData ad, double attackerConLevel)
@@ -2693,13 +2699,7 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Calculates melee critical damage
-        /// </summary>
-        /// <param name="ad">The attack data</param>
-        /// <param name="weapon">The weapon used</param>
-        /// <returns>The amount of critical damage</returns>
-        public int GetMeleeCriticalDamage(AttackData ad, WeaponAction action, InventoryItem weapon)
+        public int CalculateMeleeCriticalDamage(AttackData ad, WeaponAction action, InventoryItem weapon)
         {
             if (!Util.Chance(AttackCriticalChance(action, weapon)))
                 return 0;
@@ -2723,27 +2723,27 @@ namespace DOL.GS
                     // Zerk 3 = 1-75%
                     // Zerk 4 = 1-99%
                     critMin = (int) (0.01 * ad.Damage);
-                    critMax = (int) (Math.Min(0.99, (level * 0.25)) * ad.Damage);
+                    critMax = (int) (Math.Min(0.99, level * 0.25) * ad.Damage);
                 }
                 else
                 {
-                    //think min crit dmage is 10% of damage
+                    // Min crit damage is 10%.
                     critMin = ad.Damage / 10;
-                    // Critical damage to players is 50%, low limit should be around 20% but not sure
-                    // zerkers in Berserk do up to 99%
+                    // Max crit damage to players is 50%. Berzerkers go up to 99% in Berserk mode.
+
                     if (ad.Target is GamePlayer)
-                        critMax = ad.Damage >> 1;
+                        critMax = ad.Damage / 2;
                     else
                         critMax = ad.Damage;
                 }
 
                 critMin = Math.Max(critMin, 0);
                 critMax = Math.Max(critMin, critMax);
-                return Util.Random(critMin, critMax);
+                return ad.CriticalDamage = Util.Random(critMin, critMax);
             }
             else
             {
-                int maxCriticalDamage = (ad.Target is GamePlayer) ? ad.Damage / 2 : ad.Damage;
+                int maxCriticalDamage = ad.Target is GamePlayer ? ad.Damage / 2 : ad.Damage;
                 int minCriticalDamage = (int) (ad.Damage * MinMeleeCriticalDamage);
 
                 if (minCriticalDamage > maxCriticalDamage)
