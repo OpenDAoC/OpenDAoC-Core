@@ -1332,9 +1332,9 @@ namespace DOL.GS
 
                 double preResistDamage = damage;
                 double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
+                double preConversionDamage = preResistDamage * primarySecondaryResistMod;
                 double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
-                double resistMod = primarySecondaryResistMod * conversionMod;
-                damage = (int) (damage * resistMod);
+                damage = (int) (preConversionDamage * conversionMod);
 
                 if (action.RangedAttackType == eRangedAttackType.Critical)
                     damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) * 2));
@@ -1345,13 +1345,19 @@ namespace DOL.GS
 
                 if (ad.StyleDamage > 0)
                 {
-                    preResistDamage += ad.StyleDamage;
-                    ad.StyleDamage = (int) (ad.StyleDamage * resistMod);
+                    double preResistStyleDamage = ad.StyleDamage;
+                    double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
+                    ad.StyleDamage = (int) (preConversionStyleDamage * conversionMod);
+
+                    preResistDamage += preResistStyleDamage;
+                    preConversionDamage += preConversionStyleDamage;
                     damage += ad.StyleDamage;
+
                     ad.AnimationId = animationId;
                     ad.AttackResult = eAttackResult.HitStyle;
                 }
 
+                ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
                 ad.Modifier = (int) (damage - preResistDamage);
                 ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
                 ad.Damage = (int) damage;
@@ -1844,15 +1850,22 @@ namespace DOL.GS
 
         public static double CalculateTargetConversion(GameLiving target, double damage)
         {
-            if (target is not GamePlayer playerTarget)
+            if (target is not GamePlayer)
                 return 1.0;
 
             double conversionMod = 1 - target.GetModified(eProperty.Conversion) / 100.0;
 
-            if (conversionMod >= 1.0)
+            if (conversionMod > 1.0)
                 return 1.0;
 
-            int conversionAmount = (int) (damage - (int) (damage * conversionMod));
+            return conversionMod;
+        }
+
+        public static void ApplyTargetConversionRegen(GameLiving target, int conversionAmount)
+        {
+            if (target is not GamePlayer playerTarget)
+                return;
+
             int powerConversion = conversionAmount;
             int enduranceConversion = conversionAmount;
 
@@ -1870,7 +1883,6 @@ namespace DOL.GS
 
             target.Mana = Math.Min(target.MaxMana, target.Mana + powerConversion);
             target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
-            return conversionMod;
         }
 
         public virtual bool CheckBlock(AttackData ad, double attackerConLevel)

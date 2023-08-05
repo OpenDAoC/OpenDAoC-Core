@@ -3566,6 +3566,7 @@ namespace DOL.GS.Spells
 			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target, finalDamage);
 			int preConversionDamage = finalDamage;
 			finalDamage = (int) (finalDamage * conversionMod);
+			AttackComponent.ApplyTargetConversionRegen(ad.Target, preConversionDamage - finalDamage);
 			ad.Modifier += finalDamage - preConversionDamage;
 
 			// Apply damage cap (this can be raised by effectiveness).
