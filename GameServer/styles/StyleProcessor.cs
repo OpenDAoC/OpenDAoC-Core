@@ -308,7 +308,7 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static int ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, eAttackResult attackResult, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int animationId)
+		public static int ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int animationId)
 		{
 			animationId = 0;
 			int styleDamage = 0;
@@ -321,50 +321,28 @@ namespace DOL.GS.Styles
 			{
 				// Does the player want to execute a style at all?
 				if (style == null)
-					return styleDamage;
+					return 0;
 
 				// Used to disable RA styles when they're actually firing.
 				style.OnStyleExecuted?.Invoke(living);
 
-				if (weapon != null && weapon.Object_Type == (int) eObjectType.Shield)
-					animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // 2h shield?
-
-				int fatCost = 0;
-
 				if (weapon != null)
-					fatCost = CalculateEnduranceCost(living, style, weapon.SPD_ABS);
-
-				// Reduce endurance if styled attack missed.
-				switch (attackResult)
 				{
-					case eAttackResult.Blocked:
-					case eAttackResult.Evaded:
-					case eAttackResult.Missed:
-					case eAttackResult.Parried:
-					{
-						if (player != null)
-							living.Endurance -= Math.Max(1, fatCost / 2);
+					if (weapon.Object_Type == (int) eObjectType.Shield)
+						animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // 2h shield?
 
-						return styleDamage;
-					}
+					// Reduce players endurance. Full endurance cost if conditions aren't met too.
+					if (player != null)
+						player.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
 				}
-
-				// Ignore all other attack results.
-				if (attackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle)
-					return styleDamage;
 
 				// Did primary and backup style fail?
 				if (!CanUseStyle(living, style, weapon))
 				{
 					if (player != null)
-					{
-						// Reduce players endurance, full endurance if failed style.
-						player.Endurance -= fatCost;
-						// "You must be hidden to perform this style!"
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-					}
 
-					return styleDamage;
+					return 0;
 				}
 				else
 				{
@@ -417,10 +395,7 @@ namespace DOL.GS.Styles
 						styleDamage = (int) (talyGrowth * talySpec * talySpeed / talyCap * unstyledDamage);
 
 					if (player != null)
-					{
-						player.Endurance -= fatCost;
 						styleDamage = (int) (styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
-					}
 
 					// Style absorb bonus.
 					if (target is GamePlayer)

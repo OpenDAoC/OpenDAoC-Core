@@ -1234,8 +1234,10 @@ namespace DOL.GS
             // Calculate our attack result and attack damage.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon);
 
+            GamePlayer playerOwner = owner as GamePlayer;
+
             // Strafing miss.
-            if (owner is GamePlayer playerOwner && playerOwner.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
+            if (playerOwner != null && playerOwner.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
             {
                 // Used to tell the difference between a normal miss and a strafing miss.
                 // Ugly, but we shouldn't add a new field to 'AttackData' just for that purpose.
@@ -1243,124 +1245,140 @@ namespace DOL.GS
                 ad.AttackResult = eAttackResult.Missed;
             }
 
-            // Calculate damage only if we hit the target.
-            if (ad.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
+            switch (ad.AttackResult)
             {
-                double damage = AttackDamage(weapon) * effectiveness;
-                InventoryItem armor = null;
-
-                if (ad.Target.Inventory != null)
-                    armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
-
-                InventoryItem weaponForSpecModifier = null;
-
-                if (weapon != null)
+                // Calculate damage only if we hit the target.
+                case eAttackResult.HitUnstyled:
+                case eAttackResult.HitStyle:
                 {
-                    weaponForSpecModifier = new InventoryItem();
-                    weaponForSpecModifier.Object_Type = weapon.Object_Type;
-                    weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
+                    double damage = AttackDamage(weapon) * effectiveness;
+                    InventoryItem armor = null;
 
-                    if (owner is GamePlayer && owner.Realm == eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
-                        (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
-                        GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
+                    if (ad.Target.Inventory != null)
+                        armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
+
+                    InventoryItem weaponForSpecModifier = null;
+
+                    if (weapon != null)
                     {
-                        // Albion dual spec penalty, which sets minimum damage to the base damage spec.
-                        if (weapon.Type_Damage == (int) eDamageType.Crush)
-                            weaponForSpecModifier.Object_Type = (int) eObjectType.CrushingWeapon;
-                        else if (weapon.Type_Damage == (int) eDamageType.Slash)
-                            weaponForSpecModifier.Object_Type = (int) eObjectType.SlashingWeapon;
-                        else
-                            weaponForSpecModifier.Object_Type = (int) eObjectType.ThrustWeapon;
-                    }
-                }
+                        weaponForSpecModifier = new InventoryItem();
+                        weaponForSpecModifier.Object_Type = weapon.Object_Type;
+                        weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
 
-                double specModifier = CalculateSpecModifier(ad.Target, weaponForSpecModifier);
-                double modifiedWeaponSkill = CalculateModifiedWeaponSkill(ad.Target, weapon, specModifier);
-                double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation);
-                double damageMod = Math.Min(3.0, modifiedWeaponSkill / armorMod);
-
-                if (owner is GamePlayer playerOwner2)
-                {
-                    damage *= damageMod;
-
-                    if (playerOwner2.UseDetailedCombatLog)
-                    {
-                        playerOwner2.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}",
-                            eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        if (owner is GamePlayer && owner.Realm == eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
+                            (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
+                            GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
+                        {
+                            // Albion dual spec penalty, which sets minimum damage to the base damage spec.
+                            if (weapon.Type_Damage == (int) eDamageType.Crush)
+                                weaponForSpecModifier.Object_Type = (int) eObjectType.CrushingWeapon;
+                            else if (weapon.Type_Damage == (int) eDamageType.Slash)
+                                weaponForSpecModifier.Object_Type = (int) eObjectType.SlashingWeapon;
+                            else
+                                weaponForSpecModifier.Object_Type = (int) eObjectType.ThrustWeapon;
+                        }
                     }
 
-                    if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                    {
-                        attackee.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd,
-                            eChatLoc.CL_SystemWindow);
-                    }
+                    double specModifier = CalculateSpecModifier(ad.Target, weaponForSpecModifier);
+                    double modifiedWeaponSkill = CalculateModifiedWeaponSkill(ad.Target, weapon, specModifier);
+                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation);
+                    double damageMod = Math.Min(3.0, modifiedWeaponSkill / armorMod);
 
-                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                    // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                    //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    // else
-                    //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                }
-                else
-                {
-                    if (owner is GameEpicBoss boss)
-                        damage *= damageMod + boss.Strength / 200;
-                    else
+                    if (playerOwner != null)
+                    {
                         damage *= damageMod;
 
-                    if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                        attackee.Out.SendMessage($"NPC Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        if (playerOwner.UseDetailedCombatLog)
+                        {
+                            playerOwner.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}",
+                                eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        }
 
-                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                    // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                    //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    // else
-                    //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                        if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                        {
+                            attackee.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd,
+                                eChatLoc.CL_SystemWindow);
+                        }
+
+                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                        // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                        //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                        // else
+                        //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
+                    else
+                    {
+                        if (owner is GameEpicBoss boss)
+                            damage *= damageMod + boss.Strength / 200;
+                        else
+                            damage *= damageMod;
+
+                        if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                            attackee.Out.SendMessage($"NPC Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                        // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                        //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                        // else
+                        //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    }
+
+                    if (ad.IsOffHand)
+                        damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
+
+                    // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
+                    if (owner is GamePlayer || owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0)
+                    {
+                        if (target is GamePlayer)
+                            damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
+                        else if (target is GameNPC)
+                            damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
+                    }
+
+                    double preResistDamage = damage;
+                    double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
+                    double preConversionDamage = preResistDamage * primarySecondaryResistMod;
+                    double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
+                    damage = (int) (preConversionDamage * conversionMod);
+
+                    if (action.RangedAttackType == eRangedAttackType.Critical)
+                        damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) * 2));
+                    else
+                        damage = Math.Min(damage, (int) UnstyledDamageCap(weapon) /* * effectiveness*/);
+
+                    ad.StyleDamage = StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int animationId);
+
+                    if (ad.StyleDamage > 0)
+                    {
+                        double preResistStyleDamage = ad.StyleDamage;
+                        double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
+                        ad.StyleDamage = (int) (preConversionStyleDamage * conversionMod);
+
+                        preResistDamage += preResistStyleDamage;
+                        preConversionDamage += preConversionStyleDamage;
+                        damage += ad.StyleDamage;
+
+                        ad.AnimationId = animationId;
+                        ad.AttackResult = eAttackResult.HitStyle;
+                    }
+
+                    ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
+                    ad.Modifier = (int) (damage - preResistDamage);
+                    ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
+                    ad.Damage = (int) damage;
+                    break;
                 }
-
-                if (ad.IsOffHand)
-                    damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
-
-                // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
-                if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
+                case eAttackResult.Blocked:
+                case eAttackResult.Evaded:
+                case eAttackResult.Parried:
+                case eAttackResult.Missed:
                 {
-                    if (target is GamePlayer)
-                        damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
-                    else if (target is GameNPC)
-                        damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
+                    // Reduce endurance by half the style's cost if we missed.
+                    if (ad.Style != null && playerOwner != null && weapon != null)
+                        playerOwner.Endurance -= StyleProcessor.CalculateEnduranceCost(playerOwner, ad.Style, weapon.SPD_ABS) / 2;
+
+                    break;
                 }
-
-                double preResistDamage = damage;
-                double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
-                double preConversionDamage = preResistDamage * primarySecondaryResistMod;
-                double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
-                damage = (int) (preConversionDamage * conversionMod);
-
-                if (action.RangedAttackType == eRangedAttackType.Critical)
-                    damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) * 2));
-                else
-                    damage = Math.Min(damage, (int) (UnstyledDamageCap(weapon) /* * effectiveness*/));
-
-                ad.StyleDamage = StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, ad.AttackResult, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int animationId);
-
-                if (ad.StyleDamage > 0)
-                {
-                    double preResistStyleDamage = ad.StyleDamage;
-                    double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
-                    ad.StyleDamage = (int) (preConversionStyleDamage * conversionMod);
-
-                    preResistDamage += preResistStyleDamage;
-                    preConversionDamage += preConversionStyleDamage;
-                    damage += ad.StyleDamage;
-
-                    ad.AnimationId = animationId;
-                    ad.AttackResult = eAttackResult.HitStyle;
-                }
-
-                ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
-                ad.Modifier = (int) (damage - preResistDamage);
-                ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
-                ad.Damage = (int) damage;
             }
 
             // Attacked living may modify the attack data. Primarily used for keep doors and components.
