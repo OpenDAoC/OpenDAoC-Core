@@ -1364,8 +1364,8 @@ namespace DOL.GS
 
                     ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
                     ad.Modifier = (int) (damage - preResistDamage);
+                    ad.Damage = (int)damage;
                     ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
-                    ad.Damage = (int) damage;
                     break;
                 }
                 case eAttackResult.Blocked:
