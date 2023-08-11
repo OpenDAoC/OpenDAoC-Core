@@ -491,28 +491,13 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendQuestListUpdate()
+		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			if (m_gameClient == null || m_gameClient.Player == null)
-				return;
-
-			SendTaskInfo();
-			int questIndex = 1;
-
-			lock (m_gameClient.Player.QuestLock)
-			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
-					SendQuestPacket((quest.Step == 0 || quest.Step == -1 || quest.Step == -2) ? null : quest, questIndex++);
-			}
-		}
-
-		protected override void SendQuestPacket(AbstractQuest q, int index)
-		{
-			if (q == null)
+			if (quest == null)
 			{
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 				{
-					pak.WriteByte((byte)index);
+					pak.WriteByte(index);
 					pak.WriteByte(0);
 					pak.WriteByte(0);
 					pak.WriteByte(0);
@@ -522,20 +507,20 @@ namespace DOL.GS.PacketHandler
 					return;
 				}
 			}
-			else if (q is RewardQuest)
+			else if (quest is RewardQuest)
 			{
-				RewardQuest quest = q as RewardQuest;
+				RewardQuest rewardQuest = quest as RewardQuest;
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 				{
 					pak.WriteByte((byte)index);
-					pak.WriteByte((byte)quest.Name.Length);
+					pak.WriteByte((byte)rewardQuest.Name.Length);
 					pak.WriteShort(0x00); // unknown
-					pak.WriteByte((byte)quest.Goals.Count);
-					pak.WriteByte((byte)quest.Level);
-					pak.WriteStringBytes(quest.Name);
-					pak.WritePascalString(quest.Description);
+					pak.WriteByte((byte)rewardQuest.Goals.Count);
+					pak.WriteByte((byte)rewardQuest.Level);
+					pak.WriteStringBytes(rewardQuest.Name);
+					pak.WritePascalString(rewardQuest.Description);
 					int goalindex = 0;
-					foreach (RewardQuest.QuestGoal goal in quest.Goals)
+					foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
 					{
 						goalindex++;
 						String goalDesc = String.Format("{0}\r", goal.Description);
@@ -571,13 +556,13 @@ namespace DOL.GS.PacketHandler
 				{
 					pak.WriteByte((byte)index);
 
-					string name = string.Format("{0} (Level {1})", q.Name, q.Level);
-					string desc = string.Format("[Step #{0}]: {1}", q.Step, q.Description);
+					string name = string.Format("{0} (Level {1})", quest.Name, quest.Level);
+					string desc = string.Format("[Step #{0}]: {1}", quest.Step, quest.Description);
 					if (name.Length > byte.MaxValue)
 					{
 						if (log.IsWarnEnabled)
 						{
-							log.Warn(q.GetType().ToString() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
+							log.Warn(quest.GetType().ToString() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
 						}
 						name = name.Substring(0, byte.MaxValue);
 					}
@@ -585,7 +570,7 @@ namespace DOL.GS.PacketHandler
 					{
 						if (log.IsWarnEnabled)
 						{
-							log.Warn(q.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
+							log.Warn(quest.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
 						}
 						desc = desc.Substring(0, byte.MaxValue);
 					}

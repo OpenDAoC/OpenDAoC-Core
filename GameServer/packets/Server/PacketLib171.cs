@@ -313,12 +313,11 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, int index)
+		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 			{
-
-				pak.WriteByte((byte)index);
+				pak.WriteByte(index);
 				if (quest.Step <= 0)
 				{
 					pak.WriteByte(0);

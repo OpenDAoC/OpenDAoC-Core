@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
@@ -385,12 +386,10 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 			Step = -1;
 
-			lock (m_questPlayer.QuestLock)
-			{
-				m_questPlayer.QuestList.Remove(this);
-				m_questPlayer.QuestListFinished.Add(this);
-			}
-			
+			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
+
+			m_questPlayer.AddFinishedQuest(this);
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}

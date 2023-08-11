@@ -36,14 +36,8 @@ namespace DOL.GS.Commands
                 return;
 
             string message = "";
-            List<AbstractQuest> activeQuests;
-            List<AbstractQuest> finishedQuests;
-
-            lock (client.Player.QuestLock)
-            {
-                activeQuests = client.Player.QuestList.Where(x => x is not NullQuest).ToList();
-                finishedQuests = client.Player.QuestListFinished.ToList();
-            }
+            List<AbstractQuest> activeQuests = client.Player.QuestList.Keys.ToList();
+            List<AbstractQuest> finishedQuests = client.Player.GetFinishedQuests();
 
             if (activeQuests.Count == 0)
                 message += "You have no pending quests currently.";

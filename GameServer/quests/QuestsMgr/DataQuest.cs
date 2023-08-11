@@ -1023,43 +1023,42 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
-			lock (player.QuestLock)
+			foreach (AbstractQuest quest in player.QuestList.Keys)
 			{
-				foreach (AbstractQuest quest in player.QuestList)
+				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
+					return false; // player is currently doing this quest
+			}
+
+			List<AbstractQuest> finishedQuests = player.GetFinishedQuests();
+
+			foreach (AbstractQuest quest in finishedQuests)
+			{
+				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{
-					if (quest is DataQuest dataQuest && dataQuest.ID == ID)
-						return false; // player is currently doing this quest
+					if (quest.IsDoingQuest() == true || (dataQuest.Count >= MaxQuestCount && MaxQuestCount >= 0))
+						return false; // player has done this quest the max number of times
 				}
+			}
 
-				foreach (AbstractQuest quest in player.QuestListFinished)
+			// check to see if this quest requires another to be done first
+			if (m_questDependencies.Count > 0)
+			{
+				int numFound = 0;
+
+				foreach (string str in m_questDependencies)
 				{
-					if (quest is DataQuest dataQuest && dataQuest.ID == ID)
+					foreach (AbstractQuest quest in finishedQuests)
 					{
-						if (quest.IsDoingQuest() == true || (dataQuest.Count >= MaxQuestCount && MaxQuestCount >= 0))
-							return false; // player has done this quest the max number of times
-					}
-				}
-
-				// check to see if this quest requires another to be done first
-				if (m_questDependencies.Count > 0)
-				{
-					int numFound = 0;
-
-					foreach (string str in m_questDependencies)
-					{
-						foreach (AbstractQuest quest in player.QuestListFinished)
+						if (quest is DataQuest dataQuest && dataQuest.Name.ToLower() == str.ToLower())
 						{
-							if (quest is DataQuest dataQuest && dataQuest.Name.ToLower() == str.ToLower())
-							{
-								numFound++;
-								break;
-							}
+							numFound++;
+							break;
 						}
 					}
-
-					if (numFound < m_questDependencies.Count)
-						return false;
 				}
+
+				if (numFound < m_questDependencies.Count)
+					return false;
 			}
 
 			return true;
@@ -2045,20 +2044,17 @@ namespace DOL.GS.Quests
 
 							bool add = true;
 
-							lock (player.QuestLock)
+							foreach (AbstractQuest quest in player.GetFinishedQuests())
 							{
-								foreach (AbstractQuest quest in player.QuestListFinished)
+								if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 								{
-									if (quest is DataQuest dataQuest && dataQuest.ID == ID)
-									{
-										add = false;
-										break;
-									}
+									add = false;
+									break;
 								}
-
-								if (add)
-									player.QuestListFinished.Add(this);
 							}
+
+							if (add)
+								player.AddFinishedQuest(this);
 
 							player.Out.SendQuestListUpdate();
 							player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -2708,20 +2704,17 @@ namespace DOL.GS.Quests
 
 								bool add = true;
 
-								lock (player.QuestLock)
+								foreach (AbstractQuest quest in player.GetFinishedQuests())
 								{
-									foreach (AbstractQuest quest in player.QuestListFinished)
+									if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 									{
-										if (quest is DataQuest dataQuest && dataQuest.ID == ID)
-										{
-											add = false;
-											break;
-										}
+										add = false;
+										break;
 									}
-
-									if (add)
-										player.QuestListFinished.Add(this);
 								}
+
+								if (add)
+									player.AddFinishedQuest(this);
 
 								player.Out.SendQuestListUpdate();
 								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -3073,26 +3066,24 @@ namespace DOL.GS.Quests
 			// Remove this quest from the players active quest list and either
 			// Add or update the quest in the players finished list
 
-			lock (m_questPlayer.QuestLock)
+			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
+
+			bool add = true;
+
+			foreach (AbstractQuest quest in m_questPlayer.GetFinishedQuests())
 			{
-				m_questPlayer.QuestList.Remove(this);
-
-				bool add = true;
-
-				foreach (AbstractQuest quest in m_questPlayer.QuestListFinished)
+				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{
-					if (quest is DataQuest dataQuest && dataQuest.ID == ID)
-					{
-						dataQuest.CharDataQuest.Step = 0;
-						dataQuest.CharDataQuest.Count++;
-						add = false;
-						break;
-					}
+					dataQuest.CharDataQuest.Step = 0;
+					dataQuest.CharDataQuest.Count++;
+					add = false;
+					break;
 				}
-
-				if (add)
-					m_questPlayer.QuestListFinished.Add(this);
 			}
+
+			if (add)
+				m_questPlayer.AddFinishedQuest(this);
 
 			m_questPlayer.Out.SendQuestListUpdate();
 
@@ -3156,20 +3147,14 @@ namespace DOL.GS.Quests
 		{
 			if (m_questPlayer == null || m_charQuest == null || m_charQuest.IsPersisted == false) return;
 
-			lock (m_questPlayer)
-			{
-				if (m_questPlayer.QuestList.Contains(this))
-					m_questPlayer.QuestList.Remove(this);
-
-				if (m_charQuest.Count == 0)
-				{
-					if (m_questPlayer.QuestListFinished.Contains(this))
-						m_questPlayer.QuestListFinished.Remove(this);
-				}
-			}
+			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
 
 			if (m_charQuest.Count == 0)
+			{
+				m_questPlayer.RemoveFinishedQuest(this);
 				DeleteFromDatabase();
+			}
 
 			m_questPlayer.Out.SendQuestListUpdate();
 			m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

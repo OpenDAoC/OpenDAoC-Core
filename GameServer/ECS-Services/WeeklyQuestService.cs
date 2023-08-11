@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
-using DOL.GS.Quests;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -59,18 +57,8 @@ namespace DOL.GS
                     if (!player.EntityManagerId.IsSet)
                         continue;
 
-                    List<AbstractQuest> questsToRemove;
+                    player.RemoveFinishedQuests(x => x is Quests.WeeklyQuest);
 
-                    lock (player.QuestLock)
-                    {
-                        questsToRemove = player.QuestListFinished.Where(x => x is Quests.WeeklyQuest).ToList();
-
-                        foreach (AbstractQuest quest in questsToRemove)
-                        {
-                            quest.AbortQuest();
-                            player.QuestListFinished.Remove(quest);
-                        }
-                    }
                 }
 
                 IList<DBQuest> existingWeeklyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%WeeklyQuest%"));

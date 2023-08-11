@@ -191,15 +191,13 @@ namespace DOL.GS.Quests
             m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 
             // Move quest from active list to finished list.
-            lock (m_questPlayer.QuestLock)
-            {
-                m_questPlayer.QuestList.Remove(this);
+            if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+                m_questPlayer.AvailableQuestIndexes.Enqueue(value);
 
-                if (m_questPlayer.HasFinishedQuest(GetType()) == 0)
-                    m_questPlayer.QuestListFinished.Add(this);
-            }
+            if (m_questPlayer.HasFinishedQuest(GetType()) == 0)
+                m_questPlayer.AddFinishedQuest(this);
 
-            m_questPlayer.Out.SendQuestListUpdate();
+            m_questPlayer.Out.SendQuestRemove(value);
             m_questPlayer.SaveIntoDatabase();
         }
 
@@ -207,13 +205,11 @@ namespace DOL.GS.Quests
         {
             Step = -1;
 
-            lock (m_questPlayer.QuestLock)
-            {
-                m_questPlayer.QuestList.Remove(this);
-            }
+            if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+                m_questPlayer.AvailableQuestIndexes.Enqueue(value);
 
             DeleteFromDatabase();
-            m_questPlayer.Out.SendQuestListUpdate();
+            m_questPlayer.Out.SendQuestRemove(value);
             m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
 
@@ -710,54 +706,6 @@ namespace DOL.GS.Quests
             NONE,
             SEARCH,
             SEARCH_START
-        }
-    }
-
-    // A wrapper for a 'List<AbstractQuest>' that invalidates removed elements instead of actually removing them, so that indexes never change.
-    // Clients rely on indexes never changing to display an accurate journal.
-    // Because it uses the new keyword, calling those methods on 'List<AbstractQuest>' instead of 'QuestsList' will break this (the alternative would be to implement 'IList<T>').
-    public class QuestList : List<AbstractQuest>
-    {
-        public new void Clear()
-        {
-            for (int i = 0; i < Count; i++)
-                this[i] = new NullQuest();
-        }
-
-        public new void Remove(AbstractQuest item)
-        {
-            int index = IndexOf(item);
-
-            if (index >= 0)
-                this[index] = new NullQuest();
-        }
-
-        public new int RemoveAll(Predicate<AbstractQuest> match)
-        {
-            int removedCount = 0;
-
-            for (int i = 0; i < Count; i++)
-            {
-                if (match(this[i]))
-                {
-                    removedCount++;
-                    this[i] = new NullQuest();
-                }
-            }
-
-            return removedCount;
-        }
-
-        public new void RemoveRange(int index, int count)
-        {
-            for (int i = index, j = 0; i < Count && j < count; i++, j++)
-                this[i] = new NullQuest();
-        }
-
-        public new void RemoveAt(int index)
-        {
-            if (index < Count)
-                this[index] = new NullQuest();
         }
     }
 }

@@ -1704,35 +1704,32 @@ namespace DOL.GS
 		/// <returns>true if this npc is the last step of one quest, false otherwise</returns>
 		public bool CanFinishOneQuest(GamePlayer player)
 		{
-			lock (player.QuestLock)
+			foreach (AbstractQuest quest in player.QuestList.Keys)
 			{
-				foreach (AbstractQuest quest in player.QuestList)
+				// Handle Data Quest here.
+				if (quest is DataQuest dataQuest && dataQuest.TargetName == Name && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == CurrentRegionID))
 				{
-					// Handle Data Quest here.
-					if (quest is DataQuest dataQuest && dataQuest.TargetName == Name && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == CurrentRegionID))
+					switch (dataQuest.StepType)
 					{
-						switch (dataQuest.StepType)
-						{
-							case DataQuest.eStepType.DeliverFinish:
-							case DataQuest.eStepType.InteractFinish:
-							case DataQuest.eStepType.KillFinish:
-							case DataQuest.eStepType.WhisperFinish:
-							case DataQuest.eStepType.CollectFinish:
-								return true;
-						}
-					}
-
-					// Handle Reward Quest here.
-					if (quest is RewardQuest rewardQuest && rewardQuest.QuestGiver == this)
-					{
-						bool done = true;
-
-						foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
-							done &= goal.IsAchieved;
-
-						if (done)
+						case DataQuest.eStepType.DeliverFinish:
+						case DataQuest.eStepType.InteractFinish:
+						case DataQuest.eStepType.KillFinish:
+						case DataQuest.eStepType.WhisperFinish:
+						case DataQuest.eStepType.CollectFinish:
 							return true;
 					}
+				}
+
+				// Handle Reward Quest here.
+				if (quest is RewardQuest rewardQuest && rewardQuest.QuestGiver == this)
+				{
+					bool done = true;
+
+					foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
+						done &= goal.IsAchieved;
+
+					if (done)
+						return true;
 				}
 			}
 

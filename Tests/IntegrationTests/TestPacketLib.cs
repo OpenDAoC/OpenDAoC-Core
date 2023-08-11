@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS;
+using DOL.GS.Housing;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using DOL.Database;
-using DOL.AI.Brain;
-using DOL.GS.Keeps;
-using DOL.GS.Housing;
 
 namespace DOL.Tests
 {
@@ -612,6 +612,11 @@ namespace DOL.Tests
 		public void SendQuestUpdate(AbstractQuest quest)
 		{
 			if (SendQuestUpdateMethod != null) SendQuestUpdateMethod(this, quest);
+		}
+		public Action<TestPacketLib, byte> SendQuestRemoveMethod { get; set; }
+		public void SendQuestRemove(byte index)
+		{
+			if (SendQuestRemoveMethod != null) SendQuestRemoveMethod(this, index);
 		}
 		public Action<TestPacketLib> SendConcentrationListMethod { get; set; }
 		public void SendConcentrationList()

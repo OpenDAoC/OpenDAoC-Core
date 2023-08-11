@@ -39,32 +39,11 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendQuestListUpdate()
-		{
-			if (m_gameClient == null || m_gameClient.Player == null)
-				return;
-
-			SendTaskInfo();
-			int questIndex = 1;
-
-			lock (m_gameClient.Player.QuestLock)
-			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
-				{
-					if (quest.Step != -1)
-					{
-						SendQuestPacket(quest, questIndex);
-						questIndex++;
-					}
-				}
-			}
-		}
-
-		protected override void SendQuestPacket(AbstractQuest quest, int index)
+		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 			{
-				pak.WriteByte((byte) index);
+				pak.WriteByte(index);
 				if (quest == null)
 				{
 					pak.WriteByte(0);

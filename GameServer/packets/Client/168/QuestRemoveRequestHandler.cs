@@ -17,8 +17,6 @@
 *
 */
 
-using DOL.GS.Quests;
-
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.RemoveQuestRequest, "Quest Remove request Handler.", eClientStatus.PlayerInGame)]
@@ -31,12 +29,10 @@ namespace DOL.GS.PacketHandler.Client.v168
             _ = packet.ReadShort();
             _ = packet.ReadShort();
 
-            lock (client.Player.QuestLock)
+            foreach (var entry in client.Player.QuestList)
             {
-                QuestList questList = client.Player.QuestList;
-
-                if (questIndex < questList.Count)
-                    questList[questIndex].AbortQuest();
+                if (questIndex == entry.Value)
+                    entry.Key.AbortQuest();
             }
         }
     }

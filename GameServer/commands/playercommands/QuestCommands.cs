@@ -22,8 +22,6 @@ using DOL.GS.Quests;
 namespace DOL.GS.Commands
 {
 	// Command handler for the various /commands used in quests
-
-
 	[CmdAttribute(
 		"&search",
 		ePrivLevel.Player,
@@ -43,7 +41,7 @@ namespace DOL.GS.Commands
 
 			bool searched = false;
 
-			foreach (AbstractQuest quest in player.QuestList)
+			foreach (AbstractQuest quest in player.QuestList.Keys)
 			{
 				if (quest.Command(player, AbstractQuest.eQuestCommand.SEARCH))
 				{

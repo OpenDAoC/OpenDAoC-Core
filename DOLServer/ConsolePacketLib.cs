@@ -16,20 +16,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-
 using log4net;
-using DOL.Database;
 
 namespace DOLGameServerConsole
 {
@@ -174,6 +173,7 @@ namespace DOLGameServerConsole
 		public void SendObjectCreate(GameObject obj) { }
 		public void SendQuestListUpdate() { }
 		public void SendQuestUpdate(AbstractQuest quest) { }
+		public void SendQuestRemove(byte index) { }
 		public void SendConcentrationList() { }
 		public void SendUpdateCraftingSkills() { }
 		public void SendChangeTarget(GameObject newTarget) { }

@@ -1556,41 +1556,32 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendQuestUpdate(AbstractQuest quest)
+		public virtual void SendQuestListUpdate()
 		{
-			int questIndex = 0;
+			HashSet<byte> sentIndexes = new();
 
-			lock (m_gameClient.Player.QuestLock)
+			foreach (var entry in m_gameClient.Player.QuestList)
 			{
-				foreach (AbstractQuest q in m_gameClient.Player.QuestList)
-				{
-					if (q == quest)
-					{
-						SendQuestPacket(q, questIndex);
-						break;
-					}
+				SendQuestPacket(entry.Key, entry.Value);
+				sentIndexes.Add(entry.Value);
+			}
 
-					if (q.Step != -1)
-						questIndex++;
-				}
+			for (byte i = 0; i < 25; i++)
+			{
+				if (!sentIndexes.Contains(i))
+					SendQuestPacket(null, i);
 			}
 		}
 
-		public virtual void SendQuestListUpdate()
+		public virtual void SendQuestUpdate(AbstractQuest quest)
 		{
-			int questIndex = 0;
+			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
+				SendQuestPacket(quest, index);
+		}
 
-			lock (m_gameClient.Player.QuestLock)
-			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
-				{
-					if (quest.Step != -1)
-					{
-						SendQuestPacket(quest, questIndex);
-						questIndex++;
-					}
-				}
-			}
+		public virtual void SendQuestRemove(byte index)
+		{
+			SendQuestPacket(null, index);
 		}
 
 		public virtual void SendGroupWindowUpdate()
@@ -3899,11 +3890,11 @@ namespace DOL.GS.PacketHandler
 			return 0; // ??
 		}
 
-		protected virtual void SendQuestPacket(AbstractQuest quest, int index)
+		protected virtual void SendQuestPacket(AbstractQuest quest, byte index)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 			{
-				pak.WriteByte((byte) index);
+				pak.WriteByte(index);
 
 				if (quest.Step <= 0)
 				{

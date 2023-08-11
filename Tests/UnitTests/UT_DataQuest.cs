@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PlayerClass;
@@ -223,7 +224,7 @@ namespace DOL.Tests.Unit.Gameserver
             var player = NewFakePlayer();
             var dataQuest = NewDataQuest();
 
-            player.fakeQuestList.Add(dataQuest);
+            player.fakeQuestList.TryAdd(dataQuest, (byte) player.fakeQuestList.Count);
             bool isQualified = dataQuest.CheckQuestQualification(player);
 
             Assert.IsFalse(isQualified);
@@ -237,7 +238,7 @@ namespace DOL.Tests.Unit.Gameserver
             dataQuest.SpyDBDataQuest.MaxCount = 1;
             dataQuest.SpyCharQuest.Count = 1;
 
-            player.fakeQuestListFinished.Add(dataQuest);
+            player.AddFinishedQuest(dataQuest);
             bool isQualified = dataQuest.CheckQuestQualification(player);
 
             Assert.IsFalse(isQualified);
@@ -351,11 +352,9 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class FakeQuestPlayer : FakePlayer
         {
-            public QuestList fakeQuestList = new QuestList();
-            public List<AbstractQuest> fakeQuestListFinished = new List<AbstractQuest>();
+            public ConcurrentDictionary<AbstractQuest, byte> fakeQuestList = new();
 
-            public override QuestList QuestList => fakeQuestList;
-            public override List<AbstractQuest> QuestListFinished => fakeQuestListFinished;
+            public override ConcurrentDictionary<AbstractQuest, byte> QuestList => fakeQuestList;
         }
 
         private class DataQuestSpy : DataQuest

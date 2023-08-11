@@ -740,6 +740,7 @@ namespace DOL.GS.PacketHandler
 		void SendObjectUpdate(GameObject obj);
 		void SendQuestListUpdate();
 		void SendQuestUpdate(AbstractQuest quest);
+		void SendQuestRemove(byte index);
 		void SendConcentrationList();
 		void SendUpdateCraftingSkills();
 		void SendChangeTarget(GameObject newTarget);

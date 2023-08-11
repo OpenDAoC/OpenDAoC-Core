@@ -557,48 +557,36 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendQuestUpdate(AbstractQuest quest)
+		public override void SendQuestListUpdate()
 		{
-			int questIndex = 1;
+			SendTaskInfo();
 
-			if (m_gameClient != null && m_gameClient.Player != null && m_gameClient.Player.QuestList != null)
+			byte questIndex;
+			HashSet<byte> sentIndexes = new();
+
+			foreach (var entry in m_gameClient.Player.QuestList)
 			{
-				lock (m_gameClient.Player.QuestLock)
-				{
-					foreach (AbstractQuest q in m_gameClient.Player.QuestList)
-					{
-						if (q == quest)
-						{
-							SendQuestPacket(q, questIndex);
-							break;
-						}
+				questIndex = (byte) (entry.Value + 1);
+				SendQuestPacket(entry.Key, questIndex);
+				sentIndexes.Add(questIndex);
+			}
 
-						if (q.Step != -1 || q.Step != -2)
-							questIndex++;
-					}
-				}
+			for (byte i = 1; i < 26; i++)
+			{
+				if (!sentIndexes.Contains(i))
+					SendQuestPacket(null, i);
 			}
 		}
 
-		public override void SendQuestListUpdate()
+		public override void SendQuestUpdate(AbstractQuest quest)
 		{
-			if (m_gameClient.Player == null)
-				return;
+			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
+				SendQuestPacket(quest, (byte) (index + 1));
+		}
 
-			SendTaskInfo();
-			int questIndex = 1;
-
-			lock (m_gameClient.Player.QuestLock)
-			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
-				{
-					if (quest.Step != -1)
-					{
-						SendQuestPacket(quest, questIndex);
-						questIndex++;
-					}
-				}
-			}
+		public override void SendQuestRemove(byte index)
+		{
+			SendQuestPacket(null, (byte) (index + 1));
 		}
 
 		public override void SendRegionChanged()
@@ -618,12 +606,11 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, int index)
+		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
 			{
-
-				pak.WriteByte((byte)index);
+				pak.WriteByte(index);
 				if (quest.Step <= 0)
 				{
 					pak.WriteByte(0);

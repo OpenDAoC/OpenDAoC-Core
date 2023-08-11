@@ -17,10 +17,7 @@ namespace DOL.GS.Quests
 
         public override bool CheckQuestQualification(GamePlayer player)
         {
-            lock (player.QuestLock)
-            {
-                return !player.QuestListFinished.Contains(this);
-            }
+            return !player.HasFinishedQuest(this);
         }
 
         public abstract void LoadQuestParameters();

@@ -389,12 +389,10 @@ namespace DOL.GS.DailyQuest
 			FrontierMobsKilled = 0;
 			Step = -1;
 
-			lock (m_questPlayer.QuestLock)
-			{
-				m_questPlayer.QuestList.Remove(this);
-				m_questPlayer.QuestListFinished.Add(this);
-			}
+			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
+				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
 
+			m_questPlayer.AddFinishedQuest(this);
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}
