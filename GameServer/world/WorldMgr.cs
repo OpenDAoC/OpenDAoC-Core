@@ -1343,14 +1343,15 @@ namespace DOL.GS
 		{
 			if (exactMatch)
 			{
-				var client = GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
+				GameClient client = GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
+
+				if (client == null)
+					return null;
+
 				return client.Player.Name.ToLower() == playerName.ToLower() ? client : null; //only return if it's an exact match
 			}
 			else
-			{
-				int x = 0;
-				return GuessClientByPlayerNameAndRealm(playerName, 0, activeRequired, out x);
-			}
+				return GuessClientByPlayerNameAndRealm(playerName, 0, activeRequired, out _);
 		}
 
 		/// <summary>
