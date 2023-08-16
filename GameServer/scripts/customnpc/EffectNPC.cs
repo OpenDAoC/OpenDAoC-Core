@@ -50,8 +50,8 @@ namespace DOL.GS
             if (base.Interact(player))
             {
                 TurnTo(player, 500);
-                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
 
                 if (item == null)
                 {
@@ -82,13 +82,13 @@ namespace DOL.GS
                              "I can add an [effect] to it or change its color with a [dye].\n\n" +
                              "Alternatively, I can [remove all effects] or [remove dye] from your weapon. "
                 );
-                p.TempProperties.setProperty(EFFECTNPC_ITEM_WEAK, item);
+                p.TempProperties.SetProperty(EFFECTNPC_ITEM_WEAK, item);
 
                 SendReply(p, "When you are finished browsing, let me know and I will [confirm effect]."
                 );
                 var tmp = (InventoryItem) item.Clone();
-                p.TempProperties.setProperty(TempProperty, item);
-                p.TempProperties.setProperty(DisplayedItem, tmp);
+                p.TempProperties.SetProperty(TempProperty, item);
+                p.TempProperties.SetProperty(DisplayedItem, tmp);
             }
 
             return false;
@@ -101,10 +101,10 @@ namespace DOL.GS
             if (!(source is GamePlayer)) return false;
 
             GamePlayer player = source as GamePlayer;
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
             
-            int cachedEffectID = player.TempProperties.getProperty<int>(TempEffectId);
-            int cachedColorID = player.TempProperties.getProperty<int>(TempColorId);
+            int cachedEffectID = player.TempProperties.GetProperty<int>(TempEffectId);
+            int cachedColorID = player.TempProperties.GetProperty<int>(TempColorId);
 
             if (item == null) return false;
 
@@ -976,9 +976,9 @@ namespace DOL.GS
         #region setcolor
         public void SetColor(GamePlayer player, int color, int price)
         {
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
 
-            player.TempProperties.removeProperty(EFFECTNPC_ITEM_WEAK);
+            player.TempProperties.RemoveProperty(EFFECTNPC_ITEM_WEAK);
 
             if (item == null || item.SlotPosition == (int)eInventorySlot.Ground
                 || item.OwnerID == null || item.OwnerID != player.InternalID)
@@ -1034,10 +1034,10 @@ namespace DOL.GS
             //SetRealmLevel(player, (int)player.RealmPoints);
             player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
-            player.TempProperties.removeProperty(TempProperty);
-            player.TempProperties.removeProperty(DisplayedItem);
-            player.TempProperties.removeProperty(TempEffectId);
-            player.TempProperties.removeProperty(TempColorId);
+            player.TempProperties.RemoveProperty(TempProperty);
+            player.TempProperties.RemoveProperty(DisplayedItem);
+            player.TempProperties.RemoveProperty(TempEffectId);
+            player.TempProperties.RemoveProperty(TempColorId);
             
             SendReply(player, "Thanks for your donation. The color has come out beautifully, wear it with pride.");
 
@@ -1051,10 +1051,10 @@ namespace DOL.GS
 
         private void PreviewEffect(GamePlayer player, int effect)
         {
-            InventoryItem item = (InventoryItem)player.TempProperties.getProperty<InventoryItem>(TempProperty).Clone();
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            InventoryItem item = (InventoryItem)player.TempProperties.GetProperty<InventoryItem>(TempProperty).Clone();
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
             item.Effect = effect;
-            player.TempProperties.setProperty(TempEffectId, effect);
+            player.TempProperties.SetProperty(TempEffectId, effect);
             DisplayReskinPreviewTo(player, item);
             SendReply(player, "When you are finished browsing, let me know and I will [confirm effect]."
             );
@@ -1062,10 +1062,10 @@ namespace DOL.GS
         
         private void PreviewColor(GamePlayer player, int color)
         {
-            InventoryItem item = (InventoryItem)player.TempProperties.getProperty<InventoryItem>(TempProperty).Clone();
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            InventoryItem item = (InventoryItem)player.TempProperties.GetProperty<InventoryItem>(TempProperty).Clone();
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
             item.Color = color;
-            player.TempProperties.setProperty(TempColorId, color);
+            player.TempProperties.SetProperty(TempColorId, color);
             DisplayReskinPreviewTo(player, item);
             SendReply(player, "When you are finished browsing, let me know and I will [confirm color]."
             );
@@ -1077,8 +1077,8 @@ namespace DOL.GS
             if (player == null)
                 return;
 
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
-            player.TempProperties.removeProperty(EFFECTNPC_ITEM_WEAK);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            player.TempProperties.RemoveProperty(EFFECTNPC_ITEM_WEAK);
 
             if (item == null)
                 return;
@@ -1137,10 +1137,10 @@ namespace DOL.GS
             //SetRealmLevel(player, (int)player.RealmPoints);
             player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
-            player.TempProperties.removeProperty(TempProperty);
-            player.TempProperties.removeProperty(DisplayedItem);
-            player.TempProperties.removeProperty(TempEffectId);
-            player.TempProperties.removeProperty(TempColorId);
+            player.TempProperties.RemoveProperty(TempProperty);
+            player.TempProperties.RemoveProperty(DisplayedItem);
+            player.TempProperties.RemoveProperty(TempEffectId);
+            player.TempProperties.RemoveProperty(TempColorId);
             
             SendReply(player, "Thanks for your donation. May the " + item.Name + " lead you to a bright future.");
             foreach (GamePlayer visplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

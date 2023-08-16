@@ -16,10 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-//12/13/2004
-//Written by Gavinius
-//based on Nardin and Zjovaz previous script
-
 
 using System;
 using System.Collections;
@@ -120,7 +116,7 @@ namespace DOL.GS
 				{
 					if (item.Bonus == 0)
 					{
-						player.TempProperties.setProperty(ENCHANT_ITEM_WEAK, new WeakRef(item));
+						player.TempProperties.SetProperty(ENCHANT_ITEM_WEAK, new WeakRef(item));
 						// Message: It will cost {0} to enchant that. Do you accept?
                         player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client, "GameNPC.Enchanter.ReceiveItem.Cost", Money.GetString(CalculEnchantPrice(item))), new CustomDialogResponse(EnchanterDialogResponse));
                     }
@@ -151,12 +147,8 @@ namespace DOL.GS
 		/// /// <param name="response">The player's response when prompted to initiate the enchant (ACCEPT/DECLINE).</param>
 		protected void EnchanterDialogResponse(GamePlayer player, byte response)
 		{
-			WeakReference itemWeak =
-				(WeakReference) player.TempProperties.getProperty<object>(
-					ENCHANT_ITEM_WEAK,
-					new WeakRef(null)
-					);
-			player.TempProperties.removeProperty(ENCHANT_ITEM_WEAK);
+			WeakReference itemWeak = player.TempProperties.GetProperty<WeakReference>(ENCHANT_ITEM_WEAK, new WeakRef(null));
+			player.TempProperties.RemoveProperty(ENCHANT_ITEM_WEAK);
 
 			InventoryItem item = (InventoryItem) itemWeak.Target;
 

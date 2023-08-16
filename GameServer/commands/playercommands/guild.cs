@@ -100,19 +100,19 @@ namespace DOL.GS.Commands
 				//remove all guild consider to enable re try
 				foreach (GamePlayer ply in player.Group.GetPlayersInTheGroup())
 				{
-					ply.TempProperties.removeProperty("Guild_Consider");
+					ply.TempProperties.RemoveProperty("Guild_Consider");
 				}
-				player.Group.Leader.TempProperties.removeProperty("Guild_Name");
+				player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
 				player.Group.SendMessageToGroupMembers(player, "Declines to form the guild", eChatType.CT_Group, eChatLoc.CL_ChatWindow);
 				return;
 			}
 			#endregion
 			#region Player Accepts
 			player.Group.SendMessageToGroupMembers(player, "Agrees to form the guild", eChatType.CT_Group, eChatLoc.CL_ChatWindow);
-			player.TempProperties.setProperty("Guild_Consider", true);
-			var guildname = player.Group.Leader.TempProperties.getProperty<string>("Guild_Name");
+			player.TempProperties.SetProperty("Guild_Consider", true);
+			var guildname = player.Group.Leader.TempProperties.GetProperty<string>("Guild_Name");
 
-			var memnum = player.Group.GetPlayersInTheGroup().Count(p => p.TempProperties.getProperty<bool>("Guild_Consider"));
+			var memnum = player.Group.GetPlayersInTheGroup().Count(p => p.TempProperties.GetProperty<bool>("Guild_Consider"));
 
 			if (!GuildFormCheck(player) || memnum != player.Group.MemberCount) return;
 
@@ -138,9 +138,9 @@ namespace DOL.GS.Commands
 							{
 								newGuild.AddPlayer(ply, newGuild.GetRankByID(0));
 							}
-							ply.TempProperties.removeProperty("Guild_Consider");
+							ply.TempProperties.RemoveProperty("Guild_Consider");
 						}
-						player.Group.Leader.TempProperties.removeProperty("Guild_Name");
+						player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
 						player.Group.Leader.RemoveMoney(GuildFormCost);
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 					}
@@ -157,7 +157,7 @@ namespace DOL.GS.Commands
 				else
 				{
 					newGuild.AddPlayer(player, newGuild.GetRankByID(0));
-					player.TempProperties.removeProperty("Guild_Name");
+					player.TempProperties.RemoveProperty("Guild_Name");
 					player.RemoveMoney(10000);
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 				}
@@ -776,7 +776,7 @@ namespace DOL.GS.Commands
 							if (client.Player.Guild.BountyPoints > bannerPrice || client.Account.PrivLevel > (int)ePrivLevel.Player)
 							{
 								client.Out.SendCustomDialog("Are you sure you buy a guild banner for " + bannerPrice + " guild bounty points? ", ConfirmBannerBuy);
-								client.Player.TempProperties.setProperty(GUILD_BANNER_PRICE, bannerPrice);
+								client.Player.TempProperties.SetProperty(GUILD_BANNER_PRICE, bannerPrice);
 							}
 							else
 							{
@@ -871,7 +871,7 @@ namespace DOL.GS.Commands
 								{
 									if (Properties.GUILD_BUFF_RP > 0)
 									{
-										client.Player.TempProperties.setProperty(GUILD_BUFF_TYPE, Guild.eBonusType.RealmPoints);
+										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.RealmPoints);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild RP buff for 1000 merit points?", ConfirmBuffBuy);
 									}
 									else
@@ -884,7 +884,7 @@ namespace DOL.GS.Commands
 								{
 									if (Properties.GUILD_BUFF_BP > 0)
 									{
-										client.Player.TempProperties.setProperty(GUILD_BUFF_TYPE, Guild.eBonusType.BountyPoints);
+										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.BountyPoints);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild BP buff for 1000 merit points?", ConfirmBuffBuy);
 									}
 									else
@@ -897,7 +897,7 @@ namespace DOL.GS.Commands
 								{
 									if (Properties.GUILD_BUFF_CRAFTING > 0)
 									{
-										client.Player.TempProperties.setProperty(GUILD_BUFF_TYPE, Guild.eBonusType.CraftingHaste);
+										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.CraftingHaste);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild Crafting Haste buff for 1000 merit points?", ConfirmBuffBuy);
 									}
 									else
@@ -910,7 +910,7 @@ namespace DOL.GS.Commands
 								{
 									if (Properties.GUILD_BUFF_XP > 0)
 									{
-										client.Player.TempProperties.setProperty(GUILD_BUFF_TYPE, Guild.eBonusType.Experience);
+										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.Experience);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild XP buff for 1000 merit points?", ConfirmBuffBuy);
 									}
 									else
@@ -923,7 +923,7 @@ namespace DOL.GS.Commands
 								{
 									if (Properties.GUILD_BUFF_ARTIFACT_XP > 0)
 									{
-										client.Player.TempProperties.setProperty(GUILD_BUFF_TYPE, Guild.eBonusType.ArtifactXP);
+										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.ArtifactXP);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild Artifact XP buff for 1000 merit points?", ConfirmBuffBuy);
 									}
 									else
@@ -1259,10 +1259,10 @@ namespace DOL.GS.Commands
 							#endregion
 
 
-							client.Player.Group.Leader.TempProperties.setProperty("Guild_Name", guildname);
+							client.Player.Group.Leader.TempProperties.SetProperty("Guild_Name", guildname);
 							if (GuildFormCheck(client.Player))
 							{
-								client.Player.Group.Leader.TempProperties.setProperty("Guild_Consider", true);
+								client.Player.Group.Leader.TempProperties.SetProperty("Guild_Consider", true);
 								foreach (GamePlayer p in group.GetPlayersInTheGroup().Where(p => p != @group.Leader))
 								{
 									p.Out.SendCustomDialog(string.Format("Do you wish to create the guild {0} with {1} as Guild Leader", guildname, client.Player.Name), new CustomDialogResponse(CreateGuild));
@@ -2027,7 +2027,7 @@ namespace DOL.GS.Commands
 									}
 								}
 							}
-							obj.TempProperties.setProperty("allianceinvite", client.Player); //finish that
+							obj.TempProperties.SetProperty("allianceinvite", client.Player); //finish that
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInvite"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							obj.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInvited", client.Player.Guild.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							client.Player.Guild.UpdateGuildWindow();
@@ -2111,9 +2111,9 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPlayerSelected"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							GamePlayer inviter = client.Player.TempProperties.getProperty<object>("allianceinvite", null) as GamePlayer;
+							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
 							if (inviter == client.Player)
-								obj.TempProperties.removeProperty("allianceinvite");
+								obj.TempProperties.RemoveProperty("allianceinvite");
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceAnsCancel"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							obj.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceAnsCancel"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							return;
@@ -2135,8 +2135,8 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							GamePlayer inviter = client.Player.TempProperties.getProperty<object>("allianceinvite", null) as GamePlayer;
-							client.Player.TempProperties.removeProperty("allianceinvite");
+							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
+							client.Player.TempProperties.RemoveProperty("allianceinvite");
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceDeclined"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							inviter.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceDeclinedOther"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							return;
@@ -2610,8 +2610,8 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			long bannerPrice = player.TempProperties.getProperty<long>(GUILD_BANNER_PRICE, 0);
-			player.TempProperties.removeProperty(GUILD_BANNER_PRICE);
+			long bannerPrice = player.TempProperties.GetProperty<long>(GUILD_BANNER_PRICE, 0);
+			player.TempProperties.RemoveProperty(GUILD_BANNER_PRICE);
 
 			if (bannerPrice == 0 || player.Guild.GuildBanner)
 				return;
@@ -2638,8 +2638,8 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			Guild.eBonusType buffType = player.TempProperties.getProperty<Guild.eBonusType>(GUILD_BUFF_TYPE, Guild.eBonusType.None);
-			player.TempProperties.removeProperty(GUILD_BUFF_TYPE);
+			Guild.eBonusType buffType = player.TempProperties.GetProperty<Guild.eBonusType>(GUILD_BUFF_TYPE, Guild.eBonusType.None);
+			player.TempProperties.RemoveProperty(GUILD_BUFF_TYPE);
 
 			if (buffType == Guild.eBonusType.None || player.Guild.MeritPoints < 1000 || player.Guild.BonusType != Guild.eBonusType.None)
 				return;
@@ -2671,7 +2671,7 @@ namespace DOL.GS.Commands
 			if (reponse != 0x01)
 				return; //declined
 
-			GamePlayer inviter = player.TempProperties.getProperty<object>("allianceinvite", null) as GamePlayer;
+			GamePlayer inviter = player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
 
 			if (player.Guild == null)
 			{
@@ -2689,7 +2689,7 @@ namespace DOL.GS.Commands
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			player.TempProperties.removeProperty("allianceinvite");
+			player.TempProperties.RemoveProperty("allianceinvite");
 
 			if (inviter.Guild.alliance == null)
 			{
@@ -3097,10 +3097,10 @@ namespace DOL.GS.Commands
 			else
 			{
 				// try to recall last setting
-				showOffline = client.Player.TempProperties.getProperty<bool>("SOCIALSHOWOFFLINE", false);
+				showOffline = client.Player.TempProperties.GetProperty<bool>("SOCIALSHOWOFFLINE", false);
 			}
 
-			client.Player.TempProperties.setProperty("SOCIALSHOWOFFLINE", showOffline);
+			client.Player.TempProperties.SetProperty("SOCIALSHOWOFFLINE", showOffline);
 
 			//The type of sorting we will be sending
 			GuildMgr.GuildMemberDisplay.eSocialWindowSort sortOrder = (GuildMgr.GuildMemberDisplay.eSocialWindowSort)sort;

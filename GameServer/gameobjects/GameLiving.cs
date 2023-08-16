@@ -1263,7 +1263,7 @@ namespace DOL.GS
 					return false;
 			}
 
-			long rangeAttackHoldStart = TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START);
+			long rangeAttackHoldStart = TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START);
 
 			if (rangeAttackHoldStart > 0)
 			{
@@ -1826,7 +1826,7 @@ namespace DOL.GS
 				{
 					int difference = (int)(0.25 * damageDealt); // RA absorb 25% damage
 					damageDealt -= difference;
-					GamePlayer TheMauler = (GamePlayer)(this.TempProperties.getProperty<object>("GiftOfPerizorOwner", null));
+					GamePlayer TheMauler = this.TempProperties.GetProperty<GamePlayer>("GiftOfPerizorOwner", null);
 					if (TheMauler != null && TheMauler.IsAlive)
 					{
 						// Calculate mana using %. % is calculated with target maxhealth and damage difference, apply this % to mauler maxmana
@@ -3052,18 +3052,10 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// temp properties
+		/// Stores temporary properties on this living.
+		/// Beware to use unique keys so they do not interfere
 		/// </summary>
-		private readonly PropertyCollection m_tempProps = new PropertyCollection();
-
-		/// <summary>
-		/// use it to store temporary properties on this living
-		/// beware to use unique keys so they do not interfere
-		/// </summary>
-		public PropertyCollection TempProperties
-		{
-			get { return m_tempProps; }
-		}
+		public PropertyCollection TempProperties { get; private set; } = new();
 
 		/// <summary>
 		/// Gets or Sets the effective level of the Object
@@ -4017,14 +4009,14 @@ namespace DOL.GS
 			if (source != null && source is GamePlayer)
 			{
 				player = source as GamePlayer;
-				long whisperdelay = player.TempProperties.getProperty<long>("WHISPERDELAY");
+				long whisperdelay = player.TempProperties.GetProperty<long>("WHISPERDELAY");
 				if (whisperdelay > 0 && (GameLoop.GameLoopTime - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
 				{
 					//player.Out.SendMessage("Speak slower!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				
-				player.TempProperties.setProperty("WHISPERDELAY", GameLoop.GameLoopTime);
+				player.TempProperties.SetProperty("WHISPERDELAY", GameLoop.GameLoopTime);
 
 				foreach (DOL.GS.Quests.DataQuest q in DataQuestList)
 				{

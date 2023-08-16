@@ -67,7 +67,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 						//if your temporary properties says your a liar, don't even check the DB (prevent DB hammer abuse)
-						bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+						bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
 						if (!HasPendingAppeal)
 						{
 							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoNotHaveAppeal"));
@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
 							DisplaySyntax(client);
 							return;
 						}
-						bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+						bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
 						if (!HasPendingAppeal)
 						{
 							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NoAppealToView"));

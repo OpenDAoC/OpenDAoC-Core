@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -10,7 +9,6 @@ using DOL.GS.ServerProperties;
 namespace DOL.GS;
 
 public class BountyManager
-
 {
     private const string KILLEDBY = "KilledBy";
 
@@ -73,7 +71,7 @@ public class BountyManager
 
         if (!(killer?.GetConLevel(player) <= -3)) return;
 
-        player.TempProperties.setProperty(KILLEDBY, killer);
+        player.TempProperties.SetProperty(KILLEDBY, killer);
         player.Out.SendMessage($"Use /bounty add <amount> if you want to call a bounty for {killer.Name}'s head!",
             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
     }
@@ -186,7 +184,7 @@ public class BountyManager
         if (amount < minBountyReward) amount = minBountyReward;
 
         // comment below for easier debugging
-        killed.TempProperties.removeProperty(KILLEDBY);
+        killed.TempProperties.RemoveProperty(KILLEDBY);
 
         BountyPoster poster = new BountyPoster(killed, killer, amount);
 

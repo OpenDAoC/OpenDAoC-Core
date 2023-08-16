@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using log4net;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
 
 namespace DOL.GS.Scripts
 {
@@ -140,18 +139,18 @@ namespace DOL.GS.Scripts
                     canReportNews = false;
             }
 
-            var throwPlayer = TempProperties.getProperty<ECSGameTimer>("legion_throw");//cancel teleport
+            var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("legion_throw");//cancel teleport
             if (throwPlayer != null)
             {
                 throwPlayer.Stop();
-                TempProperties.removeProperty("legion_throw");
+                TempProperties.RemoveProperty("legion_throw");
             }
 
-            var castaoe = TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+            var castaoe = TempProperties.GetProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
             if (castaoe != null)
             {
                 castaoe.Stop();
-                TempProperties.removeProperty("legion_castaoe");
+                TempProperties.RemoveProperty("legion_castaoe");
             }
 
             base.Die(killer);
@@ -377,17 +376,17 @@ namespace DOL.AI.Brain
                 if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
                     randomlyPickedPlayers.Clear();
 
-                var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("legion_throw");//cancel teleport
+                var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("legion_throw");//cancel teleport
                 if (throwPlayer != null)
                 {
                     throwPlayer.Stop();
-                    Body.TempProperties.removeProperty("legion_throw");
+                    Body.TempProperties.RemoveProperty("legion_throw");
                 }
-                var castaoe = Body.TempProperties.getProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+                var castaoe = Body.TempProperties.GetProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
                 if (castaoe != null)
                 {
                     castaoe.Stop();
-                    Body.TempProperties.removeProperty("legion_castaoe");
+                    Body.TempProperties.RemoveProperty("legion_castaoe");
                 }
             }
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
@@ -411,7 +410,7 @@ namespace DOL.AI.Brain
                 {
                     ReleaseAoeLifetap();
                     ECSGameTimer castAoe = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetAoe), 10000);
-                    Body.TempProperties.setProperty("legion_castaoe", castAoe);
+                    Body.TempProperties.SetProperty("legion_castaoe", castAoe);
                     CanPbaoe = true;
                 }
                 #region Legion health checks
@@ -552,7 +551,7 @@ namespace DOL.AI.Brain
                 if (!CanThrow)
                 {
                     ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
-                    Body.TempProperties.setProperty("legion_throw", throwPlayer);
+                    Body.TempProperties.SetProperty("legion_throw", throwPlayer);
                     CanThrow = true;
                 }
             }

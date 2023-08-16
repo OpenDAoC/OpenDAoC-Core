@@ -18,9 +18,6 @@
  */
 
 using System;
-using System.Linq;
-using DOL.GS.API;
-using DOL.Language;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
 using DOL.GS.ServerProperties;
@@ -56,7 +53,7 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "advice") || IsSpammingCommand(client.Player, "adv"))
 				return;
 			
-			var lastAdviceTick = client.Player.TempProperties.getProperty<long>(advTimeoutString);
+			var lastAdviceTick = client.Player.TempProperties.GetProperty<long>(advTimeoutString);
 			var slowModeLength = Properties.ADVICE_SLOWMODE_LENGTH * 1000;
 			
 			if ((GameLoop.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
@@ -126,7 +123,7 @@ namespace DOL.GS.Commands
 
 			if (client.Account.PrivLevel == 1)
 			{
-				client.Player.TempProperties.setProperty(advTimeoutString, GameLoop.GameLoopTime);
+				client.Player.TempProperties.SetProperty(advTimeoutString, GameLoop.GameLoopTime);
 			}
 
 		}

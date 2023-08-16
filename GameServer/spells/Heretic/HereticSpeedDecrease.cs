@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 return;
             }
-            if (target.TempProperties.getProperty("Charging", false))
+            if (target.TempProperties.GetProperty("Charging", false))
             {
                 MessageToCaster(target.Name + " is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                 return;
@@ -129,7 +129,7 @@ namespace DOL.GS.Spells
 	public class HereticSpeedDecreaseSpellHandler : HereticImmunityEffectSpellHandler
 	{
 		private readonly object TIMER_PROPERTY;
-		private const string EFFECT_PROPERTY = "Effect";
+		private const string EFFECT_PROPERTY = "HereticSpeedDecreaseProperty";
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
@@ -142,7 +142,7 @@ namespace DOL.GS.Spells
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 
 			RestoreSpeedTimer timer = new(null, effect);
-			effect.Owner.TempProperties.setProperty(effect, timer);
+			effect.Owner.TempProperties.SetProperty(EFFECT_PROPERTY, timer);
 
 			//REVOIR
 			timer.Interval = 650;
@@ -156,8 +156,8 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			ECSGameTimer timer = (ECSGameTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
-			effect.Owner.TempProperties.removeProperty(effect);
+			ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			timer.Stop();
 
 			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);

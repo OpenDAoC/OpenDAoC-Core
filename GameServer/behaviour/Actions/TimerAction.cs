@@ -16,17 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.PacketHandler;
 using DOL.Events;
-using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
-using DOL.Database;
+using DOL.GS.Behaviour.Attributes;
 
 namespace DOL.GS.Behaviour.Actions
 {
-
     [ActionAttribute(ActionType = eActionType.Timer)]
     public class TimerAction : AbstractAction<string,int>
     {
@@ -57,8 +53,8 @@ namespace DOL.GS.Behaviour.Actions
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
 
             ECSGameTimer timer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(QuestTimerCallBack));
-            timer.Properties.setProperty(TIMER_ID, P);
-            timer.Properties.setProperty(TIMER_SOURCE, player);
+            timer.Properties.SetProperty(TIMER_ID, P);
+            timer.Properties.SetProperty(TIMER_SOURCE, player);
             timer.Start(Q);
         }
 
@@ -69,11 +65,11 @@ namespace DOL.GS.Behaviour.Actions
         /// <returns>0</returns>
         private static int QuestTimerCallBack(ECSGameTimer callingTimer)
         {
-            string timerid = callingTimer.Properties.getProperty<object>(TIMER_ID, null) as string;
+            string timerid = callingTimer.Properties.GetProperty<string>(TIMER_ID, null);
             if (timerid == null)
                 throw new ArgumentNullException("TimerId out of Range", "timerid");
 
-            GameLiving source = callingTimer.Properties.getProperty<object>(TIMER_SOURCE, null) as GameLiving;
+            GameLiving source = callingTimer.Properties.GetProperty<GameLiving>(TIMER_SOURCE, null);
             if (source == null)
                 throw new ArgumentNullException("TimerSource null", "timersource");
 

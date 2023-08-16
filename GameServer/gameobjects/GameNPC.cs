@@ -2173,7 +2173,7 @@ namespace DOL.GS
 
 			Brain.Stop();
 			StopFollowing();
-			TempProperties.removeProperty(CHARMED_TICK_PROP);
+			TempProperties.RemoveProperty(CHARMED_TICK_PROP);
 			base.Delete();
 		}
 
@@ -2798,7 +2798,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				if (CurrentRegion == null || CurrentRegion.Time - CHARMED_NOEXP_TIMEOUT < TempProperties.getProperty<long>(CHARMED_TICK_PROP))
+				if (CurrentRegion == null || CurrentRegion.Time - CHARMED_NOEXP_TIMEOUT < TempProperties.GetProperty<long>(CHARMED_TICK_PROP))
 					return false;
 				if (this.Brain is IControlledBrain)
 					return false;
@@ -2933,7 +2933,7 @@ namespace DOL.GS
 				}
 
 				Delete();
-				TempProperties.removeAllProperties();
+				TempProperties.RemoveAllProperties();
 				StartRespawn();
 			}
 			finally
@@ -3447,15 +3447,15 @@ namespace DOL.GS
 
 				GamePlayer playerAttacker = null;
 				BattleGroup activeBG = null;
-				if (killer is GamePlayer playerKiller &&
-					playerKiller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
-					activeBG = playerKiller.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
+				if (killer is GamePlayer playerKiller && activeBG != null)
+					activeBG = playerKiller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
 					//if a battlegroup killed the mob, filter out any non BG players
 					if (activeBG != null && gainer is GamePlayer p &&
-						p.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						p.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
 						continue;
 					
 					if (gainer is GamePlayer)

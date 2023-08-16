@@ -16,14 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
-using DOL.Language;
-using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS
@@ -161,7 +162,7 @@ namespace DOL.GS
 		protected virtual bool CanPlayerStartToCraftItem(GamePlayer player, Recipe recipe)
 		{
 			
-			player.TempProperties.setProperty("RecipeToCraft", recipe);
+			player.TempProperties.SetProperty("RecipeToCraft", recipe);
 			
 			if (!GameServer.ServerRules.IsAllowedToCraft(player, recipe.Product))
 			{

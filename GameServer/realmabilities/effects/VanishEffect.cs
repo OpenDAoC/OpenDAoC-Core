@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -33,7 +32,7 @@ namespace DOL.GS.RealmAbilities
 			player.Out.SendUpdateMaxSpeed();
 			m_countDownTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CountDown));
 			m_countDownTimer.Start(1);
-			player.TempProperties.setProperty(VANISH_BLOCK_ATTACK_TIME_KEY, player.CurrentRegion.Time + 30000);
+			player.TempProperties.SetProperty(VANISH_BLOCK_ATTACK_TIME_KEY, player.CurrentRegion.Time + 30000);
 			m_removeTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(RemoveAttackBlock));
 			m_removeTimer.Start(30000);
 		}
@@ -42,7 +41,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			GamePlayer player = timer.Owner as GamePlayer;
 			if (player != null)
-				player.TempProperties.removeProperty(VANISH_BLOCK_ATTACK_TIME_KEY);
+				player.TempProperties.RemoveProperty(VANISH_BLOCK_ATTACK_TIME_KEY);
 			return 0;
 		}
 

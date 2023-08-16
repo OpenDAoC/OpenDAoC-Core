@@ -3269,7 +3269,7 @@ namespace DOL.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			var triggers = client.Player.TempProperties.getProperty<IList<MobXAmbientBehaviour>>("mob_triggers", null);
+			var triggers = client.Player.TempProperties.GetProperty<IList<MobXAmbientBehaviour>>("mob_triggers", null);
 			if (triggers == null)
 			{
 				ChatUtil.SendSystemMessage(client, "You must use '/mob trigger info' before using this command !");
@@ -3283,7 +3283,7 @@ namespace DOL.GS.Commands
 		private void trigger_info(GameClient client, GameNPC targetMob)
 		{
 			var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[targetMob.Name];
-			client.Player.TempProperties.setProperty("mob_triggers", triggers);
+			client.Player.TempProperties.SetProperty("mob_triggers", triggers);
 			ChatUtil.SendSystemMessage(client, targetMob.Name + "'s triggers:");
 			var i = 0;
 			foreach (var trigger in triggers)

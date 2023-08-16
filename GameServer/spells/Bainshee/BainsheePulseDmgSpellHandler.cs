@@ -16,19 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.GS.Keeps;
 using DOL.Events;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
-    [SpellHandlerAttribute("BainsheePulseDmg")]
+	[SpellHandlerAttribute("BainsheePulseDmg")]
 	public class BainsheePulseDmgSpellHandler : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -111,7 +108,7 @@ namespace DOL.GS.Spells
 				}
 				if (player != null)
 				{
-					player.TempProperties.setProperty(LOSEFFECTIVENESS, effectiveness);
+					player.TempProperties.SetProperty(LOSEFFECTIVENESS, effectiveness);
 					player.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(DealDamageCheckLOS));
 				}
 				else
@@ -131,7 +128,7 @@ namespace DOL.GS.Spells
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
 					if (target != null)
 					{
-						double effectiveness = (double)player.TempProperties.getProperty<object>(LOSEFFECTIVENESS, null);
+						double effectiveness = player.TempProperties.GetProperty(LOSEFFECTIVENESS, 0.0);
 						DealDamage(target, effectiveness);
 					}
 				}
@@ -159,7 +156,7 @@ namespace DOL.GS.Spells
 		 */
 		protected override void OnSpellResisted(GameLiving target)
 		{
-			if (target is GamePlayer && Caster.TempProperties.getProperty("player_in_keep_property", false))
+			if (target is GamePlayer && Caster.TempProperties.GetProperty("player_in_keep_property", false))
 			{
 				GamePlayer player = target as GamePlayer;
 				player.Out.SendCheckLOS(Caster, player, new CheckLOSResponse(ResistSpellCheckLOS));

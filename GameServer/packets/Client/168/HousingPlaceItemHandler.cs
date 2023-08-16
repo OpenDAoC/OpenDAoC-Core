@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -94,8 +95,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 							break;
 					}
 
-					client.Player.TempProperties.setProperty(HousingConstants.MoneyForHouseRent, moneyToAdd);
-					client.Player.TempProperties.setProperty(HousingConstants.HouseForHouseRent, house);
+					client.Player.TempProperties.SetProperty(HousingConstants.MoneyForHouseRent, moneyToAdd);
+					client.Player.TempProperties.SetProperty(HousingConstants.HouseForHouseRent, house);
 					client.Player.Out.SendInventorySlotsUpdate(null);
 					client.Player.Out.SendHousePayRentDialog("Housing07");
 
@@ -121,8 +122,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 
-					client.Player.TempProperties.setProperty(DeedWeak, new WeakRef(orgitem));
-					client.Player.TempProperties.setProperty(TargetHouse, house);
+					client.Player.TempProperties.SetProperty(DeedWeak, new WeakRef(orgitem));
+					client.Player.TempProperties.SetProperty(TargetHouse, house);
 					client.Player.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "WARNING: You are about to delete this house and all indoor and outdoor items attached to it!"), HouseRemovalDialog);
 
 					return;
@@ -141,8 +142,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 
-					client.Player.TempProperties.setProperty(DeedWeak, new WeakRef(orgitem));
-					client.Player.TempProperties.setProperty(TargetHouse, house);
+					client.Player.TempProperties.SetProperty(DeedWeak, new WeakRef(orgitem));
+					client.Player.TempProperties.SetProperty(TargetHouse, house);
 					client.Player.Out.SendMessage("Warning:\n This will remove *all* items from your current house!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					client.Player.Out.SendCustomDialog("Are you sure you want to upgrade your House?", HouseUpgradeDialog);
 
@@ -558,7 +559,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
-									if (client.Player.TempProperties.getProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
+									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
 
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointID", +_position);
@@ -701,7 +702,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
-									if (client.Player.TempProperties.getProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
+									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
 
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointID", +_position);
@@ -917,12 +918,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (response != 0x01)
 				return;
 
-			var itemWeak = player.TempProperties.getProperty<WeakReference>(DeedWeak, new WeakRef(null));
-			player.TempProperties.removeProperty(DeedWeak);
+			var itemWeak = player.TempProperties.GetProperty<WeakReference>(DeedWeak, new WeakRef(null));
+			player.TempProperties.RemoveProperty(DeedWeak);
 
 			var item = (InventoryItem)itemWeak.Target;
-			var house = player.TempProperties.getProperty<House>(TargetHouse, null);
-			player.TempProperties.removeProperty(TargetHouse);
+			var house = player.TempProperties.GetProperty<House>(TargetHouse, null);
+			player.TempProperties.RemoveProperty(TargetHouse);
 
 			if (house == null)
 			{
@@ -960,12 +961,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (response != 0x01)
 				return;
 
-			var itemWeak = player.TempProperties.getProperty<WeakReference>(DeedWeak, new WeakRef(null));
-			player.TempProperties.removeProperty(DeedWeak);
+			var itemWeak = player.TempProperties.GetProperty<WeakReference>(DeedWeak, new WeakRef(null));
+			player.TempProperties.RemoveProperty(DeedWeak);
 
 			var item = (InventoryItem)itemWeak.Target;
-			var house = (House)player.TempProperties.getProperty<object>(TargetHouse, null);
-			player.TempProperties.removeProperty(TargetHouse);
+			var house = player.TempProperties.GetProperty<House>(TargetHouse, null);
+			player.TempProperties.RemoveProperty(TargetHouse);
 
 			if (house == null)
 			{

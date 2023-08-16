@@ -23,7 +23,6 @@ using DOL.GS.Scripts.discord;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 
-
 namespace DOL.GS.Commands
 {
     [CmdAttribute(
@@ -49,7 +48,7 @@ namespace DOL.GS.Commands
             }
             string message = string.Join(" ", args, 1, args.Length - 1);
 
-            var lastLFGTick = client.Player.TempProperties.getProperty<long>(lfgTimeoutString);
+            var lastLFGTick = client.Player.TempProperties.GetProperty<long>(lfgTimeoutString);
             var slowModeLength = Properties.LFG_SLOWMODE_LENGTH * 1000;
 			
             if ((GameLoop.GameLoopTime - lastLFGTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
@@ -77,11 +76,8 @@ namespace DOL.GS.Commands
             
             if (player.Client.Account.PrivLevel == 1)
             {
-                player.Client.Player.TempProperties.setProperty(lfgTimeoutString, GameLoop.GameLoopTime);
-            }   
+                player.Client.Player.TempProperties.SetProperty(lfgTimeoutString, GameLoop.GameLoopTime);
+            }
         }
-
     }
 }
-
-

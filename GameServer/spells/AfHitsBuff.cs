@@ -16,17 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.Database;
-using DOL.AI.Brain;
-using DOL.GS;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using System.Collections.Generic;
 
 namespace DOL.GS.Spells
 {
-
     [SpellHandlerAttribute("AfHitsBuff")]
     public class AfHitsBuffSpellHandler : SpellHandler
     {
@@ -68,8 +63,8 @@ namespace DOL.GS.Spells
 
 
             GameLiving living = effect.Owner as GameLiving;
-            living.TempProperties.setProperty("BONUS_HP", bonusHP);
-            living.TempProperties.setProperty("BONUS_AF", bonusAF);
+            living.TempProperties.SetProperty("BONUS_HP", bonusHP);
+            living.TempProperties.SetProperty("BONUS_AF", bonusAF);
             living.AbilityBonus[(int)eProperty.MaxHealth] += (int)bonusHP;
             living.ItemBonus[(int)eProperty.ArmorFactor] += (int)bonusAF;
 
@@ -81,14 +76,14 @@ namespace DOL.GS.Spells
             base.OnEffectExpires(effect, noMessages);
 
             GameLiving living = effect.Owner as GameLiving;
-            double bonusAF = living.TempProperties.getProperty<double>("BONUS_AF");
-            double bonusHP = living.TempProperties.getProperty<double>("BONUS_HP");
+            double bonusAF = living.TempProperties.GetProperty<double>("BONUS_AF");
+            double bonusHP = living.TempProperties.GetProperty<double>("BONUS_HP");
 
             living.ItemBonus[(int)eProperty.ArmorFactor] -= (int)bonusAF;
             living.AbilityBonus[(int)eProperty.MaxHealth] -= (int)bonusHP;
 
-            living.TempProperties.removeProperty("BONUS_AF");
-            living.TempProperties.removeProperty("BONUS_HP");
+            living.TempProperties.RemoveProperty("BONUS_AF");
+            living.TempProperties.RemoveProperty("BONUS_HP");
 
             SendUpdates(effect.Owner);
             return 0;
@@ -106,6 +101,5 @@ namespace DOL.GS.Spells
         }
 
         public AfHitsBuffSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
-
     }
 }

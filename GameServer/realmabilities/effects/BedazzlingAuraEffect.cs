@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			m_value = value;
 
-			if (living.TempProperties.getProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, false))
+			if (living.TempProperties.GetProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, false))
 				return;
 
 			base.Start(living);
@@ -47,7 +47,7 @@ namespace DOL.GS.RealmAbilities
 				GameEventMgr.AddHandler(living, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 				(living as GamePlayer).Out.SendCharResistsUpdate();
 			}
-			living.TempProperties.setProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, true);
+			living.TempProperties.SetProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, true);
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace DOL.GS.RealmAbilities
 				(m_owner as GamePlayer).Out.SendCharResistsUpdate();
 				GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 			}
-			m_owner.TempProperties.removeProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb);
+			m_owner.TempProperties.RemoveProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb);
 		}
 
 

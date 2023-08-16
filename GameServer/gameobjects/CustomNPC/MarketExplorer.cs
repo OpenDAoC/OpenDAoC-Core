@@ -1,16 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
-using DOL;
-using DOL.GS;
-using DOL.GS.GameEvents;
-using DOL.GS.PacketHandler;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Housing;
-
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -185,7 +177,7 @@ namespace DOL.GS
 				}
 
 				// Save the last search list in case we buy an item from it
-				player.TempProperties.setProperty(EXPLORER_ITEM_LIST, list);
+				player.TempProperties.SetProperty(EXPLORER_ITEM_LIST, list);
 			} else
             {
 				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
@@ -236,7 +228,7 @@ namespace DOL.GS
 				toClientSlot <= (ushort)eInventorySlot.LastBackpack &&
 				player.ActiveInventoryObject == this)
 			{
-				var list = player.TempProperties.getProperty<List<InventoryItem>>(EXPLORER_ITEM_LIST, null);
+				var list = player.TempProperties.GetProperty<List<InventoryItem>>(EXPLORER_ITEM_LIST, null);
 				if (list == null)
 				{
 					return false;

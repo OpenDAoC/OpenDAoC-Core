@@ -102,7 +102,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				string key = $"LOS C:0x{m_checkerOid} T:0x{m_targetOid}";
 
-				if (player.TempProperties.removeAndGetProperty(key, out object callback))
+				if (player.TempProperties.RemoveAndGetProperty(key, out object callback))
 				{
 					if (callback is CheckLOSResponse checkLOSResponseCallback)
 						checkLOSResponseCallback(player, (ushort)m_response, (ushort)m_targetOid);
@@ -110,7 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				string newkey = $"LOSMGR C:0x{m_checkerOid} T:0x{m_targetOid}";
 				
-				if (player.TempProperties.removeAndGetProperty(newkey, out object newCallback))
+				if (player.TempProperties.RemoveAndGetProperty(newkey, out object newCallback))
 				{
 					if (newCallback is CheckLOSMgrResponse checkLOSResponseNewCallback)
 						checkLOSResponseNewCallback(player, (ushort)m_response, (ushort)m_checkerOid, (ushort)m_targetOid);

@@ -17,10 +17,9 @@
  *
  */
 
-using DOL.Language;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -77,7 +76,7 @@ namespace DOL.GS.Commands
             
             if (args.Length > 1)
             {
-                bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+                bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
                 if (HasPendingAppeal)
                 {
                     AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
@@ -191,7 +190,7 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
             if (HasPendingAppeal)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
@@ -237,7 +236,7 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
             if (HasPendingAppeal)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
@@ -311,7 +310,7 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
             if (HasPendingAppeal)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
@@ -357,7 +356,7 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
             if (HasPendingAppeal)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));

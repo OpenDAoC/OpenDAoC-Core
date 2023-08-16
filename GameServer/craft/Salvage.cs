@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -25,7 +25,6 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.SalvageCalc;
 using DOL.Language;
-
 using log4net;
 
 namespace DOL.GS
@@ -193,9 +192,9 @@ namespace DOL.GS
             {
                 Callback = new ECSGameTimer.ECSTimerCallback(Proceed)
             };
-            player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.setProperty(SALVAGED_ITEM, item);
-			player.CraftTimer.Properties.setProperty(SALVAGE_YIELD, salvageYield);
+            player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(SALVAGED_ITEM, item);
+			player.CraftTimer.Properties.SetProperty(SALVAGE_YIELD, salvageYield);
 
 			player.CraftTimer.Start(salvageYield.Count * 1000);
 			return 1;
@@ -249,7 +248,7 @@ namespace DOL.GS
 		
 		public static int BeginWorkList(GamePlayer player, IList<InventoryItem> itemList)
 		{
-			player.TempProperties.setProperty(SALVAGE_QUEUE,itemList);
+			player.TempProperties.SetProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
 			if (itemList == null || itemList.Count == 0) return 0;
@@ -329,10 +328,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.getProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			InventoryItem itemToSalvage = timer.Properties.getProperty<InventoryItem>(SALVAGED_ITEM, null);
-			SalvageYield yield = timer.Properties.getProperty<SalvageYield>(SALVAGE_YIELD, null);
-			IList<InventoryItem> itemList = player.TempProperties.getProperty<IList<InventoryItem>>(SALVAGE_QUEUE, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
+			InventoryItem itemToSalvage = timer.Properties.GetProperty<InventoryItem>(SALVAGED_ITEM, null);
+			SalvageYield yield = timer.Properties.GetProperty<SalvageYield>(SALVAGE_YIELD, null);
+			IList<InventoryItem> itemList = player.TempProperties.GetProperty<IList<InventoryItem>>(SALVAGE_QUEUE, null);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)

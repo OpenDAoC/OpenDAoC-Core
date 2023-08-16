@@ -17,14 +17,8 @@
  *
  */
 
-/*
-  * New system by Niko jan 2009
-  */
-
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
@@ -63,15 +57,15 @@ namespace DOL.GS.Commands
 
 			if (args.Length > 1 && args[1] == "show" && client.Player != null)
 			{
-				if (client.Player.TempProperties.getProperty(DoorMgr.WANT_TO_ADD_DOORS, false))
+				if (client.Player.TempProperties.GetProperty(DoorMgr.WANT_TO_ADD_DOORS, false))
 				{
-					client.Player.TempProperties.removeProperty(DoorMgr.WANT_TO_ADD_DOORS);
+					client.Player.TempProperties.RemoveProperty(DoorMgr.WANT_TO_ADD_DOORS);
 					client.Out.SendMessage("You will no longer be shown the add door dialog.", eChatType.CT_System,
 					                       eChatLoc.CL_SystemWindow);
 				}
 				else
 				{
-					client.Player.TempProperties.setProperty(DoorMgr.WANT_TO_ADD_DOORS, true);
+					client.Player.TempProperties.SetProperty(DoorMgr.WANT_TO_ADD_DOORS, true);
 					client.Out.SendMessage("You will now be shown the add door dialog if door is not found in the DB.",
 					                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}

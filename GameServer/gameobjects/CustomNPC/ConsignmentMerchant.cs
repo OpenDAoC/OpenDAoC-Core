@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -393,7 +394,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			InventoryItem item = player.TempProperties.getProperty<InventoryItem>(GameInventoryObjectExtensions.ITEM_BEING_ADDED, null);
+			InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(GameInventoryObjectExtensions.ITEM_BEING_ADDED, null);
 
 			if (item != null)
 			{
@@ -464,7 +465,7 @@ namespace DOL.GS
 			// If the player has a marketExplorer activated they will be charged a commission
 			if (player.TargetObject is MarketExplorer)
 			{
-				player.TempProperties.setProperty(CONSIGNMENT_BUY_ITEM, fromClientSlot);
+				player.TempProperties.SetProperty(CONSIGNMENT_BUY_ITEM, fromClientSlot);
 				if (ServerProperties.Properties.MARKET_FEE_PERCENT > 0)
 				{
 					player.Out.SendCustomDialog("Buying directly from the Market Explorer costs an additional " +  ServerProperties.Properties.MARKET_FEE_PERCENT + "% fee. Do you want to buy this Item?", new CustomDialogResponse(BuyMarketResponse));
@@ -476,7 +477,7 @@ namespace DOL.GS
 			}
 			else if (player.TargetObject == this)
 			{
-				player.TempProperties.setProperty(CONSIGNMENT_BUY_ITEM, fromClientSlot);
+				player.TempProperties.SetProperty(CONSIGNMENT_BUY_ITEM, fromClientSlot);
 				player.Out.SendCustomDialog(buyText, new CustomDialogResponse(BuyResponse));
 			}
 			else
@@ -495,7 +496,7 @@ namespace DOL.GS
 		{
 			if (response != 0x01)
 			{
-				player.TempProperties.removeProperty(CONSIGNMENT_BUY_ITEM);
+				player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
 				return;
 			}
 
@@ -511,7 +512,7 @@ namespace DOL.GS
 		{
 			if (response != 0x01)
 			{
-				player.TempProperties.removeProperty(CONSIGNMENT_BUY_ITEM);
+				player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
 				return;
 			}
 
@@ -520,8 +521,8 @@ namespace DOL.GS
 
 		protected virtual void BuyItem(GamePlayer player, bool usingMarketExplorer = false)
 		{
-			eInventorySlot fromClientSlot = player.TempProperties.getProperty<eInventorySlot>(CONSIGNMENT_BUY_ITEM, eInventorySlot.Invalid);
-			player.TempProperties.removeProperty(CONSIGNMENT_BUY_ITEM);
+			eInventorySlot fromClientSlot = player.TempProperties.GetProperty<eInventorySlot>(CONSIGNMENT_BUY_ITEM, eInventorySlot.Invalid);
+			player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
 
 			InventoryItem item = null;
 

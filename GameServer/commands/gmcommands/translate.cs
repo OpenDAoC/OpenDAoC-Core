@@ -17,14 +17,8 @@
  *
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using DOL.Database;
 using DOL.Language;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
@@ -96,9 +90,9 @@ namespace DOL.GS.Commands
                 #region debug
                 case "debug":
                     {
-                        bool debug = client.Player.TempProperties.getProperty("LANGUAGEMGR-DEBUG", false);
+                        bool debug = client.Player.TempProperties.GetProperty("LANGUAGEMGR-DEBUG", false);
                         debug = !debug;
-                        client.Player.TempProperties.setProperty("LANGUAGEMGR-DEBUG", debug);
+                        client.Player.TempProperties.SetProperty("LANGUAGEMGR-DEBUG", debug);
                         DisplayMessage(client, "[Language-Manager] Debug mode: " + (debug ? "ON" : "OFF"));
                         return;
                     }
@@ -116,7 +110,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate memadd [Language] [TranslationId]'");
                         else
                         {
-                            LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_MEM_LNG_OBJ, null);
+                            LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_MEM_LNG_OBJ, null);
 
                             if (lngObj != null)
                                 DisplayMessage(client, "[Language-Manager] Can't add language object, there is already another one!");
@@ -132,7 +126,7 @@ namespace DOL.GS.Commands
                                     ((DBLanguageSystem)lngObj).TranslationId = args[3];
                                     ((DBLanguageSystem)lngObj).Language = args[2];
 
-                                    client.Player.TempProperties.setProperty(LANGUAGEMGR_MEM_LNG_OBJ, lngObj);
+                                    client.Player.TempProperties.SetProperty(LANGUAGEMGR_MEM_LNG_OBJ, lngObj);
                                     DisplayMessage(client, "[Language-Manager] Language object successfully added to your temporary properties! ( Language <" + args[2].ToUpper() + "> TranslationId <" + args[3] + "> )");
                                 }
                             }
@@ -146,13 +140,13 @@ namespace DOL.GS.Commands
                 case "memclear":
                     {
                         // Removes the language object from your temp properties you've previously added with the "memadd" sub command.
-                        LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_MEM_LNG_OBJ, null);
+                        LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_MEM_LNG_OBJ, null);
 
                         if (lngObj == null)
                             DisplayMessage(client, "[Language-Manager] No language object found.");
                         else
                         {
-                            client.Player.TempProperties.removeProperty(LANGUAGEMGR_MEM_LNG_OBJ);
+                            client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_MEM_LNG_OBJ);
                             DisplayMessage(client, "[Language-Manager] Language object successfully removed.");
                         }
 
@@ -168,7 +162,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate memsave [Text]'");
                         else
                         {
-                            LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_MEM_LNG_OBJ, null);
+                            LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_MEM_LNG_OBJ, null);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] No language object found.");
@@ -184,7 +178,7 @@ namespace DOL.GS.Commands
                                 else
                                 {
                                     GameServer.Database.AddObject(lngObj);
-                                    client.Player.TempProperties.removeProperty(LANGUAGEMGR_MEM_LNG_OBJ);
+                                    client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_MEM_LNG_OBJ);
                                     DisplayMessage(client, "[Language-Manager] Translation successfully added into the database and registered in LanguageMgr.");
                                 }
                             }
@@ -197,7 +191,7 @@ namespace DOL.GS.Commands
                 #region memshow
                 case "memshow":
                     {
-                        LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_MEM_LNG_OBJ, null);
+                        LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_MEM_LNG_OBJ, null);
 
                         if (lngObj == null)
                             DisplayMessage(client, "[Language-Manager] No language object found.");
@@ -238,7 +232,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate select [Language] [TranslationId]'");
                         else
                         {
-                            LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_SEL_LNG_OBJ, null);
+                            LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_SEL_LNG_OBJ, null);
 
                             if (lngObj != null)
                             {
@@ -256,7 +250,7 @@ namespace DOL.GS.Commands
                                 }
                                 else
                                 {
-                                    client.Player.TempProperties.setProperty(LANGUAGEMGR_SEL_LNG_OBJ, lngObj);
+                                    client.Player.TempProperties.SetProperty(LANGUAGEMGR_SEL_LNG_OBJ, lngObj);
                                     DisplayMessage(client, "[Language-Manager] Language object found and added to your temporary properties! ( Language <" + args[2].ToUpper() +
                                                            "> - TranslationId <" + args[3] + "> )");
                                 }
@@ -271,13 +265,13 @@ namespace DOL.GS.Commands
                 case "selectclear":
                     {
                         // Removes the language object from your temp properties you've previously selected with the "select" sub command.
-                        LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_SEL_LNG_OBJ, null);
+                        LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_SEL_LNG_OBJ, null);
 
                         if (lngObj == null)
                             DisplayMessage(client, "[Language-Manager] No language object selected!");
                         else
                         {
-                            client.Player.TempProperties.removeProperty(LANGUAGEMGR_SEL_LNG_OBJ);
+                            client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_SEL_LNG_OBJ);
                             DisplayMessage(client, "[Language-Manager] Language object successfully removed from your temporary properties." +
                                                    "( Language <" + ((DBLanguageSystem)lngObj).Language +
                                                    "> - TranslationId <" + ((DBLanguageSystem)lngObj).TranslationId + "> )");
@@ -294,7 +288,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate selectsave [Text]'");
                         else
                         {
-                            LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_SEL_LNG_OBJ, null);
+                            LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_SEL_LNG_OBJ, null);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] No language object selected!");
@@ -306,7 +300,7 @@ namespace DOL.GS.Commands
                                     ((DBLanguageSystem)lngObj).Text = args[2];
 
                                 GameServer.Database.SaveObject(lngObj);
-                                client.Player.TempProperties.removeProperty(LANGUAGEMGR_SEL_LNG_OBJ);
+                                client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_SEL_LNG_OBJ);
                                 DisplayMessage(client, "[Language-Manager] Language object successfully changed and saved in database." +
                                                        "( Language <" + ((DBLanguageSystem)lngObj).Language +
                                                        "> - TranslationId <" + ((DBLanguageSystem)lngObj).TranslationId +
@@ -321,7 +315,7 @@ namespace DOL.GS.Commands
                 #region selectshow
                 case "selectshow":
                     {
-                        LanguageDataObject lngObj = (LanguageDataObject)client.Player.TempProperties.getProperty<object>(LANGUAGEMGR_SEL_LNG_OBJ, null);
+                        LanguageDataObject lngObj = client.Player.TempProperties.GetProperty<LanguageDataObject>(LANGUAGEMGR_SEL_LNG_OBJ, null);
 
                         if (lngObj == null)
                             DisplayMessage(client, "[Language-Manager] No language object selected!");

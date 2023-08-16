@@ -19,15 +19,15 @@
 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
+using DOL.GS.Friends;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using DOL.GS.Friends;
 
 namespace DOL.GS.Commands
 {
@@ -1836,7 +1836,7 @@ namespace DOL.GS.Commands
                                             DisplaySyntax(client);
                                             return;
                                         }
-                                        var cg = (ChatGroup)pname.Player.TempProperties.getProperty<object>(ChatGroup.CHATGROUP_PROPERTY, null);
+                                        var cg = pname.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
 
                                         if (name == pname.Player.Name)
                                         {
@@ -1867,11 +1867,11 @@ namespace DOL.GS.Commands
                                             DisplaySyntax(client);
                                             return;
                                         }
-                                        var cg = (BattleGroup)pname.Player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                        var bg = pname.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
                                         if (name == pname.Player.Name)
                                         {
-                                            foreach (GamePlayer cgplayers in cg.Members.Keys)
+                                            foreach (GamePlayer cgplayers in bg.Members.Keys)
                                             {
                                                 cgplayers.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
                                                                  client.Player.Heading);
@@ -2459,7 +2459,7 @@ namespace DOL.GS.Commands
 			text.Add("  - Money : " + Money.GetString(player.GetCurrentMoney()) + "");
 			text.Add("  - Model ID : " + player.Model);
 			text.Add("  - Region OID : " + player.ObjectID);
-			text.Add("  - AFK Message: " + player.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) + "");
+			text.Add("  - AFK Message: " + player.TempProperties.GetProperty<string>(GamePlayer.AFK_MESSAGE) + "");
 			text.Add(" ");
 			text.Add("HOUSE INFORMATION ");
 			text.Add("  - Personal House : " + HouseMgr.GetHouseNumberByPlayer(player));

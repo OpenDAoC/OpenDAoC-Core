@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -39,10 +40,10 @@ namespace DOL.GS.Commands
 			}
 			string message = string.Join(" ", args, 1, args.Length - 1);
 
-			long SayTick = client.Player.TempProperties.getProperty<long>(SAY_TICK);
+			long SayTick = client.Player.TempProperties.GetProperty<long>(SAY_TICK);
 			if (SayTick > 0 && SayTick - client.Player.CurrentRegion.Time <= 0)
 			{
-				client.Player.TempProperties.removeProperty(SAY_TICK);
+				client.Player.TempProperties.RemoveProperty(SAY_TICK);
 			}
 
 			long changeTime = client.Player.CurrentRegion.Time - SayTick;
@@ -58,7 +59,7 @@ namespace DOL.GS.Commands
             }
 
 			client.Player.Say(message);
-			client.Player.TempProperties.setProperty(SAY_TICK, client.Player.CurrentRegion.Time);
+			client.Player.TempProperties.SetProperty(SAY_TICK, client.Player.CurrentRegion.Time);
 		}
 	}
 }

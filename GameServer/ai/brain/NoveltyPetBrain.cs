@@ -17,8 +17,6 @@
  *
  */
 
-// Original code from Dinberg
-
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -69,9 +67,9 @@ namespace DOL.AI.Brain
 			{
 				Body.Delete();
 				Body = null;
-				if (m_owner != null && m_owner.TempProperties.getProperty<bool>(HAS_PET, false))
+				if (m_owner != null && m_owner.TempProperties.GetProperty<bool>(HAS_PET, false))
 				{
-					m_owner.TempProperties.setProperty(HAS_PET, false);
+					m_owner.TempProperties.SetProperty(HAS_PET, false);
 				}
 				m_owner = null;
 			}

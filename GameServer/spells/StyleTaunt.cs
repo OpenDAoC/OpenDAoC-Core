@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI.Brain;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -50,7 +49,7 @@ namespace DOL.GS.Spells
         {
             if (target is GameNPC)
             {
-                AttackData ad = Caster.TempProperties.getProperty<object>(GameLiving.LAST_ATTACK_DATA, null) as AttackData;
+                AttackData ad = Caster.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
                 if (ad != null)
                 {
                     IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;

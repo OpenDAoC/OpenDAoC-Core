@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
 
 namespace DOL.GS.Spells
 {
@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			effect.Owner.TempProperties.setProperty(ConvertDamage, 100000);
+			effect.Owner.TempProperties.SetProperty(ConvertDamage, 100000);
 			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 
 			eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			effect.Owner.TempProperties.removeProperty(ConvertDamage);
+			effect.Owner.TempProperties.RemoveProperty(ConvertDamage);
 			return 1;
 		}
 		
@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 			{
 				ad = attackedByEnemy.AttackData;
 			}
-			int reduceddmg = living.TempProperties.getProperty<int>(ConvertDamage);
+			int reduceddmg = living.TempProperties.GetProperty<int>(ConvertDamage);
 			double absorbPercent = Spell.Damage;
 			int damageConverted = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 
@@ -178,7 +178,7 @@ namespace DOL.GS.Spells
 				{
 					case AttackData.eAttackType.Spell:
 						{
-							int reduceddmg = living.TempProperties.getProperty<int>(ConvertDamage, 0);
+							int reduceddmg = living.TempProperties.GetProperty<int>(ConvertDamage, 0);
 							double absorbPercent = Spell.Damage;
 							int damageConverted = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 							if (damageConverted > reduceddmg)

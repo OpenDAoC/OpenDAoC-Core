@@ -16,15 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/***[ random.cs ]****
-* reqired DOL:	1.5.0
-* author|date:	SEpHirOTH |	2004/02/25
-* modificatio:  SmallHorse (just a little cleanup)
-* modificatio:  noret (made it look like on live servers)
-* description: enables the usage of "/random" command
-*		"/random <n>" get a random number between 1 and <n>
-*		results will be send to all players in emote range
-******************/
 
 using System;
 using DOL.GS.PacketHandler;
@@ -86,7 +77,7 @@ namespace DOL.GS.Commands
 			// throw result
 			int thrown = Util.Random(1, thrownMax);
 			
-			BattleGroup mybattlegroup = client.Player.TempProperties.getProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+			BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 			if (mybattlegroup != null && mybattlegroup.IsRecordingRolls() && thrownMax <= mybattlegroup.GetRecordingThreshold())
 			{
 				mybattlegroup.AddRoll(client.Player, thrown);

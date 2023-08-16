@@ -16,19 +16,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-
-using DOL.Language;
-using DOL.GS.PacketHandler;
+using System.Reflection;
 using DOL.Database;
-using DOL.GS.Scripts;
+using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
-
+using DOL.Language;
 using log4net;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     /// <summary>
     /// This class represents an inventory item
     /// </summary>
@@ -874,7 +873,7 @@ namespace DOL.GS {
                                     output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.UseItem1", Util.FormatTime(spl.RecastDelay / 1000)));
                                 else
                                     output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.UseItem2"));
-                                long lastChargedItemUseTick = client.Player.TempProperties.getProperty<long>(GamePlayer.LAST_CHARGED_ITEM_USE_TICK);
+                                long lastChargedItemUseTick = client.Player.TempProperties.GetProperty<long>(GamePlayer.LAST_CHARGED_ITEM_USE_TICK);
                                 long changeTime = client.Player.CurrentRegion.Time - lastChargedItemUseTick;
                                 long recastDelay = (spl.RecastDelay > 0) ? spl.RecastDelay : 60000 * 3;
                                 if (changeTime < recastDelay) //3 minutes reuse timer
@@ -1449,7 +1448,7 @@ namespace DOL.GS {
                             list.Add(" ");
                             WritePotionSpellsInfos(list, client, spl, potionLine);
                             list.Add(" ");
-                            long nextPotionAvailTime = client.Player.TempProperties.getProperty<long>("LastPotionItemUsedTick_Type" + spl.SharedTimerGroup);
+                            long nextPotionAvailTime = client.Player.TempProperties.GetProperty<long>("LastPotionItemUsedTick_Type" + spl.SharedTimerGroup);
                             // Satyr Update: Individual Reuse-Timers for Pots need a Time looking forward
                             // into Future, set with value of "itemtemplate.CanUseEvery" and no longer back into past
                             if (nextPotionAvailTime > client.Player.CurrentRegion.Time)
@@ -1491,7 +1490,7 @@ namespace DOL.GS {
             list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
             list.Add(" ");
 
-            long nextPotionAvailTime = client.Player.TempProperties.getProperty<long>("LastPotionItemUsedTick_Type" + mSpell.SharedTimerGroup);
+            long nextPotionAvailTime = client.Player.TempProperties.GetProperty<long>("LastPotionItemUsedTick_Type" + mSpell.SharedTimerGroup);
             // Satyr Update: Individual Reuse-Timers for Pots need a Time looking forward
             // into Future, set with value of "itemtemplate.CanUseEvery" and no longer back into past
             if (nextPotionAvailTime > client.Player.CurrentRegion.Time)

@@ -91,15 +91,15 @@ namespace DOL.GS.Commands
 				{
 					if (args[2] == "on")
 					{
-						client.Player.TempProperties.setProperty("AppealAlert", false);
-						client.Player.TempProperties.setProperty("SendAlert", false);
+						client.Player.TempProperties.SetProperty("AppealAlert", false);
+						client.Player.TempProperties.SetProperty("SendAlert", false);
 						// Message: "You will now receive sound alerts."
 						ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AllOn", null);
 					}
 					if (args[2] == "off")
 					{
-						client.Player.TempProperties.setProperty("AppealAlert", true);
-						client.Player.TempProperties.setProperty("SendAlert", true);
+						client.Player.TempProperties.SetProperty("AppealAlert", true);
+						client.Player.TempProperties.SetProperty("SendAlert", true);
 						// Message: "You will no longer receive sound alerts."
 						ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AllOff", null);
 					}
@@ -116,13 +116,13 @@ namespace DOL.GS.Commands
 					{
 						if (args[2] == "on")
 						{
-							client.Player.TempProperties.setProperty("AppealAlert", false);
+							client.Player.TempProperties.SetProperty("AppealAlert", false);
 							// Message: "You will now receive sound alerts when an appeal is filed or awaiting assistance."
 							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AppealOn", null);
 						}
 						if (args[2] == "off")
 						{
-							client.Player.TempProperties.setProperty("AppealAlert", true);
+							client.Player.TempProperties.SetProperty("AppealAlert", true);
 							// Message: "You will no longer receive sound alerts regarding appeals."
 							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.AppealOff", null);
 						}
@@ -139,13 +139,13 @@ namespace DOL.GS.Commands
 					{
 						if (args[2] == "on")
 						{
-							client.Player.TempProperties.setProperty("SendAlert", false);
+							client.Player.TempProperties.SetProperty("SendAlert", false);
 							// Message: "You will now receive sound alerts when a player sends you a message."
 							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.SendOn", null);
 						}
 						if (args[2] == "off")
 						{
-							client.Player.TempProperties.setProperty("SendAlert", true);
+							client.Player.TempProperties.SetProperty("SendAlert", true);
 							// Message: "You will no longer receive sound alerts for player messages."
 							ChatUtil.SendSystemMessage(client, "GMCommands.Alert.Msg.SendOff", null);
 						}

@@ -1,10 +1,5 @@
 ﻿using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -31,7 +26,7 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             if (EffectType == eEffect.Bleed && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
-                Owner.TempProperties.removeProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
+                Owner.TempProperties.RemoveProperty(StyleBleeding.BLEED_VALUE_PROPERTY);
             
             // "Your mental agony fades."
             // "{0}'s mental agony fades."
@@ -67,7 +62,7 @@ namespace DOL.GS
                 {
 
                     if (Owner.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed)
-                        && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
+                        && Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
                     {
                         if (OwnerPlayer != null)
                             bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
@@ -75,9 +70,9 @@ namespace DOL.GS
                         return;
                     }
 
-                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
+                    if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
                     {
-                        Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
+                        Owner.TempProperties.SetProperty(StyleBleeding.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
                     }
 
                     if (OwnerPlayer != null)
@@ -86,7 +81,7 @@ namespace DOL.GS
                         Message.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
                     }
 
-                    int bleedValue = Owner.TempProperties.getProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
+                    int bleedValue = Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
 
                     AttackData ad = bleedHandler.CalculateDamageToTarget(Owner, 1.0);
                     bleedHandler.SendDamageMessages(ad);
@@ -107,7 +102,7 @@ namespace DOL.GS
                     {
                         EffectService.RequestImmediateCancelEffect(this);
                     }
-                    else Owner.TempProperties.setProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
+                    else Owner.TempProperties.SetProperty(StyleBleeding.BLEED_VALUE_PROPERTY, bleedValue);
                 }
 
                 if (Owner.Realm == 0 || SpellHandler.Caster.Realm == 0)

@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using System.Collections;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.SkillHandler
@@ -51,14 +50,14 @@ namespace DOL.GS.SkillHandler
 				player.Out.SendMessage("You can't stealth while you have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			long stealthChangeTick = player.TempProperties.getProperty<long>(GamePlayer.STEALTH_CHANGE_TICK);
+			long stealthChangeTick = player.TempProperties.GetProperty<long>(GamePlayer.STEALTH_CHANGE_TICK);
 			long changeTime = player.CurrentRegion.Time - stealthChangeTick;
 			if(changeTime < 2000)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseStealthChangeTick", ((2000 - changeTime) / 1000).ToString()), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
-			player.TempProperties.setProperty(GamePlayer.STEALTH_CHANGE_TICK, player.CurrentRegion.Time);
+			player.TempProperties.SetProperty(GamePlayer.STEALTH_CHANGE_TICK, player.CurrentRegion.Time);
 
 			if (!player.IsStealthed)
 			{

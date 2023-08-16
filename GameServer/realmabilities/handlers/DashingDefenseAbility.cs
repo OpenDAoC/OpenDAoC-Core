@@ -1,11 +1,9 @@
-using System.Reflection;
 using System.Collections;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Language;
 using System.Collections.Generic;
+using DOL.Database;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -24,7 +22,7 @@ namespace DOL.GS.RealmAbilities
         {
             GamePlayer player = living as GamePlayer;
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            if (player.TempProperties.getProperty(Dashing, false))
+            if (player.TempProperties.GetProperty(Dashing, false))
             {
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.AlreadyEffect"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
@@ -70,7 +68,7 @@ namespace DOL.GS.RealmAbilities
             {
                 //send spelleffect
                 if (!target.IsAlive) continue;
-                success = !target.TempProperties.getProperty(Dashing, false);
+                success = !target.TempProperties.GetProperty(Dashing, false);
                 if (success)
                     if (target != null && target != player)
                     {

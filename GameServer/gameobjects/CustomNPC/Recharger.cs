@@ -98,13 +98,13 @@ public class Recharger : GameNPC
         long NeededMoney = 0;
         if (item.Charges < item.MaxCharges)
         {
-            player.TempProperties.setProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
+            player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
             NeededMoney += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
         }
 
         if (item.Charges1 < item.MaxCharges1)
         {
-            player.TempProperties.setProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
+            player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
             NeededMoney += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
         }
 
@@ -121,12 +121,8 @@ public class Recharger : GameNPC
 
     private void RechargerDialogResponse(GamePlayer player, byte response)
     {
-        var itemWeak =
-            (WeakReference) player.TempProperties.getProperty<object>(
-                RECHARGE_ITEM_WEAK,
-                new WeakRef(null)
-            );
-        player.TempProperties.removeProperty(RECHARGE_ITEM_WEAK);
+        var itemWeak = player.TempProperties.GetProperty<WeakReference>(RECHARGE_ITEM_WEAK, new WeakRef(null));
+        player.TempProperties.RemoveProperty(RECHARGE_ITEM_WEAK);
 
         var item = (InventoryItem) itemWeak.Target;
 

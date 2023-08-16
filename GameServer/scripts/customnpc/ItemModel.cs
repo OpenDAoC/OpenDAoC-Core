@@ -44,8 +44,8 @@ namespace DOL.GS
             if (base.Interact(player))
             {
                 TurnTo(player, 500);
-                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
                 
                 if (item == null)
                 {
@@ -97,10 +97,10 @@ namespace DOL.GS
 
             GamePlayer player = source as GamePlayer;
             TurnTo(player.X, player.Y);
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
-            int cachedModelID = player.TempProperties.getProperty<int>(TempModelID);
-            int cachedModelPrice = player.TempProperties.getProperty<int>(TempModelPrice);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+            int cachedModelID = player.TempProperties.GetProperty<int>(TempModelID);
+            int cachedModelPrice = player.TempProperties.GetProperty<int>(TempModelPrice);
 
             if (item == null)
             {
@@ -6036,8 +6036,8 @@ namespace DOL.GS
                 tmpItem.Model = tmp;
             }
             
-            player.TempProperties.setProperty(TempModelID, modelIDToAssign);
-            player.TempProperties.setProperty(TempModelPrice, price);
+            player.TempProperties.SetProperty(TempModelID, modelIDToAssign);
+            player.TempProperties.SetProperty(TempModelPrice, price);
 
             return true;
         }
@@ -6475,8 +6475,8 @@ namespace DOL.GS
             SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
                          );
             var tmp = (InventoryItem) item.Clone();
-            t.TempProperties.setProperty(TempProperty, item);
-            t.TempProperties.setProperty(DisplayedItem, tmp);
+            t.TempProperties.SetProperty(TempProperty, item);
+            t.TempProperties.SetProperty(DisplayedItem, tmp);
             
             return false;
         }
@@ -6727,15 +6727,15 @@ namespace DOL.GS
                                   "I have changed your item's model, you can now use it. \n\n" +
                                   "I look forward to doing business with you in the future.");
 
-                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
                 
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return false;
                 
-                player.TempProperties.removeProperty(TempProperty);
-                player.TempProperties.removeProperty(DisplayedItem);
-                player.TempProperties.removeProperty(TempModelID);
+                player.TempProperties.RemoveProperty(TempProperty);
+                player.TempProperties.RemoveProperty(DisplayedItem);
+                player.TempProperties.RemoveProperty(TempModelID);
                 
                 //Console.WriteLine($"item model: {item.Model} assignment {number}");
                 player.Inventory.RemoveItem(item);
@@ -6776,14 +6776,14 @@ namespace DOL.GS
                     return;
                 }
 
-                InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
                 
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return;
                 
-                player.TempProperties.removeProperty(TempProperty);
-                player.TempProperties.removeProperty(DisplayedItem);
+                player.TempProperties.RemoveProperty(TempProperty);
+                player.TempProperties.RemoveProperty(DisplayedItem);
 
                 //only allow pads on valid slots: torso/hand/feet
                 if (item.Item_Type != (int)eEquipmentItems.TORSO && item.Item_Type != (int)eEquipmentItems.HAND && item.Item_Type != (int)eEquipmentItems.FEET)

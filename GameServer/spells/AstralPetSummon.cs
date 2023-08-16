@@ -18,21 +18,12 @@
  */
 
 using System;
-
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
-using DOL.Database;
-using DOL.GS.Styles;
 
 namespace DOL.GS.Spells
 {
-    
-   [SpellHandler("AstralPetSummon")]
+    [SpellHandler("AstralPetSummon")]
     public class AstralPetSummon : SummonSpellHandler
     {
     	//Graveen: Not implemented property - can be interesting
@@ -51,7 +42,7 @@ namespace DOL.GS.Spells
         {
             base.ApplyEffectOnTarget(target, effectiveness);
 
-            m_pet.TempProperties.setProperty("target", target);
+            m_pet.TempProperties.SetProperty("target", target);
             (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
             (m_pet.Brain as ProcPetBrain).Think();
 

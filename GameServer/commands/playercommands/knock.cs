@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
-using DOL.GS.PacketHandler;
+
 using DOL.GS.Housing;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
@@ -38,10 +37,10 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			long KnockTick = client.Player.TempProperties.getProperty<long>(PLAYER_KNOCKED);
+			long KnockTick = client.Player.TempProperties.GetProperty<long>(PLAYER_KNOCKED);
 			if (KnockTick > 0 && KnockTick - client.Player.CurrentRegion.Time <= 0)
 			{
-				client.Player.TempProperties.removeProperty(PLAYER_KNOCKED);
+				client.Player.TempProperties.RemoveProperty(PLAYER_KNOCKED);
 			}
 
 			long changeTime = client.Player.CurrentRegion.Time - KnockTick;
@@ -66,7 +65,7 @@ namespace DOL.GS.Commands
 			if (done)
 			{
 				client.Out.SendMessage("You knock on the door.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Player.TempProperties.setProperty(PLAYER_KNOCKED, client.Player.CurrentRegion.Time);
+				client.Player.TempProperties.SetProperty(PLAYER_KNOCKED, client.Player.CurrentRegion.Time);
 			}
 			else client.Out.SendMessage("You must go to the house you wish to knock on!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}

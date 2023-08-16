@@ -126,7 +126,7 @@ namespace DOL.GS
 
                 charmSpellHandler.m_controlledBrain?.ClearAggroList();
                 charmMob.StopFollowing();
-                charmMob.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
+                charmMob.TempProperties.SetProperty(GameNPC.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
 
                 foreach (GamePlayer playerInRadius in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {

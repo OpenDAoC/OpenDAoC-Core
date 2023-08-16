@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -31,10 +32,10 @@ namespace DOL.GS.Commands
 		public void OnCommand(GameClient client, string[] args)
 		{
 			const string YELL_TICK = "YELL_Tick";
-			long YELLTick = client.Player.TempProperties.getProperty<long>(YELL_TICK);
+			long YELLTick = client.Player.TempProperties.GetProperty<long>(YELL_TICK);
 			if (YELLTick > 0 && YELLTick - client.Player.CurrentRegion.Time <= 0)
 			{
-				client.Player.TempProperties.removeProperty(YELL_TICK);
+				client.Player.TempProperties.RemoveProperty(YELL_TICK);
 			}
 
 			long changeTime = client.Player.CurrentRegion.Time - YELLTick;
@@ -81,13 +82,13 @@ namespace DOL.GS.Commands
 					else
 						client.Out.SendMessage("You yell for help!", eChatType.CT_Help, eChatLoc.CL_SystemWindow);
 				}
-				client.Player.TempProperties.setProperty(YELL_TICK, client.Player.CurrentRegion.Time);
+				client.Player.TempProperties.SetProperty(YELL_TICK, client.Player.CurrentRegion.Time);
 				return;
 			}
 
 			string message = string.Join(" ", args, 1, args.Length - 1);
 			client.Player.Yell(message);
-			client.Player.TempProperties.setProperty(YELL_TICK, client.Player.CurrentRegion.Time);
+			client.Player.TempProperties.SetProperty(YELL_TICK, client.Player.CurrentRegion.Time);
 			return;
 		}
 	}

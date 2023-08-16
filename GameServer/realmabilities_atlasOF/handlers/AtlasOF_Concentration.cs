@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
-	public class AtlasOF_Concentration : ConcentrationAbility
+    public class AtlasOF_Concentration : ConcentrationAbility
 	{
 		public AtlasOF_Concentration(DBAbility dba, int level) : base(dba, level) { }
 
@@ -71,7 +67,7 @@ namespace DOL.GS.RealmAbilities
                     // Is Quickcast's cooldown actually active?
                     if (player.GetSkillDisabledDuration(player.GetAbility(Abilities.Quickcast)) > 0)
                     {
-                        player.TempProperties.setProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, 0);
+                        player.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, 0);
                         player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
                         DisableSkill(living);
 

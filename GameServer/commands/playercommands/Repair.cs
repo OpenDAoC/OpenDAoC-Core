@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Linq;
 using DOL.Database;
@@ -198,15 +199,15 @@ namespace DOL.GS.Commands
 			player.Out.SendTimerWindow("Repairing: " + obj.Name, repairDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
-			player.CraftTimer.Properties.setProperty("repair_player", player);
-			player.CraftTimer.Properties.setProperty("repair_target", obj);
+			player.CraftTimer.Properties.SetProperty("repair_player", player);
+			player.CraftTimer.Properties.SetProperty("repair_target", obj);
 			player.CraftTimer.Start(repairDuration * 1000);
 		}
 
 		private int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = (GamePlayer)timer.Properties.getProperty<object>("repair_player", null);
-			GameLiving obj = (GameLiving)timer.Properties.getProperty<object>("repair_target", null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>("repair_player", null);
+			GameLiving obj = timer.Properties.GetProperty<GameLiving>("repair_target", null);
 
 			if (player == null || obj == null)
 			{

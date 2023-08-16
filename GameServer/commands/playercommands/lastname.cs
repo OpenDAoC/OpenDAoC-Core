@@ -1,11 +1,5 @@
-/* 01/03/2005
-   Written by Gavinius */
-
 using System;
-using DOL.GS;
-using DOL.Database;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS.Commands
 {
@@ -65,7 +59,7 @@ namespace DOL.GS.Commands
 			/* If you type /lastname with no other arguments, clear your actual lastname */
 			if (args.Length < 2)
 			{
-				client.Player.TempProperties.setProperty(LASTNAME_WEAK, "");
+				client.Player.TempProperties.SetProperty(LASTNAME_WEAK, "");
 				client.Out.SendCustomDialog("Would you like to clear your last name?", new CustomDialogResponse(LastNameDialogResponse));
 				return;
 			}
@@ -101,7 +95,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			client.Player.TempProperties.setProperty(LASTNAME_WEAK, NewLastname);
+			client.Player.TempProperties.SetProperty(LASTNAME_WEAK, NewLastname);
 			client.Out.SendCustomDialog("Would you like to set your last name to \x000a" + NewLastname + "?", new CustomDialogResponse(LastNameDialogResponse));
 
 			return;
@@ -121,12 +115,8 @@ namespace DOL.GS.Commands
 
 		protected void LastNameDialogResponse(GamePlayer player, byte response)
 		{
-			string NewLastName =
-				(string)player.TempProperties.getProperty<object>(
-					LASTNAME_WEAK,
-					String.Empty
-				);
-			player.TempProperties.removeProperty(LASTNAME_WEAK);
+			string NewLastName = player.TempProperties.GetProperty(LASTNAME_WEAK, string.Empty);
+			player.TempProperties.RemoveProperty(LASTNAME_WEAK);
 
 			if (!(player.TargetObject is NameRegistrar))
 			{

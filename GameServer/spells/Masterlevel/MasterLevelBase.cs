@@ -799,6 +799,8 @@ namespace DOL.GS.Spells
     /// </summary>
     public class BanelordSnare : UnbreakableSpeedDecreaseSpellHandler
     {
+        private const string EFFECT_PROPERTY = "BanelordSnareProperty";
+
         public override bool HasPositiveEffect
         {
             get { return false; }
@@ -816,8 +818,8 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            ECSGameTimer timer = (ECSGameTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
-            effect.Owner.TempProperties.removeProperty(effect);
+            ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+            effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
             timer.Stop();
 
             effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);

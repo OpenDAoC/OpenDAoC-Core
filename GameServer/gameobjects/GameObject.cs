@@ -1081,9 +1081,9 @@ namespace DOL.GS
 				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
 					{
-						player.TempProperties.setProperty("isbeingbanned", true);
+						player.TempProperties.SetProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
@@ -1101,9 +1101,9 @@ namespace DOL.GS
 				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
 					{
-						player.TempProperties.setProperty("isbeingbanned", true);
+						player.TempProperties.SetProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
@@ -1121,9 +1121,9 @@ namespace DOL.GS
 				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
 					{
-						player.TempProperties.setProperty("isbeingbanned", true);
+						player.TempProperties.SetProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}
@@ -1141,9 +1141,9 @@ namespace DOL.GS
 				// Avoids server freeze.
 				if (CurrentRegion.GetZone(X, Y) == null)
 				{
-					if (this is GamePlayer player && !player.TempProperties.getProperty("isbeingbanned", false))
+					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
 					{
-						player.TempProperties.setProperty("isbeingbanned", true);
+						player.TempProperties.SetProperty("isbeingbanned", true);
 						player.MoveToBind();
 					}
 				}

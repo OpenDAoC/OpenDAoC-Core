@@ -38,8 +38,8 @@ public class AchievementReskinVendor : GameNPC
         if (base.Interact(player))
         {
             TurnTo(player, 500);
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
 
             if (item == null)
             {
@@ -135,8 +135,8 @@ public class AchievementReskinVendor : GameNPC
         SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
         );
         var tmp = (InventoryItem)item.Clone();
-        t.TempProperties.setProperty(TempProperty, item);
-        t.TempProperties.setProperty(DisplayedItem, tmp);
+        t.TempProperties.SetProperty(TempProperty, item);
+        t.TempProperties.SetProperty(DisplayedItem, tmp);
 
         return false;
     }
@@ -257,8 +257,8 @@ public class AchievementReskinVendor : GameNPC
                 return false;
             }
 
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
 
             InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
@@ -275,9 +275,9 @@ public class AchievementReskinVendor : GameNPC
                           "I have changed your item's model, you can now use it. \n\n" +
                           "I look forward to doing business with you in the future.");
 
-            player.TempProperties.removeProperty(TempProperty);
-            player.TempProperties.removeProperty(DisplayedItem);
-            player.TempProperties.removeProperty(TempModelID);
+            player.TempProperties.RemoveProperty(TempProperty);
+            player.TempProperties.RemoveProperty(DisplayedItem);
+            player.TempProperties.RemoveProperty(TempModelID);
 
             //Console.WriteLine($"item model: {item.Model} assignment {number}");
             player.Inventory.RemoveItem(item);
@@ -345,8 +345,8 @@ public class AchievementReskinVendor : GameNPC
                 SendReply(player, "I'm sorry, but you currently have no available inventoryspace for this Item.");
                 return;
             }
-            InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-            InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
+            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
 
             InventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
@@ -360,8 +360,8 @@ public class AchievementReskinVendor : GameNPC
             if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                 return;
 
-            player.TempProperties.removeProperty(TempProperty);
-            player.TempProperties.removeProperty(DisplayedItem);
+            player.TempProperties.RemoveProperty(TempProperty);
+            player.TempProperties.RemoveProperty(DisplayedItem);
 
             //only allow pads on valid slots: torso/hand/feet
             if (item.Item_Type != (int)eEquipmentItems.TORSO && item.Item_Type != (int)eEquipmentItems.HAND &&
@@ -523,10 +523,10 @@ public class AchievementReskinVendor : GameNPC
 
         GamePlayer player = source as GamePlayer;
         TurnTo(player.X, player.Y);
-        InventoryItem item = player.TempProperties.getProperty<InventoryItem>(TempProperty);
-        InventoryItem displayItem = player.TempProperties.getProperty<InventoryItem>(DisplayedItem);
-        int cachedModelID = player.TempProperties.getProperty<int>(TempModelID);
-        int cachedModelPrice = player.TempProperties.getProperty<int>(TempModelPrice);
+        InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
+        InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+        int cachedModelID = player.TempProperties.GetProperty<int>(TempModelID);
+        int cachedModelPrice = player.TempProperties.GetProperty<int>(TempModelPrice);
 
         int playerRealm = (int)player.Realm;
         int noneRealm = (int)eRealm.None;
@@ -644,8 +644,8 @@ public class AchievementReskinVendor : GameNPC
                         tmpItem.Model = tmp;
                     }
 
-                    player.TempProperties.setProperty(TempModelID, modelIDToAssign);
-                    player.TempProperties.setProperty(TempModelPrice, price);
+                    player.TempProperties.SetProperty(TempModelID, modelIDToAssign);
+                    player.TempProperties.SetProperty(TempModelPrice, price);
 
                 }
                 else
@@ -661,8 +661,8 @@ public class AchievementReskinVendor : GameNPC
     {
         if (response == 1)
         {
-            int cachedModelID = player.TempProperties.getProperty<int>(TempModelID);
-            int cachedModelPrice = player.TempProperties.getProperty<int>(TempModelPrice);
+            int cachedModelID = player.TempProperties.GetProperty<int>(TempModelID);
+            int cachedModelPrice = player.TempProperties.GetProperty<int>(TempModelPrice);
             SetModel(player, cachedModelID, cachedModelPrice);
         }
     }

@@ -16,13 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-using System;
-using System.Collections;
-using DOL.Database;
 using System.Collections.Generic;
+using DOL.Database;
 
-// Tolakram - January 7, 2012
- 
 namespace DOL.GS
 {
 	/// <summary>
@@ -183,7 +179,7 @@ namespace DOL.GS
 				updateItems.Add((int)toClientSlot, fromItem);
 
 				// for objects that support doing something when added (setting a price, for example)
-				player.TempProperties.setProperty(ITEM_BEING_ADDED, fromItem);
+				player.TempProperties.SetProperty(ITEM_BEING_ADDED, fromItem);
 
 				return updateItems;
 			}

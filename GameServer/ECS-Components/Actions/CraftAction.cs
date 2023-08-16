@@ -65,7 +65,7 @@ namespace DOL.GS
             _owner.craftComponent.CraftState = false;
             _finishedCraft = false;
             _owner.Out.SendCloseTimerWindow();
-            _owner.TempProperties.removeProperty("CraftQueueRemaining");
+            _owner.TempProperties.RemoveProperty("CraftQueueRemaining");
         }
 
         protected virtual void MakeItem()
@@ -73,8 +73,8 @@ namespace DOL.GS
             GamePlayer player = _owner as GamePlayer;
             Recipe recipe = _recipe;
             AbstractCraftingSkill skill = _skill;
-            int queue = player.TempProperties.getProperty<int>("CraftQueueLength");
-            int remainingToCraft = player.TempProperties.getProperty<int>("CraftQueueRemaining");
+            int queue = player.TempProperties.GetProperty<int>("CraftQueueLength");
+            int remainingToCraft = player.TempProperties.GetProperty<int>("CraftQueueRemaining");
 
             if (player == null || recipe == null || skill == null)
             {
@@ -114,7 +114,7 @@ namespace DOL.GS
             {
                 if (skill.CheckRawMaterials(player, recipe))
                 {
-                    player.TempProperties.setProperty("CraftQueueRemaining", --remainingToCraft);
+                    player.TempProperties.SetProperty("CraftQueueRemaining", --remainingToCraft);
                     _startTick = GameLoop.GameLoopTime + 1;
                     player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), skill.GetCraftingTime(player, recipe));
                     _finishedCraft = false;
@@ -125,7 +125,7 @@ namespace DOL.GS
             }
             else
             {
-                player.TempProperties.removeProperty("CraftQueueRemaining");
+                player.TempProperties.RemoveProperty("CraftQueueRemaining");
                 _finishedCraft = true;
             }
         }

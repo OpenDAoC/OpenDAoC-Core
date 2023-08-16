@@ -1,15 +1,5 @@
-﻿/*
-*
-* Atlas - Dismisses novelty pet
-*
-*/
+﻿using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
-using System.Collections;
-using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Language;
-using DOL.GS.Keeps;
-using DOL.GS.ServerRules;
 
 namespace DOL.GS.Commands
 {
@@ -24,7 +14,7 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "dismisspet"))
 				return;
 
-			if (client.Player.TempProperties.getProperty<bool>(NoveltyPetBrain.HAS_PET, false))
+			if (client.Player.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET, false))
 			{
 				foreach (GameSummonedPet pet in client.Player.GetNPCsInRadius(500))
 				{
@@ -33,7 +23,7 @@ namespace DOL.GS.Commands
 						if (pet.Owner == client.Player)
 						{
 							pet.RemoveFromWorld();
-							client.Player.TempProperties.removeProperty(NoveltyPetBrain.HAS_PET);
+							client.Player.TempProperties.RemoveProperty(NoveltyPetBrain.HAS_PET);
 							client.Player.MessageToSelf("You have dismissed your companion pet.",eChatType.CT_Spell);
 						}
 		

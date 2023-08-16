@@ -16,14 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.Events;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -117,7 +117,7 @@ namespace DOL.GS.Spells
 			if (target.EffectList.GetOfType<ChargeEffect>() != null)
 				return;
 
-			if (target.TempProperties.getProperty("Charging", false))
+			if (target.TempProperties.GetProperty("Charging", false))
 				return;
 
 			if (target.EffectList.GetOfType<ArmsLengthEffect>() != null)

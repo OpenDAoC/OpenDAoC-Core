@@ -16,13 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS.PacketHandler;
-using System.Reflection;
-using System.Collections;
-using DOL.Database;
 
-//By dinberg - so its him who you blame ;)
+using System;
+using System.Reflection;
+using DOL.Database;
+using DOL.GS.PacketHandler;
+
 namespace DOL.GS.Commands
 {
     [Cmd(
@@ -71,7 +70,7 @@ namespace DOL.GS.Commands
                 #region SetInstanceID
                 case "key":
 					string newKey = string.Join(" ", args, 2, args.Length - 2);
-                    client.Player.TempProperties.setProperty(INSTANCE_KEY, newKey);
+                    client.Player.TempProperties.SetProperty(INSTANCE_KEY, newKey);
 					SendMessage(client, "Instance key set to " + newKey);
 					break;
                 #endregion
@@ -223,7 +222,7 @@ namespace DOL.GS.Commands
 								throw new Exception("You need to provide a skin id.  A skin is the ID of the region you want this instance to look like.");
 							}
 
-							Instance newInstance = player.TempProperties.getProperty<object>(key, null) as Instance;
+							Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
 
 							if (newInstance != null)
 							{
@@ -242,7 +241,7 @@ namespace DOL.GS.Commands
 							{
 								SendMessage(client, "Instance created, now loading elements for instance '" + key + "' from the DB.");
 								newInstance.LoadFromDatabase(key);
-								player.TempProperties.setProperty(key, newInstance);
+								player.TempProperties.SetProperty(key, newInstance);
 							}
 						}
 						catch (Exception ex)
@@ -256,7 +255,7 @@ namespace DOL.GS.Commands
 				#region close
 				case "close":
 					{
-						Instance newInstance = player.TempProperties.getProperty<object>(key, null) as Instance;
+						Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
 
 						if (newInstance == null)
 						{
@@ -264,7 +263,7 @@ namespace DOL.GS.Commands
 						}
 						else
 						{
-							player.TempProperties.removeProperty(key);
+							player.TempProperties.RemoveProperty(key);
 							newInstance.DestroyWhenEmpty = true;
 							if (newInstance.NumPlayers == 0)
 							{
@@ -287,7 +286,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						Instance newInstance = player.TempProperties.getProperty<object>(key, null) as Instance;
+						Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
 
 						if (newInstance == null)
 						{
@@ -312,7 +311,7 @@ namespace DOL.GS.Commands
 
 							// save current position for use with /instance exit
 							GameLocation saveLocation = new GameLocation(player.Name + "_exit", player.CurrentRegionID, player.X, player.Y, player.Z);
-							player.TempProperties.setProperty(saveLocation.Name, saveLocation);
+							player.TempProperties.SetProperty(saveLocation.Name, saveLocation);
 
 							bool success = true;
 
@@ -345,7 +344,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GameLocation saveLocation = player.TempProperties.getProperty<object>(player.Name + "_exit", null) as GameLocation;
+						GameLocation saveLocation = player.TempProperties.GetProperty<GameLocation>(player.Name + "_exit", null);
 
 						if (saveLocation == null)
 						{
@@ -371,7 +370,7 @@ namespace DOL.GS.Commands
             string str = "";
             try
             {
-                str = (string)p.TempProperties.getProperty<object>(INSTANCE_KEY, "");
+                str = p.TempProperties.GetProperty<string>(INSTANCE_KEY, "");
             }
             catch { return ""; }
             return str;

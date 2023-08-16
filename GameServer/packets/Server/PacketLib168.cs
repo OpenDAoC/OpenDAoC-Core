@@ -1512,8 +1512,8 @@ namespace DOL.GS.PacketHandler
 
 			lock (m_gameClient.Player.TempProperties)
 			{
-				old_callback = (CheckLOSResponse) m_gameClient.Player.TempProperties.getProperty<object>(key, null);
-				m_gameClient.Player.TempProperties.setProperty(key, callback);
+				old_callback = m_gameClient.Player.TempProperties.GetProperty<CheckLOSResponse>(key, null);
+				m_gameClient.Player.TempProperties.SetProperty(key, callback);
 			}
 			if (old_callback != null)
 				old_callback(m_gameClient.Player, 0, 0);
@@ -1540,8 +1540,8 @@ namespace DOL.GS.PacketHandler
 
 			lock (m_gameClient.Player.TempProperties)
 			{
-				old_callback = (CheckLOSMgrResponse) m_gameClient.Player.TempProperties.getProperty<object>(key, null);
-				m_gameClient.Player.TempProperties.setProperty(key, callback);
+				old_callback = m_gameClient.Player.TempProperties.GetProperty<CheckLOSMgrResponse>(key, null);
+				m_gameClient.Player.TempProperties.SetProperty(key, callback);
 			}
 			if (old_callback != null)
 				old_callback(m_gameClient.Player, 0, 0, 0);

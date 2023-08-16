@@ -166,7 +166,7 @@ public class PredatorManager
     {
         if (player.PredatorTimeoutTimer.IsAlive) return;
         player.PredatorTimeoutTimer = new ECSGameTimer(player);
-        player.PredatorTimeoutTimer.Properties.setProperty(TimeoutTickKey, GameLoop.GameLoopTime);
+        player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoop.GameLoopTime);
         player.PredatorTimeoutTimer.Callback = new ECSGameTimer.ECSTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
@@ -602,7 +602,7 @@ public class PredatorManager
         {
             if (!PredatorManager.PlayerIsActive(pl)) return 0;
             
-            long TimerStartTime = timer.Properties.getProperty<long>(TimeoutTickKey);
+            long TimerStartTime = timer.Properties.GetProperty<long>(TimeoutTickKey);
 
             long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
             if (secondsleft > 0)

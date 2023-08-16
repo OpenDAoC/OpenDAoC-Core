@@ -93,9 +93,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					player.Notify(GamePlayerEvent.RegionChanged, player);
 				}
-				if (player.TempProperties.getProperty(GamePlayer.RELEASING_PROPERTY, false))
+				if (player.TempProperties.GetProperty(GamePlayer.RELEASING_PROPERTY, false))
 				{
-					player.TempProperties.removeProperty(GamePlayer.RELEASING_PROPERTY);
+					player.TempProperties.RemoveProperty(GamePlayer.RELEASING_PROPERTY);
 					player.Notify(GamePlayerEvent.Revive, player);
 					player.Notify(GamePlayerEvent.Released, player);
 				}
@@ -190,7 +190,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								long longresult = 0;
 								if (long.TryParse(container.Value, out longresult))
 								{
-									player.TempProperties.setProperty(container.TempPropString, longresult);
+									player.TempProperties.SetProperty(container.TempPropString, longresult);
 
 									if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 										Log.Debug("Container " + container.TempPropString + " with value " + container.Value + " for player " + player.Name + " was removed from container list, tempproperties added");

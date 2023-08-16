@@ -104,7 +104,7 @@ namespace DOL.GS
 
             if (base.FinalizeRangedAttack())
             {
-                _playerOwner.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+                _playerOwner.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
                 return true;
             }
 

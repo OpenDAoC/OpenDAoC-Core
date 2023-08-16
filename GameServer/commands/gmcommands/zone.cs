@@ -16,13 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using System;
+using System.Collections.Generic;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
@@ -189,7 +187,7 @@ namespace DOL.GS.Commands
 
 				if (args[6].ToLower().StartsWith("t"))
 				{
-					client.Player.TempProperties.setProperty("ZONE_BONUS_SAVE", zone);
+					client.Player.TempProperties.SetProperty("ZONE_BONUS_SAVE", zone);
 					client.Player.Out.SendCustomDialog(string.Format("Are you sure you wan't to over write {0} in the database?", zone.Description), new CustomDialogResponse(AreYouSure));
 				}
 				else
@@ -206,12 +204,12 @@ namespace DOL.GS.Commands
         public static void AreYouSure(GamePlayer player, byte response)
         {
             //here we get the zones new info.
-            Zone zone = player.TempProperties.getProperty<Zone>("ZONE_BONUS_SAVE");
+            Zone zone = player.TempProperties.GetProperty<Zone>("ZONE_BONUS_SAVE");
 
             if (response != 0x01)
             {
                 player.Out.SendCustomDialog(string.Format("{0}'s bonuses will not be saved to the database!", zone.Description), null);
-                player.TempProperties.removeProperty("ZONE_BONUS_SAVE");
+                player.TempProperties.RemoveProperty("ZONE_BONUS_SAVE");
                 return;
             }
 
@@ -227,7 +225,7 @@ namespace DOL.GS.Commands
             player.Out.SendCustomDialog(string.Format("{0}'s new zone bonuses have been updated to the database and changes have already taken effect!", zone.Description), null);
             
             //remove the property.
-            player.TempProperties.removeProperty("ZONE_BONUS_SAVE");
+            player.TempProperties.RemoveProperty("ZONE_BONUS_SAVE");
         }
     }
 }

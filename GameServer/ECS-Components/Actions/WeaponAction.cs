@@ -150,7 +150,7 @@ namespace DOL.GS
             else
                 mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
 
-            m_owner.TempProperties.setProperty(LAST_ATTACK_DATA, mainHandAD);
+            m_owner.TempProperties.SetProperty(LAST_ATTACK_DATA, mainHandAD);
 
             if (mainHandAD.Target == null ||
                 mainHandAD.AttackResult == eAttackResult.OutOfRange ||
@@ -223,7 +223,7 @@ namespace DOL.GS
             mainHandAD.Target.HandleDamageShields(mainHandAD);
 
             // Remove the left-hand AttackData from the previous attack.
-            m_owner.TempProperties.removeProperty(LAST_ATTACK_DATA_LH);
+            m_owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA_LH);
 
             // Now left hand damage.
             if (leftHandSwingCount > 0 && mainWeapon.SlotPosition != Slot.RANGED)
@@ -262,7 +262,7 @@ namespace DOL.GS
                                 }
                             }
 
-                            m_owner.TempProperties.setProperty(LAST_ATTACK_DATA_LH, leftHandAD);
+                            m_owner.TempProperties.SetProperty(LAST_ATTACK_DATA_LH, leftHandAD);
                             leftHandAD.Target.HandleDamageShields(leftHandAD);
 
                             // Reflex Attack - Offhand.

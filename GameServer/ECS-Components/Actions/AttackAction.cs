@@ -109,11 +109,11 @@ namespace DOL.GS
                 return false;
             }
 
-            _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
 
             if (!_attackComponent.AttackState)
             {
-                _owner.TempProperties.removeProperty(LAST_ATTACK_DATA);
+                _owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA);
 
                 if (_attackData?.Target != null)
                     _attackData.Target.attackComponent.RemoveAttacker(_owner);
@@ -268,7 +268,7 @@ namespace DOL.GS
                     // and the resulting interrupt will last 1.5 seconds."
 
                     long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
+                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
 
                     if (elapsedTime < rapidFireMaxDuration)
                     {
@@ -301,7 +301,7 @@ namespace DOL.GS
         {
             _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _interruptDuration, _combatStyle);
             _attackComponent.weaponAction.Execute();
-            _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
 
         protected virtual void PerformRangedAttack()
@@ -322,7 +322,7 @@ namespace DOL.GS
             else
                 _attackComponent.weaponAction.Execute();
 
-            _attackData = _owner.TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
 
         protected virtual bool FinalizeMeleeAttack()

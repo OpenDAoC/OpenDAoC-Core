@@ -134,11 +134,11 @@ namespace DOL.GS
 					}
 				}
 
-				var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("cuuldurach_messengers");
+				var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("cuuldurach_messengers");
 				if (spawnMessengers != null)
 				{
 					spawnMessengers.Stop();
-					TempProperties.removeProperty("cuuldurach_messengers");
+					TempProperties.RemoveProperty("cuuldurach_messengers");
 				}
 
 				AwardDragonKillPoint();
@@ -368,30 +368,30 @@ namespace DOL.AI.Brain
 					if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
 						randomlyPickedPlayers.Clear();
 
-					var prepareGlare = Body.TempProperties.getProperty<ECSGameTimer>("cuuldurach_glare");
+					var prepareGlare = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_glare");
 					if(prepareGlare != null)
                     {
 						prepareGlare.Stop();
-						Body.TempProperties.removeProperty("cuuldurach_glare");
+						Body.TempProperties.RemoveProperty("cuuldurach_glare");
                     }
-					var prepareStun = Body.TempProperties.getProperty<ECSGameTimer>("cuuldurach_stun");
+					var prepareStun = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_stun");
 					if (prepareStun != null)
 					{
 						prepareStun.Stop();
-						Body.TempProperties.removeProperty("cuuldurach_stun");
+						Body.TempProperties.RemoveProperty("cuuldurach_stun");
 					}
-					var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("cuuldurach_throw");
+					var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_throw");
 					if (throwPlayer != null)
 					{
 						throwPlayer.Stop();
-						Body.TempProperties.removeProperty("cuuldurach_throw");
+						Body.TempProperties.RemoveProperty("cuuldurach_throw");
 					}
-					var spawnMessengers = Body.TempProperties.getProperty<ECSGameTimer>("cuuldurach_messengers");
+					var spawnMessengers = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_messengers");
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
 						CanSpawnMessengers = false;
-						Body.TempProperties.removeProperty("cuuldurach_messengers");
+						Body.TempProperties.RemoveProperty("cuuldurach_messengers");
 					}                   
                 }
 				#endregion
@@ -479,25 +479,25 @@ namespace DOL.AI.Brain
 				if (CanThrow == false && !IsRestless)
 				{
 					ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(60000, 80000));//Teleport 2-5 Players every 60-80s
-					Body.TempProperties.setProperty("cuuldurach_throw", throwPlayer);
+					Body.TempProperties.SetProperty("cuuldurach_throw", throwPlayer);
 					CanThrow = true;
 				}
 				if (CanGlare == false && !Body.IsCasting && !IsRestless)
 				{
 					ECSGameTimer prepareGlare = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
-					Body.TempProperties.setProperty("cuuldurach_glare", prepareGlare);
+					Body.TempProperties.SetProperty("cuuldurach_glare", prepareGlare);
 					CanGlare = true;
 				}
 				if (CanStun == false && !Body.IsCasting && !IsRestless)
 				{
 					ECSGameTimer prepareStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
-					Body.TempProperties.setProperty("cuuldurach_stun", prepareStun);
+					Body.TempProperties.SetProperty("cuuldurach_stun", prepareStun);
 					CanStun = true;
 				}
 				if (Body.HealthPercent <= 50 && CanSpawnMessengers == false && !IsRestless)
 				{
 					ECSGameTimer spawnMessengers = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
-					Body.TempProperties.setProperty("cuuldurach_messengers", spawnMessengers);
+					Body.TempProperties.SetProperty("cuuldurach_messengers", spawnMessengers);
 					CanSpawnMessengers = true;
 				}
 			}

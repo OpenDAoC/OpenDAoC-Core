@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -91,7 +92,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			AbstractGameKeep myKeep = (AbstractGameKeep)client.Player.TempProperties.getProperty<object>(TEMP_KEEP_LAST, null);
+			AbstractGameKeep myKeep = client.Player.TempProperties.GetProperty<AbstractGameKeep>(TEMP_KEEP_LAST, null);
 			if (myKeep == null) myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 10000);
 			
 			switch (args[1])
@@ -1964,7 +1965,7 @@ namespace DOL.GS.Commands
 
 						log.Debug("Keep creation: used keep type " + ((eKeepTypes)keepType));
 
-						client.Player.TempProperties.setProperty(TEMP_KEEP_LAST, keep);
+						client.Player.TempProperties.SetProperty(TEMP_KEEP_LAST, keep);
 						foreach (GameKeepComponent comp in keep.KeepComponents)
 						{
 							if (comp.InternalID != null)
@@ -2173,7 +2174,7 @@ namespace DOL.GS.Commands
 
 							(door as GameObject).Delete();
 						}
-						client.Player.TempProperties.setProperty(TEMP_KEEP_LAST, k);
+						client.Player.TempProperties.SetProperty(TEMP_KEEP_LAST, k);
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.FastCreate.KeepCreated"));
 
 						//send the creation packets

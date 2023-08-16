@@ -16,18 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.GS.Keeps;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	[SpellHandlerAttribute("DirectDamage")]
 	public class DirectDamageSpellHandler : SpellHandler
 	{
@@ -124,7 +120,7 @@ namespace DOL.GS.Spells
 				}
 				if (checkPlayer != null)
 				{
-                    checkPlayer.TempProperties.setProperty(LOSEFFECTIVENESS + target.ObjectID, effectiveness);
+                    checkPlayer.TempProperties.SetProperty(LOSEFFECTIVENESS + target.ObjectID, effectiveness);
 					checkPlayer.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(DealDamageCheckLOS));
 				}
 				else
@@ -150,9 +146,9 @@ namespace DOL.GS.Spells
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
 					if (target != null)
 					{
-                        double effectiveness = player.TempProperties.getProperty<double>(LOSEFFECTIVENESS + target.ObjectID, 1.0);
+                        double effectiveness = player.TempProperties.GetProperty<double>(LOSEFFECTIVENESS + target.ObjectID, 1.0);
 						DealDamage(target, effectiveness);
-                        player.TempProperties.removeProperty(LOSEFFECTIVENESS + target.ObjectID);
+                        player.TempProperties.RemoveProperty(LOSEFFECTIVENESS + target.ObjectID);
 						// Due to LOS check delay the actual cast happens after FinishSpellCast does a notify, so we notify again
 						GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 					}

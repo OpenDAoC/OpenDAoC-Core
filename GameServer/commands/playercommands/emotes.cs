@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -117,10 +117,10 @@ namespace DOL.GS.Commands
 				}
 			}
 			const string EMOTE_TICK = "Emote_Tick";
-			long Tick = client.Player.TempProperties.getProperty<long>(EMOTE_TICK);
+			long Tick = client.Player.TempProperties.GetProperty<long>(EMOTE_TICK);
 			if (Tick > 0 && client.Player.CurrentRegion.Time - Tick  <= 0) //
 			{
-				client.Player.TempProperties.removeProperty(EMOTE_TICK);
+				client.Player.TempProperties.RemoveProperty(EMOTE_TICK);
 			}
 			
 			long changeTime = client.Player.CurrentRegion.Time - Tick;
@@ -130,7 +130,7 @@ namespace DOL.GS.Commands
 				client.Player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			client.Player.TempProperties.setProperty(EMOTE_TICK, client.Player.CurrentRegion.Time);
+			client.Player.TempProperties.SetProperty(EMOTE_TICK, client.Player.CurrentRegion.Time);
 			eEmote emoteID;
 			string[] emoteMessages;
 

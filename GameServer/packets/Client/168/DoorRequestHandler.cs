@@ -150,7 +150,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if (doorType != 9 && client.Account.PrivLevel > 1 && client.Player.CurrentRegion.IsInstance == false)
 				{
-					if (client.Player.TempProperties.getProperty(DoorMgr.WANT_TO_ADD_DOORS, false))
+					if (client.Player.TempProperties.GetProperty(DoorMgr.WANT_TO_ADD_DOORS, false))
 					{
 						client.Player.Out.SendCustomDialog(
 							"This door is not in the database. Place yourself nearest to this door and click Accept to add it.", AddingDoor);

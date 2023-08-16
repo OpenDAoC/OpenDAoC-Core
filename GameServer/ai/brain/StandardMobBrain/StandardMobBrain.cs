@@ -454,7 +454,6 @@ namespace DOL.AI.Brain
             lock ((AggroTable as ICollection).SyncRoot)
             {
                 AggroTable.Clear();
-                Body.TempProperties.removeProperty(Body.attackComponent.Attackers);
             }
         }
 
@@ -750,7 +749,7 @@ namespace DOL.AI.Brain
             HashSet<String> countedVictims = null;
             HashSet<String> countedAttackers = null;
 
-            BattleGroup bg = puller.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) as BattleGroup;
+            BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
             // Check group first to minimize the number of HashSet.Add() calls
             if (puller.Group is Group group)

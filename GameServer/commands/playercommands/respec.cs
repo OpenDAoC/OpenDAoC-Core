@@ -16,27 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-// Respec script Version 1.0 by Echostorm
-/* Ver 1.0 Notes:
- * With changes to the core the respec system adds a new (allowed null) field to the DOL character file called RespecAllSkill that contains an integer.
- * All characters with 1 or more in their RespecAllSkill field, who are targeting their trainer will be able to Respec, or reset their spec
- *		points to their full amount and return their specs to 1 clearing their style and spell lists.  One respec is deducted each time.
- * Characters recieve 1 respec upon creation, and 2 more at 20th and 40th levels.  Respecs are currently cumulative due to the high
- *		demand.
- * Respec stones have been added to default item template to prevent confustion with item databases.  They can be created via the /item command
- *		by typing /item create respec_full | respec_single | respec_realm.
- * Respec stones may be turned in to trainers for respecs.
- * 
- * TODO: include autotrains in the formula
- * TODO: realm respec
- * 
- * Suncheck:
- * 	Added: /respec buy
- */
-
 
 using System;
-using System.Collections;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -150,7 +131,7 @@ namespace DOL.GS.Commands
                         }
 
                         client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-                        client.Player.TempProperties.setProperty(ALL_RESPEC, true);
+                        client.Player.TempProperties.SetProperty(ALL_RESPEC, true);
 
 						break;
 					}
@@ -180,7 +161,7 @@ namespace DOL.GS.Commands
                             }
                         }
 						client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-						client.Player.TempProperties.setProperty(RA_RESPEC, true);
+						client.Player.TempProperties.SetProperty(RA_RESPEC, true);
 						break;
 					}
 				//case "champion":
@@ -220,7 +201,7 @@ namespace DOL.GS.Commands
 						}
 
 						client.Out.SendCustomDialog("CAUTION: All respec changes are final with no second chance. Proceed carefully!", new CustomDialogResponse(RespecDialogResponse));
-						client.Player.TempProperties.setProperty(LINE_RESPEC, specLine);
+						client.Player.TempProperties.SetProperty(LINE_RESPEC, specLine);
 						break;
 					}
 			}
@@ -235,35 +216,35 @@ namespace DOL.GS.Commands
 			int specPoints = player.SkillSpecialtyPoints;
 			int realmSpecPoints = player.RealmSpecialtyPoints;
 
-			if (player.TempProperties.getProperty(ALL_RESPEC, false))
+			if (player.TempProperties.GetProperty(ALL_RESPEC, false))
 			{
 				player.RespecAll();
-				player.TempProperties.removeProperty(ALL_RESPEC);
+				player.TempProperties.RemoveProperty(ALL_RESPEC);
 			}
-			if (player.TempProperties.getProperty(DOL_RESPEC, false))
+			if (player.TempProperties.GetProperty(DOL_RESPEC, false))
 			{
 				player.RespecDOL();
-				player.TempProperties.removeProperty(DOL_RESPEC);
+				player.TempProperties.RemoveProperty(DOL_RESPEC);
 			}
-			if (player.TempProperties.getProperty(RA_RESPEC, false))
+			if (player.TempProperties.GetProperty(RA_RESPEC, false))
 			{
 				player.RespecRealm();
-				player.TempProperties.removeProperty(RA_RESPEC);
+				player.TempProperties.RemoveProperty(RA_RESPEC);
 			}
-			if (player.TempProperties.getProperty(CHAMP_RESPEC, false))
+			if (player.TempProperties.GetProperty(CHAMP_RESPEC, false))
 			{
 				player.RespecChampionSkills();
-				player.TempProperties.removeProperty(CHAMP_RESPEC);
+				player.TempProperties.RemoveProperty(CHAMP_RESPEC);
 			}
-			if (player.TempProperties.getProperty<object>(LINE_RESPEC, null) != null)
+			Specialization specLine = player.TempProperties.GetProperty<Specialization>(LINE_RESPEC, null);
+			if (specLine != null)
 			{
-				Specialization specLine = (Specialization)player.TempProperties.getProperty<object>(LINE_RESPEC, null);
 				player.RespecSingle(specLine);
-				player.TempProperties.removeProperty(LINE_RESPEC);
+				player.TempProperties.RemoveProperty(LINE_RESPEC);
 			}
-			if (player.TempProperties.getProperty(BUY_RESPEC, false))
+			if (player.TempProperties.GetProperty(BUY_RESPEC, false))
 			{
-				player.TempProperties.removeProperty(BUY_RESPEC);
+				player.TempProperties.RemoveProperty(BUY_RESPEC);
 				if (player.RespecCost >= 0 && player.RemoveMoney(player.RespecCost * 10000))
 				{
                     InventoryLogging.LogInventoryAction(player, "(respec)", eInventoryActionType.Merchant, player.RespecCost * 10000);

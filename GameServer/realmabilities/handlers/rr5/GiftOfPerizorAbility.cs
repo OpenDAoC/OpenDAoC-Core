@@ -17,11 +17,10 @@
  *
  */
 
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
-using System.Collections.Generic;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -63,7 +62,7 @@ namespace DOL.GS.RealmAbilities
 					if (!target.IsAlive) continue;
 					GiftOfPerizorEffect GiftOfPerizor = target.EffectList.GetOfType<GiftOfPerizorEffect>();
 					if (GiftOfPerizor != null) GiftOfPerizor.Cancel(false);
-					target.TempProperties.setProperty("GiftOfPerizorOwner", player);
+					target.TempProperties.SetProperty("GiftOfPerizorOwner", player);
 					new GiftOfPerizorEffect().Start(target);
 				}
 			}
@@ -86,5 +85,3 @@ namespace DOL.GS.RealmAbilities
 
     }
 }
-
-

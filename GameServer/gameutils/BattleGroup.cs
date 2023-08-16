@@ -105,7 +105,7 @@ namespace DOL.GS
 			{
 				if (m_battlegroupMembers.Contains(player))
 					return false;
-				player.TempProperties.setProperty(BATTLEGROUP_PROPERTY, this);
+				player.TempProperties.SetProperty(BATTLEGROUP_PROPERTY, this);
                 player.Out.SendMessage("You join the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
@@ -347,7 +347,7 @@ namespace DOL.GS
 					return false;
 				var leader = IsBGLeader(player);
 				m_battlegroupMembers.Remove(player);
-				player.TempProperties.removeProperty(BATTLEGROUP_PROPERTY);
+				player.TempProperties.RemoveProperty(BATTLEGROUP_PROPERTY);
 				player.isInBG = false; //Xarik: Player is no more in the BG
                 player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)

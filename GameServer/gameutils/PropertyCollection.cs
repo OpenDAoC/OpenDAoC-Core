@@ -25,109 +25,71 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Holds properties of different types
-	/// </summary>
-	public class PropertyCollection
-	{
-		/// <summary>
-		/// Define a logger for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public class PropertyCollection
+    {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// Container of properties
-		/// </summary>
-		private readonly ConcurrentDictionary<object, object> _props = new();
+        private readonly ConcurrentDictionary<string, object> _properties = new();
 
-		/// <summary>
-		/// Retrieve a property
-		/// </summary>
-		/// <param name="key">key</param>
-		/// <param name="def">default value</param>
-		/// <param name="loggued">loggued if the value is not found</param>
-		/// <returns>value in properties or default value if not found</returns>
-		public T getProperty<T>(object key)
-		{
-			return getProperty<T>(key, default(T));
-		}
+        public T GetProperty<T>(string key)
+        {
+            return GetProperty(key, default(T));
+        }
 
-		public T getProperty<T>(object key, T def)
-		{
-			return getProperty<T>(key, def, false);
-		}
+        public T GetProperty<T>(string key, T @default)
+        {
+            return GetProperty(key, @default, false);
+        }
 
-		public T getProperty<T>(object key, T def, bool loggued)
-		{
-			object val;
+        public T GetProperty<T>(string key, T @default, bool logged)
+        {
+            bool exists = _properties.TryGetValue(key, out object value);
 
-			bool exists = _props.TryGetValue(key, out val);
+            if (!exists)
+            {
+                if (Log.IsWarnEnabled && logged)
+                    Log.Warn($"Property {key} is required but not found, default value {@default} will be used.");
 
-			if (loggued)
-			{
-				if (!exists)
-				{
-					if (Log.IsWarnEnabled)
-						Log.Warn("Property '" + key + "' is required but not found, default value '" + def + "' is used.");
-					
-					return def;
-				}
-			}
-			
-			if (val is T)
-				return (T)val;
-			
-			return def;
-		}
-		
-		/// <summary>
-		/// Set a property
-		/// </summary>
-		/// <param name="key">key</param>
-		/// <param name="val">value</param>
-		public void setProperty(object key, object val)
-		{
-			if (val == null)
-				_props.TryRemove(key, out _);
-			else
-				_props[key] = val;
-		}
+                return @default;
+            }
 
-		/// <summary>
-		/// Remove a property
-		/// </summary>
-		/// <param name="key">key</param>
-		public void removeProperty(object key)
-		{
-			_props.TryRemove(key, out _);
-		}
+            if (value is not T result)
+            {
+                if (Log.IsWarnEnabled && logged)
+                    Log.Warn($"Property {key} found, but {value} isn't of the type provided {typeof(T)}, default value {@default} will be used.");
 
-		/// <summary>
-		/// Remove a property and return its value.
-		/// </summary>
-		/// <param name="key">key</param>
-		/// <param name="val">value</param>
-		/// <returns>True if the property exists and was removed</returns>
-		public bool removeAndGetProperty(object key, out object val)
-		{
-			return _props.TryRemove(key, out val);
-		}
+                return @default;
+            }
 
-		/// <summary>
-		/// List all properties
-		/// </summary>
-		/// <returns></returns>
-		public List<string> getAllProperties()
-		{
-			return _props.Keys.Cast<string>().ToList();
-		}
+            return result;
+        }
 
-		/// <summary>
-		/// Remove all properties
-		/// </summary>
-		public void removeAllProperties()
-		{
-			_props.Clear();
-		}
-	}
+        public void SetProperty(string key, object value)
+        {
+            if (value == null)
+                _properties.TryRemove(key, out _);
+            else
+                _properties[key] = value;
+        }
+
+        public void RemoveProperty(string key)
+        {
+            _properties.TryRemove(key, out _);
+        }
+
+        public bool RemoveAndGetProperty(string key, out object value)
+        {
+            return _properties.TryRemove(key, out value);
+        }
+
+        public List<string> GetAllProperties()
+        {
+            return _properties.Keys.ToList();
+        }
+
+        public void RemoveAllProperties()
+        {
+            _properties.Clear();
+        }
+    }
 }

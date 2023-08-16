@@ -16,13 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using System.Reflection;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Commands
 {
@@ -47,7 +46,7 @@ namespace DOL.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			Faction myfaction = (Faction)client.Player.TempProperties.getProperty<object>(TEMP_FACTION_LAST, null);
+			Faction myfaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST, null);
 			switch (args[1])
 			{
 				#region Create
@@ -93,7 +92,7 @@ namespace DOL.GS.Commands
 						myfaction = new Faction();
 						myfaction.LoadFromDatabase(dbfaction);
 						FactionMgr.Factions.Add(dbfaction.ID, myfaction);
-						client.Player.TempProperties.setProperty(TEMP_FACTION_LAST, myfaction);
+						client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, myfaction);
 						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Create.NewCreated"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 					}
 					break;
@@ -226,7 +225,7 @@ namespace DOL.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						client.Player.TempProperties.setProperty(TEMP_FACTION_LAST, tempfaction);
+						client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, tempfaction);
 					}
 					break;
 				#endregion Select

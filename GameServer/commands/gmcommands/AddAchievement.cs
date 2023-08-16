@@ -66,7 +66,7 @@ namespace DOL.GS.Commands
             } 
             else if (args[1] == "addbg")
             {
-                var bg = (BattleGroup)client.Player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
                 if (bg == null)
                 {
@@ -108,8 +108,8 @@ namespace DOL.GS.Commands
             }
             
             // to remove
-            client.Player.TempProperties.setProperty("AchievementName", achievementName);
-            client.Player.TempProperties.setProperty("targetPlayers", targetPlayers);
+            client.Player.TempProperties.SetProperty("AchievementName", achievementName);
+            client.Player.TempProperties.SetProperty("targetPlayers", targetPlayers);
             
             client.Out.SendCustomDialog($"Confirm adding the achievement \"{achievementName}\" to {count} player(s)?", AddAchievementResponseHandler);
         }
@@ -118,8 +118,8 @@ namespace DOL.GS.Commands
         {
             if (response == 1)
             {
-                var targetPlayers = player.TempProperties.getProperty<List<GamePlayer>>("targetPlayers");
-                var achievementName = player.TempProperties.getProperty<string>("AchievementName");
+                var targetPlayers = player.TempProperties.GetProperty<List<GamePlayer>>("targetPlayers");
+                var achievementName = player.TempProperties.GetProperty<string>("AchievementName");
 
                 if (targetPlayers == null || achievementName == null)
                 {
@@ -144,8 +144,8 @@ namespace DOL.GS.Commands
                 player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
             
-            player.TempProperties.removeProperty("AchievementName");
-            player.TempProperties.removeProperty("targetPlayers");
+            player.TempProperties.RemoveProperty("AchievementName");
+            player.TempProperties.RemoveProperty("targetPlayers");
         }
     }
 }

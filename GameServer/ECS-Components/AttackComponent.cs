@@ -624,7 +624,7 @@ namespace DOL.GS
                     return;
                 }
 
-                long vanishTimeout = player.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long vanishTimeout = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
                 {
                     player.Out.SendMessage(
@@ -634,7 +634,7 @@ namespace DOL.GS
                     return;
                 }
 
-                long VanishTick = player.TempProperties.getProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long VanishTick = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 long changeTime = GameLoop.GameLoopTime - VanishTick;
                 if (changeTime < 30000 && VanishTick > 0)
                 {
@@ -802,7 +802,7 @@ namespace DOL.GS
                         player.Out.SendAttackMode(AttackState);
                     else
                     {
-                        player.TempProperties.setProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
 
                         string typeMsg = "shot";
                         if (attackWeapon.Object_Type == (int) eObjectType.Thrown)
@@ -2173,7 +2173,7 @@ namespace DOL.GS
             GameSpellEffect grapple = null;
             GameSpellEffect brittleguard = null;
 
-            AttackData lastAD = owner.TempProperties.getProperty<AttackData>(LAST_ATTACK_DATA, null);
+            AttackData lastAD = owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
             bool defenseDisabled = ad.Target.IsMezzed | ad.Target.IsStunned | ad.Target.IsSitting;
 
             GamePlayer playerOwner = owner as GamePlayer;

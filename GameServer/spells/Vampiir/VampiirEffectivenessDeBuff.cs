@@ -16,13 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
-using DOL.Events;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -43,7 +40,7 @@ namespace DOL.GS.Spells
 			{
 				base.OnEffectStart(effect);
 				GamePlayer player = effect.Owner as GamePlayer;
-				player.TempProperties.setProperty("PreEffectivenessDebuff", player.Effectiveness);
+				player.TempProperties.SetProperty("PreEffectivenessDebuff", player.Effectiveness);
 
 
 				double effectiveness =  player.Effectiveness;
@@ -76,8 +73,8 @@ namespace DOL.GS.Spells
 			if (effect.Owner is GamePlayer)
 			{
 				GamePlayer player = effect.Owner as GamePlayer;
-				player.Effectiveness = player.TempProperties.getProperty<double>("PreEffectivenessDebuff");
-				player.TempProperties.removeProperty("PreEffectivenessDebuff");
+				player.Effectiveness = player.TempProperties.GetProperty<double>("PreEffectivenessDebuff");
+				player.TempProperties.RemoveProperty("PreEffectivenessDebuff");
 				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_Spell);
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 

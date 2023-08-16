@@ -14,33 +14,26 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*///made by Yemla, based off Alblative
+ *
+ */
+
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-
 using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Events;
-using log4net;
-using System.Collections;
-using DOL.GS;
-using DOL.AI.Brain;
-using DOL.GS.Keeps;
-
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
 	[SpellHandlerAttribute("DmgReductionAndPowerReturn")]
-   public class DamageReductionAndPowerReturnSpellHandler : SpellHandler
-   {
+	public class DamageReductionAndPowerReturnSpellHandler : SpellHandler
+	{
 		public const string Damage_Reduction = "damage reduction";
 
 	  public override void OnEffectStart(GameSpellEffect effect)
 	  {
-			effect.Owner.TempProperties.setProperty(Damage_Reduction, 100000);         
+			effect.Owner.TempProperties.SetProperty(Damage_Reduction, 100000);         
 		 GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 
 		 eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
@@ -59,7 +52,7 @@ namespace DOL.GS.Spells
 	  public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 	  {
 		 GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			effect.Owner.TempProperties.removeProperty(Damage_Reduction);         
+			effect.Owner.TempProperties.RemoveProperty(Damage_Reduction);         
 		 if (!noMessages && Spell.Pulse == 0)
 		 {
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
@@ -84,7 +77,7 @@ namespace DOL.GS.Spells
 
 //         Log.DebugFormat("sender:{0} res:{1} IsMelee:{2} Type:{3}", living.Name, ad.AttackResult, ad.IsMeleeAttack, ad.AttackType);
 
-			int damagereduction = living.TempProperties.getProperty<int>(Damage_Reduction);
+			int damagereduction = living.TempProperties.GetProperty<int>(Damage_Reduction);
 		 double absorbPercent = Spell.Damage;
 		 int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage+ad.CriticalDamage));
 			if (damageAbsorbed > damagereduction)
@@ -111,7 +104,7 @@ namespace DOL.GS.Spells
 		 }
 		 else
 		 {
-				living.TempProperties.setProperty(Damage_Reduction, damagereduction);
+				living.TempProperties.SetProperty(Damage_Reduction, damagereduction);
 		 }
 	  }
 
@@ -137,14 +130,14 @@ namespace DOL.GS.Spells
 
 	  public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
 	  {
-			effect.Owner.TempProperties.setProperty(Damage_Reduction, (int)vars[1]);
+			effect.Owner.TempProperties.SetProperty(Damage_Reduction, (int)vars[1]);
 		 GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 	  }
 
 	  public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)
 	  {
 		 GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			effect.Owner.TempProperties.removeProperty(Damage_Reduction);
+			effect.Owner.TempProperties.RemoveProperty(Damage_Reduction);
 		 if (!noMessages && Spell.Pulse == 0)
 		 {
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);

@@ -66,15 +66,13 @@ namespace DOL.GS
             Relic = MinotaurRelicManager.GetRelic(1);
             LockRelic();
 
-
-
-            TempProperties.setProperty(ALREADY_GOT_HELP, false);
+            TempProperties.SetProperty(ALREADY_GOT_HELP, false);
 
             return base.AddToWorld();
         }
         public override void StartAttack(GameObject target)
         {
-            if (!TempProperties.getProperty<bool>(ALREADY_GOT_HELP))
+            if (!TempProperties.GetProperty<bool>(ALREADY_GOT_HELP))
             {
                 foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
@@ -83,7 +81,7 @@ namespace DOL.GS
                     npc.attackComponent.RequestStartAttack(target);
                 }
 
-                TempProperties.setProperty(ALREADY_GOT_HELP, true);
+                TempProperties.SetProperty(ALREADY_GOT_HELP, true);
             }
 
             base.StartAttack(target);
@@ -92,7 +90,7 @@ namespace DOL.GS
         {
             base.Die(killer);
 
-            TempProperties.setProperty(ALREADY_GOT_HELP, false);
+            TempProperties.SetProperty(ALREADY_GOT_HELP, false);
 
             //when the protector is dead, the relic should be unlocked!
             UnlockRelic();

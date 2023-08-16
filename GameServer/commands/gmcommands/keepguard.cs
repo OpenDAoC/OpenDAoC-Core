@@ -383,8 +383,8 @@ namespace DOL.GS.Commands
 									RemoveAllTempPathObjects(client);
 
 									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, ePathType.Once);
-									client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, startpoint);
-									client.Player.TempProperties.setProperty(TEMP_PATH_LAST, startpoint);
+									client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
+									client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
 									client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.CreationStarted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									CreateTempPathObject(client, startpoint, "TMP PP 1");
 									break;
@@ -393,7 +393,7 @@ namespace DOL.GS.Commands
 							#region Add
 							case "add":
 								{
-									PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 									if (path == null)
 									{
 										DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.NoPathCreatedYet"));
@@ -417,7 +417,7 @@ namespace DOL.GS.Commands
 									PathPoint newpp = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, speedlimit, path.Type);
 									path.Next = newpp;
 									newpp.Prev = path;
-									client.Player.TempProperties.setProperty(TEMP_PATH_LAST, newpp);
+									client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, newpp);
 
 									int len = 0;
 									while (path.Prev != null)
@@ -435,7 +435,7 @@ namespace DOL.GS.Commands
 							#region Save
 							case "save":
 								{
-									PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 									if (path == null)
 									{
 										DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.NoPathCreatedYet"));
@@ -499,21 +499,21 @@ namespace DOL.GS.Commands
 			obj.Model = 488;
 			obj.Emblem = 0;
 			obj.AddToWorld();
-			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
 			if (objs == null)
 				objs = new ArrayList();
 			objs.Add(obj);
-			client.Player.TempProperties.setProperty(TEMP_PATH_OBJS, objs);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, objs);
 		}
 
 		private void RemoveAllTempPathObjects(GameClient client)
 		{
-			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
 			if (objs == null)
 				return;
 			foreach (GameStaticItem obj in objs)
 				obj.Delete();
-			client.Player.TempProperties.setProperty(TEMP_PATH_OBJS, null);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, null);
 		}
 	}
 }

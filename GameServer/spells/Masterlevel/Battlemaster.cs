@@ -487,7 +487,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
 
             //we need to make sure the spell is only disabled if the attack was a success
-            int isDisabled = Caster.TempProperties.getProperty<int>(DISABLE);
+            int isDisabled = Caster.TempProperties.GetProperty<int>(DISABLE);
             
             //if this value is greater than 0 then we know that their weapon did not damage the target
             //the skill's disable timer should be set to their attackspeed 
@@ -496,7 +496,7 @@ namespace DOL.GS.Spells
                 Caster.DisableSkill(Spell, isDisabled);
                 
                 //remove the temp property
-                Caster.TempProperties.removeProperty(DISABLE);
+                Caster.TempProperties.RemoveProperty(DISABLE);
             }
             else
             {
@@ -613,7 +613,7 @@ namespace DOL.GS.Spells
                 //They failed, do they do not get disarmed, and the spell is not disabled for the full duration,
                 //just the modified swing speed, this is in milliseconds
                 int attackSpeed = player.AttackSpeed(weapon);
-                player.TempProperties.setProperty(DISABLE, attackSpeed);
+                player.TempProperties.SetProperty(DISABLE, attackSpeed);
             }
             return ad;
         }

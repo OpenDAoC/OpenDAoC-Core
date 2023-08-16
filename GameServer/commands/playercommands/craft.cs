@@ -41,7 +41,7 @@ namespace DOL.GS.Commands
                             count = 100;
                         }
                 
-                        client.Player.TempProperties.setProperty(CraftQueueLength, count);
+                        client.Player.TempProperties.SetProperty(CraftQueueLength, count);
                         DisplayMessage(client, $"Crafting queue set to {count} items");
                     }
                     else
@@ -57,13 +57,13 @@ namespace DOL.GS.Commands
                 if (args[1] == "clear")
                 {
 
-                    client.Player.TempProperties.removeProperty(CraftQueueLength);
+                    client.Player.TempProperties.RemoveProperty(CraftQueueLength);
                     
 
-                    var recipe = client.Player.TempProperties.getProperty<Recipe>(RecipeToCraft);
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>(RecipeToCraft);
                     if (recipe != null)
                     {
-                        client.Player.TempProperties.removeProperty(RecipeToCraft);
+                        client.Player.TempProperties.RemoveProperty(RecipeToCraft);
                     }
 
                     DisplayMessage(client, "Crafting queue reset to 1 and item cleared");
@@ -75,9 +75,9 @@ namespace DOL.GS.Commands
 
                 if (args[1] == "show")
                 {
-                    if (client.Player.TempProperties.getProperty<int>(CraftQueueLength) != 0)
+                    if (client.Player.TempProperties.GetProperty<int>(CraftQueueLength) != 0)
                         DisplayMessage(client,
-                            $"Crafting queue set to {client.Player.TempProperties.getProperty<int>(CraftQueueLength)}");
+                            $"Crafting queue set to {client.Player.TempProperties.GetProperty<int>(CraftQueueLength)}");
                     else
                         DisplayMessage(client, "Crafting queue set to 1");
                 }
@@ -98,7 +98,7 @@ namespace DOL.GS.Commands
                         }
                     }
 
-                    var recipe = client.Player.TempProperties.getProperty<Recipe>("RecipeToCraft");
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
                     if (recipe != null)
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)
@@ -214,7 +214,7 @@ namespace DOL.GS.Commands
                         return;
                     }
 
-                    var recipe = client.Player.TempProperties.getProperty<Recipe>("RecipeToCraft");
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
                     if (recipe != null)
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)

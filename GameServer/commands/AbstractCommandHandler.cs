@@ -50,11 +50,11 @@ namespace DOL.GS.Commands
 		public bool IsSpammingCommand(GamePlayer player, string commandName, int delay)
 		{
 			string spamKey = commandName + "NOSPAM";
-			long tick = player.TempProperties.getProperty<long>(spamKey, 0);
+			long tick = player.TempProperties.GetProperty<long>(spamKey, 0);
 
 			if (tick > 0 && player.CurrentRegion.Time - tick <= 0)
 			{
-				player.TempProperties.removeProperty(spamKey);
+				player.TempProperties.RemoveProperty(spamKey);
 			}
 
 			long changeTime = player.CurrentRegion.Time - tick;
@@ -64,7 +64,7 @@ namespace DOL.GS.Commands
 				return true;
 			}
 
-			player.TempProperties.setProperty(spamKey, player.CurrentRegion.Time);
+			player.TempProperties.SetProperty(spamKey, player.CurrentRegion.Time);
 			return false;
 		}
 

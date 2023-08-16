@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
@@ -126,7 +127,7 @@ namespace DOL.GS.Spells
             }
 
             // Use defense bonus from last executed style if any.
-            AttackData targetAD = target.TempProperties.getProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            AttackData targetAD = target.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 
             if (targetAD?.AttackResult == eAttackResult.HitStyle && targetAD.Style != null)
                 hitChance -= targetAD.Style.BonusToDefense;

@@ -25,7 +25,7 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             var player = client.Player;
-            var merchTick = player.TempProperties.getProperty(SummonMerch, 0L);
+            var merchTick = player.TempProperties.GetProperty(SummonMerch, 0L);
             var changeTime = GameLoop.GameLoopTime - merchTick;
             if (changeTime < 30000)
             {
@@ -34,7 +34,7 @@ namespace DOL.GS.Commands
                     eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
-            player.TempProperties.setProperty(SummonMerch, GameLoop.GameLoopTime);
+            player.TempProperties.SetProperty(SummonMerch, GameLoop.GameLoopTime);
 
             #endregion Command timer
             

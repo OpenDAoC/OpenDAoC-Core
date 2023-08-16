@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
-
 	public class ChargeEffect : StaticEffect, IGameEffect
 	{
 		protected const String delveString = "Grants unbreakable speed 3 for 15 second duration. Grants immunity to roots, stun, snare and mesmerize spells. Target will still take damage from snare/root spells that do damage.";
@@ -60,7 +58,7 @@ namespace DOL.GS.Effects
 			foreach (GameSpellEffect spell in speedSpells)
 				spell.Cancel(false);
 			m_living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED3);
-			m_living.TempProperties.setProperty("Charging", true);
+			m_living.TempProperties.SetProperty("Charging", true);
 			if (m_living is GamePlayer)
 				((GamePlayer)m_living).Out.SendUpdateMaxSpeed();
 			StartTimers();
@@ -69,7 +67,7 @@ namespace DOL.GS.Effects
 
 		public override void Cancel(bool playerCancel)
 		{
-			m_living.TempProperties.removeProperty("Charging");
+			m_living.TempProperties.RemoveProperty("Charging");
 			m_living.EffectList.Remove(this);
 			m_living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 			//Send messages

@@ -17,12 +17,10 @@
  *
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace DOL.GS.Effects
 {
-
     public class GiftOfPerizorEffect : TimedEffect
     {
         private GamePlayer EffectOwner;
@@ -42,7 +40,7 @@ namespace DOL.GS.Effects
         }
         public override void Stop()
         {
-            if (EffectOwner != null) EffectOwner.TempProperties.removeProperty("GiftOfPerizorOwner");
+            if (EffectOwner != null) EffectOwner.TempProperties.RemoveProperty("GiftOfPerizorOwner");
             base.Stop();
         }
 

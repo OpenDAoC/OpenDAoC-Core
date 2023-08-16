@@ -16,17 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Events;
-using DOL.AI.Brain;
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using DOL.AI.Brain;
+using DOL.Events;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -438,7 +435,7 @@ namespace DOL.GS.Spells
 				if (attacker is GamePlayer) chance = 100;
 				if (Util.Chance((int)chance))
 				{
-					Caster.TempProperties.setProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
+					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
 					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", eChatType.CT_SpellResisted);
 					InterruptCasting();
 					return true;

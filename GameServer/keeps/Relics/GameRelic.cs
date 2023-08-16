@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using DOL.Database;
 using DOL.GS.ServerProperties;
-
 
 namespace DOL.GS
 {
@@ -129,7 +128,7 @@ namespace DOL.GS
 
 		public static bool IsPlayerCarryingRelic(GamePlayer player)
 		{
-			return player.TempProperties.getProperty<object>(PLAYER_CARRY_RELIC_WEAK, null) != null;
+			return player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false);
 		}
 
 		#endregion
@@ -214,7 +213,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		protected virtual void PlayerTakesRelic(GamePlayer player)
 		{
-			if (player.TempProperties.getProperty<object>(PLAYER_CARRY_RELIC_WEAK, null) != null)
+			if (player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
 			{
 				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
@@ -252,7 +251,7 @@ namespace DOL.GS
 
 
 				m_currentCarrier = player;
-				player.TempProperties.setProperty(PLAYER_CARRY_RELIC_WEAK, this);
+				player.TempProperties.SetProperty(PLAYER_CARRY_RELIC_WEAK, this);
 				player.Out.SendUpdateMaxSpeed();
 
 				if (IsMounted)
@@ -295,7 +294,7 @@ namespace DOL.GS
 
 			GamePlayer player = m_currentCarrier;
 
-			if (player.TempProperties.getProperty<object>(PLAYER_CARRY_RELIC_WEAK, null) == null)
+			if (!player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
 			{
 				log.Warn("GameRelic: " + player.Name + " has already lost" + Name);
 				return;
@@ -316,7 +315,7 @@ namespace DOL.GS
 			//kill the pulsingEffectTimer on the player
 			StartPlayerTimer(null);
 
-			player.TempProperties.removeProperty(PLAYER_CARRY_RELIC_WEAK);
+			player.TempProperties.RemoveProperty(PLAYER_CARRY_RELIC_WEAK);
 			m_currentCarrier = null;
 			player.Out.SendUpdateMaxSpeed();
 			//CurrentRegion.Time;
@@ -632,7 +631,5 @@ namespace DOL.GS
 			return m_template;
 		}
 		#endregion
-
 	}
-
 }

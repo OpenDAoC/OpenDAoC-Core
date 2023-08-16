@@ -77,9 +77,9 @@ namespace DOL.GS
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.BeginWork.Repairing", item.Name), workDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
-			player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.setProperty(PLAYER_PARTNER, tradePartner);
-			player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, item);
+			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(PLAYER_PARTNER, tradePartner);
+			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, item);
 			player.CraftTimer.Start(workDuration * 1000);
 			return 1;
 		}
@@ -91,9 +91,9 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = (GamePlayer)timer.Properties.getProperty<object>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			GamePlayer tradePartner = (GamePlayer)timer.Properties.getProperty<object>(PLAYER_PARTNER, null);
-			InventoryItem item = (InventoryItem)timer.Properties.getProperty<object>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
+			GamePlayer tradePartner = timer.Properties.GetProperty<GamePlayer>(PLAYER_PARTNER, null);
+			InventoryItem item = timer.Properties.GetProperty<InventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
 
 			if (player == null || item == null)
 			{
@@ -246,8 +246,8 @@ namespace DOL.GS
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.BeginWork.Repairing", siegeWeapon.Name), workDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(ProceedSiegeWeapon);
-			player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.setProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, siegeWeapon);
+			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, siegeWeapon);
 			player.CraftTimer.Start(workDuration * 1000);
 			return 1;
 		}
@@ -259,8 +259,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int ProceedSiegeWeapon(ECSGameTimer timer)
 		{
-			GamePlayer player = (GamePlayer)timer.Properties.getProperty<object>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			GameSiegeWeapon siegeWeapon = (GameSiegeWeapon)timer.Properties.getProperty<object>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
+			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
 
 			if (player == null || siegeWeapon == null)
 			{

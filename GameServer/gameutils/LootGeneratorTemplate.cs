@@ -16,21 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*
- * Credits go to:
- * - Echostorm's Mob Drop Loot System
- * - Roach's modifications to add loottemplate base mobdrops
- */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using DOL.Database;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.PacketHandler;
-using DOL.GS.Utils;
 
 namespace DOL.GS
 {
@@ -373,11 +365,11 @@ namespace DOL.GS
                                         int dropCooldown =
                                             lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
                                         long tempProp =
-                                            player.TempProperties.getProperty<long>(XPItemKey,
+                                            player.TempProperties.GetProperty<long>(XPItemKey,
                                                 0); //check if our loot has dropped for player
                                         List<string> itemsDropped =
                                             player.TempProperties
-                                                .getProperty<List<string>>(
+                                                .GetProperty<List<string>>(
                                                     XPItemDroppersKey); //check our list of dropped monsters
                                         if (itemsDropped == null) itemsDropped = new List<string>();
                                         GamePlayer GroupedTimerToUse = null;
@@ -412,10 +404,10 @@ namespace DOL.GS
                                             if (numRelics > 0) nextDropTime -= 10000 * numRelics;
 
                                             loot.AddFixed(drop, lootTemplate.Count);
-                                            player.TempProperties.setProperty(XPItemKey, nextDropTime);
+                                            player.TempProperties.SetProperty(XPItemKey, nextDropTime);
 
                                             itemsDropped.Clear();
-                                            player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+                                            player.TempProperties.SetProperty(XPItemDroppersKey, itemsDropped);
                                         }
                                         else if (GroupedTimerToUse != null)
                                         {
@@ -437,10 +429,10 @@ namespace DOL.GS
                                             }
 
                                             loot.AddFixed(drop, lootTemplate.Count);
-                                            GroupedTimerToUse.TempProperties.setProperty(XPItemKey, nextDropTime);
+                                            GroupedTimerToUse.TempProperties.SetProperty(XPItemKey, nextDropTime);
 
                                             itemsDropped.Clear();
-                                            GroupedTimerToUse.TempProperties.setProperty(XPItemDroppersKey,
+                                            GroupedTimerToUse.TempProperties.SetProperty(XPItemDroppersKey,
                                                 itemsDropped);
                                         }
                                         //else if this drop cycle has not seen this item, reduce global cooldown
@@ -448,8 +440,8 @@ namespace DOL.GS
                                         {
                                             itemsDropped.Add(drop.Name);
                                             tempProp -= 20 * 1000; //take 20 seconds off cooldown
-                                            player.TempProperties.setProperty(XPItemKey, tempProp);
-                                            player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+                                            player.TempProperties.SetProperty(XPItemKey, tempProp);
+                                            player.TempProperties.SetProperty(XPItemDroppersKey, itemsDropped);
                                             tmp = tempProp;
                                             dropChan = dropCooldown;
                                         }
@@ -524,11 +516,11 @@ namespace DOL.GS
                                         int dropCooldown =
                                             lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
                                         long tempProp =
-                                            player.TempProperties.getProperty<long>(XPItemKey,
+                                            player.TempProperties.GetProperty<long>(XPItemKey,
                                                 0); //check if our loot has dropped for player
                                         List<string> itemsDropped =
                                             player.TempProperties
-                                                .getProperty<List<string>>(
+                                                .GetProperty<List<string>>(
                                                     XPItemDroppersKey); //check our list of dropped monsters
                                         GamePlayer GroupedTimerToUse = null;
                                         if (itemsDropped == null) itemsDropped = new List<string>();
@@ -562,10 +554,10 @@ namespace DOL.GS
                                             if (numRelics > 0) nextDropTime -= 10000 * numRelics;
 
                                             loot.AddFixed(drop, lootTemplate.Count);
-                                            player.TempProperties.setProperty(XPItemKey, nextDropTime);
+                                            player.TempProperties.SetProperty(XPItemKey, nextDropTime);
 
                                             itemsDropped.Clear();
-                                            player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+                                            player.TempProperties.SetProperty(XPItemDroppersKey, itemsDropped);
                                         }
                                         else if (GroupedTimerToUse != null)
                                         {
@@ -586,10 +578,10 @@ namespace DOL.GS
                                             }
 
                                             loot.AddFixed(drop, lootTemplate.Count);
-                                            GroupedTimerToUse.TempProperties.setProperty(XPItemKey, nextDropTime);
+                                            GroupedTimerToUse.TempProperties.SetProperty(XPItemKey, nextDropTime);
 
                                             itemsDropped.Clear();
-                                            GroupedTimerToUse.TempProperties.setProperty(XPItemDroppersKey,
+                                            GroupedTimerToUse.TempProperties.SetProperty(XPItemDroppersKey,
                                                 itemsDropped);
                                         }
                                         //else if this drop cycle has not seen this item, reduce global cooldown
@@ -597,8 +589,8 @@ namespace DOL.GS
                                         {
                                             itemsDropped.Add(drop.Name);
                                             tempProp -= 20 * 1000; //take 20 seconds off cooldown
-                                            player.TempProperties.setProperty(XPItemKey, tempProp);
-                                            player.TempProperties.setProperty(XPItemDroppersKey, itemsDropped);
+                                            player.TempProperties.SetProperty(XPItemKey, tempProp);
+                                            player.TempProperties.SetProperty(XPItemDroppersKey, itemsDropped);
                                         }
 
                                         tmp = tempProp;
@@ -643,7 +635,7 @@ namespace DOL.GS
                 if ((player.CurrentZone != groupMember.CurrentZone) ||
                     player.CurrentRegion != groupMember.CurrentRegion) continue;
                 if (player.GetDistance(groupMember) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
-                long tempProp = groupMember.TempProperties.getProperty<long>(xpItemKey, 0);
+                long tempProp = groupMember.TempProperties.GetProperty<long>(xpItemKey, 0);
                 if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)
                     return groupMember;
             }

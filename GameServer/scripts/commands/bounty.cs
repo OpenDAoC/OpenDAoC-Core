@@ -2,7 +2,6 @@
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
-
 namespace DOL.GS.Scripts
 {
     [CmdAttribute(
@@ -66,7 +65,7 @@ namespace DOL.GS.Scripts
                     return;
                 }
 
-                killerPlayer = client.Player.TempProperties.getProperty<GamePlayer>(KILLEDBY);
+                killerPlayer = client.Player.TempProperties.GetProperty<GamePlayer>(KILLEDBY);
 
                 amount = minBountyReward;
 

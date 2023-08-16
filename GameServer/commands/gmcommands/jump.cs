@@ -16,11 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
+using System.Collections.Generic;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System.Collections.Generic;
 
 namespace DOL.GS.Commands
 {
@@ -367,12 +368,12 @@ namespace DOL.GS.Commands
 				{
 					Stack<GameLocation> locations;
 
-					locations = client.Player.TempProperties.getProperty<object>(TEMP_KEY_JUMP, null) as Stack<GameLocation>;
+					locations = client.Player.TempProperties.GetProperty<Stack<GameLocation>>(TEMP_KEY_JUMP, null);
 
 					if (locations == null)
 					{
 						locations = new Stack<GameLocation>(3);
-						client.Player.TempProperties.setProperty(TEMP_KEY_JUMP, locations);
+						client.Player.TempProperties.SetProperty(TEMP_KEY_JUMP, locations);
 					}
 
 					locations.Push(new GameLocation("temploc", client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading));
@@ -390,7 +391,7 @@ namespace DOL.GS.Commands
 				{
 					Stack<GameLocation> locations;
 
-					locations = client.Player.TempProperties.getProperty<object>(TEMP_KEY_JUMP, null) as Stack<GameLocation>;
+					locations = client.Player.TempProperties.GetProperty<Stack<GameLocation>>(TEMP_KEY_JUMP, null);
 
 					if (locations == null || locations.Count < 1)
 					{

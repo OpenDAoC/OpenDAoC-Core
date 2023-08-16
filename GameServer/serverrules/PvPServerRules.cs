@@ -16,17 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
-using DOL;
-using DOL.Database;
-using DOL.Language;
+using System.Collections.Generic;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using System.Collections.Generic;
+using DOL.Language;
 
 namespace DOL.GS.ServerRules
 {
@@ -82,17 +80,17 @@ namespace DOL.GS.ServerRules
 		{
 			base.OnPlayerKilled(killedPlayer, killer);
 			if (killer == null || killer is GamePlayer)
-				killedPlayer.TempProperties.setProperty(KILLED_BY_PLAYER_PROP, KILLED_BY_PLAYER_PROP);
+				killedPlayer.TempProperties.SetProperty(KILLED_BY_PLAYER_PROP, KILLED_BY_PLAYER_PROP);
 			else
-				killedPlayer.TempProperties.removeProperty(KILLED_BY_PLAYER_PROP);
+				killedPlayer.TempProperties.RemoveProperty(KILLED_BY_PLAYER_PROP);
 		}
 
 		public override void OnReleased(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
-			if (player.TempProperties.getProperty<object>(KILLED_BY_PLAYER_PROP, null) != null)
+			if (player.TempProperties.GetProperty<string>(KILLED_BY_PLAYER_PROP, null) != null)
 			{
-				player.TempProperties.removeProperty(KILLED_BY_PLAYER_PROP);
+				player.TempProperties.RemoveProperty(KILLED_BY_PLAYER_PROP);
 				StartImmunityTimer(player, ServerProperties.Properties.TIMER_KILLED_BY_PLAYER * 1000);//When Killed by a Player
 			}
 			else
@@ -198,7 +196,7 @@ namespace DOL.GS.ServerRules
 					}
 
 				    // Player can't hit other members of the same BattleGroup
-				    BattleGroup mybattlegroup = (BattleGroup)playerAttacker.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				    BattleGroup mybattlegroup = playerAttacker.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
 				    if (mybattlegroup != null && mybattlegroup.IsInTheBattleGroup(playerDefender))
 				    {

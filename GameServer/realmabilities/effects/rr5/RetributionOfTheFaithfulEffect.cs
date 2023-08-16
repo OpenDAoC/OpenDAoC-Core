@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
-using System.Collections;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 
 namespace DOL.GS.Effects
@@ -118,7 +114,7 @@ namespace DOL.GS.Effects
             if (args.AttackData == null) return;
             if (!args.AttackData.IsMeleeAttack) return;
 			//FIXME: [WARN] this has been commented out, it should be handled somewhere
-			if (args.AttackData.Attacker.EffectList.GetOfType<ChargeEffect>() != null || args.AttackData.Attacker.TempProperties.getProperty("Charging", false))
+			if (args.AttackData.Attacker.EffectList.GetOfType<ChargeEffect>() != null || args.AttackData.Attacker.TempProperties.GetProperty("Charging", false))
 				return;
             if ( !owner.IsWithinRadius( args.AttackData.Attacker, 300 ) ) return;
             if (Util.Chance(50))

@@ -60,20 +60,20 @@ namespace DOL.GS.Effects
 
         public override void OnStopEffect()
         {
-            ECSGameTimer readyTimer = OwnerPlayer.TempProperties.getProperty<ECSGameTimer>("volley_readyTimer");
+            ECSGameTimer readyTimer = OwnerPlayer.TempProperties.GetProperty<ECSGameTimer>("volley_readyTimer");
 
             if (readyTimer != null)
             {
                 readyTimer.Stop();
-                OwnerPlayer.TempProperties.removeProperty("volley_readyTimer");
+                OwnerPlayer.TempProperties.RemoveProperty("volley_readyTimer");
             }
 
-            ECSGameTimer tiredTimer = OwnerPlayer.TempProperties.getProperty<ECSGameTimer>("volley_tiredTimer");
+            ECSGameTimer tiredTimer = OwnerPlayer.TempProperties.GetProperty<ECSGameTimer>("volley_tiredTimer");
 
             if (tiredTimer != null)
             {
                 tiredTimer.Stop();
-                OwnerPlayer.TempProperties.removeProperty("volley_tiredTimer");
+                OwnerPlayer.TempProperties.RemoveProperty("volley_tiredTimer");
             }
 
             GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
@@ -105,10 +105,10 @@ namespace DOL.GS.Effects
                 speed = 1500;
 
             ECSGameTimer tiredTimer = new(OwnerPlayer, new ECSGameTimer.ECSTimerCallback(TooTired), RangeAttackComponent.MAX_DRAW_DURATION);
-            OwnerPlayer.TempProperties.setProperty("volley_tiredTimer", tiredTimer);
+            OwnerPlayer.TempProperties.SetProperty("volley_tiredTimer", tiredTimer);
 
             ECSGameTimer readyTimer = new(OwnerPlayer, new ECSGameTimer.ECSTimerCallback(ReadyToShoot), speed);
-            OwnerPlayer.TempProperties.setProperty("volley_readyTimer", readyTimer);
+            OwnerPlayer.TempProperties.SetProperty("volley_readyTimer", readyTimer);
 
             int model = OwnerPlayer.ActiveWeapon == null ? 0 : OwnerPlayer.ActiveWeapon.Model;
 
@@ -138,12 +138,12 @@ namespace DOL.GS.Effects
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
 
-            ECSGameTimer readyTimer = OwnerPlayer.TempProperties.getProperty<ECSGameTimer>("volley_readyTimer");
+            ECSGameTimer readyTimer = OwnerPlayer.TempProperties.GetProperty<ECSGameTimer>("volley_readyTimer");
 
             if (readyTimer != null)
             {
                 readyTimer.Stop();
-                OwnerPlayer.TempProperties.removeProperty("volley_readyTimer");
+                OwnerPlayer.TempProperties.RemoveProperty("volley_readyTimer");
             }
 
             _isReadyToShoot = true;
@@ -229,13 +229,13 @@ namespace DOL.GS.Effects
                 return;
             }
 
-            ECSGameTimer tiredTimer = OwnerPlayer.TempProperties.getProperty<ECSGameTimer>("volley_tiredTimer");
+            ECSGameTimer tiredTimer = OwnerPlayer.TempProperties.GetProperty<ECSGameTimer>("volley_tiredTimer");
 
             if (tiredTimer == null)
                 return;
 
             tiredTimer.Stop();
-            OwnerPlayer.TempProperties.removeProperty("volley_tiredTimer");
+            OwnerPlayer.TempProperties.RemoveProperty("volley_tiredTimer");
 
             foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {

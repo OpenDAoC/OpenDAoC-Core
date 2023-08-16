@@ -625,7 +625,7 @@ namespace DOL.GS
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;
-				BattleGroup mybattlegroup = (BattleGroup)player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
 					if (mybattlegroup.IsInTheBattleGroup(plr))
@@ -653,7 +653,7 @@ namespace DOL.GS
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;
-				BattleGroup mybattlegroup = (BattleGroup)player.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
 					text.Append($"{plr.Name} ({plr.CharacterClass.Name}) ");

@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.GS.PropertyCalc;
-using DOL.Events;
 using System.Collections.Generic;
+using DOL.Events;
 
 namespace DOL.GS.Effects
 {
@@ -31,7 +27,7 @@ namespace DOL.GS.Effects
 			// log.InfoFormat("Starting SpeedOfSoundEffect for player {0} giving speed of {1}", living.Name, PropertyCalc.MaxSpeedCalculator.SPEED4);
 
 			base.Start(living);
-			living.TempProperties.setProperty("Charging", true);
+			living.TempProperties.SetProperty("Charging", true);
 			GameEventMgr.AddHandler(living, GameLivingEvent.AttackFinished, m_attackFinished);
 			GameEventMgr.AddHandler(living, GameLivingEvent.CastFinished, m_attackFinished);
 			living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED4);		
@@ -93,7 +89,7 @@ namespace DOL.GS.Effects
 		{
 			
 			base.Stop();
-			m_owner.TempProperties.removeProperty("Charging");
+			m_owner.TempProperties.RemoveProperty("Charging");
 			m_owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 			if (m_owner is GamePlayer)
             {

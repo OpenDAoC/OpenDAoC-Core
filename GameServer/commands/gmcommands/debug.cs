@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.GS.PacketHandler;
+
 using DOL.Language;
 
 namespace DOL.GS.Commands
@@ -51,14 +51,14 @@ namespace DOL.GS.Commands
 			}
 			if (args[1].ToLower().Equals("on"))
 			{
-				client.Player.TempProperties.setProperty(GamePlayer.DEBUG_MODE_PROPERTY, true);
+				client.Player.TempProperties.SetProperty(GamePlayer.DEBUG_MODE_PROPERTY, true);
 				client.Player.IsAllowedToFly = true;
 				client.Out.SendDebugMode(true);
 				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Debug.ModeON"));
 			}
 			else if (args[1].ToLower().Equals("off"))
 			{
-				client.Player.TempProperties.removeProperty(GamePlayer.DEBUG_MODE_PROPERTY);
+				client.Player.TempProperties.RemoveProperty(GamePlayer.DEBUG_MODE_PROPERTY);
 				client.Out.SendDebugMode(false);
 				client.Player.IsAllowedToFly = false;
 				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Debug.ModeOFF"));

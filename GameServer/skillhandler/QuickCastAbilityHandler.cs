@@ -16,15 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Language;
 
 namespace DOL.GS.SkillHandler
 {
 	/// <summary>
-    /// Handler for Quick Cast Ability clicks
+	/// Handler for Quick Cast Ability clicks
 	/// </summary>
 	[SkillHandlerAttribute(Abilities.Quickcast)]
 	public class QuickCastAbilityHandler : IAbilityActionHandler
@@ -69,7 +68,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			long quickcastChangeTick = player.TempProperties.getProperty<long>(GamePlayer.QUICK_CAST_CHANGE_TICK);
+			long quickcastChangeTick = player.TempProperties.GetProperty<long>(GamePlayer.QUICK_CAST_CHANGE_TICK);
 			long changeTime = player.CurrentRegion.Time - quickcastChangeTick;
 			if(changeTime < DISABLE_DURATION)
 			{

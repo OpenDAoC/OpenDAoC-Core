@@ -17,11 +17,10 @@
  *
  */
 
-using DOL.Language;
-using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
-
+using DOL.GS.ServerProperties;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -47,7 +46,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 			
-			var lastTradeTick = client.Player.TempProperties.getProperty<long>(tradeTimeoutString);
+			var lastTradeTick = client.Player.TempProperties.GetProperty<long>(tradeTimeoutString);
 			var slowModeLength = Properties.TRADE_SLOWMODE_LENGTH * 1000;
 			
 			if ((GameLoop.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
@@ -77,10 +76,8 @@ namespace DOL.GS.Commands
 			
 			if (player.Client.Account.PrivLevel == 1)
 			{
-				player.Client.Player.TempProperties.setProperty(tradeTimeoutString, GameLoop.GameLoopTime);
+				player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoop.GameLoopTime);
 			}
 		}
 	}
 }
-
-

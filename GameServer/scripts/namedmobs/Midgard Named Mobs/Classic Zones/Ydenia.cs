@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
@@ -69,11 +69,11 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			var throwPlayer = TempProperties.getProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
+			var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
 			if (throwPlayer != null)
 			{
 				throwPlayer.Stop();
-				TempProperties.removeProperty("ydenia_teleport");
+				TempProperties.RemoveProperty("ydenia_teleport");
 			}
 			base.Die(killer);
         }
@@ -89,7 +89,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class YdeniaBrain : StandardMobBrain
+    public class YdeniaBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public YdeniaBrain() : base()
@@ -114,11 +114,11 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				canPort = false;
-				var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
+				var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
 				if (throwPlayer != null)
 				{
 					throwPlayer.Stop();
-					Body.TempProperties.removeProperty("ydenia_teleport");
+					Body.TempProperties.RemoveProperty("ydenia_teleport");
 				}
 			}
 			if (Body.TargetObject != null && HasAggro)
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 				if(Util.Chance(35) && !canPort)
                 {
 					ECSGameTimer portTimer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(InitiatePort), Util.Random(25000, 35000));
-					Body.TempProperties.setProperty("ydenia_teleport", portTimer);
+					Body.TempProperties.SetProperty("ydenia_teleport", portTimer);
 					canPort = true;
                 }				
 			}

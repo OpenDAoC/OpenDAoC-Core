@@ -68,7 +68,7 @@ namespace DOL.GS
                 
                 var achievementMob = Regex.Replace(Name, @"\s+", "");
                 
-                var killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                var killerBG = playerKiller?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
                 
                 if (killerBG != null)
                 {

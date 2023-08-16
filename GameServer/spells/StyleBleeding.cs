@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectStart(effect);
 			SendEffectAnimation(effect.Owner, 0, false, 1);
-			effect.Owner.TempProperties.setProperty(BLEED_VALUE_PROPERTY, (int)Spell.Damage + (int)Spell.Damage * Util.Random(25) / 100);  // + random max 25%
+			effect.Owner.TempProperties.SetProperty(BLEED_VALUE_PROPERTY, (int)Spell.Damage + (int)Spell.Damage * Util.Random(25) / 100);  // + random max 25%
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			base.OnEffectExpires(effect, noMessages);
-			effect.Owner.TempProperties.removeProperty(BLEED_VALUE_PROPERTY);
+			effect.Owner.TempProperties.RemoveProperty(BLEED_VALUE_PROPERTY);
 			return 0;
 		}
 
@@ -78,7 +78,7 @@ namespace DOL.GS.Spells
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_YouWereHit);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 
-			int bleedValue = effect.Owner.TempProperties.getProperty<int>(BLEED_VALUE_PROPERTY);
+			int bleedValue = effect.Owner.TempProperties.GetProperty<int>(BLEED_VALUE_PROPERTY);
 
 			AttackData ad = CalculateDamageToTarget( effect.Owner, 1.0 );
 
@@ -95,7 +95,7 @@ namespace DOL.GS.Spells
 
 			if (--bleedValue <= 0 || !effect.Owner.IsAlive)
 				effect.Cancel(false);
-			else effect.Owner.TempProperties.setProperty(BLEED_VALUE_PROPERTY, bleedValue);
+			else effect.Owner.TempProperties.SetProperty(BLEED_VALUE_PROPERTY, bleedValue);
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace DOL.GS.Spells
 
 		public override AttackData CalculateDamageToTarget( GameLiving target, double effectiveness )
 		{
-			int bleedValue = target.TempProperties.getProperty<int>( BLEED_VALUE_PROPERTY);
+			int bleedValue = target.TempProperties.GetProperty<int>( BLEED_VALUE_PROPERTY);
 
 			AttackData ad = new AttackData();
 			ad.Attacker = Caster;

@@ -135,11 +135,11 @@ namespace DOL.GS
 					}
 				}
 
-				var spawnMessengers = TempProperties.getProperty<ECSGameTimer>("golestandt_messengers");
+				var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
 				if (spawnMessengers != null)
 				{
 					spawnMessengers.Stop();
-					TempProperties.removeProperty("golestandt_messengers");
+					TempProperties.RemoveProperty("golestandt_messengers");
 				}
 
 			AwardDragonKillPoint();
@@ -366,30 +366,30 @@ namespace DOL.AI.Brain
 					if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
 						randomlyPickedPlayers.Clear();
 
-					var prepareGlare = Body.TempProperties.getProperty<ECSGameTimer>("golestandt_glare");
+					var prepareGlare = Body.TempProperties.GetProperty<ECSGameTimer>("golestandt_glare");
 					if (prepareGlare != null)
 					{
 						prepareGlare.Stop();
-						Body.TempProperties.removeProperty("golestandt_glare");
+						Body.TempProperties.RemoveProperty("golestandt_glare");
 					}
-					var prepareStun = Body.TempProperties.getProperty<ECSGameTimer>("golestandt_stun");
+					var prepareStun = Body.TempProperties.GetProperty<ECSGameTimer>("golestandt_stun");
 					if (prepareStun != null)
 					{
 						prepareStun.Stop();
-						Body.TempProperties.removeProperty("golestandt_stun");
+						Body.TempProperties.RemoveProperty("golestandt_stun");
 					}
-					var throwPlayer = Body.TempProperties.getProperty<ECSGameTimer>("golestandt_throw");
+					var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("golestandt_throw");
 					if (throwPlayer != null)
 					{
 						throwPlayer.Stop();
-						Body.TempProperties.removeProperty("golestandt_throw");
+						Body.TempProperties.RemoveProperty("golestandt_throw");
 					}
-					var spawnMessengers = Body.TempProperties.getProperty<ECSGameTimer>("golestandt_messengers");
+					var spawnMessengers = Body.TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
 						CanSpawnMessengers = false;
-						Body.TempProperties.removeProperty("golestandt_messengers");
+						Body.TempProperties.RemoveProperty("golestandt_messengers");
 					}
 				}
                 #endregion
@@ -477,25 +477,25 @@ namespace DOL.AI.Brain
 				if (CanThrow == false && !IsRestless)
 				{
 					ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(60000, 80000));//Teleport 2-5 Players every 60-80s
-					Body.TempProperties.setProperty("golestandt_throw", throwPlayer);
+					Body.TempProperties.SetProperty("golestandt_throw", throwPlayer);
 					CanThrow = true;
 				}
 				if (CanGlare == false && !Body.IsCasting && !IsRestless)
 				{
 					ECSGameTimer prepareGlare = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
-					Body.TempProperties.setProperty("golestandt_glare", prepareGlare);
+					Body.TempProperties.SetProperty("golestandt_glare", prepareGlare);
 					CanGlare = true;
 				}
 				if (CanStun == false && !Body.IsCasting && !IsRestless)
 				{
 					ECSGameTimer prepareStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
-					Body.TempProperties.setProperty("golestandt_stun", prepareStun);
+					Body.TempProperties.SetProperty("golestandt_stun", prepareStun);
 					CanStun = true;
 				}
 				if (Body.HealthPercent <= 50 && CanSpawnMessengers == false && !IsRestless)
 				{
 					ECSGameTimer spawnMessengers = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
-					Body.TempProperties.setProperty("golestandt_messengers", spawnMessengers);
+					Body.TempProperties.SetProperty("golestandt_messengers", spawnMessengers);
 					CanSpawnMessengers = true;
 				}
 			}

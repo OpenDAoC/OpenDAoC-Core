@@ -82,13 +82,13 @@ namespace DOL.GS
         {
             if (m_owner is GamePlayer playerOwner)
             {
-                long attackStart = m_owner.TempProperties.getProperty<long>(RANGED_ATTACK_START);
+                long attackStart = m_owner.TempProperties.GetProperty<long>(RANGED_ATTACK_START);
 
                 // Failsafe, but it should never happen.
                 if (attackStart == 0)
                 {
                     attackStart = GameLoop.GameLoopTime;
-                    playerOwner.TempProperties.setProperty(RANGED_ATTACK_START, attackStart);
+                    playerOwner.TempProperties.SetProperty(RANGED_ATTACK_START, attackStart);
                 }
 
                 if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)

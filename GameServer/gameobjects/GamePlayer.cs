@@ -1041,7 +1041,7 @@ namespace DOL.GS
             if (Group != null)
                 Group.RemoveMember(this);
 
-            BattleGroup myBattlegroup = (BattleGroup)TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup myBattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             if (myBattlegroup != null)
                 myBattlegroup.RemoveBattlePlayer(this);
 
@@ -1054,7 +1054,7 @@ namespace DOL.GS
             if (Mission != null)
                 Mission.ExpireMission();
 
-            ChatGroup mychatgroup = (ChatGroup)TempProperties.getProperty<object>(ChatGroup.CHATGROUP_PROPERTY, null);
+            ChatGroup mychatgroup = TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
             if (mychatgroup != null)
                 mychatgroup.RemovePlayer(this);
 
@@ -1107,19 +1107,19 @@ namespace DOL.GS
                 {
                     List<string> registeredTempProp = null;
 
-                    foreach (string property in TempProperties.getAllProperties())
+                    foreach (string property in TempProperties.GetAllProperties())
                     {
                         if (property == "")
                             continue;
 
-                        int occurences = 0;
+                        int occurrences = 0;
                         registeredTempProp = Util.SplitCSV(Properties.TEMPPROPERTIES_TO_REGISTER).ToList();
-                        occurences = (from j in registeredTempProp where property.Contains(j) select j).Count();
+                        occurrences = (from j in registeredTempProp where property.Contains(j) select j).Count();
 
-                        if (occurences == 0)
+                        if (occurrences == 0)
                             continue;
 
-                        object propertyValue = TempProperties.getProperty<object>(property, null);
+                        object propertyValue = TempProperties.GetProperty<object>(property, null);
 
                         if (propertyValue == null)
                             continue;
@@ -1130,7 +1130,7 @@ namespace DOL.GS
                                 log.Debug("On Disconnection found and was saved: " + property + " with value: " + propertyValue.ToString() + " for player: " + Name);
 
                             TempPropertiesManager.TempPropContainerList.Add(new TempPropertiesManager.TempPropContainer(DBCharacter.ObjectId, property, propertyValue.ToString()));
-                            TempProperties.removeProperty(property);
+                            TempProperties.RemoveProperty(property);
                         }
                         else if (Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
                             log.Debug("On Disconnection found but was not saved (not a long value): " + property + " with value: " + propertyValue.ToString() + " for player: " + Name);
@@ -1344,7 +1344,7 @@ namespace DOL.GS
             }
 
             //60 second rebind timer
-            long lastBindTick = TempProperties.getProperty<long>(LAST_BIND_TICK, 0);
+            long lastBindTick = TempProperties.GetProperty<long>(LAST_BIND_TICK, 0);
             long changeTime = CurrentRegion.Time - lastBindTick;
             if (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && changeTime < BindAllowInterval)
             {
@@ -1434,7 +1434,7 @@ namespace DOL.GS
                     }
                 }
 
-                TempProperties.setProperty(LAST_BIND_TICK, CurrentRegion.Time);
+                TempProperties.SetProperty(LAST_BIND_TICK, CurrentRegion.Time);
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Bind.Bound"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             else
@@ -1838,8 +1838,8 @@ namespace DOL.GS
                 {
                     // actual lost exp, needed for 2nd stage deaths
                     long lostExp = Experience;
-                    long lastDeathExpLoss = TempProperties.getProperty<long>(DEATH_EXP_LOSS_PROPERTY);
-                    TempProperties.removeProperty(DEATH_EXP_LOSS_PROPERTY);
+                    long lastDeathExpLoss = TempProperties.GetProperty<long>(DEATH_EXP_LOSS_PROPERTY);
+                    TempProperties.RemoveProperty(DEATH_EXP_LOSS_PROPERTY);
 
                     GainExperience(eXPSource.Other, -lastDeathExpLoss);
                     lostExp -= Experience;
@@ -1874,7 +1874,7 @@ namespace DOL.GS
 
             if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
             {
-                int deathConLoss = TempProperties.getProperty<int>(DEATH_CONSTITUTION_LOSS_PROPERTY); // get back constitution lost at death
+                int deathConLoss = TempProperties.GetProperty<int>(DEATH_CONSTITUTION_LOSS_PROPERTY); // get back constitution lost at death
                 if (deathConLoss > 0)
                 {
                     TotalConstitutionLostAtDeath += deathConLoss;
@@ -1948,7 +1948,7 @@ namespace DOL.GS
 
             //Set property indicating that we are releasing to another region; used for Released event
             if (oldRegion != CurrentRegionID)
-                TempProperties.setProperty(RELEASING_PROPERTY, true);
+                TempProperties.SetProperty(RELEASING_PROPERTY, true);
             else
             {
                 // fire the player revive event
@@ -1956,7 +1956,7 @@ namespace DOL.GS
                 Notify(GamePlayerEvent.Released, this);
             }
 
-            TempProperties.removeProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
+            TempProperties.RemoveProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
 
             //Reset last valide position array to prevent /stuck avec /release
             lock (m_lastUniqueLocations)
@@ -2037,10 +2037,10 @@ namespace DOL.GS
             bool applyRezSick = true;
 
             // Used by spells like Perfect Recovery
-            if (TempProperties.getAllProperties().Contains(RESURRECT_REZ_SICK_EFFECTIVENESS) && TempProperties.getProperty<double>(RESURRECT_REZ_SICK_EFFECTIVENESS) == 0)
+            if (TempProperties.GetAllProperties().Contains(RESURRECT_REZ_SICK_EFFECTIVENESS) && TempProperties.GetProperty<double>(RESURRECT_REZ_SICK_EFFECTIVENESS) == 0)
             {
                 applyRezSick = false;
-                TempProperties.removeProperty(RESURRECT_REZ_SICK_EFFECTIVENESS);
+                TempProperties.RemoveProperty(RESURRECT_REZ_SICK_EFFECTIVENESS);
             }
             else if (player.Level < ServerProperties.Properties.RESS_SICKNESS_LEVEL)
             {
@@ -2763,7 +2763,7 @@ namespace DOL.GS
             }
             else
             {
-                long lastmove = TempProperties.getProperty<long>(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
+                long lastmove = TempProperties.GetProperty<long>(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
                 if ((lastmove > 0 && lastmove + 5000 < CurrentRegion.Time) //cancel sprint after 5sec without moving?
                     || Endurance - 5 <= 0)
                     Sprint(false);
@@ -5163,13 +5163,13 @@ namespace DOL.GS
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (this.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+            if (this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
             {
                 Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            int numCurrentLoyalDays = this.TempProperties.getProperty<int>(CURRENT_LOYALTY_KEY);
+            int numCurrentLoyalDays = this.TempProperties.GetProperty<int>(CURRENT_LOYALTY_KEY);
             //check for cached loyalty days, and grab value if needed
             if (numCurrentLoyalDays == 0)
             {
@@ -5189,11 +5189,11 @@ namespace DOL.GS
                     numCurrentLoyalDays = realmLoyalty.LoyalDays;
                 }
 
-                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+                this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
             }
 
             //check for realm loyalty
-            var loyaltyCheck = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+            var loyaltyCheck = this.TempProperties.GetProperty<DateTime>(REALM_LOYALTY_KEY);
             if (loyaltyCheck == null)
                 loyaltyCheck = DateTime.UnixEpoch;
 
@@ -5241,8 +5241,8 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newLoyalty);
                 }
 
-                this.TempProperties.setProperty(REALM_LOYALTY_KEY, DateTime.Now);
-                this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
+                this.TempProperties.SetProperty(REALM_LOYALTY_KEY, DateTime.Now);
+                this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
             }
 
             if (xpSource == eXPSource.Player && !this.CurrentZone.IsBG)
@@ -6048,7 +6048,7 @@ namespace DOL.GS
             {
                 if (ActiveWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon 
                     && rangeAttackComponent.RangedAttackState != eRangedAttackState.None 
-                    && GameLoop.GameLoopTime - this.TempProperties.getProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
+                    && GameLoop.GameLoopTime - this.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
                     && attackComponent.attackAction != null)
                 {
                     attackComponent.attackAction.StartTime = 1000;
@@ -7112,7 +7112,7 @@ namespace DOL.GS
                             if (ServerProperties.Properties.PVP_DEATH_CON_LOSS)
                             {
                                 conpenalty = 3;
-                                TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conpenalty);
+                                TempProperties.SetProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conpenalty);
                             }
                             break;
                     }
@@ -7139,7 +7139,7 @@ namespace DOL.GS
                         m_deathtype = eDeathType.PvE;
                         long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
                         GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, false, true);
-                        TempProperties.setProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
+                        TempProperties.SetProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
                     if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
@@ -7149,7 +7149,7 @@ namespace DOL.GS
                             conLoss = 3;
                         else if (conLoss < 1)
                             conLoss = 1;
-                        TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
+                        TempProperties.SetProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
                     }
 
                     if (realmDeath)
@@ -7323,8 +7323,8 @@ namespace DOL.GS
             Duel.Start();
 
             //Get PvP Combat ticks before duel.
-            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKTICKPVP, LastAttackTickPvP);
-            TempProperties.setProperty(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP, LastAttackedByEnemyTickPvP);
+            TempProperties.SetProperty(DUEL_PREVIOUS_LASTATTACKTICKPVP, LastAttackTickPvP);
+            TempProperties.SetProperty(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP, LastAttackedByEnemyTickPvP);
         }
 
         /// <summary>
@@ -7339,8 +7339,8 @@ namespace DOL.GS
             Duel = null;
 
             //Set PvP Combat ticks to that they were before duel.
-            LastAttackTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKTICKPVP);
-            LastAttackedByEnemyTickPvP = TempProperties.getProperty<long>(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP);
+            LastAttackTickPvP = TempProperties.GetProperty<long>(DUEL_PREVIOUS_LASTATTACKTICKPVP);
+            LastAttackedByEnemyTickPvP = TempProperties.GetProperty<long>(DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP);
         }
         #endregion
 
@@ -8069,7 +8069,7 @@ namespace DOL.GS
                                 // For potions most can be used by any player level except a few higher level ones.
                                 // So for the case of potions we will only restrict the level of usage if LevelRequirement is >0 for the item
 
-                                long nextPotionAvailTime = TempProperties.getProperty<long>(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup));
+                                long nextPotionAvailTime = TempProperties.GetProperty<long>(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup));
 
                                 if (Client.Account.PrivLevel == 1 && nextPotionAvailTime > CurrentRegion.Time)
                                 {
@@ -8134,7 +8134,7 @@ namespace DOL.GS
                                                         Emote(eEmote.Drink);
 
                                                         if (spell.CastTime > 0)
-                                                            TempProperties.setProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
+                                                            TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
                                                     }
 
                                                     //Spell
@@ -8156,7 +8156,7 @@ namespace DOL.GS
                                                         }
                                                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.Used", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                                                        TempProperties.setProperty(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup), useItem.CanUseEvery * 1000 + CurrentRegion.Time);
+                                                        TempProperties.SetProperty(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup), useItem.CanUseEvery * 1000 + CurrentRegion.Time);
                                                     }
                                                     else
                                                     {
@@ -8193,10 +8193,10 @@ namespace DOL.GS
                             }
                             else
                             {
-                                long lastChargedItemUseTick = TempProperties.getProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
+                                long lastChargedItemUseTick = TempProperties.GetProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
                                 long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
-                                long delay = TempProperties.getProperty<long>(ITEM_USE_DELAY, 0L);
-                                long itemdelay = TempProperties.getProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
+                                long delay = TempProperties.GetProperty<long>(ITEM_USE_DELAY, 0L);
+                                long itemdelay = TempProperties.GetProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
                                 long itemreuse = (long)useItem.CanUseEvery * 1000;
                                 if (itemdelay == 0) itemdelay = CurrentRegion.Time - itemreuse;
 
@@ -8462,9 +8462,9 @@ namespace DOL.GS
 
                         if (castOk)
                         {
-                            TempProperties.setProperty(LAST_CHARGED_ITEM_USE_TICK, CurrentRegion.Time);
-                            TempProperties.setProperty(ITEM_USE_DELAY, (long)(60000 * 2));
-                            TempProperties.setProperty("ITEMREUSEDELAY" + useItem.Id_nb, CurrentRegion.Time);
+                            TempProperties.SetProperty(LAST_CHARGED_ITEM_USE_TICK, CurrentRegion.Time);
+                            TempProperties.SetProperty(ITEM_USE_DELAY, (long)(60000 * 2));
+                            TempProperties.SetProperty("ITEMREUSEDELAY" + useItem.Id_nb, CurrentRegion.Time);
                         }
                     }
                 }
@@ -8559,7 +8559,7 @@ namespace DOL.GS
                     if (spellHandler != null && spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
                         castingComponent.RequestStartCastSpell(spell, itemSpellLine);
-                        TempProperties.setProperty(LAST_USED_ITEM_SPELL, item);
+                        TempProperties.SetProperty(LAST_USED_ITEM_SPELL, item);
                         //CurrentSpellHandler = spellHandler;
                         //CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
                         //spellHandler.CastSpell(item);
@@ -8749,7 +8749,7 @@ namespace DOL.GS
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this))
             {
                 // If GM/Admin uses '/alert send on', receive audio alert for all sends
-                if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.getProperty<bool>("SendAlert") == false)
+                if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.GetProperty<bool>("SendAlert") == false)
                     Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
                 if (source.Client.Account.PrivLevel > 1)
                     // Message: {0} [TEAM] sends, "{1}"
@@ -8765,7 +8765,7 @@ namespace DOL.GS
                 return true;
             }
 
-            var afkmessage = TempProperties.getProperty<string>(AFK_MESSAGE);
+            var afkmessage = TempProperties.GetProperty<string>(AFK_MESSAGE);
             if (afkmessage != null)
             {
                 if (afkmessage == "")
@@ -9195,9 +9195,9 @@ namespace DOL.GS
 
             if (CurrentRegion.GetZone(X, Y) == null)
             {
-                if (Client.Account.PrivLevel < 3 && !TempProperties.getProperty("isbeingbanned", false))
+                if (Client.Account.PrivLevel < 3 && !TempProperties.GetProperty("isbeingbanned", false))
                 {
-                    TempProperties.setProperty("isbeingbanned", true);
+                    TempProperties.SetProperty("isbeingbanned", true);
                     MoveToBind();
                 }
             }
@@ -9228,7 +9228,7 @@ namespace DOL.GS
         {
             CleanupOnDisconnect();
             Group?.RemoveMember(this);
-            BattleGroup mybattlegroup = (BattleGroup) TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
             mybattlegroup?.RemoveBattlePlayer(this);
             m_guild?.RemoveOnlineMember(this);
             GroupMgr.RemovePlayerLooking(this);
@@ -9320,7 +9320,7 @@ namespace DOL.GS
             Heading = heading;
 
             // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
-            TempProperties.removeProperty(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
+            TempProperties.RemoveProperty(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
 
             if (regionID != CurrentRegionID)
             {
@@ -9787,7 +9787,7 @@ namespace DOL.GS
 
                 if (attackComponent.AttackState && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
-                    AttackData ad = TempProperties.getProperty<object>(LAST_ATTACK_DATA, null) as AttackData;
+                    AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
                         //Does the target can be attacked ?
@@ -10162,7 +10162,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    AttackData ad = TempProperties.getProperty<AttackData>(LAST_ATTACK_DATA, null);
+                    AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
 
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
@@ -10554,7 +10554,7 @@ namespace DOL.GS
             //Check null on client.player bypass region change
             if (Client.Account.PrivLevel == (uint)ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
                 if (item.SpellID > 0 || item.SpellID1 > 0)
-                    TempProperties.setProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
+                    TempProperties.SetProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
 
             /*
             //max 2 charges
@@ -11146,7 +11146,7 @@ namespace DOL.GS
                     }
 
                     Group group = Group;
-                    BattleGroup mybattlegroup = (BattleGroup)TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
                     if (mybattlegroup != null && mybattlegroup.GetBGLootType() == true && mybattlegroup.GetBGTreasurer() != null)
                     {
                         GamePlayer theTreasurer = mybattlegroup.GetBGTreasurer();
@@ -11791,8 +11791,8 @@ namespace DOL.GS
             }
 
             //set that date as our temp property for reference on kill
-            this.TempProperties.setProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
-            this.TempProperties.setProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
+            this.TempProperties.SetProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
+            this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
 
             AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
@@ -12052,7 +12052,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.getProperty<DateTime>(REALM_LOYALTY_KEY);
+                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.GetProperty<DateTime>(REALM_LOYALTY_KEY);
                     GameServer.Database.SaveObject(realmLoyalty);
                 }
 
@@ -12421,24 +12421,24 @@ namespace DOL.GS
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
         public void StartStealthUncoverAction()
         {
-            UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
+            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP, null);
             //start the uncover timer
             if (action == null)
                 action = new UncoverStealthAction(this);
             action.Interval = 1000;
             action.Start(1000);
-            TempProperties.setProperty(UNCOVER_STEALTH_ACTION_PROP, action);
+            TempProperties.SetProperty(UNCOVER_STEALTH_ACTION_PROP, action);
         }
 
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
         public void StopStealthUncoverAction()
         {
-            UncoverStealthAction action = (UncoverStealthAction)TempProperties.getProperty<object>(UNCOVER_STEALTH_ACTION_PROP, null);
+            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP, null);
             //stop the uncover timer
             if (action != null)
             {
                 action.Stop();
-                TempProperties.removeProperty(UNCOVER_STEALTH_ACTION_PROP);
+                TempProperties.RemoveProperty(UNCOVER_STEALTH_ACTION_PROP);
             }
         }
 
@@ -15392,7 +15392,7 @@ namespace DOL.GS
                 if (IsMoving)
                     return false;
 
-                long lastMovementTick = TempProperties.getProperty<long>("PLAYERPOSITION_LASTMOVEMENTTICK");
+                long lastMovementTick = TempProperties.GetProperty<long>("PLAYERPOSITION_LASTMOVEMENTTICK");
                 return (CurrentRegion.Time - lastMovementTick > 3000);
             }
         }

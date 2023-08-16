@@ -15,15 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-/*				
-            Written by Doulbousiouf (27/11/2004)
-*/
 
 using System;
 using System.Collections;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 using DOL.Language;
 
 namespace DOL.GS
@@ -95,7 +90,7 @@ namespace DOL.GS
             if (player.TotalConstitutionLostAtDeath > 0)
 			{
 				int oneConCost = GamePlayer.prcRestore[player.Level < GamePlayer.prcRestore.Length ? player.Level : GamePlayer.prcRestore.Length - 1];
-				player.TempProperties.setProperty(COST_BY_PTS, (long)oneConCost);
+				player.TempProperties.SetProperty(COST_BY_PTS, (long)oneConCost);
 				
 				// Trigger custom ACCEPT/DECLINE dialog
 				// Message: It will cost {0} to have your lost constitution restored. Do you accept?
@@ -127,8 +122,8 @@ namespace DOL.GS
                 return;
             }
 
-            long cost = player.TempProperties.getProperty<long>(COST_BY_PTS);
-            player.TempProperties.removeProperty(COST_BY_PTS);
+            long cost = player.TempProperties.GetProperty<long>(COST_BY_PTS);
+            player.TempProperties.RemoveProperty(COST_BY_PTS);
             if (cost <= 0) cost = 1;
             int restorePoints = (int)Math.Min(player.TotalConstitutionLostAtDeath, player.GetCurrentMoney() / cost);
             if (restorePoints < 1)

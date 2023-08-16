@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -24,7 +23,7 @@ namespace DOL.GS.RealmAbilities
 
 			if (player != null)
 			{
-				if (player.TempProperties.getProperty("Charging", false)
+				if (player.TempProperties.GetProperty("Charging", false)
 					|| player.EffectList.CountOfType(typeof(SpeedOfSoundEffect), typeof(ArmsLengthEffect), typeof(ChargeEffect)) > 0)
 				{
 					player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -53,6 +52,5 @@ namespace DOL.GS.RealmAbilities
 			list.Add("Duration: 10 sec");
 			list.Add("Casting time: instant");
 		}
-
 	}
 }

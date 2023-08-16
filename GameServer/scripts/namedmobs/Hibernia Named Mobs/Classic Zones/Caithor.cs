@@ -225,17 +225,17 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			var despawnGiantCaithorTimer2 = TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn2");
+			var despawnGiantCaithorTimer2 = TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn2");
 			if (despawnGiantCaithorTimer2 != null)
 			{
 				despawnGiantCaithorTimer2.Stop();
-				TempProperties.removeProperty("giantcaithor_despawn2");
+				TempProperties.RemoveProperty("giantcaithor_despawn2");
 			}
-			var despawnGiantCaithorTimer = TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn");
+			var despawnGiantCaithorTimer = TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn");
 			if (despawnGiantCaithorTimer != null)
 			{
 				despawnGiantCaithorTimer.Stop();
-				TempProperties.removeProperty("giantcaithor_despawn");
+				TempProperties.RemoveProperty("giantcaithor_despawn");
 			}
 			GhostCaithorUP = false;
 			SpawnCaithor();
@@ -299,7 +299,7 @@ namespace DOL.AI.Brain
 			if (!Body.InCombatInLast(30000) && !despawnGiantCaithor && Body.Model == 339)//5min
             {
 				ECSGameTimer _despawnTimer2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DespawnGiantCaithor), 300000);//5min to despawn
-				Body.TempProperties.setProperty("giantcaithor_despawn2", _despawnTimer2);
+				Body.TempProperties.SetProperty("giantcaithor_despawn2", _despawnTimer2);
 				despawnGiantCaithor = true;
             }
 			base.Think();
@@ -309,11 +309,11 @@ namespace DOL.AI.Brain
 		{
 			if (!HasAggro)
 			{
-				var despawnGiantCaithorTimer = Body.TempProperties.getProperty<ECSGameTimer>("giantcaithor_despawn");
+				var despawnGiantCaithorTimer = Body.TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn");
 				if (despawnGiantCaithorTimer != null)
 				{
 					despawnGiantCaithorTimer.Stop();
-					Body.TempProperties.removeProperty("giantcaithor_despawn");
+					Body.TempProperties.RemoveProperty("giantcaithor_despawn");
 				}				
 				CaithorDorocha.DorochaKilled = 0;
 				oldFlags = Body.Flags;

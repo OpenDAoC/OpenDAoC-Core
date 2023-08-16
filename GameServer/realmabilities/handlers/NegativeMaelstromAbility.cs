@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
-	public class NegativeMaelstromAbility : TimedRealmAbility
+    public class NegativeMaelstromAbility : TimedRealmAbility
 	{
         public NegativeMaelstromAbility(DBAbility dba, int level) : base(dba, level) { }
 		private int dmgValue;
@@ -34,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 				caster.Out.SendMessage("You groundtarget is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
             }
-            if (caster.TempProperties.getProperty(IS_CASTING, false))
+            if (caster.TempProperties.GetProperty(IS_CASTING, false))
             {
                 caster.Out.SendMessage("You are already casting an ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -86,8 +82,8 @@ namespace DOL.GS.RealmAbilities
 
 				i_player.Out.SendSpellCastAnimation(caster, 7027, 20);
 			}
-            caster.TempProperties.setProperty(IS_CASTING, true);
-            caster.TempProperties.setProperty(NM_CAST_SUCCESS, true);
+            caster.TempProperties.SetProperty(IS_CASTING, true);
+            caster.TempProperties.SetProperty(NM_CAST_SUCCESS, true);
             // GameEventMgr.AddHandler(caster, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
             GameEventMgr.AddHandler(caster, GamePlayerEvent.AttackFinished, new DOLEventHandler(CastInterrupted));
             GameEventMgr.AddHandler(caster, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
@@ -98,8 +94,8 @@ namespace DOL.GS.RealmAbilities
 		}
 		protected virtual int EndCast(ECSGameTimer timer)
 		{
-            bool castWasSuccess = player.TempProperties.getProperty(NM_CAST_SUCCESS, false);
-            player.TempProperties.removeProperty(IS_CASTING);
+            bool castWasSuccess = player.TempProperties.GetProperty(NM_CAST_SUCCESS, false);
+            player.TempProperties.RemoveProperty(IS_CASTING);
             // GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackFinished, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
@@ -119,7 +115,7 @@ namespace DOL.GS.RealmAbilities
             AttackFinishedEventArgs attackFinished = arguments as AttackFinishedEventArgs;
             if (attackFinished != null && attackFinished.AttackData.Attacker != sender)
                 return;
-            player.TempProperties.setProperty(NM_CAST_SUCCESS, false);
+            player.TempProperties.SetProperty(NM_CAST_SUCCESS, false);
             foreach (GamePlayer i_player in player.GetPlayersInRadius(WorldMgr.INFO_DISTANCE)) {
                 i_player.Out.SendInterruptAnimation(player);
             }

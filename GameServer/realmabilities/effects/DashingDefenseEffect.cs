@@ -16,13 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
-using DOL.GS.PacketHandler;
-using DOL.Events;
-using DOL.GS.SkillHandler;
-using DOL.GS.RealmAbilities;
 using System.Collections.Generic;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
@@ -116,7 +113,7 @@ namespace DOL.GS.Effects
                 guardSource.Out.SendMessage(string.Format("You are now guarding {0}.", guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 guardTarget.Out.SendMessage(string.Format("{0} is now guarding you.", guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
-            guardTarget.TempProperties.setProperty(RealmAbilities.DashingDefenseAbility.Dashing, true);
+            guardTarget.TempProperties.SetProperty(RealmAbilities.DashingDefenseAbility.Dashing, true);
         }
 
         // <summary>
@@ -129,7 +126,7 @@ namespace DOL.GS.Effects
             m_guardSource.EffectList.Remove(this);
             m_guardTarget.EffectList.Remove(this);
 
-            m_guardTarget.TempProperties.removeProperty(RealmAbilities.DashingDefenseAbility.Dashing);
+            m_guardTarget.TempProperties.RemoveProperty(RealmAbilities.DashingDefenseAbility.Dashing);
 
             m_guardSource.Out.SendMessage(string.Format("You are no longer guarding {0}.", m_guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             m_guardTarget.Out.SendMessage(string.Format("{0} is no longer guarding you.", m_guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

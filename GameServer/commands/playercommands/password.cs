@@ -1,15 +1,3 @@
-/*
- * Author:		Nocto
- * Mod:			Kristopher Gilbert <ogre@fallenrealms.net>
- * Rev:			$Id: password.cs,v 1.3 2005/09/03 12:02:36 noret Exp $
- * Copyright:	2004 by Hired Goons, LLC
- * License:		http://www.gnu.org/licenses/gpl.txt
- * 
- * Implements the /password command which allows players to change the password
- * associated with their account.
- * 
- */
-
 using System;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
@@ -22,6 +10,7 @@ namespace DOL.GS.Commands
 	public class PasswordCommand : AbstractCommandHandler, ICommandHandler
 	{
 		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private const string PASSWORD_PROPERTY = "PasswordCommandProperty";
 
 		#region ICommandHandler Members
 
@@ -43,7 +32,7 @@ namespace DOL.GS.Commands
 				{
 					// TODO: Add confirmation dialog
 					// TODO: If user has set their email address, mail them the change notification
-					client.Player.TempProperties.setProperty(this, newPassword);
+					client.Player.TempProperties.SetProperty(PASSWORD_PROPERTY, newPassword);
 					client.Out.SendCustomDialog("Do you wish to change your password to \n" + newPassword, PasswordCheckCallback);
 				}
 				else
@@ -69,11 +58,11 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			var newPassword = player.TempProperties.getProperty<string>(this, null);
+			var newPassword = player.TempProperties.GetProperty<string>(PASSWORD_PROPERTY, null);
 			if (newPassword == null)
 				return;
 
-			player.TempProperties.removeProperty(this);
+			player.TempProperties.RemoveProperty(PASSWORD_PROPERTY);
 			player.Out.SendMessage("Your password has been changed.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			player.Client.Account.Password = LoginRequestHandler.CryptPassword(newPassword);
 

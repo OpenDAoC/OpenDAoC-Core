@@ -147,12 +147,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (newZone == null)
 			{
 				if(client.Player==null) return;
-				if(!client.Player.TempProperties.getProperty("isbeingbanned",false))
+				if(!client.Player.TempProperties.GetProperty("isbeingbanned",false))
 				{
 					if (log.IsErrorEnabled)
 						log.Error(client.Player.Name + "'s position in unknown zone! => " + currentZoneID);
 					GamePlayer player=client.Player;
-					player.TempProperties.setProperty("isbeingbanned", true);
+					player.TempProperties.SetProperty("isbeingbanned", true);
 					player.MoveToBind();
 				}
 
@@ -274,7 +274,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (coordsPerSec > tolerance)
 				{
 					// check to see if CPS time tolerance is exceeded
-					int lastCPSTick = client.Player.TempProperties.getProperty<int>(LASTCPSTICK, 0);
+					int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK, 0);
 
 					if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
 					{
@@ -350,7 +350,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				}
 
-				client.Player.TempProperties.setProperty(LASTCPSTICK, environmentTick);
+				client.Player.TempProperties.SetProperty(LASTCPSTICK, environmentTick);
 			}
 
 			var headingflag = packet.ReadShort();
@@ -359,7 +359,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			client.Player.Heading = (ushort)(headingflag & 0xFFF);
 			if (client.Player.X != realX || client.Player.Y != realY)
-				client.Player.TempProperties.setProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
+				client.Player.TempProperties.SetProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
 			client.Player.X = realX;
 			client.Player.Y = realY;
 			client.Player.Z = realZ;
@@ -425,10 +425,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			const string SHLASTUPDATETICK = "SHPLAYERPOSITION_LASTUPDATETICK";
 			const string SHLASTFLY = "SHLASTFLY_STRING";
 			const string SHLASTSTATUS = "SHLASTSTATUS_STRING";
-			long SHlastTick = client.Player.TempProperties.getProperty<long>(SHLASTUPDATETICK);
-			int SHlastFly = client.Player.TempProperties.getProperty<int>(SHLASTFLY);
-			int SHlastStatus = client.Player.TempProperties.getProperty<int>(SHLASTSTATUS);
-			int SHcount = client.Player.TempProperties.getProperty<int>(SHSPEEDCOUNTER);
+			long SHlastTick = client.Player.TempProperties.GetProperty<long>(SHLASTUPDATETICK);
+			int SHlastFly = client.Player.TempProperties.GetProperty<int>(SHLASTFLY);
+			int SHlastStatus = client.Player.TempProperties.GetProperty<int>(SHLASTSTATUS);
+			int SHcount = client.Player.TempProperties.GetProperty<int>(SHSPEEDCOUNTER);
 			int status = (speedData & 0x1FF ^ speedData) >> 8;
 			int fly = (flyingflag & 0x1FF ^ flyingflag) >> 8;
 
@@ -533,7 +533,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			client.Player.IsClimbing = (state == 7);
 			client.Player.IsSwimming = (state == 1);
 			// debugFly on, but player not do /debug on (hack)
-			if (state == 3 && !client.Player.TempProperties.getProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) && !client.Player.IsAllowedToFly)
+			if (state == 3 && !client.Player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) && !client.Player.IsAllowedToFly)
 			{
 				StringBuilder builder = new StringBuilder();
 				builder.Append("HACK_FLY");
@@ -573,10 +573,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			SHlastFly = fly;
 			SHlastStatus = status;
-			client.Player.TempProperties.setProperty(SHLASTUPDATETICK, SHlastTick);
-			client.Player.TempProperties.setProperty(SHLASTFLY, SHlastFly);
-			client.Player.TempProperties.setProperty(SHLASTSTATUS, SHlastStatus);
-			client.Player.TempProperties.setProperty(SHSPEEDCOUNTER, SHcount);
+			client.Player.TempProperties.SetProperty(SHLASTUPDATETICK, SHlastTick);
+			client.Player.TempProperties.SetProperty(SHLASTFLY, SHlastFly);
+			client.Player.TempProperties.SetProperty(SHLASTSTATUS, SHlastStatus);
+			client.Player.TempProperties.SetProperty(SHSPEEDCOUNTER, SHcount);
 			lock (client.Player.LastUniqueLocations)
 			{
 				GameLocation[] locations = client.Player.LastUniqueLocations;
@@ -869,11 +869,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			Zone newZone = WorldMgr.GetZone(currentZoneID);
 			if (newZone == null)
 			{
-				if (!client.Player.TempProperties.getProperty("isbeingbanned", false))
+				if (!client.Player.TempProperties.GetProperty("isbeingbanned", false))
 				{
 					log.Error(client.Player.Name + "'s position in unknown zone! => " + currentZoneID);
 					GamePlayer player = client.Player;
-					player.TempProperties.setProperty("isbeingbanned", true);
+					player.TempProperties.SetProperty("isbeingbanned", true);
 					player.MoveToBind();
 				}
 
@@ -982,7 +982,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (coordsPerSec > tolerance)
 				{
 					// check to see if CPS time tolerance is exceeded
-					int lastCPSTick = client.Player.TempProperties.getProperty<int>(LASTCPSTICK, 0);
+					int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK, 0);
 
 					if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
 					{
@@ -1058,13 +1058,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				}
 
-				client.Player.TempProperties.setProperty(LASTCPSTICK, environmentTick);
+				client.Player.TempProperties.SetProperty(LASTCPSTICK, environmentTick);
 			}
 			//client.Player.Heading = (ushort)(newHeading & 0xFFF); //patch 0024 expermental
 
 			if (client.Player.X != newPlayerX || client.Player.Y != newPlayerY)
 			{
-				client.Player.TempProperties.setProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
+				client.Player.TempProperties.SetProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
 			}
 
 			client.Player.X = (int)newPlayerX;
@@ -1139,7 +1139,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			//int status = (data & 0x1FF ^ data) >> 8;
 			//int fly = (flyingflag & 0x1FF ^ flyingflag) >> 8;
-			if (state == 3 && client.Player.TempProperties.getProperty<bool>(GamePlayer.DEBUG_MODE_PROPERTY, false) == false && !client.Player.IsAllowedToFly) //debugFly on, but player not do /debug on (hack)
+			if (state == 3 && client.Player.TempProperties.GetProperty<bool>(GamePlayer.DEBUG_MODE_PROPERTY, false) == false && !client.Player.IsAllowedToFly) //debugFly on, but player not do /debug on (hack)
 			{
 				StringBuilder builder = new StringBuilder();
 				builder.Append("HACK_FLY");

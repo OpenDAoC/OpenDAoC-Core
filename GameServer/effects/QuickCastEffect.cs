@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-    
 	/// <summary>
 	/// The helper class for quckcast ability
 	/// </summary>
@@ -42,7 +40,7 @@ namespace DOL.GS.Effects
 			base.Start(living);
 			if (m_owner is GamePlayer)
 				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			m_owner.TempProperties.removeProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
+			m_owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
             
 		}
 

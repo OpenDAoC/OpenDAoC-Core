@@ -1,10 +1,8 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS
 {
@@ -117,11 +115,11 @@ namespace DOL.GS
                 if(player != null)
                     BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.CharacterClass.Name+ "!"));
             }
-            var prepareMezz = TempProperties.getProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+            var prepareMezz = TempProperties.GetProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
             if (prepareMezz != null)
             {
                 prepareMezz.Stop();
-                TempProperties.removeProperty("kvasir_prepareMezz");
+                TempProperties.RemoveProperty("kvasir_prepareMezz");
             }
             base.Die(killer);
         }
@@ -208,11 +206,11 @@ namespace DOL.AI.Brain
                 IsPulled = false;
                 StartMezz = false;
                 AggroText = false;
-                var prepareMezz = Body.TempProperties.getProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+                var prepareMezz = Body.TempProperties.GetProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
                 if (prepareMezz != null)
                 {
                     prepareMezz.Stop();
-                    Body.TempProperties.removeProperty("kvasir_prepareMezz");
+                    Body.TempProperties.RemoveProperty("kvasir_prepareMezz");
                 }
             }
             if (Body.IsOutOfTetherRange)
@@ -230,7 +228,7 @@ namespace DOL.AI.Brain
                 if (!StartMezz)
                 {
                    ECSGameTimer prepareMezz = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareMezz), Util.Random(45000, 60000));
-                    Body.TempProperties.setProperty("kvasir_prepareMezz", prepareMezz);
+                    Body.TempProperties.SetProperty("kvasir_prepareMezz", prepareMezz);
                     StartMezz = true;
                 }
                 if(!Body.IsCasting && Util.Chance(5))

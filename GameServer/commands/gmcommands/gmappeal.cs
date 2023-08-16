@@ -17,16 +17,13 @@
  *
  */
 
-using System.Reflection;
 using System.Collections.Generic;
-using log4net;
+using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using DOL.GS.Appeal;
 
 namespace DOL.GS.Commands
 {
-
     [CmdAttribute(
         "&gmappeal",
         new string[] { "&gmhelp" },
@@ -99,7 +96,7 @@ namespace DOL.GS.Commands
                             {
                                 AppealMgr.ChangeStatus(client.Player.Name, targetClient.Player, appeal, "Being Helped");
                                 string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.RandMessage" + Util.Random(4), targetClient.Player.Name);
-                                client.Player.TempProperties.setProperty("AppealAssist", targetClient.Player);
+                                client.Player.TempProperties.SetProperty("AppealAssist", targetClient.Player);
                                 client.Player.SendPrivateMessage(targetClient.Player, message);
                                 targetClient.Out.SendPlaySound(eSoundType.Craft, 0x04);
                                 return;
@@ -194,7 +191,7 @@ namespace DOL.GS.Commands
                             if (appeal.Status == "Being Helped")
                             {
                                 AppealMgr.ChangeStatus(client.Player.Name, targetClient.Player, appeal, "Open");
-                                client.Player.TempProperties.removeProperty("AppealAssist");
+                                client.Player.TempProperties.RemoveProperty("AppealAssist");
                                 return;
                             }
                             else
@@ -344,7 +341,7 @@ namespace DOL.GS.Commands
                             return;
                         }
                         AppealMgr.CloseAppeal(client.Player.Name, targetClient.Player, appeal);
-                        client.Player.TempProperties.removeProperty("AppealAssist");
+                        client.Player.TempProperties.RemoveProperty("AppealAssist");
                         return;
                     }
 
@@ -390,7 +387,7 @@ namespace DOL.GS.Commands
                             //cleaning up the player since he really was online.
                             AppealMgr.MessageToClient(targetClient, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", client.Player.Name));
                             targetClient.Out.SendPlaySound(eSoundType.Craft, 0x02);
-                            targetClient.Player.TempProperties.setProperty("HasPendingAppeal", false);
+                            targetClient.Player.TempProperties.SetProperty("HasPendingAppeal", false);
                         }
                         return;
                     }
@@ -401,11 +398,11 @@ namespace DOL.GS.Commands
                     {
                         try
                         {
-                            GamePlayer p = client.Player.TempProperties.getProperty<GamePlayer>("AppealAssist");
+                            GamePlayer p = client.Player.TempProperties.GetProperty<GamePlayer>("AppealAssist");
                             if (p.ObjectState == GameObject.eObjectState.Active)
                             {
                                 GameLocation oldlocation = new GameLocation("old", client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z);
-                                client.Player.TempProperties.setProperty("AppealJumpOld", oldlocation);
+                                client.Player.TempProperties.SetProperty("AppealJumpOld", oldlocation);
                                 client.Player.MoveTo(p.CurrentRegionID, p.X, p.Y, p.Z, p.Heading);
                             }
                             break;
@@ -418,7 +415,7 @@ namespace DOL.GS.Commands
                     }
                 case "jumpback":
                     {
-                        GameLocation jumpback = client.Player.TempProperties.getProperty<GameLocation>("AppealJumpOld");
+                        GameLocation jumpback = client.Player.TempProperties.GetProperty<GameLocation>("AppealJumpOld");
 
                         if (jumpback != null)
                         {
@@ -437,17 +434,17 @@ namespace DOL.GS.Commands
                 #region gmappeal mute
                 case "mute":
                     {
-                        bool mute = client.Player.TempProperties.getProperty<bool>("AppealMute");
+                        bool mute = client.Player.TempProperties.GetProperty<bool>("AppealMute");
                         if (mute == false)
                         {
-                            client.Player.TempProperties.setProperty("AppealMute", true);
+                            client.Player.TempProperties.SetProperty("AppealMute", true);
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NoLongerReceiveMsg"));
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseCmdTurnBackOn"));
                             AppealMgr.StaffList.Remove(client.Player);
                         }
                         else
                         {
-                            client.Player.TempProperties.setProperty("AppealMute", false);
+                            client.Player.TempProperties.SetProperty("AppealMute", false);
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NowReceiveMsg"));
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseCmdTurnBackOff"));
                             AppealMgr.StaffList.Add(client.Player);

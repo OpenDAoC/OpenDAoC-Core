@@ -288,24 +288,24 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (m_response == 0x00)
 							{
-								if (player.TempProperties.getProperty<long>(HousingConstants.MoneyForHouseRent, -1) != -1)
+								if (player.TempProperties.GetProperty<long>(HousingConstants.MoneyForHouseRent, -1) != -1)
 								{
-									player.TempProperties.removeProperty(HousingConstants.MoneyForHouseRent);
+									player.TempProperties.RemoveProperty(HousingConstants.MoneyForHouseRent);
 								}
 
-								if (player.TempProperties.getProperty<long>(HousingConstants.BPsForHouseRent, -1) != -1)
+								if (player.TempProperties.GetProperty<long>(HousingConstants.BPsForHouseRent, -1) != -1)
 								{
-									player.TempProperties.removeProperty(HousingConstants.BPsForHouseRent);
+									player.TempProperties.RemoveProperty(HousingConstants.BPsForHouseRent);
 								}
 
-								player.TempProperties.removeProperty(HousingConstants.HouseForHouseRent);
+								player.TempProperties.RemoveProperty(HousingConstants.HouseForHouseRent);
 
 								return 0;
 							}
 
-							var house = player.TempProperties.getProperty<House>(HousingConstants.HouseForHouseRent, null);
-							var moneyToAdd = player.TempProperties.getProperty<long>(HousingConstants.MoneyForHouseRent, -1);
-							var bpsToMoney = player.TempProperties.getProperty<long>(HousingConstants.BPsForHouseRent, -1);
+							var house = player.TempProperties.GetProperty<House>(HousingConstants.HouseForHouseRent, null);
+							var moneyToAdd = player.TempProperties.GetProperty<long>(HousingConstants.MoneyForHouseRent, -1);
+							var bpsToMoney = player.TempProperties.GetProperty<long>(HousingConstants.BPsForHouseRent, -1);
 
 							if (moneyToAdd != -1)
 							{
@@ -334,7 +334,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									" payments.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 								// clean up
-								player.TempProperties.removeProperty(HousingConstants.MoneyForHouseRent);
+								player.TempProperties.RemoveProperty(HousingConstants.MoneyForHouseRent);
 							}
 							else
 							{
@@ -359,11 +359,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 									" payments.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 								// clean up
-								player.TempProperties.removeProperty(HousingConstants.BPsForHouseRent);
+								player.TempProperties.RemoveProperty(HousingConstants.BPsForHouseRent);
 							}
 
 							// clean up
-							player.TempProperties.removeProperty(HousingConstants.MoneyForHouseRent);
+							player.TempProperties.RemoveProperty(HousingConstants.MoneyForHouseRent);
 							Interval = 0;
 							break;
 						}

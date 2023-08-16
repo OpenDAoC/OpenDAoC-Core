@@ -17,9 +17,6 @@
  *
  */
 
-using DOL.GS.PacketHandler;
-using DOL.Language;
-
 namespace DOL.GS.Commands
 {
 	[CmdAttribute(
@@ -35,9 +32,9 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (client.Player.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) != null && args.Length == 1)
+			if (client.Player.TempProperties.GetProperty<string>(GamePlayer.AFK_MESSAGE) != null && args.Length == 1)
 			{
-				client.Player.TempProperties.removeProperty(GamePlayer.AFK_MESSAGE);
+				client.Player.TempProperties.RemoveProperty(GamePlayer.AFK_MESSAGE);
 				// Message: Your AFK flag is now off.
 				ChatUtil.SendErrorMessage(client, "PLCommands.AFK.Msg.Off", null);
 			}
@@ -46,11 +43,11 @@ namespace DOL.GS.Commands
 				if (args.Length > 1)
 				{
 					string message = string.Join(" ", args, 1, args.Length - 1);
-					client.Player.TempProperties.setProperty(GamePlayer.AFK_MESSAGE, message);
+					client.Player.TempProperties.SetProperty(GamePlayer.AFK_MESSAGE, message);
 				}
 				else
 				{
-					client.Player.TempProperties.setProperty(GamePlayer.AFK_MESSAGE, "");
+					client.Player.TempProperties.SetProperty(GamePlayer.AFK_MESSAGE, "");
 				}
 				
 				// Message: Your AFK flag is now on.

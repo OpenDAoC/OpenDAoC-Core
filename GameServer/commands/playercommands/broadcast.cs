@@ -18,11 +18,8 @@
  */
 
 using System.Collections;
-using System.Reflection;
-using DOL.Language;
-using DOL.GS;
-using DOL.GS.ServerProperties;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -59,21 +56,21 @@ namespace DOL.GS.Commands
 			}
 			string message = string.Join(" ", args, 1, args.Length - 1);
 
-			long BroadTick = client.Player.TempProperties.getProperty<long>(BROAD_TICK);
+			long BroadTick = client.Player.TempProperties.GetProperty<long>(BROAD_TICK);
 			if (BroadTick > 0 && BroadTick - client.Player.CurrentRegion.Time <= 0)
 			{
-				client.Player.TempProperties.removeProperty(BROAD_TICK);
+				client.Player.TempProperties.RemoveProperty(BROAD_TICK);
 			}
 			long changeTime = client.Player.CurrentRegion.Time - BroadTick;
 			if (changeTime < 800 && BroadTick > 0)
 			{
 				client.Player.Out.SendMessage("Slow down! Think before you say each word!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Player.TempProperties.setProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
+				client.Player.TempProperties.SetProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
 				return;
 			}
 			Broadcast(client.Player, message);
 
-			client.Player.TempProperties.setProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
+			client.Player.TempProperties.SetProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
 		}
 
 		private void Broadcast(GamePlayer player, string message)

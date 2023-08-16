@@ -17,15 +17,12 @@
  *
  */
 
-// Original code by Dinberg
-
 using System.Collections.Generic;
 using DOL.AI.Brain;
 
-
 namespace DOL.GS.Spells
 {
-	/// <summary>
+    /// <summary>
     /// This pet is purely aesthetic and can't be cast in RvR zones
     /// </summary>
     [SpellHandler("SummonNoveltyPet")]
@@ -49,9 +46,8 @@ namespace DOL.GS.Spells
 				//No brain for now, so just follow owner.
 				m_pet.Follow(Caster, 100, WorldMgr.VISIBILITY_DISTANCE);
 
-				Caster.TempProperties.setProperty(NoveltyPetBrain.HAS_PET, true);
+				Caster.TempProperties.SetProperty(NoveltyPetBrain.HAS_PET, true);
 			}
-                        
         }
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
@@ -62,7 +58,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-			if (Caster.TempProperties.getProperty<bool>(NoveltyPetBrain.HAS_PET, false))
+			if (Caster.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET, false))
 			{
 				// no message
 				MessageToCaster("You already have a pet by your side!", PacketHandler.eChatType.CT_SpellResisted);

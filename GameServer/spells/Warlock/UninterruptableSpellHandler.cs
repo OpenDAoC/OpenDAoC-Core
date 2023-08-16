@@ -16,26 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using DOL.Language;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using log4net;
+using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	[SpellHandlerAttribute("Uninterruptable")]
+    [SpellHandlerAttribute("Uninterruptable")]
 	public class UninterruptableSpellHandler : PrimerSpellHandler
 	{
         public static string WARLOCK_UNINTERRUPTABLE_SPELL = "WARLOCK_UNINTERRUPTABLE_SPELL";
@@ -53,7 +42,7 @@ namespace DOL.GS.Spells
 		}
         public override void FinishSpellCast(GameLiving target)
         {
-            Caster.TempProperties.setProperty(WARLOCK_UNINTERRUPTABLE_SPELL, Spell);
+            Caster.TempProperties.SetProperty(WARLOCK_UNINTERRUPTABLE_SPELL, Spell);
 
             base.FinishSpellCast(target);
 

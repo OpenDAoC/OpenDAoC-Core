@@ -16,11 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections;
-using DOL.Database;
 using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
@@ -133,14 +132,14 @@ namespace DOL.GS.Commands
 
 				if (args[1].ToLower() == "addhookpoints")
 				{
-					if (player.TempProperties.getProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
+					if (player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 					{
-						player.TempProperties.removeProperty(HousingConstants.AllowAddHouseHookpoint);
+						player.TempProperties.RemoveProperty(HousingConstants.AllowAddHouseHookpoint);
 						DisplayMessage(player.Client, "Add hookpoints turned off!");
 					}
 					else
 					{
-						player.TempProperties.setProperty(HousingConstants.AllowAddHouseHookpoint, true);
+						player.TempProperties.SetProperty(HousingConstants.AllowAddHouseHookpoint, true);
 						DisplayMessage(player.Client, "Add hookpoints turned on!");
 					}
 
@@ -213,6 +212,5 @@ namespace DOL.GS.Commands
 				return;
 			}
 		}
-
 	}
 }

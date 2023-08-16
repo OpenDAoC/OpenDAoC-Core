@@ -16,18 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Threading;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Linq;
-
-using log4net;
-
+using System.Reflection;
+using System.Threading;
+using DOL.Database;
+using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using DOL.Events;
-using DOL.Database;
+using log4net;
 
 namespace DOL.GS.Appeal
 {
@@ -155,7 +153,7 @@ namespace DOL.GS.Appeal
 				{
 					MessageToClient(staffplayer.Client, msg);
 					// If GM has '/alert appeal on' set, receive audible alert when an appeal is submitted or requires assistance
-					if (staffplayer.Client.Player.TempProperties.getProperty<bool>("AppealAlert") == false)
+					if (staffplayer.Client.Player.TempProperties.GetProperty<bool>("AppealAlert") == false)
 					{
 						staffplayer.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
 					}
@@ -180,7 +178,7 @@ namespace DOL.GS.Appeal
 			{
 				staffplayer.Out.SendMessage("[Appeals]: " + msg, chattype, chatloc);
 				// If GM has '/alert appeal on' set, receive audible alert when an appeal is submitted or requires assistance
-				if (staffplayer?.Client?.Player?.TempProperties?.getProperty<bool>("AppealAlert") == false)
+				if (staffplayer?.Client?.Player?.TempProperties?.GetProperty<bool>("AppealAlert") == false)
 				{
 					staffplayer.Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
 				}
@@ -251,7 +249,7 @@ namespace DOL.GS.Appeal
 				Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.YouAreMuted"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 				return;
 			}
-			bool HasPendingAppeal = Player.TempProperties.getProperty<bool>("HasPendingAppeal");
+			bool HasPendingAppeal = Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
 			if (HasPendingAppeal)
 			{
 				Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -261,7 +259,7 @@ namespace DOL.GS.Appeal
 			string TimeStamp = DateTime.Now.ToLongTimeString() + " " + DateTime.Now.ToLongDateString();
 			DBAppeal appeal = new DBAppeal(Player.Name, Player.Client.Account.Name, Severity, Status, TimeStamp, eText);
 			GameServer.Database.AddObject(appeal);
-			Player.TempProperties.setProperty("HasPendingAppeal", true);
+			Player.TempProperties.SetProperty("HasPendingAppeal", true);
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.AppealSubmitted"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.IfYouLogOut"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			Player.Out.SendPlaySound(eSoundType.Craft, 0x04);
@@ -297,7 +295,7 @@ namespace DOL.GS.Appeal
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", staffname), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			Player.Out.SendPlaySound(eSoundType.Craft, 0x02);
 			GameServer.Database.DeleteObject(appeal);
-			Player.TempProperties.setProperty("HasPendingAppeal", false);
+			Player.TempProperties.SetProperty("HasPendingAppeal", false);
 			return;
 		}
 		/// <summary>
@@ -318,7 +316,7 @@ namespace DOL.GS.Appeal
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.CanceledYourAppeal"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 			Player.Out.SendPlaySound(eSoundType.Craft, 0x02);
 			GameServer.Database.DeleteObject(appeal);
-			Player.TempProperties.setProperty("HasPendingAppeal", false);
+			Player.TempProperties.SetProperty("HasPendingAppeal", false);
 			return;
 		}
 
@@ -358,7 +356,7 @@ namespace DOL.GS.Appeal
 				GameServer.Database.SaveObject(appeal);
 			}
 			player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Appeal.YouHavePendingAppeal"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
-			player.TempProperties.setProperty("HasPendingAppeal", true);
+			player.TempProperties.SetProperty("HasPendingAppeal", true);
 			NotifyStaff();
 		}
 
@@ -376,6 +374,5 @@ namespace DOL.GS.Appeal
 			}
 		}
 		#endregion Player quit
-
 	}
 }

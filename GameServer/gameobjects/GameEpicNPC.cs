@@ -50,7 +50,7 @@ namespace DOL.GS
                     realmLoyalty = (int)Math.Round(20 * (numCurrentLoyalDays / 30.0));
 
                 string achievementMob = Regex.Replace(Name, @"\s+", "");
-                BattleGroup killerBG = (BattleGroup)playerKiller?.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroup killerBG = playerKiller?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
                 if (killerBG != null)
                 {

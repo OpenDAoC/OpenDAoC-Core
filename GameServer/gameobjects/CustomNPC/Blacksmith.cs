@@ -135,7 +135,7 @@ public class Blacksmith : GameNPC
                 return false;
             }
 
-            player.TempProperties.setProperty(REPAIR_ITEM_WEAK, new WeakRef(item));
+            player.TempProperties.SetProperty(REPAIR_ITEM_WEAK, new WeakRef(item));
             // Pop-up dialog prompting repair with ACCEPT/DECLINE options
             // Message: It will cost {0} to repair {1}. Do you accept?
             player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -164,12 +164,8 @@ public class Blacksmith : GameNPC
     /// <param name="response">The player's response when prompted to initiate the repair (ACCEPT/DECLINE).</param>
     protected void BlacksmithDialogResponse(GamePlayer player, byte response)
     {
-        var itemWeak =
-            (WeakReference) player.TempProperties.getProperty<object>(
-                REPAIR_ITEM_WEAK,
-                new WeakRef(null)
-            );
-        player.TempProperties.removeProperty(REPAIR_ITEM_WEAK);
+        var itemWeak = player.TempProperties.GetProperty<WeakReference>(REPAIR_ITEM_WEAK, new WeakRef(null));
+        player.TempProperties.RemoveProperty(REPAIR_ITEM_WEAK);
         var item = (InventoryItem) itemWeak.Target;
 
         if (response != 0x01)

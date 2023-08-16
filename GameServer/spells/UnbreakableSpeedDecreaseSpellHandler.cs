@@ -29,6 +29,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("UnbreakableSpeedDecrease")]
 	public class UnbreakableSpeedDecreaseSpellHandler : ImmunityEffectSpellHandler
 	{
+		private const string EFFECT_PROPERTY = "UnbreakableSpeedDecreaseProperty";
+
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			new StatDebuffECSEffect(initParams);
@@ -73,7 +75,7 @@ namespace DOL.GS.Spells
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 
 			RestoreSpeedTimer timer = new RestoreSpeedTimer(effect.Owner, effect);
-			effect.Owner.TempProperties.setProperty(effect, timer);
+			effect.Owner.TempProperties.SetProperty(EFFECT_PROPERTY, timer);
 			timer.Interval = 650;
 			timer.Start(1 + (effect.Duration >> 1));
 
@@ -91,8 +93,8 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			RestoreSpeedTimer timer = (RestoreSpeedTimer)effect.Owner.TempProperties.getProperty<object>(effect, null);
-			effect.Owner.TempProperties.removeProperty(effect);
+			RestoreSpeedTimer timer = effect.Owner.TempProperties.GetProperty<RestoreSpeedTimer>(EFFECT_PROPERTY, null);
+			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			if(timer!=null) timer.Stop();
 
 			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);

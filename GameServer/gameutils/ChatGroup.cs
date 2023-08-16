@@ -16,14 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Collections;
 using System.Collections.Specialized;
 using DOL.GS.PacketHandler;
+
 namespace DOL.GS
 {
-	/// <summary>
-	/// Description résumée de ChatGroup.
-	/// </summary>
 	public class ChatGroup
 	{
 		public const string CHATGROUP_PROPERTY="chatgroup";
@@ -75,7 +74,7 @@ namespace DOL.GS
 			{
 				if (m_chatgroupMembers.Contains(player))
 					return false;
-				player.TempProperties.setProperty(CHATGROUP_PROPERTY, this);
+				player.TempProperties.SetProperty(CHATGROUP_PROPERTY, this);
 				player.Out.SendMessage("You join the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
@@ -99,7 +98,7 @@ namespace DOL.GS
 				if (!m_chatgroupMembers.Contains(player))
 					return false;
 				m_chatgroupMembers.Remove(player);
-				player.TempProperties.removeProperty(CHATGROUP_PROPERTY);
+				player.TempProperties.RemoveProperty(CHATGROUP_PROPERTY);
 				player.Out.SendMessage("You leave the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{

@@ -61,16 +61,16 @@ namespace DOL.GS.Commands
 			obj.Emblem = 0;
 			obj.AddToWorld();
 
-			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
 			if (objs == null)
 				objs = new ArrayList();
 			objs.Add(obj);
-			client.Player.TempProperties.setProperty(TEMP_PATH_OBJS, objs);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, objs);
 		}
 
 		private void RemoveAllPathPointObjects(GameClient client)
 		{
-			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
 			if (objs == null)
 				return;
 
@@ -82,14 +82,14 @@ namespace DOL.GS.Commands
 			objs.Clear();
 
 			// remove all path properties
-			client.Player.TempProperties.setProperty(TEMP_PATH_OBJS, null);
-			client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, null);
-			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, null);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, null);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, null);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, null);
 		}
 
 		private void PathHide(GameClient client)
 		{
-			ArrayList objs = (ArrayList)client.Player.TempProperties.getProperty<object>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
 			if (objs == null)
 				return;
 
@@ -104,15 +104,15 @@ namespace DOL.GS.Commands
 			RemoveAllPathPointObjects(client);
 
 			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, ePathType.Once);
-			client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, startpoint);
-			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, startpoint);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
 			client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			CreatePathPointObject(client, startpoint, 1);
 		}
 
 		private void PathAdd(GameClient client, string[] args)
 		{
-			PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 			if (path == null)
 			{
 				DisplayMessage(client, "No path created yet! Use /path create first!");
@@ -150,7 +150,7 @@ namespace DOL.GS.Commands
 			newpp.WaitTime = waittime * 10;
 			path.Next = newpp;
 			newpp.Prev = path;
-			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, newpp);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, newpp);
 
 			int len = 0;
 			while (path.Prev != null)
@@ -182,7 +182,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			PathPoint pathpoint = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_FIRST, null);
+			PathPoint pathpoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST, null);
 
 			if (pathpoint == null)
 			{
@@ -203,7 +203,7 @@ namespace DOL.GS.Commands
 
 		private void PathTravel(GameClient client)
 		{
-			PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 			if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNPC))
 			{
 				DisplayMessage(client, "You need to select a mob first!");
@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
 			((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
 
 			// set the new path
-			((GameNPC)client.Player.TargetObject).CurrentWaypoint = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_FIRST, null);
+			((GameNPC)client.Player.TargetObject).CurrentWaypoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST, null);
 
 			((GameNPC)client.Player.TargetObject).MoveOnPath(speed);
 
@@ -247,7 +247,7 @@ namespace DOL.GS.Commands
 
 		private void PathType(GameClient client, string[] args)
 		{
-			PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 			if (args.Length < 2)
 			{
 				DisplayMessage(client, "Usage: /path type <pathtype>");
@@ -305,7 +305,7 @@ namespace DOL.GS.Commands
 
 			RemoveAllPathPointObjects(client);
 			DisplayMessage(client, "Path '{0}' loaded.", pathName);
-			client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, pathPoint);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, pathPoint);
 			int len = 0;
 			PathPoint lastPathPoint;
 
@@ -316,12 +316,12 @@ namespace DOL.GS.Commands
 				pathPoint = pathPoint.Next;
 			} while (pathPoint != null);
 
-			client.Player.TempProperties.setProperty(TEMP_PATH_LAST, lastPathPoint);
+			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, lastPathPoint);
 		}
 
 		private void PathSave(GameClient client, string[] args)
 		{
-			PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 			if (args.Length < 3)
 			{
 				DisplayMessage(client, "Usage: /path save <pathname>");
@@ -341,7 +341,7 @@ namespace DOL.GS.Commands
 
 		private void PathAssignTaxiRoute(GameClient client, string[] args)
 		{
-			PathPoint path = (PathPoint)client.Player.TempProperties.getProperty<object>(TEMP_PATH_LAST, null);
+			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
 			if (args.Length < 2)
 			{
 				DisplayMessage(client, "Usage: /path assigntaxiroute <destination>");
