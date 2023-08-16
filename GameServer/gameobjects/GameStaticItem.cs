@@ -66,11 +66,9 @@ namespace DOL.GS
 			set
 			{
 				base.Model = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						player.Out.SendObjectCreate(this);
-				}
+					PlayerService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -83,11 +81,9 @@ namespace DOL.GS
 			set
 			{
 				m_Emblem = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						player.Out.SendObjectCreate(this);
-				}
+					PlayerService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -122,11 +118,9 @@ namespace DOL.GS
 			set
 			{
 				base.Name = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						player.Out.SendObjectCreate(this);
-				}
+					PlayerService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -221,11 +215,9 @@ namespace DOL.GS
 			set
 			{
 				base.Heading = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						player.Out.SendObjectCreate(this);
-				}
+					PlayerService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -238,11 +230,9 @@ namespace DOL.GS
 			set
 			{
 				base.Level = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						player.Out.SendObjectCreate(this);
-				}
+					PlayerService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -333,10 +323,8 @@ namespace DOL.GS
 		{
 			if (!base.AddToWorld())
 				return false;
-			
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				player.Out.SendObjectCreate(this);
 
+			PlayerService.CreateObjectForPlayers(this);
 			return true;
 		}
 
