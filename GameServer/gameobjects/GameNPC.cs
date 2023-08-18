@@ -196,7 +196,7 @@ namespace DOL.GS
 			get => base.Level;
 			set
 			{
-				bool bMaxHealth = (m_health == MaxHealth);
+				bool bMaxHealth = m_health >= MaxHealth;
 
 				if (Level != value)
 				{
@@ -1088,6 +1088,7 @@ namespace DOL.GS
 			m_databaseLevel = dbMob.Level;
 			AutoSetStats(dbMob);
 			Level = dbMob.Level;
+			m_health = MaxHealth;
 			MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
 
 			if (MeleeDamageType == 0)
