@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
         {
             if (!_brain.Body.InCombatInLast(25000) || _brain.Body.IsNearSpawn)
             {
-                if (_brain.IsBeyondTetherRange() || !_brain.CheckProximityAggro())
+                if (!_brain.CheckProximityAggro())
                 {
                     if (_brain.Body.CurrentWaypoint != null)
                         _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
