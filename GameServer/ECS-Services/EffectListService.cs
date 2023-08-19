@@ -117,7 +117,7 @@ namespace DOL.GS
                                 effect.ExpireTick += effect.PulseFreq;
                             }
 
-                            if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != eSpellType.Charm && effect.SpellHandler.Spell.SpellType != eSpellType.SpeedDecrease)
+                            if (effect.SpellHandler.Spell.IsHarmful && effect.SpellHandler.Spell.SpellType != eSpellType.SpeedDecrease)
                             {
                                 if (!(effect.Owner.IsMezzed || effect.Owner.IsStunned))
                                     ((SpellHandler)effect.SpellHandler).SendCastAnimation();

@@ -120,7 +120,7 @@ namespace DOL.GS
                     // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
                     if (spellEffect is ECSPulseEffect)
                     {
-                        if (!spell.IsHarmful && !spellEffect.RenewEffect)
+                        if (!spell.IsHarmful && spell.SpellType != eSpellType.Charm && !spellEffect.RenewEffect)
                             SendSpellAnimation(spellEffect);
                     }
                     else if (spell.IsHarmful)
