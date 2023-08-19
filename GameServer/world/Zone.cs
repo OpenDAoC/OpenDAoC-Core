@@ -338,7 +338,7 @@ namespace DOL.GS
                 return false;
             }
 
-            LightConcurrentLinkedList<GameObject>.Node node = new(gameObject);
+            LinkedListNode<GameObject> node = new(gameObject);
             SubZoneObject subZoneObject= new(node, null);
             gameObject.SubZoneObject = subZoneObject;
 
@@ -395,7 +395,7 @@ namespace DOL.GS
                 maxLine = SUBZONE_NBR_ON_ZONE_SIDE - 1;
 
             int subZoneIndex;
-            LightConcurrentLinkedList<GameObject> objects;
+            ConcurrentLinkedList<GameObject> objects;
             bool ignoreDistance;
 
             for (int line = minLine; line <= maxLine; ++line)
@@ -425,11 +425,11 @@ namespace DOL.GS
                     else
                         ignoreDistance = false;
 
-                    using LightConcurrentLinkedList<GameObject>.Reader reader = objects.GetReader();
+                    using ConcurrentLinkedList<GameObject>.Reader reader = objects.GetReader();
 
-                    for (LightConcurrentLinkedList<GameObject>.Node node = reader.Current(); node != null; node = reader.Next())
+                    for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
                     {
-                        GameObject gameObject = node.Item;
+                        GameObject gameObject = node.Value;
 
                         // Inactive or deleted objects can't remove themselves.
                         if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
@@ -451,9 +451,9 @@ namespace DOL.GS
 
         #region Relocation
 
-        public void CheckForRelocation(LightConcurrentLinkedList<GameObject>.Node node)
+        public void CheckForRelocation(LinkedListNode<GameObject> node)
         {
-            GameObject gameObject = node.Item;
+            GameObject gameObject = node.Value;
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
             SubZone subZone = subZoneObject.CurrentSubZone;
 
@@ -466,15 +466,15 @@ namespace DOL.GS
             if (subZoneIndex != -1 && _subZones[subZoneIndex] == subZone)
                 return;
 
-            using LightConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
+            using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
             reader.MoveTo(node);
             Relocate(node, -1);
             return;
         }
 
-        private void Relocate(LightConcurrentLinkedList<GameObject>.Node node, int newSubZoneIndex)
+        private void Relocate(LinkedListNode<GameObject> node, int newSubZoneIndex)
         {
-            GameObject gameObject = node.Item;
+            GameObject gameObject = node.Value;
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
             // Does the current object exists, is active and still in the region where this zone is located?
@@ -689,11 +689,11 @@ namespace DOL.GS
             {
                 foreach (SubZone subZone in _subZones)
                 {
-                    using LightConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(eGameObjectType.NPC).GetReader();
+                    using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(eGameObjectType.NPC).GetReader();
 
-                    for (LightConcurrentLinkedList<GameObject>.Node node = reader.Current(); node != null; node = reader.Next())
+                    for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
                     {
-                        currentNPC = (GameNPC) node.Item;
+                        currentNPC = (GameNPC) node.Value;
 
                         for (int i = 0; i < realms.Length; i++)
                         {
