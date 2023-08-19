@@ -482,6 +482,19 @@ namespace DOL.GS
                 if (newSubZoneIndex == -1)
                 {
                     Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
+
+                    if (newZone == null && log.IsErrorEnabled)
+                    {
+                        log.Error($"Tried to relocate object to a non-existent zone (Object: {gameObject})");
+
+                        if (gameObject is GamePlayer player)
+                            player.MoveToBind();
+                        else
+                            gameObject.RemoveFromWorld();
+
+                        return;
+                    }
+
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
 
                     if (subZoneObject.StartSubZoneChange)
