@@ -504,6 +504,23 @@ namespace DOL.GS
             Interlocked.Decrement(ref _objectCount);
         }
 
+        // Temporary debug
+        public LinkedListNode<GameObject> FindObject(GameObject gameObject)
+        {
+            foreach (SubZone subZone in _subZones)
+            {
+                using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
+
+                for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
+                {
+                    if (node.Value == gameObject)
+                        return node;
+                }
+            }
+
+            return null;
+        }
+
         #endregion
 
         /// <summary>

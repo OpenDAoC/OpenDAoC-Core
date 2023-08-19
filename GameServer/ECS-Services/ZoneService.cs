@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using ECS.Debug;
 using log4net;
@@ -38,7 +39,49 @@ namespace DOL.GS
                     // Remove object from subzone.
                     if (currentZone != null)
                     {
-                        subZoneObject.CurrentSubZone.RemoveObjectNode(node);
+                        // Temporary debug
+                        try
+                        {
+                            subZoneObject.CurrentSubZone.RemoveObjectNode(node);
+                        }
+                        catch (InvalidOperationException e)
+                        {
+                            StringBuilder builder = new();
+                            builder.AppendLine(e.Message);
+                            builder.AppendLine($"Info from objectChangingSubZone.SubZoneObject:");
+                            builder.AppendLine($"- object: {node.Value})");
+                            builder.AppendLine($"- currentZone: {currentZone.ID}");
+                            builder.AppendLine($"- destinationZone: {destinationZone.ID}");
+                            builder.AppendLine($"Looking for real node...");
+                            LinkedListNode<GameObject> realNode = null;
+
+                            foreach (Region region in WorldMgr.Regions.Values)
+                            {
+                                foreach (Zone zone in region.Zones)
+                                {
+                                    realNode = zone.FindObject(node.Value);
+
+                                    if (realNode == null)
+                                        continue;
+                                    else
+                                        goto leave;
+                                }
+                            }
+
+                            leave:
+                            if (realNode == null)
+                                builder.AppendLine($"real node not found, object already removed?");
+                            else
+                            {
+                                builder.AppendLine($"realNode equals node? {realNode == node})");
+                                builder.AppendLine($"realNode.Value equals node.Value? {realNode.Value == node.Value})");
+                                builder.AppendLine($"realNode.Value.SubZoneObject == node.Value.SubZoneObject? {realNode.Value.SubZoneObject == node.Value.SubZoneObject})");
+                                builder.AppendLine($"realNode.Value.SubZoneObject.CurrentSubZone == node.Value.SubZoneObject.CurrentSubZone? {realNode.Value.SubZoneObject.CurrentSubZone == node.Value.SubZoneObject.CurrentSubZone})");
+                                builder.AppendLine($"realNodeValueSubZoneObjectParentZone: {realNode.Value.SubZoneObject.CurrentSubZone.ParentZone.ID}");
+                            }
+
+                            log.Error(builder.ToString());
+                        }
 
                         if (changingZone)
                             currentZone.OnObjectRemovedFromZone();
