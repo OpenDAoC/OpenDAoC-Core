@@ -466,9 +466,7 @@ namespace DOL.GS
             if (subZoneIndex != -1 && _subZones[subZoneIndex] == subZone)
                 return;
 
-            using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
-            reader.MoveTo(node);
-            Relocate(node, -1);
+            Relocate(node, subZoneIndex);
             return;
         }
 
@@ -480,10 +478,8 @@ namespace DOL.GS
             // Does the current object exists, is active and still in the region where this zone is located?
             if (gameObject.ObjectState == GameObject.eObjectState.Active && gameObject.CurrentRegion == ZoneRegion)
             {
-                int objectSubZoneIndex = GetSubZoneIndex(gameObject.X, gameObject.Y);
-
                 // Has the object moved to another zone in the same region, or to another subzone in the same zone?
-                if (objectSubZoneIndex == -1)
+                if (newSubZoneIndex == -1)
                 {
                     Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
@@ -491,11 +487,8 @@ namespace DOL.GS
                     if (subZoneObject.StartSubZoneChange)
                         ObjectChangingSubZone.Create(node, subZoneObject, newZone, newSubZone);
                 }
-                else if (objectSubZoneIndex != newSubZoneIndex)
-                {
-                    if (subZoneObject.StartSubZoneChange)
-                        ObjectChangingSubZone.Create(node, subZoneObject, this, _subZones[objectSubZoneIndex]);
-                }
+                else if (subZoneObject.StartSubZoneChange)
+                    ObjectChangingSubZone.Create(node, subZoneObject, this, _subZones[newSubZoneIndex]);
             }
             else if (subZoneObject.StartSubZoneChange)
                 ObjectChangingSubZone.Create(node, subZoneObject, null, null);
