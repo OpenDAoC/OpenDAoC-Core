@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target.ToLower() == "cone" || (Spell.Target == "Enemy" && Spell.IsPBAoE))
+			if (Spell.Target.ToLower() == "cone") //  || (Spell.Target == "Enemy" && Spell.IsPBAoE)  <-- pbaoe skips los per 1.65
 			{
 				GamePlayer checkPlayer = null;
 				if (target is GamePlayer)
