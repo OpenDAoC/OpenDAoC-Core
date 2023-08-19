@@ -343,7 +343,7 @@ namespace DOL.GS
             gameObject.SubZoneObject = subZoneObject;
 
             if (subZoneObject.StartSubZoneChange)
-                ObjectChangingSubZone.Create(node, subZoneObject, this, subZone);
+                ObjectChangingSubZone.Create(subZoneObject, this, subZone);
 
             return true;
         }
@@ -437,7 +437,7 @@ namespace DOL.GS
                             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
                             if (subZoneObject.StartSubZoneChange)
-                                ObjectChangingSubZone.Create(node, subZoneObject, null, null);
+                                ObjectChangingSubZone.Create(subZoneObject, null, null);
 
                             continue;
                         }
@@ -485,13 +485,13 @@ namespace DOL.GS
                     SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
 
                     if (subZoneObject.StartSubZoneChange)
-                        ObjectChangingSubZone.Create(node, subZoneObject, newZone, newSubZone);
+                        ObjectChangingSubZone.Create(subZoneObject, newZone, newSubZone);
                 }
                 else if (subZoneObject.StartSubZoneChange)
-                    ObjectChangingSubZone.Create(node, subZoneObject, this, _subZones[newSubZoneIndex]);
+                    ObjectChangingSubZone.Create(subZoneObject, this, _subZones[newSubZoneIndex]);
             }
             else if (subZoneObject.StartSubZoneChange)
-                ObjectChangingSubZone.Create(node, subZoneObject, null, null);
+                ObjectChangingSubZone.Create(subZoneObject, null, null);
         }
 
         public void OnObjectAddedToZone()
@@ -504,27 +504,10 @@ namespace DOL.GS
             Interlocked.Decrement(ref _objectCount);
         }
 
-        // Temporary debug
-        public LinkedListNode<GameObject> FindObject(GameObject gameObject)
-        {
-            foreach (SubZone subZone in _subZones)
-            {
-                using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(gameObject.GameObjectType).GetReader();
-
-                for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
-                {
-                    if (node.Value == gameObject)
-                        return node;
-                }
-            }
-
-            return null;
-        }
-
         #endregion
 
         /// <summary>
-        /// Checks that the square distance between two arbitary points in space is lower or equal to the given square distance.
+        /// Checks that the square distance between two arbitrary points in space is lower or equal to the given square distance.
         /// </summary>
         /// <param name="x1">X of Point1</param>
         /// <param name="y1">Y of Point1</param>
