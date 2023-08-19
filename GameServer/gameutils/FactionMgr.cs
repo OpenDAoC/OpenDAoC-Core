@@ -17,9 +17,8 @@
  *
  */
 
-using System;
-using System.Reflection;
 using System.Collections;
+using System.Reflection;
 using DOL.Database;
 using log4net;
 
@@ -83,7 +82,7 @@ namespace DOL.GS
 					log.Warn("Missing Faction with Id :"+dbfactionAggroLevel.FactionID);
 					continue;
 				}
-				faction.PlayerxFaction.Add(dbfactionAggroLevel.CharacterID,dbfactionAggroLevel.AggroLevel);
+				faction.AggroToPlayers.TryAdd(dbfactionAggroLevel.CharacterID, dbfactionAggroLevel.AggroLevel);
 			}
 			return true;
 		}
@@ -107,7 +106,7 @@ namespace DOL.GS
 		{
 			if (m_factions == null) return; // nothing to save yet
 			foreach(Faction faction in m_factions.Values)
-				faction.SaveAggroToFaction();
+				faction.SaveFactionAggroToPlayers();
 		}
 
 

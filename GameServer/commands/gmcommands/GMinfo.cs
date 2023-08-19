@@ -96,7 +96,7 @@ namespace DOL.GS.Commands
 					if (target.Faction != null)
 					{
 						info.Add("Faction: " + target.Faction.Name);
-						info.Add("ID:   " + target.Faction.ID);
+						info.Add("ID:   " + target.Faction.Id);
 						info.Add("Enemies: " + target.Faction.EnemyFactions.Count);
 						info.Add("Friends: " + target.Faction.FriendFactions.Count);
 					}

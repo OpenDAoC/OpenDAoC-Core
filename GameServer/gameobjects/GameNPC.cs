@@ -1270,7 +1270,7 @@ namespace DOL.GS
 			mob.EquipmentTemplateID = EquipmentTemplateID;
 
 			if (m_faction != null)
-				mob.FactionID = m_faction.ID;
+				mob.FactionID = m_faction.Id;
 
 			mob.MeleeDamageType = (int) MeleeDamageType;
 

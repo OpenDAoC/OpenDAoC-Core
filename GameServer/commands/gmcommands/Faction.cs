@@ -147,8 +147,8 @@ namespace DOL.GS.Commands
 							return;
 						}
 						DBLinkedFaction dblinkedfaction = new DBLinkedFaction();
-						dblinkedfaction.FactionID = myfaction.ID;
-						dblinkedfaction.LinkedFactionID = linkedfaction.ID;
+						dblinkedfaction.FactionID = myfaction.Id;
+						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
 						dblinkedfaction.IsFriend = true;
 						GameServer.Database.AddObject(dblinkedfaction);
 						myfaction.AddFriendFaction(linkedfaction);
@@ -185,11 +185,11 @@ namespace DOL.GS.Commands
 							return;
 						}
 						DBLinkedFaction dblinkedfaction = new DBLinkedFaction();
-						dblinkedfaction.FactionID = myfaction.ID;
-						dblinkedfaction.LinkedFactionID = linkedfaction.ID;
+						dblinkedfaction.FactionID = myfaction.Id;
+						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
 						dblinkedfaction.IsFriend = false;
 						GameServer.Database.AddObject(dblinkedfaction);
-						myfaction.AddEnemyFaction(linkedfaction);
+						myfaction.EnemyFactions.Add(linkedfaction);
 					}
 					break;
 				#endregion AddEnemy
@@ -197,7 +197,7 @@ namespace DOL.GS.Commands
 				case "list":
 					{
 						foreach (Faction faction in FactionMgr.Factions.Values)
-							client.Player.Out.SendMessage("#" + faction.ID.ToString() + ": " + faction.Name + " (" + faction.BaseAggroLevel + ")", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("#" + faction.Id.ToString() + ": " + faction.Name + " (" + faction._baseAggroLevel + ")", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 						return;
 					}
 				#endregion List

@@ -1241,7 +1241,7 @@ namespace DOL.GS.Commands
 			info.Add(" + Realm: " + GlobalConstants.RealmToName(targetMob.Realm));
 
 			if (targetMob.Faction != null)
-				info.Add($" + Faction: {targetMob.Faction.Name} [{targetMob.Faction.ID}]");
+				info.Add($" + Faction: {targetMob.Faction.Name} [{targetMob.Faction.Id}]");
 
 			info.Add(" + Level: " + targetMob.Level);
 			info.Add(" + Brain: " + (targetMob.Brain == null ? "(null)" : targetMob.Brain.GetType().ToString()));

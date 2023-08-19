@@ -468,7 +468,7 @@ namespace DOL.GS
 			IList regionGenerators = (IList)m_mobRegionGenerators[(int)mob.CurrentRegionID];
 			IList factionGenerators = null;
 			if (mob.Faction != null)
-				factionGenerators = (IList)m_mobFactionGenerators[mob.Faction.ID];
+				factionGenerators = (IList)m_mobFactionGenerators[mob.Faction.Id];
 
 			ArrayList allGenerators = new ArrayList();
 
