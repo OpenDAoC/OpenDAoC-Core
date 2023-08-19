@@ -308,10 +308,10 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static int ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int animationId)
+		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
 		{
+			styleDamage = 0;
 			animationId = 0;
-			int styleDamage = 0;
 
 			// First thing in processors, lock the objects you modify.
 			// This way it makes sure the objects are not modified by several different threads at the same time.
@@ -321,7 +321,7 @@ namespace DOL.GS.Styles
 			{
 				// Does the player want to execute a style at all?
 				if (style == null)
-					return 0;
+					return false;
 
 				// Used to disable RA styles when they're actually firing.
 				style.OnStyleExecuted?.Invoke(living);
@@ -342,7 +342,7 @@ namespace DOL.GS.Styles
 					if (player != null)
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
-					return 0;
+					return false;
 				}
 				else
 				{
@@ -488,7 +488,7 @@ namespace DOL.GS.Styles
 
 					#endregion Animation
 
-					return styleDamage;
+					return true;
 				}
 			}
 		}

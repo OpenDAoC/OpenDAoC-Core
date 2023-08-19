@@ -1346,11 +1346,9 @@ namespace DOL.GS
                     else
                         damage = Math.Min(damage, (int) UnstyledDamageCap(weapon) /* * effectiveness*/);
 
-                    ad.StyleDamage = StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int animationId);
-
-                    if (ad.StyleDamage > 0)
+                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int styleDamage, out int animationId))
                     {
-                        double preResistStyleDamage = ad.StyleDamage;
+                        double preResistStyleDamage = styleDamage;
                         double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
                         ad.StyleDamage = (int) (preConversionStyleDamage * conversionMod);
 
@@ -1364,7 +1362,7 @@ namespace DOL.GS
 
                     ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
                     ad.Modifier = (int) (damage - preResistDamage);
-                    ad.Damage = (int)damage;
+                    ad.Damage = (int) damage;
                     ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
                     break;
                 }
