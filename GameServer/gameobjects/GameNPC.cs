@@ -264,19 +264,33 @@ namespace DOL.GS
 					Piety = mob.Piety;
 					Charisma = mob.Charisma;
 				}
-				else
-				{
-					if (Level > 1)
-					{
-						int levelMinusOne = Level - 1;
-						Strength = (short) (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-						Constitution = (short) (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-						Quickness = (short) (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-						Dexterity = (short) (Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-						Intelligence = (short) (Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-					}
-				}
 			}
+
+			int levelMinusOne = Level - 1;
+
+			if (Strength < 1)
+				Strength = (short) (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+
+			if (Constitution < 1)
+				Constitution = (short) (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+
+			if (Quickness < 1)
+				Quickness = (short) (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+
+			if (Dexterity < 1)
+				Dexterity = (short) (Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+
+			if (Intelligence < 1)
+				Intelligence = (short) (Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+
+			if (Empathy < 1)
+				Empathy = (short) (30 + levelMinusOne);
+
+			if (Piety < 1)
+				Piety = (short) (30 + levelMinusOne);
+
+			if (Charisma < 1)
+				Charisma = (short) (30 + levelMinusOne);
 		}
 
 		/*
