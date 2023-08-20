@@ -243,7 +243,7 @@ namespace DOL.GS
 				Intelligence = NPCTemplate.Intelligence;
 				Empathy = NPCTemplate.Empathy;
 				Piety = NPCTemplate.Piety;
-				Charisma = NPCTemplate.Strength;
+				Charisma = NPCTemplate.Charisma;
 			}
 			else
 			{
