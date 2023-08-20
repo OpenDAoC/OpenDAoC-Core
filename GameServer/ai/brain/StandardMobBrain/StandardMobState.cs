@@ -102,6 +102,10 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_AGGRO : StandardMobState
     {
+        private const int LEAVE_WHEN_OUT_OF_COMBAT_FOR = 25000;
+
+        private long _aggroTime = GameLoop.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
+
         public StandardMobState_AGGRO(StandardMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.AGGRO;
@@ -112,6 +116,7 @@ namespace DOL.AI.Brain
             if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
                 Console.WriteLine($"{_brain.Body} is entering AGGRO");
 
+            _aggroTime = GameLoop.GameLoopTime;
             base.Enter();
         }
 
@@ -126,17 +131,14 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!_brain.Body.InCombatInLast(25000) || _brain.Body.IsNearSpawn)
+            if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoop.GameLoopTime))
             {
-                if (!_brain.CheckProximityAggro())
-                {
-                    if (_brain.Body.CurrentWaypoint != null)
-                        _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-                    else
-                        _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                if (_brain.Body.CurrentWaypoint != null)
+                    _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
+                else
+                    _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
-                    return;
-                }
+                return;
             }
 
             if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
