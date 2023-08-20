@@ -94,10 +94,10 @@ namespace DOL.GS
         public void KillMember(GamePlayer killer)
         {
             foreach (Faction faction in FriendFactions)
-                faction.ChangeAggroLevel(killer, INCREASE_AGGRO_AMOUNT);
+                faction.ChangeAggroLevel(killer, DECREASE_AGGRO_AMOUNT);
 
             foreach (Faction faction in EnemyFactions)
-                faction.ChangeAggroLevel(killer, DECREASE_AGGRO_AMOUNT);
+                faction.ChangeAggroLevel(killer, INCREASE_AGGRO_AMOUNT);
         }
 
         private void ChangeAggroLevel(GamePlayer player, int amount)
