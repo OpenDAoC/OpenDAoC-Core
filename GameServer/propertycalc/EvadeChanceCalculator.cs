@@ -43,7 +43,7 @@ namespace DOL.GS.PropertyCalc
                 chance += player.BaseBuffBonusCategory[(int) property] * 10;
                 chance += player.SpecBuffBonusCategory[(int) property] * 10;
                 chance -= player.DebuffCategory[(int) property] * 10;
-                chance +=  player.BuffBonusCategory4[(int) property] * 10;
+                chance += player.BuffBonusCategory4[(int) property] * 10;
                 chance += player.AbilityBonus[(int) property] * 10;
             }
             else if (living is GameNPC npc)

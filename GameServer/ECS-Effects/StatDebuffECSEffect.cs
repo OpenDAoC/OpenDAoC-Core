@@ -1,13 +1,8 @@
-using System;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
-using DOL.GS.PropertyCalc;
 using System.Collections.Generic;
-using DOL.GS.API;
 using System.Linq;
 using DOL.GS.PlayerClass;
+using DOL.GS.PropertyCalc;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -183,14 +178,12 @@ namespace DOL.GS
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
 
-                //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]} effectiveness {Effectiveness}");
+                // This should probably be the opposite?
+                // Most values returned by 'DebuffCategory' are modified with 'Math.Abs' because of this.
                 if (IsSubstracted)
-                {
                     tblBonusCat[(int) Property] -= effectiveValue;
-                }
                 else
                     tblBonusCat[(int) Property] += effectiveValue;
-                //Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
             }
         }
 

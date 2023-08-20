@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 
 namespace DOL.GS.PropertyCalc
@@ -25,12 +26,12 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			if (living is GameNPC)
+			if (living is GameNPC npc)
 			{
 				int strengthPerMeleeDamagePercent = 8;
-				var strengthBuffBonus = living.BaseBuffBonusCategory[eProperty.Strength] + living.SpecBuffBonusCategory[eProperty.Strength];
-				var strengthDebuffMalus = living.DebuffCategory[eProperty.Strength] + living.SpecDebuffCategory[eProperty.Strength];
-				return ((living as GameNPC).Strength + (strengthBuffBonus - strengthDebuffMalus)) / strengthPerMeleeDamagePercent;
+				var strengthBuffBonus = npc.BaseBuffBonusCategory[eProperty.Strength] + npc.SpecBuffBonusCategory[eProperty.Strength];
+				var strengthDebuffMalus = Math.Abs(npc.DebuffCategory[eProperty.Strength] + npc.SpecDebuffCategory[eProperty.Strength]);
+				return (npc.Strength + (strengthBuffBonus - strengthDebuffMalus)) / strengthPerMeleeDamagePercent;
 			}
 
 			int hardCap = 10;
