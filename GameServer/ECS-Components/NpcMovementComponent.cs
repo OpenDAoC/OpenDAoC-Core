@@ -11,7 +11,7 @@ namespace DOL.GS
     {
         public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public const short DEFAULT_WALK_SPEED = 50;
+        public const short DEFAULT_WALK_SPEED = 70;
         public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
         public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
         private const double FOLLOW_SPEED_SCALAR = 2.5;
