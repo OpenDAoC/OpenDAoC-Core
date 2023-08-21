@@ -77,8 +77,14 @@ namespace DOL.GS
             player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
         }
 
+        private static void AddHouseToPlayerCache(GamePlayer player, House house)
+        {
+            player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+        }
+
         private static void AddObjectToPlayerCache(GamePlayer player, GameObject gameObject)
         {
+            // Doesn't handle houses. They aren't 'GameObject'.
             switch (gameObject.GameObjectType)
             {
                 case eGameObjectType.ITEM:
@@ -101,6 +107,7 @@ namespace DOL.GS
 
         public static void UpdateObjectForPlayer(GamePlayer player, GameObject gameObject)
         {
+            // Doesn't handle houses. They aren't 'GameObject'.
             gameObject.OnUpdateByPlayerService();
             player.Out.SendObjectUpdate(gameObject);
             AddObjectToPlayerCache(player, gameObject);
@@ -263,6 +270,8 @@ namespace DOL.GS
                 }
                 else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
+
+                AddHouseToPlayerCache(player, house);
             }
         }
 
