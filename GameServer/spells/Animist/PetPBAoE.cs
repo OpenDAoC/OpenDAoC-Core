@@ -36,11 +36,17 @@ namespace DOL.GS.Spells
             return base.CheckBeginCast(Target);
         }
 
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+            if (Target.IsAlive)
+                base.ApplyEffectOnTarget(target, effectiveness);
+        }
+
         public override void DamageTarget(AttackData ad, bool showEffectAnimation)
         {
             // Set the turret as the attacker so that aggro is split properly (damage should already be calculated at this point).
             // This may cause some issues if something else relies on 'ad.Attacker', but is better than calculating aggro here.
-            ad.Attacker = Caster.ControlledBrain?.Body;
+            ad.Attacker = Target;
             base.DamageTarget(ad, showEffectAnimation);
         }
     }
