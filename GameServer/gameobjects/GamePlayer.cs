@@ -379,7 +379,9 @@ namespace DOL.GS
         }
 
         #region Object Caches
-        public ConcurrentDictionary<GameObject, long>[] ObjectUpdateCaches { get; private set; } = new ConcurrentDictionary<GameObject, long>[Enum.GetValues(typeof(eGameObjectType)).Length];
+        public ConcurrentDictionary<GameNPC, PlayerService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
+        public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; private set; } = new();
+        public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<House, long> HouseUpdateCache { get; private set; } = new();
         #endregion
 
@@ -15202,10 +15204,6 @@ namespace DOL.GS
 
             LoadFromDatabase(dbChar);
             CreateStatistics();
-
-            for (int i = 0; i < ObjectUpdateCaches.Length; i++)
-                ObjectUpdateCaches[i] = new();
-
             EntityManager.Add(this);
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>

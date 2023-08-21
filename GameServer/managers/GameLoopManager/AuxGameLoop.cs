@@ -48,7 +48,7 @@ namespace DOL.GS
 
             try
             {
-                PlayerService.Tick(GameLoopTime);
+                PlayerService.Tick();
                 AuxTimerService.Tick(GameLoopTime);
             }
             catch (Exception e)

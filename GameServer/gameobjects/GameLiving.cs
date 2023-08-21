@@ -3446,39 +3446,27 @@ namespace DOL.GS
 		/// </summary>
 		public override int Health
 		{
-			get { return m_health; }
+			get => m_health;
 			set
 			{
+				int maxHealth = MaxHealth;
 
-				int maxhealth = MaxHealth;
-				if (value >= maxhealth)
+				if (value >= maxHealth)
 				{
-					m_health = maxhealth;
+					m_health = maxHealth;
 
-					// noret: i see a problem here when players get not RPs after this player was healed to full
-					// either move this to GameNPC or add a check.
-
-					//We clean all damagedealers if we are fully healed,
-					//no special XP calculations need to be done
+					// We clean all damage dealers if we are fully healed, no special XP calculations need to be done.
+					// May prevent players from gaining RPs after this living was healed to full?
 					lock (m_xpGainers.SyncRoot)
 					{
-						//DOLConsole.WriteLine(this.Name+": Health=100% -> clear xpgainers");
 						m_xpGainers.Clear();
 					}
 				}
-				else if (value > 0)
-				{
-					m_health = value;
-				}
 				else
-				{
-					m_health = 0;
-				}
+					m_health = Math.Max(0, value);
 
-				if (IsAlive && m_health < maxhealth)
-				{
+				if (IsAlive && m_health < maxHealth)
 					StartHealthRegeneration();
-				}
 			}
 		}
 
