@@ -7821,43 +7821,33 @@ namespace DOL.GS
 
             lock (Inventory)
             {
-                InventoryItem useItem = Inventory.GetItem((eInventorySlot)slot);
+                InventoryItem useItem = Inventory.GetItem((eInventorySlot) slot);
                 UseItem = useItem;
 
                 if (useItem == null)
                 {
-                    if ((slot >= Slot.FIRSTQUIVER) && (slot <= Slot.FOURTHQUIVER))
-                    {
-                        Out.SendMessage("The quiver slot " + (slot - (Slot.FIRSTQUIVER) + 1) + " is empty!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    }
+                    if (slot is >= Slot.FIRSTQUIVER and <= Slot.FOURTHQUIVER)
+                        Out.SendMessage($"The quiver slot {slot - Slot.FIRSTQUIVER + 1} is empty!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     else
-                    {
-                        // don't allow using empty slots
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.IllegalSourceObject", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    }
+
                     return;
                 }
 
-                if (useItem is IGameInventoryItem)
+                if (useItem is IGameInventoryItem inventoryItem)
                 {
-                    if ((useItem as IGameInventoryItem).Use(this))
-                    {
+                    if (inventoryItem.Use(this))
                         return;
-                    }
                 }
 
-                if (useItem.Item_Type >= (int)eInventorySlot.LeftFrontSaddleBag && useItem.Item_Type <= (int)eInventorySlot.RightRearSaddleBag)
+                if (useItem.Item_Type is >= ((int) eInventorySlot.LeftFrontSaddleBag) and <= ((int) eInventorySlot.RightRearSaddleBag))
                 {
                     UseSaddleBag(useItem);
                     return;
                 }
 
                 if (useItem.Item_Type != Slot.RANGED && (slot != Slot.HORSE || type != 0))
-                {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AttemptToUse", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-
-                #region Non-backpack/vault slots
 
                 switch (slot)
                 {
@@ -7865,90 +7855,91 @@ namespace DOL.GS
                     case Slot.HORSEBARDING:
                         return;
                     case Slot.HORSE:
-                        if (type == 0)
+                    {
+                        if (type != 0)
+                            break;
+
+                        if (IsOnHorse)
+                            IsOnHorse = false;
+                        else
                         {
-                            if (IsOnHorse)
-                                IsOnHorse = false;
-                            else
+                            if (Level < useItem.Level)
                             {
-                                if (Level < useItem.Level)
-                                {
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.SummonHorseLevel", useItem.Level), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    return;
-                                }
-
-                                string reason = GameServer.ServerRules.ReasonForDisallowMounting(this);
-                                if (!String.IsNullOrEmpty(reason))
-                                {
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, reason), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    return;
-                                }
-
-                                if (IsSummoningMount)
-                                {
-                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.StopCallingMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    StopWhistleTimers();
-                                    return;
-                                }
-                                Out.SendTimerWindow("Summoning Mount", 5);
-                                foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                                {
-                                    if (plr == null) continue;
-                                    plr.Out.SendEmoteAnimation(this, eEmote.Horse_whistle);
-                                }
-                                // vampiir ~
-                                GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
-                                //GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, "SpeedEnhancement");
-                                ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
-                                if (effects != null)
-                                    effects.Cancel(false);
-                                if (effect != null)
-                                    EffectService.RequestImmediateCancelEffect(effect);
-                                    //effect.Cancel(false);
-                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
-                                m_whistleMountTimer = new ECSGameTimer(this);
-                                m_whistleMountTimer.Callback = new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback);
-                                m_whistleMountTimer.Start(5000);
+                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.SummonHorseLevel", useItem.Level), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
                             }
+
+                            string reason = GameServer.ServerRules.ReasonForDisallowMounting(this);
+
+                            if (!string.IsNullOrEmpty(reason))
+                            {
+                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, reason), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+
+                            if (IsSummoningMount)
+                            {
+                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.StopCallingMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                StopWhistleTimers();
+                                return;
+                            }
+
+                            Out.SendTimerWindow("Summoning Mount", 5);
+
+                            foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            {
+                                if (plr == null)
+                                    continue;
+                                plr.Out.SendEmoteAnimation(this, eEmote.Horse_whistle);
+                            }
+
+                            GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
+                            ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
+
+                            if (effects != null)
+                                effects.Cancel(false);
+
+                            if (effect != null)
+                                EffectService.RequestImmediateCancelEffect(effect);
+
+                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+                            m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
                         }
+
                         break;
+                    }
                     case Slot.RIGHTHAND:
                     case Slot.LEFTHAND:
-                        if (type != 0) break;
-                        if (ActiveWeaponSlot == eActiveWeaponSlot.Standard)
+                    {
+                        if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.Standard)
                             break;
+
                         SwitchWeapon(eActiveWeaponSlot.Standard);
                         Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
                         return;
-
+                    }
                     case Slot.TWOHAND:
-                        if (type != 0) break;
-                        if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
+                    {
+                        if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
                             break;
+
                         SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                         Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
                         return;
-
+                    }
                     case Slot.RANGED:
+                    {
                         bool newAttack = false;
-                        ///Volley TempProperties to not allow shot during volley and cancel aim animation
-                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//check if player got volley
-                       /* var IsReadyToFire = TempProperties.getProperty<bool>("volley_IsReadyToFire");
-                        if(!IsReadyToFire && volley != null)
-                        {
-                            return;//dont shot until it's ready to fire
-                        }
-                        if(IsReadyToFire && volley != null && type == 0)//type == 0 means player click icon
-                            TempProperties.removeProperty("volley_IsReadyToFire");
-                        if(volley == null)//dont have volley so remove property
-                          TempProperties.removeProperty("volley_IsReadyToFire");*/
-                        ///////////////////////////////////////////////////////////////////////////////////
+                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
                             SwitchWeapon(eActiveWeaponSlot.Distance);
-                            if(useItem.Object_Type == (int)eObjectType.Instrument) return;
+
+                            if(useItem.Object_Type == (int) eObjectType.Instrument)
+                                return;
                         }
-                        else if (!attackComponent.AttackState && useItem.Object_Type != (int)eObjectType.Instrument && volley == null)//volley check
+                        else if (!attackComponent.AttackState && useItem.Object_Type != (int) eObjectType.Instrument && volley == null)
                         {
                             StopCurrentSpellcast();
                             attackComponent.RequestStartAttack(TargetObject);
@@ -7994,80 +7985,74 @@ namespace DOL.GS
                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NoAutoReleaseShotReload"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             }
                         }
+
                         break;
-                    case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false); break;
-                    case Slot.SECONDQUIVER: SwitchQuiver(eActiveQuiverSlot.Second, false); break;
-                    case Slot.THIRDQUIVER: SwitchQuiver(eActiveQuiverSlot.Third, false); break;
-                    case Slot.FOURTHQUIVER: SwitchQuiver(eActiveQuiverSlot.Fourth, false); break;
+                    }
+                    case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false);
+                        break;
+                    case Slot.SECONDQUIVER: SwitchQuiver(eActiveQuiverSlot.Second, false);
+                        break;
+                    case Slot.THIRDQUIVER: SwitchQuiver(eActiveQuiverSlot.Third, false);
+                        break;
+                    case Slot.FOURTHQUIVER: SwitchQuiver(eActiveQuiverSlot.Fourth, false);
+                        break;
                 }
 
-                #endregion
-
-                if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0) // don't return without firing events
+                if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0)
                 {
-                    if (IsSitting && useItem.Object_Type != (int)eObjectType.Poison)
+                    if (IsSitting && useItem.Object_Type != (int) eObjectType.Poison)
                     {
                         Out.SendMessage("You can't use an item while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     // Item with a non-charge ability.
-
-                    if (useItem.Object_Type == (int)eObjectType.Magical
-                        && useItem.Item_Type == (int)eInventorySlot.FirstBackpack
-                        && useItem.SpellID > 0
-                        && useItem.MaxCharges == 0)
+                    if (useItem.Object_Type == (int) eObjectType.Magical &&
+                        useItem.Item_Type == (int) eInventorySlot.FirstBackpack &&
+                        useItem.SpellID > 0 &&
+                        useItem.MaxCharges == 0)
                     {
                         UseMagicalItem(useItem, type);
                         return;
                     }
 
                     // Artifacts don't require charges.
-
                     if ((type < 2 && useItem.SpellID > 0 && useItem.Charges < 1 && useItem.MaxCharges > -1) ||
                         (type == 2 && useItem.SpellID1 > 0 && useItem.Charges1 < 1 && useItem.MaxCharges1 > -1) ||
                         (useItem.PoisonSpellID > 0 && useItem.PoisonCharges < 1))
                     {
-                        Out.SendMessage("The " + useItem.Name + " is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage($"The {useItem.Name} is out of charges.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
                     }
                     else
                     {
-                        if (useItem.Object_Type == (int)eObjectType.Poison)
+                        if (useItem.Object_Type == (int) eObjectType.Poison)
                         {
                             InventoryItem mainHand = ActiveWeapon;
                             InventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+
                             if (mainHand != null && mainHand.PoisonSpellID == 0)
-                            {
                                 ApplyPoison(useItem, mainHand);
-                            }
                             else if (leftHand != null && leftHand.PoisonSpellID == 0)
-                            {
                                 ApplyPoison(useItem, leftHand);
-                            }
                         }
-                        else if (useItem.SpellID > 0 && useItem.Charges > 0 && useItem.Object_Type == (int)eObjectType.Magical && (useItem.Item_Type == (int)eInventorySlot.FirstBackpack || useItem.Item_Type == 41))
+                        else if (useItem.SpellID > 0 && useItem.Charges > 0 && useItem.Object_Type == (int) eObjectType.Magical && (useItem.Item_Type == (int) eInventorySlot.FirstBackpack || useItem.Item_Type == 41))
                         {
                             SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
                             if (useItem.Item_Type == 41)
-                            {
                                 potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                            }
 
                             Spell spell = SkillBase.FindSpell(useItem.SpellID, potionEffectLine);
 
                             if (spell != null)
                             {
                                 // For potions most can be used by any player level except a few higher level ones.
-                                // So for the case of potions we will only restrict the level of usage if LevelRequirement is >0 for the item
-
-                                long nextPotionAvailTime = TempProperties.GetProperty<long>(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup));
+                                // So for the case of potions we will only restrict the level of usage if LevelRequirement is >0 for the item.
+                                long nextPotionAvailTime = TempProperties.GetProperty<long>($"{NEXT_POTION_AVAIL_TIME}_Type{spell.SharedTimerGroup}");
 
                                 if (Client.Account.PrivLevel == 1 && nextPotionAvailTime > CurrentRegion.Time)
-                                {
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.MustWaitBeforeUse", (nextPotionAvailTime - CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                }
                                 else
                                 {
                                     if (potionEffectLine != null)
@@ -8077,38 +8062,27 @@ namespace DOL.GS
                                         if (requiredLevel <= Level)
                                         {
                                             if (spell.CastTime > 0 && attackComponent.AttackState)
-                                            {
                                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            }
-                                            //Eden
                                             else if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
-                                            {
                                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseState", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            }
                                             else if (spell.CastTime > 0 && IsCasting)
-                                            {
                                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            }
                                             else
                                             {
-                                                SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) as SpellHandler;
-                                                if (spellHandler != null)
+                                                if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
                                                 {
                                                     GameLiving target = TargetObject as GameLiving;
+
                                                     if (spellHandler is AllStatsBarrel)
                                                         target = this;
 
                                                     if (spellHandler is AllRegenBuff)
                                                         target = this;
 
-                                                    // Tobz: make sure we have the appropriate target for our charge spell,
-                                                    // otherwise don't waste a charge.
-                                                    if (spell.Target.ToLower() == "enemy")
+                                                    if (spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase))
                                                     {
-                                                        // we need an enemy target.
                                                         if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
                                                         {
-                                                            // not allowed to attack, so they are not an enemy.
                                                             Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                             return;
                                                         }
@@ -8122,7 +8096,7 @@ namespace DOL.GS
 
                                                     Stealth(false);
 
-                                                    if (useItem.Item_Type == (int)eInventorySlot.FirstBackpack)
+                                                    if (useItem.Item_Type == (int) eInventorySlot.FirstBackpack)
                                                     {
                                                         Emote(eEmote.Drink);
 
@@ -8130,7 +8104,6 @@ namespace DOL.GS
                                                             TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
                                                     }
 
-                                                    //Spell
                                                     if (spellHandler.StartSpell(target, useItem))
                                                     {
                                                         if (useItem.Count > 1)
@@ -8141,89 +8114,70 @@ namespace DOL.GS
                                                         else
                                                         {
                                                             useItem.Charges--;
+
                                                             if (useItem.Charges < 1)
                                                             {
                                                                 Inventory.RemoveCountFromStack(useItem, 1);
                                                                 InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
                                                             }
                                                         }
-                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.Used", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                                                        TempProperties.SetProperty(NEXT_POTION_AVAIL_TIME + "_Type" + (spell.SharedTimerGroup), useItem.CanUseEvery * 1000 + CurrentRegion.Time);
-                                                    }
-                                                    else
-                                                    {
-                                                        // StartItemSpell is responsible for sending failure message to player
+                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.Used", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        TempProperties.SetProperty($"{NEXT_POTION_AVAIL_TIME}_Type{spell.SharedTimerGroup}", useItem.CanUseEvery * 1000 + CurrentRegion.Time);
                                                     }
                                                 }
                                                 else
-                                                {
-                                                    Out.SendMessage("Potion effect ID " + spell.ID + " is not implemented yet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                }
+                                                    Out.SendMessage($"Potion effect ID {spell.ID} is not implemented yet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             }
                                         }
                                         else
-                                        {
                                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NotEnouthPower"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                        }
                                     }
                                     else
-                                    {
                                         Out.SendMessage("Potion effect line not found", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    }
                                 }
                             }
                             else
-                            {
-                                Out.SendMessage("Potion effect spell ID " + useItem.SpellID + " not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            }
+                                Out.SendMessage($"Potion effect spell ID {useItem.SpellID} not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
                         else if (type > 0)
                         {
                             if (!Inventory.EquippedItems.Contains(useItem))
-                            {
                                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseFromBackpack"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            }
                             else
                             {
                                 long lastChargedItemUseTick = TempProperties.GetProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
                                 long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
-                                long delay = TempProperties.GetProperty<long>(ITEM_USE_DELAY, 0L);
-                                long itemdelay = TempProperties.GetProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
-                                long itemreuse = (long)useItem.CanUseEvery * 1000;
-                                if (itemdelay == 0) itemdelay = CurrentRegion.Time - itemreuse;
+                                long delay = TempProperties.GetProperty(ITEM_USE_DELAY, 0L);
+                                long itemDelay = TempProperties.GetProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
+                                long itemReuse = (long)useItem.CanUseEvery * 1000;
+
+                                if (itemDelay == 0)
+                                    itemDelay = CurrentRegion.Time - itemReuse;
 
                                 if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
-                                {
                                     Out.SendMessage("In your state you can't discharge any object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                }
-                                else if ((type == 1 && SelfBuffChargeIDs.Contains(useItem.SpellID)) || 
-                                         (type == 2 && SelfBuffChargeIDs.Contains(useItem.SpellID1)))
-                                {
+                                else if ((type == 1 && SelfBuffChargeIDs.Contains(useItem.SpellID)) || (type == 2 && SelfBuffChargeIDs.Contains(useItem.SpellID1)))
                                     UseItemCharge(useItem, type);
-                                }
-                                else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
+                                else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemDelay) < itemReuse)) //2 minutes reuse timer
                                 {
-                                    if ((CurrentRegion.Time - itemdelay) < itemreuse)
-                                    {
-                                        Out.SendMessage("You must wait " + (itemreuse - (CurrentRegion.Time - itemdelay)) / 1000 + " more second before discharge " + useItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    }
+                                    if ((CurrentRegion.Time - itemDelay) < itemReuse)
+                                        Out.SendMessage($"You must wait {(itemReuse - (CurrentRegion.Time - itemDelay)) / 1000} more second before discharge {useItem.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                     else
-                                    {
-                                        Out.SendMessage("You must wait " + (delay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                    }
+                                        Out.SendMessage($"You must wait {(delay - changeTime) / 1000} more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                                     return;
                                 }
                                 else
                                 {
-                                    if (type == 1) //use1
+                                    if (type == 1)
                                     {
                                         if (useItem.SpellID == 0)
                                             return;
 
                                         UseItemCharge(useItem, type);
                                     }
-                                    else if (type == 2) //use2
+                                    else if (type == 2)
                                     {
                                         if (useItem.SpellID1 == 0)
                                             return;
@@ -8235,7 +8189,7 @@ namespace DOL.GS
                         }
                     }
                 }
-                // notify event handlers about used slot
+
                 Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
             }
         }
