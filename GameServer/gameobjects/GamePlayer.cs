@@ -7955,39 +7955,30 @@ namespace DOL.GS
                             newAttack = true;
                         }
 
-                        //Clean up range attack state/type if we are not in combat mode
-                        //anymore
-                        if (!attackComponent.AttackState && volley == null)//volley check
+                        if (!attackComponent.AttackState && volley == null)
                         {
                             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
                         }
 
-                        if (!newAttack && rangeAttackComponent.RangedAttackState != eRangedAttackState.None && volley == null)//volley check
+                        if (!newAttack && rangeAttackComponent.RangedAttackState != eRangedAttackState.None && volley == null)
                         {
                             if (rangeAttackComponent.RangedAttackState == eRangedAttackState.ReadyToFire)
                             {
+                                rangeAttackComponent.AutoFireTarget = null;
                                 rangeAttackComponent.RangedAttackState = eRangedAttackState.Fire;
                                 StopCurrentSpellcast();
-                                //m_attackAction.Start(1);
-                                attackComponent.attackAction.StartTime = 1;
                             }
                             else if (rangeAttackComponent.RangedAttackState == eRangedAttackState.Aim)
                             {
                                 if (!TargetInView)
                                 {
-                                    // Don't store last target if it's not visible
-                                    if(volley == null)//volley check
+                                    if (volley == null)
                                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
                                 else
                                 {
-                                    if (rangeAttackComponent.AutoFireTarget == null)
-                                    {
-                                        //set new target only if there was no target before
-                                        rangeAttackComponent.AutoFireTarget = TargetObject;
-                                    }
-
+                                    rangeAttackComponent.AutoFireTarget = TargetObject;
                                     rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShot"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
