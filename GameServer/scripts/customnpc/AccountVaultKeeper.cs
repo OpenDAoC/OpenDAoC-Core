@@ -1,24 +1,13 @@
-/*
- * Account Vault Keeper - Kakuri Mar 20 2009
- * A fake GameHouseVault that works as an account vault.
- * The methods and properties of GameHouseVault *must* be marked as virtual for this to work (which was not the case in DOL builds prior to 1584).
- * 
- */
-
-using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS
 {
     public class AccountVaultKeeper : GameNPC
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-
 
         public override bool Interact(GamePlayer player)
         {
@@ -136,7 +125,6 @@ namespace DOL.GS
             dbh.GuildHouse = false;
             dbh.HouseNumber = player.ObjectID;
             dbh.Name = "Account Vault";
-            //dbh.Name = "Maison de " + player.Name;
             dbh.OwnerID = player.Client.Account.Name + "_" + player.Realm.ToString();
             dbh.RegionID = player.CurrentRegionID;
             CurrentHouse = new House(dbh);
@@ -223,7 +211,7 @@ namespace DOL.GS
         /// <summary>
         /// Move an item from, to or inside a house vault.  From IGameInventoryObject
         /// </summary>
-        public override bool MoveItem(GamePlayer player, ushort fromSlot, ushort toSlot)
+        public override bool MoveItem(GamePlayer player, ushort fromSlot, ushort toSlot, ushort count)
         {
             if (GetOwner(player) != m_vaultOwner)
                 return false;
@@ -302,29 +290,14 @@ namespace DOL.GS
                 }
             }
 
-            // let's move it
-
             lock (m_vaultSync)
             {
-                if (fromAccountVault)
-                {
-                    if (toAccountVault)
-                    {
-                        NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-                    }
-                    else
-                    {
-                        NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-                    }
-                }
-                else if (toAccountVault)
-                {
-                    NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-                }
+                this.NotifyPlayers(this, player, _observers, this.MoveItem(player, (eInventorySlot) fromSlot, (eInventorySlot) toSlot, count));
             }
 
             return true;
         }
+
         /// <summary>
         /// Whether or not this player can view the contents of this vault.
         /// </summary>

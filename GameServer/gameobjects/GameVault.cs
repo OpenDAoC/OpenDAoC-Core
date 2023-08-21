@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-
 	/// <summary>
 	/// A vault.
 	/// </summary>
@@ -218,7 +198,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item from, to or inside a house vault.  From IGameInventoryObject
 		/// </summary>
-		public virtual bool MoveItem(GamePlayer player, ushort fromSlot, ushort toSlot)
+		public virtual bool MoveItem(GamePlayer player, ushort fromSlot, ushort toSlot, ushort count)
 		{
 			if (fromSlot == toSlot)
 			{
@@ -274,25 +254,9 @@ namespace DOL.GS
 				return false;
 			}
 
-			// let's move it
-
 			lock (m_vaultSync)
 			{
-				if (fromHousing)
-				{
-					if (toHousing)
-					{
-						NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-					}
-					else
-					{
-						NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-					}
-				}
-				else if (toHousing)
-				{
-					NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
-				}
+				this.NotifyPlayers(this, player, _observers, this.MoveItem(player, (eInventorySlot) fromSlot, (eInventorySlot) toSlot, count));
 			}
 
 			return true;
@@ -303,7 +267,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
 		{
-			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -311,7 +275,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
 		{
-			return false;
+			return true;
 		}
 
 
@@ -320,18 +284,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool SetSellPrice(GamePlayer player, ushort clientSlot, uint price)
 		{
-			return false;
-		}
-
-
-		/// <summary>
-		/// Send inventory updates to all players actively viewing this vault;
-		/// players that are too far away will be considered inactive.
-		/// </summary>
-		/// <param name="updateItems"></param>
-		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
-		{
-			player.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
+			return true;
 		}
 
 		/// <summary>

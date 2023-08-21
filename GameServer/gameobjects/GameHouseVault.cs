@@ -1,24 +1,5 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Housing;
 
@@ -203,54 +184,6 @@ namespace DOL.GS
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Send inventory updates to all players actively viewing this vault;
-		/// players that are too far away will be considered inactive.
-		/// </summary>
-		/// <param name="updateItems"></param>
-		protected override void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
-		{
-			var inactiveList = new List<string>();
-			bool hasUpdatedPlayer = false;
-
-			lock (_vaultLock)
-			{
-				foreach (GamePlayer observer in _observers.Values)
-				{
-					if (observer.ActiveInventoryObject != this)
-					{
-						inactiveList.Add(observer.Name);
-						continue;
-					}
-
-					if (!IsWithinRadius(observer, WorldMgr.INFO_DISTANCE))
-					{
-						observer.ActiveInventoryObject = null;
-						inactiveList.Add(observer.Name);
-
-						continue;
-					}
-
-					observer.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
-
-					if (observer == player)
-						hasUpdatedPlayer = true;
-				}
-
-				// now remove all inactive observers.
-				foreach (string observerName in inactiveList)
-				{
-					_observers.Remove(observerName);
-				}
-
-				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
-				if (hasUpdatedPlayer == false)
-				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
-				}
-			}
 		}
 
 		/// <summary>

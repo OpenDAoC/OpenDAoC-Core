@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
@@ -29,12 +10,10 @@ namespace DOL.GS
 {
     public class GameConsignmentMerchant : GameNPC, IGameInventoryObject
     {
-		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public const int CONSIGNMENT_SIZE = 100;
-		public const int CONSIGNMENT_OFFSET = 1350; // client sends the same slots as a housing vault
-
-		public const string CONSIGNMENT_BUY_ITEM = "ConsignmentBuyItem";
+        private const string ITEM_BEING_ADDED = "ItemBeingAddedToObject";
+        private const string CONSIGNMENT_BUY_ITEM = "ConsignmentBuyItem";
 
         protected readonly Dictionary<string, GamePlayer> _observers = new Dictionary<string, GamePlayer>();
         protected readonly object m_moneyLock = new object();
@@ -241,7 +220,7 @@ namespace DOL.GS
 			if (player == null || player.ActiveInventoryObject != this)
 				return false;
 
-			return this.CanHandleRequest(player, fromClientSlot, toClientSlot);
+			return this.CanHandleRequest(fromClientSlot, toClientSlot);
 		}
 
         /// <summary>
@@ -251,7 +230,7 @@ namespace DOL.GS
         /// <param name="fromClientSlot"></param>
         /// <param name="toClientSlot"></param>
         /// <returns></returns> 
-        public virtual bool MoveItem(GamePlayer player, ushort fromClientSlot, ushort toClientSlot)
+        public virtual bool MoveItem(GamePlayer player, ushort fromClientSlot, ushort toClientSlot, ushort count)
         {
             if (fromClientSlot == toClientSlot)
                 return false;
@@ -269,7 +248,7 @@ namespace DOL.GS
             {
                 if (fromClientSlot == toClientSlot)
                 {
-                    NotifyObservers(player, null);
+                    this.NotifyPlayers(this, player, _observers, null);
                 }
                 else if (fromClientSlot >= FirstClientSlot && fromClientSlot <= LastClientSlot)
                 {
@@ -280,7 +259,7 @@ namespace DOL.GS
 						// ... consignment merchant
 						if (HasPermissionToMove(player))
 						{
-							NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+							this.NotifyPlayers(this, player, _observers, this.MoveItem(player, (eInventorySlot) fromClientSlot, (eInventorySlot) toClientSlot, count));
 						}
 						else
 						{
@@ -291,7 +270,7 @@ namespace DOL.GS
 					{
 						// ... player
 
-						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
+						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot) toClientSlot);
 
 						if (toItem != null)
 						{
@@ -302,13 +281,13 @@ namespace DOL.GS
 						if (HasPermissionToMove(player) == false)
 						{
 							// Move must be an attempt to buy
-							OnPlayerBuy(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot);
+							OnPlayerBuy(player, (eInventorySlot)fromClientSlot, (eInventorySlot) toClientSlot);
 						}
 						else if (player.TargetObject == this)
 						{
 							// Allow a move only if the player with permission is standing in front of the CM.
 							// This prevents moves if player has owner permission but is viewing from the Market Explorer
-							NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+							this.NotifyPlayers(this, player, _observers, this.MoveItem(player, (eInventorySlot) fromClientSlot, (eInventorySlot) toClientSlot, count));
 						}
 						else
 						{
@@ -322,16 +301,14 @@ namespace DOL.GS
 					// moving an item from the client to the consignment merchant
 					if (HasPermissionToMove(player))
 					{
-						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
-
-						if (toItem != null)
+						if (GetClientInventory(player).TryGetValue(toClientSlot, out _))
 						{
 							// in most clients this is actually handled ON the client, but just in case...
 							player.Client.Out.SendMessage("You can only move an item to an empty slot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return false;
 						}
 
-						NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+						this.NotifyPlayers(this, player, _observers, this.MoveItem(player, (eInventorySlot) fromClientSlot, (eInventorySlot) toClientSlot, count));
 					}
 					else
 					{
@@ -348,6 +325,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
 		{
+			player.TempProperties.SetProperty(ITEM_BEING_ADDED, item); // For objects that support doing something when added (setting a price, for example).
+
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
 				log.DebugFormat("CM: {0}:{1} adding '{2}' to consignment merchant on lot {3}.", player.Name, player.Client.Account.Name, item.Name, HouseNumber);
@@ -394,19 +373,26 @@ namespace DOL.GS
 				return false;
 			}
 
-			DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(GameInventoryObjectExtensions.ITEM_BEING_ADDED, null);
-
-			if (item != null)
+			if (player.TempProperties.RemoveAndGetProperty(ITEM_BEING_ADDED, out object result))
 			{
+				if (result is not DbInventoryItem item)
+					return false;
+
 				if (item.IsTradable)
-				{
 					item.SellPrice = (int)price;
-				}
 				else
 				{
 					// Unique DOL feature
 					item.SellPrice = 0;
 					player.Out.SendCustomDialog("This item is not tradable. You can store it here but cannot sell it.", null);
+				}
+
+				// Ideally `MoveItem` shouldn't notify observers before a price is set.
+				// But this is currently the case so we need to notify observers again, this time with the new price.
+				if (item.SellPrice > 0)
+				{
+					Dictionary<int, DbInventoryItem> updateItem = new() { { item.SlotPosition + (FirstClientSlot - FirstDBSlot), item } };
+					this.NotifyPlayers(this, player, _observers, updateItem);
 				}
 
 				item.OwnerLot = conMerchant.HouseNumber;
@@ -416,13 +402,8 @@ namespace DOL.GS
 				player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-				{
 					log.DebugFormat("CM: {0}:{1} set sell price of '{2}' to {3} for consignment merchant on lot {4}.", player.Name, player.Client.Account.Name, item.Name, item.SellPrice, HouseNumber);
-				}
-
-				NotifyObservers(player, null);
 			}
-
 
 			return true;
 		}
@@ -615,7 +596,7 @@ namespace DOL.GS
 						log.DebugFormat("CM: {0}:{1} purchased '{2}' for {3} from consignment merchant on lot {4}.", player.Name, player.Client.Account.Name, item.Name, purchasePrice, HouseNumber);
 					}
 
-					NotifyObservers(player, this.MoveItemFromObject(player, fromClientSlot, toClientSlot));
+					this.NotifyPlayers(this, player, _observers, this.MoveItem(player, fromClientSlot, toClientSlot, (ushort) item.Count));
 				}
 			}
 		}
@@ -643,47 +624,6 @@ namespace DOL.GS
 				_observers.Remove(player.Name);
 			}
 		}
-
-        /// <summary>
-        /// Send inventory updates to all players actively viewing this merchant;
-        /// players that are too far away will be considered inactive.
-        /// </summary>
-        /// <param name="updateItems"></param>
-		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
-        {
-            var inactiveList = new List<string>();
-			bool hasUpdatedPlayer = false;
-
-            foreach (GamePlayer observer in _observers.Values)
-            {
-				if (observer.ActiveInventoryObject != this)
-                {
-					inactiveList.Add(observer.Name);
-                    continue;
-                }
-
-                if ((observer.TargetObject is MarketExplorer) == false && observer.IsWithinRadius(this, WorldMgr.INTERACT_DISTANCE) == false)
-                {
-					observer.ActiveInventoryObject = null;
-					inactiveList.Add(observer.Name);
-                    continue;
-                }
-
-                observer.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
-
-				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
-				if (hasUpdatedPlayer == false)
-				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
-				}
-			}
-
-            // Now remove all inactive observers.
-            foreach (string observerName in inactiveList)
-            {
-                _observers.Remove(observerName);
-            }
-        }
 
         /// <summary>
         /// Player interacting with this Merchant.
