@@ -177,10 +177,7 @@ namespace DOL.GS
 		/// <returns>False if the object is null, in a different region, or outside the radius; otherwise true</returns>
 		public bool IsWithinRadius(GameObject obj, int radius, bool ignoreZ = false)
 		{
-			if (obj == null)
-				return false;
-
-			if (this.CurrentRegionID != obj.CurrentRegionID)
+			if (obj.ObjectState != eObjectState.Active || CurrentRegionID != obj.CurrentRegionID)
 				return false;
 
 			return base.IsWithinRadius(obj, radius, ignoreZ);
