@@ -143,17 +143,17 @@ namespace DOL.GS
 
         private static void UpdateNpcs(GamePlayer player)
         {
-            List<GameNPC> npcsInRange = player.CurrentRegion.GetInRadius<GameNPC>(player, eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
 
             foreach (var npcInCache in npcUpdateCache)
             {
                 GameNPC npc = npcInCache.Key;
 
-                if (!npcsInRange.Contains(npc) || !npc.IsVisibleTo(player))
+                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
                     npcUpdateCache.Remove(npc, out _);
             }
 
+            List<GameNPC> npcsInRange = player.CurrentRegion.GetInRadius<GameNPC>(player, eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE, false);
             GameObject targetObject = player.TargetObject;
             GameNPC pet = player.ControlledBrain?.Body;
             CachedNpcValues cachedTargetValues = null;
@@ -161,9 +161,6 @@ namespace DOL.GS
 
             foreach (GameNPC objectInRange in npcsInRange)
             {
-                if (!objectInRange.IsVisibleTo(player))
-                    continue;
-
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
                 else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
@@ -193,22 +190,20 @@ namespace DOL.GS
 
         private static void UpdateItems(GamePlayer player)
         {
-            List<GameStaticItem> itemsInRange = player.CurrentRegion.GetInRadius<GameStaticItem>(player, eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameStaticItem, long> itemUpdateCache = player.ItemUpdateCache;
 
             foreach (var itemInCache in itemUpdateCache)
             {
                 GameStaticItem item = itemInCache.Key;
 
-                if (!itemsInRange.Contains(item) || !item.IsVisibleTo(player))
+                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
                     itemUpdateCache.Remove(item, out _);
             }
 
+            List<GameStaticItem> itemsInRange = player.CurrentRegion.GetInRadius<GameStaticItem>(player, eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE, false);
+
             foreach (GameStaticItem itemInRange in itemsInRange)
             {
-                if (!itemInRange.IsVisibleTo(player))
-                    continue;
-
                 if (!itemUpdateCache.TryGetValue(itemInRange, out _))
                     CreateObjectForPlayer(player, itemInRange);
             }
@@ -216,22 +211,20 @@ namespace DOL.GS
 
         private static void UpdateDoors(GamePlayer player)
         {
-            List<GameDoorBase> doorsInRange = player.CurrentRegion.GetInRadius<GameDoorBase>(player, eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameDoorBase, long> doorUpdateCache = player.DoorUpdateCache;
 
             foreach (var doorInCache in doorUpdateCache)
             {
                 GameDoorBase door = doorInCache.Key;
 
-                if (!doorsInRange.Contains(door) || !door.IsVisibleTo(player))
+                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
                     doorUpdateCache.Remove(door, out _);
             }
 
+            List<GameDoorBase> doorsInRange = player.CurrentRegion.GetInRadius<GameDoorBase>(player, eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE, false);
+
             foreach (GameDoorBase doorInRange in doorsInRange)
             {
-                if (!doorInRange.IsVisibleTo(player))
-                    continue;
-
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
                 {
                     CreateObjectForPlayer(player, doorInRange);
@@ -244,18 +237,18 @@ namespace DOL.GS
 
         private static void UpdateHouses(GamePlayer player)
         {
-            if (player.CurrentRegion == null || !player.CurrentRegion.HousingEnabled)
-                return;
-
-            ICollection<House> houses = HouseMgr.GetHouses(player.CurrentRegionID).Values;
-
             foreach (var houseEntry in player.HouseUpdateCache)
             {
                 House house = houseEntry.Key;
 
-                if (!houses.Contains(house) || !player.IsWithinRadius(house, HousingConstants.HouseViewingDistance))
+                if (house.RegionID != player.CurrentRegionID || !house.IsWithinRadius(player, HousingConstants.HouseViewingDistance))
                     player.HouseUpdateCache.Remove(house, out _);
             }
+
+            if (player.CurrentRegion == null || !player.CurrentRegion.HousingEnabled)
+                return;
+
+            ICollection<House> houses = HouseMgr.GetHouses(player.CurrentRegionID).Values;
 
             foreach (House house in houses)
             {
