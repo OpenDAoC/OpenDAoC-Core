@@ -143,7 +143,7 @@ namespace DOL.GS
 
         private static void UpdateNpcs(GamePlayer player)
         {
-            HashSet<GameNPC> npcsInRange = player.CurrentRegion.GetInRadius<GameNPC>(player, eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE, false);
+            List<GameNPC> npcsInRange = player.CurrentRegion.GetInRadius<GameNPC>(player, eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
 
             foreach (var npcInCache in npcUpdateCache)
@@ -193,7 +193,7 @@ namespace DOL.GS
 
         private static void UpdateItems(GamePlayer player)
         {
-            HashSet<GameStaticItem> itemsInRange = player.CurrentRegion.GetInRadius<GameStaticItem>(player, eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE, false);
+            List<GameStaticItem> itemsInRange = player.CurrentRegion.GetInRadius<GameStaticItem>(player, eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameStaticItem, long> itemUpdateCache = player.ItemUpdateCache;
 
             foreach (var itemInCache in itemUpdateCache)
@@ -216,7 +216,7 @@ namespace DOL.GS
 
         private static void UpdateDoors(GamePlayer player)
         {
-            HashSet<GameDoorBase> doorsInRange = player.CurrentRegion.GetInRadius<GameDoorBase>(player, eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE, false);
+            List<GameDoorBase> doorsInRange = player.CurrentRegion.GetInRadius<GameDoorBase>(player, eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE, false);
             ConcurrentDictionary<GameDoorBase, long> doorUpdateCache = player.DoorUpdateCache;
 
             foreach (var doorInCache in doorUpdateCache)

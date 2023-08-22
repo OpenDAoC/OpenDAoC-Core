@@ -353,7 +353,7 @@ namespace DOL.GS
         /// The found objects are appended to the given 'partialList'.
         /// </summary>
         /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, HashSet<T> partialList, bool ignoreZ) where T : GameObject
+        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> partialList, bool ignoreZ) where T : GameObject
         {
             GetObjectsInRadius(point.X, point.Y, point.Z, objectType, radius, partialList, ignoreZ);
         }
@@ -363,7 +363,7 @@ namespace DOL.GS
         /// The found objects are appended to the given 'partialList'.
         /// </summary>
         /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, HashSet<T> partialList, bool ignoreZ) where T : GameObject
+        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> partialList, bool ignoreZ) where T : GameObject
         {
             if (!_initialized)
                 InitializeZone();

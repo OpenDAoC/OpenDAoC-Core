@@ -1440,14 +1440,14 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public HashSet<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
+        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
         {
             // Check if we are around borders of a zone.
             Zone startingZone = GetZone(point.X, point.Y);
 
             if (startingZone != null)
             {
-                HashSet<T> list = new();
+                List<T> list = new();
                 startingZone.GetObjectsInRadius(point, objectType, radius, list, ignoreZ);
                 uint sqRadius = (uint) radius * radius;
 
@@ -1508,22 +1508,22 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
-        public HashSet<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
             return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius, ignoreZ);
         }
 
-        public HashSet<GameNPC> GetNPCsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
             return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius, ignoreZ);
         }
 
-        public HashSet<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
             return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius, ignoreZ);
         }
 
-        public HashSet<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
         {
             return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius, ignoreZ);
         }

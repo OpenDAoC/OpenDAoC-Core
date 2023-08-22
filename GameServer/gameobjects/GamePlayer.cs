@@ -9256,7 +9256,7 @@ namespace DOL.GS
                     hasPetToMove = true;
             }
 
-            HashSet<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+            List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
             CurrentSpeed = 0;
             movementComponent.MovementStartTick = GameLoop.GameLoopTime;

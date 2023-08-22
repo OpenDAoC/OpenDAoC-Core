@@ -12,43 +12,27 @@ namespace DOL.GS
 
         public void AddLast(LinkedListNode<T> node)
         {
-            _lock.EnterWriteLock();
-
-            try
-            {
-                _list.AddLast(node);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            _list.AddLast(node);
         }
 
         public void Remove(LinkedListNode<T> node)
         {
-            _lock.EnterWriteLock();
-
-            try
-            {
-                _list.Remove(node);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
+            _list.Remove(node);
         }
 
         public Reader GetReader()
         {
             return new Reader(this);
+        }
+
+        public Writer GetWriter()
+        {
+            return new Writer(this);
+        }
+
+        public Writer TryGetWriter(out bool success)
+        {
+            return new Writer(this, out success);
         }
 
         // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
@@ -83,6 +67,31 @@ namespace DOL.GS
             public void Dispose()
             {
                 _list._lock.ExitReadLock();
+            }
+        }
+
+        // A disposable class taking care of acquiring and disposing a write lock.
+        public sealed class Writer : IDisposable
+        {
+            private const int WRITE_LOCK_TIMEOUT = 3;
+
+            private ConcurrentLinkedList<T> _list;
+
+            public Writer(ConcurrentLinkedList<T> list)
+            {
+                _list = list;
+                _list._lock.EnterWriteLock();
+            }
+
+            public Writer(ConcurrentLinkedList<T> list, out bool success)
+            {
+                _list = list;
+                success = _list._lock.TryEnterWriteLock(WRITE_LOCK_TIMEOUT);
+            }
+
+            public void Dispose()
+            {
+                _list._lock.ExitWriteLock();
             }
         }
     }

@@ -618,7 +618,7 @@ public class ConquestManager
     public IList<string> GetTextList(GamePlayer player)
     {
         List<string> temp = new();
-        HashSet<GamePlayer> playerCount = new();
+        List<GamePlayer> playerCount = new();
 
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
         //TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s

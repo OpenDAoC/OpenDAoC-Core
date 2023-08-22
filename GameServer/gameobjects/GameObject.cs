@@ -1074,7 +1074,7 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		public HashSet<GamePlayer> GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ = false)
+		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ = false)
 		{
 			if (CurrentRegion != null)
 			{
@@ -1094,7 +1094,7 @@ namespace DOL.GS
 			return new();
 		}
 
-		public HashSet<GameNPC> GetNPCsInRadius(ushort radiusToCheck, bool ignoreZ = false)
+		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck, bool ignoreZ = false)
 		{
 			if (CurrentRegion != null)
 			{
@@ -1114,7 +1114,7 @@ namespace DOL.GS
 			return new();
 		}
 
-		public HashSet<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
+		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
 			if (CurrentRegion != null)
 			{
@@ -1134,7 +1134,7 @@ namespace DOL.GS
 			return new();
 		}
 
-		public HashSet<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
+		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			if (CurrentRegion != null)
 			{

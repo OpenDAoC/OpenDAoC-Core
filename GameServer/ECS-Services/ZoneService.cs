@@ -28,20 +28,32 @@ namespace DOL.GS
                     return;
 
                 EntityManager.Remove(objectChangingSubZone);
+                SubZoneObject subZoneObject = null;
 
                 try
                 {
-                    SubZoneObject subZoneObject = objectChangingSubZone.SubZoneObject;
+                    subZoneObject = objectChangingSubZone.SubZoneObject;
                     LinkedListNode<GameObject> node = subZoneObject.Node;
-                    SubZone subZone = subZoneObject.CurrentSubZone;
-                    Zone currentZone = subZone?.ParentZone;
+                    SubZone currentSubZone = subZoneObject.CurrentSubZone;
+                    Zone currentZone = currentSubZone?.ParentZone;
+                    SubZone destinationSubZone = objectChangingSubZone.DestinationSubZone;
                     Zone destinationZone = objectChangingSubZone.DestinationZone;
                     bool changingZone = currentZone != destinationZone;
 
-                    // Remove object from subzone.
-                    if (currentZone != null)
+                    // Acquire locks on both subzones. We want the removal and addition to happen at the same time from a reader's point of view.
+                    // Abort if we can't get a lock on the destination subzone.
+                    using ConcurrentLinkedList<GameObject>.Writer currentSubZoneWriter = currentSubZone?.GetObjectWriter(node);
+                    bool destinationZoneWriterSuccess = false;
+                    using ConcurrentLinkedList<GameObject>.Writer destinationSubZoneWriter = destinationSubZone?.TryGetObjectWriter(node, out destinationZoneWriterSuccess);
+
+                    // If we couldn't acquire a lock, try again later.
+                    if (!destinationZoneWriterSuccess)
+                        return;
+
+                    // Remove object from current subzone.
+                    if (currentSubZoneWriter != null)
                     {
-                        subZone.RemoveObjectNode(node);
+                        currentSubZone.RemoveObjectNode(node);
 
                         if (changingZone)
                             currentZone.OnObjectRemovedFromZone();
@@ -49,22 +61,23 @@ namespace DOL.GS
                         subZoneObject.CurrentSubZone = null;
                     }
 
-                    // Add object to subzone.
-                    if (destinationZone != null)
+                    // Add object to destination subzone.
+                    if (destinationSubZoneWriter != null)
                     {
-                        SubZone destinationSubZone = objectChangingSubZone.DestinationSubZone;
                         destinationSubZone.AddObjectNode(node);
                         subZoneObject.CurrentSubZone = destinationSubZone;
 
                         if (changingZone)
                             destinationZone.OnObjectAddedToZone();
                     }
-
-                    subZoneObject.ResetSubZoneChange();
                 }
                 catch (Exception e)
                 {
                     ServiceUtils.HandleServiceException(e, SERVICE_NAME, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Value);
+                }
+                finally
+                {
+                    subZoneObject?.ResetSubZoneChange();
                 }
             });
 

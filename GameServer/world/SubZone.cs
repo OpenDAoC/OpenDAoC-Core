@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
     // A 'SubZone' inside a 'Zone', holding linked lists of 'GameObject'.
     // To preserve thread safety, the list returned by 'GetObjects' must be iterated with 'ConcurrentLinkedList.Reader'.
+    // 'ConcurrentLinkedList.Writer' must be acquired before calling `AddObjectNode` or `RemoveObjectNode`.
     // Modification during iteration on the same thread isn't supported.
     public class SubZone
     {
@@ -33,6 +35,21 @@ namespace DOL.GS
         public ConcurrentLinkedList<GameObject> GetObjects(eGameObjectType objectType)
         {
             return _objects[(byte) objectType];
+        }
+
+        public ConcurrentLinkedList<GameObject>.Reader GetObjectReader(LinkedListNode<GameObject> node)
+        {
+            return _objects[(byte) node.Value.GameObjectType].GetReader();
+        }
+
+        public ConcurrentLinkedList<GameObject>.Writer GetObjectWriter(LinkedListNode<GameObject> node)
+        {
+            return _objects[(byte) node.Value.GameObjectType].GetWriter();
+        }
+
+        public ConcurrentLinkedList<GameObject>.Writer TryGetObjectWriter(LinkedListNode<GameObject> node, out bool success)
+        {
+            return _objects[(byte) node.Value.GameObjectType].TryGetWriter(out success);
         }
 
         public void CheckForRelocation(LinkedListNode<GameObject> node)
