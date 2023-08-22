@@ -73,8 +73,6 @@ namespace DOL.GS.Spells
                 if (player.Group != null)
                     player.Group.UpdateMember(player, false, false);
             }
-            else if (effect.Owner is GameNPC npc && npc.Brain is IOldAggressiveBrain aggroBrain)
-                aggroBrain.AddToAggroList(Caster, 1);
 
             effect.Owner.Notify(GameLivingEvent.CrowdControlExpired, effect.Owner);
             return (effect.Name == "Pet Stun") ? 0 : 60000;

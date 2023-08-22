@@ -2300,10 +2300,6 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving t in targets)
 			{
-				// Aggressive NPCs will aggro on every target they hit with an AoE spell, whether it landed or was resisted.
-				if (Spell.Radius > 0 && Spell.Target.ToLower() == "enemy" && Caster is GameNPC casterNpc && casterNpc.Brain is IOldAggressiveBrain casterNpcBrain)
-					casterNpcBrain.AddToAggroList(t, 1);
-
 				if (CheckSpellResist(t))
 					continue;
 
@@ -2469,13 +2465,9 @@ namespace DOL.GS.Spells
 
 			// Apply effect for Duration Spell.
 			if ((Spell.Duration > 0 && Spell.Target.ToLower() != "area") || Spell.Concentration > 0)
-			{
 				OnDurationEffectApply(target, effectiveness);
-			}
 			else
-			{
 				OnDirectEffect(target, effectiveness);
-			}
 				
 			if (!HasPositiveEffect)
 			{
@@ -2492,21 +2484,11 @@ namespace DOL.GS.Spells
 				m_lastAttackData = ad;
 				Caster.OnAttackEnemy(ad);
 
-				// Treat non-damaging effects as attacks to trigger an immediate response and BAF
-				if (ad.Damage == 0 && ad.Target is GameNPC)
-				{
-					IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
-					if (aggroBrain != null)
-						aggroBrain.AddToAggroList(Caster, 1);
-				}
-
 				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
 				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
 				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
 				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime)
-				{
 					target.OnAttackedByEnemy(ad);
-				}
 			}
 		}
 
@@ -2792,13 +2774,10 @@ namespace DOL.GS.Spells
 			SendSpellResistNotification(target);
 			StartSpellResistInterruptTimer(target);
 			StartSpellResistLastAttackTimer(target);
+
 			// Treat resists as attacks to trigger an immediate response and BAF
 			if (target is GameNPC)
 			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-
 				if (Caster.Realm == 0 || target.Realm == 0)
 				{
 					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
@@ -3702,8 +3681,8 @@ namespace DOL.GS.Spells
 
 			if (ad.Damage == 0 && ad.Target is GameNPC targetNpc)
 			{
-				if (targetNpc.Brain is IOldAggressiveBrain aggroBrain)
-					aggroBrain.AddToAggroList(Caster, 0);
+				if (targetNpc.Brain is IOldAggressiveBrain brain)
+					brain.AddToAggroList(Caster, 1);
 
 				if (this is not DoTSpellHandler and not StyleBleeding)
 				{

@@ -16,10 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
-using DOL.AI.Brain;
-using DOL.Database;
+
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -72,15 +69,7 @@ namespace DOL.GS.Spells
 			}
 
 			base.ApplyEffectOnTarget(target, effectiveness);
-
-			//if (Spell.CastTime > 0) {
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-			//}
-			if(target is GameNPC) {
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-			}
 		}
 
 		/// <summary>

@@ -618,17 +618,13 @@ namespace DOL.AI.Brain
                 return;
 
             int damage = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
+            ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
 
             if (!Body.attackComponent.AttackState && FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
             {
-                // Aggro must be generated before calling Think(), otherwise the mob won't attack immediately.
-                // Ensure that non damaging hits still result in the mob reacting.
-                ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 Think();
             }
-            else if (damage > 0)
-                ConvertDamageToAggroAmount(ad.Attacker, damage);
         }
 
         /// <summary>

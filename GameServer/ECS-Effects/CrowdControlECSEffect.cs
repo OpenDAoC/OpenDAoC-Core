@@ -34,15 +34,7 @@ namespace DOL.GS
             Owner.DisableTurning(false);
             UpdatePlayerStatus();
 
-            GameNPC npc = Owner as GameNPC;
-            if (npc != null)
-            {
-                IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
-                if (aggroBrain != null)
-                    aggroBrain.AddToAggroList(SpellHandler.Caster, 1);
-                npc.attackComponent.AttackState = true;
-            }
-            if(SpellHandler.Caster is GamePlayer)
+            if (SpellHandler.Caster is GamePlayer)
                 Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
             else
                 Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
