@@ -40,11 +40,13 @@ namespace DOL.GS
         {
             LinkedListNode<T> _current;
             ConcurrentLinkedList<T> _list;
+            private bool _hasLock;
 
             public Reader(ConcurrentLinkedList<T> list)
             {
                 _list = list;
                 _list._lock.EnterReadLock();
+                _hasLock = true;
                 _current = _list._list.First;
             }
 
@@ -66,7 +68,8 @@ namespace DOL.GS
 
             public void Dispose()
             {
-                _list._lock.ExitReadLock();
+                if (_hasLock)
+                    _list._lock.ExitReadLock();
             }
         }
 
@@ -76,22 +79,26 @@ namespace DOL.GS
             private const int WRITE_LOCK_TIMEOUT = 3;
 
             private ConcurrentLinkedList<T> _list;
+            private bool _hasLock;
 
             public Writer(ConcurrentLinkedList<T> list)
             {
                 _list = list;
                 _list._lock.EnterWriteLock();
+                _hasLock = true;
             }
 
             public Writer(ConcurrentLinkedList<T> list, out bool success)
             {
                 _list = list;
-                success = _list._lock.TryEnterWriteLock(WRITE_LOCK_TIMEOUT);
+                _hasLock = _list._lock.TryEnterWriteLock(WRITE_LOCK_TIMEOUT);
+                success = _hasLock;
             }
 
             public void Dispose()
             {
-                _list._lock.ExitWriteLock();
+                if (_hasLock)
+                    _list._lock.ExitWriteLock();
             }
         }
     }
