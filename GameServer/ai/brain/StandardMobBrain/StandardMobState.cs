@@ -133,10 +133,13 @@ namespace DOL.AI.Brain
         {
             if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoop.GameLoopTime))
             {
-                if (_brain.Body.CurrentWaypoint != null)
-                    _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-                else
-                    _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                if (!_brain.Body.IsMezzed && !_brain.Body.IsStunned)
+                {
+                    if (_brain.Body.CurrentWaypoint != null)
+                        _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
+                    else
+                        _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                }
 
                 return;
             }
