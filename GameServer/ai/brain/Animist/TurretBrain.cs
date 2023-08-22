@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
                     DefensiveSpellTargets.RemoveAt(i);
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true) || !player.IsAlive || LivingHasEffect(player, spell))
                     continue;
@@ -136,7 +136,7 @@ namespace DOL.AI.Brain
                     DefensiveSpellTargets.Add(player);
             }
 
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)spell.Range, !Body.CurrentRegion.IsDungeon))
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true) || !npc.IsAlive || LivingHasEffect(npc, spell))
                     continue;

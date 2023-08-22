@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
@@ -175,7 +176,7 @@ namespace DOL.GS
 		/// <param name="radius">Radius</param>
 		/// <param name="ignoreZ">Ignore Z values</param>
 		/// <returns>False if the object is null, in a different region, or outside the radius; otherwise true</returns>
-		public bool IsWithinRadius(GameObject obj, int radius, bool ignoreZ = false)
+		public bool IsWithinRadius(GameObject obj, int radius)
 		{
 			if (obj == null)
 				return false;
@@ -183,7 +184,7 @@ namespace DOL.GS
 			if (this.CurrentRegionID != obj.CurrentRegionID)
 				return false;
 
-			return base.IsWithinRadius(obj, radius, ignoreZ);
+			return base.IsWithinRadius(obj, radius);
 		}
 
 		/// <summary>
@@ -740,6 +741,7 @@ namespace DOL.GS
 				player.Out.SendObjectRemove(this);
 
 			CurrentRegion.RemoveObject(this);
+			ClearObjectsInRadiusCache();
 			return true;
 		}
 
@@ -1074,84 +1076,82 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck, bool ignoreZ = false)
-		{
-			if (CurrentRegion != null)
-			{
-				// Avoids server freeze.
-				if (CurrentRegion.GetZone(X, Y) == null)
-				{
-					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
-					{
-						player.TempProperties.SetProperty("isbeingbanned", true);
-						player.MoveToBind();
-					}
-				}
-				else
-					return CurrentRegion.GetPlayersInRadius(this, radiusToCheck, ignoreZ);
-			}
+		private Dictionary<eGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
 
-			return new();
+		private void ClearObjectsInRadiusCache()
+		{
+			_objectsInRadiusCache = new()
+			{
+				{ eGameObjectType.PLAYER, (null, 0, 0) },
+				{ eGameObjectType.NPC, (null, 0, 0) },
+				{ eGameObjectType.ITEM, (null, 0, 0) },
+				{ eGameObjectType.DOOR, (null, 0, 0) }
+			};
 		}
 
-		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck, bool ignoreZ = false)
+		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
 		{
-			if (CurrentRegion != null)
+			List<T> result = new();
+
+			if (CurrentRegion == null)
+				return result;
+
+			// Avoids server freeze.
+			if (CurrentRegion.GetZone(X, Y) == null)
 			{
-				// Avoids server freeze.
-				if (CurrentRegion.GetZone(X, Y) == null)
+				if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
 				{
-					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
-					{
-						player.TempProperties.SetProperty("isbeingbanned", true);
-						player.MoveToBind();
-					}
+					player.TempProperties.SetProperty("isbeingbanned", true);
+					player.MoveToBind();
 				}
-				else
-					return CurrentRegion.GetNPCsInRadius(this, radiusToCheck, ignoreZ);
+
+				return result;
 			}
 
-			return new();
+			var cachedValues = _objectsInRadiusCache[objectType];
+
+			if (cachedValues.Item3 >= GameLoop.GameLoopTime)
+			{
+				if (cachedValues.Item2 <= radiusToCheck)
+				{
+					if (cachedValues.Item2 == radiusToCheck)
+						return cachedValues.Item1 as List<T>;
+				}
+				else
+				{
+					foreach (T @object in cachedValues.Item1 as List<T>)
+					{
+						if (IsWithinRadius(@object, radiusToCheck))
+							result.Add(@object);
+					}
+
+					return result;
+				}
+			}
+
+			result = CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck);
+			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoop.GameLoopTime + 500);
+			return result;
+		}
+
+		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
+		{
+			return GetObjectsInRadius<GamePlayer>(eGameObjectType.PLAYER, radiusToCheck);
+		}
+
+		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
+		{
+			return GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, radiusToCheck);
 		}
 
 		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
-			if (CurrentRegion != null)
-			{
-				// Avoids server freeze.
-				if (CurrentRegion.GetZone(X, Y) == null)
-				{
-					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
-					{
-						player.TempProperties.SetProperty("isbeingbanned", true);
-						player.MoveToBind();
-					}
-				}
-				else
-					return CurrentRegion.GetItemsInRadius(this, radiusToCheck);
-			}
-
-			return new();
+			return GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, radiusToCheck);
 		}
 
 		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
-			if (CurrentRegion != null)
-			{
-				// Avoids server freeze.
-				if (CurrentRegion.GetZone(X, Y) == null)
-				{
-					if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
-					{
-						player.TempProperties.SetProperty("isbeingbanned", true);
-						player.MoveToBind();
-					}
-				}
-				else
-					return CurrentRegion.GetDoorsInRadius(this, radiusToCheck);
-			}
-
-			return new();
+			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
 		}
 
 		#endregion
@@ -1288,6 +1288,7 @@ namespace DOL.GS
 			m_name = "";
 			m_ObjectState = eObjectState.Inactive;
 			m_boat_ownerid = "";
+			ClearObjectsInRadiusCache();
 		}
 		public static bool PlayerHasItem(GamePlayer player, string str)
 		{

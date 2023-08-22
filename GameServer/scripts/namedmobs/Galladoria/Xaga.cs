@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
+                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
                     {
                         if (mob_c != null)
                         {
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000, false))
+                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
                 {
                     if (mob_c != null)
                     {

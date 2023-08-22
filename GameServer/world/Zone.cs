@@ -353,9 +353,9 @@ namespace DOL.GS
         /// The found objects are appended to the given 'partialList'.
         /// </summary>
         /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> partialList, bool ignoreZ) where T : GameObject
+        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> partialList) where T : GameObject
         {
-            GetObjectsInRadius(point.X, point.Y, point.Z, objectType, radius, partialList, ignoreZ);
+            GetObjectsInRadius(point.X, point.Y, point.Z, objectType, radius, partialList);
         }
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace DOL.GS
         /// The found objects are appended to the given 'partialList'.
         /// </summary>
         /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> partialList, bool ignoreZ) where T : GameObject
+        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> partialList) where T : GameObject
         {
             if (!_initialized)
                 InitializeZone();
@@ -420,7 +420,7 @@ namespace DOL.GS
                             continue;
 
                         // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
-                        ignoreDistance = ignoreZ && CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
+                        ignoreDistance = CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
                     }
                     else
                         ignoreDistance = false;
@@ -442,7 +442,7 @@ namespace DOL.GS
                             continue;
                         }
 
-                        if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius, ignoreZ))
+                        if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius))
                             partialList.Add(gameObject as T);
                     }
                 }
@@ -519,36 +519,22 @@ namespace DOL.GS
 
         #endregion
 
-        /// <summary>
-        /// Checks that the square distance between two arbitrary points in space is lower or equal to the given square distance.
-        /// </summary>
-        /// <param name="x1">X of Point1</param>
-        /// <param name="y1">Y of Point1</param>
-        /// <param name="z1">Z of Point1</param>
-        /// <param name="x2">X of Point2</param>
-        /// <param name="y2">Y of Point2</param>
-        /// <param name="z2">Z of Point2</param>
-        /// <param name="sqDistance">the square distance to check for</param>
-        /// <returns>The distance</returns>
-        public static bool IsWithinSquaredRadius(int x1, int y1, int z1, int x2, int y2, int z2, uint sqDistance, bool ignoreZ)
+        public static bool IsWithinSquaredRadius(int x1, int y1, int z1, int x2, int y2, int z2, uint sqDistance)
         {
             int xDiff = x1 - x2;
-            long dist = (long)xDiff * xDiff;
+            long dist = (long) xDiff * xDiff;
 
             if (dist > sqDistance)
                 return false;
 
             int yDiff = y1 - y2;
-            dist += (long)yDiff * yDiff;
+            dist += (long) yDiff * yDiff;
 
             if (dist > sqDistance)
                 return false;
 
-            if (ignoreZ == false)
-            {
-                int zDiff = z1 - z2;
-                dist += (long)zDiff * zDiff;
-            }
+            int zDiff = z1 - z2;
+            dist += (long) zDiff * zDiff;
 
             return dist <= sqDistance;
         }

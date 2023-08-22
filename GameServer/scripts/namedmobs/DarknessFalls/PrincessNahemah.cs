@@ -129,7 +129,7 @@ namespace DOL.AI.Brain
                 Spawn(); // spawn minions
                 spawnMinions = false; // check to avoid spawning adds multiple times
 
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000, false))
+                foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
                 {
                     if (mob_c?.Brain is NahemahMinionBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {

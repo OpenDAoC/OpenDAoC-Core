@@ -1440,7 +1440,7 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, bool ignoreZ) where T : GameObject
+        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius) where T : GameObject
         {
             // Check if we are around borders of a zone.
             Zone startingZone = GetZone(point.X, point.Y);
@@ -1448,13 +1448,13 @@ namespace DOL.GS
             if (startingZone != null)
             {
                 List<T> list = new();
-                startingZone.GetObjectsInRadius(point, objectType, radius, list, ignoreZ);
+                startingZone.GetObjectsInRadius(point, objectType, radius, list);
                 uint sqRadius = (uint) radius * radius;
 
                 foreach (Zone currentZone in m_zones)
                 {
                     if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, point.X, point.Y, sqRadius))
-                        currentZone.GetObjectsInRadius(point, objectType, radius, list, ignoreZ);
+                        currentZone.GetObjectsInRadius(point, objectType, radius, list);
                 }
 
                 return list;
@@ -1508,24 +1508,24 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
-        public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius, ignoreZ);
+            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius);
         }
 
-        public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius, ignoreZ);
+            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius);
         }
 
-        public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius, ignoreZ);
+            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius);
         }
 
-        public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius, bool ignoreZ = false)
+        public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius, ignoreZ);
+            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius);
         }
 
         #endregion

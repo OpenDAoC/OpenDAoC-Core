@@ -103,7 +103,7 @@ namespace DOL.GS
 			//Limit 2 Rams aimed at door at a time
 			//Check # of rams on the target
 			int ramsAimedAtTarget=0;
-			foreach (GameNPC npc in Owner.CurrentRegion.GetNPCsInRadius(TargetObject, 600))
+			foreach (GameNPC npc in TargetObject.GetNPCsInRadius(600))
 			{
 				if(npc is GameSiegeRam ram)
 				{

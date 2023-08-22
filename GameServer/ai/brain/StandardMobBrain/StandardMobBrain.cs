@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual void CheckPlayerAggro()
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange, !Body.CurrentZone.IsDungeon))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
             {
                 if (!CanAggroTarget(player))
                     continue;
@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual void CheckNPCAggro()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange, !Body.CurrentRegion.IsDungeon))
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
             {
                 if (!CanAggroTarget(npc))
                     continue;
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
                 // Check if we can "see" players and fire off ambient text
                 List<GamePlayer> currentPlayersSeen = new();
 
-                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange, true))
+                foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {
                     if (!PlayersSeen.Contains(player))
                     {
@@ -1365,7 +1365,7 @@ namespace DOL.AI.Brain
         {
             ushort range = (ushort) (ThinkInterval / 800 * Body.CurrentWaypoint.MaxSpeed);
 
-            foreach (GameDoorBase door in Body.CurrentRegion.GetDoorsInRadius(Body, range, false))
+            foreach (GameDoorBase door in Body.CurrentRegion.GetDoorsInRadius(Body, range))
             {
                 if (door is GameKeepDoor)
                 {

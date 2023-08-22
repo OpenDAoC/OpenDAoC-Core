@@ -44,7 +44,7 @@ namespace DOL.AI.Brain
         protected override void CheckPlayerAggro()
         {
             // Copy paste of 'base.CheckPlayerAggro()' except we add all players in range.
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, !Body.CurrentZone.IsDungeon))
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
             {
                 if (!CanAggroTarget(player))
                     continue;
@@ -65,7 +65,7 @@ namespace DOL.AI.Brain
         protected override void CheckNPCAggro()
         {
             // Copy paste of 'base.CheckNPCAggro()' except we add all NPCs in range.
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, !Body.CurrentRegion.IsDungeon))
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
             {
                 if (!CanAggroTarget(npc))
                     continue;

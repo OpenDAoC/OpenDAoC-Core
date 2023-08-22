@@ -88,7 +88,7 @@ public class SubObjective
         PlayerService.UpdateObjectForPlayers(FlagObject);
         CaptureTimer = null;
         BroadcastCapture();
-        var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true).Where(player => player.Realm == CapturingRealm).ToList();
+        var nearbyPlayers = FlagObject.GetPlayersInRadius(750).Where(player => player.Realm == CapturingRealm).ToList();
         ConquestService.ConquestManager.AddContributors(nearbyPlayers);
 
         foreach (var player in nearbyPlayers)
@@ -109,7 +109,7 @@ public class SubObjective
 
     private void BroadcastTimeUntilCapture(int secondsLeft)
     {
-        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750, false))
+        foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750))
         {
             if(secondsLeft%5 == 0)
                 player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
@@ -170,7 +170,7 @@ public class SubObjective
     {
         Dictionary<eRealm, int> playersOfRealmDict = new Dictionary<eRealm, int>();
        // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
-       var nearbyPlayers = FlagObject.GetPlayersInRadius(750, true);
+       var nearbyPlayers = FlagObject.GetPlayersInRadius(750);
         foreach (GamePlayer player in nearbyPlayers)
         {
             if (!player.IsAlive || player.IsStealthed) continue;
@@ -192,7 +192,7 @@ public class SubObjective
         else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);
-            ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750, true).Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
+            ConquestService.ConquestManager.AddContributors(FlagObject.GetPlayersInRadius(750).Where(x=> x.Realm == playersOfRealmDict.First().Key).ToList());
         }
     }
     

@@ -70,7 +70,7 @@ namespace DOL.AI.Brain
                         }
                     }
 
-                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000, false))
+                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
                     {
                         if (mob_c != null)
                         {

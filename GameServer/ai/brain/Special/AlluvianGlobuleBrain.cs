@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
 				if (!Body.attackComponent.AttackState && AggroRange > 0)
 				{
 					var currentPlayersSeen = new List<GamePlayer>();
-					foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, true))
+					foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
 					{
 						if (!PlayersSeen.Contains(player))
 						{

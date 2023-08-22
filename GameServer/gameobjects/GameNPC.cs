@@ -4291,7 +4291,7 @@ namespace DOL.GS
 			{
 				case "b": // Broadcast message without "[Broadcast] {0}:" string start
 				{
-					foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(this, 25000, false))
+					foreach (GamePlayer player in GetPlayersInRadius(25000))
 					{
 					  player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 					}
