@@ -9,8 +9,6 @@ namespace DOL.GS
 {
     public class CharmECSGameEffect : ECSGameSpellEffect
     {
-        private bool _keepSongAlive;
-
         public CharmECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
@@ -67,6 +65,7 @@ namespace DOL.GS
             GamePlayer casterPlayer = SpellHandler.Caster as GamePlayer;
             GameNPC charmMob = Owner as GameNPC;
             CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
+            bool keepSongAlive = false;
 
             if (casterPlayer != null && charmMob != null)
             {
@@ -140,9 +139,11 @@ namespace DOL.GS
                         playerInRadius.Out.SendObjectGuildID(charmMob, null);
                     }
                 }
+
+                keepSongAlive = charmMob.IsAlive && charmMob.IsWithinRadius(casterPlayer, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST);
             }
 
-            if (!_keepSongAlive)
+            if (!keepSongAlive)
             {
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(casterPlayer, SpellHandler.Spell);
 
@@ -151,12 +152,6 @@ namespace DOL.GS
             }
 
             charmSpellHandler.m_controlledBrain = null;
-        }
-
-        public void Cancel(bool keepSongAlive)
-        {
-            _keepSongAlive = keepSongAlive;
-            EffectService.RequestImmediateCancelEffect(this);
         }
     }
 }

@@ -502,13 +502,11 @@ namespace DOL.GS.Spells
         /// <param name="arguments"></param>
         public void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
-            if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
+            if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
                 return;
 
-            bool keepSongAlive = pet.IsAlive && pet.IsWithinRadius(petBrain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST);
-
             if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
-                (charms.FirstOrDefault() as CharmECSGameEffect)?.Cancel(keepSongAlive);
+                EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
         }
 
         /// <summary>
