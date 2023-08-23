@@ -149,7 +149,7 @@ namespace DOL.GS
             {
                 GameNPC npc = npcInCache.Key;
 
-                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
+                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !npc.IsVisibleTo(player))
                     npcUpdateCache.Remove(npc, out _);
             }
 
@@ -161,6 +161,9 @@ namespace DOL.GS
 
             foreach (GameNPC objectInRange in npcsInRange)
             {
+                if (!objectInRange.IsVisibleTo(player))
+                    continue;
+
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
                 else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
@@ -196,7 +199,7 @@ namespace DOL.GS
             {
                 GameStaticItem item = itemInCache.Key;
 
-                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
+                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !item.IsVisibleTo(player))
                     itemUpdateCache.Remove(item, out _);
             }
 
@@ -204,6 +207,9 @@ namespace DOL.GS
 
             foreach (GameStaticItem itemInRange in itemsInRange)
             {
+                if (!itemInRange.IsVisibleTo(player))
+                    continue;
+
                 if (!itemUpdateCache.TryGetValue(itemInRange, out _))
                     CreateObjectForPlayer(player, itemInRange);
             }
@@ -217,7 +223,7 @@ namespace DOL.GS
             {
                 GameDoorBase door = doorInCache.Key;
 
-                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE))
+                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !door.IsVisibleTo(player))
                     doorUpdateCache.Remove(door, out _);
             }
 
@@ -225,6 +231,9 @@ namespace DOL.GS
 
             foreach (GameDoorBase doorInRange in doorsInRange)
             {
+                if (!doorInRange.IsVisibleTo(player))
+                    continue;
+
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
                 {
                     CreateObjectForPlayer(player, doorInRange);

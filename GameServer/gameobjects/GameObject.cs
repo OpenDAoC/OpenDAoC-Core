@@ -134,12 +134,18 @@ namespace DOL.GS
         /// </summary>
         /// <param name="point">Target point</param>
         /// <returns>Distance or int.MaxValue if distance cannot be calculated</returns>
-        public override int GetDistanceTo(IPoint3D point)
+        public override int GetDistanceTo( IPoint3D point )
         {
-            if (point is not GameObject obj || (obj.ObjectState == eObjectState.Active && CurrentRegionID == obj.CurrentRegionID))
-                return base.GetDistanceTo(point);
-            else
-                return int.MaxValue;
+			GameObject obj = point as GameObject;
+
+			if ( obj == null || this.CurrentRegionID == obj.CurrentRegionID )
+			{
+				return base.GetDistanceTo( point );
+			}
+			else
+			{
+				return int.MaxValue;
+			}
         }
 
         /// <summary>
@@ -148,12 +154,18 @@ namespace DOL.GS
         /// <param name="point">Target point</param>
         /// <param name="zfactor">Z-axis factor - use values between 0 and 1 to decrease the influence of Z-axis</param>
         /// <returns>Adjusted distance or int.MaxValue if distance cannot be calculated</returns>
-        public override int GetDistanceTo(IPoint3D point, double zfactor)
+        public override int GetDistanceTo( IPoint3D point, double zfactor )
         {
-            if (point is not GameObject obj || (obj.ObjectState == eObjectState.Active && CurrentRegionID == obj.CurrentRegionID))
-                return base.GetDistanceTo(point);
-            else
-                return int.MaxValue;
+			GameObject obj = point as GameObject;
+
+			if ( obj == null || this.CurrentRegionID == obj.CurrentRegionID )
+			{
+				return base.GetDistanceTo( point, zfactor );
+			}
+			else
+			{
+				return int.MaxValue;
+			}
         }
 
 		/// <summary>
@@ -165,7 +177,10 @@ namespace DOL.GS
 		/// <returns>False if the object is null, in a different region, or outside the radius; otherwise true</returns>
 		public bool IsWithinRadius(GameObject obj, int radius, bool ignoreZ = false)
 		{
-			if (obj.ObjectState != eObjectState.Active || CurrentRegionID != obj.CurrentRegionID)
+			if (obj == null)
+				return false;
+
+			if (this.CurrentRegionID != obj.CurrentRegionID)
 				return false;
 
 			return base.IsWithinRadius(obj, radius, ignoreZ);
