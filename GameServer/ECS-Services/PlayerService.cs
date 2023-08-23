@@ -149,7 +149,7 @@ namespace DOL.GS
             {
                 GameNPC npc = npcInCache.Key;
 
-                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !npc.IsVisibleTo(player))
+                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState != GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
                     npcUpdateCache.Remove(npc, out _);
             }
 
@@ -199,7 +199,7 @@ namespace DOL.GS
             {
                 GameStaticItem item = itemInCache.Key;
 
-                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !item.IsVisibleTo(player))
+                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || item.ObjectState != GameObject.eObjectState.Active || !item.IsVisibleTo(player))
                     itemUpdateCache.Remove(item, out _);
             }
 
@@ -223,7 +223,7 @@ namespace DOL.GS
             {
                 GameDoorBase door = doorInCache.Key;
 
-                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || !door.IsVisibleTo(player))
+                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || door.ObjectState != GameObject.eObjectState.Active || !door.IsVisibleTo(player))
                     doorUpdateCache.Remove(door, out _);
             }
 
