@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -569,19 +570,20 @@ namespace DOL.GS
 			}
 
 			double absorbBonus = GetModified(eProperty.ArmorAbsorption) / 100.0;
-
-			double debuffBuffRatio = 2;
-			double constitutionPerAbsorptionPercent = 4;
-			double baseConstitutionPerAbsorptionPercent = 12;
-			int constitutionBuffBonus = BaseBuffBonusCategory[eProperty.Constitution] + SpecBuffBonusCategory[eProperty.Constitution];
-			int constitutionDebuffMalus = Math.Abs(DebuffCategory[eProperty.Constitution] + SpecDebuffCategory[eProperty.Constitution]);
-			double constitutionAbsorb = 0;
-			double baseConstitutionAbsorb = (GetBaseStat((eStat)eProperty.Constitution) - 60) / baseConstitutionPerAbsorptionPercent / 100.0;
-			double constitutionBuffAbsorb = (constitutionBuffBonus - constitutionDebuffMalus * debuffBuffRatio) / constitutionPerAbsorptionPercent / 100;
-			constitutionAbsorb += baseConstitutionAbsorb + constitutionBuffAbsorb;
-
-			double absorb = 1 - (1 - baseAbsorb) * (1 - absorbBonus) * (1 - constitutionAbsorb);
+			double constitutionAbsorb = ModifyAbsorptionWithStat(eProperty.Constitution, 12, 4);
+			double dexterityAbsorb = ModifyAbsorptionWithStat(eProperty.Dexterity, 12, 4);
+			double absorb = 1 - (1 - baseAbsorb) * (1 - absorbBonus) * (1 - constitutionAbsorb) * (1 - dexterityAbsorb);
 			return absorb;
+
+			double ModifyAbsorptionWithStat(eProperty property, double baseStatPerAbsorption, double buffStatPerAbsorption)
+			{
+				int buff = BaseBuffBonusCategory[property] + SpecBuffBonusCategory[property];
+				int debuff = Math.Abs(DebuffCategory[property] + SpecDebuffCategory[property]);
+				double debuffEffectiveness = 2; // Debuffs are made more effective.
+				double basePropertyAbsorb = (GetBaseStat((eStat) property) - 60) / baseStatPerAbsorption / 100.0;
+				double buffPropertyAbsorb = (buff - debuff * debuffEffectiveness) / buffStatPerAbsorption / 100;
+				return basePropertyAbsorb + buffPropertyAbsorb;
+			}
 		}
 
 		/// <summary>
