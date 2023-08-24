@@ -16,14 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 
 namespace DOL.GS.PropertyCalc
 {
-	[PropertyCalculator(eProperty.Resist_First, eProperty.Resist_Last)]
-	public class ResistCalculator : PropertyCalculator
-	{
-		public ResistCalculator() { }
+    [PropertyCalculator(eProperty.Resist_First, eProperty.Resist_Last)]
+    public class ResistCalculator : PropertyCalculator
+    {
+        public ResistCalculator() { }
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
@@ -38,8 +39,8 @@ namespace DOL.GS.PropertyCalc
 
             // Abilities/racials/debuffs.
             int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
-			int abilityBonus = livingToCheck.AbilityBonus[propertyIndex];
-			int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist)property);
+            int abilityBonus = livingToCheck.AbilityBonus[propertyIndex];
+            int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist)property);
 
             // Items and buffs.
             int itemBonus = CalcValueFromItems(living, property);
@@ -60,27 +61,29 @@ namespace DOL.GS.PropertyCalc
                     break;
             }
 
-            if (living is GameNPC)
-            {
-                double constitutionPerMagicAbsorptionPercent = 8;
-                var constitutionBuffBonus = living.BaseBuffBonusCategory[eProperty.Constitution] + living.SpecBuffBonusCategory[eProperty.Constitution];
-                var constitutionDebuffMalus = Math.Abs(living.DebuffCategory[eProperty.Constitution] + living.SpecDebuffCategory[eProperty.Constitution]);
-                var magicAbsorptionFromConstitution = (int)((constitutionBuffBonus - constitutionDebuffMalus) / constitutionPerMagicAbsorptionPercent);
-                buffBonus += magicAbsorptionFromConstitution;
-            }
-
             buffBonus -= Math.Abs(debuff);
 
-            // Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for item bonuses.
-            if (living is GamePlayer && buffBonus < 0)
+            if (buffBonus < 0 && living is GamePlayer)
             {
                 itemBonus += buffBonus / 2;
                 buffBonus = 0;
             }
 
+            int result = itemBonus + buffBonus + abilityBonus + racialBonus;
+
+            if (living is GameNPC)
+            {
+                double constitutionPerMagicAbsorption = 8;
+                int constitutionBuffBonus = living.BaseBuffBonusCategory[eProperty.Constitution] + living.SpecBuffBonusCategory[eProperty.Constitution];
+                int constitutionDebuffMalus = Math.Abs(living.DebuffCategory[eProperty.Constitution] + living.SpecDebuffCategory[eProperty.Constitution]);
+                double debuffEffectiveness = 2; // Debuffs are made more effective.
+                double magicAbsorptionFromConstitution = (constitutionBuffBonus - constitutionDebuffMalus * debuffEffectiveness) / constitutionPerMagicAbsorption / 100;
+                result += (int) ((100 - result) * magicAbsorptionFromConstitution);
+            }
+
             // Add up and apply hardcap.
-            return Math.Min(itemBonus + buffBonus + abilityBonus + racialBonus, HardCap);
-		}
+            return Math.Min(result, HardCap);
+        }
 
         public override int CalcValueBase(GameLiving living, eProperty property)
         {
@@ -218,18 +221,18 @@ namespace DOL.GS.PropertyCalc
         {
             get { return 70; }
         }
-	}
-	
-	[PropertyCalculator(eProperty.Resist_Natural)]
-	public class ResistNaturalCalculator : PropertyCalculator
-	{
-		public ResistNaturalCalculator() { }
+    }
+    
+    [PropertyCalculator(eProperty.Resist_Natural)]
+    public class ResistNaturalCalculator : PropertyCalculator
+    {
+        public ResistNaturalCalculator() { }
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int propertyIndex = (int)property;
             int debuff = Math.Abs(living.DebuffCategory[propertyIndex]) + Math.Abs(living.DebuffCategory[eProperty.MagicAbsorption]);
-			int abilityBonus = living.AbilityBonus[propertyIndex] + living.AbilityBonus[eProperty.MagicAbsorption];
+            int abilityBonus = living.AbilityBonus[propertyIndex] + living.AbilityBonus[eProperty.MagicAbsorption];
             int itemBonus = CalcValueFromItems(living, property);
             int buffBonus = CalcValueFromBuffs(living, property);
 
@@ -252,7 +255,7 @@ namespace DOL.GS.PropertyCalc
                 itemBonus += buffBonus / 2;
                 buffBonus = 0;
             }
-			return (itemBonus + buffBonus + abilityBonus);
+            return (itemBonus + buffBonus + abilityBonus);
         }
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
         {
@@ -272,5 +275,5 @@ namespace DOL.GS.PropertyCalc
         public static int BuffBonusCap { get { return 25; } }
 
         public static int HardCap { get { return 70; } }
-	}
+    }
 }
