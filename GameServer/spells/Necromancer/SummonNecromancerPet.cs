@@ -16,17 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using DOL.GS.Effects;
 using DOL.AI.Brain;
+using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.Events;
 using DOL.GS.PropertyCalc;
-using System.Collections;
-using DOL.Language;
 using DOL.GS.RealmAbilities;
+using DOL.Language;
 
 namespace DOL.GS.Spells
 {
@@ -48,7 +46,7 @@ namespace DOL.GS.Spells
 		public void SetConAndHitsBonus()
 		{
 			// Check current item bonuses for constitution and hits (including cap increases) of the caster.
-			// Bonus from Aug.Con is applied as well. Thoughness is applied later on.
+			// Bonus from Aug.Con is applied as well. Toughness is applied later on.
 			int hitsCap = MaxHealthCalculator.GetItemBonusCap(Caster) + MaxHealthCalculator.GetItemBonusCapIncrease(Caster);
 			int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(Caster is GamePlayer playerOwner  ? AtlasRAHelpers.GetAugConLevel(playerOwner) : 0);
 
