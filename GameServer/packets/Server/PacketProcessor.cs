@@ -23,7 +23,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -339,20 +338,6 @@ namespace DOL.GS.PacketHandler
             }
 
             TcpQueue.Enqueue(buf);
-        }
-
-        public static T[] CombineBuffers<T>(params T[][] buffers)
-        {
-            int position = 0;
-            T[] outputArray = new T[buffers.Sum(x => x.Length)];
-
-            foreach (T[] buffer in buffers)
-            {
-                Array.Copy(buffer, 0, outputArray, position, buffer.Length);
-                position += buffer.Length;
-            }
-
-            return outputArray;
         }
 
         public void ProcessTcpQueue()
