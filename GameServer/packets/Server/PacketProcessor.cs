@@ -357,8 +357,6 @@ namespace DOL.GS.PacketHandler
 
         public void ProcessTcpQueue()
         {
-            long start = GameLoop.GetCurrentTime();
-
             try
             {
                 int count;
@@ -373,16 +371,11 @@ namespace DOL.GS.PacketHandler
             catch (Exception e)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn($"It seems {m_client.Account?.Name ?? m_client.TcpEndpoint} went link-dead. Closing connection. ({nameof(ProcessTcpQueue)}, {e.GetType()}: {e.Message}");
+                    log.Warn($"({nameof(ProcessTcpQueue)}) It seems {m_client.Account?.Name ?? m_client.TcpEndpoint} went link-dead. Closing connection. {e.GetType()}: {e.Message}");
 
                 GameServer.Instance.Disconnect(m_client);
                 return;
             }
-
-            long took = GameLoop.GetCurrentTime() - start;
-
-            if (took > 25 && log.IsWarnEnabled)
-                log.WarnFormat($"{nameof(ProcessTcpQueue)} took {took}ms! (Client: {m_client})");
         }
 
         /// <summary>
@@ -444,7 +437,7 @@ namespace DOL.GS.PacketHandler
         {
             int count = 0;
 
-            while (queue.TryDequeue(out byte[] packet))
+            while (queue.TryPeek(out byte[] packet))
             {
                 if (count + packet.Length > buffer.Length)
                 {
@@ -454,6 +447,7 @@ namespace DOL.GS.PacketHandler
 
                 Buffer.BlockCopy(packet, 0, buffer, count, packet.Length);
                 count += packet.Length;
+                queue.TryDequeue(out _);
             }
 
             empty = true;
