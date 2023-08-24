@@ -583,7 +583,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// If UDP is unavailable, send via TCP instead.
-			if (m_client.UdpEndPoint == null || !isForced || !m_client.UdpConfirm)
+			if (m_client.UdpEndPoint == null || !(isForced || m_client.UdpConfirm))
 			{
 				byte[] newBuffer = new byte[buffer.Length - 2];
 				newBuffer[0] = buffer[0];
