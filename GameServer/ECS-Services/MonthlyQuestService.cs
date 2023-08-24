@@ -47,16 +47,16 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newTime);
                 }
 
-                List<GamePlayer> players = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastValidIndex);
+                List<GameClient> clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out int lastValidIndex);
 
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {
-                    GamePlayer player = players[i];
+                    GameClient client = clients[i];
 
-                    if (player?.EntityManagerId.IsSet != true)
-                        continue;
+                    if (client?.EntityManagerId.IsSet != true)
+                        return;
 
-                    player.RemoveFinishedQuests(x => x is Quests.MonthlyQuest);
+                    client.Player?.RemoveFinishedQuests(x => x is Quests.MonthlyQuest);
                 }
 
                 IList<DBQuest> existingMonthlyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%MonthlyQuest%"));

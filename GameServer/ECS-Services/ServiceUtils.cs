@@ -24,7 +24,7 @@ namespace DOL.GS
                 player.SaveIntoDatabase();
             }
             else
-                entityOwner.RemoveFromWorld();
+                entityOwner?.RemoveFromWorld();
         }
     }
 }

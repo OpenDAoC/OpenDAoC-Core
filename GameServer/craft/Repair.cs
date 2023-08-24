@@ -277,7 +277,7 @@ namespace DOL.GS
 			//player.CraftTimer.Stop();
 			player.craftComponent.StopCraft();
 			player.Out.SendCloseTimerWindow();
-			PlayerService.UpdateObjectForPlayer(player, siegeWeapon);
+			ClientService.UpdateObjectForPlayer(player, siegeWeapon);
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired1", siegeWeapon.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			return 0;
 		}

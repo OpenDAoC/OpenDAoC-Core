@@ -286,7 +286,7 @@ namespace DOL.GS.Keeps
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				PlayerService.UpdateObjectForPlayer(player, this);
+				ClientService.UpdateObjectForPlayer(player, this);
 				player.Out.SendDoorState(CurrentRegion, this);
 			}
 		}

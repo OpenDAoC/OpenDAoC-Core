@@ -68,7 +68,7 @@ namespace DOL.GS
 				base.Model = value;
 
 				if (ObjectState == eObjectState.Active)
-					PlayerService.CreateObjectForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace DOL.GS
 				m_Emblem = value;
 
 				if (ObjectState == eObjectState.Active)
-					PlayerService.CreateObjectForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace DOL.GS
 				base.Name = value;
 
 				if (ObjectState == eObjectState.Active)
-					PlayerService.CreateObjectForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace DOL.GS
 				base.Heading = value;
 
 				if (ObjectState == eObjectState.Active)
-					PlayerService.CreateObjectForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -232,7 +232,7 @@ namespace DOL.GS
 				base.Level = value;
 
 				if (ObjectState == eObjectState.Active)
-					PlayerService.CreateObjectForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -324,7 +324,7 @@ namespace DOL.GS
 			if (!base.AddToWorld())
 				return false;
 
-			PlayerService.CreateObjectForPlayers(this);
+			ClientService.CreateObjectForPlayers(this);
 			return true;
 		}
 

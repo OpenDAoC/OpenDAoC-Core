@@ -12,7 +12,7 @@ namespace DOL.GS
 
         public enum EntityType
         {
-            Player,
+            Client,
             Brain,
             Effect,
             AttackComponent,
@@ -27,7 +27,7 @@ namespace DOL.GS
 
         private static Dictionary<EntityType, object> _entityArrays = new()
         {
-            { EntityType.Player, new EntityArray<GamePlayer>(ServerProperties.Properties.MAX_PLAYERS) },
+            { EntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
             { EntityType.Effect, new EntityArray<ECSGameEffect>(250) },
             { EntityType.AttackComponent, new EntityArray<AttackComponent>(1250) },

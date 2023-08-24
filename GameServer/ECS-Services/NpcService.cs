@@ -79,7 +79,7 @@ namespace DOL.GS
 
                     if (npc.NeedsBroadcastUpdate)
                     {
-                        PlayerService.UpdateObjectForPlayers(npc);
+                        ClientService.UpdateObjectForPlayers(npc);
                         npc.NeedsBroadcastUpdate = false;
                     }
                 }

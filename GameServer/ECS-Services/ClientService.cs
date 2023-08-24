@@ -10,46 +10,66 @@ using log4net;
 
 namespace DOL.GS
 {
-    public static class PlayerService
+    public static class ClientService
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(PlayerService);
+        private const string SERVICE_NAME = nameof(ClientService);
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<GamePlayer> list = EntityManager.UpdateAndGetAll<GamePlayer>(EntityManager.EntityType.Player, out int lastValidIndex);
+            List<GameClient> list = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
-                GamePlayer player = list[i];
+                GameClient client = list[i];
 
-                if (player?.EntityManagerId.IsSet != true ||
-                    player.Client.ClientState != GameClient.eClientState.Playing ||
-                    player.ObjectState != GameObject.eObjectState.Active)
-                {
+                if (client?.EntityManagerId.IsSet != true)
                     return;
+
+                GamePlayer player = client.Player;
+
+                if (player != null &&
+                    player.Client.ClientState == GameClient.eClientState.Playing &&
+                    player.ObjectState == GameObject.eObjectState.Active)
+                {
+                    try
+                    {
+                        if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                        {
+                            long startTick = GameLoop.GetCurrentTime();
+                            UpdateWorld(player);
+                            long stopTick = GameLoop.GetCurrentTime();
+
+                            if (stopTick - startTick > 25)
+                                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                        }
+
+                        player.movementComponent.Tick(GameLoop.GameLoopTime);
+                    }
+                    catch (Exception e)
+                    {
+                        ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                    }
                 }
 
-                try
+                if (client.IsConnected)
                 {
-                    if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                    try
                     {
                         long startTick = GameLoop.GetCurrentTime();
-                        UpdateWorld(player);
+                        client.PacketProcessor?.ProcessTcpQueue();
                         long stopTick = GameLoop.GetCurrentTime();
 
                         if (stopTick - startTick > 25)
-                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                            log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
                     }
-
-                    player.movementComponent.Tick(GameLoop.GameLoopTime);
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, player, player);
+                    catch (Exception e)
+                    {
+                        ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                    }
                 }
             });
 

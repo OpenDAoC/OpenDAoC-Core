@@ -85,7 +85,7 @@ public class SubObjective
         OwningRealm = CapturingRealm;
         FlagObject.Realm = CapturingRealm;
         FlagObject.Model = GetModelIDForRealm(CapturingRealm);
-        PlayerService.UpdateObjectForPlayers(FlagObject);
+        ClientService.UpdateObjectForPlayers(FlagObject);
         CaptureTimer = null;
         BroadcastCapture();
         var nearbyPlayers = FlagObject.GetPlayersInRadius(750).Where(player => player.Realm == CapturingRealm).ToList();
@@ -117,7 +117,7 @@ public class SubObjective
         }
         
         if(secondsLeft%5 == 0)
-            PlayerService.UpdateObjectForPlayers(FlagObject);
+            ClientService.UpdateObjectForPlayers(FlagObject);
     }
 
     private void BroadcastCapture()

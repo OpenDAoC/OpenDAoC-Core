@@ -108,7 +108,7 @@ namespace DOL.GS.RealmAbilities
                 else
                     player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-                PlayerService.CreateObjectForPlayer(player, trap);
+                ClientService.CreateObjectForPlayer(player, trap);
             }
 
             new AtlasOF_RuneOfDecimationECSEffect(new ECSGameEffectInitParams(trap, m_duration, 1, tmpHandler));

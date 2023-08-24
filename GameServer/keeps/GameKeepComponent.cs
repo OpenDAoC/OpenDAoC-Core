@@ -477,7 +477,7 @@ namespace DOL.GS.Keeps
 					m_oldHealthPercent = HealthPercent;
 					foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
 					{
-						PlayerService.UpdateObjectForPlayer(client.Player, this);
+						ClientService.UpdateObjectForPlayer(client.Player, this);
 						client.Out.SendKeepComponentDetailUpdate(this); // I knoiw this works, not sure if ObjectUpdate is needed - Tolakram
 					}
 				}

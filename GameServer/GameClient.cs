@@ -37,7 +37,7 @@ namespace DOL.GS
 	/// <summary>
 	/// Represents a single connection to the game server
 	/// </summary>
-	public class GameClient : BaseClient, ICustomParamsValuable
+	public class GameClient : BaseClient, ICustomParamsValuable, IManagedEntity
 	{
 		#region eClientAddons enum
 
@@ -250,10 +250,12 @@ namespace DOL.GS
 
 		// Trainer window Cache, (Object Type, Object ID) => Skill
 		public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache = null;
-		
+
 		// Tooltip Request Time Cache, (Object Type => (Object ID => expires))
 		private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> m_tooltipRequestTimes = new();
-		
+
+		public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client, false);
+
 		/// <summary>
 		/// Try to Send Tooltip to Client, return false if cache hit.
 		/// Return true and register cache before you can send tooltip !
@@ -565,12 +567,14 @@ namespace DOL.GS
 		public override void OnDisconnect()
 		{
 			bool linkdead = false;
+
 			try
 			{
+				EntityManager.Remove(this);
+
 				if (PacketProcessor != null)
 					PacketProcessor.OnDisconnect();
 
-				
 				//If we went linkdead and we were inside the game
 				//we don't let the player disappear!
 				if (ClientState == eClientState.Playing)
@@ -592,7 +596,7 @@ namespace DOL.GS
 			}
 			finally
 			{
-				// Make sure the client is diconnected even on errors but only if OnLinkDeath() wasnt called.
+				// Make sure the client is disconnected even on errors but only if OnLinkDeath() wasn't called.
 				if(!linkdead)
 					Quit();
 			}
@@ -603,6 +607,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void OnConnect()
 		{
+			EntityManager.Add(this);
 			GameEventMgr.Notify(GameClientEvent.Connected, this);
 		}
 

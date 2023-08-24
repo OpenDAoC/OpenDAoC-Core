@@ -300,7 +300,7 @@ namespace DOL.GS.Keeps
 					m_oldHealthPercent = HealthPercent;
 
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						PlayerService.UpdateObjectForPlayer(player, this);
+						ClientService.UpdateObjectForPlayer(player, this);
 				}
 			}
 
@@ -566,7 +566,7 @@ namespace DOL.GS.Keeps
 				if (Health <= 0 && State != eDoorState.Open)
 					State = eDoorState.Open;
 
-				PlayerService.UpdateObjectForPlayer(player, this);
+				ClientService.UpdateObjectForPlayer(player, this);
 			}
 
 			return list;
@@ -829,7 +829,7 @@ namespace DOL.GS.Keeps
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				PlayerService.UpdateObjectForPlayer(player, this);
+				ClientService.UpdateObjectForPlayer(player, this);
 				player.Out.SendDoorState(CurrentRegion, this);
 			}
 		}

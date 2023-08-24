@@ -461,7 +461,7 @@ public class AchievementReskinVendor : GameNPC
         display.ObjectState = eObjectState.Active;
         display.attackComponent.AttackState = true;
         display.BroadcastLivingEquipmentUpdate();
-        PlayerService.UpdateObjectForPlayer(player, display);
+        ClientService.UpdateObjectForPlayer(player, display);
 
         //Uncomment this if you want animations
         // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));

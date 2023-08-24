@@ -53,7 +53,7 @@ namespace DOL.GS
     /// <summary>
     /// This class represents a player inside the game
     /// </summary>
-    public class GamePlayer : GameLiving, IManagedEntity
+    public class GamePlayer : GameLiving
     {
         private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
 
@@ -71,7 +71,6 @@ namespace DOL.GS
         public double NonCombatNonSprintRegen { get; set; }
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Player, false);
         public long LastWorldUpdate { get; set; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
@@ -379,7 +378,7 @@ namespace DOL.GS
         }
 
         #region Object Caches
-        public ConcurrentDictionary<GameNPC, PlayerService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
+        public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<House, long> HouseUpdateCache { get; private set; } = new();
@@ -1024,7 +1023,6 @@ namespace DOL.GS
                 IsOnHorse = false;
 
             GameEventMgr.RemoveAllHandlersForObject(m_inventory);
-            EntityManager.Remove(this);
 
             if (CraftTimer != null)
             {
@@ -15149,7 +15147,6 @@ namespace DOL.GS
 
             LoadFromDatabase(dbChar);
             CreateStatistics();
-            EntityManager.Add(this);
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
             {
