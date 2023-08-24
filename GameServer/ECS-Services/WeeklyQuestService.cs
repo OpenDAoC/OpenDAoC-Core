@@ -54,11 +54,10 @@ namespace DOL.GS
                 {
                     GamePlayer player = players[i];
 
-                    if (!player.EntityManagerId.IsSet)
+                    if (player?.EntityManagerId.IsSet != true)
                         continue;
 
                     player.RemoveFinishedQuests(x => x is Quests.WeeklyQuest);
-
                 }
 
                 IList<DBQuest> existingWeeklyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%WeeklyQuest%"));
