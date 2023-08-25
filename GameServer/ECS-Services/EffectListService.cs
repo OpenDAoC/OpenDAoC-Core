@@ -163,25 +163,25 @@ namespace DOL.GS
 
                     if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                     {
-                        //Check if player is too far away from Caster for Concentration buff.
-                        if (!effect.SpellHandler.Caster.
-                            IsWithinRadius(effect.Owner,
-                            effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
-                            && !effect.IsDisabled)
+                        int radiusToCheck = effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+                        bool isWithinRadius = effect.SpellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck);
+
+                        // Check if player is too far away from Caster for Concentration buff, or back in range.
+                        if (!isWithinRadius)
                         {
-                            ECSGameSpellEffect disabled = null;
-                            if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count > 1)
-                                disabled = effect.Owner.effectListComponent.GetBestDisabledSpellEffect(effect.EffectType);
+                            if (!effect.IsDisabled)
+                            {
+                                ECSGameSpellEffect disabled = null;
+                                if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count > 1)
+                                    disabled = effect.Owner.effectListComponent.GetBestDisabledSpellEffect(effect.EffectType);
 
-                            EffectService.RequestDisableEffect(effect);
+                                EffectService.RequestDisableEffect(effect);
 
-                            if (disabled != null)
-                                EffectService.RequestEnableEffect(disabled);
+                                if (disabled != null)
+                                    EffectService.RequestEnableEffect(disabled);
+                            }
                         }
-                        //Check if player is back in range of Caster for Concentration buff.
-                        else if (effect.SpellHandler.Caster.IsWithinRadius(effect.Owner,
-                            effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500)
-                            && effect.IsDisabled)
+                        else if (effect.IsDisabled)
                         {
                             //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                             ECSGameSpellEffect enabled = null;
