@@ -44,7 +44,7 @@ namespace DOL.GS
                     if (currentSubZone == destinationSubZone)
                     {
                         if (log.IsWarnEnabled)
-                            log.Warn($"Cancelled a subzone change because both subzones are the same ({nameof(currentZone)}: {currentZone.ID}) ({nameof(destinationZone)}: {destinationZone.ID}) (Object: {node.Value})");
+                            log.Warn($"Cancelled a subzone change because both subzones are the same ({nameof(currentZone)}: {currentZone?.ID}) ({nameof(destinationZone)}: {destinationZone?.ID}) (Object: {node.Value})");
 
                         return;
                     }
