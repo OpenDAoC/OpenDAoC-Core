@@ -30,11 +30,6 @@ namespace DOL.GS
             return new Writer(this);
         }
 
-        public Writer TryGetWriter(out bool success)
-        {
-            return new Writer(this, out success);
-        }
-
         // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
         public sealed class Reader : IDisposable
         {
@@ -76,23 +71,24 @@ namespace DOL.GS
         // A disposable class taking care of acquiring and disposing a write lock.
         public sealed class Writer : IDisposable
         {
-            private const int WRITE_LOCK_TIMEOUT = 3;
-
             private ConcurrentLinkedList<T> _list;
             private bool _hasLock;
 
             public Writer(ConcurrentLinkedList<T> list)
             {
                 _list = list;
+            }
+
+            public void Lock()
+            {
                 _list._lock.EnterWriteLock();
                 _hasLock = true;
             }
 
-            public Writer(ConcurrentLinkedList<T> list, out bool success)
+            public bool TryLock()
             {
-                _list = list;
-                _hasLock = _list._lock.TryEnterWriteLock(WRITE_LOCK_TIMEOUT);
-                success = _hasLock;
+                _hasLock = _list._lock.TryEnterWriteLock(-1);
+                return _hasLock;
             }
 
             public void Dispose()

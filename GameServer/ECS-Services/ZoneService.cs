@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using ECS.Debug;
 using log4net;
@@ -41,17 +42,52 @@ namespace DOL.GS
                     bool changingZone = currentZone != destinationZone;
 
                     // Acquire locks on both subzones. We want the removal and addition to happen at the same time from a reader's point of view.
-                    // Abort if we can't get a lock on the destination subzone.
-                    using ConcurrentLinkedList<GameObject>.Writer currentSubZoneWriter = currentSubZone?.GetObjectWriter(node);
-                    bool destinationZoneWriterSuccess = false;
-                    using ConcurrentLinkedList<GameObject>.Writer destinationSubZoneWriter = destinationSubZone?.TryGetObjectWriter(node, out destinationZoneWriterSuccess);
+                    ConcurrentLinkedList<GameObject>.Writer currentSubZoneWriter = currentSubZone?.GetObjectWriter(node);
+                    ConcurrentLinkedList<GameObject>.Writer destinationSubZoneWriter = destinationSubZone?.GetObjectWriter(node);
 
-                    // If we couldn't acquire a lock, try again later.
-                    if (!destinationZoneWriterSuccess)
-                        return;
-
-                    // Remove object from current subzone.
                     if (currentSubZoneWriter != null)
+                    {
+                        currentSubZoneWriter.Lock();
+
+                        if (destinationSubZoneWriter != null)
+                        {
+                            // Spin until we can acquire a lock on the other subzone.
+                            while (!destinationSubZoneWriter.TryLock())
+                            {
+                                // Relinquish then reacquire our current lock to prevent dead-locks.
+                                currentSubZoneWriter.Dispose();
+                                Thread.Sleep(0);
+                                currentSubZoneWriter.Lock();
+                            }
+
+                            RemoveObjectFromCurrentSubZone();
+                            AddObjectToDestinationSubZone();
+                            currentSubZoneWriter.Dispose();
+                            destinationSubZoneWriter.Dispose();
+                        }
+                        else
+                        {
+                            RemoveObjectFromCurrentSubZone();
+                            currentSubZoneWriter.Dispose();
+                        }
+                    }
+                    else
+                    {
+                        destinationSubZoneWriter.Lock();
+                        AddObjectToDestinationSubZone();
+                        destinationSubZoneWriter.Dispose();
+                    }
+
+                    void AddObjectToDestinationSubZone()
+                    {
+                        destinationSubZone.AddObjectNode(node);
+                        subZoneObject.CurrentSubZone = destinationSubZone;
+
+                        if (changingZone)
+                            destinationZone.OnObjectAddedToZone();
+                    }
+
+                    void RemoveObjectFromCurrentSubZone()
                     {
                         currentSubZone.RemoveObjectNode(node);
 
@@ -59,16 +95,6 @@ namespace DOL.GS
                             currentZone.OnObjectRemovedFromZone();
 
                         subZoneObject.CurrentSubZone = null;
-                    }
-
-                    // Add object to destination subzone.
-                    if (destinationSubZoneWriter != null)
-                    {
-                        destinationSubZone.AddObjectNode(node);
-                        subZoneObject.CurrentSubZone = destinationSubZone;
-
-                        if (changingZone)
-                            destinationZone.OnObjectAddedToZone();
                     }
                 }
                 catch (Exception e)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -45,11 +44,6 @@ namespace DOL.GS
         public ConcurrentLinkedList<GameObject>.Writer GetObjectWriter(LinkedListNode<GameObject> node)
         {
             return _objects[(byte) node.Value.GameObjectType].GetWriter();
-        }
-
-        public ConcurrentLinkedList<GameObject>.Writer TryGetObjectWriter(LinkedListNode<GameObject> node, out bool success)
-        {
-            return _objects[(byte) node.Value.GameObjectType].TryGetWriter(out success);
         }
 
         public void CheckForRelocation(LinkedListNode<GameObject> node)
