@@ -4669,7 +4669,7 @@ namespace DOL.GS
 		#region ControlledNpc
 
 		private int m_petCount;
-		public int PetCount { get; private set; }
+		public int PetCount => m_petCount;
 
 		public void UpdatePetCount(bool add)
 		{
