@@ -31,7 +31,7 @@ namespace DOL.GS
                 try
                 {
                     // Dead owners don't get effects
-                    if (!Owner.IsAlive || Owner.ObjectState != GameObject.eObjectState.Active)
+                    if (!Owner.IsAlive)
                         return false;
 
                     EntityManager.Add(this);
