@@ -87,7 +87,7 @@ namespace DOL.GS
 
             public bool TryLock()
             {
-                _hasLock = _list._lock.TryEnterWriteLock(-1);
+                _hasLock = _list._lock.TryEnterWriteLock(0);
                 return _hasLock;
             }
 
