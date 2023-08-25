@@ -41,6 +41,14 @@ namespace DOL.GS
                     Zone destinationZone = objectChangingSubZone.DestinationZone;
                     bool changingZone = currentZone != destinationZone;
 
+                    if (currentSubZone == destinationSubZone)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Cancelled a subzone change because both subzones are the same ({nameof(currentZone)}: {currentZone.ID}) ({nameof(destinationZone)}: {destinationZone.ID}) (Object: {node.Value})");
+
+                        return;
+                    }
+
                     // Acquire locks on both subzones. We want the removal and addition to happen at the same time from a reader's point of view.
                     ConcurrentLinkedList<GameObject>.Writer currentSubZoneWriter = currentSubZone?.GetObjectWriter(node);
                     ConcurrentLinkedList<GameObject>.Writer destinationSubZoneWriter = destinationSubZone?.GetObjectWriter(node);
