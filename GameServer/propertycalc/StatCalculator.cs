@@ -79,7 +79,7 @@ namespace DOL.GS.PropertyCalc
 			int unbuffedBonus = baseStat + itemBonus;
 			buffBonus -= Math.Abs(debuff);
 
-			if (living is GamePlayer && buffBonus < 0)
+			if (buffBonus < 0)
 			{
 				unbuffedBonus += buffBonus / 2;
 				buffBonus = 0;
@@ -94,7 +94,7 @@ namespace DOL.GS.PropertyCalc
 
 			stat -= (property == eProperty.Constitution)? deathConDebuff : 0;
 
-			return Math.Max(baseStat, stat);
+			return Math.Max(1, stat);
         }
 
         /// <summary>
