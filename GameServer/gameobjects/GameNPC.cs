@@ -2741,19 +2741,8 @@ namespace DOL.GS
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
-			// https://camelotherald.fandom.com/wiki/Weapon_Skill
-			// [[[[LEVEL *DAMAGE_TABLE * (200 + BONUS * ITEM_BONUS) / 500]
-			// (100 + STAT) / 100]
-			// (100 + SPEC) / 100]
-			// (100 + WEAPONSKILL_BONUS) / 100]
-			
-			int weaponskill = (Level + 1) 
-				* (ScalingFactor / 4) // Mob damage table calc, basically.
-				* (200 + GetModified(eProperty.MeleeDamage)) / 500 // Melee damage buffs.
-				* ((100 + Strength) / 100) // NPCs only use STR to calculate, can skip str or str/dex check.
-				* ((100 + GetModified(eProperty.WeaponSkill)) / 100); // WeaponSkill buffs.
-  
-			return weaponskill;
+			double preBuff = (Level + 1) * (ScalingFactor / 7.5) * (1 + 0.01 * GetWeaponStat(weapon) / 2);
+			return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
 		public void SetLastMeleeAttackTick()

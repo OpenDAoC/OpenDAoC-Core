@@ -26,14 +26,6 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			if (living is GameNPC npc)
-			{
-				int strengthPerMeleeDamagePercent = 8;
-				var strengthBuffBonus = npc.BaseBuffBonusCategory[eProperty.Strength] + npc.SpecBuffBonusCategory[eProperty.Strength];
-				var strengthDebuffMalus = Math.Abs(npc.DebuffCategory[eProperty.Strength] + npc.SpecDebuffCategory[eProperty.Strength]);
-				return (npc.Strength + (strengthBuffBonus - strengthDebuffMalus)) / strengthPerMeleeDamagePercent;
-			}
-
 			int hardCap = 10;
 			int abilityBonus = living.AbilityBonus[(int)property];
 			int itemBonus = Math.Min(hardCap, living.ItemBonus[(int)property]);

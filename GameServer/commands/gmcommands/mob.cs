@@ -1326,11 +1326,8 @@ namespace DOL.GS.Commands
 			info.Add(" +     INT      /     EMP     /     PIE     /     CHR");
 			info.Add(" + " + targetMob.Intelligence + " (" + targetMob.GetModified(eProperty.Intelligence) + ")  /  " + targetMob.Empathy + " (" + targetMob.GetModified(eProperty.Empathy) + ")  /  " + targetMob.Piety + " (" + targetMob.GetModified(eProperty.Piety) + ")  /  " + targetMob.Charisma + " (" + targetMob.GetModified(eProperty.Charisma) + ")");
 			info.Add(" + Block / Parry / Evade %:  " + targetMob.BlockChance + " / " + targetMob.ParryChance + " / " + targetMob.EvadeChance);
+			info.Add($"+ Weapon Skill: {targetMob.GetWeaponSkill(targetMob.ActiveWeapon)}");
 			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
-
-			if (targetMob.GetModified(eProperty.MeleeDamage) != 0)
-				info.Add($" + Damage Bonus: {targetMob.GetModified(eProperty.MeleeDamage)}");
-
 			info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(eProperty.CastingSpeed));
 
 			if (targetMob.LeftHandSwingChance > 0)
