@@ -6665,8 +6665,8 @@ namespace DOL.GS
                 return 0;
 
             int classBaseWeaponSkill = weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
-            double preBuff = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
-            return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
+            double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
+            return Math.Max(0, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 
         /// <summary>
@@ -6755,7 +6755,7 @@ namespace DOL.GS
                 return 0;
 
             // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
-            return Math.Max(0, (item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01);
+            return Math.Clamp((item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01, 0, 1);
         }
 
         /// <summary>

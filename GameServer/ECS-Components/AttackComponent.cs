@@ -1787,24 +1787,22 @@ namespace DOL.GS
 
             if (owner is GamePlayer)
             {
-                double baseAF = target is GamePlayer ? target.Level * AFLevelScalar / 50.0 : 2;
+                double baseAf = target is GamePlayer ? Math.Max(1, target.Level * AFLevelScalar / 50.0) : 2;
+                double absorb = target.GetArmorAbsorb(armorSlot);
+                double Af = baseAf + target.GetArmorAF(armorSlot);
+                armorMod = absorb >= 1 ? double.MaxValue : Af / (1 - absorb);
 
-                if (baseAF < 1)
-                    baseAF = 1;
-
-                armorMod = (baseAF + target.GetArmorAF(armorSlot)) / (1 - target.GetArmorAbsorb(armorSlot));
-
-                if (owner is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
+                if (owner is GamePlayer playerAttacker && playerAttacker.UseDetailedCombatLog)
                 {
-                    weaponskiller.Out.SendMessage(
-                        $"Base AF: {target.GetArmorAF(armorSlot) + baseAF:0.00} | ABS: {target.GetArmorAbsorb(armorSlot) * 100:0.00} | AF/ABS: {armorMod:0.00}",
+                    playerAttacker.Out.SendMessage(
+                        $"AF: {Af:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}",
                         eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (target is GamePlayer attackee && attackee.UseDetailedCombatLog)
+                if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
                 {
-                    attackee.Out.SendMessage(
-                        $"Base AF: {target.GetArmorAF(armorSlot) + baseAF:0.00} | ABS: {target.GetArmorAbsorb(armorSlot) * 100:0.00} | AF/ABS: {armorMod:0.00}",
+                    playerTarget.Out.SendMessage(
+                        $"AF: {Af:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}",
                         eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 

@@ -2741,8 +2741,8 @@ namespace DOL.GS
 		
 		public override double GetWeaponSkill(InventoryItem weapon)
 		{
-			double preBuff = (Level + 1) * (ScalingFactor / 7.5) * (1 + 0.01 * GetWeaponStat(weapon) / 2);
-			return Math.Max(0, preBuff * GetModified(eProperty.WeaponSkill) * 0.01);
+			double weaponSkill = (Level + 1) * (ScalingFactor / 7.5) * (1 + 0.01 * GetWeaponStat(weapon) / 2);
+			return Math.Max(0, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
 		public void SetLastMeleeAttackTick()

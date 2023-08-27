@@ -572,7 +572,7 @@ namespace DOL.GS
 			double constitutionAbsorb = GetAbsorbFromStat(eProperty.Constitution, 4);
 			double dexterityAbsorb = GetAbsorbFromStat(eProperty.Dexterity, 4);
 			double absorb = 1 - (1 - baseAbsorb) * (1 - absorbBonus) * (1 - constitutionAbsorb) * (1 - dexterityAbsorb);
-			return absorb;
+			return Math.Clamp(absorb, 0, 1);
 
 			double GetAbsorbFromStat(eProperty property, double buffStatPerAbsorption)
 			{
