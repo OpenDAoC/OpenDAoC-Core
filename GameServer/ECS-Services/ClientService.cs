@@ -64,7 +64,7 @@ namespace DOL.GS
                         long stopTick = GameLoop.GetCurrentTime();
 
                         if (stopTick - startTick > 25)
-                            log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                            log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
                     }
                     catch (Exception e)
                     {
