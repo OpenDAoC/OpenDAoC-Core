@@ -24,6 +24,10 @@ namespace DOL.GS.PropertyCalc
     [PropertyCalculator(eProperty.Stat_First, eProperty.Stat_Last)]
     public class StatCalculator : PropertyCalculator
     {
+        public const double SPEC_DEBUFF_VS_BUFF_MODIFIER = 0.5;
+        public const double BASE_DEBUFF_VS_BUFF_MODIFIER = 1;
+        public const double DEBUFF_VS_BASE_AND_ITEM_MODIFIER = 2;
+
         public StatCalculator() { }
 
         // Special cases:
@@ -34,7 +38,7 @@ namespace DOL.GS.PropertyCalc
         // 3) Constitution lost at death, only affects players.
 
         // DebuffCategory has 100% effectiveness against buffs, 50% effectiveness against item and base stats.
-        // SpecDebuffs (Champion's) have 200% effectiveness against buffs.
+        // SpecDebuffs (includes Champion's only) have 200% effectiveness against buffs.
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int propertyIndex = (int) property;
@@ -61,44 +65,15 @@ namespace DOL.GS.PropertyCalc
             int baseStat = living.GetBaseStat((eStat) property);
             int itemBonus = CalcValueFromItems(livingToCheck, property);
             int buffBonus = CalcValueFromBuffs(living, property);
-            int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
+            int baseDebuff = Math.Abs(living.DebuffCategory[propertyIndex]);
             int specDebuff = Math.Abs(living.SpecDebuffCategory[propertyIndex]);
             abilityBonus += livingToCheck.AbilityBonus[propertyIndex];
-
-            int unbuffedBonus = baseStat + itemBonus;
-
-            if (specDebuff > 0 && buffBonus > 0)
-                ApplyDebuff(ref specDebuff, ref buffBonus, 0.5);
-
-            if (specDebuff > 0 && unbuffedBonus > 0)
-                ApplyDebuff(ref specDebuff, ref unbuffedBonus, 2);
-
-            if (debuff > 0 && buffBonus > 0)
-                ApplyDebuff(ref debuff, ref buffBonus, 1);
-
-            if (debuff > 0 && unbuffedBonus > 0)
-                ApplyDebuff(ref debuff, ref unbuffedBonus, 2);
-
-            int stat = unbuffedBonus + buffBonus + abilityBonus;
+            int baseAndItemStat = baseStat + itemBonus;
+            ApplyDebuffs(ref baseDebuff, ref specDebuff, ref buffBonus, ref baseAndItemStat);
+            int stat = baseAndItemStat + buffBonus + abilityBonus;
             stat = (int) (stat * living.BuffBonusMultCategory1.Get((int) property));
             stat -= (property == eProperty.Constitution) ? deathConDebuff : 0;
             return Math.Max(1, stat);
-
-            static void ApplyDebuff(ref int debuff, ref int stat, double modifier)
-            {
-                double remainingDebuff = debuff - stat * modifier;
-
-                if (remainingDebuff > 0)
-                {
-                    debuff = (int) remainingDebuff;
-                    stat = 0;
-                }
-                else
-                {
-                    stat -= (int) (debuff / modifier);
-                    debuff = 0;
-                }
-            }
         }
 
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
@@ -216,6 +191,49 @@ namespace DOL.GS.PropertyCalc
                 not eCharacterClass.Hunter and
                 not eCharacterClass.Ranger and
                 not eCharacterClass.Nightshade;
+        }
+
+        public static void ApplyDebuffs(ref int baseDebuff, ref int specDebuff, ref int buffBonus, ref int baseAndItemStat)
+        {
+            if (specDebuff > 0 && buffBonus > 0)
+                ApplyDebuff(ref specDebuff, ref buffBonus, SPEC_DEBUFF_VS_BUFF_MODIFIER);
+
+            if (specDebuff > 0 && baseAndItemStat > 0)
+                ApplyDebuff(ref specDebuff, ref baseAndItemStat, DEBUFF_VS_BASE_AND_ITEM_MODIFIER);
+
+            if (baseDebuff > 0 && buffBonus > 0)
+                ApplyDebuff(ref baseDebuff, ref buffBonus, BASE_DEBUFF_VS_BUFF_MODIFIER);
+
+            if (baseDebuff > 0 && baseAndItemStat > 0)
+                ApplyDebuff(ref baseDebuff, ref baseAndItemStat, DEBUFF_VS_BASE_AND_ITEM_MODIFIER);
+
+            static void ApplyDebuff(ref int debuff, ref int stat, double modifier)
+            {
+                double remainingDebuff = debuff - stat * modifier;
+
+                if (remainingDebuff > 0)
+                {
+                    debuff = (int) remainingDebuff;
+                    stat = 0;
+                }
+                else
+                {
+                    stat -= (int) (debuff / modifier);
+                    debuff = 0;
+                }
+            }
+        }
+
+        // Intended to be used by NPCs to calculate ABS or resist bonus / malus from the difference between currently applied buffs and debuffs.
+        public static double CalculateBuffContributionToAbsorbOrResist(GameLiving living, eProperty stat)
+        {
+            int buff = living.BaseBuffBonusCategory[stat] + living.SpecBuffBonusCategory[stat];
+            int baseDebuff = Math.Abs(living.DebuffCategory[stat]);
+            int specDebuff =  Math.Abs(living.SpecDebuffCategory[stat]);
+            int baseAndItemStat = 0;
+            ApplyDebuffs(ref baseDebuff, ref specDebuff, ref buff, ref baseAndItemStat);
+            double debuffContribution = (baseDebuff + specDebuff) / DEBUFF_VS_BASE_AND_ITEM_MODIFIER;
+            return (buff - debuffContribution) * 0.01;
         }
     }
 }

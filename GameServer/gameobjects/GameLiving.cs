@@ -569,19 +569,10 @@ namespace DOL.GS
 			}
 
 			double absorbBonus = GetModified(eProperty.ArmorAbsorption) / 100.0;
-			double constitutionAbsorb = GetAbsorbFromStat(eProperty.Constitution, 4);
-			double dexterityAbsorb = GetAbsorbFromStat(eProperty.Dexterity, 4);
-			double absorb = 1 - (1 - baseAbsorb) * (1 - absorbBonus) * (1 - constitutionAbsorb) * (1 - dexterityAbsorb);
+			double absorptionFromConstitution = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Constitution) / 4;
+			double absorptionFromDexterity = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Dexterity) / 4;
+			double absorb = 1 - (1 - baseAbsorb) * (1 - absorbBonus) * (1 - absorptionFromConstitution) * (1 - absorptionFromDexterity);
 			return Math.Clamp(absorb, 0, 1);
-
-			double GetAbsorbFromStat(eProperty property, double buffStatPerAbsorption)
-			{
-				int buff = BaseBuffBonusCategory[property] + SpecBuffBonusCategory[property];
-				int debuff = Math.Abs(DebuffCategory[property] + SpecDebuffCategory[property]);
-				double debuffEffectiveness = 2; // Debuffs are made more effective.
-				double absorbFromStat = (buff - debuff * debuffEffectiveness) / buffStatPerAbsorption / 100;
-				return absorbFromStat;
-			}
 		}
 
 		/// <summary>

@@ -73,12 +73,8 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GameNPC)
             {
-                double constitutionPerMagicAbsorption = 8;
-                int constitutionBuffBonus = living.BaseBuffBonusCategory[eProperty.Constitution] + living.SpecBuffBonusCategory[eProperty.Constitution];
-                int constitutionDebuffMalus = Math.Abs(living.DebuffCategory[eProperty.Constitution] + living.SpecDebuffCategory[eProperty.Constitution]);
-                double debuffEffectiveness = 2; // Debuffs are made more effective.
-                double magicAbsorptionFromConstitution = (constitutionBuffBonus - constitutionDebuffMalus * debuffEffectiveness) / constitutionPerMagicAbsorption / 100;
-                result += (int) ((100 - result) * magicAbsorptionFromConstitution);
+                double resistanceFromConstitution = StatCalculator.CalculateBuffContributionToAbsorbOrResist(living, eProperty.Constitution) / 8;
+                result += (int) ((100 - result) * resistanceFromConstitution);
             }
 
             // Add up and apply hardcap.
