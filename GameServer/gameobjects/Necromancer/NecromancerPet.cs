@@ -132,29 +132,17 @@ namespace DOL.GS
 			if (Brain == null || (Brain as IControlledBrain) == null)
 				return base.GetModified(property);
 
-			GameLiving livingOwner = (Brain as IControlledBrain).GetLivingOwner();
-			GamePlayer playerOwner = livingOwner as GamePlayer;
-
 			switch (property)
 			{
 				case eProperty.MaxHealth:
 				{
-					int conBonus = (int)(3.1 * m_summonConBonus);
+					GamePlayer playerOwner = (Brain as IControlledBrain).GetLivingOwner() as GamePlayer;
+					int conBonus = (int) (3.1 * m_summonConBonus);
 					int hitsBonus = 30 * Level + m_summonHitsBonus;
-					int debuff = DebuffCategory[(int)property];
-
-					// Apply debuffs. As only base constitution affects pet health, effectiveness is a flat 50%.
-					conBonus -= Math.Abs(debuff) / 2;
-
-					if (conBonus < 0)
-						conBonus = 0;
-						
 					int totalBonus = conBonus + hitsBonus;
-
 					AtlasOF_ToughnessAbility toughness = playerOwner?.GetAbility<AtlasOF_ToughnessAbility>();
 					double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
-
-					return (int)(totalBonus * toughnessMod);
+					return (int) (totalBonus * toughnessMod);
 				}
 				default:
 					return base.GetModified(property);
