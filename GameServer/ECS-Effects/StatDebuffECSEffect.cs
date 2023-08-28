@@ -31,14 +31,14 @@ namespace DOL.GS
                 }
             }
 
+            eBuffBonusCategory debuffCategory = (Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
+
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {
-                if (Caster is GamePlayer {CharacterClass: ClassChampion})
-                    Effectiveness = 2;
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Debuffing {prop.ToString()}");
-                    ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness, true);
+                    ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness, true);
                 }
             }
             else
@@ -78,16 +78,15 @@ namespace DOL.GS
                 else
                 {
                     bool interruptSent = false;
-                    if (Caster is GamePlayer {CharacterClass: ClassChampion})
-                        Effectiveness = 2;
+
                     foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                     {
                         //Console.WriteLine($"Debuffing {prop.ToString()}");
                         if (EffectType == eEffect.ArmorFactorDebuff)
-                            ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness,
+                            ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness,
                                 false);
                         else
-                            ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness,
+                            ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness,
                                 true);
                     }
                 }
@@ -102,14 +101,14 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
+            eBuffBonusCategory debuffCategory = (Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
+
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {
-                if (Caster is GamePlayer {CharacterClass: ClassChampion})
-                    Effectiveness = 2;
                 foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                 {
                     //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
-                    ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness, false);
+                    ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness, false);
                 }
             }
             else
@@ -135,17 +134,15 @@ namespace DOL.GS
                 }
                 else
                 {
-                    if (Caster is GamePlayer {CharacterClass: ClassChampion})
-                        Effectiveness = 2;
                     foreach (var prop in EffectService.GetPropertiesFromEffect(EffectType))
                     {
                         //Console.WriteLine($"Canceling {prop.ToString()} on {e.Owner}.");
 
                         if (EffectType == eEffect.ArmorFactorDebuff)
-                            ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness,
+                            ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness,
                                 true);
                         else
-                            ApplyBonus(Owner, eBuffBonusCategory.Debuff, prop, SpellHandler.Spell.Value, Effectiveness,
+                            ApplyBonus(Owner, debuffCategory, prop, SpellHandler.Spell.Value, Effectiveness,
                                 false);
                     }
                 }
