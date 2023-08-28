@@ -126,10 +126,6 @@ namespace DOL.GS
                     newSpellHandler.Tick(GameLoop.GameLoopTime);
                 else
                     SpellHandler = newSpellHandler;
-
-                // Why?
-                if (SpellHandler is SummonNecromancerPet necroPetHandler)
-                    necroPetHandler.SetConAndHitsBonus();
             }
         }
 

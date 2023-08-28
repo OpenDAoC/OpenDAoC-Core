@@ -23,6 +23,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PropertyCalc;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.Language;
@@ -78,16 +79,10 @@ namespace DOL.GS
 		/// items the caster was wearing when the summon started, will be
 		/// transferred to the pet.
 		/// </summary>
-		/// <param name="npcTemplate"></param>
-		/// <param name="owner">Player who summoned this pet.</param>
-		/// <param name="summonConBonus">Item constitution bonuses of the player.</param>
-		/// <param name="summonHitsBonus">Hits bonuses of the player.</param>
-		public NecromancerPet(INpcTemplate npcTemplate, int summonConBonus, int summonHitsBonus) : base(npcTemplate)
+		public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{
-			// Transfer bonuses.
-			m_summonConBonus = summonConBonus;
-			m_summonHitsBonus = summonHitsBonus;
-
+			// Update max health on summon.
+			GetModified(eProperty.MaxHealth);
 			// Set immunities/load equipment/etc.
 			switch (Name.ToLower())
 			{
@@ -121,9 +116,6 @@ namespace DOL.GS
 
 		#region Stats
 
-		private int m_summonConBonus;
-		private int m_summonHitsBonus;
-
 		/// <summary>
 		/// Get modified bonuses for the pet; some bonuses come from the shade, some come from the pet.
 		/// </summary>
@@ -136,12 +128,26 @@ namespace DOL.GS
 			{
 				case eProperty.MaxHealth:
 				{
-					GamePlayer playerOwner = (Brain as IControlledBrain).GetLivingOwner() as GamePlayer;
-					int conBonus = (int) (3.1 * m_summonConBonus);
-					int hitsBonus = 30 * Level + m_summonHitsBonus;
+					int hitsCap = MaxHealthCalculator.GetItemBonusCap(Owner) + MaxHealthCalculator.GetItemBonusCapIncrease(Owner);
+					int conFromRa = 0;
+					int conFromItems = 0;
+					int maxHealthFromItems = 0;
+					double toughnessMod = 1.0;
+					
+					if ((Brain as IControlledBrain).GetLivingOwner() is GamePlayer playerOwner)
+					{
+						conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(playerOwner));
+						conFromItems = playerOwner.GetModifiedFromItems(eProperty.Constitution);
+						maxHealthFromItems = playerOwner.ItemBonus[(int) eProperty.MaxHealth];
+						AtlasOF_ToughnessAbility toughness = playerOwner.GetAbility<AtlasOF_ToughnessAbility>();
+
+						if (toughness != null)
+							toughnessMod = 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01;
+					}
+
+					int conBonus = (int) ((conFromItems + conFromRa) * 3.1);
+					int hitsBonus = 30 * Level + Math.Min(maxHealthFromItems, hitsCap);
 					int totalBonus = conBonus + hitsBonus;
-					AtlasOF_ToughnessAbility toughness = playerOwner?.GetAbility<AtlasOF_ToughnessAbility>();
-					double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
 					return (int) (totalBonus * toughnessMod);
 				}
 				default:
@@ -184,7 +190,7 @@ namespace DOL.GS
 			if (Name.ToUpper() == "GREATER NECROSERVANT")
 			{
 				Strength = Properties.NECRO_GREATER_PET_STR_BASE;
-				Constitution = (short) (Properties.NECRO_GREATER_PET_CON_BASE + m_summonConBonus);
+				Constitution = Properties.NECRO_GREATER_PET_CON_BASE;
 				Dexterity = Properties.NECRO_GREATER_PET_DEX_BASE;
 				Quickness = Properties.NECRO_GREATER_PET_QUI_BASE;
 				Intelligence = Properties.NECRO_GREATER_PET_INT_BASE;
@@ -201,7 +207,7 @@ namespace DOL.GS
 			else
 			{
 				Strength = Properties.NECRO_PET_STR_BASE;
-				Constitution = (short) (Properties.NECRO_PET_CON_BASE + m_summonConBonus);
+				Constitution = Properties.NECRO_PET_CON_BASE;
 				Dexterity = Properties.NECRO_PET_DEX_BASE;
 				Quickness = Properties.NECRO_PET_QUI_BASE;
 				Intelligence = Properties.NECRO_PET_INT_BASE;
