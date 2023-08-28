@@ -137,108 +137,28 @@ namespace DOL.GS
 
 			switch (property)
 			{
-				case eProperty.Resist_Body:
-				case eProperty.Resist_Cold:
-				case eProperty.Resist_Crush:
-				case eProperty.Resist_Energy:
-				case eProperty.Resist_Heat:
-				case eProperty.Resist_Matter:
-				case eProperty.Resist_Slash:
-				case eProperty.Resist_Spirit:
-				case eProperty.Resist_Thrust:
-					return base.GetModified(property);
-				case eProperty.Strength:
-				case eProperty.Dexterity:
-				case eProperty.Quickness:
-				case eProperty.Intelligence:
-					{
-						// Get item bonuses from the shade, but buff bonuses from the pet.
-						int itemBonus = livingOwner.GetModifiedFromItems(property);
-						int buffBonus = GetModifiedFromBuffs(property);
-						int debuff = DebuffCategory[(int)property];
-
-						// Base stats from the pet; add this to item bonus
-						// afterwards, as it is treated the same way for
-						// debuffing purposes.
-						int baseBonus = 0;
-						int augRaBonus = 0;
-
-						switch (property)
-						{
-							case eProperty.Strength:
-								baseBonus = Strength;
-								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugStrLevel(playerOwner) : 0);
-								break;
-							case eProperty.Dexterity:
-								baseBonus = Dexterity;
-								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugDexLevel(playerOwner) : 0);
-								break;
-							case eProperty.Quickness:
-								baseBonus = Quickness;
-								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugQuiLevel(playerOwner) : 0);
-								break;
-							case eProperty.Intelligence:
-								baseBonus = Intelligence;
-								augRaBonus = AtlasRAHelpers.GetStatEnhancerAmountForLevel(playerOwner != null ? AtlasRAHelpers.GetAugAcuityLevel(playerOwner) : 0);
-								break;
-						}
-
-						itemBonus += baseBonus + augRaBonus;
-
-						// Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for item bonuses.
-						buffBonus -= Math.Abs(debuff);
-
-						if (buffBonus < 0)
-						{
-							itemBonus += buffBonus / 2;
-							buffBonus = 0;
-							if (itemBonus < 0)
-								itemBonus = 0;
-						}
-
-						return itemBonus + buffBonus;
-					}
-				case eProperty.Constitution:
-					{
-						int baseBonus = Constitution;
-						int buffBonus = GetModifiedFromBuffs(eProperty.Constitution);
-						int debuff = DebuffCategory[(int)property];
-
-						// Apply debuffs. 100% Effectiveness for player buffs, but only 50% effectiveness for base bonuses.
-						buffBonus -= Math.Abs(debuff);
-
-						if (buffBonus < 0)
-						{
-							baseBonus += buffBonus / 2;
-							buffBonus = 0;
-							if (baseBonus < 0)
-								baseBonus = 0;
-						}
-
-						return baseBonus + buffBonus;
-					}
 				case eProperty.MaxHealth:
-					{
-						int conBonus = (int)(3.1 * m_summonConBonus);
-						int hitsBonus = 30 * Level + m_summonHitsBonus;
-						int debuff = DebuffCategory[(int)property];
+				{
+					int conBonus = (int)(3.1 * m_summonConBonus);
+					int hitsBonus = 30 * Level + m_summonHitsBonus;
+					int debuff = DebuffCategory[(int)property];
 
-						// Apply debuffs. As only base constitution affects pet health, effectiveness is a flat 50%.
-						conBonus -= Math.Abs(debuff) / 2;
+					// Apply debuffs. As only base constitution affects pet health, effectiveness is a flat 50%.
+					conBonus -= Math.Abs(debuff) / 2;
 
-						if (conBonus < 0)
-							conBonus = 0;
+					if (conBonus < 0)
+						conBonus = 0;
 						
-						int totalBonus = conBonus + hitsBonus;
+					int totalBonus = conBonus + hitsBonus;
 
-						AtlasOF_ToughnessAbility toughness = playerOwner?.GetAbility<AtlasOF_ToughnessAbility>();
-						double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
+					AtlasOF_ToughnessAbility toughness = playerOwner?.GetAbility<AtlasOF_ToughnessAbility>();
+					double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
 
-						return (int)(totalBonus * toughnessMod);
-					}
+					return (int)(totalBonus * toughnessMod);
+				}
+				default:
+					return base.GetModified(property);
 			}
-
-			return base.GetModified(property);
 		}
 
 		public override int Health

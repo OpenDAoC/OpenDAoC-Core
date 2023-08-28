@@ -26,23 +26,21 @@ namespace DOL.GS.PropertyCalc
     {
         public StatCalculator() { }
 
+        // Special cases:
+        // 1) ManaStat (base stat + acuity, players only).
+        // 2) As of patch 1.64: - Acuity - This bonus will increase your casting stat, 
+        //    whatever your casting stat happens to be. If you're a druid, you should get an increase to empathy, 
+        //    while a bard should get an increase to charisma.  http://support.darkageofcamelot.com/kb/article.php?id=540
+        // 3) Constitution lost at death, only affects players.
+
+        // DebuffCategory has 100% effectiveness against buffs, 50% effectiveness against item and base stats.
+        // SpecDebuffs (Champion's) have 200% effectiveness against buffs.
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int propertyIndex = (int) property;
-            int baseStat = living.GetBaseStat((eStat) property);
-            int itemBonus = CalcValueFromItems(living, property);
-            int buffBonus = CalcValueFromBuffs(living, property);
-            int abilityBonus = living.AbilityBonus[propertyIndex];
-            int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
-            int specDebuff = Math.Abs(living.SpecDebuffCategory[propertyIndex]);
+            int abilityBonus = 0;
             int deathConDebuff = 0;
-
-            // Special cases:
-            // 1) ManaStat (base stat + acuity, players only).
-            // 2) As of patch 1.64: - Acuity - This bonus will increase your casting stat, 
-            //    whatever your casting stat happens to be. If you're a druid, you should get an increase to empathy, 
-            //    while a bard should get an increase to charisma.  http://support.darkageofcamelot.com/kb/article.php?id=540
-            // 3) Constitution lost at death, only affects players.
+            GameLiving livingToCheck; // Used to get item and ability bonuses from the owner of a Necromancer pet.
 
             if (living is GamePlayer player)
             {
@@ -53,10 +51,19 @@ namespace DOL.GS.PropertyCalc
                 }
 
                 deathConDebuff = player.TotalConstitutionLostAtDeath;
+                livingToCheck = player;
             }
+            else if (living is NecromancerPet necromancerPet)
+                livingToCheck = necromancerPet.Owner ?? living;
+            else
+                livingToCheck = living;
 
-            // Apply debuffs. 100% effectiveness against buffs, 50% effectiveness against item and base stats.
-            // SpecDebuffs (Champion's) have 200% effectiveness against buffs.
+            int baseStat = living.GetBaseStat((eStat) property);
+            int itemBonus = CalcValueFromItems(livingToCheck, property);
+            int buffBonus = CalcValueFromBuffs(living, property);
+            int debuff = Math.Abs(living.DebuffCategory[propertyIndex]);
+            int specDebuff = Math.Abs(living.SpecDebuffCategory[propertyIndex]);
+            abilityBonus += livingToCheck.AbilityBonus[propertyIndex];
 
             int unbuffedBonus = baseStat + itemBonus;
 
