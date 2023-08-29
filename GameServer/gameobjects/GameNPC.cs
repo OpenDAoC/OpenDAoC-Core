@@ -2760,7 +2760,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual double AttackDamage(InventoryItem weapon)
 		{
-			return attackComponent.AttackDamage(weapon);
+			return attackComponent.AttackDamage(weapon, out _);
 		}
 
 		/// <summary>

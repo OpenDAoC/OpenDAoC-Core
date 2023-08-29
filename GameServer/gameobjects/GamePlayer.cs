@@ -6783,7 +6783,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            return WeaponDamageWithoutQualityAndCondition(weapon) * weapon.Quality * 0.01 * weapon.Condition / weapon.MaxCondition;
+            return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
         }
 
         public double WeaponDamageWithoutQualityAndCondition(InventoryItem weapon)
@@ -6807,6 +6807,10 @@ namespace DOL.GS
             return Dps * 0.1;
         }
 
+        public double ApplyWeaponQualityAndConditionToDamage(InventoryItem weapon, double damage)
+        {
+            return damage * weapon.Quality * 0.01 * weapon.Condition / weapon.MaxCondition;
+        }
 
         public override bool CanCastWhileAttacking()
         {

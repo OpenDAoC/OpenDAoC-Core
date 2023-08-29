@@ -308,7 +308,7 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
+		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
 		{
 			styleDamage = 0;
 			animationId = 0;
@@ -350,7 +350,6 @@ namespace DOL.GS.Styles
 					double talyGrowth = style.GrowthRate;
 					double talySpec = living.GetModifiedSpecLevel(style.Spec);
 					double talySpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
-					double talyCap = living.attackComponent.UnstyledDamageCap(weapon);
 
 					if (staticGrowth)
 					{
@@ -392,7 +391,7 @@ namespace DOL.GS.Styles
 						styleDamage = (int) (styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation))));
 					}
 					else
-						styleDamage = (int) (talyGrowth * talySpec * talySpeed / talyCap * unstyledDamage);
+						styleDamage = (int) (talyGrowth * talySpec * talySpeed / unstyledDamageCap * unstyledDamage);
 
 					if (player != null)
 						styleDamage = (int) (styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -457,21 +458,21 @@ namespace DOL.GS
             }
         }
 
-        public double AttackDamage(InventoryItem weapon, bool calculateCap = false)
+        public double AttackDamage(InventoryItem weapon, out double damageCap)
         {
             double effectiveness = 1;
+            damageCap = 0;
 
             if (owner is GamePlayer player)
             {
                 if (weapon == null)
                     return 0;
 
-                double damage = calculateCap ? player.WeaponDamageWithoutQualityAndCondition(weapon) : player.WeaponDamage(weapon);
-                damage *= weapon.SPD_ABS * (calculateCap ? 0.3 : 0.1) * CalculateSlowWeaponDamageModifier(weapon);
+                damageCap = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
 
                 if (weapon.Item_Type == Slot.RANGED)
                 {
-                    damage *= CalculateTwoHandedDamageModifier(weapon);
+                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
                     InventoryItem ammo = player.rangeAttackComponent.Ammo;
 
                     if (ammo != null)
@@ -479,15 +480,15 @@ namespace DOL.GS
                         switch ((ammo.SPD_ABS) & 0x3)
                         {
                             case 0:
-                                damage *= 0.85;
+                                damageCap *= 0.85;
                                 break; // Blunt (light) -15%.
                             case 1:
                                 break; // Bodkin (medium) 0%.
                             case 2:
-                                damage *= 1.15;
+                                damageCap *= 1.15;
                                 break; // Doesn't exist on live.
                             case 3:
-                                damage *= 1.25;
+                                damageCap *= 1.25;
                                 break; // Broadhead (X-heavy) +25%.
                         }
                     }
@@ -510,15 +511,20 @@ namespace DOL.GS
                     effectiveness += player.GetModified(eProperty.MeleeDamage) * 0.01;
 
                     if (weapon.Item_Type == Slot.TWOHAND)
-                        damage *= CalculateTwoHandedDamageModifier(weapon);
+                        damageCap *= CalculateTwoHandedDamageModifier(weapon);
                     else if (player.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
-                        damage *= CalculateLeftAxeModifier();
+                        damageCap *= CalculateLeftAxeModifier();
                 }
 
+                damageCap *= effectiveness;
+                double damage = player.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
+                damageCap *= 3;
                 return damage *= effectiveness;
             }
             else
             {
+                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
+
                 if (weapon == null ||
                     weapon.SlotPosition == Slot.RIGHTHAND ||
                     weapon.SlotPosition == Slot.LEFTHAND ||
@@ -542,9 +548,21 @@ namespace DOL.GS
                         effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
                 }
 
-                return (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1 * effectiveness;
+                damage *= effectiveness;
+
+                if (owner is GameEpicBoss epicBoss)
+                    damageCap = damage + epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                else
+                    damageCap = damage * 3;
+
+                return damage;
             }
         }
+
+        //public double AttackDamage(InventoryItem weapon)
+        //{
+        //    return AttackDamage(weapon, out _);
+        //}
 
         public void RequestStartAttack(GameObject attackTarget)
         {
@@ -1088,20 +1106,21 @@ namespace DOL.GS
         /// attacktimer and should not be called manually
         /// </summary>
         /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness,
-            int interruptDuration, bool dualWield, bool ignoreLOS = false)
+        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS = false)
         {
-            AttackData ad = new AttackData();
-            ad.Attacker = owner;
-            ad.Target = target as GameLiving;
-            ad.Damage = 0;
-            ad.CriticalDamage = 0;
-            ad.Style = style;
-            ad.WeaponSpeed = AttackSpeed(weapon) / 100;
-            ad.DamageType = AttackDamageType(weapon);
-            ad.ArmorHitLocation = eArmorSlot.NOTSET;
-            ad.Weapon = weapon;
-            ad.IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND;
+            AttackData ad = new()
+            {
+                Attacker = owner,
+                Target = target as GameLiving,
+                Damage = 0,
+                CriticalDamage = 0,
+                Style = style,
+                WeaponSpeed = AttackSpeed(weapon) / 100,
+                DamageType = AttackDamageType(weapon),
+                ArmorHitLocation = eArmorSlot.NOTSET,
+                Weapon = weapon,
+                IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND
+            };
 
             // Asp style range add.
             IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == eSpellType.StyleRange);
@@ -1227,7 +1246,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    double damage = AttackDamage(weapon) * effectiveness;
+                    double damage = AttackDamage(weapon, out double damageCap) * effectiveness;
                     InventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1256,25 +1275,17 @@ namespace DOL.GS
                     }
 
                     double specModifier = CalculateSpecModifier(ad.Target, weaponForSpecModifier);
-                    double modifiedWeaponSkill = CalculateModifiedWeaponSkill(ad.Target, weapon, specModifier);
-                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation);
-                    double damageMod = Math.Min(3.0, modifiedWeaponSkill / armorMod);
+                    double weaponSkill = CalculateWeaponSkill(ad.Target, weapon, specModifier, out double baseWeaponSkill);
+                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double bonusArmorFactor, out double armorFactor, out double absorb);
+                    double damageMod = weaponSkill / armorMod;
+
+                    if (action.RangedAttackType == eRangedAttackType.Critical)
+                        damageCap *= 2; // This may be incorrect. Critical shot doesn't double damage on >yellow targets.
 
                     if (playerOwner != null)
                     {
-                        damage *= damageMod;
-
                         if (playerOwner.UseDetailedCombatLog)
-                        {
-                            playerOwner.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}",
-                                eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                        }
-
-                        if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                        {
-                            attackee.Out.SendMessage($"Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd,
-                                eChatLoc.CL_SystemWindow);
-                        }
+                            PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, damageCap);
 
                         // Badge Of Valor Calculation 1+ absorb or 1- absorb
                         // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
@@ -1285,12 +1296,7 @@ namespace DOL.GS
                     else
                     {
                         if (owner is GameEpicBoss boss)
-                            damage *= damageMod + boss.Strength / 200;
-                        else
-                            damage *= damageMod;
-
-                        if (ad.Target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                            attackee.Out.SendMessage($"NPC Damage Modifier: {(int) (damageMod * 1000)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            damageMod += boss.Strength / 200;
 
                         // Badge Of Valor Calculation 1+ absorb or 1- absorb
                         // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
@@ -1298,6 +1304,9 @@ namespace DOL.GS
                         // else
                         //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     }
+
+                    if (target is GamePlayer targetPlayer && targetPlayer.UseDetailedCombatLog)
+                        PrintDetailedCombatLog(targetPlayer, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, damageCap);
 
                     if (ad.IsOffHand)
                         damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
@@ -1311,18 +1320,13 @@ namespace DOL.GS
                             damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
                     }
 
-                    double unstyledDamageCap = UnstyledDamageCap(weapon);
-
-                    if (action.RangedAttackType == eRangedAttackType.Critical)
-                        unstyledDamageCap *= 2; // This may be incorrect. Critical shot doesn't double damage on >yellow targets.
-
+                    damage *= damageMod;
                     double preResistDamage = damage;
                     double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
                     double preConversionDamage = preResistDamage * primarySecondaryResistMod;
                     double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
-                    damage = Math.Min((int) (preConversionDamage * conversionMod), (int) unstyledDamageCap);
 
-                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, ad.ArmorHitLocation, ad.StyleEffects, out int styleDamage, out int animationId))
+                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, damageCap, ad.ArmorHitLocation, ad.StyleEffects, out int styleDamage, out int animationId))
                     {
                         double preResistStyleDamage = styleDamage;
                         double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
@@ -1336,9 +1340,17 @@ namespace DOL.GS
                         ad.AttackResult = eAttackResult.HitStyle;
                     }
 
-                    ApplyTargetConversionRegen(ad.Target, (int) (preConversionDamage - damage));
+                    damage = preConversionDamage * conversionMod;
                     ad.Modifier = (int) (damage - preResistDamage);
-                    ad.Damage = (int) damage;
+                    damage = (int) Math.Min(damage, damageCap);
+
+                    if (conversionMod < 1)
+                    {
+                        double conversionAmount = conversionMod > 0 ? damage / conversionMod - damage : damage;
+                        ApplyTargetConversionRegen(ad.Target, (int) conversionAmount);
+                    }
+
+                    ad.Damage = (int) Math.Min(damage, damageCap);
                     ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
                     break;
                 }
@@ -1352,6 +1364,15 @@ namespace DOL.GS
                         playerOwner.Endurance -= StyleProcessor.CalculateEnduranceCost(playerOwner, ad.Style, weapon.SPD_ABS) / 2;
 
                     break;
+                }
+
+                static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, double specModifier, double weaponSkill, double damageMod, double damageCap)
+                {
+                    StringBuilder stringBuilder = new();
+                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.00} | SpecMod: {specModifier:0.00} | WS: {weaponSkill:0.00}\n");
+                    stringBuilder.Append($"AF: {armorFactor:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}\n");
+                    stringBuilder.Append($"DamageMod: {damageMod:0.00} | DamageCap: {damageCap:0.00}");
+                    player.Out.SendMessage(stringBuilder.ToString(), eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
             }
 
@@ -1700,42 +1721,23 @@ namespace DOL.GS
             return ad;
         }
 
-        public double CalculateModifiedWeaponSkill(GameLiving target, InventoryItem weapon, double specModifier)
+        public double CalculateWeaponSkill(GameLiving target, InventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
-            return CalculateModifiedWeaponSkill(target, 1 + owner.GetWeaponSkill(weapon), 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
+            baseWeaponSkill = 1 + owner.GetWeaponSkill(weapon);
+            return CalculateWeaponSkill(target, baseWeaponSkill, 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
         }
 
-        public double CalculateModifiedWeaponSkill(GameLiving target, double weaponSkill, double relicBonus, double specModifier)
+        public double CalculateWeaponSkill(GameLiving target, double baseWeaponSkill, double relicBonus, double specModifier)
         {
-            double modifiedWeaponSkill;
-
             if (owner is GamePlayer)
-            {
-                modifiedWeaponSkill = weaponSkill * relicBonus * specModifier;
+                return baseWeaponSkill * relicBonus * specModifier;
 
-                if (owner is GamePlayer weaponskiller && weaponskiller.UseDetailedCombatLog)
-                {
-                    weaponskiller.Out.SendMessage(
-                        $"Base WS: {weaponSkill:0.00} | Calc WS: {modifiedWeaponSkill:0.00} | SpecMod: {specModifier:0.00}",
-                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
+            baseWeaponSkill += target.Level * 65 / 50.0;
 
-                if (target is GamePlayer attackee && attackee.UseDetailedCombatLog)
-                {
-                    attackee.Out.SendMessage(
-                        $"Base WS: {weaponSkill:0.00} | Calc WS: {modifiedWeaponSkill:0.00} | SpecMod: {specModifier:0.00}",
-                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
-            }
-            else
-            {
-                modifiedWeaponSkill = weaponSkill + target.Level * 65 / 50.0;
+            if (owner.Level < 10)
+                baseWeaponSkill *= 1 - 0.05 * (10 - owner.Level);
 
-                if (owner.Level < 10)
-                    modifiedWeaponSkill *= 1 - 0.05 * (10 - owner.Level);
-            }
-
-            return modifiedWeaponSkill;
+            return baseWeaponSkill;
         }
 
         public double CalculateSpecModifier(GameLiving target, InventoryItem weapon)
@@ -1760,67 +1762,50 @@ namespace DOL.GS
             }
             else
             {
-                int minimun;
+                int minimum;
                 int maximum;
 
                 if (owner is GameEpicBoss)
                 {
-                    minimun = 95;
+                    minimum = 95;
                     maximum = 105;
                 }
                 else
                 {
-                    minimun = 75;
+                    minimum = 75;
                     maximum = 125;
                 }
 
-                specModifier = (Util.Random(maximum - minimun) + minimun) * 0.01;
+                specModifier = (Util.Random(maximum - minimum) + minimum) * 0.01;
             }
 
             return specModifier;
         }
 
+        private const int ARMOR_FACTOR_LEVEL_SCALAR = 25;
+
         public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot)
         {
-            double armorMod;
-            int AFLevelScalar = 25;
+            return CalculateTargetArmor(target, armorSlot, out _, out _, out _);
+        }
 
+        public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double bonusArmorFactor, out double armorFactor, out double absorb)
+        {
             if (owner is GamePlayer)
-            {
-                double baseAf = target is GamePlayer ? Math.Max(1, target.Level * AFLevelScalar / 50.0) : 2;
-                double absorb = target.GetArmorAbsorb(armorSlot);
-                double Af = baseAf + target.GetArmorAF(armorSlot);
-                armorMod = absorb >= 1 ? double.MaxValue : Af / (1 - absorb);
-
-                if (owner is GamePlayer playerAttacker && playerAttacker.UseDetailedCombatLog)
-                {
-                    playerAttacker.Out.SendMessage(
-                        $"AF: {Af:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}",
-                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
-
-                if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-                {
-                    playerTarget.Out.SendMessage(
-                        $"AF: {Af:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}",
-                        eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                }
-
-                return armorMod;
-            }
+                bonusArmorFactor = target is GamePlayer ? Math.Max(1, target.Level * ARMOR_FACTOR_LEVEL_SCALAR / 50.0) : 2;
             else
             {
-                if (target.Level < 21)
-                    AFLevelScalar += 20 - target.Level;
+                int armorFactorLevelScalar = ARMOR_FACTOR_LEVEL_SCALAR;
 
-                double baseAF = target.Level * AFLevelScalar / 50.0;
-                armorMod = (baseAF + target.GetArmorAF(armorSlot)) / (1 - target.GetArmorAbsorb(armorSlot));
+                if (target.Level < 21)
+                    armorFactorLevelScalar += 20 - target.Level;
+
+                bonusArmorFactor = target.Level * armorFactorLevelScalar / 50.0;
             }
 
-            if (armorMod <= 0)
-                armorMod = 0.1;
-
-            return armorMod;
+            absorb = target.GetArmorAbsorb(armorSlot);
+            armorFactor = bonusArmorFactor + target.GetArmorAF(armorSlot);
+            return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
         }
 
         public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, InventoryItem armor)
@@ -2871,24 +2856,6 @@ namespace DOL.GS
         public double CalculateTwoHandedDamageModifier(InventoryItem weapon)
         {
             return 1.1 + (owner.WeaponSpecLevel(weapon) - 1) * 0.005;
-        }
-
-        /// <summary>
-        /// Max. Damage possible without style
-        /// </summary>
-        /// <param name="weapon">attack weapon</param>
-        public double UnstyledDamageCap(InventoryItem weapon)
-        {
-            if (owner is GameEpicBoss epicBoss) // Damage cap for epic encounters if they use melee weapons.
-                return AttackDamage(weapon) * ((double) epicBoss.Empathy / 100) * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-
-            if (owner is not GamePlayer)
-                return AttackDamage(weapon) * (2.82 + 0.00009 * AttackSpeed(weapon)); // Odd.
-
-            if (weapon == null)
-                return 0;
-
-            return AttackDamage(weapon, true);
         }
 
         /// <summary>

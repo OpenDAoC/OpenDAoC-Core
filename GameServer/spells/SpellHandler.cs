@@ -3535,51 +3535,44 @@ namespace DOL.GS.Spells
 					finalDamage = (int) (finalDamage * Properties.PVE_SPELL_DAMAGE);
 			}
 
-			int critDamage = 0;
-
-			if (finalDamage < 0)
-				finalDamage = 0;
-			else
-				finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
-
+			// Calculate resistances and conversion.
+			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target, finalDamage);
 			int preConversionDamage = finalDamage;
 			finalDamage = (int) (finalDamage * conversionMod);
-			AttackComponent.ApplyTargetConversionRegen(ad.Target, preConversionDamage - finalDamage);
 			ad.Modifier += finalDamage - preConversionDamage;
 
-			// Apply damage cap (this can be raised by effectiveness).
+			// Apply damage cap.
 			if (finalDamage > DamageCap(effectiveness))
-				finalDamage = (int)DamageCap(effectiveness);
+				finalDamage = (int) DamageCap(effectiveness);
+
+			// Apply conversion.
+			if (conversionMod < 1)
+			{
+				double conversionAmount = conversionMod > 0 ? finalDamage / conversionMod - finalDamage : finalDamage;
+				AttackComponent.ApplyTargetConversionRegen(ad.Target, (int) conversionAmount);
+			}
 
 			if (finalDamage < 0)
 				finalDamage = 0;
 
-			int criticalChance;
-
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
-			if (this is not DoTSpellHandler)
-				criticalChance = m_caster.SpellCriticalChance;
-			else
-			{
-				criticalChance = 0;
-				critDamage = 0;
-			}
-
+			int criticalChance = this is not DoTSpellHandler ? m_caster.SpellCriticalChance : 0;
+			int criticalDamage = 0;
 			int randNum = Util.CryptoNextInt(1, 100);
-			int critCap = Math.Min(50, criticalChance);
+			int criticalCap = Math.Min(50, criticalChance);
 
-			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
-				spellCaster.Out.SendMessage($"spell crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && criticalCap > 0)
+				spellCaster.Out.SendMessage($"spell crit chance: {criticalCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-			if (critCap > randNum && finalDamage >= 1)
+			if (criticalCap > randNum && finalDamage > 0)
 			{
-				int critmax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
-				critDamage = Util.Random(finalDamage / 10, critmax);
+				int crititalMax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
+				criticalDamage = Util.Random(finalDamage / 10, crititalMax);
 			}
 
 			ad.Damage = finalDamage;
-			ad.CriticalDamage = critDamage;
+			ad.CriticalDamage = criticalDamage;
 
 			// Attacked living may modify the attack data. Primarily used for keep doors and components.
 			ad.Target.ModifyAttack(ad);
