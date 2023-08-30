@@ -112,6 +112,19 @@ namespace DOL.GS
 
             if (spellEffect != null)
             {
+                if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
+                    || spellEffect is SavageBuffECSGameEffect)
+                {
+                    //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
+                    //{
+                    //    //Console.WriteLine("Applying EnduranceRegenBuff");
+                    //    var handler = spellHandler as EnduranceRegenSpellHandler;
+                    //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spell.Value, 1, false);
+                    //}
+                    e.OnStartEffect();
+                    e.IsBuffActive = true;
+                }
+
                 if (spell.IsPulsing)
                 {
                     // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
@@ -128,22 +141,8 @@ namespace DOL.GS
                 }
                 else if (spellEffect is not ECSImmunityEffect)
                     SendSpellAnimation(spellEffect);
-
                 if (e is StatDebuffECSEffect && spell.CastTime == 0)
                     StatDebuffECSEffect.TryDebuffInterrupt(spell, e.OwnerPlayer, caster);
-
-                if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
-                    || spellEffect is SavageBuffECSGameEffect)
-                {
-                    //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                    //{
-                    //    //Console.WriteLine("Applying EnduranceRegenBuff");
-                    //    var handler = spellHandler as EnduranceRegenSpellHandler;
-                    //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spell.Value, 1, false);
-                    //}
-                    e.OnStartEffect();
-                    e.IsBuffActive = true;
-                }
             }
             else
                 e.OnStartEffect();
