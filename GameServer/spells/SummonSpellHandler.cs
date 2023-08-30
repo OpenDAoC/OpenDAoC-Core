@@ -243,7 +243,7 @@ namespace DOL.GS.Spells
 
 			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
 			
-			if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
+			if (pet.effectListComponent._effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
 				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 

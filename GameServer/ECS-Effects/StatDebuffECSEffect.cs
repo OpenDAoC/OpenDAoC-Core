@@ -19,7 +19,7 @@ namespace DOL.GS
                 TryDebuffInterrupt(SpellHandler.Spell, player, SpellHandler.Caster);
 
             //if our debuff is already on the target, do not reapply effect
-            if (Owner.effectListComponent.Effects.ContainsKey(EffectType))
+            if (Owner.effectListComponent._effects.ContainsKey(EffectType))
             {
                 List<ECSGameSpellEffect> effects = Owner.effectListComponent.GetSpellEffects(EffectType);
                 foreach (var e in effects)

@@ -172,7 +172,7 @@ namespace DOL.GS.PacketHandler
 					lock (pet.effectListComponent.EffectsLock)
 					{
 						ArrayList icons = new ArrayList();
-						foreach (var effects in pet.effectListComponent.Effects.Values)
+						foreach (var effects in pet.effectListComponent._effects.Values)
 						{
 							foreach (ECSGameEffect effect in effects)
 							{

@@ -1296,7 +1296,7 @@ namespace DOL.AI.Brain
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
             if (spell.SpellType is eSpellType.OffensiveProc or eSpellType.DefensiveProc)
             {
-                if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<ECSGameEffect> existingEffects))
+                if (target.effectListComponent._effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<ECSGameEffect> existingEffects))
                 {
                     if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null)
                         return true;
