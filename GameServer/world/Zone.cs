@@ -483,9 +483,10 @@ namespace DOL.GS
                 {
                     Zone newZone = ZoneRegion.GetZone(gameObject.X, gameObject.Y);
 
-                    if (newZone == null && log.IsErrorEnabled)
+                    if (newZone == null)
                     {
-                        log.Error($"Tried to relocate object to a non-existent zone (Object: {gameObject})");
+                        if (log.IsErrorEnabled)
+                            log.Error($"Tried to relocate object to a non-existent zone (Object: {gameObject})");
 
                         if (gameObject is GamePlayer player)
                             player.MoveToBind();
