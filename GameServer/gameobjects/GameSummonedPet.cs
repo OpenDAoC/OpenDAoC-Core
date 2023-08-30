@@ -124,28 +124,6 @@ namespace DOL.GS
 			return true;
 		}
 
-		#region Shared Melee & Spells
-		private double m_effectiveness = 1;
-		/// <summary>
-		/// Multiplier for melee and magic.
-		/// </summary>
-		public override double Effectiveness
-		{
-			get 
-			{
-				GameLiving gl = (Brain as IControlledBrain).GetLivingOwner();
-				if (gl != null)
-					return m_effectiveness;//gl.Effectiveness;
-
-				return 1.0;
-			}
-			set
-			{
-				m_effectiveness = value;
-			}
-		}
-		#endregion
-
 		#region Spells
 
 		/// <summary>
