@@ -112,7 +112,7 @@ namespace DOL.GS.Spells
             // If resist chance > 0, apply effect
             else
             {
-                ApplyEffectOnTarget(target, 1);
+                ApplyEffectOnTarget(target);
             }
             return true;
         }
@@ -396,12 +396,7 @@ namespace DOL.GS.Spells
             return true;
         }
 
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GamePlayer playerCaster = Caster as GamePlayer;
 
@@ -481,7 +476,7 @@ namespace DOL.GS.Spells
                 }
             }
 
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         /// <summary>

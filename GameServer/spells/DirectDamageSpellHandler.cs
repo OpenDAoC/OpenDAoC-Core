@@ -45,10 +45,6 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		private const string LOSEFFECTIVENESS = "LOS Effectivness";
-
-
-
 		/// <summary>
 		/// Calculates the base 100% spell damage which is then modified by damage variance factors
 		/// </summary>
@@ -88,13 +84,7 @@ namespace DOL.GS.Spells
 			return base.DamageCap(effectiveness);
 		}
 
-
-		/// <summary>
-		/// execute direct effect
-		/// </summary>
-		/// <param name="target">target that gets the damage</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null)
 				return;
@@ -120,17 +110,16 @@ namespace DOL.GS.Spells
 				}
 				if (checkPlayer != null)
 				{
-                    checkPlayer.TempProperties.SetProperty(LOSEFFECTIVENESS + target.ObjectID, effectiveness);
 					checkPlayer.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(DealDamageCheckLOS));
 				}
 				else
 				{
-					DealDamage(target, effectiveness);
+					DealDamage(target);
 				}
 			}
 			else
 			{
-				DealDamage(target, effectiveness);
+				DealDamage(target);
 			}
 		}
 
@@ -146,9 +135,7 @@ namespace DOL.GS.Spells
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
 					if (target != null)
 					{
-                        double effectiveness = player.TempProperties.GetProperty<double>(LOSEFFECTIVENESS + target.ObjectID, 1.0);
-						DealDamage(target, effectiveness);
-                        player.TempProperties.RemoveProperty(LOSEFFECTIVENESS + target.ObjectID);
+						DealDamage(target);
 						// Due to LOS check delay the actual cast happens after FinishSpellCast does a notify, so we notify again
 						GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 					}
@@ -171,12 +158,12 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		protected virtual void DealDamage(GameLiving target, double effectiveness)
+		protected virtual void DealDamage(GameLiving target)
 		{
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);

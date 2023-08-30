@@ -16,11 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.AI.Brain;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -96,9 +96,9 @@ namespace DOL.GS.Spells
 		public override eProperty Property1 { get { return eProperty.FumbleChance; } }
 		public override eProperty Property2 { get { return eProperty.SpellFumbleChance; } }
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 		
@@ -108,7 +108,7 @@ namespace DOL.GS.Spells
 
 namespace DOL.GS
 {
-	public class ZoarkatPet : GameSummonedPet
+    public class ZoarkatPet : GameSummonedPet
 	{
 		public override int MaxHealth
         {
@@ -118,4 +118,3 @@ namespace DOL.GS
 		public ZoarkatPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
 	}
 }
-

@@ -1,12 +1,8 @@
-using System;
-using System.Collections;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-
 	[SpellHandlerAttribute("HereticDamageOverTime")]
 	public class HereticDoTSpellHandler : HereticPiercingMagic
 	{
@@ -34,9 +30,9 @@ namespace DOL.GS.Spells
 		}
 
 
-		public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
-			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = base.CalculateDamageToTarget(target);
 			ad.CriticalDamage = 0;
 			return ad;
 		}
@@ -66,9 +62,9 @@ namespace DOL.GS.Spells
 			if (min < 0) min = 0;
 		}
 		
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
@@ -100,7 +96,7 @@ namespace DOL.GS.Spells
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 			// {0} is surrounded by an acidic cloud!
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-			OnDirectEffect(effect.Owner, effect.Effectiveness);
+			OnDirectEffect(effect.Owner);
 		}
 
 
@@ -117,14 +113,14 @@ namespace DOL.GS.Spells
 		}
 
 		
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
 
 			// no interrupts on DoT direct effect
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			SendDamageMessages(ad);
 			DamageTarget(ad);
 		}

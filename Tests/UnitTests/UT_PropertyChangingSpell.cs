@@ -23,7 +23,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewBasecSpellLine();
             var resiPierceBuff = new ResiPierceBuff(caster, spell, spellLine);
 
-            resiPierceBuff.ApplyEffectOnTarget(target, 1);
+            resiPierceBuff.ApplyEffectOnTarget(target);
 
             var actual = target.BaseBuffBonusCategory[eProperty.ResistPierce];
             Assert.AreEqual(5, actual);
@@ -41,7 +41,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewBasecSpellLine();
             var constitutionBuff = new ConstitutionBuff(caster, spell, spellLine);
 
-            constitutionBuff.ApplyEffectOnTarget(target, 1);
+            constitutionBuff.ApplyEffectOnTarget(target);
 
             var actual = target.GetModified(eProperty.Constitution);
             Assert.AreEqual(51, actual);

@@ -1,11 +1,6 @@
-using System;
-using System.Text;
-using System.Collections;
+using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Events;
 
 namespace DOL.GS.Spells
 {
@@ -17,9 +12,9 @@ namespace DOL.GS.Spells
     {
         public override eProperty Property1 { get { return eProperty.CastingSpeed; } }
 		
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
@@ -53,7 +48,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
@@ -132,12 +127,12 @@ namespace DOL.GS.Spells
 			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (mezz != null)
                 mezz.Cancel(false);
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -157,7 +152,7 @@ namespace DOL.GS.Spells
     {
         public override eProperty Property1 { get { return eProperty.FatigueConsumption; } }	
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GameSpellEffect effect2 = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (effect2 != null)
@@ -165,7 +160,7 @@ namespace DOL.GS.Spells
                 effect2.Cancel(false);
                 return;
             }
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         public override void OnEffectStart(GameSpellEffect effect)
@@ -233,7 +228,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.StunImmunity))
             {
@@ -241,7 +236,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         public override void OnEffectStart(GameSpellEffect effect)

@@ -30,12 +30,7 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class AbstractCCSpellHandler : ImmunityEffectSpellHandler
     {
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.CCImmunity))
             {
@@ -49,7 +44,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         /// <summary>
@@ -152,7 +147,7 @@ namespace DOL.GS.Spells
             return resistChance;
         }
 
-        public AbstractCCSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+        public AbstractCCSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
     /// <summary>
@@ -173,21 +168,6 @@ namespace DOL.GS.Spells
         {
             SendEffectAnimation(effect.Owner, 0, false, 1);
             base.OnEffectPulse(effect);
-        }
-
-        /// <summary>
-        /// Variance is max 50% for players, none for mobs
-        /// </summary>
-        /// <param name="target">target to calculate variance for</param>
-        /// <param name="distance">distance from the target the spell was cast on</param>
-        /// <param name="radius">radius of the spell</param>
-        /// <returns>amount to subtract from effectiveness</returns>
-        protected override double CalculateAreaVariance(GameLiving target, int distance, int radius)
-        {
-            if (target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain is IControlledBrain))
-                return (double) distance / radius / 2.0;
-
-            return 0;
         }
 
         //If mez resisted, just rupt, dont demez
@@ -238,7 +218,7 @@ namespace DOL.GS.Spells
             target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             // Flute Mez (pulse>0)
             if (Spell.Pulse > 0)
@@ -318,7 +298,7 @@ namespace DOL.GS.Spells
                 return;
             }*/
 
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         /// <summary>
@@ -373,21 +353,6 @@ namespace DOL.GS.Spells
         }
 
         /// <summary>
-        /// Variance is max 50% for players, none for mobs
-        /// </summary>
-        /// <param name="target">target to calculate variance for</param>
-        /// <param name="distance">distance from the target the spell was cast on</param>
-        /// <param name="radius">radius of the spell</param>
-        /// <returns>amount to subtract from effectiveness</returns>
-        protected override double CalculateAreaVariance(GameLiving target, int distance, int radius)
-        {
-            if (target is GamePlayer || (target is GameNPC && (target as GameNPC).Brain is IControlledBrain))
-                return (double) distance / radius / 2.0;
-
-            return 0;
-        }
-
-        /// <summary>
         /// When an applied effect expires.
         /// Duration spells only.
         /// </summary>
@@ -409,7 +374,7 @@ namespace DOL.GS.Spells
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if ((target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
             {
@@ -434,7 +399,7 @@ namespace DOL.GS.Spells
                 }*/
             }
 
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
         
         /// <summary>

@@ -1,15 +1,5 @@
-//Eden - Darwin
-
-using System;
-using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using log4net;
-using System.Collections;
-using DOL.Database;
 using DOL.GS.Effects;
-using DOL.GS.Spells;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -26,10 +16,10 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 		public override double CalculateDamageBase(GameLiving target) { return Spell.Damage; }
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			GamePlayer player=target as GamePlayer;
-			base.ApplyEffectOnTarget(Caster,effectiveness);
+			base.ApplyEffectOnTarget(Caster);
 			Caster.attackComponent.StopAttack();
             Caster.DisarmedTime = Caster.CurrentRegion.Time + Spell.Duration;
 			foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
@@ -37,7 +27,7 @@ namespace DOL.GS.Spells
 			if(Spell.ResurrectMana>0) foreach (GamePlayer visPlayer in target.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
 				visPlayer.Out.SendSpellEffectAnimation(Caster, target, (ushort)Spell.ResurrectMana, 0, false, 0x01);
 			
-			if((Spell.Duration>0&&Spell.Target!="Area")||Spell.Concentration>0) OnDirectEffect(target,effectiveness);
+			if((Spell.Duration>0&&Spell.Target!="Area")||Spell.Concentration>0) OnDirectEffect(target);
 		}
 		public override int OnEffectExpires(GameSpellEffect effect,bool noMessages)
 		{

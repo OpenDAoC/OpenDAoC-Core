@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
@@ -72,15 +73,15 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			int specLevel = 0;
 			if (Caster is GamePlayer)
 				specLevel = ((GamePlayer)Caster).GetModifiedSpecLevel(m_spellLine.Spec);
-			effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
-			effectiveness = Math.Max(0.75, effectiveness);
-			effectiveness = Math.Min(1.25, effectiveness);
-			base.ApplyEffectOnTarget(target, effectiveness);
+			Effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
+			Effectiveness = Math.Max(0.75, Effectiveness);
+			Effectiveness = Math.Min(1.25, Effectiveness);
+			base.ApplyEffectOnTarget(target);
         }
 
 		public override IList<string> DelveInfo 
@@ -173,15 +174,15 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			int specLevel = 0;
 			if (Caster is GamePlayer)
 				specLevel = ((GamePlayer)Caster).GetModifiedSpecLevel(m_spellLine.Spec);
-			effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
-			effectiveness = Math.Max(0.75, effectiveness);
-			effectiveness = Math.Min(1.25, effectiveness);
-			base.ApplyEffectOnTarget(target, effectiveness);
+			Effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
+			Effectiveness = Math.Max(0.75, Effectiveness);
+			Effectiveness = Math.Min(1.25, Effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		public override IList<string> DelveInfo 

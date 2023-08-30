@@ -1,10 +1,4 @@
-﻿/*
- *
- * Atlas -  Summon Siege Ram
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
@@ -76,9 +70,9 @@ namespace DOL.GS.Spells
         }
 
 
-	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+	    public override void ApplyEffectOnTarget(GameLiving target)
 	    {
-		    base.ApplyEffectOnTarget(target, effectiveness);
+		    base.ApplyEffectOnTarget(target);
 
 		    if (Caster is not GamePlayer player) return;
 

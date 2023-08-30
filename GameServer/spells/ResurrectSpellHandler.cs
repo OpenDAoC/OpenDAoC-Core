@@ -42,14 +42,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			if(target == null || target.IsAlive) return;
 
 			SendEffectAnimation(target, 0, false, 1);

@@ -24,10 +24,9 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
-            var effectiveness = 1;
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
-            damageFocus.OnDirectEffect(target, effectiveness);
+            damageFocus.OnDirectEffect(target);
 
             var actual = source.LastDamageDealt;
             var expected = 100;
@@ -44,12 +43,11 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
-            var effectiveness = 1;
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
             damageFocus.OnSpellPulse(null);
-            damageFocus.OnDirectEffect(target, effectiveness);
+            damageFocus.OnDirectEffect(target);
 
             var actual = source.LastDamageDealt;
             var expected = 150;
@@ -66,11 +64,10 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
-            var effectiveness = 1;
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
-            damageFocus.OnDirectEffect(target, effectiveness);
+            damageFocus.OnDirectEffect(target);
 
             var actual = source.LastDamageDealt;
             var expected = 150;
@@ -88,12 +85,11 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
-            var effectiveness = 1;
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
             damageFocus.OnSpellPulse(null);
-            damageFocus.OnDirectEffect(target, effectiveness);
+            damageFocus.OnDirectEffect(target);
 
             var actual = source.LastDamageDealt;
             var expected = 170;

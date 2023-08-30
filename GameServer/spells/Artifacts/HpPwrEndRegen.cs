@@ -16,11 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+
 using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -40,11 +38,6 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
-		{
-			base.ApplyEffectOnTarget(target, effectiveness);
-		}
-
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
 		{
 			return new GameSpellEffect(this, Spell.Duration, Spell.Frequency, effectiveness);
@@ -60,10 +53,10 @@ namespace DOL.GS.Spells
 		public override void OnEffectPulse(GameSpellEffect effect)
 		{
 			base.OnEffectPulse(effect);
-			OnDirectEffect(effect.Owner, effect.Effectiveness);
+			OnDirectEffect(effect.Owner);
 		}
 
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target.ObjectState != GameObject.eObjectState.Active) return;
 			if (target.IsAlive == false) return;
@@ -104,7 +97,6 @@ namespace DOL.GS.Spells
 			}
 			return 0;
 		}
-
 
 		// constructor
         public HpPwrEndRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

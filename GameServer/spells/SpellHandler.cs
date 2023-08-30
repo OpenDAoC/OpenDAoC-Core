@@ -66,6 +66,8 @@ namespace DOL.GS.Spells
 		/// The caster of the spell
 		/// </summary>
 		protected GameLiving m_caster;
+		public double Effectiveness { get; protected set; } = 1;
+		protected double _distanceFallOff;
 		/// <summary>
 		/// Has the spell been interrupted
 		/// </summary>
@@ -2258,7 +2260,7 @@ namespace DOL.GS.Spells
 			else
 				targets = SelectTargets(Target);
 
-			double effectiveness = Caster.Effectiveness;
+			Effectiveness = Caster.Effectiveness;
 
 			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
 				gpet.ScalePetSpell(Spell);
@@ -2269,7 +2271,7 @@ namespace DOL.GS.Spells
 // 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
 // 				if (ra != null && ra.Level > 0)
 // 				{
-// 					effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 					Effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
 // 				}
 // 			}
 
@@ -2281,7 +2283,7 @@ namespace DOL.GS.Spells
 // 					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
 // 					if (necroRA != null && necroRA.Level > 0)
 // 					{
-// 						effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
+// 						Effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
 // 					}
 // 				}
 // 			}
@@ -2293,36 +2295,28 @@ namespace DOL.GS.Spells
 				if (uninterruptibleSpell != null && uninterruptibleSpell.Value > 0)
 				{
 					double nerf = uninterruptibleSpell.Value;
-					effectiveness *= (1 - (nerf * 0.01));
+					Effectiveness *= (1 - (nerf * 0.01));
 					Caster.TempProperties.RemoveProperty(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
 				}
 			}
 
-			foreach (GameLiving t in targets)
+			foreach (GameLiving targetInList in targets)
 			{
-				if (CheckSpellResist(t))
+				if (CheckSpellResist(targetInList))
 					continue;
 
 				if (Spell.Radius == 0 || HasPositiveEffect)
-					ApplyEffectOnTarget(t, effectiveness);
-				else if (Spell.Target.ToLower() == "area")
-				{
-					int dist = t.GetDistanceTo(Caster.GroundTarget);
-					if (dist >= 0)
-						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Radius));
-				}
-				else if (Spell.Target.ToLower() == "cone")
-				{
-					int dist = t.GetDistanceTo(Caster);
-					// Cone spells use the range for their variance.
-					if (dist >= 0)
-						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Range));
-				}
+					ApplyEffectOnTarget(targetInList);
 				else
 				{
-					int dist = t.GetDistanceTo(Target);
-					if (dist >= 0)
-						ApplyEffectOnTarget(t, effectiveness - CalculateAreaVariance(t, dist, Spell.Radius));
+					if (Spell.Target.ToLower() == "area")
+						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster.GroundTarget), Spell.Radius);
+					else if (Spell.Target.ToLower() == "cone")
+						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.Range);
+					else
+						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Target), Spell.Radius);
+
+					ApplyEffectOnTarget(targetInList);
 				}
 
 				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
@@ -2330,21 +2324,18 @@ namespace DOL.GS.Spells
 			}
 
 			if (Spell.Target.ToLower() == "ground")
-				ApplyEffectOnTarget(null, 1);
+			{
+				Effectiveness = 1;
+				ApplyEffectOnTarget(null);
+			}
 
 			CastSubSpells(Target);
 			return true;
 		}
 
-		/// <summary>
-		/// Calculate the variance due to the radius of the spell
-		/// </summary>
-		/// <param name="distance">The distance away from center of the spell</param>
-		/// <param name="radius">The radius of the spell</param>
-		/// <returns></returns>
-		protected virtual double CalculateAreaVariance(GameLiving target, int distance, int radius)
+		protected virtual double CalculateDistanceFallOff(int distance, int radius)
 		{
-			return ((double)distance / (double)radius);
+			return distance / (double) radius;
 		}
 
 		/// <summary>
@@ -2390,12 +2381,7 @@ namespace DOL.GS.Spells
 			return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 		}
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public virtual void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public virtual void ApplyEffectOnTarget(GameLiving target)
 		{
 			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent))
 			{
@@ -2434,9 +2420,7 @@ namespace DOL.GS.Spells
 				if (!isAllowed)
 				{
 					if (!isSilent)
-					{
-						MessageToCaster(String.Format("Your spell has no effect on the {0}!", target.Name), eChatType.CT_SpellResisted);
-					}
+						MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
 
 					return;
 				}
@@ -2449,25 +2433,19 @@ namespace DOL.GS.Spells
 				m_spellLine.KeyName == Specs.Savagery || 
 				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
 				m_spellLine.KeyName == "OffensiveProc"))
-				effectiveness = 1.0; // TODO player.PlayerEffectiveness
+				Effectiveness = 1.0; // TODO player.PlayerEffectiveness
 
 
-			if (Spell.Radius == 0 &&
-				(m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects ||
-				m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
-				&& effectiveness < 1)
-			{
-				effectiveness = 1.0;
-			}
+			if (Spell.Radius == 0 && (m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == GlobalSpellsLines.Item_Effects))
+				Effectiveness = 1.0;
 
-			if (effectiveness <= 0)
-				return; // no effect
+			if (Effectiveness <= 0)
+				return;
 
-			// Apply effect for Duration Spell.
 			if ((Spell.Duration > 0 && Spell.Target.ToLower() != "area") || Spell.Concentration > 0)
-				OnDurationEffectApply(target, effectiveness);
+				OnDurationEffectApply(target);
 			else
-				OnDirectEffect(target, effectiveness);
+				OnDirectEffect(target);
 				
 			if (!HasPositiveEffect)
 			{
@@ -2570,18 +2548,19 @@ namespace DOL.GS.Spells
 			
 			return false;
 		}
-		
-		/// <summary>
-		/// Execute Duration Spell Effect on Target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public virtual void OnDurationEffectApply(GameLiving target, double effectiveness)
+
+		public virtual void OnDurationEffectApply(GameLiving target)
 		{
 			if (!target.IsAlive || target.effectListComponent == null)
 				return;
 
-			CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, effectiveness), effectiveness, this));
+			double durationEffectiveness = Effectiveness;
+
+			// Duration is reduced for AoE spells based on the distance from the center, but only in RvR combat and if the spell doesn't have a damage component.
+			if (_distanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
+				durationEffectiveness *= 1 - _distanceFallOff / 2;
+
+			CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, durationEffectiveness), Effectiveness, this));
 		}
 		
 		/// <summary>
@@ -2598,13 +2577,8 @@ namespace DOL.GS.Spells
 		public virtual void OnEffectRemove(GameSpellEffect effect, bool overwrite)
 		{
 		}
-		
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public virtual void OnDirectEffect(GameLiving target, double effectiveness) { }
+
+		public virtual void OnDirectEffect(GameLiving target) { }
 
 		/// <summary>
 		/// When an applied effect starts
@@ -3454,16 +3428,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// Calculates damage to target with resist chance and stores it in ad
-		/// </summary>
-		/// <param name="target">spell target</param>
-		/// <returns>attack data</returns>
-		public AttackData CalculateDamageToTarget(GameLiving target)
-		{
-			return CalculateDamageToTarget(target, 1);
-		}
-
-		/// <summary>
 		/// Adjust damage based on chance to hit.
 		/// </summary>
 		/// <param name="damage"></param>
@@ -3479,12 +3443,7 @@ namespace DOL.GS.Spells
 			return Math.Max(adjustedDamage, 1);
 		}
 
-		/// <summary>
-		/// Calculates damage to target with resist chance and stores it in ad
-		/// </summary>
-		/// <param name="target">spell target</param>
-		/// <param name="effectiveness">value from 0..1 to modify damage</param>
-		public virtual AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public virtual AttackData CalculateDamageToTarget(GameLiving target)
 		{
 			AttackData ad = new()
 			{
@@ -3498,34 +3457,22 @@ namespace DOL.GS.Spells
 			CalculateDamageVariance(target, out double minVariance, out double maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 			GamePlayer playerCaster = m_caster is GameSummonedPet pet ? pet.Owner as GamePlayer : m_caster as GamePlayer;
+			double effectiveness = Effectiveness;
 
 			if (playerCaster != null)
 			{
-				effectiveness += playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
-
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, eRelicType.Magic);
-
-				//eProperty skillProp = SkillBase.SpecToSkill(m_spellLine.Spec);
-				//if (skillProp != eProperty.Undefined)
-				//{
-				//	int level = m_caster.GetModifiedFromItems(skillProp);
-				//	spellDamage *= (1 + level / 200.0);
-				//}
+				effectiveness *= 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
 			}
 
-			// Apply caster's effectiveness.
-			spellDamage *= m_caster.Effectiveness;
-
+			spellDamage *= effectiveness * _distanceFallOff;
 			int finalDamage = Util.Random((int)(minVariance * spellDamage), (int)(maxVariance * spellDamage));
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
 			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100.
 			int hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
-
-			// Apply spell's effectiveness.
-			finalDamage = (int)(finalDamage * effectiveness);
 
 			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))
 			{
@@ -3567,16 +3514,13 @@ namespace DOL.GS.Spells
 
 			if (criticalCap > randNum && finalDamage > 0)
 			{
-				int crititalMax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
-				criticalDamage = Util.Random(finalDamage / 10, crititalMax);
+				int criticalMax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
+				criticalDamage = Util.Random(finalDamage / 10, criticalMax);
 			}
 
 			ad.Damage = finalDamage;
 			ad.CriticalDamage = criticalDamage;
-
-			// Attacked living may modify the attack data. Primarily used for keep doors and components.
-			ad.Target.ModifyAttack(ad);
-
+			ad.Target.ModifyAttack(ad); // Attacked living may modify the attack data. Primarily used for keep doors and components.
 			m_lastAttackData = ad;
 			return ad;
 		}

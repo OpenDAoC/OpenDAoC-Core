@@ -34,9 +34,9 @@ namespace DOL.GS.Spells
 		public SummonNoveltyPet(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line) { }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
 
 			if (m_pet != null)
 			{

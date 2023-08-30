@@ -16,11 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Events;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -31,20 +31,20 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("AlvarusMorph")]
     public class AlvarusMorph : Morph
     {
-    	GameSpellEffect m_effect = null;
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        GameSpellEffect m_effect = null;
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GamePlayer targetPlayer = target as GamePlayer;
 
-			if (targetPlayer == null)
-				return;
+            if (targetPlayer == null)
+                return;
 
             if (!targetPlayer.IsUnderwater)
             {
                 MessageToCaster("You must be under water to use this ability.", eChatType.CT_SpellResisted);
                 return;
             }
-			foreach (GameSpellEffect Effect in targetPlayer.EffectList.GetAllOfType<GameSpellEffect>())
+            foreach (GameSpellEffect Effect in targetPlayer.EffectList.GetAllOfType<GameSpellEffect>())
             {
                 if (
                     Effect.SpellHandler.Spell.SpellType.Equals("ShadesOfMist") || 
@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
                     return;
                 }
             }
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
         public override void OnEffectStart(GameSpellEffect effect)
         {

@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
 			new StatDebuffECSEffect(initParams);
 		}
 		
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
 			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		/// <summary>

@@ -16,13 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+using DOL.AI.Brain;
+using DOL.GS;
+using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
+
 namespace DOL.spells
 {
-    using AI.Brain;
-    using GS;
-    using GS.PacketHandler;
-    using GS.Spells;
-
     /// <summary>
     /// Return life to Player Owner
     /// </summary>
@@ -31,11 +32,11 @@ namespace DOL.spells
     {
         public PetLifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if(Caster == null || !(Caster is GameSummonedPet) || !(((GameSummonedPet) Caster).Brain is IControlledBrain))
                 return;
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
         }
 
         public override void StealLife(AttackData ad)

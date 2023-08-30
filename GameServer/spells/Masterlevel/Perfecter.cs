@@ -16,12 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-using System;
-using DOL.GS;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Database;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -280,24 +278,24 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             // TODO: correct formula
-            double eff = 1.25;
+            Effectiveness = 1.25;
             if (Caster is GamePlayer)
             {
                 double lineSpec = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
                 if (lineSpec < 1)
                     lineSpec = 1;
-                eff = 0.75;
+                Effectiveness = 0.75;
                 if (Spell.Level > 0)
                 {
-                    eff += (lineSpec - 1.0) / Spell.Level * 0.5;
-                    if (eff > 1.25)
-                        eff = 1.25;
+                    Effectiveness += (lineSpec - 1.0) / Spell.Level * 0.5;
+                    if (Effectiveness > 1.25)
+                        Effectiveness = 1.25;
                 }
             }
-            base.ApplyEffectOnTarget(target, eff);
+            base.ApplyEffectOnTarget(target);
         }
 
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
@@ -315,10 +313,10 @@ namespace DOL.GS.Spells
         public override void OnEffectPulse(GameSpellEffect effect)
         {
             base.OnEffectPulse(effect);
-            OnDirectEffect(effect.Owner, effect.Effectiveness);
+            OnDirectEffect(effect.Owner);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target.InCombat) return;
             if (target.ObjectState != GameObject.eObjectState.Active) return;
@@ -333,8 +331,8 @@ namespace DOL.GS.Spells
                     return;
             }
 
-            base.OnDirectEffect(target, effectiveness);
-            double heal = Spell.Value * effectiveness;
+            base.OnDirectEffect(target);
+            double heal = Spell.Value * Effectiveness;
             if (heal < 0) target.Mana += (int)(-heal * target.MaxMana / 100);
             else target.Mana += (int)heal;
             //"You feel calm and healthy."

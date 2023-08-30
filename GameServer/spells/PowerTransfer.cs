@@ -16,10 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -52,12 +50,7 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 
-		/// <summary>
-		/// Execute direct effect.
-		/// </summary>
-		/// <param name="target">Target power is transferred to.</param>
-		/// <param name="effectiveness">Effectiveness of the spell (0..1, equalling 0-100%).</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;

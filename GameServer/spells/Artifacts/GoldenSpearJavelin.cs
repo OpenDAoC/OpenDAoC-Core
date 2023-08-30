@@ -16,13 +16,13 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 */
+
+using System;
+using DOL.Database;
+using DOL.Events;
+
 namespace DOL.GS.Spells
 {
-    using System;
-    using System.Collections;
-    using Database;
-    using Events;
-
     /// <summary>
     /// NOTE: PLEASE CHECK YOUR SPELL ID FOR JAVELIN OR CREATE YOUR OWN ITEM
     /// </summary>
@@ -72,9 +72,9 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
         }
 

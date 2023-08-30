@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -93,9 +94,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			//m_pet.Name = Spell.Name;
 

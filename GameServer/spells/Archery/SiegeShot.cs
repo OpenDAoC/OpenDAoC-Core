@@ -1,11 +1,5 @@
-//Andraste v2.0 -Vico
-
-using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Events;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -50,9 +44,9 @@ namespace DOL.GS.Spells
 		}
 
 		public override void SendSpellMessages() { MessageToCaster("You prepare " + Spell.Name, eChatType.CT_Spell); }
-		public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
-			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = base.CalculateDamageToTarget(target);
 			ad.Damage *= 30;  // actual value unknown
 			return ad;
 		}

@@ -16,10 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using DOL.AI.Brain;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -82,15 +80,10 @@ namespace DOL.GS.Spells
             }                       
             return base.OnEffectExpires(effect, noMessages);
         }
-        
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
 				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
@@ -156,14 +149,10 @@ namespace DOL.GS.Spells
             
             return base.OnEffectExpires(effect, noMessages);
         }
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
 				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

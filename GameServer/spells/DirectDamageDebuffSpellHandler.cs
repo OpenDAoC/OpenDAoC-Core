@@ -43,14 +43,7 @@ namespace DOL.GS.Spells
 
 		#region LOS on Keeps
 
-		private const string LOSEFFECTIVENESS = "LOS Effectivness";
-
-		/// <summary>
-		/// execute direct effect
-		/// </summary>
-		/// <param name="target">target that gets the damage</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null)
 				return;
@@ -77,20 +70,19 @@ namespace DOL.GS.Spells
 					}
 				}
 				if (player != null)
-				{
-					player.TempProperties.SetProperty(LOSEFFECTIVENESS, effectiveness);
 					player.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(DealDamageCheckLOS));
-				}
 				else
-					DealDamage(target, effectiveness);
+					DealDamage(target);
 			}
-			else DealDamage(target, effectiveness);
+
+			else DealDamage(target);
 		}
 
 		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
 		{
-			if (player == null) // Hmm
+			if (player == null || targetOID == 0)
 				return;
+
 			if ((response & 0x100) == 0x100)
 			{
 				try
@@ -98,8 +90,7 @@ namespace DOL.GS.Spells
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
 					if (target != null)
 					{
-						double effectiveness = player.TempProperties.GetProperty(LOSEFFECTIVENESS, 0.0);
-						DealDamage(target, effectiveness);
+						DealDamage(target);
 
 						// Due to LOS check delay the actual cast happens after FinishSpellCast does a notify, so we notify again
 						GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
@@ -113,31 +104,21 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			// do not apply debuff to keep components or doors
 			if ((target is Keeps.GameKeepComponent) == false && (target is Keeps.GameKeepDoor) == false)
 			{
-				double tmpeffective = effectiveness;
-				/*
-				if (Caster.HasAbilityType(typeof(AtlasOF_WildArcanaAbility)))
-				{
-					if (Util.Chance(Caster.SpellCriticalChance))
-					{
-						tmpeffective *= 1 + Util.Random(1, 10) * .1;
-						if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name}'s debuff critically hits the enemy for {(tmpeffective-effectiveness) * 100}% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-					}
-				}*/
-				base.ApplyEffectOnTarget(target, tmpeffective);
+				base.ApplyEffectOnTarget(target);
 			}
 
 			if ((Spell.Duration > 0 && Spell.Target != "Area") || Spell.Concentration > 0)
 			{
-				OnDirectEffect(target, effectiveness);
+				OnDirectEffect(target);
 			}
 		}
 
-		private void DealDamage(GameLiving target, double effectiveness)
+		private void DealDamage(GameLiving target)
 		{
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
@@ -147,7 +128,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);

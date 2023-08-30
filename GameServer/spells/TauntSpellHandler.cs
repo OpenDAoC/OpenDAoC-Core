@@ -16,10 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -38,12 +37,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
@@ -56,7 +50,7 @@ namespace DOL.GS.Spells
 			SendEffectAnimation(target, 0, false, 1);
 
 			// Create attack data.
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			DamageTarget(ad, false);
 
 			// Interrupt only if target is actually casting

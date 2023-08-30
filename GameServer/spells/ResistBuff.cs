@@ -16,9 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -27,15 +24,10 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public abstract class AbstractResistBuff : PropertyChangingSpell
 	{
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
-			base.ApplyEffectOnTarget(target, effectiveness);
+			Effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
+			base.ApplyEffectOnTarget(target);
 		}
 
         public override void CreateECSEffect(ECSGameEffectInitParams initParams)

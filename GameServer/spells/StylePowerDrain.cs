@@ -16,9 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -33,9 +30,9 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 		
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
 			SendEffectAnimation(target, 0, false, 1);
         }
 

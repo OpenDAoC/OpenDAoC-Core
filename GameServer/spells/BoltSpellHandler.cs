@@ -55,7 +55,7 @@ namespace DOL.GS.Spells
             return true;
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target.CurrentRegionID != Caster.CurrentRegionID)
                 return;
@@ -66,7 +66,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive)
                 return;
 
-            AttackData ad = CalculateDamageToTarget(target, effectiveness);
+            AttackData ad = CalculateDamageToTarget(target);
 
             SendDamageMessages(ad);
             MessageToLiving(target, Spell.Message1, eChatType.CT_Spell); // "A bolt of runic energy hits you!"

@@ -18,19 +18,13 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using DOL.Database;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
 using DOL.Language;
-using log4net;
-using System.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -102,12 +96,7 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (Caster == null || Caster.ControlledBrain == null)
 				return;
@@ -128,7 +117,7 @@ namespace DOL.GS.Spells
 					return;
 			}
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			if (m_pet.Brain is BDPetBrain brain && !brain.MinionsAssisting)
 				brain.SetAggressionState(eAggressionState.Passive);

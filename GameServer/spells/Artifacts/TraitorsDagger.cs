@@ -16,11 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using DOL.GS.Effects;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.AI.Brain;
+using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
@@ -69,9 +70,9 @@ namespace DOL.GS.Spells
     {
         public DdtProcDd(GameLiving caster,Spell spell,SpellLine line) : base(caster,spell,line) { }
 
-        public override void OnDirectEffect(GameLiving target,double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target,effectiveness);
+            base.OnDirectEffect(target);
             Caster.ChangeHealth(Caster,eHealthChangeType.Spell,-Spell.ResurrectHealth);
         }
     }
@@ -81,10 +82,10 @@ namespace DOL.GS.Spells
     {
         private ISpellHandler _trap;
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             //Set pet infos & Brain
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             ProcPetBrain petBrain = (ProcPetBrain) m_pet.Brain;
             petBrain.AddToAggroList(target, 1);
             petBrain.Think();
@@ -143,7 +144,7 @@ namespace DOL.GS.Spells
 
 namespace DOL.GS
 {
-	public class TraitorDaggerPet : GameSummonedPet
+    public class TraitorDaggerPet : GameSummonedPet
 	{
 		public override int MaxHealth
 		{

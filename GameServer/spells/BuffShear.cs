@@ -16,12 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*
- * Made by Biceps
- * TODO: DD proc
- */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
@@ -38,9 +34,9 @@ namespace DOL.GS.Spells
 		public override string ShearSpellType { get	{ return "StrengthBuff"; } }
 		public override string DelveSpellType { get { return "Strength"; } }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             GameSpellEffect effect;
             effect = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (effect != null)
@@ -138,14 +134,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
 
@@ -270,14 +261,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 

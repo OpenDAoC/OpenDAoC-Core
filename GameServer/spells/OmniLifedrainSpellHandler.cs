@@ -16,17 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	///
-	/// </summary>
 	[SpellHandlerAttribute("OmniLifedrain")]
 	public class OmniLifedrainSpellHandler : DirectDamageSpellHandler
 	{
@@ -35,13 +32,13 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param>target that gets the damage</param>
 		/// <param>factor from 0..1 (0%-100%)</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			// calc damage and healing
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			StealLife(ad);

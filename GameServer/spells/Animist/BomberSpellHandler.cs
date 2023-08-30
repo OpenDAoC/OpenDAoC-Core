@@ -45,9 +45,9 @@ namespace DOL.GS.Spells
             return base.CheckBeginCast(selectedTarget);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
 
             if (m_pet is not null)
             {

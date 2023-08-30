@@ -26,21 +26,9 @@ namespace DOL.GS.Spells
     [SpellHandler("AstralPetSummon")]
     public class AstralPetSummon : SummonSpellHandler
     {
-    	//Graveen: Not implemented property - can be interesting
-        /* 
-        public bool Controllable
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            get { return false; }
-        }*/
-
-        /// <summary>
-        /// Summon the pet.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="effectiveness"></param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
-        {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
 
             m_pet.TempProperties.SetProperty("target", target);
             (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);

@@ -17,15 +17,13 @@
 *
 */
 
+using System;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+
 namespace DOL.GS.Spells
 {
-    using System;
-    using Database;
-    using Events;
-    using DOL.GS.PacketHandler;
-    using DOL.GS.Utils;
-    using System.Collections.Generic;
-
     [SpellHandler("BeltOfSun")]
     public class BeltOfSun : SummonItemSpellHandler
     {
@@ -1752,9 +1750,9 @@ namespace DOL.GS.Spells
         #endregion Hib Weapons
 
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Released, OnPlayerReleased);
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
         }

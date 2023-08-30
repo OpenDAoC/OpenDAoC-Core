@@ -16,14 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Reflection;
+
+using System;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
-using log4net;
-using DOL.AI.Brain;
-using System;
 
 namespace DOL.GS.Spells
 {
@@ -31,7 +30,7 @@ namespace DOL.GS.Spells
 	/// Spell to change up to 3 property bonuses at once
 	/// in one their specific given bonus category
 	/// </summary>
-	
+
 	public abstract class PropertyChangingSpell : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -82,7 +81,7 @@ namespace DOL.GS.Spells
 			return (int)duration;
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			
 			GamePlayer player = target as GamePlayer;
@@ -171,7 +170,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		/// <summary>

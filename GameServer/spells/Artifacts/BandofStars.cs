@@ -87,7 +87,8 @@ namespace DOL.GS.Spells
                 if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID)
                     return 0;
 
-                AttackData ad = m_handler.CalculateDamageToTarget(target, 1);
+                m_handler.Effectiveness = 1;
+                AttackData ad = m_handler.CalculateDamageToTarget(target);
                 ad.Damage = (int)m_handler.Spell.Damage;
                 m_handler.SendDamageMessages(ad);
                 m_handler.DamageTarget(ad, false);
@@ -168,9 +169,9 @@ namespace DOL.GS.Spells
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             if (target.Realm == 0 || Caster.Realm == 0)
             {
                 target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

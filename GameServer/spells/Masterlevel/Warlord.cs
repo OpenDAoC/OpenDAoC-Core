@@ -16,20 +16,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Collections.Generic;
-using System.Reflection;
-using log4net;
-using System;
-using System.Collections;
+using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
-using DOL.GS;
-using DOL.Events;
-using System.Collections.Specialized;
 
 namespace DOL.GS.Spells
-{    
+{
     //http://www.camelotherald.com/masterlevels/ma.php?ml=Warlord
     #region Warlord-1
     //Gamesiegeweapon - getactiondelay
@@ -57,7 +51,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;

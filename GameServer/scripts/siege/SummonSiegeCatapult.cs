@@ -1,11 +1,4 @@
-﻿/*
- *
- * Atlas -  Summon Siege Catapult
- *
- */
-
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
@@ -50,7 +43,7 @@ namespace DOL.GS.Spells
             return base.StartSpell(target);
         }
         
-	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+	    public override void ApplyEffectOnTarget(GameLiving target)
         {
 	        
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
@@ -58,7 +51,7 @@ namespace DOL.GS.Spells
 		        return;
 	        }
 	        
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             
             GameSiegeCatapult cat = new GameSiegeCatapult();
             cat.X = Caster.X;

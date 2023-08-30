@@ -1,10 +1,4 @@
-﻿/*
- *
- * Atlas -  Summon Siege Ballista
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
@@ -38,7 +32,7 @@ namespace DOL.GS.Spells
 
             return base.StartSpell(target);
         }    
-	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+	    public override void ApplyEffectOnTarget(GameLiving target)
         {
 	        
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
@@ -46,7 +40,7 @@ namespace DOL.GS.Spells
 		        return;
 	        }
 	        
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             
             GameSiegeBallista bal = new GameSiegeBallista();
             bal.X = Caster.X;

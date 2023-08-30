@@ -36,10 +36,10 @@ namespace DOL.GS.Spells
             return base.CheckBeginCast(Target);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (Target.IsAlive)
-                base.ApplyEffectOnTarget(target, effectiveness);
+                base.ApplyEffectOnTarget(target);
         }
 
         public override void DamageTarget(AttackData ad, bool showEffectAnimation)

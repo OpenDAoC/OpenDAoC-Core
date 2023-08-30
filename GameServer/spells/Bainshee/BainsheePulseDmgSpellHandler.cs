@@ -25,7 +25,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("BainsheePulseDmg")]
+    [SpellHandlerAttribute("BainsheePulseDmg")]
 	public class BainsheePulseDmgSpellHandler : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -79,14 +79,7 @@ namespace DOL.GS.Spells
 
 		#region LOS on Keeps
 
-		private const string LOSEFFECTIVENESS = "LOS Effectivness";
-
-		/// <summary>
-		/// execute direct effect
-		/// </summary>
-		/// <param name="target">target that gets the damage</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null)
 				return;
@@ -107,30 +100,26 @@ namespace DOL.GS.Spells
 					}
 				}
 				if (player != null)
-				{
-					player.TempProperties.SetProperty(LOSEFFECTIVENESS, effectiveness);
 					player.Out.SendCheckLOS(Caster, target, new CheckLOSResponse(DealDamageCheckLOS));
-				}
 				else
-					DealDamage(target, effectiveness);
+					DealDamage(target);
 			}
-			else DealDamage(target, effectiveness);
+			else DealDamage(target);
 		}
 
 		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
 		{
-			if (player == null) // Hmm
+			if (player == null || targetOID == 0)
 				return;
+
 			if ((response & 0x100) == 0x100)
 			{
 				try
 				{
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
+
 					if (target != null)
-					{
-						double effectiveness = player.TempProperties.GetProperty(LOSEFFECTIVENESS, 0.0);
-						DealDamage(target, effectiveness);
-					}
+						DealDamage(target);
 				}
 				catch (Exception e)
 				{
@@ -140,12 +129,12 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private void DealDamage(GameLiving target, double effectiveness)
+		private void DealDamage(GameLiving target)
 		{
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			DamageTarget(ad, true);
 			SendDamageMessages(ad);
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);

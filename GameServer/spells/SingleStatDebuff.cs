@@ -16,13 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using System.Linq;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -39,12 +34,7 @@ namespace DOL.GS.Spells
 			new StatDebuffECSEffect(initParams);
         }
 
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			// var debuffs = target.effectListComponent.GetSpellEffects()
 			// 					.Where(x => x.SpellHandler is SingleStatDebuff);
@@ -65,7 +55,7 @@ namespace DOL.GS.Spells
             // }
 
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{

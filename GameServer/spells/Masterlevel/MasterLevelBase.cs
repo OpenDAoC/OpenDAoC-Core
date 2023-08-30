@@ -1023,9 +1023,9 @@ namespace DOL.GS.Spells
             return false;
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if(font != null)
 			{
 				font.AddToWorld();
@@ -1116,9 +1116,9 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             mine.AddToWorld();
             neweffect.Start(mine);
         }
@@ -1182,9 +1182,9 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             storm.AddToWorld();
             neweffect.Start(storm.Owner);
         }
@@ -1222,14 +1222,9 @@ namespace DOL.GS.Spells
             get { return true; }
         }
 
-        /// <summary>
-        /// execute non duration spell effect on target
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="effectiveness"></param>
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             if (target == null || !target.IsAlive)
                 return;
 

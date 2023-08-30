@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
             return false;
 		}
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target is GameNPC)
             {

@@ -35,7 +35,7 @@ namespace DOL.GS.spells
 		public PowerRendSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 				
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active)
 				return;
@@ -79,7 +79,7 @@ namespace DOL.GS.spells
 			}
 		}
 		
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target == null || target.CurrentRegion == null)
 				return;
@@ -95,7 +95,7 @@ namespace DOL.GS.spells
 				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
 			}
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 

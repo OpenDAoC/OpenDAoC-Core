@@ -7,7 +7,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	public abstract class HereticImmunityEffectSpellHandler : HereticPiercingMagic
+    public abstract class HereticImmunityEffectSpellHandler : HereticPiercingMagic
 	{
 		/// <summary>
 		/// called when spell effect has to be started and applied to targets
@@ -29,12 +29,8 @@ namespace DOL.GS.Spells
 			if (oldeffect.Owner is GamePlayer) return false; //no overwrite for players
 			return base.IsNewEffectBetter(oldeffect, neweffect);
 		}
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
@@ -56,7 +52,7 @@ namespace DOL.GS.Spells
                 MessageToCaster(target.Name + " is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                 return;
             }
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			if (Spell.CastTime > 0) 
 			{

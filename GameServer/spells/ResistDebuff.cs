@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -63,13 +64,8 @@ namespace DOL.GS.Spells
 				duration = (Spell.Duration * 4);
 			return (int)duration;
 		}
-		
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			//check for existing effect
 			// var debuffs = target.effectListComponent.GetSpellEffects()
@@ -98,23 +94,23 @@ namespace DOL.GS.Spells
                 if (((GamePlayer)Caster).CharacterClass.ClassType == eClassType.ListCaster)
 				{
 					int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-					effectiveness = 0.75;
-                    effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                    effectiveness = Math.Max(0.75, effectiveness);
-                    effectiveness = Math.Min(1.25, effectiveness);
-                    effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
+					Effectiveness = 0.75;
+                    Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                    Effectiveness = Math.Max(0.75, Effectiveness);
+                    Effectiveness = Math.Min(1.25, Effectiveness);
+                    Effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
                 }
 				else
 				{
-					effectiveness = 1.0; 
-					effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
+					Effectiveness = 1.0; 
+					Effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
 				}
 
-				effectiveness *= GetCritBonus();
+				Effectiveness *= GetCritBonus();
 			}
             
 			
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
@@ -393,5 +389,4 @@ namespace DOL.GS.Spells
 		// constructor
 		public EssenceResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
-
 }

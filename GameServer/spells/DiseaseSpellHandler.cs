@@ -16,24 +16,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
 
 using DOL.Database;
-using DOL.AI.Brain;
-using DOL.GS;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Disease always debuffs the target by 7.5% movement
-	/// and 15% total hit points, and prevents health regeneration.
-	/// http://www.camelotherald.com/article.php?id=63
-	/// Here they say hit points but spell description states that
-	/// it is strength, what should I use hmm...
-	/// </summary>
-	[SpellHandlerAttribute("Disease")]
+    /// <summary>
+    /// Disease always debuffs the target by 7.5% movement
+    /// and 15% total hit points, and prevents health regeneration.
+    /// http://www.camelotherald.com/article.php?id=63
+    /// Here they say hit points but spell description states that
+    /// it is strength, what should I use hmm...
+    /// </summary>
+    [SpellHandlerAttribute("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
         public override void CreateECSEffect(ECSGameEffectInitParams initParams)
@@ -49,10 +45,10 @@ namespace DOL.GS.Spells
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
         }
 
         /// <summary>

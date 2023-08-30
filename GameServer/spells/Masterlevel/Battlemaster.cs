@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
         }
 
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
@@ -331,14 +331,14 @@ namespace DOL.GS.Spells
         }
 
         
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
 
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
             // calc damage
-            AttackData ad = CalculateDamageToTarget(target, effectiveness);
+            AttackData ad = CalculateDamageToTarget(target);
             SendDamageMessages(ad);
             DamageTarget(ad, true);            
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
@@ -505,7 +505,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GamePlayer player = target as GamePlayer;
           
@@ -514,11 +514,11 @@ namespace DOL.GS.Spells
                 visPlayer.Out.SendCombatAnimation(Caster, target, 0x0000, 0x0000, (ushort)408, 0, 0x00, target.HealthPercent);
             }
             
-            OnDirectEffect(target, effectiveness);
+            OnDirectEffect(target);
 
         }
 
-        public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+        public override AttackData CalculateDamageToTarget(GameLiving target)
         {
             GamePlayer player = Caster as GamePlayer;
 
@@ -564,7 +564,7 @@ namespace DOL.GS.Spells
             if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
             {
                 //we only need to calculate the damage if the attack was a success.
-                double damage = player.attackComponent.AttackDamage(weapon, out _) * effectiveness;
+                double damage = player.attackComponent.AttackDamage(weapon, out _) * Effectiveness;
 
                 if (target is GamePlayer)
                     ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
@@ -601,8 +601,8 @@ namespace DOL.GS.Spells
                 damage += resistModifier;
                 ad.Modifier += resist;
                 ad.Damage = (int)damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.AttackDamage(weapon, out _) * effectiveness));
-                ad.Damage = (int)((double)ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
+                ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.AttackDamage(weapon, out _) * Effectiveness));
+                ad.Damage = (int)(ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0)
                     ad.AttackResult = eAttackResult.Missed;
                 else
@@ -659,9 +659,9 @@ namespace DOL.GS.Spells
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             if (target.Realm == 0 || Caster.Realm == 0)
             {
                 target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;
@@ -753,9 +753,9 @@ namespace DOL.GS.Spells
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             if (target.Realm == 0 || Caster.Realm == 0)
             {
                 target.LastAttackedByEnemyTickPvE = target.CurrentRegion.Time;

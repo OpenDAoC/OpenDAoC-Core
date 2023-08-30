@@ -16,16 +16,15 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 */
+
+using System;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+
 namespace DOL.GS.Spells
 {
-	using System;
-	using Database;
-	using Events;
-    using DOL.GS.PacketHandler;
-    using DOL.GS.Utils;
-    using System.Collections.Generic;
-
-	[SpellHandler("BeltOfMoon")]
+    [SpellHandler("BeltOfMoon")]
 	public class BeltOfMoon : SummonItemSpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -273,9 +272,9 @@ namespace DOL.GS.Spells
         #endregion End of Moon Staff
 
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Released, OnPlayerReleased);
 			GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
 		}

@@ -76,9 +76,9 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Summon the pet.
 		/// </summary>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			m_pet.TargetObject = target;
 			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);

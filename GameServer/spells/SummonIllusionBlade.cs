@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -29,7 +30,7 @@ namespace DOL.GS.Spells
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             //Template of the Illusionblade NPC
             INpcTemplate template = NpcTemplateMgr.GetTemplate(Spell.LifeDrainReturn);
@@ -42,7 +43,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            GameSpellEffect effect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
             IControlledBrain brain = GetPetBrain(Caster);
             m_pet = GetGamePet(template);
             m_pet.SetOwnBrain(brain as AI.ABrain);
@@ -101,4 +102,3 @@ namespace DOL.GS
         public IllusionBladePet(INpcTemplate npcTemplate) : base(npcTemplate) { }
     }
 }
-

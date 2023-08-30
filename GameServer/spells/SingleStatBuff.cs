@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 
@@ -41,48 +41,43 @@ namespace DOL.GS.Spells
             new StatBuffECSEffect(initParams);
         }
 
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
 
             if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
-                effectiveness = 1.0;
+                Effectiveness = 1.0;
             else if (Spell.Level <= 0)
-                effectiveness = 1.0;
+                Effectiveness = 1.0;
             else if (Caster is GamePlayer playerCaster)
             {
 			    if (playerCaster.CharacterClass.ID != (int)eCharacterClass.Savage && Spell.Target != "Enemy")
                 {
                     if (playerCaster.CharacterClass.ClassType != eClassType.ListCaster)
                     {
-                        effectiveness = 0.75; // This section is for self bulfs, cleric buffs etc.
-                        effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                        effectiveness = Math.Max(0.75, effectiveness);
-                        effectiveness = Math.Min(1.25, effectiveness);
+                        Effectiveness = 0.75; // This section is for self bulfs, cleric buffs etc.
+                        Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                        Effectiveness = Math.Max(0.75, Effectiveness);
+                        Effectiveness = Math.Min(1.25, Effectiveness);
                     }
                 }
                 else if (Spell.Target == "Enemy")
                 {
-				    effectiveness = 0.75; // This section is for list casters stat debuffs.
+				    Effectiveness = 0.75; // This section is for list casters stat debuffs.
 				    if (playerCaster.CharacterClass.ClassType == eClassType.ListCaster)
 				    {
-                        effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                        effectiveness = Math.Max(0.75, effectiveness);
-                        effectiveness = Math.Min(1.25, effectiveness);
-                        effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
+                        Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                        Effectiveness = Math.Max(0.75, Effectiveness);
+                        Effectiveness = Math.Min(1.25, Effectiveness);
+                        Effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
 
                         if (playerCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                             playerCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
 				    else
 				    {
-					    effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
-					    effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
+					    Effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
+					    Effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
                     }
 			    }
             }
@@ -90,33 +85,33 @@ namespace DOL.GS.Spells
             {
                 specLevel = playerOwner.GetModifiedSpecLevel(m_spellLine.Spec);
 
-                effectiveness = 0.75; // This section is for list casters stat debuffs.
-                effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                effectiveness = Math.Max(0.75, effectiveness);
-                effectiveness = Math.Min(1.25, effectiveness);
-                effectiveness *= 1.0 + playerOwner.GetModified(eProperty.DebuffEffectivness) * 0.01;                
+                Effectiveness = 0.75; // This section is for list casters stat debuffs.
+                Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
+                Effectiveness = Math.Max(0.75, Effectiveness);
+                Effectiveness = Math.Min(1.25, Effectiveness);
+                Effectiveness *= 1.0 + playerOwner.GetModified(eProperty.DebuffEffectivness) * 0.01;                
 
                 if (Spell.SpellType == eSpellType.ArmorFactorDebuff)
-                    effectiveness *= 1 + target.GetArmorAbsorb(eArmorSlot.TORSO);
+                    Effectiveness *= 1 + target.GetArmorAbsorb(eArmorSlot.TORSO);
 
                 if (playerOwner.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                     playerOwner.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
             }
             else
-                effectiveness = 1.0;
+                Effectiveness = 1.0;
 
             if (Spell.Target != "Enemy")
             {
-                effectiveness *= 1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
+                Effectiveness *= 1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
 
                 if (Caster is GamePlayer gamePlayer && gamePlayer.UseDetailedCombatLog && m_caster.GetModified(eProperty.BuffEffectiveness) > 0 )
                     gamePlayer.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(eProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
             }
             else
-                effectiveness *= GetCritBonus();
+                Effectiveness *= GetCritBonus();
 
             target.StartHealthRegeneration();
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
 
         /// <summary>
@@ -169,14 +164,14 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("StrengthBuff")]
     public class StrengthBuff : SingleStatBuff
     {
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.VampiirStrength))
             {
                 MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
                 return;
             }
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
         public override eProperty Property1 { get { return eProperty.Strength; } }
 
@@ -190,14 +185,14 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("DexterityBuff")]
     public class DexterityBuff : SingleStatBuff
     {
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.VampiirDexterity))
             {
                 MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
                 return;
             }
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
         public override eProperty Property1 { get { return eProperty.Dexterity; } }
 
@@ -211,14 +206,14 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("ConstitutionBuff")]
     public class ConstitutionBuff : SingleStatBuff
     {
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.VampiirConstitution))
             {
                 MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
                 return;
             }
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
         }
         public override eProperty Property1 { get { return eProperty.Constitution; } }
 

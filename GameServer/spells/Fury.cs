@@ -17,10 +17,6 @@
  *
  */
 
-using System;
-using System.Collections;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -28,9 +24,10 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Fury")]
     public class FuryHandler : SpellHandler
     {
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, 1);
+            Effectiveness = 1;
+            base.ApplyEffectOnTarget(target);
         }
 
         public override void OnEffectStart(GameSpellEffect effect)

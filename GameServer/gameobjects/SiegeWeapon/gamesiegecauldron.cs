@@ -16,12 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Collections;
 
 using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -97,10 +95,10 @@ namespace DOL.GS
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	[SpellHandlerAttribute("SiegeDirectDamage")]
+    /// <summary>
+    /// 
+    /// </summary>
+    [SpellHandlerAttribute("SiegeDirectDamage")]
 	public class SiegeDirectDamageSpellHandler : DirectDamageSpellHandler
 	{
 
@@ -130,9 +128,9 @@ namespace DOL.GS.Spells
 			max = 1;
 		}
 
-		public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
-			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = base.CalculateDamageToTarget(target);
 			if (target is GamePlayer)
 			{
 				GamePlayer player = target as GamePlayer;

@@ -31,14 +31,9 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        /// <summary>
-        /// execute non duration spell effect on target
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="effectiveness"></param>
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             if (target == null || !target.IsAlive)
                 return;
 
@@ -124,7 +119,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
@@ -164,7 +159,7 @@ namespace DOL.GS.Spells
         protected GamePlayer m_target;
 		protected IPoint3D m_loc;
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             GamePlayer player = target as GamePlayer;
@@ -419,7 +414,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;

@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 	{
 		public SummonAnimistAmbusher(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(target, eEffect.ForestheartAmbusher);
 
@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
 			else
 				return;
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			m_pet.Brain.Think();
 			((ControlledNpcBrain)m_pet.Brain).Stay();

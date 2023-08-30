@@ -16,13 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.Effects;
+
 using DOL.Database;
-using DOL.Language;
+using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Spells
 {
@@ -53,12 +51,7 @@ namespace DOL.GS.Spells
 			return (selectedTarget is GamePlayer);
 		}
 
-		/// <summary>
-		/// Apply the effect.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			GamePlayer player = target as GamePlayer;
 			if (player == null)
@@ -103,12 +96,7 @@ namespace DOL.GS.Spells
 			return (selectedTarget is GamePlayer);
 		}
 
-		/// <summary>
-		/// Apply the effect.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			GamePlayer player = target as GamePlayer;
 			if (player == null)

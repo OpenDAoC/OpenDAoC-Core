@@ -77,9 +77,9 @@ namespace DOL.GS.Spells
     {
         public override eProperty Property1 { get { return eProperty.MissHit; } }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
@@ -135,12 +135,8 @@ namespace DOL.GS.Spells
         {
             return 0;
         }
-        /// <summary>
-        /// execute non duration spell effect on target
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="effectiveness"></param>
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+
+        public override void OnDirectEffect(GameLiving target)
         {
             //base.OnDirectEffect(target, effectiveness);
             var targets = SelectTargets(Caster);
@@ -215,9 +211,9 @@ namespace DOL.GS.Spells
 
         public StormEndudrain(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
 
             neweffect.Start(target);
 
@@ -300,9 +296,9 @@ namespace DOL.GS.Spells
         public override eProperty Property1 { get { return eProperty.Dexterity; } }
         public override eProperty Property2 { get { return eProperty.Quickness; } }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
@@ -385,9 +381,9 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
@@ -537,9 +533,9 @@ namespace DOL.GS.Spells
         public override eProperty Property1 { get { return eProperty.Strength; } }
         public override eProperty Property2 { get { return eProperty.Constitution; } }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
@@ -631,9 +627,9 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
@@ -745,16 +741,16 @@ namespace DOL.GS.Spells
 
             return base.DamageCap(effectiveness);
         }
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
 
 
             // calc damage
-            AttackData ad = CalculateDamageToTarget(target, effectiveness);
+            AttackData ad = CalculateDamageToTarget(target);
             SendDamageMessages(ad);
             DamageTarget(ad, true);            
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);

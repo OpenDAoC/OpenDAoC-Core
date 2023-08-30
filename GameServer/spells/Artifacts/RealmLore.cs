@@ -1,16 +1,6 @@
-//Andraste v2.0 - Vico
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Collections;
-using DOL;
-using DOL.GS;
-using DOL.GS.Spells;
-using DOL.GS.Effects;
+using System.Collections.Generic;
 using DOL.GS.PacketHandler;
-using log4net;
 using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
@@ -41,7 +31,7 @@ namespace DOL.GS.Spells
 
             return true;
         }
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			GamePlayer player = target as GamePlayer;
 			if(player == null) 
@@ -69,5 +59,5 @@ namespace DOL.GS.Spells
 			(m_caster as GamePlayer).Out.SendMessage("Realm Lore [ "+player.Name+" ]\n"+text,eChatType.CT_System,eChatLoc.CL_SystemWindow);
 		}
 		public RealmLore(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-    }	
+    }
 }

@@ -16,13 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -33,15 +30,10 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("DamageSpeedDecrease")]
 	public class DamageSpeedDecreaseSpellHandler : SpeedDecreaseSpellHandler
 	{
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			// do damage even if immune to duration effect
-			OnDirectEffect(target, effectiveness);
+			OnDirectEffect(target);
 
 			if ((target is Keeps.GameKeepDoor) == false && (target is Keeps.GameKeepComponent == false))
 			{
@@ -54,20 +46,15 @@ namespace DOL.GS.Spells
 						if(Caster is GamePlayer c) c.Out.SendMessage($"Your {Spell.Name} critically hits the enemy for 100% additional effect!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 					}
 				}*/
-				base.ApplyEffectOnTarget(target, effectiveness);
+				base.ApplyEffectOnTarget(target);
 			}
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			if (Spell.LifeDrainReturn != 0)

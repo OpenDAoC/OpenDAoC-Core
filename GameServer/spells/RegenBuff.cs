@@ -43,13 +43,13 @@ namespace DOL.GS.Spells
 	[SpellHandler("PowerRegenBuff")]
 	public class PowerRegenSpellHandler : PropertyChangingSpell
 	{
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
             if (target is GamePlayer && (((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.Vampiir
                 || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerAlb
                 || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerMid
                 || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", eChatType.CT_Spell); return; }
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
 		public override eProperty Property1 { get { return eProperty.PowerRegenerationRate; } }

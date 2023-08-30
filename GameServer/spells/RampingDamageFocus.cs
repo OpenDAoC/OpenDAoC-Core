@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
 			Target = target;
 			Caster.Mana -= (PowerCost(target) + Spell.PulsePower);
 			base.FinishSpellCast(target);
-			OnDirectEffect(target, CurrentEffectiveness);
+			OnDirectEffect(target);
 		}
 
 		public override bool StartSpell(GameLiving target)
@@ -53,26 +53,8 @@ namespace DOL.GS.Spells
 
 			if (Target == null) return false;
 
-			ApplyEffectOnTarget(target, CurrentEffectiveness);
+			ApplyEffectOnTarget(target);
 			return true;
-		}
-
-		private double CurrentEffectiveness
-		{
-			get
-			{
-				double effectiveness = Caster.Effectiveness;
-
-// 				if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-// 				{
-// 					AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-// 					if (ra != null && ra.Level > 0)
-// 					{
-// 						effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-// 					}
-// 				}
-				return effectiveness;
-			}
 		}
 
 		public override void OnSpellPulse(PulsingSpellEffect effect)
@@ -89,7 +71,7 @@ namespace DOL.GS.Spells
 				Caster.Mana -= Spell.PulsePower;
 				SendEffectAnimation(Caster, 0, true, 1); // pulsing auras or songs
 				pulseCount += 1;
-				OnDirectEffect(Target, CurrentEffectiveness);
+				OnDirectEffect(Target);
 			}
 			else
 			{
@@ -124,7 +106,7 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 
@@ -138,7 +120,7 @@ namespace DOL.GS.Spells
 					continue;
 				}
 				
-				DealDamage(t, effectiveness);
+				DealDamage(t);
 
 				if (Spell.Value > 0)
 				{
@@ -147,7 +129,7 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		protected virtual void DealDamage(GameLiving target, double effectiveness)
+		protected virtual void DealDamage(GameLiving target)
 		{
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
@@ -155,7 +137,7 @@ namespace DOL.GS.Spells
 			double growthCapPercent = Spell.AmnesiaChance * 0.01;
 			double damageIncreaseInPercent = Math.Min(pulseCount * growthPercent, growthCapPercent);
 
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			ad.Damage += (int)(ad.Damage * damageIncreaseInPercent);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);			

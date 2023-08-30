@@ -1,13 +1,11 @@
 using System;
-using System.Collections;
-using DOL.GS;
+using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
+
 namespace DOL.GS.Spells
 {
-
-	[SpellHandlerAttribute("HereticDamageSpeedDecrease")]
+    [SpellHandlerAttribute("HereticDamageSpeedDecrease")]
 	public class HereticDamageSpeedDecrease : HereticSpeedDecreaseSpellHandler
 	{
         protected int m_lastdamage = 0;
@@ -32,9 +30,9 @@ namespace DOL.GS.Spells
             return true;
         }
 
-        public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+        public override AttackData CalculateDamageToTarget(GameLiving target)
         {
-            AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+            AttackData ad = base.CalculateDamageToTarget(target);
             ad.CriticalDamage = 0;
             ad.AttackType = AttackData.eAttackType.Unknown;
             return ad;
@@ -127,7 +125,7 @@ namespace DOL.GS.Spells
 
             Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 
-            OnDirectEffect(effect.Owner, effect.Effectiveness);
+            OnDirectEffect(effect.Owner);
 
 			// A really lame way to charge the correct amount of power per pulse since this spell is cast and maintained without pulsing. - Tolakram
 			if (m_focusTargets.Count > 1)
@@ -161,7 +159,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
@@ -170,7 +168,7 @@ namespace DOL.GS.Spells
                 OnSpellResist(target);
                 return;
             }
-            AttackData ad = CalculateDamageToTarget(target, effectiveness);
+            AttackData ad = CalculateDamageToTarget(target);
 
             if (m_lastdamage <= 0)
             {

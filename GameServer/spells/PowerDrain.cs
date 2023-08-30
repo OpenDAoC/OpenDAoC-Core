@@ -31,19 +31,14 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("PowerDrain")]
 	public class PowerDrain : DirectDamageSpellHandler
 	{
-		/// <summary>
-		/// Execute direct effect.
-		/// </summary>
-		/// <param name="target">Target that takes the damage.</param>
-		/// <param name="effectiveness">Effectiveness of the spell (0..1, equalling 0-100%).</param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			// Calculate damage to the target.
 
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			DrainPower(ad);

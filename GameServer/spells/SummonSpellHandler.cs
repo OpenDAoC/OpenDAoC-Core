@@ -125,12 +125,7 @@ namespace DOL.GS.Spells
 
 		#endregion
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			INpcTemplate template = NpcTemplateMgr.GetTemplate(Spell.LifeDrainReturn);
 
@@ -192,7 +187,7 @@ namespace DOL.GS.Spells
 			m_pet.Health = m_pet.MaxHealth;
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
-			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, effectiveness), effectiveness, this));
+			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 

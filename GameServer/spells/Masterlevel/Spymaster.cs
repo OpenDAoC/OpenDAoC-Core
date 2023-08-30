@@ -18,15 +18,11 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using DOL.Database;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS;
-using DOL.Events;
-using DOL.GS.Spells;
-using DOL.Database;
-using DOL.AI.Brain;
 
 namespace DOL.GS.Spells
 {
@@ -55,9 +51,9 @@ namespace DOL.GS.Spells
             return false;
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             decoy.AddToWorld();
             neweffect.Start(decoy);
         }
@@ -144,9 +140,9 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("Sabotage")]
     public class SabotageSpellHandler : SpellHandler
     {
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            base.OnDirectEffect(target, effectiveness);
+            base.OnDirectEffect(target);
             if (target is GameFont)
             {
                 GameFont targetFont = target as GameFont;
@@ -503,8 +499,8 @@ namespace DOL.GS.Spells
     }
     //to show an Icon & informations to the caster
     namespace DOL.GS.Effects
-    {
-        public class LoockoutOwner : StaticEffect, IGameEffect
+{
+    public class LoockoutOwner : StaticEffect, IGameEffect
         {
             public LoockoutOwner() : base() { }
             public void Start(GamePlayer player) { base.Start(player); }

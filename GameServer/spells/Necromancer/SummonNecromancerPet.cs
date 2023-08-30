@@ -67,14 +67,9 @@ namespace DOL.GS.Spells
             return Caster.EffectList.GetOfType<CallOfDarknessEffect>() != null ? 3000 : base.CalculateCastingTime();
         }
 
-        /// <summary>
-        /// Create the pet and transfer stats.
-        /// </summary>
-        /// <param name="target">Target that gets the effect</param>
-        /// <param name="effectiveness">Factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
 
             if (Caster is GamePlayer playerCaster)
                 playerCaster.Shade(true);

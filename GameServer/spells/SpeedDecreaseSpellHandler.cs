@@ -38,12 +38,7 @@ namespace DOL.GS.Spells
 			new StatDebuffECSEffect(initParams);
 		}
 
-        /// <summary>
-        /// Apply the effect.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="effectiveness"></param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			// Check for root immunity.
 			if (Spell.Value == 99 && (target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity) || target.effectListComponent.Effects.ContainsKey(eEffect.SpeedOfSound)))
@@ -90,7 +85,7 @@ namespace DOL.GS.Spells
 				}
 			}
 			
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		/// <summary>

@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 */
+
 namespace DOL.GS.Spells
 {
 	using System;
@@ -200,9 +201,9 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
 		}
 

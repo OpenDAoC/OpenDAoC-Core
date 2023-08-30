@@ -209,9 +209,9 @@ namespace DOL.GS.Spells
 		}
 
 
-		public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
-			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = base.CalculateDamageToTarget(target);
 			GamePlayer player;
 			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
             target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
@@ -318,8 +318,6 @@ namespace DOL.GS.Spells
 
 			return spellDamage;
 		}
-
-
 
 		public override void FinishSpellCast(GameLiving target)
 		{

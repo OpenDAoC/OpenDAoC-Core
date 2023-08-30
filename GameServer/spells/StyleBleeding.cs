@@ -80,7 +80,8 @@ namespace DOL.GS.Spells
 
 			int bleedValue = effect.Owner.TempProperties.GetProperty<int>(BLEED_VALUE_PROPERTY);
 
-			AttackData ad = CalculateDamageToTarget( effect.Owner, 1.0 );
+			Effectiveness = 1;
+			AttackData ad = CalculateDamageToTarget(effect.Owner);
 
 			SendDamageMessages(ad);
 
@@ -109,7 +110,7 @@ namespace DOL.GS.Spells
 			return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), Spell.Frequency, effectiveness);
 		}
 
-		public override AttackData CalculateDamageToTarget( GameLiving target, double effectiveness )
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
 			int bleedValue = target.TempProperties.GetProperty<int>( BLEED_VALUE_PROPERTY);
 

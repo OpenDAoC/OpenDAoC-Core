@@ -47,12 +47,7 @@ namespace DOL.GS.Spells
 			return base.IsNewEffectBetter(oldeffect, neweffect);
 		}
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target == null || target.CurrentRegion == null)
 				return;
@@ -68,7 +63,7 @@ namespace DOL.GS.Spells
 				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 

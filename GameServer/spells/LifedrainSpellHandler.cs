@@ -16,8 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
@@ -27,13 +26,13 @@ namespace DOL.GS.Spells
     public class LifedrainSpellHandler : DirectDamageSpellHandler
     {
 	    
-		protected override void DealDamage(GameLiving target, double effectiveness)
+		protected override void DealDamage(GameLiving target)
 		{
 			if (target == null || !target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			if (target is not (GamePlayer or GameNPC or GameKeepDoor or GameRelicDoor)) return;
 			// calc damage and healing
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			// "Your life energy is stolen!"
 			MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
 			SendDamageMessages(ad);

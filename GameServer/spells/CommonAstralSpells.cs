@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -93,12 +94,7 @@ namespace DOL.GS.Spells
         public SummonHealingElemental(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)  {}
 
-        /// <summary>
-        /// Apply effect on target or do spell action if non duration spell
-        /// </summary>
-        /// <param name="target">target that gets the effect</param>
-        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             GamePlayer player = Caster as GamePlayer;
             if (player == null)
@@ -116,7 +112,7 @@ namespace DOL.GS.Spells
             }
 
             Point2D summonloc;
-            beffect = CreateSpellEffect(target, effectiveness);
+            beffect = CreateSpellEffect(target, Effectiveness);
             {
                 summonloc = target.GetPointFromHeading(target.Heading, 64);
 
@@ -165,10 +161,10 @@ namespace DOL.GS.Spells
     {
         private ISpellHandler _trap;
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             //Set pet infos & Brain
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             ProcPetBrain petBrain = (ProcPetBrain)m_pet.Brain;
             m_pet.Level = Caster.Level;
             m_pet.Strength = 0;

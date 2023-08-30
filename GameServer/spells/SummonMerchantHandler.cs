@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using DOL.AI.Brain;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS.Spells
 {
@@ -21,11 +19,9 @@ namespace DOL.GS.Spells
         {
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             var template = NpcTemplateMgr.GetTemplate((int) m_spell.Value);
-            
-            //base.ApplyEffectOnTarget(target, effectiveness);
 
             if (template.ClassType == "")
                 Npc = new GameAtlasMerchant();

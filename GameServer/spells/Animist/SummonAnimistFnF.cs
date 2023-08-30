@@ -29,10 +29,10 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Summon a fnf animist pet.
-	/// </summary>
-	[SpellHandler("SummonAnimistFnF")]
+    /// <summary>
+    /// Summon a fnf animist pet.
+    /// </summary>
+    [SpellHandler("SummonAnimistFnF")]
 	public class SummonAnimistFnF : SummonAnimistPet
 	{
 		public SummonAnimistFnF(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -88,9 +88,9 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 
 			if (Spell.SubSpellID > 0 && m_pet.Spells != null && SkillBase.GetSpellByID(Spell.SubSpellID) != null)
 			{

@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Apply the effect.
 		/// </summary>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (Caster is not GamePlayer player)
 				return;

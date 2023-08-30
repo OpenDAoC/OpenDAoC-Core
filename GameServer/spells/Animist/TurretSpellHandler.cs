@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target == null || target.CurrentRegion == null)
                 return;

@@ -16,11 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+
 using System.Collections;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
 
 namespace DOL.GS.Spells
 {
@@ -46,7 +45,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target.HasAbility(Abilities.ConfusionImmunity))
 			{
@@ -54,7 +53,7 @@ namespace DOL.GS.Spells
 				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 

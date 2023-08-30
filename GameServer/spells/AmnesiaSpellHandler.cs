@@ -16,18 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using DOL.AI.Brain;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	[SpellHandlerAttribute("Amnesia")]
 	public class AmnesiaSpellHandler : SpellHandler
 	{
@@ -46,14 +41,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// execute non duration spell effect on target
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
-			base.OnDirectEffect(target, effectiveness);
+			base.OnDirectEffect(target);
 			if (target == null || !target.IsAlive)
 				return;
 

@@ -1,10 +1,4 @@
-﻿/*
- *
- * Atlas -  Summon Siege Trebuchet
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Keeps;
 
@@ -50,14 +44,14 @@ namespace DOL.GS.Spells
             return base.StartSpell(target);
         }
         
-	    public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+	    public override void ApplyEffectOnTarget(GameLiving target)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
 		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
 		        return;
 	        }
 	        
-            base.ApplyEffectOnTarget(target, effectiveness);
+            base.ApplyEffectOnTarget(target);
             
             GameSiegeTrebuchet tre = new GameSiegeTrebuchet();
             tre.X = Caster.X;

@@ -1,7 +1,4 @@
-﻿using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
+﻿using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
@@ -11,10 +8,10 @@ namespace DOL.GS.Spells
         //Shatter Illusions 
         //(returns the enemy from their shapeshift forms 
         //causing 200 body damage to the enemy. Range: 1500) 
-        public override void OnDirectEffect(GameLiving target, double effectiveness)
+        public override void OnDirectEffect(GameLiving target)
         {
-            AttackData ad = CalculateDamageToTarget(target, effectiveness);
-            base.OnDirectEffect(target, effectiveness);
+            AttackData ad = CalculateDamageToTarget(target);
+            base.OnDirectEffect(target);
             foreach (GameSpellEffect effect in target.EffectList.GetAllOfType(typeof(GameSpellEffect)))
             {
                 if (effect.SpellHandler.Spell.SpellType.Equals("ShadesOfMist") ||

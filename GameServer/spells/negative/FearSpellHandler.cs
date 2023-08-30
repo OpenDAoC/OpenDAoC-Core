@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// called when spell effect has to be started and applied to targets
 		/// </summary>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			var npcTarget = target as GameNPC;
 			if (npcTarget == null) return;
@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 			
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		/// <summary>

@@ -52,11 +52,14 @@ namespace DOL.GS
                         OnEffectStartsMsg(Owner, true, false, true);
                     }
 
-                    double postRAEffectiveness = Effectiveness;
                     if (handler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper) && SpellHandler.Spell.IsPoison)
-                        postRAEffectiveness *= 2;
-                    
-                    handler.OnDirectEffect(Owner, postRAEffectiveness);
+                    {
+                        Effectiveness *= 2;
+                        handler.OnDirectEffect(Owner);
+                        Effectiveness /= 2;
+                    }
+                    else
+                        handler.OnDirectEffect(Owner);
                 }
                 else if (SpellHandler is StyleBleeding bleedHandler)
                 {
@@ -83,7 +86,8 @@ namespace DOL.GS
 
                     int bleedValue = Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);
 
-                    AttackData ad = bleedHandler.CalculateDamageToTarget(Owner, 1.0);
+                    Effectiveness = 1;
+                    AttackData ad = bleedHandler.CalculateDamageToTarget(Owner);
                     bleedHandler.SendDamageMessages(ad);
 
                     // attacker must be null, attack result is 0x0A

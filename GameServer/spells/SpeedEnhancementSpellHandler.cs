@@ -106,13 +106,8 @@ namespace DOL.GS.Spells
 			
 		//	base.OnEffectRemove(effect, overwrite);
 		//}
-		
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target.EffectList.GetOfType<ChargeEffect>() != null)
 				return;
@@ -138,7 +133,7 @@ namespace DOL.GS.Spells
 				MessageToLiving(target, "You've been in combat recently, the spell has no effect on you!", eChatType.CT_SpellResisted);
 				return;
 			}
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		///// <summary>

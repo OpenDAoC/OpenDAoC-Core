@@ -1,15 +1,11 @@
 using System;
 using System.Collections;
-using System.Reflection;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using log4net;
-using DOL.Database;
-using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
@@ -468,12 +464,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			GamePlayer player = Caster as GamePlayer;
 			if (player == null)
@@ -491,7 +482,7 @@ namespace DOL.GS.Spells
 			}
 
 			Point2D summonloc;
-			beffect = CreateSpellEffect(target, effectiveness);
+			beffect = CreateSpellEffect(target, Effectiveness);
 			{
 				summonloc = target.GetPointFromHeading( target.Heading, 64 );
 
@@ -553,7 +544,7 @@ namespace DOL.GS.Spells
 
 		//public override eProperty Property1 { get { return eProperty.MeleeDamage; } }
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			foreach (JuggernautEffect jg in target.EffectList.GetAllOfType<JuggernautEffect>())
 			{
@@ -575,7 +566,7 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 		}
 
 		public override void OnEffectStart(GameSpellEffect effect)
@@ -635,12 +626,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// Apply effect on target or do spell action if non duration spell
-		/// </summary>
-		/// <param name="target">target that gets the effect</param>
-		/// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			GamePlayer player = Caster as GamePlayer;
 			if (player == null)
@@ -656,7 +642,7 @@ namespace DOL.GS.Spells
 				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
 				return;
 			}
-			GameSpellEffect effect = CreateSpellEffect(target, effectiveness);
+			GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
 			TitanBrain controlledBrain = new TitanBrain(player);
 			controlledBrain.IsMainPet = false;
 			controlledBrain.WalkState = eWalkState.Stay;
@@ -753,7 +739,7 @@ namespace DOL.GS.Spells
 #region BrittleBrain
 namespace DOL.AI.Brain
 {
-	public class BrittleBrain : ControlledNpcBrain
+    public class BrittleBrain : ControlledNpcBrain
 	{
 		public BrittleBrain(GameLiving owner)
 			: base(owner)
@@ -775,7 +761,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.AI.Brain
 {
-	public class TitanBrain : ControlledNpcBrain
+    public class TitanBrain : ControlledNpcBrain
 	{
 		private GameLiving m_target;
 

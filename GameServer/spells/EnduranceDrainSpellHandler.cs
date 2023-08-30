@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 
@@ -17,7 +15,7 @@ namespace DOL.GS.Spells
 		}
 
 		
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
@@ -100,26 +98,3 @@ namespace DOL.GS.Spells
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

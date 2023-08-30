@@ -16,8 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using System.Collections;
+
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -51,7 +50,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving living in targets)
 			{
-				ApplyEffectOnTarget(living, 1.0);
+				ApplyEffectOnTarget(living);
 				mana += (int)(living.Health * Spell.Value / 100);
 			}
 

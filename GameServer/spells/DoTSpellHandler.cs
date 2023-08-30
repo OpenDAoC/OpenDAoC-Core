@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
@@ -52,14 +53,7 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		/// <summary>
-		/// No variance for DOT spells
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="distance"></param>
-		/// <param name="radius"></param>
-		/// <returns></returns>
-		protected override double CalculateAreaVariance(GameLiving target, int distance, int radius)
+		protected override double CalculateDistanceFallOff(int distance, int radius)
 		{
 			return 0;
 		}
@@ -76,22 +70,9 @@ namespace DOL.GS.Spells
 			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}
 
-		// public override bool IsOverwritable(ECSGameSpellEffect compare)
-		// {
-		// 	return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && 
-		// 		   SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine &&
-		// 		   ((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.SpellHandler.Spell.Damage + dot.CriticalDamage);
-		// }
-
-		/// <summary>
-		/// Calculates damage to target with resist chance and stores it in ad
-		/// </summary>
-		/// <param name="target">spell target</param>
-		/// <param name="effectiveness">value from 0..1 to modify damage</param>
-		/// <returns>attack data</returns>
-		public override AttackData CalculateDamageToTarget(GameLiving target, double effectiveness)
+		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
-			AttackData ad = base.CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = base.CalculateDamageToTarget(target);
             if (this.SpellLine.KeyName == GlobalSpellsLines.Mundane_Poisons)
             {
                 RealmAbilities.L3RAPropertyEnhancer ra = Caster.GetAbility<RealmAbilities.ViperAbility>();
@@ -209,7 +190,7 @@ namespace DOL.GS.Spells
 			//			}
 		}
 
-		public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			//((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.Spell.Damage + dot.CriticalDamage)
 			// var dots = target.effectListComponent.GetSpellEffects(eEffect.DamageOverTime)
@@ -241,7 +222,7 @@ namespace DOL.GS.Spells
 			// 	}
 			// }
 
-			base.ApplyEffectOnTarget(target, effectiveness);
+			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
@@ -266,7 +247,7 @@ namespace DOL.GS.Spells
 				MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 				// {0} is surrounded by an acidic cloud!
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
-				OnDirectEffect(effect.Owner, effect.Effectiveness);
+				OnDirectEffect(effect.Owner);
 			}
 		}
 
@@ -290,14 +271,14 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override void OnDirectEffect(GameLiving target, double effectiveness)
+		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
 			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
 			// no interrupts on DoT direct effect
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 
 			ad.CriticalDamage = CalculateCriticalDamage(ad);
 
@@ -323,7 +304,7 @@ namespace DOL.GS.Spells
 
 			// no interrupts on DoT direct effect
 			// calc damage
-			AttackData ad = CalculateDamageToTarget(target, effectiveness);
+			AttackData ad = CalculateDamageToTarget(target);
 			ad.CausesCombat = causesCombat;
 			SendDamageMessages(ad);
 			DamageTarget(ad, false);

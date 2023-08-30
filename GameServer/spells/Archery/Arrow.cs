@@ -152,7 +152,8 @@ namespace DOL.GS.Spells
 
 				// half of the damage is magical
 				// subtract any spelldamage bonus and re-calculate after half damage is calculated
-				AttackData ad = m_handler.CalculateDamageToTarget(target, 0.5 - (caster.GetModified(eProperty.SpellDamage) * 0.01));
+				m_handler.Effectiveness = 0.5 - caster.GetModified(eProperty.SpellDamage) * 0.01;
+				AttackData ad = m_handler.CalculateDamageToTarget(target);
 
 				// check for bladeturn miss
 				if (ad.AttackResult == eAttackResult.Missed)
