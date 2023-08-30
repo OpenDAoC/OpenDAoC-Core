@@ -1917,7 +1917,7 @@ namespace DOL.GS
 				player.Stealth(false);
 
 			//Cancel SpeedOfTheRealm (Hastener Speed) 
-			if (effectListComponent._effects.ContainsKey(eEffect.MovementSpeedBuff))
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
@@ -1999,7 +1999,7 @@ namespace DOL.GS
                 {
 					((SpellHandler)pulseSpell.SpellHandler).FocusSpellAction(moving);
 					EffectService.RequestImmediateCancelEffect(pulseSpell);
-					if (((SpellHandler)pulseSpell.SpellHandler).Target.effectListComponent._effects.TryGetValue(eEffect.FocusShield, out var petEffect))
+					if (((SpellHandler)pulseSpell.SpellHandler).Target.effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out var petEffect))
                     {
 						if (petEffect is not null)
                         {
@@ -2189,7 +2189,7 @@ namespace DOL.GS
 			}
 
 			// Remove Mez
-            if (removeMez && effectListComponent._effects.ContainsKey(eEffect.Mez))
+            if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
 			{
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
 
@@ -2198,7 +2198,7 @@ namespace DOL.GS
 			}
 
 			// Remove Snare/Root
-			if (removeSnare && effectListComponent._effects.ContainsKey(eEffect.Snare))
+			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
 			{
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
 
@@ -2228,7 +2228,7 @@ namespace DOL.GS
                 return;
 
 			//Cancel SpeedOfTheRealm (Hastener Speed) 
-			if (effectListComponent._effects.ContainsKey(eEffect.MovementSpeedBuff))
+			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
@@ -2253,7 +2253,7 @@ namespace DOL.GS
             if (effectListComponent == null)
                 return;
 
-            if (effectListComponent._effects.ContainsKey(eEffect.MovementSpeedBuff))
+            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 

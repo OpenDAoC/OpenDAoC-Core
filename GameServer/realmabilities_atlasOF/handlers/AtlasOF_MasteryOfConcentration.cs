@@ -50,7 +50,7 @@ namespace DOL.GS.RealmAbilities
 			if (caster == null)
 				return;
 
-			EffectListService.CancelFirstEffectOfTypeOnTarget(caster, eEffect.MasteryOfConcentration);
+			EffectListService.TryCancelFirstEffectOfTypeOnTarget(caster, eEffect.MasteryOfConcentration);
 
 			SendCasterSpellEffectAndCastMessage(living, 7007, true);
 			foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

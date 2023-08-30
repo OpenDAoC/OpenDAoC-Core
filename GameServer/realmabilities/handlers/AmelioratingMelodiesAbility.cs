@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
 			if (player == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | STUNNED | MEZZED )) return;
 
-			EffectListService.CancelFirstEffectOfTypeOnTarget(player, eEffect.AmelioratingMelodies);
+			EffectListService.TryCancelFirstEffectOfTypeOnTarget(player, eEffect.AmelioratingMelodies);
 
 			SendCasterSpellEffectAndCastMessage(living, 3021, true);
 

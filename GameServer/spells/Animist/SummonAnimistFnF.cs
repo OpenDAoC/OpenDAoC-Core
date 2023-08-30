@@ -137,7 +137,7 @@ namespace DOL.GS.Spells
 			//GameSpellEffect effect = FindEffectOnTarget(m_pet, this);
 			//if (effect != null)
 			//	effect.Cancel(false);
-			if (m_pet.effectListComponent._effects.TryGetValue(eEffect.Pet, out var petEffect))
+			if (m_pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
 				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 

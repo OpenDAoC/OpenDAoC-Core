@@ -500,7 +500,7 @@ namespace DOL.GS.Spells
             if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
                 return;
 
-            if (pet.effectListComponent._effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
+            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
                 EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
         }
 

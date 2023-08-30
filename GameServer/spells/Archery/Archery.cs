@@ -214,7 +214,7 @@ namespace DOL.GS.Spells
 			AttackData ad = base.CalculateDamageToTarget(target);
 			GamePlayer player;
 			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
-            target.effectListComponent._effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
+            target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
 			if (bladeturn != null)
 			{
 				switch (Spell.LifeDrainReturn)

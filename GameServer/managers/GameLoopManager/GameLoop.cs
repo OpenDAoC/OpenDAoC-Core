@@ -60,7 +60,7 @@ namespace DOL.GS
                 AttackService.Tick(GameLoopTime);
                 CastingService.Tick(GameLoopTime);
                 EffectService.Tick();
-                EffectListService.Tick();
+                EffectListService.Tick(GameLoopTime);
                 ZoneService.Tick();
                 CraftingService.Tick(GameLoopTime);
                 TimerService.Tick(GameLoopTime);
