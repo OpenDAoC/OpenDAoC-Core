@@ -488,15 +488,22 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error($"Tried to relocate object to a non-existent zone (Object: {gameObject})");
 
-                        if (gameObject is GamePlayer player)
-                            player.MoveToBind();
-                        else
-                            gameObject.RemoveFromWorld();
-
+                        AbortRelocation();
                         return;
                     }
 
-                    SubZone newSubZone = newZone.GetSubZone(newZone.GetSubZoneIndex(gameObject.X, gameObject.Y));
+                    newSubZoneIndex = newZone.GetSubZoneIndex(gameObject.X, gameObject.Y);
+
+                    if (newSubZoneIndex == -1)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Tried to relocate object to a non-existent subzone (Object: {gameObject})");
+
+                        AbortRelocation();
+                        return;
+                    }
+
+                    SubZone newSubZone = newZone.GetSubZone(newSubZoneIndex);
 
                     if (subZoneObject.StartSubZoneChange)
                         ObjectChangingSubZone.Create(subZoneObject, newZone, newSubZone);
@@ -506,6 +513,14 @@ namespace DOL.GS
             }
             else if (subZoneObject.StartSubZoneChange)
                 ObjectChangingSubZone.Create(subZoneObject, null, null);
+
+            void AbortRelocation()
+            {
+                if (gameObject is GamePlayer player)
+                    player.MoveToBind();
+                else
+                    gameObject.RemoveFromWorld();
+            }
         }
 
         public void OnObjectAddedToZone()
