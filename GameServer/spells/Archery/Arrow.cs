@@ -209,13 +209,13 @@ namespace DOL.GS.Spells
 										if (engage.Owner is GamePlayer)
 											(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									}  // Check if player has enough endurance left to engage
-									else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
+									else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 									{
 										engage.Cancel(false, true); // if player ran out of endurance cancel engage effect
 									}
 									else
 									{
-										engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
+										engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
 										if (engage.Owner is GamePlayer)
 											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 

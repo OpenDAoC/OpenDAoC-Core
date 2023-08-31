@@ -1701,11 +1701,11 @@ namespace DOL.GS
 					{
 						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						else if (Endurance < EngageAbilityHandler.ENGAGE_DURATION_LOST)
+						else if (Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 							engage.Cancel(false, true);
 						else
 						{
-							Endurance -= EngageAbilityHandler.ENGAGE_DURATION_LOST;
+							Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
 							player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
 							if (blockChance < 0.95)
