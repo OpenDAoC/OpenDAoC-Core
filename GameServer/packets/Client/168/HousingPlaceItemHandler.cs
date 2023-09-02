@@ -395,7 +395,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// figure out proper rotation for item
 							int properRotation = client.Player.Heading / 10;
-							properRotation = properRotation.Clamp(0, 360);
+							properRotation = Math.Clamp(properRotation, 0, 360);
 
 							if (method == 2 && IsSuitableForWall(orgitem))
 							{

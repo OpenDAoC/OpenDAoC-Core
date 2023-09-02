@@ -2782,7 +2782,7 @@ namespace DOL.GS
             get { return DBCharacter != null ? DBCharacter.Health : base.Health; }
             set
             {
-                value = value.Clamp(0, MaxHealth);
+                value = Math.Clamp(value, 0, MaxHealth);
                 //If it is already set, don't do anything
                 if (Health == value)
                 {

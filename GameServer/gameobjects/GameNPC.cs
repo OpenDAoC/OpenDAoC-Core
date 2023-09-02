@@ -785,20 +785,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_x;
 
-				if (IsTargetPositionValid)
-				{
-					long expectedDistance = FastMath.Abs((long) TargetPosition.X - m_x);
+				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedX;
 
-					if (expectedDistance == 0)
-						return TargetPosition.X;
+				if (!IsTargetPositionValid)
+					return (int) (m_x + movementAmount);
 
-					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedX));
-
-					if (expectedDistance - actualDistance < 0)
-						return TargetPosition.X;
-				}
-
-				return (int) (m_x + MovementElapsedTicks * movementComponent.TickSpeedX);
+				double absMovementAmount = Math.Abs(movementAmount);
+				return Math.Abs(TargetPosition.X - m_x) < absMovementAmount ? TargetPosition.X : (int) (m_x + movementAmount);
 			}
 		}
 
@@ -816,20 +809,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_y;
 
-				if (IsTargetPositionValid)
-				{
-					long expectedDistance = FastMath.Abs((long) TargetPosition.Y - m_y);
+				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedY;
 
-					if (expectedDistance == 0)
-						return TargetPosition.Y;
+				if (!IsTargetPositionValid)
+					return (int) (m_y + movementAmount);
 
-					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedY));
-
-					if (expectedDistance - actualDistance < 0)
-						return TargetPosition.Y;
-				}
-
-				return (int) (m_y + MovementElapsedTicks * movementComponent.TickSpeedY);
+				double absMovementAmount = Math.Abs(movementAmount);
+				return Math.Abs(TargetPosition.Y - m_y) < absMovementAmount ? TargetPosition.Y : (int) (m_y + movementAmount);
 			}
 		}
 
@@ -847,20 +833,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_z;
 
-				if (IsTargetPositionValid)
-				{
-					long expectedDistance = FastMath.Abs(TargetPosition.Z - m_z);
+				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedZ;
 
-					if (expectedDistance == 0)
-						return TargetPosition.Z;
+				if (!IsTargetPositionValid)
+					return (int) (m_z + movementAmount);
 
-					long actualDistance = FastMath.Abs((long) (MovementElapsedTicks * movementComponent.TickSpeedZ));
-
-					if (expectedDistance - actualDistance < 0)
-						return TargetPosition.Z;
-				}
-
-				return (int) (m_z + MovementElapsedTicks * movementComponent.TickSpeedZ);
+				double absMovementAmount = Math.Abs(movementAmount);
+				return Math.Abs(TargetPosition.Z - m_z) < absMovementAmount ? TargetPosition.Z : (int) (m_z + movementAmount);
 			}
 		}
 

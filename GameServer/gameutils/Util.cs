@@ -544,7 +544,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool IsNearValue(int valueToHave, int compareToCompare, ushort tolerance)
 		{
-			return FastMath.Abs(valueToHave - compareToCompare) <= FastMath.Abs(tolerance);
+			return Math.Abs(valueToHave - compareToCompare) <= Math.Abs(tolerance);
 		}
 
 		/// <summary>

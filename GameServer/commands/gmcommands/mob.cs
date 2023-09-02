@@ -481,8 +481,8 @@ namespace DOL.GS.Commands
 				//Fill the object variables
 				int x = client.Player.X + Util.Random(-radius, radius);
 				int y = client.Player.Y + Util.Random(-radius, radius);
-				mob.X = FastMath.Abs(x);
-				mob.Y = FastMath.Abs(y);
+				mob.X = Math.Abs(x);
+				mob.Y = Math.Abs(y);
 				mob.Z = client.Player.Z;
 				mob.CurrentRegion = client.Player.CurrentRegion;
 				mob.Heading = client.Player.Heading;
@@ -541,8 +541,8 @@ namespace DOL.GS.Commands
 				//Fill the object variables
 				int x = client.Player.X + DOL.GS.Util.Random(-radius, radius);
 				int y = client.Player.Y + DOL.GS.Util.Random(-radius, radius);
-				mob.X = FastMath.Abs(x);
-				mob.Y = FastMath.Abs(y);
+				mob.X = Math.Abs(x);
+				mob.Y = Math.Abs(y);
 				mob.Z = client.Player.Z;
 				mob.CurrentRegion = client.Player.CurrentRegion;
 				mob.Heading = client.Player.Heading;

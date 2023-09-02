@@ -1487,20 +1487,20 @@ namespace DOL.GS
 
             if ((y >= yTop) && (y <= yBottom))
             {
-                int xdiff = Math.Min(FastMath.Abs(x - xLeft), FastMath.Abs(x - xRight));
+                int xdiff = Math.Min(Math.Abs(x - xLeft), Math.Abs(x - xRight));
                 distance = (long)xdiff * xdiff;
             }
             else
             {
                 if ((x >= xLeft) && (x <= xRight))
                 {
-                    int ydiff = Math.Min(FastMath.Abs(y - yTop), FastMath.Abs(y - yBottom));
+                    int ydiff = Math.Min(Math.Abs(y - yTop), Math.Abs(y - yBottom));
                     distance = (long)ydiff * ydiff;
                 }
                 else
                 {
-                    int xdiff = Math.Min(FastMath.Abs(x - xLeft), FastMath.Abs(x - xRight));
-                    int ydiff = Math.Min(FastMath.Abs(y - yTop), FastMath.Abs(y - yBottom));
+                    int xdiff = Math.Min(Math.Abs(x - xLeft), Math.Abs(x - xRight));
+                    int ydiff = Math.Min(Math.Abs(y - yTop), Math.Abs(y - yBottom));
                     distance = (long)xdiff * xdiff + (long)ydiff * ydiff;
                 }
             }
