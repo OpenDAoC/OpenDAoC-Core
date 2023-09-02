@@ -3466,7 +3466,11 @@ namespace DOL.GS.Spells
 				effectiveness *= 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
 			}
 
-			spellDamage *= effectiveness * _distanceFallOff;
+			spellDamage *= effectiveness;
+
+			if (_distanceFallOff > 0)
+				spellDamage *= 1 - _distanceFallOff;
+
 			int finalDamage = Util.Random((int)(minVariance * spellDamage), (int)(maxVariance * spellDamage));
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
