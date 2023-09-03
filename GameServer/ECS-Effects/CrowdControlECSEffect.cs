@@ -63,6 +63,11 @@ namespace DOL.GS
     /// </summary>
     public class StunECSGameEffect : AbstractCrowdControlECSEffect
     {
+        public StunECSGameEffect(ECSGameEffectInitParams initParams, int immunityTime)
+            : this(initParams)
+        {
+            ImmunityDuration = immunityTime;
+        }
         public StunECSGameEffect(ECSGameEffectInitParams initParams)
             : base(initParams)
         {

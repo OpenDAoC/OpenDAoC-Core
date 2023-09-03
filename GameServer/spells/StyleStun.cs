@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
 	{
 		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			new StunECSGameEffect(initParams);
+			new StunECSGameEffect(initParams, initParams.Duration * 5);
 		}
 		
 		public override int CalculateSpellResistChance(GameLiving target)
