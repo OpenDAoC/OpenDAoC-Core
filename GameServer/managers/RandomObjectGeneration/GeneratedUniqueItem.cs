@@ -54,24 +54,24 @@ namespace DOL.GS {
         //The following properties are weights for each roll
         //It is *not* a direct chance to receive the item. It is instead
         //a chance for that item type to be randomly selected as a valid generation type
-        private static ushort ToaItemChance = Properties.ROG_TOA_ITEM_CHANCE;
-        private static ushort ArmorWeight = Properties.ROG_ARMOR_WEIGHT;
-        private static ushort JewelryWeight = Properties.ROG_MAGICAL_WEIGHT;
-        private static ushort WeaponWeight = Properties.ROG_WEAPON_WEIGHT;
+        private static int ToaItemChance = Properties.ROG_TOA_ITEM_CHANCE;
+        private static int ArmorWeight = Properties.ROG_ARMOR_WEIGHT;
+        private static int JewelryWeight = Properties.ROG_MAGICAL_WEIGHT;
+        private static int WeaponWeight = Properties.ROG_WEAPON_WEIGHT;
         //The following 5 weights are for EACH roll on an item
         //I do not recommend putting any of them above 45
-        private static ushort ToaStatWeight = Properties.ROG_TOA_STAT_WEIGHT;
-        private static ushort ItemStatWeight = Properties.ROG_ITEM_STAT_WEIGHT;
-        private static ushort ItemResistWeight = Properties.ROG_ITEM_RESIST_WEIGHT;
-        private static ushort ItemSkillWeight = Properties.ROG_ITEM_SKILL_WEIGHT;
-        private static ushort ItemAllSkillWeight = Properties.ROG_STAT_ALLSKILL_WEIGHT;
+        private static int ToaStatWeight = Properties.ROG_TOA_STAT_WEIGHT;
+        private static int ItemStatWeight = Properties.ROG_ITEM_STAT_WEIGHT;
+        private static int ItemResistWeight = Properties.ROG_ITEM_RESIST_WEIGHT;
+        private static int ItemSkillWeight = Properties.ROG_ITEM_SKILL_WEIGHT;
+        private static int ItemAllSkillWeight = Properties.ROG_STAT_ALLSKILL_WEIGHT;
 
         //base item quality for all rogs
-        private static ushort RogStartingQual = Properties.ROG_STARTING_QUAL;
+        private static int RogStartingQual = Properties.ROG_STARTING_QUAL;
         //max possible quality for any rog
-        private static ushort RogCapQuality = Properties.ROG_CAP_QUAL;
+        private static int RogCapQuality = Properties.ROG_CAP_QUAL;
         //base Chance to get a magical RoG item, PlayerLevel*2 is added to get final value
-        private static ushort MagicalItemOffset = Properties.ROG_MAGICAL_ITEM_OFFSET;
+        private static int MagicalItemOffset = Properties.ROG_MAGICAL_ITEM_OFFSET;
 
         private eCharacterClass charClass = eCharacterClass.Unknown;
 
