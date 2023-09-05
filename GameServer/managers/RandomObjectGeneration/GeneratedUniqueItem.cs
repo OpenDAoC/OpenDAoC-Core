@@ -42,6 +42,7 @@ using System.Collections.Generic;
 
 using DOL.Events;
 using DOL.Database;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS {
     /// <summary>
@@ -49,38 +50,28 @@ namespace DOL.GS {
     /// Using it as a class is much more extendable to other usage than just loot and inventory
     /// </summary>
     public class GeneratedUniqueItem : ItemUnique {
-        // TOA Chance in %
-        public const ushort ROG_TOA_ITEM_CHANCE = 0;
-        // Armor Chance in %
-        public const ushort ROG_ARMOR_CHANCE = 50;
-        // Magical Chance in %
-        public const ushort ROG_MAGICAL_CHANCE = 40;
-        // Weapon Chance in %
-        public const ushort ROG_WEAPON_CHANCE = 40;
+        
+        //The following properties are weights for each roll
+        //It is *not* a direct chance to receive the item. It is instead
+        //a chance for that item type to be randomly selected as a valid generation type
+        private static ushort ToaItemChance = Properties.ROG_TOA_ITEM_CHANCE;
+        private static ushort ArmorWeight = Properties.ROG_ARMOR_WEIGHT;
+        private static ushort JewelryWeight = Properties.ROG_MAGICAL_WEIGHT;
+        private static ushort WeaponWeight = Properties.ROG_WEAPON_WEIGHT;
+        //The following 5 weights are for EACH roll on an item
+        //I do not recommend putting any of them above 45
+        private static ushort ToaStatWeight = Properties.ROG_TOA_STAT_WEIGHT;
+        private static ushort ItemStatWeight = Properties.ROG_ITEM_STAT_WEIGHT;
+        private static ushort ItemResistWeight = Properties.ROG_ITEM_RESIST_WEIGHT;
+        private static ushort ItemSkillWeight = Properties.ROG_ITEM_SKILL_WEIGHT;
+        private static ushort ItemAllSkillWeight = Properties.ROG_STAT_ALLSKILL_WEIGHT;
 
-        // Item lowest quality
-        public const ushort ROG_STARTING_QUAL = 95;
-
-        // Item highest quality
-        public const ushort ROG_CAP_QUAL = 99;
-
-        // Item chance to get a TOA advanced stat in a TOA Item
-        public const ushort ROG_TOA_STAT_CHANCE = 0;
-
-        // Item chance to get stat bonus
-        public const ushort ROG_ITEM_STAT_CHANCE = 45;
-
-        // Item chance to get resist bonus
-        public const ushort ROG_ITEM_RESIST_CHANCE = 48;
-
-        //item chance to get skills
-        public const ushort ROG_ITEM_SKILL_CHANCE = 25;
-
-        // Item chance to get All skills stat
-        public const ushort ROG_STAT_ALLSKILL_CHANCE = 0;
-
-        // base Chance to get a magical RoG item, Level*2 is added to get final value
-        public const ushort ROG_100_MAGICAL_OFFSET = 60;
+        //base item quality for all rogs
+        private static ushort RogStartingQual = Properties.ROG_STARTING_QUAL;
+        //max possible quality for any rog
+        private static ushort RogCapQuality = Properties.ROG_CAP_QUAL;
+        //base Chance to get a magical RoG item, PlayerLevel*2 is added to get final value
+        private static ushort MagicalItemOffset = Properties.ROG_MAGICAL_ITEM_OFFSET;
 
         private eCharacterClass charClass = eCharacterClass.Unknown;
 
@@ -90,7 +81,7 @@ namespace DOL.GS {
 
         [ScriptLoadedEvent]
         public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
+        { 
             InitializeHashtables();
         }
 
@@ -217,15 +208,15 @@ namespace DOL.GS {
         public void GenerateItemQuality(double conlevel)
         {
             // set base quality
-            int minQuality = ROG_STARTING_QUAL + Math.Max(0, this.Level - 59);
+            int minQuality = RogStartingQual + Math.Max(0, this.Level - 59);
             int maxQuality = (int)(1.310 * conlevel + 94.29 + 3);
 
             if (this.Level > 51 && minQuality < 97)
                 minQuality = 97;
 
             // CAPS
-            maxQuality = Math.Min(maxQuality, ROG_CAP_QUAL);  // unique objects capped at 99 quality
-            minQuality = Math.Min(minQuality, ROG_CAP_QUAL);  // unique objects capped at 99 quality
+            maxQuality = Math.Min(maxQuality, RogCapQuality);  // unique objects capped at 99 quality
+            minQuality = Math.Min(minQuality, RogCapQuality);  // unique objects capped at 99 quality
 
             maxQuality = Math.Max(maxQuality, minQuality);
 
@@ -703,7 +694,7 @@ namespace DOL.GS {
             if (this.Level > 80 && Util.Chance(80)) number++;
             // END
 
-            if (Util.Chance(ROG_100_MAGICAL_OFFSET + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
+            if (Util.Chance(MagicalItemOffset + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
             {
                 //1
                 number++;
@@ -955,7 +946,7 @@ namespace DOL.GS {
                                 if (!fIndividualSkill)
                                 {
                                     // ok to add AllSkills, but reduce the chance
-                                    if (SkillIsValidForObjectType(eProperty.AllSkills) && Util.Chance(ROG_STAT_ALLSKILL_CHANCE))
+                                    if (SkillIsValidForObjectType(eProperty.AllSkills) && Util.Chance(ItemAllSkillWeight))
                                         validSkills.Add(eProperty.AllSkills);
                                 }
                             }
@@ -963,16 +954,16 @@ namespace DOL.GS {
                             // All type skills never combined with individual skills
                             if (!fIndividualSkill)
                             {
-                                if (!BonusExists(eProperty.AllMagicSkills) && SkillIsValidForObjectType(eProperty.AllMagicSkills) && Util.Chance(ROG_STAT_ALLSKILL_CHANCE))
+                                if (!BonusExists(eProperty.AllMagicSkills) && SkillIsValidForObjectType(eProperty.AllMagicSkills) && Util.Chance(ItemAllSkillWeight))
                                     validSkills.Add(eProperty.AllMagicSkills);
 
-                                if (!BonusExists(eProperty.AllMeleeWeaponSkills) && SkillIsValidForObjectType(eProperty.AllMeleeWeaponSkills) && Util.Chance(ROG_STAT_ALLSKILL_CHANCE))
+                                if (!BonusExists(eProperty.AllMeleeWeaponSkills) && SkillIsValidForObjectType(eProperty.AllMeleeWeaponSkills) && Util.Chance(ItemAllSkillWeight))
                                     validSkills.Add(eProperty.AllMeleeWeaponSkills);
 
-                                if (!BonusExists(eProperty.AllDualWieldingSkills) && SkillIsValidForObjectType(eProperty.AllDualWieldingSkills) && Util.Chance(ROG_STAT_ALLSKILL_CHANCE))
+                                if (!BonusExists(eProperty.AllDualWieldingSkills) && SkillIsValidForObjectType(eProperty.AllDualWieldingSkills) && Util.Chance(ItemAllSkillWeight))
                                     validSkills.Add(eProperty.AllDualWieldingSkills);
 
-                                if (!BonusExists(eProperty.AllArcherySkills) && SkillIsValidForObjectType(eProperty.AllArcherySkills) && Util.Chance(ROG_STAT_ALLSKILL_CHANCE))
+                                if (!BonusExists(eProperty.AllArcherySkills) && SkillIsValidForObjectType(eProperty.AllArcherySkills) && Util.Chance(ItemAllSkillWeight))
                                     validSkills.Add(eProperty.AllArcherySkills);
                             }
 
@@ -5661,15 +5652,15 @@ namespace DOL.GS {
             }
             else if (level < 10)
             {
-                if (Util.Chance(ROG_ARMOR_CHANCE)) { genTypes.Add(eGenerateType.Armor); }
+                if (Util.Chance(ArmorWeight)) { genTypes.Add(eGenerateType.Armor); }
                 //if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE)) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(WeaponWeight)) { genTypes.Add(eGenerateType.Weapon); }
             }
             else
             {
-                if (Util.Chance(ROG_ARMOR_CHANCE + Util.Random(ROG_ARMOR_CHANCE))) { genTypes.Add(eGenerateType.Armor); }
-                if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(ROG_WEAPON_CHANCE + Util.Random(ROG_WEAPON_CHANCE)/2) ) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(ArmorWeight + Util.Random(ArmorWeight))) { genTypes.Add(eGenerateType.Armor); }
+                if (Util.Chance(JewelryWeight)) { genTypes.Add(eGenerateType.Magical); }
+                if (Util.Chance(WeaponWeight + Util.Random(WeaponWeight)/2) ) { genTypes.Add(eGenerateType.Weapon); }
             }
 
             //if none of the object types were added, default to armor
