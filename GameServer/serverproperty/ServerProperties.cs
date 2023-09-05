@@ -2905,6 +2905,15 @@ namespace DOL.GS.ServerProperties
         
         [ServerProperty("atlas", "alt_currency_id", "The id_nb of the item to use as alternative currency (i.e. Orbs)", "")]
         public static string ALT_CURRENCY_ID;
+        
+        [ServerProperty("atlas", "immunity_timer_use_adaptive", "toggle adaptive vs. flat immunity timers", false)]
+        public static bool IMMUNITY_TIMER_USE_ADAPTIVE;
+        
+        [ServerProperty("atlas", "immunity_timer_flat_length", "if non-adapative timers, the duration (in seconds) for immunity", 60)]
+        public static int IMMUNITY_TIMER_FLAT_LENGTH;
+        
+        [ServerProperty("atlas", "immunity_timer_adaptive_length", "if adapative timers, the modifer to apply to length (i.e. stun length * 6)", 6)]
+        public static int IMMUNITY_TIMER_ADAPTIVE_LENGTH;
 
 		#endregion
 		

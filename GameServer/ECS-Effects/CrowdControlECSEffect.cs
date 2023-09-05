@@ -1,15 +1,27 @@
+using System;
 using System.Linq;
 using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
     public abstract class AbstractCrowdControlECSEffect : ECSGameSpellEffect
     {
         public AbstractCrowdControlECSEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+            : base(initParams)
+        {
+            if (Properties.IMMUNITY_TIMER_USE_ADAPTIVE)
+            {
+                ImmunityDuration = Math.Min(60000, (int) (Duration * Properties.IMMUNITY_TIMER_ADAPTIVE_LENGTH)); //cap at 60s
+            }
+            else
+            {
+                ImmunityDuration = Properties.IMMUNITY_TIMER_FLAT_LENGTH * 1000; // *1000 to convert to gameloop time
+            }
+        }
 
         protected void OnHardCCStart()
         {
