@@ -44,7 +44,7 @@ namespace DOL.GS.PropertyCalc
 		/// <returns></returns>
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			if (living.IsDiseased)
+			if (living.IsDiseased || living.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
 				return 0; // no HP regen if diseased
 			if (living is GameKeepDoor)
 				return (int)(living.MaxHealth * 0.05); //5% each time for keep door
