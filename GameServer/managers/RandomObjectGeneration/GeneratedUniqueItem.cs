@@ -814,13 +814,12 @@ namespace DOL.GS {
             //allfocus
             if (CanAddFocus())
                 return eBonusType.Focus;
-            /*
+            
 			// ToA allows stat cap bonuses
-			if (toa && Util.Chance(ROG_TOA_STAT_CHANCE))
+			if (toa && Util.Chance(ToaItemChance))
 			{
 				return eBonusType.AdvancedStat;
 			}
-			*/
 
             if (Level < 10)
             {
@@ -830,30 +829,47 @@ namespace DOL.GS {
                     return eBonusType.Skill;
             }
 
-            int rand = Util.Random(100);
-            /*
-            List<eBonusType> bonTypes = new List<eBonusType>();
-            if (Util.Chance(ROG_ITEM_STAT_CHANCE)) { bonTypes.Add(eBonusType.Stat); }
-            if (Util.Chance(ROG_ITEM_RESIST_CHANCE)) { bonTypes.Add(eBonusType.Resist); }
-            if (Util.Chance(ROG_ITEM_SKILL_CHANCE) && !hasSkill) { bonTypes.Add(eBonusType.Skill); }
-            
-            //if none of the object types were added, randomly pick between stat/resist
-            if (bonTypes.Count < 1)
+            //weighted rolls
+            if (Properties.ROG_USE_WEIGHTED_GENERATION)
             {
-                int bonType = Util.Random(3);
-                if (bonType == 1) bonType--; //no toa stats
-                bonTypes.Add((eBonusType)bonType);
+                List<eBonusType> bonTypes = new List<eBonusType>();
+                if (Util.Chance(ItemStatWeight)) { bonTypes.Add(eBonusType.Stat); }
+                if (Util.Chance(ItemResistWeight)) { bonTypes.Add(eBonusType.Resist); }
+                if (Util.Chance(ItemSkillWeight) && !HasSkill) { bonTypes.Add(eBonusType.Skill); }
+            
+                //if none of the object types were added, randomly pick between stat/resist
+                if (bonTypes.Count < 1)
+                {
+                    int bonType = Util.Random(3);
+                    if (bonType == 1) bonType--; //no toa stats
+                    bonTypes.Add((eBonusType)bonType);
+                }
+
+                return bonTypes[Util.Random(bonTypes.Count - 1)];
             }
-
-            return bonTypes[Util.Random(bonTypes.Count - 1)];
-            */
-
+            
+            //simple generation
+            int rand = Util.Random(100);
             if (rand < 15)
                 return eBonusType.Skill;
             if (rand < 45)
                 return eBonusType.Resist;
             return eBonusType.Stat;
+        }
 
+        private bool HasSkill
+        {
+            get { return (this.Bonus1Type == (int) eBonusType.Skill
+                || this.Bonus2Type == (int) eBonusType.Skill
+                || this.Bonus3Type == (int) eBonusType.Skill
+                || this.Bonus4Type == (int) eBonusType.Skill
+                || this.Bonus5Type == (int) eBonusType.Skill
+                || this.Bonus6Type == (int) eBonusType.Skill
+                || this.Bonus7Type == (int) eBonusType.Skill
+                || this.Bonus8Type == (int) eBonusType.Skill
+                || this.Bonus9Type == (int) eBonusType.Skill
+                || this.Bonus10Type == (int) eBonusType.Skill
+                ); }
         }
 
         private bool CanAddFocus()
