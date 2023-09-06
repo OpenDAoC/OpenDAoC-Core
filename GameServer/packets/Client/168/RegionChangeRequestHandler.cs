@@ -42,8 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			ushort zonePoindId = packet.ReadShort();
-
+			ushort zonePointId = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
 			eRealm playerRealm = client.Player.Realm;
 
 			// If we are in TrialsOfAtlantis then base the target jump on the current region realm instead of the players realm.
@@ -51,7 +50,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (client.Player.CurrentRegion.Expansion == (int) eClientExpansion.TrialsOfAtlantis && client.Player.CurrentZone.Realm != eRealm.None)
 				playerRealm = client.Player.CurrentZone.Realm;
 
-			WhereClause whereClause = DB.Column("Id").IsEqualTo(zonePoindId);
+			WhereClause whereClause = DB.Column("Id").IsEqualTo(zonePointId);
 
 			if (client.Account.PrivLevel == 1)
 			{
@@ -63,7 +62,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (zonePoint == null)
 			{
-				ChatUtil.SendDebugMessage(client, $"Invalid ZonePoint. Wrong ID or mismatching realm. (ID: {zonePoindId}) (playerRealm: {(byte) playerRealm})");
+				ChatUtil.SendDebugMessage(client, $"Invalid ZonePoint. Wrong ID or mismatching realm. (ID: {zonePointId}) (playerRealm: {(byte) playerRealm})");
 				return;
 			}
 
@@ -72,12 +71,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				zonePoint = new()
 				{
-					Id = zonePoindId
+					Id = zonePointId
 				};
 			}
 
 			if (client.Account.PrivLevel > 1)
-				ChatUtil.SendDebugMessage(client, $"ZonePoint (ID: {zonePoindId}) (TargetRegion: {zonePoint.TargetRegion}) (ClassType: {zonePoint.ClassType})");
+				ChatUtil.SendDebugMessage(client, $"ZonePoint (ID: {zonePointId}) (TargetRegion: {zonePoint.TargetRegion}) (ClassType: {zonePoint.ClassType})");
 
 			if (zonePoint.TargetRegion != 0)
 			{
@@ -124,9 +123,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Type type = ScriptMgr.GetType(typeName);
 
 					if (type == null)
-						Log.Error($"ZonePoint not found (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})");
+						Log.Error($"ZonePoint not found (ID: {zonePoint.Id}) (Class {typeName})");
 					else if (!typeof(IJumpPointHandler).IsAssignableFrom(type))
-						Log.Error($"ZonePoint must implement IJumpPointHandler interface (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})");
+						Log.Error($"ZonePoint must implement {nameof(IJumpPointHandler)} interface (ID: {zonePoint.Id}) (Class {typeName})");
 					else
 					{
 						try
@@ -136,7 +135,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						catch (Exception e)
 						{
 							customHandler = null;
-							Log.Error($"Error when creating a new instance of jump point handler (ID: {zonePoint.Id}) (Class {zonePoint.ClassType})", e);
+							Log.Error($"Error when creating a new instance of jump point handler (ID: {zonePoint.Id}) (Class {typeName})", e);
 						}
 					}
 				}
