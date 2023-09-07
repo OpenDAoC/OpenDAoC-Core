@@ -16,13 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using DOL.Database;
 using DOL.Events;
-using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Quests
 {
@@ -169,10 +169,7 @@ namespace DOL.GS.Quests
 		public virtual void OfferQuest(GamePlayer player)
 		{
 			if (CheckQuestQualification(player))
-			{
-				OfferPlayer = player;
 				player.Out.SendQuestOfferWindow(QuestGiver, player, this);
-			}
 		}
 
 		/// <summary>

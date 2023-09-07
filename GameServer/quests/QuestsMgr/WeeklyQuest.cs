@@ -1,34 +1,28 @@
 using DOL.Database;
 
-namespace DOL.GS.Quests;
-
-public abstract class WeeklyQuest : BaseQuest
+namespace DOL.GS.Quests
 {
-    public abstract string QuestPropertyKey { get; set; }
-    public override bool CheckQuestQualification(GamePlayer player)
+    public abstract class WeeklyQuest : BaseQuest
     {
-        if (player.QuestListFinished.Contains(this))
-            return false;
-        
-        return true;
-    }
-    
-    public WeeklyQuest() : base()
-    {
-    }
-    
-    public WeeklyQuest(GamePlayer questingPlayer) : base(questingPlayer)
-    {
-    }
+        public abstract string QuestPropertyKey { get; set; }
 
-    public WeeklyQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-    {
-    }
+        public WeeklyQuest() : base() { }
 
-    public WeeklyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
-    {
+        public WeeklyQuest(GamePlayer questingPlayer) : base(questingPlayer) { }
+
+        public WeeklyQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
+
+        public WeeklyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+
+        public override bool CheckQuestQualification(GamePlayer player)
+        {
+            lock (player.QuestLock)
+            {
+                return !player.QuestListFinished.Contains(this);
+            }
+        }
+
+        public abstract void LoadQuestParameters();
+        public abstract void SaveQuestParameters();
     }
-    
-    public abstract void LoadQuestParameters();
-    public abstract void SaveQuestParameters();
 }

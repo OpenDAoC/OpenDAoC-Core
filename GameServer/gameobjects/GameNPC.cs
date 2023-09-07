@@ -1704,63 +1704,40 @@ namespace DOL.GS
 		/// <returns>true if this npc is the last step of one quest, false otherwise</returns>
 		public bool CanFinishOneQuest(GamePlayer player)
 		{
-			// browse Quests.
-			List<AbstractQuest> dqs;
-			lock (((ICollection)player.QuestList).SyncRoot)
+			lock (player.QuestLock)
 			{
-				dqs = new List<AbstractQuest>(player.QuestList);
-			}
-
-			foreach (AbstractQuest q in dqs)
-			{
-				// Handle Data Quest here.
-
-				DataQuest quest = null;
-				if (q is DataQuest)
+				foreach (AbstractQuest quest in player.QuestList)
 				{
-					quest = (DataQuest)q;
-				}
-
-				if (quest != null && (quest.TargetName == Name && (quest.TargetRegion == 0 || quest.TargetRegion == CurrentRegionID)))
-				{
-					switch (quest.StepType)
+					// Handle Data Quest here.
+					if (quest is DataQuest dataQuest && dataQuest.TargetName == Name && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == CurrentRegionID))
 					{
-						case DataQuest.eStepType.DeliverFinish:
-						case DataQuest.eStepType.InteractFinish:
-						case DataQuest.eStepType.KillFinish:
-						case DataQuest.eStepType.WhisperFinish:
-						case DataQuest.eStepType.CollectFinish:
+						switch (dataQuest.StepType)
+						{
+							case DataQuest.eStepType.DeliverFinish:
+							case DataQuest.eStepType.InteractFinish:
+							case DataQuest.eStepType.KillFinish:
+							case DataQuest.eStepType.WhisperFinish:
+							case DataQuest.eStepType.CollectFinish:
+								return true;
+						}
+					}
+
+					// Handle Reward Quest here.
+					if (quest is RewardQuest rewardQuest && rewardQuest.QuestGiver == this)
+					{
+						bool done = true;
+
+						foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
+							done &= goal.IsAchieved;
+
+						if (done)
 							return true;
-					}
-				}
-
-				// Handle Reward Quest here.
-
-				RewardQuest rwQuest = null;
-
-				if (q is RewardQuest)
-				{
-					rwQuest = (RewardQuest)q;
-				}
-
-				if (rwQuest != null && rwQuest.QuestGiver == this)
-				{
-					bool done = true;
-					foreach (RewardQuest.QuestGoal goal in rwQuest.Goals)
-					{
-						done &= goal.IsAchieved;
-					}
-
-					if (done)
-					{
-						return true;
 					}
 				}
 			}
 
 			return false;
 		}
-
 
 		/// <summary>
 		/// Give a quest a to specific player

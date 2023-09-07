@@ -217,11 +217,14 @@ namespace DOL.GS.PacketHandler
 				return;
 
 			SendTaskInfo();
-
 			int questIndex = 1;
-			lock (m_gameClient.Player.QuestList)
+
+			lock (m_gameClient.Player.QuestLock)
+			{
 				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 					SendQuestPacket((quest.Step == -1) ? null : quest, questIndex++);
+			}
+
 			while (questIndex <= 25)
 				SendQuestPacket(null, questIndex++);
 		}

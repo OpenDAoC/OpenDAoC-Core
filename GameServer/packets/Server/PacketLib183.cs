@@ -42,9 +42,9 @@ namespace DOL.GS.PacketHandler
 		public override void SendQuestListUpdate()
 		{
 			SendTaskInfo();
-
 			int questIndex = 1;
-			lock (m_gameClient.Player.QuestList)
+
+			lock (m_gameClient.Player.QuestLock)
 			{
 				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 				{

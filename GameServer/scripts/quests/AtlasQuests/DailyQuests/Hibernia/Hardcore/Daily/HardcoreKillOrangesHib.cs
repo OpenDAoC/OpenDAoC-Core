@@ -388,17 +388,18 @@ namespace DOL.GS.DailyQuest
 			
 		}
 
-		public void FailQuest()
+		private void FailQuest()
 		{
 			OrangeConKilled = 0;
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
-
-			OrangeConKilled = 0;
 			Step = -1;
-			// move quest from active list to finished list...
-			m_questPlayer.QuestList.Remove(this);
-			m_questPlayer.QuestListFinished.Add(this);
-			
+
+			lock (m_questPlayer.QuestLock)
+			{
+				m_questPlayer.QuestList.Remove(this);
+				m_questPlayer.QuestListFinished.Add(this);
+			}
+
 			m_questPlayer.Out.SendQuestListUpdate();
 		}
 	}

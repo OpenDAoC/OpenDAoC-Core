@@ -12127,13 +12127,11 @@ namespace DOL.GS
                 }
 
                 if (cachedCharacter != null)
-                {
                     cachedCharacter = DBCharacter;
-                }
 
-                foreach (var quest in this.QuestList)
+                foreach (AbstractQuest quest in QuestList)
                 {
-                    if(quest is Quests.DailyQuest dq)
+                    if (quest is Quests.DailyQuest dq)
                         dq.SaveQuestParameters();
 
                     if (quest is Quests.WeeklyQuest wq)
@@ -12144,20 +12142,23 @@ namespace DOL.GS
 
                     if (quest is LaunchQuestAlb lqa)
                         lqa.SaveQuestParameters();
+
                     if (quest is LaunchQuestHib lqh)
                         lqh.SaveQuestParameters();
+
                     if (quest is LaunchQuestMid lqm)
                         lqm.SaveQuestParameters();
-                    if(quest is Quests.AtlasQuest aq)
+
+                    if (quest is Quests.AtlasQuest aq)
                         aq.SaveQuestParameters();
                 }
-
 
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
 
                 if (log.IsInfoEnabled)
                     log.InfoFormat("{0} saved!", DBCharacter.Name);
+
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SaveIntoDatabase.CharacterSaved"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             catch (Exception e)
@@ -12736,8 +12737,8 @@ namespace DOL.GS
         /// </summary>
         public virtual void LoadQuests()
         {
-            m_questList.Clear();
-            m_questListFinished.Clear();
+            QuestList.Clear();
+            QuestListFinished.Clear();
 
             // Scripted quests
             var quests = DOLDB<DBQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
@@ -12747,9 +12748,9 @@ namespace DOL.GS
                 if (quest != null)
                 {
                     if (quest.Step < 0)
-                        m_questListFinished.Add(quest);
+                        QuestListFinished.Add(quest);
                     else
-                        m_questList.Add(quest);
+                        QuestList.Add(quest);
 
                     if (quest is Quests.DailyQuest dq)
                         dq.LoadQuestParameters();
@@ -12782,49 +12783,23 @@ namespace DOL.GS
 
                     if (quest.Step > 0)
                     {
-                        m_questList.Add((AbstractQuest)dataQuest);
+                        QuestList.Add(dataQuest);
                     }
                     else if (quest.Count > 0)
                     {
-                        m_questListFinished.Add((AbstractQuest)dataQuest);
+                        QuestListFinished.Add(dataQuest);
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Holds all the quests currently active on this player
-        /// </summary>
-        protected List<AbstractQuest> m_questList = new List<AbstractQuest>();
+        public virtual QuestList QuestList { get; private set; } = new();
 
-        /// <summary>
-        /// Holds all already finished quests off this player
-        /// </summary>
-        protected List<AbstractQuest> m_questListFinished = new List<AbstractQuest>();
+        public virtual List<AbstractQuest> QuestListFinished { get; private set; } = new();
 
-        protected ECSGameTimer m_questActionTimer = null;
+        public object QuestLock { get; private set; } = new();
 
-        public ECSGameTimer QuestActionTimer
-        {
-            get { return m_questActionTimer; }
-            set { m_questActionTimer = value; }
-        }
-
-        /// <summary>
-        /// Gets the questlist of this player
-        /// </summary>
-        public virtual List<AbstractQuest> QuestList
-        {
-            get { return m_questList; }
-        }
-
-        /// <summary>
-        /// Gets the finished quests of this player
-        /// </summary>
-        public virtual List<AbstractQuest> QuestListFinished
-        {
-            get { return m_questListFinished; }
-        }
+        public ECSGameTimer QuestActionTimer;
 
         /// <summary>
         /// Add a quest to the players finished list
@@ -12832,9 +12807,9 @@ namespace DOL.GS
         /// <param name="quest"></param>
         public void AddFinishedQuest(AbstractQuest quest)
         {
-            lock (m_questListFinished)
+            lock (QuestListFinished)
             {
-                m_questListFinished.Add(quest);
+                QuestListFinished.Add(quest);
             }
         }
 
@@ -12846,14 +12821,15 @@ namespace DOL.GS
         /// <returns>true if added, false if player is already doing the quest!</returns>
         public bool AddQuest(AbstractQuest quest)
         {
-            lock (QuestList)
+            lock (QuestLock)
             {
                 if (IsDoingQuest(quest) != null)
                     return false;
 
-                m_questList.Add(quest);
+                QuestList.Add(quest);
                 quest.OnQuestAssigned(this);
             }
+
             Out.SendQuestUpdate(quest);
             return true;
         }
@@ -12869,18 +12845,15 @@ namespace DOL.GS
             if (questType == null)
                 return false;
 
-            lock (QuestListFinished)
+            lock (QuestLock)
             {
-                foreach (AbstractQuest q in m_questListFinished)
+                foreach (AbstractQuest quest in QuestListFinished)
                 {
-                    if (q is DataQuest == false)
+                    if (quest is not DataQuest && quest.GetType().Equals(questType) && quest.Step == -1)
                     {
-                        if (q.GetType().Equals(questType) && q.Step == -1)
-                        {
-                            m_questListFinished.Remove(q);
-                            q.DeleteFromDatabase();
-                            return true;
-                        }
+                        QuestListFinished.Remove(quest);
+                        quest.DeleteFromDatabase();
+                        return true;
                     }
                 }
             }
@@ -12898,17 +12871,19 @@ namespace DOL.GS
         public int HasFinishedQuest(Type questType)
         {
             int counter = 0;
-            lock (QuestListFinished)
+
+            lock (QuestLock)
             {
-                foreach (AbstractQuest q in m_questListFinished)
+                foreach (AbstractQuest quest in QuestListFinished)
                 {
-                    if (q is DataQuest == false)
+                    if (quest is not DataQuest)
                     {
-                        if (q.GetType().Equals(questType))
+                        if (quest.GetType().Equals(questType))
                             counter++;
                     }
                 }
             }
+
             return counter;
         }
 
@@ -12916,21 +12891,20 @@ namespace DOL.GS
         /// Checks if this player is currently doing the specified quest
         /// Can be used by scripted and data quests
         /// </summary>
-        /// <param name="questType">The quest type</param>
         /// <returns>the quest if player is doing the quest or null if not</returns>
         public AbstractQuest IsDoingQuest(AbstractQuest quest)
         {
-            lock (QuestList)
+            lock (QuestLock)
             {
-                foreach (AbstractQuest q in m_questList)
+                foreach (AbstractQuest questInList in QuestList)
                 {
-                    if (q.GetType().Equals(quest.GetType()) && q.IsDoingQuest(quest))
-                        return q;
+                    if (questInList.GetType().Equals(quest.GetType()) && questInList.IsDoingQuest())
+                        return questInList;
                 }
             }
+
             return null;
         }
-
 
         /// <summary>
         /// Checks if this player is currently doing the specified quest type
@@ -12940,17 +12914,18 @@ namespace DOL.GS
         /// <returns>the quest if player is doing the quest or null if not</returns>
         public AbstractQuest IsDoingQuest(Type questType)
         {
-            lock (QuestList)
+            lock (QuestLock)
             {
-                foreach (AbstractQuest q in m_questList)
+                foreach (AbstractQuest quest in QuestList)
                 {
-                    if (q is DataQuest == false)
+                    if (quest is DataQuest == false)
                     {
-                        if (q.GetType().Equals(questType))
-                            return q;
+                        if (quest.GetType().Equals(questType))
+                            return quest;
                     }
                 }
             }
+
             return null;
         }
 
@@ -12962,12 +12937,12 @@ namespace DOL.GS
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
-
             List<AbstractQuest> cloneList;
+
             // events will only fire for currently active quests.
-            lock (QuestList)
+            lock (QuestLock)
             {
-                cloneList = new List<AbstractQuest>(m_questList);
+                cloneList = new List<AbstractQuest>(QuestList);
             }
 
             foreach (AbstractQuest q in cloneList)

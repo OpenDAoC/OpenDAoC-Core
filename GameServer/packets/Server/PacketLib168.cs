@@ -1560,7 +1560,7 @@ namespace DOL.GS.PacketHandler
 		{
 			int questIndex = 0;
 
-			lock (m_gameClient.Player.QuestList)
+			lock (m_gameClient.Player.QuestLock)
 			{
 				foreach (AbstractQuest q in m_gameClient.Player.QuestList)
 				{
@@ -1579,7 +1579,8 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendQuestListUpdate()
 		{
 			int questIndex = 0;
-			lock (m_gameClient.Player.QuestList)
+
+			lock (m_gameClient.Player.QuestLock)
 			{
 				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 				{

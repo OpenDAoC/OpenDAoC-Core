@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Quests;
 using ECS.Debug;
@@ -57,21 +58,17 @@ namespace DOL.GS
                     if (!player.EntityManagerId.IsSet)
                         continue;
 
-                    List<AbstractQuest> questsToRemove = new();
+                    List<AbstractQuest> questsToRemove;
 
-                    foreach (AbstractQuest quest in player.QuestListFinished)
+                    lock (player.QuestLock)
                     {
-                        if (quest is Quests.MonthlyQuest)
+                        questsToRemove = player.QuestListFinished.Where(x => x is Quests.MonthlyQuest).ToList();
+
+                        foreach (AbstractQuest quest in questsToRemove)
                         {
                             quest.AbortQuest();
-                            questsToRemove.Add(quest);
+                            player.QuestListFinished.Remove(quest);
                         }
-                    }
-
-                    foreach (AbstractQuest quest in questsToRemove)
-                    {
-                        player.QuestList.Remove(quest);
-                        player.QuestListFinished.Remove(quest);
                     }
                 }
 

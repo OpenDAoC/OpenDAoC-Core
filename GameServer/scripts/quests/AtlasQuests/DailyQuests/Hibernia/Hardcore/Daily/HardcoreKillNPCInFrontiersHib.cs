@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Cache;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using log4net;
 
@@ -395,10 +389,12 @@ namespace DOL.GS.DailyQuest
 			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 			FrontierMobsKilled = 0;
 			Step = -1;
-			
-			// move quest from active list to finished list...
-			m_questPlayer.QuestList.Remove(this);
-			m_questPlayer.QuestListFinished.Add(this);
+
+			lock (m_questPlayer.QuestLock)
+			{
+				m_questPlayer.QuestList.Remove(this);
+				m_questPlayer.QuestListFinished.Add(this);
+			}
 
 			m_questPlayer.Out.SendQuestListUpdate();
 		}

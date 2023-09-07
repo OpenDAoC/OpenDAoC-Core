@@ -494,19 +494,15 @@ namespace DOL.GS.PacketHandler
 		public override void SendQuestListUpdate()
 		{
 			if (m_gameClient == null || m_gameClient.Player == null)
-			{
 				return;
-			}
 
 			SendTaskInfo();
-
 			int questIndex = 1;
-			lock (m_gameClient.Player.QuestList)
+
+			lock (m_gameClient.Player.QuestLock)
 			{
-				foreach (AbstractQuest quest in m_gameClient.Player.QuestList.ToList())
-				{
+				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 					SendQuestPacket((quest.Step == 0 || quest.Step == -1 || quest.Step == -2) ? null : quest, questIndex++);
-				}
 			}
 		}
 

@@ -16,45 +16,28 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 *
 */
-using System;
-using System.Collections;
 
 using DOL.GS.Quests;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.RemoveQuestRequest, "Quest Remove request Handler.", eClientStatus.PlayerInGame)]
-	public class QuestRemoveRequestHandler : IPacketHandler
-	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
-		{
-			ushort unk1 = packet.ReadShort();
-			ushort questIndex = packet.ReadShort();
-			ushort unk2 = packet.ReadShort();
-			ushort unk3 = packet.ReadShort();
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.RemoveQuestRequest, "Quest Remove request Handler.", eClientStatus.PlayerInGame)]
+    public class QuestRemoveRequestHandler : IPacketHandler
+    {
+        public void HandlePacket(GameClient client, GSPacketIn packet)
+        {
+            _ = packet.ReadShort();
+            ushort questIndex = packet.ReadShort();
+            _ = packet.ReadShort();
+            _ = packet.ReadShort();
 
-			AbstractQuest quest = null;
+            lock (client.Player.QuestLock)
+            {
+                QuestList questList = client.Player.QuestList;
 
-			int index = 0;
-			lock (client.Player.QuestList)
-			{
-				foreach (AbstractQuest q in client.Player.QuestList)
-				{
-					// ignore completed quests
-					if (q.Step == -1)
-						continue;
-
-					if (index == questIndex)
-					{
-						quest = q;
-						break;
-					}
-
-				index++;
-				}
-			}
-
-			quest?.AbortQuest();
-		}
-	}
+                if (questIndex < questList.Count)
+                    questList[questIndex].AbortQuest();
+            }
+        }
+    }
 }

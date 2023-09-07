@@ -560,10 +560,10 @@ namespace DOL.GS.PacketHandler
 		public override void SendQuestUpdate(AbstractQuest quest)
 		{
 			int questIndex = 1;
-			// add check for null due to LD
+
 			if (m_gameClient != null && m_gameClient.Player != null && m_gameClient.Player.QuestList != null)
 			{
-				lock (m_gameClient.Player.QuestList)
+				lock (m_gameClient.Player.QuestLock)
 				{
 					foreach (AbstractQuest q in m_gameClient.Player.QuestList)
 					{
@@ -584,10 +584,11 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			SendTaskInfo();
 
+			SendTaskInfo();
 			int questIndex = 1;
-			lock (m_gameClient.Player.QuestList)
+
+			lock (m_gameClient.Player.QuestLock)
 			{
 				foreach (AbstractQuest quest in m_gameClient.Player.QuestList)
 				{

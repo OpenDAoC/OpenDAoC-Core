@@ -1,34 +1,29 @@
 using DOL.Database;
 
-namespace DOL.GS.Quests;
-
-public abstract class MonthlyQuest : BaseQuest
+namespace DOL.GS.Quests
 {
-    public abstract string QuestPropertyKey { get; set; }
-    public override bool CheckQuestQualification(GamePlayer player)
+    public abstract class MonthlyQuest : BaseQuest
     {
-        if (player.QuestListFinished.Contains(this))
-            return false;
-        
-        return true;
-    }
-    
-    public MonthlyQuest() : base()
-    {
-    }
-    
-    public MonthlyQuest(GamePlayer questingPlayer) : base(questingPlayer)
-    {
-    }
+        public abstract string QuestPropertyKey { get; set; }
 
-    public MonthlyQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-    {
-    }
+        public MonthlyQuest() : base() { }
 
-    public MonthlyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
-    {
+        public MonthlyQuest(GamePlayer questingPlayer) : base(questingPlayer) { }
+
+        public MonthlyQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
+
+        public MonthlyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+
+
+        public override bool CheckQuestQualification(GamePlayer player)
+        {
+            lock (player.QuestLock)
+            {
+                return !player.QuestListFinished.Contains(this);
+            }
+        }
+
+        public abstract void LoadQuestParameters();
+        public abstract void SaveQuestParameters();
     }
-    
-    public abstract void LoadQuestParameters();
-    public abstract void SaveQuestParameters();
 }

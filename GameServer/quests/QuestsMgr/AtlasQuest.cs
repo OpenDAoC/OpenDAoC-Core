@@ -1,34 +1,28 @@
 using DOL.Database;
 
-namespace DOL.GS.Quests;
-
-public abstract class AtlasQuest : BaseQuest
+namespace DOL.GS.Quests
 {
-    public abstract string QuestPropertyKey { get; set; }
-    public override bool CheckQuestQualification(GamePlayer player)
+    public abstract class AtlasQuest : BaseQuest
     {
-        if (player.QuestListFinished.Contains(this))
-            return false;
-        
-        return true;
-    }
-    
-    public AtlasQuest() : base()
-    {
-    }
-    
-    public AtlasQuest(GamePlayer questingPlayer) : base(questingPlayer)
-    {
-    }
+        public abstract string QuestPropertyKey { get; set; }
 
-    public AtlasQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-    {
-    }
+        public AtlasQuest() : base() { }
 
-    public AtlasQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
-    {
+        public AtlasQuest(GamePlayer questingPlayer) : base(questingPlayer) { }
+
+        public AtlasQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
+
+        public AtlasQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+
+        public override bool CheckQuestQualification(GamePlayer player)
+        {
+            lock (player.QuestLock)
+            {
+                return !player.QuestListFinished.Contains(this);
+            }
+        }
+
+        public abstract void LoadQuestParameters();
+        public abstract void SaveQuestParameters();
     }
-    
-    public abstract void LoadQuestParameters();
-    public abstract void SaveQuestParameters();
 }

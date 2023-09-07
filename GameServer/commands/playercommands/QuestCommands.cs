@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 
 			foreach (AbstractQuest quest in player.QuestList)
 			{
-				if (quest.Command(player, AbstractQuest.eQuestCommand.Search))
+				if (quest.Command(player, AbstractQuest.eQuestCommand.SEARCH))
 				{
 					searched = true;
 				}
@@ -59,7 +59,7 @@ namespace DOL.GS.Commands
                 {
                     if (area is QuestSearchArea && (area as QuestSearchArea).DataQuest != null && (area as QuestSearchArea).Step == 0)
                     {
-                        if ((area as QuestSearchArea).DataQuest.Command(player, AbstractQuest.eQuestCommand.SearchStart, area))
+                        if ((area as QuestSearchArea).DataQuest.Command(player, AbstractQuest.eQuestCommand.SEARCH_START, area))
                         {
                             searched = true;
                         }
