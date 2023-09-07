@@ -1791,20 +1791,9 @@ namespace DOL.GS
 
         public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double bonusArmorFactor, out double armorFactor, out double absorb)
         {
-            if (owner is GamePlayer)
-                bonusArmorFactor = target is GamePlayer ? Math.Max(1, target.Level * ARMOR_FACTOR_LEVEL_SCALAR / 50.0) : 2;
-            else
-            {
-                int armorFactorLevelScalar = ARMOR_FACTOR_LEVEL_SCALAR;
-
-                if (target.Level < 21)
-                    armorFactorLevelScalar += 20 - target.Level;
-
-                bonusArmorFactor = target.Level * armorFactorLevelScalar / 50.0;
-            }
-
-            absorb = target.GetArmorAbsorb(armorSlot);
+            bonusArmorFactor = owner is GamePlayer && target is not GamePlayer ? 2 : target.Level * ARMOR_FACTOR_LEVEL_SCALAR / 50.0;
             armorFactor = bonusArmorFactor + target.GetArmorAF(armorSlot);
+            absorb = target.GetArmorAbsorb(armorSlot);
             return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
         }
 
