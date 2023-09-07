@@ -10165,7 +10165,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (sit && CurrentSpeed > 0)
+            if (sit && (CurrentSpeed > 0 || IsStrafing))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.MustStandingStill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
