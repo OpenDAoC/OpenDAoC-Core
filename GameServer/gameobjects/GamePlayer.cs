@@ -322,11 +322,6 @@ namespace DOL.GS
         public override bool IsAttackable { get { return (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && base.IsAttackable); }}
 
         /// <summary>
-        /// Is this player PvP enabled
-        /// </summary>
-        public virtual bool IsPvP { get { return GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP || (this.CurrentRegionID == 27 && Properties.EVENT_PVP); }}
-
-        /// <summary>
         /// Can this player use cross realm items
         /// </summary>
         public virtual bool CanUseCrossRealmItems { get { return ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS; }}
@@ -1647,32 +1642,6 @@ namespace DOL.GS
                         relY = 385230;
                         relZ = 5410;
                         relHeading = 1756;
-                        break;
-                    }
-
-                    if (Properties.EVENT_THIDRANKI && player.CurrentRegionID == 252)
-                    {
-                        switch (player.Realm)
-                        {
-                            case eRealm.Albion:
-                                relRegion = player.CurrentRegion.ID;
-                                relX = 38113;
-                                relY = 53507;
-                                relZ = 4160;
-                                break;
-                            case eRealm.Midgard:
-                                relRegion = player.CurrentRegion.ID;
-                                relX = 53568;
-                                relY = 23643;
-                                relZ = 4530;
-                                break;
-                            case eRealm.Hibernia:
-                                relRegion = player.CurrentRegion.ID;
-                                relX = 17367;
-                                relY = 18248;
-                                relZ = 4320;
-                                break;
-                        }
                         break;
                     }
 
@@ -8774,17 +8743,6 @@ namespace DOL.GS
                 return false;
             if (IsIgnoring(source))
                 return true;
-
-            if (Properties.EVENT_CROSS_REALM_SAY)
-            {
-                foreach (AbstractArea area in source.CurrentAreas)
-                {
-                    if (area.IsSafeArea)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.Says", source.GetName(0, false), str),
-                            eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-                    return true;
-                }
-            }
 
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this) || Properties.ENABLE_DEBUG)
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SayReceive.Says", source.GetName(0, false), str),

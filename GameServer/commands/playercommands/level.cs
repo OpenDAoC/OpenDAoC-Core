@@ -1,6 +1,5 @@
 using System;
 using DOL.Database;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 
@@ -100,11 +99,7 @@ namespace DOL.GS.Commands
 						client.Player.Out.SendMessage("You have already received your /level complementary gear.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return;
 					}
-					
-					BattlegroundEventLoot.GenerateArmor(client.Player);
-					BattlegroundEventLoot.GenerateWeaponsForClass((eCharacterClass)client.Player.CharacterClass.ID, client.Player);
-					BattlegroundEventLoot.GenerateGems(client.Player);
-					
+
 					var slashlevelgear = new AccountXCustomParam();
 					slashlevelgear.Name = client.Account.Name;
 					slashlevelgear.KeyName = SoftLaunchLevelGearKey;

@@ -1,30 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
 using System.Collections;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.Styles;
 
 namespace DOL.GS.ServerRules
 {
@@ -79,12 +57,6 @@ namespace DOL.GS.ServerRules
 				return false;
 			}
 
-			if(attacker is GamePlayer atkPl && defender is GamePlayer defPl
-				&& atkPl.IsPvP && defPl.IsPvP)
-            {
-				return true;
-            }
-
 			//Don't allow attacks on same realm members on Normal Servers
 			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender))
 			{
@@ -134,10 +106,6 @@ namespace DOL.GS.ServerRules
 			// checking as a gm, targets are considered friendly
 			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
 
-			if (target is GamePlayer tPl && source is GamePlayer sPl
-				&& tPl.IsPvP && sPl.IsPvP)
-				return false;
-
 			//Peace flag NPCs are same realm
 			if (target is GameNPC)
 				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
@@ -173,13 +141,6 @@ namespace DOL.GS.ServerRules
 				if(quiet == false) MessageToLiving(source, "You can't group with a player from another realm!");
 				return false;
 			}
-
-			if (source?.CurrentRegionID == 27 || target?.CurrentRegionID == 27)
-            {
-                if (Properties.EVENT_PVP) { return false; }
-            }
-
-			if (Properties.EVENT_CROSS_REALM_GROUPS) return true;
 
 			return true;
 		}
@@ -244,8 +205,6 @@ namespace DOL.GS.ServerRules
 		public override bool IsAllowedToUnderstand(GameLiving source, GamePlayer target)
 		{
 			if(source == null || target == null) return false;
-			
-			if(Properties.EVENT_CROSS_REALM_GROUPS) return true;
 
 			if (source.CurrentRegionID == 27) return true;
 
@@ -372,8 +331,6 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.Name;
-			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
-				return target.Name;
 
 			return source.RaceToTranslatedName(target.Race, target.Gender);
 		}
@@ -387,8 +344,6 @@ namespace DOL.GS.ServerRules
 		public override string GetPlayerLastName(GamePlayer source, GamePlayer target)
 		{
 			if (IsSameRealm(source, target, true))
-				return target.LastName;
-			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
 				return target.LastName;
 
 			return target.RealmRankTitle(source.Client.Account.Language);
@@ -404,8 +359,7 @@ namespace DOL.GS.ServerRules
 		{
 			if (IsSameRealm(source, target, true))
 				return target.GuildName;
-			if (Properties.EVENT_PVP && source.CurrentRegionID == 27)
-				return target.RealmRankTitle(source.Client.Account.Language);
+
 			return string.Empty;
 		}
 	
