@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 using System.Reflection;
 using DOL.Network;
 using log4net;
@@ -139,6 +140,12 @@ namespace DOL.GS
 			return
 				string.Format("GSPacketIn: Size={0} Sequence=0x{1:X4} Session={2} Parameter={3} ID=0x{4:X2}",
 							  m_psize, m_sequence, m_sessionID, m_parameter, m_id);
+		}
+
+		public override void Close()
+		{
+			// Called by Dispose and normally invalidates the stream.
+			// But this is both pointless (`MemoryStream` doesn't have any unmanaged resource) and undesirable (we always want the buffer to remain accessible)
 		}
 	}
 }

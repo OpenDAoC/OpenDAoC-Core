@@ -305,7 +305,7 @@ namespace DOL.GS.PacketHandler
         public void SendTCP(GSTCPPacketOut packet)
         {
             packet.WritePacketLength();
-            //SavePacket(packet); // TODO: Fix. This doesn't work since packets are disposed.
+            SavePacket(packet);
             SendTCP(packet.GetBuffer());
         }
 
