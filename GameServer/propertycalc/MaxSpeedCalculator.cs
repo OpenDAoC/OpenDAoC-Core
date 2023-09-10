@@ -130,20 +130,23 @@ namespace DOL.GS.PropertyCalc
 
                 if (!living.InCombat)
                 {
-                    if (brain != null && brain.Body != null)
+                    if (brain?.Body != null)
                     {
-                        GameLiving owner = brain.GetLivingOwner();
-                        int distance = brain.Body.GetDistanceTo(owner);
-
+                        GameLiving owner = brain.Owner;
                         if (owner != null && owner == brain.Body.FollowTarget)
                         {
+                            if (owner is GameNPC)
+                                owner = brain.GetPlayerOwner();
+
+                            int distance = brain.Body.GetDistanceTo(owner);
+
                             if (distance > 20)
                                 speed *= 1.25;
 
                             if (living is NecromancerPet && distance > 700)
                                 speed *= 1.25;
 
-                            double ownerSpeedAdjust = (double) owner.MaxSpeed / GamePlayer.PLAYER_BASE_SPEED;
+                            double ownerSpeedAdjust = (double) owner.MaxSpeed / owner.MaxSpeedBase;
 
                             if (ownerSpeedAdjust > 1.0)
                                 speed *= ownerSpeedAdjust;
@@ -161,10 +164,13 @@ namespace DOL.GS.PropertyCalc
                 }
                 else
                 {
-                    GameLiving owner = brain?.GetLivingOwner();
+                    GameLiving owner = brain?.Owner;
 
                     if (owner != null && owner == brain.Body.FollowTarget)
                     {
+                        if (owner is GameNPC)
+                            owner = brain.GetPlayerOwner();
+
                         if (owner is GamePlayer playerOwner && playerOwner.IsSprinting)
                             speed *= 1.3;
                     }
@@ -177,7 +183,7 @@ namespace DOL.GS.PropertyCalc
             }
 
             speed = living.MaxSpeedBase * speed + 0.5; // 0.5 is to fix the rounding error when converting to int so root results in speed 2 ((191 * 0.01 = 1.91) + 0.5 = 2.41).
-            
+
             if (speed <= 0.5) // Fix for the rounding fix above. (???)
                 return 0;
 

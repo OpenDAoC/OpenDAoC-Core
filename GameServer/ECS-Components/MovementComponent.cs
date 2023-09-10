@@ -18,7 +18,7 @@ namespace DOL.GS
         public double TickSpeedZ { get; private set; }
         public bool FixedSpeed { get; set; }
         public short CurrentSpeed { get; set; }
-        public short MaxSpeedBase { get; set; }
+        public short MaxSpeedBase { get; set; } // Currently unused for players.
         public long MovementStartTick { get; set; }
         public bool IsTurningDisabled => !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound) && _turningDisabledCount > 0;
         public short MaxSpeed => FixedSpeed ? MaxSpeedBase : (short) Owner.GetModified(eProperty.MaxSpeed);

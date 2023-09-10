@@ -80,8 +80,6 @@ namespace DOL.GS
         /// <param name="owner"></param>
         public BDSubPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
 
-        public override short MaxSpeed => (Brain as IControlledBrain).Owner.MaxSpeed;
-
         /// <summary>
         /// Changes the commander's weapon to the specified weapon template
         /// </summary>
