@@ -49,7 +49,7 @@ namespace DOL.GS.PacketHandler
         /// Sync Lock Object
         /// </summary>
         private readonly object m_SyncLock = new object();
-        
+
         /// <summary>
         /// Holds the current client for this processor
         /// </summary>
@@ -120,6 +120,9 @@ namespace DOL.GS.PacketHandler
         /// <param name="pak">The sent packet</param>
         protected void SavePacket(IPacket pak)
         {
+            if (!Properties.SAVE_PACKETS)
+                return;
+
             lock (((ICollection)m_lastPackets).SyncRoot)
             {
                 while (m_lastPackets.Count >= MAX_LAST_PACKETS)
@@ -135,6 +138,9 @@ namespace DOL.GS.PacketHandler
         /// <returns></returns>
         public IPacket[] GetLastPackets()
         {
+            if (!Properties.SAVE_PACKETS)
+                return Array.Empty<IPacket>();
+
             lock (((ICollection)m_lastPackets).SyncRoot)
             {
                 return m_lastPackets.ToArray();
@@ -675,14 +681,17 @@ namespace DOL.GS.PacketHandler
 
                         if (log.IsInfoEnabled)
                         {
-                            log.Info("Last client sent/received packets (from older to newer):");
-
-                            foreach (IPacket prevPak in GetLastPackets())
+                            if (Properties.SAVE_PACKETS)
                             {
-                                log.Info(prevPak.ToHumanReadable());
+                                log.Info("Last client sent/received packets (from older to newer):");
+
+                                foreach (IPacket prevPak in GetLastPackets())
+                                    log.Info(prevPak.ToHumanReadable());
                             }
-                            
-                            log.Info(Marshal.ToHexDump("Last Received Bytes : ", buffer));
+                            else
+                                log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+
+                            log.Info(Marshal.ToHexDump("Last received bytes: ", buffer));
                         }
 
                         m_client.Disconnect();
