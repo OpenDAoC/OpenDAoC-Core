@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using DOL.Database;
@@ -144,13 +145,15 @@ namespace DOL.GS.Scripts
             m_Dura = STD_VOTING_DURATION;
             string msg1 = "Voting in progress... type /vote";
             string msg2 = aGM.Name + " starts a new voting for " + m_Dura + "sec ... Use /vote";
-            foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+
+            foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
             {
-                client.Player.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
-                client.Out.SendMessage(msg1, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                client.Out.SendMessage(msg2, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                client.Out.SendPlaySound(eSoundType.Craft, 0x04);
+                otherPlayer.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
+                otherPlayer.Out.SendMessage(msg1, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                otherPlayer.Out.SendMessage(msg2, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                otherPlayer.Out.SendPlaySound(eSoundType.Craft, 0x04);
             }
+
             //NewsMgr.CreateNews(aGM.Name+" starts a new voting!", (byte)eRealm.None, eNewsType.RvRGlobal, false);
             if (m_Timer != null)
                 m_Timer.Dispose();
@@ -165,13 +168,15 @@ namespace DOL.GS.Scripts
             m_Timer = null;
             m_Current = null;
             string msg = aGM.Name + " cancels the voting!";
-            foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+
+            foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
             {
-                client.Player.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
-                client.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                client.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                client.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                otherPlayer.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
+                otherPlayer.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                otherPlayer.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                otherPlayer.Out.SendPlaySound(eSoundType.Craft, 0x02);
             }
+
             //NewsMgr.CreateNews(msg, (byte)eRealm.None, eNewsType.RvRGlobal, false);
         }
 
@@ -188,10 +193,11 @@ namespace DOL.GS.Scripts
             if (m_Dura == 60 || m_Dura == 30 || m_Dura == 10 || m_Dura == 5)
             {
                 string msg = "Voting ends in " + m_Dura + "sec...";
-                foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+
+                foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
                 {
-                    client.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                    otherPlayer.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                    otherPlayer.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
                 }
             }
         }
@@ -208,80 +214,77 @@ namespace DOL.GS.Scripts
 
             int listStart = 1;
             ArrayList filters = null;
-            ArrayList clients = new ArrayList();
+            List<GamePlayer> players = ClientService.GetPlayers();
+
+            // counting the votes for each option
+            uint count = 0;
+            ArrayList votes = new ArrayList();
+            for (int i = 0; i < voting.Options.Length; i++)
+                votes.Add(new KVP(voting.Options[i], 0));
 
             // get list of clients depending on server type
-            foreach (GameClient serverClient in WorldMgr.GetAllPlayingClients())
-                lock (clients)
+            foreach (GamePlayer player in players)
             {
-                // counting the votes for each option
-                uint count = 0;
-                ArrayList votes = new ArrayList();
-                for (int i = 0; i < voting.Options.Length; i++)
-                    votes.Add(new KVP(voting.Options[i], 0));
+                player.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                player.Out.SendPlaySound(eSoundType.Craft, 0x04);
 
-                foreach (GameClient client in clients)
+                int vote = player.TempProperties.GetProperty(PLY_TEMP_PROP_KEY, -1);
+                player.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
+
+                if (vote >= 0 && vote < voting.Options.Length)
                 {
-                    client.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage(msg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    client.Out.SendPlaySound(eSoundType.Craft, 0x04);
-
-                    int vote = client.Player.TempProperties.GetProperty(PLY_TEMP_PROP_KEY, -1);
-                    client.Player.TempProperties.RemoveProperty(PLY_TEMP_PROP_KEY);
-                    if (vote >= 0 && vote < voting.Options.Length)
-                    {
-                        ((KVP)votes[vote]).Value++;
-                        ++count;
-                    }
+                    ((KVP)votes[vote]).Value++;
+                    ++count;
                 }
+            }
 
-                // generating result
-                StringBuilder msg1 = new StringBuilder(); // for PrivLevel < GM
-                StringBuilder msg2 = new StringBuilder(); // for PrivLevel >= GM
-                string tmp = string.Format(
-                    "Altogether {0} of {1} players voted ({2}%).\n",
-                    count, clients.Count, PDivide(count, clients.Count));
-                msg1.Append(tmp);
-                msg2.Append("VoteID: ").Append(voting.VoteID).Append("\n").Append(tmp);
-                if (voting.Description != string.Empty)
-                    msg2.Append("\n").Append(voting.Description).Append("\n");
+            // generating result
+            StringBuilder msg1 = new StringBuilder(); // for PrivLevel < GM
+            StringBuilder msg2 = new StringBuilder(); // for PrivLevel >= GM
+            string tmp = string.Format(
+                "Altogether {0} of {1} players voted ({2}%).\n",
+                count, players.Count, PDivide(count, players.Count));
+            msg1.Append(tmp);
+            msg2.Append("VoteID: ").Append(voting.VoteID).Append("\n").Append(tmp);
+            if (voting.Description != string.Empty)
+                msg2.Append("\n").Append(voting.Description).Append("\n");
 
-                votes.Sort(new SortByKVP());
-                votes.Reverse();
-                foreach (KVP kvp in votes)
-                {
-                    tmp = string.Format(
-                        "- {0}: {1} ({2}%)\n",
-                        kvp.Key, kvp.Value, PDivide(kvp.Value, clients.Count));
-                    msg1.Append(tmp);
-                    msg2.Append(tmp);
-                }
+            votes.Sort(new SortByKVP());
+            votes.Reverse();
+            foreach (KVP kvp in votes)
+            {
                 tmp = string.Format(
-                    "{0} players did not vote ({1}%).\n",
-                    (clients.Count - count), PDivide(clients.Count - count, clients.Count));
+                    "- {0}: {1} ({2}%)\n",
+                    kvp.Key, kvp.Value, PDivide(kvp.Value, players.Count));
                 msg1.Append(tmp);
                 msg2.Append(tmp);
-                string str1 = msg1.ToString();
-                string str2 = msg2.ToString();
-                string[] array1 = str1.Split('\n');
-                string[] array2 = str2.Split('\n');
-
-
-                foreach (GameClient client in clients)
-                {
-                    if (client.Account.PrivLevel <= (uint)ePrivLevel.GM)
-                    {
-                        client.Out.SendCustomTextWindow("Voting", array1);
-                        client.Out.SendMessage(str1, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    }
-                    else
-                    {
-                        client.Out.SendCustomTextWindow("Voting", array2);
-                        client.Out.SendMessage(str2, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    }
-                }
-                m_Result = str2;
             }
+            tmp = string.Format(
+                "{0} players did not vote ({1}%).\n",
+                (players.Count - count), PDivide(players.Count - count, players.Count));
+            msg1.Append(tmp);
+            msg2.Append(tmp);
+            string str1 = msg1.ToString();
+            string str2 = msg2.ToString();
+            string[] array1 = str1.Split('\n');
+            string[] array2 = str2.Split('\n');
+
+            foreach (GamePlayer player in players)
+            {
+                if (player.Client.Account.PrivLevel < (uint) ePrivLevel.GM)
+                {
+                    player.Out.SendCustomTextWindow("Voting", array1);
+                    player.Out.SendMessage(str1, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                }
+                else
+                {
+                    player.Out.SendCustomTextWindow("Voting", array2);
+                    player.Out.SendMessage(str2, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                }
+            }
+
+            m_Result = str2;
         }
 
         public static void ShowVoting(GamePlayer player, DBVoting voting)

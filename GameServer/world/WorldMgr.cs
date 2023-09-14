@@ -1,27 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -187,11 +167,6 @@ namespace DOL.GS
 		{
 			get { return m_zones; }
 		}
-
-		/// <summary>
-		/// This array holds all gameclients connected to the game
-		/// </summary>
-		private static GameClient[] m_clients = new GameClient[0];
 
 		/// <summary>
 		/// Timer for ping timeout checks
@@ -484,8 +459,6 @@ namespace DOL.GS
 		{
 			try
 			{
-				m_clients = new GameClient[GameServer.Instance.Configuration.MaxClientCount];
-
 				LootMgr.Init();
 
 				long mobs = 0;
@@ -529,7 +502,7 @@ namespace DOL.GS
 		{
 			try
 			{
-				foreach (GameClient client in GetAllClients())
+				foreach (GameClient client in ClientService.GetClients())
 				{
 					try
 					{
@@ -588,12 +561,13 @@ namespace DOL.GS
 		private static void DayReset(object sender)
 		{
 			m_dayStartTick = (int)GameLoop.GetCurrentTime();
-			foreach (GameClient client in GetAllPlayingClients())
+
+			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
+				player.Out.SendTime();
+
+			static bool Predicate(GamePlayer player, object unused)
 			{
-				if (client.Player != null && client.Player.CurrentRegion != null && client.Player.CurrentRegion.UseTimeManager)
-				{
-					client.Out.SendTime();
-				}
+				return player.CurrentRegion?.UseTimeManager == true;
 			}
 		}
 
@@ -619,15 +593,14 @@ namespace DOL.GS
 				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
 			}
 
-			foreach (GameClient client in GetAllPlayingClients())
+			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
+				player.Out.SendTime();
+
+			static bool Predicate(GamePlayer player, object unused)
 			{
-				if (client.Player != null && client.Player.CurrentRegion != null && client.Player.CurrentRegion.UseTimeManager)
-				{
-					client.Out.SendTime();
-				}
+				return player.CurrentRegion?.UseTimeManager == true;
 			}
 		}
-
 
 		/// <summary>
 		/// Gets the game time for a players current region
@@ -877,27 +850,6 @@ namespace DOL.GS
 			return null;
 		}
 
-
-		/// <summary>
-		/// Creates a new SessionID for a GameClient object
-		/// </summary>
-		/// <param name="obj">The GameClient for which we need an ID</param>
-		/// <returns>The new ID or -1 if none free</returns>
-		public static int CreateSessionID(GameClient obj)
-		{
-			lock (m_clients.SyncRoot)
-			{
-				for (int i = 0; i < m_clients.Length; i++)
-					if (m_clients[i] == null)
-				{
-					m_clients[i] = obj;
-					obj.SessionID = i + 1;
-					return i + 1;
-				}
-			}
-			return -1;
-		}
-		
 		public static object[] OfTypeAndToArray<T>(this IEnumerable<T> input, Type type)
 		{
 			MethodInfo methodOfType = typeof(Enumerable).GetMethod("OfType");
@@ -1043,498 +995,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Fetch a GameClient based on it's ID
-		/// </summary>
-		/// <param name="id">ID to search</param>
-		/// <returns>The found GameClient or null if not found</returns>
-		public static GameClient GetClientFromID(uint id)
-		{
-			var i = id;
-			if (i <= 0 || i > m_clients.Length)
-				return null;
-			return m_clients[i - 1];
-		}
-
-		/// <summary>
-		/// Removes a GameClient and free's it's ID again!
-		/// </summary>
-		/// <param name="entry">The GameClient to be removed</param>
-		public static void RemoveClient(GameClient entry)
-		{
-			if (entry == null)
-				return;
-			int sessionid = -1;
-			int i = 1;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client == entry)
-					{
-						sessionid = i;
-						break;
-					}
-					i++;
-				}
-			}
-
-			// do NOT remove sessionid in lock of clients
-			// or a deadlock can occur under certain circumstances!
-			if (sessionid > 0)
-			{
-				RemoveSessionID(sessionid);
-			}
-		}
-
-		/// <summary>
-		/// Removes a GameClient based on it's ID
-		/// </summary>
-		/// <param name="id">The SessionID to free</param>
-		public static void RemoveSessionID(int id)
-		{
-			GameClient client;
-			lock (m_clients.SyncRoot)
-			{
-				client = m_clients[id - 1];
-				m_clients[id - 1] = null;
-			}
-			if (client == null)
-				return;
-			if (client.Player == null)
-				return;
-			//client.Player.RemoveFromWorld();
-			client.Player.Delete();
-			return;
-		}
-
-		/// <summary>
-		/// Returns the number of playing Clients inside a realm
-		/// </summary>
-		/// <param name="realmID">ID of Realm (1=Alb, 2=Mid, 3=Hib)</param>
-		/// <returns>Client count of that realm</returns>
-		public static int GetClientsOfRealmCount(eRealm realm)
-		{
-			int count = 0;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-						    && client.Player != null
-						    && client.Player.ObjectState == GameObject.eObjectState.Active
-						    && client.Player.Realm == realm)
-							count++;
-					}
-				}
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// Returns an array of GameClients currently playing from a specific realm
-		/// </summary>
-		/// <param name="realmID">ID of Realm (1=Alb, 2=Mid, 3=Hib)</param>
-		/// <returns>An ArrayList of clients</returns>
-		public static IList<GameClient> GetClientsOfRealm(eRealm realm)
-		{
-			var targetClients = new List<GameClient>();
-
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-						    && client.Player != null
-						    && client.Player.ObjectState == GameObject.eObjectState.Active
-						    && client.Player.Realm == realm)
-							targetClients.Add(client);
-					}
-				}
-			}
-
-			return targetClients;
-		}
-
-		/// <summary>
-		/// Returns the number of playing Clients in a certain Region
-		/// </summary>
-		/// <param name="regionID">The ID of the Region</param>
-		/// <returns>Number of playing Clients in that Region</returns>
-		public static int GetClientsOfRegionCount(ushort regionID)
-		{
-			int count = 0;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-						    && client.Player != null
-						    && client.Player.ObjectState == GameObject.eObjectState.Active
-						    && client.Player.CurrentRegionID == regionID)
-							count++;
-					}
-				}
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// Returns the number of playing Clients in a certain Region
-		/// </summary>
-		/// <param name="regionID">The ID of the Region</param>
-		/// <param name="realm">The realm of clients to check</param>
-		/// <returns>Number of playing Clients in that Region</returns>
-		public static int GetClientsOfRegionCount(ushort regionID, eRealm realm)
-		{
-			int count = 0;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-						    && client.Player != null
-						    && client.Player.ObjectState == GameObject.eObjectState.Active
-						    && client.Player.CurrentRegionID == regionID
-						    && client.Player.Realm == realm)
-							count++;
-					}
-				}
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// Returns a list of playing clients inside a region
-		/// </summary>
-		/// <param name="regionID">The ID of the Region</param>
-		/// <returns>Array of GameClients from that Region</returns>
-		public static IList<GameClient> GetClientsOfRegion(ushort regionID)
-		{
-			var targetClients = new  List<GameClient>();
-
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-						    && client.Player != null
-						    && client.Player.ObjectState == GameObject.eObjectState.Active
-						    && client.Player.CurrentRegionID == regionID)
-							targetClients.Add(client);
-					}
-				}
-			}
-
-			return targetClients;
-		}
-		/// <summary>
-		/// Returns a list of playing clients inside a zone
-		/// </summary>
-		/// <param name="zoneID">The ID of the Zone</param>
-		/// <returns>Array of GameClients from that Zone</returns>
-		public static IList<GameClient> GetClientsOfZone(ushort zoneID)
-		{
-			var targetClients = new List<GameClient>();
-
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (client.IsPlaying
-							&& client.Player != null
-							&& client.Player.ObjectState == GameObject.eObjectState.Active
-							&& client.Player.CurrentZone.ID == zoneID)
-							targetClients.Add(client);
-					}
-				}
-			}
-
-			return targetClients;
-		}
-		
-		/// <summary>
-		/// Returns a list of playing clients from a given IP address
-		/// </summary>
-		/// <param name="ip">The IP address</param>
-		/// <returns>Array of GameClients from that IP</returns>
-		public static IList<GameClient> GetClientsFromIP(string ip)
-		{
-			var targetClients = new List<GameClient>();
-
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if (((IPEndPoint)client.Socket.RemoteEndPoint)?.Address.ToString() == ip)
-							targetClients.Add(client);
-					}
-				}
-			}
-			return targetClients;
-		}
-		
-		/// <summary>
-		/// Find a GameClient by the Player's ID
-		/// Case-insensitive, make sure you use returned Player.Name instead of what player typed.
-		/// </summary>
-		/// <param name="playerID">ID to search</param>
-		/// <param name="exactMatch">true if AccountName match exactly</param>
-		/// <param name="activeRequired"></param>
-		/// <returns>The found GameClient or null</returns>
-		public static GameClient GetClientByPlayerID(string playerID, bool exactMatch, bool activeRequired)
-		{
-			foreach (GameClient client in WorldMgr.GetAllPlayingClients())
-			{
-				if (client.Player.InternalID == playerID)
-					return client;
-			}
-			return null;
-		}
-		
-		/// <summary>
-		/// Finds a GameClient by the AccountName
-		/// </summary>
-		/// <param name="accountName">AccountName to search</param>
-		/// <param name="exactMatch">true if AccountName match exactly</param>
-		/// <returns>The found GameClient or null</returns>
-		public static GameClient GetClientByAccountName(string accountName, bool exactMatch)
-		{
-			accountName = accountName.ToLower();
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-					{
-						if ((exactMatch && client.Account.Name.ToLower() == accountName)
-						    || (!exactMatch && client.Account.Name.ToLower().StartsWith(accountName)))
-						{
-							return client;
-						}
-					}
-				}
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Find a GameClient by the Player's name
-		/// Case-insensitive, make sure you use returned Player.Name instead of what player typed.
-		/// </summary>
-		/// <param name="playerName">Name to search</param>
-		/// <param name="exactMatch">true if AccountName match exactly</param>
-		/// <param name="activeRequired"></param>
-		/// <returns>The found GameClient or null</returns>
-		public static GameClient GetClientByPlayerName(string playerName, bool exactMatch, bool activeRequired)
-		{
-			if (exactMatch)
-			{
-				GameClient client = GetClientByPlayerNameAndRealm(playerName, 0, activeRequired).FirstOrDefault();
-
-				if (client == null)
-					return null;
-
-				return client.Player.Name.ToLower() == playerName.ToLower() ? client : null; //only return if it's an exact match
-			}
-			else
-				return GuessClientByPlayerNameAndRealm(playerName, 0, activeRequired, out _);
-		}
-
-		/// <summary>
-		/// Find a GameClient by the Player's name.
-		/// Case-insensitive now, make sure you use returned Player.Name instead of what player typed.
-		/// </summary>
-		/// <param name="playerName">Name to search</param>
-		/// <param name="realmID">search in: 0=all realms or player.Realm</param>
-		/// <param name="activeRequired"></param>
-		/// <returns>The found GameClient or null</returns>
-		public static List<GameClient> GetClientByPlayerNameAndRealm(string playerName, eRealm realm, bool activeRequired)
-		{
-			List<GameClient> potentialMatches = new List<GameClient>();
-			lock (m_clients.SyncRoot)
-			{
-				
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null && client.Player != null && (realm == eRealm.None || client.Player.Realm == realm))
-					{
-						if (activeRequired && (!client.IsPlaying || client.Player.ObjectState != GameObject.eObjectState.Active))
-							continue;
-						
-						if (0 == String.Compare(client.Player.Name, playerName, StringComparison.OrdinalIgnoreCase)) // case insensitive comapre
-						{
-							potentialMatches.Add(client);
-							//return potentialMatches;
-							return new List<GameClient> { client }; //return exact match
-						}
-
-						if (client.Player.Name.ToLower().StartsWith(playerName.ToLower())) potentialMatches.Add(client);
-
-					}
-				}
-
-				return potentialMatches;
-
-			}
-		}
-
-		/// <summary>
-		/// Guess a GameClient by first letters of Player's name
-		/// Case-insensitive, make sure you use returned Player.Name instead of what player typed.
-		/// </summary>
-		/// <param name="playerName">Name to search</param>
-		/// <param name="realm">search in: 0=all realms or player.Realm</param>
-		/// <param name="result">returns: 1=no name found, 2=name is not unique, 3=exact match, 4=guessed name</param>
-		/// <param name="activeRequired"></param>
-		/// <returns>The found GameClient or null</returns>
-		public static GameClient GuessClientByPlayerNameAndRealm(string playerName, eRealm realm, bool activeRequired, out int result)
-		{
-			// first try exact match in case player with "abcde" name is
-			// before "abc" in list and user typed "abc"
-			GameClient guessedClient = GetClientByPlayerNameAndRealm(playerName, realm, activeRequired).FirstOrDefault();
-			if (guessedClient != null && guessedClient.Player.Name.ToLower() == playerName.ToLower())
-			{
-				result = 3; // exact match
-				return guessedClient;
-			}
-
-			// now trying to guess
-			string compareName = playerName.ToLower();
-			result = 1; // no name found
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null && client.Player != null)
-					{
-						if (activeRequired && (!client.IsPlaying || client.Player.ObjectState != GameObject.eObjectState.Active))
-							continue;
-						if (realm == eRealm.None || client.Player.Realm == realm)
-						{
-							if (client.Player.Name.ToLower().StartsWith(compareName))
-							{
-								if (result == 4) // keep looking to be sure that name is unique
-								{
-									result = 2; // name not unique
-									break;
-								}
-								else
-								{
-									result = 4; // guessed name
-									guessedClient = client;
-								}
-							}
-						}
-					}
-				}
-			}
-			return guessedClient;
-		}
-
-		/// <summary>
-		/// Find a GameClient by the Player's name from a specific region
-		/// </summary>
-		/// <param name="playerName">Name to search</param>
-		/// <param name="regionID">Region ID of region to search through</param>
-		/// <param name="exactMatch">true if the Name must match exactly</param>
-		/// <param name="activeRequired"></param>
-		/// <returns>The first found GameClient or null</returns>
-		public static GameClient GetClientByPlayerNameFromRegion(string playerName, ushort regionID, bool exactMatch, bool activeRequired)
-		{
-			GameClient client = GetClientByPlayerName(playerName, exactMatch, activeRequired);
-			if (client == null || client.Player.CurrentRegionID != regionID)
-				return null;
-			return client;
-		}
-
-		/// <summary>
-		/// Gets a copy of all playing clients
-		/// </summary>
-		/// <returns>ArrayList of playing GameClients</returns>
-		public static IList<GameClient> GetAllPlayingClients()
-		{
-			var targetClients = new List<GameClient>();
-
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null
-					    && client.IsPlaying
-					    && client.Player != null
-					    && client.Player.ObjectState == GameObject.eObjectState.Active)
-						targetClients.Add(client);
-				}
-			}
-			return targetClients;
-		}
-
-		/// <summary>
-		/// Returns the number of all playing clients
-		/// </summary>
-		/// <returns>Count of all playing clients</returns>
-		public static int GetAllPlayingClientsCount()
-		{
-			int count = 0;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null
-					    && client.IsPlaying
-					    && client.Player != null
-					    && client.Player.ObjectState == GameObject.eObjectState.Active)
-						count++;
-				}
-			}
-			return count;
-		}
-
-		/// <summary>
-		/// Gets a copy of ALL clients no matter at what state they are
-		/// </summary>
-		/// <returns>ArrayList of GameClients</returns>
-		public static IList<GameClient> GetAllClients()
-		{
-			lock (m_clients.SyncRoot)
-			{
-				return m_clients.Where(c => c != null).ToList();
-			}
-		}
-
-		/// <summary>
-		/// Gets a count of ALL clients no matter at what state they are
-		/// </summary>
-		/// <returns>ArrayList of GameClients</returns>
-		public static int GetAllClientsCount()
-		{
-			int count = 0;
-			lock (m_clients.SyncRoot)
-			{
-				foreach (GameClient client in m_clients)
-				{
-					if (client != null)
-						count++;
-				}
-			}
-			return count;
-		}
-
-		/// <summary>
 		/// Fetch an Object from a specific Region by it's ID
 		/// </summary>
 		/// <param name="regionID">Region ID of Region to search through</param>
@@ -1606,32 +1066,6 @@ namespace DOL.GS
 				return new();
 
 			return reg.GetItemsInRadius(new Point3D(x, y ,z), radiusToCheck);
-		}
-
-		/// <summary>
-		/// Saves all players into the database.
-		/// </summary>
-		/// <returns>The count of players saved</returns>
-		public static int SavePlayers()
-		{
-			GameClient[] clientsCopy = null;
-			lock (m_clients.SyncRoot)
-			{
-				clientsCopy = (GameClient[])m_clients.Clone();
-			}
-
-			int savedCount = 0;
-			foreach (GameClient client in clientsCopy)
-			{
-				if (client != null)
-				{
-					client.SavePlayer();
-					savedCount++;
-					//Relinquis our remaining thread time here after each save
-					Thread.Sleep(0);
-				}
-			}
-			return savedCount;
 		}
 
 		#region Instances

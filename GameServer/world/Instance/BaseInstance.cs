@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
@@ -347,13 +328,12 @@ namespace DOL.GS
                 //If there are players, someone has callously forgotten to include
                 //a base in one of their OnPlayerEnter/Exit overrides.
                 //When this is a case, keep the timer ticking - we will eventually have it cleanup the instance,
-                //it just wont be runnign at optimum speed.
-                if (WorldMgr.GetClientsOfRegion(m_instance.ID).Count > 0)
+                //it just wont be running at optimum speed.
+                if (ClientService.GetPlayersOfRegion(m_instance).Count > 0)
                     log.Warn("Players were still in the region on AutoRemoveregionTimer Tick! Please check the overridden voids OnPlayerEnter/Exit to ensure that a 'base.OnPlayerEnter/Exit' is included!");
                 else
                 {
                     //Collapse the zone!
-                    //Thats my favourite bit ;)
                     log.Info(m_instance.Name + " (ID: " + m_instance.ID + ") just reached the timeout for the removal timer. The region is empty, and will now be demolished and removed from the world. Entering OnCollapse!");
                     Stop();
                     WorldMgr.RemoveInstance(m_instance);

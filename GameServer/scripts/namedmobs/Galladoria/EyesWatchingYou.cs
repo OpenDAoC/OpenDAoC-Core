@@ -88,15 +88,12 @@ namespace DOL.AI.Brain
         }
         public void DoStuff()
         {
-            if (Body.IsAlive)
+            if (Body.IsAlive && Body.CurrentRegionID == 191)
             {
-                foreach (GameClient client in WorldMgr.GetClientsOfRegion(191))
+                foreach (GamePlayer player in ClientService.GetPlayersOfRegion(Body.CurrentRegion))
                 {
-                    if (client != null)
-                    {
-                        if (client.Player.IsAlive && client.Account.PrivLevel == 1 && !PlayersInGalla.Contains(client.Player))
-                            PlayersInGalla.Add(client.Player);//add players to list from whole galladoria
-                    }
+                    if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !PlayersInGalla.Contains(player))
+                        PlayersInGalla.Add(player);//add players to list from whole galladoria
                 }
             }
         }

@@ -1,5 +1,3 @@
-using DOL.Database;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
@@ -132,15 +130,8 @@ namespace DOL.GS.Keeps
 		/// <param name="realm">The realm</param>
 		public static void BroadcastMessage(string message, eRealm realm)
 		{
-			foreach (GameClient client in WorldMgr.GetAllClients())
-			{
-				if (client.Player == null)
-					continue;
-				if ((client.Account.PrivLevel != 1 || realm == eRealm.None) || client.Player.Realm == realm)
-				{
-					client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
-			}
+			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
+				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -151,30 +142,26 @@ namespace DOL.GS.Keeps
 		/// <param name="capturingrealm">The realm that captured the keep</param>
 		public static void BroadcastKeepTakeMessage(string message, eRealm capturingrealm)
 		{
-			foreach (GameClient client in WorldMgr.GetAllClients())
+			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
-				if (client.Player == null)
-					continue;
-				
-				client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);
 				
 				switch (capturingrealm)
 				{
 					case eRealm.Albion:
-						client.Out.SendSoundEffect(220, 0, 0, 0, 0, 0);
+						player.Out.SendSoundEffect(220, 0, 0, 0, 0, 0);
 						break;
 					case eRealm.Midgard:
-						client.Out.SendSoundEffect(218, 0, 0, 0, 0, 0);
+						player.Out.SendSoundEffect(218, 0, 0, 0, 0, 0);
 						break;
 					case eRealm.Hibernia:
-						client.Out.SendSoundEffect(219, 0, 0, 0, 0, 0);
+						player.Out.SendSoundEffect(219, 0, 0, 0, 0, 0);
 						break;
 				}
-
 			}
 		}
-		
+
 		/// <summary>
 		/// Method to broadcast RvR messages over Discord
 		/// </summary>

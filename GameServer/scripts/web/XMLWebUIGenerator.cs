@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 using DOL.Database;
 using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Events;
-using DOL.GS.PacketHandler;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -275,7 +256,7 @@ namespace DOL.GS.Scripts
 
 				si.Time = DateTime.Now.ToString();
 				si.ServerName = GameServer.Instance.Configuration.ServerName;
-				si.NumClients = GameServer.Instance.ClientCount;
+				si.NumClients = ClientService.ClientCount;
 				si.NumAccounts = GameServer.Database.GetObjectCount<Account>();
 				si.NumMobs = GameServer.Database.GetObjectCount<Mob>();
 				si.NumInventoryItems = GameServer.Database.GetObjectCount<InventoryItem>();
@@ -291,21 +272,19 @@ namespace DOL.GS.Scripts
 
 				PlayerInfo pi = new PlayerInfo();
 
-				foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+				foreach (GamePlayer player in ClientService.GetPlayers())
 				{
-					GamePlayer plr = client.Player;
-
-					pi.Name = plr.Name;
-					pi.LastName = plr.LastName;
-					pi.Class = plr.CharacterClass.Name;
-					pi.Race = plr.RaceName;
-					pi.Guild = plr.GuildName;
-					pi.Level = plr.Level;
-					pi.Alive = plr.IsAlive ? "yes" : "no";
-					pi.Realm = ((eRealm) plr.Realm).ToString();
-					pi.Region = plr.CurrentRegion.Name;
-					pi.X = plr.X;
-					pi.Y = plr.Y;
+					pi.Name = player.Name;
+					pi.LastName = player.LastName;
+					pi.Class = player.CharacterClass.Name;
+					pi.Race = player.RaceName;
+					pi.Guild = player.GuildName;
+					pi.Level = player.Level;
+					pi.Alive = player.IsAlive ? "yes" : "no";
+					pi.Realm = player.Realm.ToString();
+					pi.Region = player.CurrentRegion.Name;
+					pi.X = player.X;
+					pi.Y = player.Y;
 				}
 
 				// 2008-01-29 Kakuri - Obsolete

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -225,11 +206,6 @@ namespace DOL.GS
 		protected GamePlayer m_player;
 
 		/// <summary>
-		/// This variable holds the sessionid
-		/// </summary>
-		protected int m_sessionID;
-
-		/// <summary>
 		/// This variable holds the UDP endpoint of this client
 		/// </summary>
 		protected volatile bool m_udpConfirm;
@@ -386,11 +362,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the session ID for this client
 		/// </summary>
-		public int SessionID
-		{
-			get { return m_sessionID; }
-			internal set { m_sessionID = value; }
-		}
+		public int SessionID => EntityManagerId.Value + 1;
 
 		/// <summary>
 		/// Gets/Sets the time of last ping packet
@@ -567,28 +539,18 @@ namespace DOL.GS
 		/// </summary>
 		public override void OnDisconnect()
 		{
-			bool linkdead = false;
-
 			try
 			{
-				EntityManager.Remove(this);
-
-				if (PacketProcessor != null)
-					PacketProcessor.OnDisconnect();
-
 				//If we went linkdead and we were inside the game
 				//we don't let the player disappear!
 				if (ClientState == eClientState.Playing)
 				{
 					OnLinkdeath();
-					linkdead = true;
 					return;
 				}
 
 				if (ClientState == eClientState.WorldEnter && Player != null)
-				{
 					Player.SaveIntoDatabase();
-				}
 			}
 			catch (Exception e)
 			{
@@ -598,7 +560,7 @@ namespace DOL.GS
 			finally
 			{
 				// Make sure the client is disconnected even on errors but only if OnLinkDeath() wasn't called.
-				if(!linkdead)
+				if (ClientState != eClientState.Linkdead)
 					Quit();
 			}
 		}
@@ -608,7 +570,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void OnConnect()
 		{
-			EntityManager.Add(this);
+			ClientService.OnClientConnect(this);
 			GameEventMgr.Notify(GameClientEvent.Connected, this);
 		}
 
@@ -628,7 +590,6 @@ namespace DOL.GS
 			DOLCharacters dolChar = m_account.Characters[accountindex];
 			LoadPlayer(dolChar, playerClass);
 		}
-
 
 		/// <summary>
 		/// Loads a player from the DB
@@ -753,7 +714,7 @@ namespace DOL.GS
 
 			//If we have no sessionid we simply disconnect
 			GamePlayer curPlayer = Player;
-			if (m_sessionID == 0 || curPlayer == null)
+			if (SessionID == 0 || curPlayer == null)
 			{
 				Quit();
 			}
@@ -777,18 +738,14 @@ namespace DOL.GS
 				try
 				{
 					eClientState oldClientState = ClientState;
-					if (m_sessionID != 0)
+
+					if (SessionID != 0)
 					{
-						if (oldClientState == eClientState.Playing || oldClientState == eClientState.WorldEnter ||
-						    oldClientState == eClientState.Linkdead)
+						if (oldClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
 						{
 							try
 							{
-								if (Player != null)
-								{
-									Player.Quit(true); //calls delete
-								}
-								//m_player.Delete(true);
+								Player?.Quit(true); // Calls delete.
 							}
 							catch (Exception e)
 							{
@@ -798,8 +755,7 @@ namespace DOL.GS
 
 						try
 						{
-							//Now free our objid and sessionid again
-							WorldMgr.RemoveClient(this); //calls RemoveSessionID -> player.Delete
+							Player?.Delete();
 						}
 						catch (Exception e)
 						{
@@ -808,8 +764,6 @@ namespace DOL.GS
 					}
 
 					ClientState = eClientState.Disconnected;
-					//Player = null;
-
 					GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 
 					if (Account != null)
@@ -818,17 +772,16 @@ namespace DOL.GS
 						{
 							if (m_udpEndpoint != null)
 							{
-								log.Info("(" + m_udpEndpoint.Address + ") " + Account.Name + " just disconnected!");
+								log.Info($"({m_udpEndpoint.Address}) {Account.Name} just disconnected.");
 							}
 							else
 							{
-								log.Info("(" + TcpEndpoint + ") " + Account.Name + " just disconnected!");
+								log.Info($"({TcpEndpoint}) {Account.Name} just disconnected.");
 							}
 						}
+
 						Account.LastDisconnected = DateTime.Now;
 						GameServer.Database.SaveObject(Account);
-
-						// log disconnect
 						AuditMgr.AddAuditEntry(this, AuditType.Account, AuditSubtype.AccountLogout, "", Account.Name);
 					}
 				}

@@ -79,6 +79,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); // last seen : 0x44 0x05
 				pak.WriteByte(0x00);
 				SendTCP(pak);
+				m_gameClient.PacketProcessor.ProcessTcpQueue();
 			}
 		}
 

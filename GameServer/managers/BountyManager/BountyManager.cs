@@ -351,71 +351,46 @@ public class BountyManager
 
     private static void BroadcastBounty(BountyPoster poster)
     {
-        foreach (var client in WorldMgr.GetAllPlayingClients())
+        string message = $"{poster.Ganked.Name} is offering {poster.Reward} gold for the head of {poster.Target.Name} in {poster.Target.CurrentZone.Description}";
+
+        foreach (GamePlayer player in ClientService.GetPlayersOfRealm(poster.Ganked.Realm))
         {
-            if (client.Player == null) continue;
-            if (client.Player.Realm != poster.Ganked.Realm) continue;
-
-            var message =
-                $"{poster.Ganked.Name} is offering {poster.Reward} gold for the head of {poster.Target.Name} in {poster.Target.CurrentZone.Description}";
-
-            client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller,
-                eChatLoc.CL_SystemWindow);
-            client.Player.Out.SendMessage(message, eChatType.CT_Broadcast,
-                eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
         }
 
-        var killerClient = WorldMgr.GetClientByPlayerName(poster.Target.Name, false, true);
+        GamePlayer killer = ClientService.GetPlayerByPartialName(poster.Target.Name, out _);
 
-        if (killerClient == null) return;
+        if (killer == null)
+            return;
 
-        var messageToKiller =
-            $"{poster.Ganked.Name} is offering {poster.Reward} gold for your head!";
-
-        killerClient.Player.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter,
-            eChatLoc.CL_SystemWindow);
-        killerClient.Player.Out.SendMessage($"ATTENTION!\n{messageToKiller}", eChatType.CT_Important,
-            eChatLoc.CL_SystemWindow);
+        string messageToKiller = $"{poster.Ganked.Name} is offering {poster.Reward} gold for your head!";
+        killer.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+        killer.Out.SendMessage($"ATTENTION!\n{messageToKiller}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
     }
 
     private static void BroadcastBountyKill(BountyPoster poster)
     {
-        foreach (var client in WorldMgr.GetAllPlayingClients())
-        {
-            if (client.Player == null) continue;
-            if (client.Player.Realm != poster.Ganked.Realm) continue;
+        string message = $"{poster.Target.Name} has been killed and the bounty has been paid out!";
 
-            var message =
-                $"{poster.Target.Name} has been killed and the bounty has been paid out!";
-
-            client.Player.Out.SendMessage(message, eChatType.CT_Broadcast,
-                eChatLoc.CL_SystemWindow);
-        }
+        foreach (GamePlayer player in ClientService.GetPlayersOfRealm(poster.Ganked.Realm))
+            player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
     }
 
     private static void BroadcastExpiration(BountyPoster poster)
     {
-        foreach (var client in WorldMgr.GetAllPlayingClients())
-        {
-            if (client.Player == null) continue;
-            if (client.Player.Realm != poster.Ganked.Realm) continue;
+        string message = $"{poster.Ganked.Name}'s Bounty Hunt for {poster.Target.Name}'s head has expired.";
 
-            var message =
-                $"{poster.Ganked.Name}'s Bounty Hunt for {poster.Target.Name}'s head has expired.";
+        foreach (GamePlayer player in ClientService.GetPlayersOfRealm(poster.Ganked.Realm))
+            player.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
 
-            client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenter_And_CT_System,
-                eChatLoc.CL_SystemWindow);
-        }
+        GamePlayer killer = ClientService.GetPlayerByPartialName(poster.Target.Name, out _);
 
-        var killerClient = WorldMgr.GetClientByPlayerName(poster.Target.Name, false, true);
+        if (killer == null)
+            return;
 
-        if (killerClient == null) return;
-
-        var messageToKiller =
-            $"{poster.Ganked.Name}'s Bounty Hunt for your head has expired!";
-
-        killerClient.Player.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter_And_CT_System,
-            eChatLoc.CL_SystemWindow);
+        string messageToKiller = $"{poster.Ganked.Name}'s Bounty Hunt for your head has expired!";
+        killer.Out.SendMessage(messageToKiller, eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
     }
 
     public static IList<string> GetTextList(GamePlayer player)

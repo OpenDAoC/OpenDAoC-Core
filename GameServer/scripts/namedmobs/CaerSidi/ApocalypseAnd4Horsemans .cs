@@ -2265,15 +2265,9 @@ namespace DOL.GS
             ApocUP = true;
 
 
-            foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
-            {
-                if (client == null) break;
-                if (client.Player == null) continue;
-                if (client.IsPlaying)
-                {
-                    client.Out.SendSoundEffect(2452, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
-                }
-            }
+            foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+                player.Out.SendSoundEffect(2452, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
+
             KilledEnemys = 0;
             ApocalypseBrain adds = new ApocalypseBrain();
             SetOwnBrain(adds);

@@ -1,22 +1,3 @@
-/* 
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
@@ -68,37 +49,38 @@ namespace DOL.GS.Commands
                             DisplaySyntax(client);
                             return;
                         }
-                        int result = 0;
+
                         string targetName = args[2];
-                        GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+
                         switch (result)
                         {
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.NOT_FOUND:
+                            {
+                                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
+                                return;
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
                                 break;
                         }
 
-                        if (targetClient == null)
-                        {
+                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetPlayer.Name);
 
-                            // nothing found
-                            AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
-                            return;
-                        }
-
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal != null)
                         {
                             if (appeal.Status != "Being Helped")
                             {
-                                AppealMgr.ChangeStatus(client.Player.Name, targetClient.Player, appeal, "Being Helped");
-                                string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.RandMessage" + Util.Random(4), targetClient.Player.Name);
-                                client.Player.TempProperties.SetProperty("AppealAssist", targetClient.Player);
-                                client.Player.SendPrivateMessage(targetClient.Player, message);
-                                targetClient.Out.SendPlaySound(eSoundType.Craft, 0x04);
+                                AppealMgr.ChangeStatus(client.Player.Name, targetPlayer, appeal, "Being Helped");
+                                string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.RandMessage" + Util.Random(4), targetPlayer.Name);
+                                client.Player.TempProperties.SetProperty("AppealAssist", targetPlayer);
+                                client.Player.SendPrivateMessage(targetPlayer, message);
+                                targetPlayer.Out.SendPlaySound(eSoundType.Craft, 0x04);
                                 return;
                             }
                             else
@@ -107,6 +89,7 @@ namespace DOL.GS.Commands
                                 break;
                             }
                         }
+
                         AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoesntHaveAppeal"));
                         break;
                     }
@@ -120,38 +103,44 @@ namespace DOL.GS.Commands
                             DisplaySyntax(client);
                             return;
                         }
-                        int result = 0;
+
                         string targetName = args[2];
-                        GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+                        GamePlayer playerTarget = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+
                         switch (result)
                         {
-
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.NOT_FOUND:
+                            {
+                                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
+                                return;
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
                                 break;
                         }
-                        if (targetClient == null)
-                        {
 
-                            // nothing found
-                            AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
-                            return;
-                        }
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
+                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
+
                         if (appeal != null)
                         {
                             //Let's view it.
-                            List<string> msg = new List<string>();
-                            msg.Add("[Appeal]: " + appeal.Name + ", [Status]: " + appeal.Status + ", [Priority]: " + appeal.SeverityToName + " [Issue]: " + appeal.Text + ", [Time]: " + appeal.Timestamp + ".\n");
-                            msg.Add("To assist them with the appeal use /gmappeal assist <player name>.\n");
-                            msg.Add("To jump yourself to the player use /gmappeal jumpto.\n");
-                            msg.Add("For a full list of possible commands, use /gmappeal (with no arguments)");
+                            List<string> msg = new()
+                            {
+                                $"[Appeal]: {appeal.Name}, [Status]: {appeal.Status}, [Priority]: {appeal.SeverityToName}, [Issue]: {appeal.Text}, [Time]: {appeal.Timestamp}.\n",
+                                "To assist them with the appeal use /gmappeal assist <player name>.\n",
+                                "To jump yourself to the player use /gmappeal jumpto.\n",
+                                "For a full list of possible commands, use /gmappeal (with no arguments)"
+                            };
+
                             client.Out.SendCustomTextWindow("Viewing " + appeal.Name + "'s Appeal", msg);
                             return;
                         }
+
                         AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoesntHaveAppeal"));
                         break;
                     }
@@ -164,33 +153,34 @@ namespace DOL.GS.Commands
                             DisplaySyntax(client);
                             return;
                         }
-                        int result = 0;
+
                         string targetName = args[2];
-                        GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+                        GamePlayer playerTarget = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+
                         switch (result)
                         {
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.NOT_FOUND:
+                            {
+                                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
+                                return;
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
                                 break;
                         }
 
-                        if (targetClient == null)
-                        {
+                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
 
-                            // nothing found
-                            AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
-                            return;
-                        }
-
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal != null)
                         {
                             if (appeal.Status == "Being Helped")
                             {
-                                AppealMgr.ChangeStatus(client.Player.Name, targetClient.Player, appeal, "Open");
+                                AppealMgr.ChangeStatus(client.Player.Name, playerTarget, appeal, "Open");
                                 client.Player.TempProperties.RemoveProperty("AppealAssist");
                                 return;
                             }
@@ -200,6 +190,7 @@ namespace DOL.GS.Commands
                                 return;
                             }
                         }
+
                         AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoesntHaveAppeal"));
                         return;
                     }
@@ -313,34 +304,36 @@ namespace DOL.GS.Commands
                             DisplaySyntax(client);
                             return;
                         }
-                        int result = 0;
+
                         string targetName = args[2];
-                        GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetName, 0, false, out result);
+                        GamePlayer player = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+
                         switch (result)
                         {
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.NOT_FOUND:
+                            {
+                                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
+                                return;
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
                                 break;
                         }
 
-                        if (targetClient == null)
-                        {
+                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(player.Name);
 
-                            // nothing found
-                            AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
-                            return;
-                        }
-
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal == null)
                         {
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoesntHaveAppeal"));
                             return;
                         }
-                        AppealMgr.CloseAppeal(client.Player.Name, targetClient.Player, appeal);
+
+                        AppealMgr.CloseAppeal(client.Player.Name, player, appeal);
                         client.Player.TempProperties.RemoveProperty("AppealAssist");
                         return;
                     }
@@ -365,31 +358,29 @@ namespace DOL.GS.Commands
 
                         //just incase the player is actually online let's check so we can handle it properly
                         string targetNameTwo = args[2];
-                        int resultTwo = 0;
-                        GameClient targetClient = WorldMgr.GuessClientByPlayerNameAndRealm(targetNameTwo, 0, false, out resultTwo);
+                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetNameTwo, out ClientService.PlayerGuessResult resultTwo);
+
                         switch (resultTwo)
                         {
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.NOT_FOUND:
+                                return; // player isn't online so we're fine.
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
+                            {
+                                //cleaning up the player since he really was online.
+                                AppealMgr.MessageToClient(targetPlayer.Client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", client.Player.Name));
+                                targetPlayer.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                                targetPlayer.TempProperties.SetProperty("HasPendingAppeal", false);
                                 break;
+                            }
                         }
-                        if (targetClient == null)
-                        {
 
-                            // player isn't online so we're fine.
-                            return;
-                        }
-                        else
-                        {
-                            //cleaning up the player since he really was online.
-                            AppealMgr.MessageToClient(targetClient, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", client.Player.Name));
-                            targetClient.Out.SendPlaySound(eSoundType.Craft, 0x02);
-                            targetClient.Player.TempProperties.SetProperty("HasPendingAppeal", false);
-                        }
-                        return;
+                        break;
                     }
 
                 #endregion gmappeal closeoffline

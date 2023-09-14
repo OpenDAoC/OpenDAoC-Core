@@ -90,7 +90,7 @@ namespace DOL.GS.GameEvents
                 {
                     StringBuilder stats = new StringBuilder(256)
                         .Append("-stats- Mem=").Append(GC.GetTotalMemory(false) / 1024 / 1024).Append("MB")
-                        .Append("  Clients=").Append(GameServer.Instance.ClientCount)
+                        .Append("  Clients=").Append(ClientService.ClientCount)
                         .Append("  Down=").Append(inRate / 1024).Append("kb/s (").Append(Statistics.BytesIn / 1024 / 1024).Append("MB)")
                         .Append("  Up=").Append(outRate / 1024).Append("kb/s (").Append(Statistics.BytesOut / 1024 / 1024).Append("MB)")
                         .Append("  In=").Append(inPckRate).Append("pck/s (").Append(Statistics.PacketsIn / 1000).Append("K)")

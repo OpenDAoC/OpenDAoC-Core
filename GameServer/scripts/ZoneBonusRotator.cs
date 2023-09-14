@@ -1,15 +1,10 @@
-﻿using DOL.Database;
+﻿using System;
+using System.Collections.Generic;
+using DOL.Database;
 using DOL.Events;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scheduler;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
- 
+
 namespace DOL.GS.Scripts
 {
     static class ZoneBonusRotator
@@ -154,10 +149,10 @@ namespace DOL.GS.Scripts
                 hiberniaSIZones.Add(zone.ZoneID);
             }
         }
+
         public static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
         {
-            GamePlayer player = sender as GamePlayer;
-            TellClient(player.Client);
+            TellPlayer(sender as GamePlayer);
         }
 
         internal static int UpdatePvEZones()
@@ -199,13 +194,10 @@ namespace DOL.GS.Scripts
             WorldMgr.Zones[(ushort)currentHiberniaZone].BonusExperience = PvEExperienceBonusAmount;
             WorldMgr.Zones[(ushort)currentHiberniaZoneSI].BonusExperience = PvEExperienceBonusAmount;
 
-            foreach (GameClient client in WorldMgr.GetAllClients())
-            {
-                TellClient(client);
-            }
+            foreach (GamePlayer player in ClientService.GetPlayers())
+                TellPlayer(player);
 
             scheduler.Start(UpdatePvEZones, PvETimer);
-
             return 0;
         }
 
@@ -265,15 +257,10 @@ namespace DOL.GS.Scripts
                     break;
             }
 
-            foreach (GameClient client in WorldMgr.GetAllClients())
-            {
-                TellClient(client);
-            }
+            foreach (GamePlayer player in ClientService.GetPlayers())
+                TellPlayer(player);
 
             scheduler.Start(UpdateRvRZones, RvRTimer);
-
-            
-
             return 0;
         }
 
@@ -464,12 +451,9 @@ namespace DOL.GS.Scripts
 
         }
 
-
-        private static void TellClient(GameClient client)
+        private static void TellPlayer(GamePlayer player)
         {
-            // client.Out.SendMessage(GetText(), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage("Bonus zones updated.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
+            player.Out.SendMessage("Bonus zones updated.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
 
         private static string GetLevelRange(int zoneID)

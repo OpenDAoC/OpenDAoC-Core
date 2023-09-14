@@ -542,13 +542,13 @@ namespace DOL.GS
 			Y = living.Y;
 			Z = living.Z;
 			Heading = living.Heading;
-			foreach (GameClient clt in WorldMgr.GetClientsOfRegion(CurrentRegionID))
+
+			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
 			{
-				if (clt == null || clt.Player == null) continue;
 				if (XP > 0)
-					clt.Player.Out.SendMinotaurRelicMapUpdate((byte)RelicID, CurrentRegionID, X, Y, Z);
+					player.Out.SendMinotaurRelicMapUpdate((byte)RelicID, CurrentRegionID, X, Y, Z);
 				else
-					clt.Player.Out.SendMinotaurRelicMapRemove((byte)RelicID);
+					player.Out.SendMinotaurRelicMapRemove((byte)RelicID);
 			}
 		}
 		#endregion

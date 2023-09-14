@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System.Reflection;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 
@@ -182,13 +182,14 @@ namespace DOL.GS
 			if (relic.CurrentCarrier != null && returning == false)
 			{
 				/* Sending broadcast */
-				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.MountRelic.Stored", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
-				foreach (GameClient cl in WorldMgr.GetAllPlayingClients())
+				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.MountRelic.Stored", relic.CurrentCarrier.Name, GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name, Name);
+
+				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 				{
-					if (cl.Player.ObjectState != eObjectState.Active) continue;
-                    cl.Out.SendMessage(LanguageMgr.GetTranslation(cl.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-					cl.Out.SendMessage(message + "\n" + message + "\n" + message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
+
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
@@ -244,12 +245,9 @@ namespace DOL.GS
 			{
 				// relic returned to pad, probably because it was dropped on ground and timer expired.
 				string message = string.Format("The {0} has been returned to {1}.", relic.Name, Name);
-				foreach (GameClient cl in WorldMgr.GetAllPlayingClients())
-				{
-					if (cl.Player.ObjectState != eObjectState.Active) continue;
-					cl.Out.SendMessage(message + "\n" + message + "\n" + message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
 
+				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -260,11 +258,10 @@ namespace DOL.GS
 			if (relic.CurrentCarrier != null)
 			{
 				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
-				foreach (GameClient cl in WorldMgr.GetAllPlayingClients())
-				{
-					if (cl.Player.ObjectState != eObjectState.Active) continue;
-					cl.Out.SendMessage(message + "\n" + message + "\n" + message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
+
+				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))

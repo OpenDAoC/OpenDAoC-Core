@@ -1,47 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -410,13 +366,13 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        GameClient playingclient = WorldMgr.GetClientByPlayerName(cha.Name, true, false);
-                        
+                        GamePlayer player = ClientService.GetPlayerByExactName(cha.Name);
+
                         // Kick the player from the server to complete the character move
-                        if (playingclient != null)
+                        if (player != null)
                         {
-                            playingclient.Out.SendPlayerQuit(true);
-                            playingclient.Disconnect();
+                            player.Out.SendPlayerQuit(true);
+                            player.Client.Disconnect();
                         }
 
                         cha.AccountName = acc.Name;
@@ -591,12 +547,10 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="name">The account name</param>
 		/// <returns>The matching account name or 'null'</returns>
-		private Account GetAccount(string name)
+		private static Account GetAccount(string accountName)
 		{
-			GameClient client = WorldMgr.GetClientByAccountName(name, true);
-			if (client != null)
-				return client.Account;
-			return GameServer.Database.FindObjectByKey<Account>(name);
+			GameClient client = ClientService.GetClientFromAccountName(accountName);
+			return client != null ? client.Account : GameServer.Database.FindObjectByKey<Account>(accountName);
 		}
 
 		/// <summary>
@@ -604,25 +558,24 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="charname">The character name</param>
 		/// <returns>The matching character name or 'null'</returns>
-		private DOLCharacters GetCharacter(string charname)
+		private static DOLCharacters GetCharacter(string characterName)
 		{
-			GameClient client = WorldMgr.GetClientByPlayerName(charname, true, false);
-			if (client != null)
-				return client.Player.DBCharacter;
-			return DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
+			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
+			return player != null ? player.DBCharacter : DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 		}
 
 		/// <summary>
 		/// Kicks an active playing account from the server and closes the client
 		/// </summary>
 		/// <param name="acc">The account</param>
-		private void KickAccount(Account acc)
+		private static void KickAccount(Account account)
 		{
-			GameClient playingclient = WorldMgr.GetClientByAccountName(acc.Name, true);
-			if (playingclient != null)
+			GameClient client = ClientService.GetClientFromAccount(account);
+
+			if (client != null)
 			{
-				playingclient.Out.SendPlayerQuit(true);
-				playingclient.Disconnect();
+				client.Out.SendPlayerQuit(true);
+				client.Disconnect();
 			}
 		}
 
@@ -630,13 +583,14 @@ namespace DOL.GS.Commands
 		/// Kicks an active playing character from the server and closes the client
 		/// </summary>
 		/// <param name="cha">The character</param>
-		private void KickCharacter(DOLCharacters cha)
+		private static void KickCharacter(DOLCharacters character)
 		{
-			GameClient playingclient = WorldMgr.GetClientByPlayerName(cha.Name, true, false);
-			if (playingclient != null)
+			GamePlayer player = ClientService.GetPlayerByExactName(character.Name);
+
+			if (player != null)
 			{
-				playingclient.Out.SendPlayerQuit(true);
-				playingclient.Disconnect();
+				player.Out.SendPlayerQuit(true);
+				player.Client.Disconnect();
 			}
 		}
 
@@ -645,17 +599,15 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="charname">The character name</param>
 		/// <returns>The account name or 'null'</returns>
-		private string GetAccountName(string charname)
+		private static string GetAccountName(string characterName)
 		{
-			GameClient client = WorldMgr.GetClientByPlayerName(charname, true, false);
-			if (client != null)
-				return client.Account.Name;
+			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
 
-			var ch = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
-			if (ch != null)
-				return ch.AccountName;
-			else
-				return null;
+			if (player != null)
+				return player.Client.Account.Name;
+
+			DOLCharacters characterDb = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			return characterDb?.AccountName;
 		}
 	}
 }
