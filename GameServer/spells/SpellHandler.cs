@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -535,8 +516,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// All checks before any casting begins
 		/// </summary>
-		/// <param name="selectedTarget"></param>
-		/// <returns></returns>
 		public virtual bool CheckBeginCast(GameLiving selectedTarget, bool quiet)
 		{
 			if (m_caster.ObjectState != GameObject.eObjectState.Active)
@@ -549,6 +528,34 @@ namespace DOL.GS.Spells
 
 				return false;
 			}
+
+			Target = selectedTarget;
+
+			if (Spell.Target == "Self")
+				// Self spells should ignore whatever we actually have selected.
+				Target = Caster;
+			else if (Spell.Target == "Pet")
+			{
+				// Get the current target if we don't have one already.
+				if (Target == null)
+					Target = Caster?.TargetObject as GameLiving;
+
+				// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
+				if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
+					Target = Caster.ControlledBrain.Body;
+			}
+			else
+			{
+				// Get the current target if we don't have one already.
+				if (Target == null)
+					Target = Caster?.TargetObject as GameLiving;
+
+				if (Target == null && Caster is NecromancerPet nPet)
+					Target = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
+			}
+
+			// Initial LoS state.
+			HasLos = Caster.TargetInView;
 
 			if (Caster is GameNPC npcOwner)
 			{
@@ -622,20 +629,20 @@ namespace DOL.GS.Spells
 				if (SelectiveBlindness != null)
 				{
 					GameLiving EffectOwner = SelectiveBlindness.EffectSource;
-					if(EffectOwner==selectedTarget)
+					if(EffectOwner==Target)
 					{
 						if (m_caster is GamePlayer && !quiet)
-							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", selectedTarget.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
 
 						return false;
 					}
 				}
 			}
 
-			if (selectedTarget !=null && selectedTarget.HasAbility("DamageImmunity") && Spell.SpellType == eSpellType.DirectDamage && Spell.Radius == 0)
+			if (Target !=null && Target.HasAbility("DamageImmunity") && Spell.SpellType == eSpellType.DirectDamage && Spell.Radius == 0)
 			{
 				if (!quiet)
-					MessageToCaster(selectedTarget.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+					MessageToCaster(Target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 
 				return false;
 			}
@@ -715,7 +722,7 @@ namespace DOL.GS.Spells
 
 			if (targetType == "pet")
 			{
-				if (selectedTarget == null || ((selectedTarget as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
+				if (Target == null || ((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
 				{
 					if (!quiet)
 						MessageToCaster("You must cast this spell on a creature you are controlling.", eChatType.CT_System);
@@ -737,7 +744,7 @@ namespace DOL.GS.Spells
 			{
 				// All spells that need a target.
 
-				if (selectedTarget == null || selectedTarget.ObjectState != GameObject.eObjectState.Active)
+				if (Target == null || Target.ObjectState != GameObject.eObjectState.Active)
 				{
 					if (!quiet)
 						MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
@@ -745,7 +752,7 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (!m_caster.IsWithinRadius(selectedTarget, CalculateSpellRange()))
+				if (!m_caster.IsWithinRadius(Target, CalculateSpellRange()))
 				{
 					if (Caster is GamePlayer && !quiet)
 						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
@@ -753,7 +760,7 @@ namespace DOL.GS.Spells
 					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
 					if (Caster is GameNPC npc)
-						npc.Follow(selectedTarget, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
+						npc.Follow(Target, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
 
 					return false;
 				}
@@ -761,7 +768,7 @@ namespace DOL.GS.Spells
 				switch (m_spell.Target.ToLower())
 				{
 					case "enemy":
-						if (selectedTarget == m_caster)
+						if (Target == m_caster)
 						{
 							if (!quiet)
 								MessageToCaster("You can't attack yourself! ", eChatType.CT_System);
@@ -769,7 +776,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (FindStaticEffectOnTarget(selectedTarget, typeof(NecromancerShadeEffect)) != null)
+						if (FindStaticEffectOnTarget(Target, typeof(NecromancerShadeEffect)) != null)
 						{
 							if (!quiet)
 								MessageToCaster("Invalid target.", eChatType.CT_System);
@@ -784,7 +791,7 @@ namespace DOL.GS.Spells
 							return true;
 
 						// Pet spells (shade) don't require the target to be in front.
-						if (!HasLos || (m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(selectedTarget, 180)))
+						if (!HasLos || (m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180)))
 						{
 							if (!quiet)
 								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
@@ -793,13 +800,13 @@ namespace DOL.GS.Spells
 							return false;
 						}
 
-						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, selectedTarget, quiet))
+						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, quiet))
 							return false;
 
 						break;
 
 					case "corpse":
-						if (selectedTarget.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, selectedTarget, true))
+						if (Target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, Target, true))
 						{
 							if (!quiet)
 								MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
@@ -810,7 +817,7 @@ namespace DOL.GS.Spells
 						break;
 
 					case "realm":
-						if (!GameServer.ServerRules.IsSameRealm(Caster, selectedTarget, true))
+						if (!GameServer.ServerRules.IsSameRealm(Caster, Target, true))
 							return false;
 
 						break;
@@ -825,17 +832,17 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
-				if (m_spell.Target.ToLower() != "corpse" && !selectedTarget.IsAlive)
+				if (m_spell.Target.ToLower() != "corpse" && !Target.IsAlive)
 				{
 					if (!quiet)
-						MessageToCaster(selectedTarget.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
+						MessageToCaster(Target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
 
 					return false;
 				}
 			}
 			
 			//Ryan: don't want mobs to have reductions in mana
-			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(selectedTarget) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
+			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(Target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
@@ -1217,32 +1224,6 @@ namespace DOL.GS.Spells
 			switch (CastState)
 			{
 				case eCastState.Precast:
-					if (Spell.Target == "Self")
-						// Self spells should ignore whatever we actually have selected.
-						Target = Caster;
-					else if (Spell.Target == "Pet")
-					{
-						// Get the current target if we don't have one already.
-						if (Target == null)
-							Target = Caster?.TargetObject as GameLiving;
-
-						// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
-						if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
-							Target = Caster.ControlledBrain.Body;
-					}
-					else
-					{
-						// Get the current target if we don't have one already.
-						if (Target == null)
-							Target = Caster?.TargetObject as GameLiving;
-
-						if (Target == null && Caster is NecromancerPet nPet)
-							Target = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
-					}
-
-					// Initial LoS state.
-					HasLos = Caster.TargetInView;
-
 					if (CheckBeginCast(Target))
 					{
 						m_started = GameLoop.GameLoopTime;
