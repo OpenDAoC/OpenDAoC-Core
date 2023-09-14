@@ -1,25 +1,5 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
@@ -91,23 +71,13 @@ namespace DOL.GS.Friends
 				throw new ArgumentNullException(nameof(Player));
 
 			string[] friends = Player.SerializedFriendsList;
-
-			if (!PlayersFriendsListsCache.TryAdd(Player, friends))
-			{
-				if (log.IsWarnEnabled)
-					log.WarnFormat("Gameplayer ({0}) is already registered in Friends Manager Cache while adding!", Player);
-			}
-
+			PlayersFriendsListsCache.TryAdd(Player, friends);
 			FriendStatus[] offlineFriends = Array.Empty<FriendStatus>();
 
 			if (friends.Any())
 				offlineFriends = Database.SelectObjects<DOLCharacters>(DB.Column("Name").IsIn(friends)).Select(chr => new FriendStatus(chr.Name, chr.Level, chr.Class, chr.LastPlayed)).ToArray();
 
-			if (!PlayersFriendsStatusCache.TryAdd(Player, offlineFriends))
-			{
-				if (log.IsWarnEnabled)
-					log.WarnFormat("Gameplayer ({0}) is already registered in Friends Manager Status Cache while adding!", Player);
-			}
+			PlayersFriendsStatusCache.TryAdd(Player, offlineFriends);
 		}
 
 		/// <summary>
@@ -119,17 +89,8 @@ namespace DOL.GS.Friends
 			if (Player == null)
 				throw new ArgumentNullException(nameof(Player));
 
-			if (!PlayersFriendsListsCache.TryRemove(Player, out _))
-			{
-				if (log.IsWarnEnabled)
-					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Cache while trying to remove!", Player);
-			}
-
-			if (!PlayersFriendsStatusCache.TryRemove(Player, out _))
-			{
-				if (log.IsWarnEnabled)
-					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to remove!", Player);
-			}
+			PlayersFriendsListsCache.TryRemove(Player, out _);
+			PlayersFriendsStatusCache.TryRemove(Player, out _);
 		}
 
 		/// <summary>
@@ -184,8 +145,8 @@ namespace DOL.GS.Friends
 
 				if (currentFriendsStatus == null)
 				{
-						if (log.IsWarnEnabled)
-							log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Add a new Friend ({1})", Player, Friend);
+					if (log.IsWarnEnabled)
+						log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Add a new Friend ({1})", Player, Friend);
 				}
 			}
 
@@ -239,7 +200,7 @@ namespace DOL.GS.Friends
 			if (currentFriendStatus == null)
 			{
 				if (log.IsWarnEnabled)
-						log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Remove a Friend ({1})", Player, Friend);
+					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Status Cache while trying to Remove a Friend ({1})", Player, Friend);
 			}
 
 			return true;
