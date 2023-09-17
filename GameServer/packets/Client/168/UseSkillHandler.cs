@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using log4net;
 
@@ -175,9 +176,24 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						player.TempProperties.SetProperty(sk.Name, GameLoop.GameLoopTime);
 					}
-					else if (sk is Style)
+					else if (sk is Style style)
 					{
-						player.styleComponent.ExecuteWeaponStyle((Style)sk);
+						if (player.styleComponent.AwaitingBackupInput && Properties.ALLOW_AUTO_BACKUP_STYLES)
+						{
+							player.styleComponent.AwaitingBackupInput = false;
+							if (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional)
+							{
+								player.Out.SendMessage($"You must use an anytime style as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+							else
+							{
+								player.Out.SendMessage($"You will now use {style.Name} as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.styleComponent.AutomaticBackupStyle = style;
+								return;
+							}
+						}
+						player.styleComponent.ExecuteWeaponStyle(style);
 					}
 				}
 

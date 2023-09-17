@@ -15,6 +15,8 @@ namespace DOL.GS
     {
         private GameLiving _owner;
 
+        public bool AwaitingBackupInput = false;
+
         public StyleComponent(GameLiving owner)
         {
             _owner = owner;
@@ -56,6 +58,9 @@ namespace DOL.GS
         /// Holds the time at which the style was set
         /// </summary>
         protected long m_nextCombatStyleTime;
+        
+        //if automatic backup styles are enabled, this is the one that will be used
+        public Style AutomaticBackupStyle { get; set; }
 
         /// <summary>
         /// Gets or Sets the next combat style to use
@@ -117,7 +122,7 @@ namespace DOL.GS
 
             AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
             InventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
-            return StyleProcessor.CanUseStyle(lastAttackData, _owner, NextCombatStyle, weapon) ? NextCombatStyle : NextCombatBackupStyle ?? NextCombatStyle;
+            return StyleProcessor.CanUseStyle(lastAttackData, _owner, NextCombatStyle, weapon) ? NextCombatStyle : NextCombatBackupStyle ?? AutomaticBackupStyle ?? NextCombatStyle;
         }
 
         /// <summary>

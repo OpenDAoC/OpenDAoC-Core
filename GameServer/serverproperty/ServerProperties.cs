@@ -2911,6 +2911,9 @@ namespace DOL.GS.ServerProperties
 
 		[ServerProperty("controls_automation", "auto_select_opening_style", "Automatically perform the opening style of the currently selected style if conditions are not met (recursive).", false)]
 		public static bool AUTO_SELECT_OPENING_STYLE;
+        
+		[ServerProperty("controls_automation", "allow_auto_backup_styles", "Allow players to set an anytime style to be used automatically with /backupstyle", false)]
+		public static bool ALLOW_AUTO_BACKUP_STYLES;
 
 		#endregion
 
