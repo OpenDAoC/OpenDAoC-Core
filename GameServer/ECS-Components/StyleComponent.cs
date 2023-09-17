@@ -1,41 +1,40 @@
-﻿using DOL.Database;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace DOL.GS
 {
     public class StyleComponent
     {
-        public GameLiving owner;
+        private GameLiving _owner;
 
         public StyleComponent(GameLiving owner)
         {
-            this.owner = owner;
+            _owner = owner;
         }
 
         /// <summary>
-		/// Holds all styles of the player
-		/// </summary>
-		protected readonly Dictionary<int, Style> m_styles = new Dictionary<int, Style>();
+        /// Holds all styles of the player
+        /// </summary>
+        protected readonly Dictionary<int, Style> m_styles = new Dictionary<int, Style>();
 
         /// <summary>
         /// Used to lock the style list
         /// </summary>
-        protected readonly Object lockStyleList = new Object();
+        protected readonly object lockStyleList = new();
 
         /// <summary>
-		/// Gets a list of available styles
-		/// This creates a copy
-		/// </summary>
-		public IList GetStyleList()
+        /// Gets a list of available styles
+        /// This creates a copy
+        /// </summary>
+        public IList GetStyleList()
         {
             List<Style> list = new List<Style>();
             lock (lockStyleList)
@@ -46,9 +45,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Holds the style that this living should use next
-		/// </summary>
-		protected Style m_nextCombatStyle;
+        /// Holds the style that this living should use next
+        /// </summary>
+        protected Style m_nextCombatStyle;
         /// <summary>
         /// Holds the backup style for the style that the living should use next
         /// </summary>
@@ -84,9 +83,9 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Holds the cancel style flag
-		/// </summary>
-		protected bool m_cancelStyle;
+        /// Holds the cancel style flag
+        /// </summary>
+        protected bool m_cancelStyle;
 
         /// <summary>
         /// Gets or Sets the cancel style flag
@@ -94,13 +93,17 @@ namespace DOL.GS
         /// </summary>
         public bool CancelStyle
         {
-            get { return (owner as GamePlayer).DBCharacter != null ? (owner as GamePlayer).DBCharacter.CancelStyle : false; }
-            set { if ((owner as GamePlayer).DBCharacter != null) (owner as GamePlayer).DBCharacter.CancelStyle = value; }
+            get => _owner is GamePlayer player && player.DBCharacter != null && player.DBCharacter.CancelStyle;
+            set
+            {
+                if (_owner is GamePlayer player && player.DBCharacter != null)
+                    player.DBCharacter.CancelStyle = value;
+            }
         }
 
         public void ExecuteWeaponStyle(Style style)
         {
-            StyleProcessor.TryToUseStyle(owner, style);
+            StyleProcessor.TryToUseStyle(_owner, style);
         }
 
         /// <summary>
@@ -109,29 +112,25 @@ namespace DOL.GS
         /// <returns>Style to use or null if none</returns>
         public Style GetStyleToUse()
         {
-            InventoryItem weapon;
-            if (NextCombatStyle == null) return null;
-            if (NextCombatStyle.WeaponTypeRequirement == (int)eObjectType.Shield)
-                weapon = owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            else weapon = owner.ActiveWeapon;
+            if (NextCombatStyle == null)
+                return null;
 
-            if (StyleProcessor.CanUseStyle(owner, NextCombatStyle, weapon))
-                return NextCombatStyle;
-
-            if (NextCombatBackupStyle == null) return NextCombatStyle;
-
-            return NextCombatBackupStyle;
+            AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            InventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
+            return StyleProcessor.CanUseStyle(lastAttackData, _owner, NextCombatStyle, weapon) ? NextCombatStyle : NextCombatBackupStyle ?? NextCombatStyle;
         }
 
         /// <summary>
-		/// Picks a style, prioritizing reactives and chains over positionals and anytimes
-		/// </summary>
-		/// <returns>Selected style</returns>
-		public Style NPCGetStyleToUse()
+        /// Picks a style, prioritizing reactives and chains over positionals and anytimes
+        /// </summary>
+        /// <returns>Selected style</returns>
+        public Style NPCGetStyleToUse()
         {
-            var p = owner as GameNPC;
+            var p = _owner as GameNPC;
             if (p.Styles == null || p.Styles.Count < 1 || p.TargetObject == null)
                 return null;
+
+            AttackData lastAttackData = p.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 
             // Chain and defensive styles are excluded from the chance roll because they would almost never happen otherwise. 
             // For example, an NPC blocks 10% of the time, so the default 20% style chance effectively means the defensive 
@@ -139,12 +138,12 @@ namespace DOL.GS
             // 0.4% of the time.
             if (p.StylesChain != null && p.StylesChain.Count > 0)
                 foreach (Style s in p.StylesChain)
-                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
+                    if (StyleProcessor.CanUseStyle(lastAttackData, p, s, p.ActiveWeapon))
                         return s;
 
             if (p.StylesDefensive != null && p.StylesDefensive.Count > 0)
                 foreach (Style s in p.StylesDefensive)
-                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon)
+                    if (StyleProcessor.CanUseStyle(lastAttackData, p, s, p.ActiveWeapon)
                         && p.CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
                         return s;
 
@@ -161,21 +160,21 @@ namespace DOL.GS
                 if (p.StylesBack != null && p.StylesBack.Count > 0)
                 {
                     Style s = p.StylesBack[Util.Random(0, p.StylesBack.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
+                    if (StyleProcessor.CanUseStyle(lastAttackData, p, s, p.ActiveWeapon))
                         return s;
                 }
 
                 if (p.StylesSide != null && p.StylesSide.Count > 0)
                 {
                     Style s = p.StylesSide[Util.Random(0, p.StylesSide.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
+                    if (StyleProcessor.CanUseStyle(lastAttackData, p, s, p.ActiveWeapon))
                         return s;
                 }
 
                 if (p.StylesFront != null && p.StylesFront.Count > 0)
                 {
                     Style s = p.StylesFront[Util.Random(0, p.StylesFront.Count - 1)];
-                    if (StyleProcessor.CanUseStyle(p, s, p.ActiveWeapon))
+                    if (StyleProcessor.CanUseStyle(lastAttackData, p, s, p.ActiveWeapon))
                         return s;
                 }
 
@@ -188,14 +187,14 @@ namespace DOL.GS
         }
 
         /// <summary>
-		/// Delve a weapon style for this player
-		/// </summary>
-		/// <param name="delveInfo"></param>
-		/// <param name="style"></param>
-		/// <returns></returns>
-		public void DelveWeaponStyle(IList<string> delveInfo, Style style)
+        /// Delve a weapon style for this player
+        /// </summary>
+        /// <param name="delveInfo"></param>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        public void DelveWeaponStyle(IList<string> delveInfo, Style style)
         {
-            StyleProcessor.DelveWeaponStyle(delveInfo, style, owner as GamePlayer);
+            StyleProcessor.DelveWeaponStyle(delveInfo, style, _owner as GamePlayer);
         }
 
         public void RemoveAllStyles()
@@ -208,7 +207,7 @@ namespace DOL.GS
 
         public void AddStyle(Style st, bool notify)
         {
-            var p = owner as GamePlayer;
+            var p = _owner as GamePlayer;
 
             lock (lockStyleList)
             {

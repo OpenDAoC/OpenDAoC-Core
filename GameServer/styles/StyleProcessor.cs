@@ -1,28 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 using DOL.Language;
 
@@ -42,7 +24,7 @@ namespace DOL.GS.Styles
 		/// <param name="style">The style to execute</param>
 		/// <param name="weapon">The weapon used to execute the style</param>
 		/// <returns>true if the player can execute the style right now, false if not</returns>
-		public static bool CanUseStyle(GameLiving living, Style style, InventoryItem weapon)
+		public static bool CanUseStyle(AttackData lastAttackData, GameLiving living, Style style, InventoryItem weapon)
 		{
 			// First thing in processors, lock the objects you modify.
 			// This way it makes sure the objects are not modified by several different threads at the same time!
@@ -66,22 +48,20 @@ namespace DOL.GS.Styles
 					case Style.eAttackResultRequirement.Parry: requiredAttackResult = eAttackResult.Parried; break;
 				}
 
-				AttackData lastAD = living.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-
 				switch (style.OpeningRequirementType)
 				{
 					case Style.eOpening.Offensive:
 						// Style required before this one?
 						if (style.OpeningRequirementValue != 0
-							&& (lastAD == null
-							|| lastAD.AttackResult != eAttackResult.HitStyle
-							|| lastAD.Style == null
-							|| lastAD.Style.ID != style.OpeningRequirementValue
+							&& (lastAttackData == null
+							|| lastAttackData.AttackResult != eAttackResult.HitStyle
+							|| lastAttackData.Style == null
+							|| lastAttackData.Style.ID != style.OpeningRequirementValue
 							/*|| lastAD.Target != target*/)) // style chains are *NOT* possible only on the same target
 							return false;
 
 						// Last attack result.
-						eAttackResult lastRes = (lastAD != null) ? lastAD.AttackResult : eAttackResult.Any;
+						eAttackResult lastRes = (lastAttackData != null) ? lastAttackData.AttackResult : eAttackResult.Any;
 
 						if (requiredAttackResult != eAttackResult.Any && lastRes != requiredAttackResult)
 							return false;
@@ -159,149 +139,157 @@ namespace DOL.GS.Styles
 		/// <param name="style">The style to execute</param>
 		public static void TryToUseStyle(GameLiving living, Style style)
 		{
+			if (living is not GamePlayer player)
+				return;
+
 			// First thing in processors, lock the objects you modify.
 			// This way it makes sure the objects are not modified by several different threads at the same time!
-			GamePlayer player = living as GamePlayer;
-
-			lock (living)
+			lock (player)
 			{
-				if (!living.IsAlive)
+				if (!player.IsAlive)
 				{
-					player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.CantCombatMode"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.CantCombatMode"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
-				if (living.IsDisarmed)
+				if (player.IsDisarmed)
 				{
-					player?.Out.SendMessage("You are disarmed and cannot attack!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You are disarmed and cannot attack!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
-				if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
 				{
-					player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.CantMeleeCombat"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.CantMeleeCombat"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
 				// Put player into attack state before setting the styles.
 				// Changing the attack state clears out the styles.
-				if (living.attackComponent.AttackState == false || EffectListService.GetEffectOnTarget(living, eEffect.Engage) != null)
-					living.attackComponent.RequestStartAttack(player.TargetObject);
+				if (player.attackComponent.AttackState == false || EffectListService.GetEffectOnTarget(player, eEffect.Engage) != null)
+					player.attackComponent.RequestStartAttack(player.TargetObject);
 
-				if (living.TargetObject == null)
+				if (player.TargetObject == null)
 				{
-					player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.MustHaveTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.MustHaveTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
-				InventoryItem weapon = (style.WeaponTypeRequirement == (int)eObjectType.Shield) ? living.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : living.ActiveWeapon;
+				InventoryItem weapon = (style.WeaponTypeRequirement == (int) eObjectType.Shield) ? player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
 
-				if (!CheckWeaponType(style, living, weapon))
+				if (!CheckWeaponType(style, player, weapon))
 				{
-					if (player != null)
-					{
-						if (style.WeaponTypeRequirement == Style.SpecialWeaponType.DualWield)
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.DualWielding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						else
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.StyleRequires", style.GetRequiredWeaponName()), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
+					if (style.WeaponTypeRequirement == Style.SpecialWeaponType.DualWield)
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.DualWielding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					else
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.StyleRequires", style.GetRequiredWeaponName()), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					return;
 				}
 
-				if (player != null)
+				if (Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType != Style.eOpening.Positional)
 				{
-					int fatCost = CalculateEnduranceCost(player, style, weapon.SPD_ABS);
+					AttackData lastAttackData = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+					Style styleToUse = style;
 
-					if (player.Endurance < fatCost)
+					while (!CanUseStyle(lastAttackData, player, styleToUse, weapon))
 					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.Fatigued"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						styleToUse = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+
+						if (styleToUse == null)
+							break;
+
+						style = styleToUse;
 					}
 				}
 
-				if (player != null)
+				int fatCost = CalculateEnduranceCost(player, style, weapon.SPD_ABS);
+
+				if (player.Endurance < fatCost)
 				{
-					Style preRequireStyle = null;
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.Fatigued"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
 
-					if (style.OpeningRequirementType == Style.eOpening.Offensive && style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
-						preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+				Style preRequireStyle = null;
 
-					// We have not set any primary style yet?
-					if (player.styleComponent.NextCombatStyle == null)
+				if (!Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType == Style.eOpening.Offensive && style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
+					preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+
+				// We have not set any primary style yet?
+				if (player.styleComponent.NextCombatStyle == null)
+				{
+					if (preRequireStyle != null)
 					{
-						if (preRequireStyle != null)
+						AttackData lastAD = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+						if (lastAD == null
+							|| lastAD.AttackResult != eAttackResult.HitStyle
+							|| lastAD.Style == null
+							|| lastAD.Style.ID != style.OpeningRequirementValue)
 						{
-							AttackData lastAD = living.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-							if (lastAD == null
-								|| lastAD.AttackResult != eAttackResult.HitStyle
-								|| lastAD.Style == null
-								|| lastAD.Style.ID != style.OpeningRequirementValue)
-							{
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PerformStyleBefore", preRequireStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
-							}
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PerformStyleBefore", preRequireStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
 						}
-
-						player.styleComponent.NextCombatStyle = style;
-						player.styleComponent.NextCombatBackupStyle = null;
-						player.styleComponent.NextCombatStyleTime = GameLoop.GameLoopTime;
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-						if (living.IsEngaging)
-						{
-							// Cancel engage effect if exist.
-							EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(living, eEffect.Engage);
-
-							if (effect != null)
-								effect.Cancel(false, true);
-						}
-
-						// Unstealth only on primary style to not break stealth with non-stealth backup styles.
-						if (!style.StealthRequirement)
-							player.Stealth(false);
 					}
+
+					player.styleComponent.NextCombatStyle = style;
+					player.styleComponent.NextCombatBackupStyle = null;
+					player.styleComponent.NextCombatStyleTime = GameLoop.GameLoopTime;
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					if (player.IsEngaging)
+					{
+						// Cancel engage effect if exist.
+						EngageECSGameEffect effect = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(player, eEffect.Engage);
+
+						if (effect != null)
+							effect.Cancel(false, true);
+					}
+
+					// Unstealth only on primary style to not break stealth with non-stealth backup styles.
+					if (!style.StealthRequirement)
+						player.Stealth(false);
+				}
+				else
+				{
+					// Have we also set the backupstyle already?
+					if (player.styleComponent.NextCombatBackupStyle != null)
+						// All styles set, can't change anything now.
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadySelectedStyles"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					else
 					{
-						// Have we also set the backupstyle already?
-						if (player.styleComponent.NextCombatBackupStyle != null)
-							// All styles set, can't change anything now.
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadySelectedStyles"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						else
+						// Have we pressed the same style button used for the primary style again?
+						if (player.styleComponent.NextCombatStyle.ID == style.ID)
 						{
-							// Have we pressed the same style button used for the primary style again?
-							if (player.styleComponent.NextCombatStyle.ID == style.ID)
+							if (player.styleComponent.CancelStyle)
 							{
-								if (player.styleComponent.CancelStyle)
-								{
-									// If yes, we cancel the style.
-									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									player.styleComponent.NextCombatStyle = null;
-									player.styleComponent.NextCombatBackupStyle = null;
-								}
-								else
-									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadyPreparing"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								// If yes, we cancel the style.
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.NoLongerPreparing", player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.styleComponent.NextCombatStyle = null;
+								player.styleComponent.NextCombatBackupStyle = null;
 							}
 							else
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.AlreadyPreparing"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}
+						else
+						{
+							if (preRequireStyle != null)
 							{
-								if (preRequireStyle != null)
+								AttackData lastAD = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+
+								if (lastAD == null
+									|| lastAD.AttackResult != eAttackResult.HitStyle
+									|| lastAD.Style == null
+									|| lastAD.Style.ID != style.OpeningRequirementValue)
 								{
-									AttackData lastAD = living.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-
-									if (lastAD == null
-										|| lastAD.AttackResult != eAttackResult.HitStyle
-										|| lastAD.Style == null
-										|| lastAD.Style.ID != style.OpeningRequirementValue)
-									{
-										player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PerformStyleBefore", preRequireStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-										return;
-									}
+									player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PerformStyleBefore", preRequireStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									return;
 								}
-
-								// If no, set the secondary backup style.
-								player.styleComponent.NextCombatBackupStyle = style;
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
+
+							// If no, set the secondary backup style.
+							player.styleComponent.NextCombatBackupStyle = style;
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}
@@ -336,12 +324,12 @@ namespace DOL.GS.Styles
 						player.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
 				}
 
-				// Did primary and backup style fail?
-				if (!CanUseStyle(living, style, weapon))
-				{
-					if (player != null)
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				AttackData lastAttackData = living.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 
+				// Did primary and backup style fail?
+				if (!CanUseStyle(lastAttackData, living, style, weapon))
+				{
+					player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				else

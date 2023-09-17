@@ -2119,7 +2119,7 @@ namespace DOL.GS
             GameSpellEffect grapple = null;
             GameSpellEffect brittleguard = null;
 
-            AttackData lastAD = owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+            AttackData lastAttackData = owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
             bool defenseDisabled = ad.Target.IsMezzed | ad.Target.IsStunned | ad.Target.IsSitting;
 
             GamePlayer playerOwner = owner as GamePlayer;
@@ -2155,7 +2155,7 @@ namespace DOL.GS
 
             bool stealthStyle = false;
 
-            if (ad.Style != null && ad.Style.StealthRequirement && ad.Attacker is GamePlayer && StyleProcessor.CanUseStyle((GamePlayer) ad.Attacker, ad.Style, attackerWeapon))
+            if (ad.Style != null && ad.Style.StealthRequirement && ad.Attacker is GamePlayer && StyleProcessor.CanUseStyle(lastAttackData, (GamePlayer) ad.Attacker, ad.Style, attackerWeapon))
             {
                 stealthStyle = true;
                 defenseDisabled = true;
@@ -2215,10 +2215,10 @@ namespace DOL.GS
 
             if (!defenseDisabled)
             {
-                if (lastAD != null && lastAD.AttackResult != eAttackResult.HitStyle)
-                    lastAD = null;
+                if (lastAttackData != null && lastAttackData.AttackResult != eAttackResult.HitStyle)
+                    lastAttackData = null;
 
-                double evadeChance = owner.TryEvade(ad, lastAD, attackerConLevel, m_attackers.Count);
+                double evadeChance = owner.TryEvade(ad, lastAttackData, attackerConLevel, m_attackers.Count);
                 ad.EvadeChance = evadeChance;
                 double randomEvadeNum = Util.CryptoNextDouble() * 10000;
                 randomEvadeNum = Math.Floor(randomEvadeNum);
@@ -2252,7 +2252,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAD, attackerConLevel, m_attackers.Count);
+                    double parryChance = owner.TryParry(ad, lastAttackData, attackerConLevel, m_attackers.Count);
                     ad.ParryChance = parryChance;
                     double ranParryNum = Util.CryptoNextDouble() * 10000;
                     ranParryNum = Math.Floor(ranParryNum);
@@ -2297,7 +2297,7 @@ namespace DOL.GS
             //     return result;
 
             // Miss chance.
-            int missChance = GetMissChance(action, ad, lastAD, attackerWeapon);
+            int missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
 
             // Check for dirty trick fumbles before misses.
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);

@@ -1648,7 +1648,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("quest", "beetle_rvr_reward", "Beetle Quest realmpoints reward", 0)]
 		public static int BEETLE_RVR_REWARD;
 		#endregion
-		
+
 		#region KEEPS
 		/// <summary>
 		/// The number of players needed for claiming
@@ -2426,7 +2426,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Sets the Circle of the Area to check for Turrets
 		/// </summary>
-		[ServerProperty("classes", "turret_area_cap_radius", "Sets the Radius which is checked for the turretareacap", 1000)]
+		[ServerProperty("classes", "turret_area_cap_radius", "Sets the Radius which is checked for the turret area cap", 1000)]
 		public static int TURRET_AREA_CAP_RADIUS;
 
 		[ServerProperty("classes", "theurgist_pet_cap", "Sets the maximum number of pets a Theurgist can summon", 16)]
@@ -2862,7 +2862,7 @@ namespace DOL.GS.ServerProperties
         public static int IMMUNITY_TIMER_ADAPTIVE_LENGTH;
 
 		#endregion
-		
+
 		#region RANDOM OBJECT GENERATION
 
 		[ServerProperty("atlas_rog", "rog_toa_item_chance", "chance of generating an object with TOA stats (in %)", 0)]
@@ -2904,8 +2904,16 @@ namespace DOL.GS.ServerProperties
 
 		[ServerProperty("atlas_rog", "rog_use_weighted_generation", "toggle weighted rolls vs. simple generation", false)]
 		public static bool ROG_USE_WEIGHTED_GENERATION;
-		
+
 		#endregion
+
+		#region CONTROLS_AUTOMATION
+
+		[ServerProperty("controls_automation", "auto_select_opening_style", "Automatically perform the opening style of the currently selected style if conditions are not met (recursive).", false)]
+		public static bool AUTO_SELECT_OPENING_STYLE;
+
+		#endregion
+
 		public static IDictionary<string, object> AllCurrentProperties
 		{
 			get; private set;
