@@ -174,7 +174,7 @@ namespace DOL.GS.Spells
 
             amount = cache;
 
-            int randNum = Util.CryptoNextInt(1, 100); //grab our random number
+            int randNum = Util.CryptoNextInt(0, 100); //grab our random number
 
             if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
             {

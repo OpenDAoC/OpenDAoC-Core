@@ -349,7 +349,7 @@ namespace DOL.GS.Spells
 			if (criticalChance < 0)
 				return 0;
 
-			int randNum = Util.CryptoNextInt(1, 100);
+			int randNum = Util.CryptoNextInt(0, 100);
 			int critCap = Math.Min(50, criticalChance);
 
 			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)

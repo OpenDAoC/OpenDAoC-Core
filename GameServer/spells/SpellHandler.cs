@@ -3495,7 +3495,7 @@ namespace DOL.GS.Spells
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
 			int criticalChance = this is not DoTSpellHandler ? m_caster.SpellCriticalChance : 0;
 			int criticalDamage = 0;
-			int randNum = Util.CryptoNextInt(1, 100);
+			int randNum = Util.CryptoNextInt(0, 100);
 			int criticalCap = Math.Min(50, criticalChance);
 
 			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && criticalCap > 0)
