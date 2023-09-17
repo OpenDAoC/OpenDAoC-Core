@@ -2696,19 +2696,23 @@ namespace DOL.GS.Spells
 		public virtual bool CheckSpellResist(GameLiving target)
 		{
 			int spellResistChance = CalculateSpellResistChance(target);
-			bool UseRNGOverride = Properties.OVERRIDE_DECK_RNG;
 
 			if (spellResistChance > 0)
 			{
-				int randNum = Caster is GamePlayer caster && !UseRNGOverride ? caster.RandomNumberDeck.GetInt() : Util.CryptoNextInt(100);
+				int spellResistRoll;
+				
+				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
+					spellResistRoll = player.RandomNumberDeck.GetInt();
+				else
+					spellResistRoll = Util.CryptoNextInt(100);
 
 				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {spellResistRoll}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {spellResistRoll}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-				if (spellResistChance > randNum)
+				if (spellResistChance > spellResistRoll)
 				{
 					OnSpellResisted(target);
 					return true;

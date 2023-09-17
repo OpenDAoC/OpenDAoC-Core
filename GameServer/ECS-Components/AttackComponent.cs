@@ -1853,34 +1853,23 @@ namespace DOL.GS
         {
             double blockChance = owner.TryBlock(ad, attackerConLevel, m_attackers.Count);
             ad.BlockChance = blockChance;
-            double ranBlockNum = Util.CryptoNextDouble() * 10000;
-            ranBlockNum = Math.Floor(ranBlockNum);
-            ranBlockNum /= 100;
-            blockChance *= 100;
+            double blockRoll;
+
+            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+                blockRoll = player.RandomNumberDeck.GetPseudoDouble();
+            else
+                blockRoll = Util.CryptoNextDouble();
 
             if (blockChance > 0)
             {
-                double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                double? blockOutput = (blockDouble != null) ? Math.Round((double) (blockDouble * 100), 2) : ranBlockNum;
-
                 if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                    blockAttk.Out.SendMessage($"target block%: {Math.Round(blockChance, 2)} rand: {blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockAttk.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                    blockTarg.Out.SendMessage($"your block%: {Math.Round(blockChance, 2)} rand: {blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    blockTarg.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (blockDouble == null || Properties.OVERRIDE_DECK_RNG)
-                {
-                    if (blockChance > ranBlockNum)
-                        return true;
-                }
-                else
-                {
-                    blockDouble *= 100;
-
-                    if (blockChance > blockDouble)
-                        return true;
-                }
+                if (blockChance > blockRoll)
+                    return true;
             }
 
             if (ad.AttackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell)
@@ -1924,15 +1913,15 @@ namespace DOL.GS
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
             int guardLevel = guard.GuardSource.GetAbilityLevel(Abilities.Guard);
-            double guardchance;
+            double guardChance;
 
             if (guard.GuardSource is GameNPC)
-                guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
+                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
             else
-                guardchance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001 * (leftHand.Quality * 0.01);
+                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001 * (leftHand.Quality * 0.01);
 
-            guardchance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
-            guardchance += attackerConLevel * 0.05;
+            guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
+            guardChance += attackerConLevel * 0.05;
             int shieldSize = 1;
 
             if (leftHand != null)
@@ -1940,55 +1929,45 @@ namespace DOL.GS
                 shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
                 if (guardSource is GamePlayer)
-                    guardchance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+                    guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
             }
 
             if (m_attackers.Count > shieldSize)
-                guardchance *= shieldSize / (double) m_attackers.Count;
+                guardChance *= shieldSize / (double) m_attackers.Count;
 
-            if (guardchance < 0.01)
-                guardchance = 0.01;
+            if (guardChance < 0.01)
+                guardChance = 0.01;
             //else if (ad.Attacker is GamePlayer && guardchance > 0.6)
             // guardchance = 0.6;
-            else if (shieldSize == 1 && guardchance > 0.8)
-                guardchance = 0.8;
-            else if (shieldSize == 2 && guardchance > 0.9)
-                guardchance = 0.9;
-            else if (shieldSize == 3 && guardchance > 0.99)
-                guardchance = 0.99;
+            else if (shieldSize == 1 && guardChance > 0.8)
+                guardChance = 0.8;
+            else if (shieldSize == 2 && guardChance > 0.9)
+                guardChance = 0.9;
+            else if (shieldSize == 3 && guardChance > 0.99)
+                guardChance = 0.99;
 
             if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-                guardchance /= 2;
+                guardChance /= 2;
 
-            double ranBlockNum = Util.CryptoNextDouble() * 10000;
-            ranBlockNum = Math.Floor(ranBlockNum);
-            ranBlockNum /= 100;
-            guardchance *= 100;
+            double guardRoll;
 
-            double? blockDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-            double? blockOutput = (blockDouble != null) ? blockDouble * 100 : ranBlockNum;
+            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+                guardRoll = player.RandomNumberDeck.GetPseudoDouble();
+            else
+                guardRoll = Util.CryptoNextDouble();
+
+            bool success = guardChance > guardRoll;
 
             if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                blockAttk.Out.SendMessage($"Chance to guard: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                blockAttk.Out.SendMessage($"Chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                blockTarg.Out.SendMessage($"Chance to be guarded: {guardchance} rand: {blockOutput} GuardSuccess? {guardchance > blockOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                blockTarg.Out.SendMessage($"Chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-            if (blockDouble == null || Properties.OVERRIDE_DECK_RNG)
+            if (success)
             {
-                if (guardchance > ranBlockNum)
-                {
-                    ad.Target = guard.GuardSource;
-                    return true;
-                }
-            }
-            else
-            {
-                if (guardchance > blockOutput)
-                {
-                    ad.Target = guard.GuardSource;
-                    return true;
-                }
+                ad.Target = guard.GuardSource;
+                return true;
             }
 
             return false;
@@ -2225,68 +2204,46 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData, attackerConLevel, m_attackers.Count);
                 ad.EvadeChance = evadeChance;
-                double randomEvadeNum = Util.CryptoNextDouble() * 10000;
-                randomEvadeNum = Math.Floor(randomEvadeNum);
-                randomEvadeNum /= 100;
-                evadeChance *= 100;
+                double evadeRoll;
+
+                if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                    evadeRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
+                else
+                    evadeRoll = Util.CryptoNextDouble();
 
                 if (evadeChance > 0)
                 {
-                    double? evadeDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                    double? evadeOutput = (evadeDouble != null) ? Math.Round((double) (evadeDouble * 100),2 ) : randomEvadeNum;
-
                     if (ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
-                        evadeAtk.Out.SendMessage($"target evade%: {Math.Round(evadeChance, 2)} rand: {evadeOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        evadeAtk.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                     if (ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
-                        evadeTarg.Out.SendMessage($"your evade%: {Math.Round(evadeChance, 2)} rand: {evadeOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        evadeTarg.Out.SendMessage($"your evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                    if (evadeDouble == null || Properties.OVERRIDE_DECK_RNG)
-                    {
-                        if (evadeChance > randomEvadeNum)
-                            return eAttackResult.Evaded;
-                    }
-                    else
-                    {
-                        evadeDouble *= 100;
-
-                        if (evadeChance > evadeDouble)
-                            return eAttackResult.Evaded;
-                    }
+                    if (evadeChance > evadeRoll)
+                        return eAttackResult.Evaded;
                 }
 
                 if (ad.IsMeleeAttack)
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, attackerConLevel, m_attackers.Count);
                     ad.ParryChance = parryChance;
-                    double ranParryNum = Util.CryptoNextDouble() * 10000;
-                    ranParryNum = Math.Floor(ranParryNum);
-                    ranParryNum /= 100;
-                    parryChance *= 100;
+                    double parryRoll;
+
+                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                        parryRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
+                    else
+                        parryRoll = Util.CryptoNextDouble();
 
                     if (parryChance > 0)
                     {
-                        double? parryDouble = (owner as GamePlayer)?.RandomNumberDeck.GetPseudoDouble();
-                        double? parryOutput = (parryDouble != null) ? Math.Round((double) (parryDouble * 100.0), 2) : ranParryNum;
-
                         if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
-                            parryAtk.Out.SendMessage($"target parry%: {Math.Round(parryChance, 2)} rand: {parryOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            parryAtk.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                         if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
-                            parryTarg.Out.SendMessage($"your parry%: {Math.Round(parryChance, 2)} rand: {parryOutput}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            parryTarg.Out.SendMessage($"your parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                        if (parryDouble == null || Properties.OVERRIDE_DECK_RNG)
-                        {
-                            if (parryChance > ranParryNum)
-                                return eAttackResult.Parried;
-                        }
-                        else
-                        {
-                            parryDouble *= 100;
-
-                            if (parryChance > parryDouble)
-                                return eAttackResult.Parried;
-                        }
+                        if (parryChance > parryRoll)
+                            return eAttackResult.Parried;
                     }
                 }
 
@@ -2314,22 +2271,27 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double rand = !Properties.OVERRIDE_DECK_RNG && playerAttacker != null ? playerAttacker.RandomNumberDeck.GetPseudoDouble() : Util.CryptoNextDouble();
+                double missRoll;
+
+                if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
+                    missRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
+                else
+                    missRoll = Util.CryptoNextDouble();
 
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
-                    misser.Out.SendMessage($"miss rate on target: {missChance}% rand: {rand * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * rand:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"miss rate on target: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * missRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
-                    missee.Out.SendMessage($"chance to be missed: {missChance}% rand: {rand * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    missee.Out.SendMessage($"chance to be missed: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 // Check for normal fumbles.
                 // NOTE: fumbles are a subset of misses, and a player can only fumble if the attack would have been a miss anyways.
-                if (missChance > rand * 100)
+                if (missChance > missRoll * 100)
                 {
-                    if (ad.Attacker.ChanceToFumble > rand)
+                    if (ad.Attacker.ChanceToFumble > missRoll)
                         return eAttackResult.Fumbled;
 
                     return eAttackResult.Missed;

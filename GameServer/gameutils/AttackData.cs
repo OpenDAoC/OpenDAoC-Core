@@ -1,28 +1,8 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
+﻿using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -308,39 +288,25 @@ namespace DOL.GS
 			}
 		}
 
-        public bool IsRandomFumble
-        {
-            get
-            {
-				double randNum = Util.CryptoNextDouble();
+		public bool IsRandomFumble
+		{
+			get
+			{
+				GamePlayer playerAttacker = Attacker as GamePlayer;
 				double fumbleChance = Attacker.ChanceToFumble;
+				double fumbleRoll;
 
-				bool overrideRNG = ServerProperties.Properties.OVERRIDE_DECK_RNG;
+				if (!ServerProperties.Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
+					fumbleRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
+				else
+					fumbleRoll = Util.CryptoNextDouble();
 
-				if (Attacker is GamePlayer p)
-				{
-					if(!overrideRNG)
-						randNum = p.RandomNumberDeck.GetPseudoDouble();
-					
-					if(p.UseDetailedCombatLog)
-						p.Out.SendMessage($"Your chance to fumble: {(100 * fumbleChance).ToString("0.##")}% rand: {(100 * randNum).ToString("0.##")}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-				}
+				if (playerAttacker?.UseDetailedCombatLog == true)
+					playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-				return (IsMeleeAttack) 
-                    ? fumbleChance > randNum 
-                    : false;
-            }
-        }
-
-        public bool IsRandomMiss
-        {
-            get
-            {
-                return (IsMeleeAttack)
-                    ? Util.ChanceDouble(Target.ChanceToBeMissed)
-                    : false;
-            }
-        }
+				return IsMeleeAttack && fumbleChance > fumbleRoll;
+			}
+		}
 
 		/// <summary>
 		/// Does this attack put the living in combat?
