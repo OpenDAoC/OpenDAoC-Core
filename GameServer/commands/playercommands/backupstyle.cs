@@ -28,7 +28,10 @@ namespace DOL.GS.Commands
                 case "set":
                     client.Player.styleComponent.AwaitingBackupInput = true;
                     client.Player.styleComponent.AutomaticBackupStyle = null;
-                    client.Out.SendMessage($"The next anytime style you use will be set as your automatic backup style.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    if(Properties.ALLOW_NON_ANYTIME_BACKUP_STYLES)
+                        client.Out.SendMessage($"The next style you use will be set as your automatic backup style.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    else
+                        client.Out.SendMessage($"The next anytime style you use will be set as your automatic backup style.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     break;
                 case "clear":
                     client.Player.styleComponent.AutomaticBackupStyle = null;

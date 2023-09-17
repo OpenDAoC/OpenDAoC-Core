@@ -181,17 +181,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (player.styleComponent.AwaitingBackupInput && Properties.ALLOW_AUTO_BACKUP_STYLES)
 						{
 							player.styleComponent.AwaitingBackupInput = false;
-							if (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional)
+							
+							if (!Properties.ALLOW_NON_ANYTIME_BACKUP_STYLES && (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional))
 							{
 								player.Out.SendMessage($"You must use an anytime style as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							else
-							{
-								player.Out.SendMessage($"You will now use {style.Name} as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								player.styleComponent.AutomaticBackupStyle = style;
-								return;
-							}
+							
+							player.Out.SendMessage($"You will now use {style.Name} as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.styleComponent.AutomaticBackupStyle = style;
+							return;
+							
 						}
 						player.styleComponent.ExecuteWeaponStyle(style);
 					}
