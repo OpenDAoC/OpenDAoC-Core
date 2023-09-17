@@ -25,7 +25,7 @@ namespace DOL.GS.Utils
 
                 for (int i = 0; i < DECKS_COUNT; i++)
                 {
-                    for (int j = 1; j < 101; j++) // Offset by 1 to only generate 'cards' with values 1-100
+                    for (int j = 0; j < 100; j++)
                     {
                         _cards.Push(j);
                     }
@@ -98,7 +98,6 @@ namespace DOL.GS.Utils
             //useful to get outputs of 0-9999 instead of 11-100100
 
             _cards.TryPop(out int first);
-            first--;
             int second = Util.CryptoNextInt(100); //just use a simple random for the .XX values
 
             //append our ints together
