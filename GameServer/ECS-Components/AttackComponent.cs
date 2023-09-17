@@ -2146,9 +2146,14 @@ namespace DOL.GS
                     && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
                     && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE)) // && Util.Chance(inter.InterceptChance))
                 {
-                    int chance = (owner is GamePlayer own) ? own.RandomNumberDeck.GetInt() : Util.Random(100);
+                    int interceptRoll;
 
-                    if (chance < inter.InterceptChance)
+                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                        interceptRoll = playerOwner.RandomNumberDeck.GetInt();
+                    else
+                        interceptRoll = Util.Random(100);
+
+                    if (inter.InterceptChance > interceptRoll)
                         intercept = inter;
                 }
             }
