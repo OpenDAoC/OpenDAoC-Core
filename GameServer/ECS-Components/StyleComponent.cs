@@ -123,48 +123,29 @@ namespace DOL.GS
 
             AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
             InventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
-
-            //check for automatic backup style and use an opener
-            var autoStyle = AutomaticBackupStyle;
             
             //if they've cached a style and then respecced to no longer have access, remove it
-            if (autoStyle != null && _owner.WeaponSpecLevel(weapon) < autoStyle.SpecLevelRequirement)
+            if (AutomaticBackupStyle != null && _owner.WeaponSpecLevel(weapon) < AutomaticBackupStyle.SpecLevelRequirement)
             {
-                (_owner as GamePlayer)?.Out.SendMessage($"{autoStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                _owner.styleComponent.AutomaticBackupStyle = null;
-                autoStyle = null;
+                (_owner as GamePlayer)?.Out.SendMessage($"{AutomaticBackupStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                AutomaticBackupStyle = null;
             }
-            
-            //find any pre-req styles and use those first
-            if (autoStyle != null && Properties.AUTO_SELECT_OPENING_STYLE && _owner is GamePlayer player)
+           
+            //determine which style will actually be used
+            Style styleToUse;
+
+            if (StyleProcessor.CanUseStyle(lastAttackData, _owner, NextCombatStyle, weapon))
+                styleToUse = NextCombatStyle;
+            else if (NextCombatBackupStyle != null)
+                styleToUse = NextCombatBackupStyle;
+            else if (AutomaticBackupStyle != null)
             {
-                Style tmpStyle = autoStyle;
-                while (!StyleProcessor.CanUseStyle(lastAttackData, player, tmpStyle, weapon))
-                {
-                    tmpStyle = SkillBase.GetStyleByID(autoStyle.OpeningRequirementValue, player.CharacterClass.ID);
-
-                    if (tmpStyle == null)
-                        break;
-
-                    autoStyle = tmpStyle;
-                }
-                
-                //make sure they have enough endurance to use the pre-req
-                int fatCost = StyleProcessor.CalculateEnduranceCost(player, autoStyle, weapon.SPD_ABS);
-                if (player.Endurance < fatCost)
-                {
-                    player.Out.SendMessage($"You are out of endurance and unable to use {autoStyle.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    autoStyle = null;
-                }
+                StyleProcessor.TryToUseStyle(_owner, AutomaticBackupStyle);
+                styleToUse = NextCombatBackupStyle; // `NextCombatBackupStyle` became `AutomaticBackupStyle` if `TryToUse` succeeded.
             }
+            else
+                styleToUse = NextCombatStyle; // Not sure why.
 
-            //determine which style will actually be used, and show feedback if one was automatically chosen
-            var styleToUse = StyleProcessor.CanUseStyle(lastAttackData, _owner, NextCombatStyle, weapon) ? NextCombatStyle : NextCombatBackupStyle ?? autoStyle ?? NextCombatStyle;
-            if (styleToUse.Equals(autoStyle))
-            {
-                (_owner as GamePlayer)?.Out.SendMessage($"{styleToUse.Name} is automatically used as a backup!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
-            
             return styleToUse;
         }
 

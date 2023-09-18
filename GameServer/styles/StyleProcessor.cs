@@ -187,6 +187,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
+				bool automaticStyleUsed = false;
 				if (Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType != Style.eOpening.Positional)
 				{
 					AttackData lastAttackData = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
@@ -200,6 +201,7 @@ namespace DOL.GS.Styles
 							break;
 
 						style = styleToUse;
+						automaticStyleUsed = true;
 					}
 				}
 
@@ -289,7 +291,10 @@ namespace DOL.GS.Styles
 
 							// If no, set the secondary backup style.
 							player.styleComponent.NextCombatBackupStyle = style;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							if(automaticStyleUsed || style == player.styleComponent.AutomaticBackupStyle)
+								player.Out.SendMessage($"You automatically attempt {style.Name} style as a backup for {player.styleComponent.NextCombatStyle.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							else
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.BackupStyle", style.Name, player.styleComponent.NextCombatStyle.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}
