@@ -200,7 +200,7 @@ namespace DOL.GS
 					{
 						try
 						{
-							m_spellLineIndex.Add(line.KeyName, new SpellLine(line.KeyName, line.Name, line.Spec, line.IsBaseLine));
+							m_spellLineIndex.Add(line.KeyName, new SpellLine(line.KeyName, line.Name, line.SpellLineID, line.Spec, line.IsBaseLine));
 						}
 						catch (Exception e)
 						{
@@ -2468,10 +2468,6 @@ namespace DOL.GS
 
 			if (result != null)
 				return result;
-
-			// Mob Spells is specifically scripted...
-			if (keyname == GlobalSpellsLines.Mob_Spells)
-				return new SpellLine(GlobalSpellsLines.Mob_Spells, GlobalSpellsLines.Mob_Spells, "", true);
 
 			if (create)
 			{

@@ -20,6 +20,7 @@ using System;
 using System.Text;
 
 using DOL.Database;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DOL.GS
 {
@@ -108,6 +109,35 @@ namespace DOL.GS
 		{
 			return (Skill)MemberwiseClone();
 		}
+
+		public override int GetHashCode()
+		{
+			return m_id;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+				return false;
+
+			if (ReferenceEquals(obj, this))
+				return true;
+
+			if (GetType() != obj.GetType())
+				return false;
+
+			return m_id == (obj as Skill).m_id;
+		}
+
+		public static bool operator == (Skill left, Skill right)
+		{
+			return left is null ? right is null : left.Equals(right);
+		}
+
+		public static bool operator != (Skill left, Skill right)
+		{
+			return !(left == right);
+		}
 	}
 
 	/// <summary>
@@ -179,8 +209,13 @@ namespace DOL.GS
 		protected bool m_isBaseLine;
 		protected string m_spec;
 
-		public SpellLine(string keyname, string name, string spec, bool baseline)
-			: base(keyname, name, 0, 0, 1, 0)
+		public SpellLine(string keyname, string name, string spec, bool baseline) : this(keyname, name, 0, spec, baseline)
+		{
+			m_isBaseLine = baseline;
+			m_spec = spec;
+		}
+
+		public SpellLine(string keyname, string name, int id, string spec, bool baseline) : base(keyname, name, id, 0, 1, 0)
 		{
 			m_isBaseLine = baseline;
 			m_spec = spec;
