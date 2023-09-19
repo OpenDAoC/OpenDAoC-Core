@@ -31,7 +31,7 @@ namespace DOL.GS.Scripts
         }
         public override bool HasAbility(string keyName)
         {
-            if (IsAlive && keyName == "CCImmunity")
+            if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);

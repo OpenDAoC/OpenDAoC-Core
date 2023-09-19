@@ -317,7 +317,7 @@ namespace DOL.GS
 			{
 				for (int r = 0 ; r < best.Count ; r++)
 				{
-					if (best[r].KeyName == ab.KeyName)
+					if (best[r].ID == ab.ID)
 					{
 						results.Add(best[r]);
 						best.RemoveAt(r);

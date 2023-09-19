@@ -3610,7 +3610,7 @@ namespace DOL.GS
                 return;
 
             m_realmAbilities.FreezeWhile(list => {
-                int index = list.FindIndex(ab => ab.KeyName == ability.KeyName);
+                int index = list.FindIndex(ab => ab.ID == ability.ID);
                 if (index > -1)
                 {
                     list[index].Level = ability.Level;
@@ -3871,7 +3871,7 @@ namespace DOL.GS
                         }
 
                         List<Skill> sps = new List<Skill>();
-                        SpellLine key = spells.Keys.FirstOrDefault(el => el.KeyName == sl.KeyName);
+                        SpellLine key = spells.Keys.FirstOrDefault(el => el.ID == sl.ID);
 
                         if (key != null && spells.ContainsKey(key))
                         {
@@ -3932,7 +3932,7 @@ namespace DOL.GS
                 // Add Spec
                 foreach (Specialization spec in specs.Where(item => item.Trainable))
                 {
-                    int index = innerList.FindIndex(e => (e.Item1 is Specialization) && ((Specialization)e.Item1).KeyName == spec.KeyName);
+                    int index = innerList.FindIndex(e => (e.Item1 is Specialization specialization) && specialization.ID == spec.ID);
 
                     if (index < 0)
                     {
@@ -3959,7 +3959,7 @@ namespace DOL.GS
                         if (ab == null)
                             ab = abv;
 
-                        int index = innerList.FindIndex(k => (k.Item1 is Ability) && ((Ability)k.Item1).KeyName == ab.KeyName);
+                        int index = innerList.FindIndex(k => (k.Item1 is Ability ability) && ability.ID == ab.ID);
 
                         if (index < 0)
                         {
