@@ -12,15 +12,28 @@ namespace DOL.GS
     {
         private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
 
-        public ISpellHandler SpellHandler { get; private set; }
-        public ISpellHandler QueuedSpellHandler { get; private set; }
         public GameLiving Owner { get; private set; }
+        public SpellHandler SpellHandler { get; protected set; }
+        public SpellHandler QueuedSpellHandler { get; private set; }
+        public virtual PairedSpellInputStep PairedSpellCommandInputStep
+        {
+            get => PairedSpellInputStep.NONE;
+            set { }
+        }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CastingComponent, false);
         public bool IsCasting => SpellHandler != null;
 
-        public CastingComponent(GameLiving owner)
+        protected CastingComponent(GameLiving owner)
         {
             Owner = owner;
+        }
+
+        public static CastingComponent Create(GameLiving owner)
+        {
+            if (owner is GamePlayer playerOwner)
+                return new PlayerCastingComponent(playerOwner);
+            else
+                return new CastingComponent(owner);
         }
 
         public void Tick(long time)
@@ -40,11 +53,11 @@ namespace DOL.GS
             }
 
             if (startCastSpellRequest != null)
-                StartCastSpell(startCastSpellRequest);
+                StartCastSpell(CreateSpellHandler(startCastSpellRequest));
 
             SpellHandler?.Tick(time);
 
-            if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.Count == 0)
+            if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.IsEmpty)
                 EntityManager.Remove(this);
         }
 
@@ -53,7 +66,7 @@ namespace DOL.GS
             if (Owner.IsStunned || Owner.IsMezzed)
                 Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
 
-            if (!CanCastSpell(Owner))
+            if (!CanCastSpell())
                 return false;
 
             _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
@@ -61,25 +74,23 @@ namespace DOL.GS
             return true;
         }
 
-        private void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
+        protected virtual SpellHandler CreateSpellHandler(StartCastSpellRequest startCastSpellRequest)
         {
-            if (Owner is GamePlayer playerOwner)
-            {
-                // Unstealth when we start casting (NS/Ranger/Hunter).
-                if (playerOwner.IsStealthed)
-                    playerOwner.Stealth(false);
-            }
-
-            ISpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(Owner, startCastSpellRequest.Spell, startCastSpellRequest.SpellLine);
+            SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(Owner, startCastSpellRequest.Spell, startCastSpellRequest.SpellLine) as SpellHandler;
 
             // 'GameLiving.TargetObject' is used by 'SpellHandler.Tick()' but is likely to change during LoS checks or for queued spells (affects NPCs only).
             // So we pre-initialize 'SpellHandler.Target' with the passed down target, if there's any.
             if (startCastSpellRequest.Target != null)
-                newSpellHandler.Target = startCastSpellRequest.Target;
+                spellHandler.Target = startCastSpellRequest.Target;
 
             // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
-            newSpellHandler.Ability = startCastSpellRequest.SpellCastingAbilityHandler;
+            spellHandler.Ability = startCastSpellRequest.SpellCastingAbilityHandler;
 
+            return spellHandler;
+        }
+
+        protected virtual void StartCastSpell(SpellHandler newSpellHandler)
+        {
             if (SpellHandler != null)
             {
                 if (SpellHandler.Spell?.IsFocus == true)
@@ -95,11 +106,11 @@ namespace DOL.GS
                 {
                     if (Owner is GamePlayer player)
                     {
-                        if (startCastSpellRequest.Spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && startCastSpellRequest.Spell.SpellType != eSpellType.Chamber)
+                        if (newSpellHandler.Spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && newSpellHandler.Spell.SpellType != eSpellType.Chamber)
                         {
                             if (SpellHandler.Spell.InstrumentRequirement != 0)
                             {
-                                if (startCastSpellRequest.Spell.InstrumentRequirement != 0)
+                                if (newSpellHandler.Spell.InstrumentRequirement != 0)
                                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                                 else
                                     player.Out.SendMessage("You must wait " + ((SpellHandler.CastStartTick + SpellHandler.Spell.CastTime - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -195,57 +206,19 @@ namespace DOL.GS
             }
         }
 
-        private static bool CanCastSpell(GameLiving living)
+        protected virtual bool CanCastSpell()
         {
-            GamePlayer player = living as GamePlayer;
+            return !Owner.IsStunned && !Owner.IsMezzed && !Owner.IsSilenced;
+        }
 
-            if (player != null)
-            {
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
-                {
-                    player.Out.SendMessage("You can't cast spells while Volley is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return false;
-                }
-
-                if (player.IsCrafting)
-                {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    player.craftComponent.StopCraft();
-                    player.CraftTimer = null;
-                    player.Out.SendCloseTimerWindow();
-                }
-
-                if (player.IsSalvagingOrRepairing)
-                {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    player.CraftTimer.Stop();
-                    player.CraftTimer = null;
-                    player.Out.SendCloseTimerWindow();
-                }
-            }
-
-            if (living.IsStunned)
-            {
-                player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.CantCastStunned"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            if (living.IsMezzed)
-            {
-                player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.CantCastMezzed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            if (living.IsSilenced)
-            {
-                player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.CantCastFumblingWords"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
+        public virtual bool PairedSpellInputCheck(Spell spell, SpellLine spellLine)
+        {
             return true;
         }
 
-        private class StartCastSpellRequest
+        public virtual void StartCastPairedSpell() { }
+
+        protected class StartCastSpellRequest
         {
             public Spell Spell { get; private set; }
             public SpellLine SpellLine { get; private set ; }
@@ -258,6 +231,26 @@ namespace DOL.GS
                 SpellLine = spellLine;
                 SpellCastingAbilityHandler = spellCastingAbilityHandler;
                 Target = target;
+            }
+        }
+
+        public enum PairedSpellInputStep
+        {
+            NONE,
+            FIRST,
+            SECOND,
+            CLEAR
+        }
+
+        public class PairedSpell
+        {
+            public Spell Spell { get; private set; }
+            public SpellLine SpellLine { get; private set; }
+
+            public PairedSpell(Spell spell, SpellLine spellLine)
+            {
+                Spell = spell;
+                SpellLine = spellLine;
             }
         }
     }

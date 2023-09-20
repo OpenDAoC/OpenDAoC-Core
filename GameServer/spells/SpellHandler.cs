@@ -62,10 +62,7 @@ namespace DOL.GS.Spells
 			set { m_stage = value; }
 		}
 		protected int m_stage = 0;
-		/// <summary>
-		/// Use to store Time when the delayedcast started
-		/// </summary>
-		protected long m_started = 0;
+
 		/// <summary>
 		/// Shall we start the reuse timer
 		/// </summary>
@@ -118,13 +115,6 @@ namespace DOL.GS.Spells
 		/// AttackData result for this spell, if any
 		/// </summary>
 		protected AttackData m_lastAttackData = null;
-		/// <summary>
-		/// AttackData result for this spell, if any
-		/// </summary>
-		public AttackData LastAttackData
-		{
-			get { return m_lastAttackData; }
-		}
 
 		/// <summary>
 		/// The property key for the interrupt timeout
@@ -207,6 +197,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 		}
+
+		public bool IsPairedSpell { get; set; }
+		public bool HasPairedSpell { get; set; }
 
 		/// <summary>
 		/// spell handler constructor
@@ -455,16 +448,29 @@ namespace DOL.GS.Spells
 				if (Spell.InstrumentRequirement == 0)
 				{
 					if (Caster is GamePlayer playerCaster)
-						// Message: You begin casting a {0} spell!
-						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
+					{
+						if (!IsPairedSpell)
+						{
+							// Message: You begin casting a {0} spell!
+							MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
+						}
+						else
+						{
+							// Message: You begin casting a {0} spell! (paired)
+							MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCastingPairedSpell", Spell.Name), eChatType.CT_Spell);
+						}
+					}
 					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
+					{
 						// Message: {0} begins casting a {1} spell!
 						casterOwner.Out.SendMessage(LanguageMgr.GetTranslation(casterOwner.Client.Account.Language, "SpellHandler.CastSpell.Msg.PetBeginsCasting", Caster.GetName(0, true), Spell.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					}
 				}
-				else
-					if (Caster is GamePlayer songCaster)
-						// Message: You begin playing {0}!
-						MessageToCaster(LanguageMgr.GetTranslation(songCaster.Client, "SpellHandler.CastSong.Msg.YouBeginPlaying", Spell.Name), eChatType.CT_Spell);
+				else if (Caster is GamePlayer songCaster)
+				{
+					// Message: You begin playing {0}!
+					MessageToCaster(LanguageMgr.GetTranslation(songCaster.Client, "SpellHandler.CastSong.Msg.YouBeginPlaying", Spell.Name), eChatType.CT_Spell);
+				}
 			}
 		}
 
@@ -608,7 +614,7 @@ namespace DOL.GS.Spells
 				if (playerCaster.Steed is GameSiegeRam)
 				{
 					if (!quiet)
-						MessageToCaster("You can't cast in a siegeram!", eChatType.CT_System);
+						MessageToCaster("You can't cast in a siege ram!", eChatType.CT_System);
 
 					return false;
 				}
@@ -1224,13 +1230,13 @@ namespace DOL.GS.Spells
 			switch (CastState)
 			{
 				case eCastState.Precast:
-					if (CheckBeginCast(Target))
+				{
+					bool castPairedSpellOnFail = HasPairedSpell && !IsPairedSpell;
+
+					if (CheckBeginCast(Target, castPairedSpellOnFail))
 					{
-						m_started = GameLoop.GameLoopTime;
 						_castStartTick = currentTick;
 
-						if (!Spell.IsInstantCast)
-							SendSpellMessages();
 						if (Spell.IsInstantCast)
 						{
 							if (!CheckEndCast(Target))
@@ -1249,6 +1255,7 @@ namespace DOL.GS.Spells
 						}
 						else
 						{
+							SendSpellMessages();
 							SendCastAnimation();
 							CastState = eCastState.Casting;
 						}
@@ -1258,10 +1265,22 @@ namespace DOL.GS.Spells
 						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 							CastState = eCastState.Interrupted;
 						else
+						{
 							CastState = eCastState.Cleanup;
+
+							if (castPairedSpellOnFail)
+							{
+								// Notify the casting component that the current spell couldn't be cast.
+								Caster.castingComponent.StartCastPairedSpell();
+								return;
+							}
+						}
 					}
+
 					break;
+				}
 				case eCastState.Casting:
+				{
 					if (!CheckDuringCast(Target))
 						CastState = eCastState.Interrupted;
 					if (_castStartTick + _calculatedCastTime < currentTick)
@@ -1279,19 +1298,26 @@ namespace DOL.GS.Spells
 								CastState = eCastState.Finished;
 						}
 					}
+
 					break;
+				}
 				case eCastState.Interrupted:
+				{
 					InterruptCasting();
 					SendInterruptCastAnimation();
 					CastState = eCastState.Cleanup;
 					break;
+				}
 				case eCastState.Focusing:
+				{
 					if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
 					{
 						CasterMoves();
 						CastState = eCastState.Cleanup;
 					}
+
 					break;
+				}
 			}
 
 			//Process cast on same tick if finished.

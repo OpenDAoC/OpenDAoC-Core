@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -2911,12 +2892,15 @@ namespace DOL.GS.ServerProperties
 
 		[ServerProperty("controls_automation", "auto_select_opening_style", "Automatically perform the opening style of the currently selected style if conditions are not met (recursive).", false)]
 		public static bool AUTO_SELECT_OPENING_STYLE;
-        
-		[ServerProperty("controls_automation", "allow_auto_backup_styles", "Allow players to set a style to be used automatically with /backupstyle", false)]
+
+		[ServerProperty("controls_automation", "allow_auto_backup_styles", "Allow players to set a style to be used automatically with /backupstyle.", false)]
 		public static bool ALLOW_AUTO_BACKUP_STYLES;
-        
-        [ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
-        public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
+
+		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
+		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
+
+		[ServerProperty("controls_automation", "allow_paired_spells", "Allow players to pair two spells together with /pairspell. The second spell will be attempted to be cast if the first one cannot be cast.", false)] 
+		public static bool ALLOW_PAIRED_SPELLS;
 
 		#endregion
 

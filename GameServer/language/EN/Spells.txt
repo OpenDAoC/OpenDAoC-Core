@@ -3,6 +3,7 @@ GamePlayer.Spell.NotImplemented:			{0} ({1}) not implemented yet on this server.
 
 ## Spell Handler
 SpellHandler.CastSpell.Msg.YouBeginCasting:                     You begin casting a {0} spell!
+SpellHandler.CastSpell.Msg.YouBeginCastingPairedSpell:          You begin casting a {0} spell! (paired)
 SpellHandler.CastSpell.Msg.YouCastSpell:                        You cast a {0} spell!
 SpellHandler.CastSpell.Msg.PetBeginsCasting:                    {0} begins casting a {1} spell!
 SpellHandler.CastSpell.Msg.PetCastSpell:                        {0} cast a {1} spell!
