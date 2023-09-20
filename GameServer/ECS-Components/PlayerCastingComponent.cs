@@ -31,11 +31,11 @@ namespace DOL.GS
                 spellHandler.HasPairedSpell = true;
                 Spell pairedSpell = _currentPairedSpell.Spell;
                 SpellLine pairedSpellLine = _currentPairedSpell.SpellLine;
-                bool isValidSpell = pairedSpellLine.IsBaseLine ? _playerOwner.Level >= pairedSpell.Level : _playerOwner.GetBaseSpecLevel(_currentPairedSpell.SpellLine.Spec) >= pairedSpell.Level;
+                bool isValidSpell = pairedSpellLine.IsBaseLine ? _playerOwner.Level >= pairedSpell.Level : _playerOwner.GetBaseSpecLevel(pairedSpellLine.Spec) >= pairedSpell.Level;
 
                 if (!isValidSpell)
                 {
-                    _playerOwner.Out.SendMessage($"{pairedSpell.Name} is no longer a valid paired spell for your {(!pairedSpellLine.IsBaseLine? "spec" : "")} level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    _playerOwner.Out.SendMessage($"{pairedSpell.Name} is no longer a valid paired spell for your {(!pairedSpellLine.IsBaseLine? "spec " : "")}level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     _pairedSpells.Remove(startCastSpellRequest.Spell);
                     _currentPairedSpell = null;
                 }
