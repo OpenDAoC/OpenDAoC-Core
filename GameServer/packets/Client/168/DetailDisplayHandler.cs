@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -2139,7 +2121,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				//.Value("TwoHandedIcon", 10, style.TwoHandAnimation > 0)
 				//.Value("Skill",43)
 				if (style.GrowthRate>0)
-					dw.AddKeyValuePair("OpeningDamage",style.GrowthRate*100);
+					dw.AddKeyValuePair("OpeningDamage",style.GrowthRate * 200);
                 //.Value("SpecialValue", GetSpecialValue(style),GetSpecialValue(style)!=0)
                 //.Value("FollowupStyle",style.DelveFollowUpStyles,!string.IsNullOrEmpty(style.DelveFollowUpStyles))
                 if (style.Procs != null && style.Procs.Count > 0)
