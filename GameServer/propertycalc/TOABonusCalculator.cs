@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 
 namespace DOL.GS.PropertyCalc
@@ -55,8 +37,7 @@ namespace DOL.GS.PropertyCalc
                 livingToCheck = living;
 
             // Hardcap at 25%
-            // While it doesn't make much sense, ItemBonus is retrieved from the pet too. I don't know if the bonus is supposed to transfer from the owner.
-            return Math.Min(25, livingToCheck.ItemBonus[(int)property] + livingToCheck.AbilityBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
+            return Math.Min(25, livingToCheck.ItemBonus[(int) property] + livingToCheck.AbilityBonus[(int) property] - living.DebuffCategory[(int) property]);
         }
     }
 
@@ -74,8 +55,8 @@ namespace DOL.GS.PropertyCalc
             percent += living.AbilityBonus[(int)property];
 
             // Relic bonus calculated before RA bonuses
-			if (living is GamePlayer or GameSummonedPet)
-				percent += (int)(100 * RelicMgr.GetRelicBonusModifier(living.Realm, eRelicType.Magic));
+            if (living is GamePlayer or GameSummonedPet)
+                percent += (int)(100 * RelicMgr.GetRelicBonusModifier(living.Realm, eRelicType.Magic));
 
             return percent;
         }
@@ -113,12 +94,14 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            /// [Atlas - Takii] Re-introduce usage of CastingSpeed ability bonus instead of Item bonus since we have Mastery of the Art RA in OF.
-            /// Hard cap at 15% since that's what MotA goes up to.
-            return Math.Min(15, livingToCheck.AbilityBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
-
-            // Hardcap at 10%
-            //return Math.Min(10, livingToCheck.ItemBonus[(int)property] - livingToCheck.DebuffCategory[(int)property]);
+            // Only custom server settings should have both ability and item bonuses. But this allows both despite the different cap values.
+            int abilityBonus = livingToCheck.AbilityBonus[(int) property]; // Mastery of the Art (OF), capped at 15%.
+            int abilityBonusOverCap = Math.Max(0, abilityBonus - 15);
+            int itemBonus = livingToCheck.ItemBonus[(int) property]; // ToA item bonus, capped at 10%.
+            int itemBonusOverCap = Math.Max(0, itemBonus - 10);
+            int cappedBonus = (abilityBonus - abilityBonusOverCap) + (itemBonus - itemBonusOverCap);
+            int remainingDebuff = Math.Max(0, living.DebuffCategory[(int) property] - (abilityBonusOverCap + itemBonusOverCap));
+            return cappedBonus - remainingDebuff;
         }
     }
 
