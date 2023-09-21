@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 
             else
             {
-                MessageToCaster("The powers of the Belt of Moon, can only be Summon under the Moon light!", eChatType.CT_SpellResisted);
+                MessageToCaster("The powers of the Belt of Moon can only be summoned under moonlight!", eChatType.CT_SpellResisted);
                 return;
             }
         }
@@ -270,78 +270,5 @@ namespace DOL.GS.Spells
             }
         }
         #endregion End of Moon Staff
-
-
-        public override void OnDirectEffect(GameLiving target)
-		{
-			base.OnDirectEffect(target);
-            GameEventMgr.AddHandler(Caster, GamePlayerEvent.Released, OnPlayerReleased);
-			GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
-		}
-
-
-        private static void OnPlayerReleased(DOLEvent e, object sender, EventArgs arguments)
-        {
-            if (!(sender is GamePlayer))
-                return;
-
-            GamePlayer player = sender as GamePlayer;
-
-			lock (player.Inventory)
-			{
-                var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-				foreach (InventoryItem invItem in items)
-				{
-                    if (player.CurrentRegion.IsNightTime)
-                    {
-                        return;
-                    }
-
-                    if (invItem.Id_nb.Equals("Moon_Mace"))
-                        player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_MaceM"))
-                        player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_MaceH"))
-                        player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_Staff"))
-                        player.Inventory.RemoveItem(invItem);
-                    
-                    player.Out.SendMessage("The Power of Belt of Moon, has left you!",eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-			}
-            GameEventMgr.RemoveHandler(sender, GamePlayerEvent.Released, OnPlayerReleased);
-		}
-        
-
-		private static void OnPlayerLeft(DOLEvent e, object sender, EventArgs arguments)
-		{
-			if (!(sender is GamePlayer))
-				return;
-
-			GamePlayer player = sender as GamePlayer;
-			lock (player.Inventory)
-			{
-                var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-				foreach (InventoryItem invItem in items)
-				{
-                    if (invItem.Id_nb.Equals("Moon_Mace"))
-						player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_MaceM"))
-						player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_MaceH"))
-						player.Inventory.RemoveItem(invItem);
-
-                    if (invItem.Id_nb.Equals("Moon_Staff"))
-                        player.Inventory.RemoveItem(invItem);
-
-				}
-			}
-			GameEventMgr.RemoveHandler(sender, GamePlayerEvent.Quit, OnPlayerLeft);
-   		}
     }
 }

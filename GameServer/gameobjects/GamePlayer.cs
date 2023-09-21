@@ -6990,6 +6990,8 @@ namespace DOL.GS
                 IsSitting = false;
                 UpdatePlayerStatus();
             }
+            
+            RemoveTemporaryItems();
 
             // then buffs drop messages
             base.ProcessDeath(killer);
@@ -9101,6 +9103,8 @@ namespace DOL.GS
             }
 
             UpdateWaterBreathState(eWaterBreath.None);
+            
+            RemoveTemporaryItems();
 
             if (IsOnHorse)
                 IsOnHorse = false;
@@ -9109,6 +9113,67 @@ namespace DOL.GS
                 instance.OnPlayerLeaveInstance(this);
 
             return true;
+        }
+        
+        private void RemoveTemporaryItems()
+        {
+            var player = this;
+            lock (Inventory)
+            {
+                var items = Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
+                bool removedSomething = false;
+                foreach (InventoryItem invItem in items)
+                {
+                    if (player.CurrentRegion.IsNightTime)
+                    {
+
+                        switch (invItem.Id_nb)
+                        {
+                            case "Sun_Crush":
+                            case "Sun_Slash":
+                            case "Sun_Thrust":
+                            case "Sun_Flex":
+                            case "Sun_TwoHanded":
+                            case "Sun_Polearm":
+                            case "Sun_Bow":
+                            case "Sun_Staff":
+                            case "Sun_MFist":
+                            case "Sun_Axe":
+                            case "Sun_LeftAxe":
+                            case "Sun_Claw":
+                            case "Sun_2HCrush":
+                            case "Sun_2HAxe":
+                            case "Sun_MStaff":
+                            case "Sun_FlexScythe":
+                            case "Sun_Spear":
+                                removedSomething = true;
+                                player.Inventory.RemoveItem(invItem);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (invItem.Id_nb)
+                        {
+                            case "Moon_Mace":
+                            case "Moon_MaceM":
+                            case "Moon_MaceH":
+                            case "Moon_Staff":
+                                removedSomething = true;
+                                player.Inventory.RemoveItem(invItem);
+                                break;
+                        }
+                    }
+                }
+
+                if (removedSomething)
+                {
+                    if(player.CurrentRegion.IsNightTime)
+                        player.Out.SendMessage("The power of Belt of Sun has left you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    else
+                        player.Out.SendMessage("The power of the Belt of Moon has left you!",eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
         }
 
         /// <summary>
