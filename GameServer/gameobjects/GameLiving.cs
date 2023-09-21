@@ -2526,9 +2526,10 @@ namespace DOL.GS
 		/// <param name="expOutpostBonus">outpost bonux to display</param>
 		/// <param name="sendMessage">should exp gain message be sent</param>
 		/// <param name="allowMultiply">should the xp amount be multiplied</param>
-		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
+		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
 		{
-			if (expTotal > 0 && notify) Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
+			if (expTotal > 0 && notify)
+				Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
 		}
 		/// <summary>
 		/// Called when this living gains realm points
@@ -2552,7 +2553,7 @@ namespace DOL.GS
 		/// <param name="exp">base amount of xp to gain</param>
 		public void GainExperience(eXPSource xpSource, long exp)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, true, false, true);
+			GainExperience(xpSource, exp, 0, 0, 0, true, false, true);
 		}
 
 		/// <summary>
@@ -2562,7 +2563,7 @@ namespace DOL.GS
 		/// <param name="allowMultiply">Do we allow the xp to be multiplied</param>
 		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, true, allowMultiply, true);
+			GainExperience(xpSource, exp, 0, 0, 0, true, allowMultiply, true);
 		}
 
 		/// <summary>
@@ -2571,7 +2572,7 @@ namespace DOL.GS
 		/// <param name="enemy">enemy killed</param>
 		public virtual void EnemyKilled(GameLiving enemy)
 		{
-            attackComponent.RemoveAttacker(enemy);
+			attackComponent.RemoveAttacker(enemy);
 			Notify(GameLivingEvent.EnemyKilled, this, new EnemyKilledEventArgs(enemy));
 		}
 

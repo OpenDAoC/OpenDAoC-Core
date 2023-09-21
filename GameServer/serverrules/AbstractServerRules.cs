@@ -1445,19 +1445,6 @@ namespace DOL.GS.ServerRules
 
 			#endregion
 
-			#region Atlas Bonus
-
-			//up to 100% more exp while solo, scaled lower as group size grows
-			long atlasBonus = 0;
-			if (player != null && player.Group != null)
-			{
-				atlasBonus = (xpReward) / player.Group.GetPlayersInTheGroup().Count;
-			}
-			else
-				atlasBonus = (xpReward);
-
-			#endregion
-
 			#region Outpost Bonus
 
 			//outpost XP
@@ -1515,7 +1502,7 @@ namespace DOL.GS.ServerRules
 				}
 
 				//Ok we've calculated all the base experience.  Now let's add them all together.
-				xpReward += (long) campBonus + groupExp + outpostXP + atlasBonus;
+				xpReward += (long) campBonus + groupExp + outpostXP;
 
 				if (!living.IsAlive) //Dead living gets 25% exp only
 					xpReward = (long) (xpReward * 0.25);
@@ -1527,7 +1514,7 @@ namespace DOL.GS.ServerRules
 				if (player != null && (player.XPLogState == eXPLogState.On ||
 				                       player.XPLogState == eXPLogState.Verbose))
 				{
-					double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
+					double baseXP = xpReward - campBonus - groupExp - outpostXP;
 					/*int scaleFactor = 1;
 					if (player.Group?.MemberCount > 1)
 						scaleFactor = player.Group.MemberCount;
@@ -1546,7 +1533,6 @@ namespace DOL.GS.ServerRules
 
 					if (player.XPLogState == eXPLogState.Verbose)
 					{
-						double soloPercent = ((double) atlasBonus / (baseXP)) * 100.0;
 						double campPercent = ((double) campBonus / (baseXP)) * 100.0;
 						double groupPercent = ((double) groupExp / (baseXP)) * 100.0;
 						double outpostPercent = ((double) outpostXP / (baseXP)) * 100.0;
@@ -1562,11 +1548,6 @@ namespace DOL.GS.ServerRules
 						player.Out.SendMessage(
 							$"# of kills needed to level at this rate: {(player.ExperienceForNextLevel - player.Experience) / xpReward}",
 							eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-						if (atlasBonus > 0)
-							player.Out.SendMessage(
-								$"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus",
-								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						if (campBonus > 0)
 							player.Out.SendMessage(
@@ -1588,12 +1569,12 @@ namespace DOL.GS.ServerRules
 								$"Relic: {relicXp.ToString("N0", format)} | {relicPercent.ToString("0.##")}% bonus",
 								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-						//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						//player.Out.SendMessage($"Total Bonus: {((double)((campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 				}
 
 				//XP Rate is handled in GainExperience
-				living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, atlasBonus, true,
+				living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true,
 					true, true);
 			}
 		}

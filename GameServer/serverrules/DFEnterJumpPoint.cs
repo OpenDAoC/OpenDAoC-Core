@@ -161,8 +161,8 @@ namespace DOL.GS.ServerRules
 				// Create your DiscordMessage with all parameters of your message.
 				var discordMessage = new DiscordMessage(
 					"",
-					username: "Atlas RvR",
-					avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928728399449571388/keep.png",
+					username: "RvR",
+					avatarUrl: "",
 					tts: false,
 					embeds: new[]
 					{

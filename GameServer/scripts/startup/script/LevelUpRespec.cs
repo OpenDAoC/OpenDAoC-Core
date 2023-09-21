@@ -87,7 +87,7 @@ namespace DOL.GS.GameEvents
 
                     if (oldAmount != player.RespecAmountDOL)
                     {
-                        player.Out.SendMessage(string.Format("As you reached level {0}, you are awarded an Atlas (full) respec!", player.Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(string.Format("As you reached level {0}, you are awarded a DOL (full) respec!", player.Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     }
                 }
 			}

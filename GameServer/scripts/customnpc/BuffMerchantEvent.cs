@@ -855,11 +855,11 @@ namespace DOL.GS.Scripts
                 m_target = target;
             }
         }
-        //atlas removing annoying quest indicator while we make our script
-        //public override eQuestIndicator GetQuestIndicator(GamePlayer player)
-        //{
-        //	return eQuestIndicator.Lore ;
-        //}
+
+        public override eQuestIndicator GetQuestIndicator(GamePlayer player)
+        {
+            return eQuestIndicator.Lore ;
+        }
         #endregion
 
         public override bool Interact(GamePlayer player)
@@ -867,7 +867,7 @@ namespace DOL.GS.Scripts
             TradeItems = new MerchantTradeItems("BuffTokens");
             if (!base.Interact(player)) return false;
             TurnTo(player, 10000);
-            player.Out.SendMessage("Greetings, " + player.Name + ".\n Atlas has instructed me to strengthen you so that you may defend the lands with valor. Simply hand me the token for the enhancement you desire, and I will empower you accordingly.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Greetings, " + player.Name + ".\n I've been instructed to strengthen you so that you may defend the lands with valor. Simply hand me the token for the enhancement you desire, and I will empower you accordingly.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             SendMerchantWindow(player);
             return true;
         }

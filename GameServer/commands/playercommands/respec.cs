@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
 				}
 				if (client.Player.RespecAmountDOL > 0)
 				{
-					DisplayMessage(client, "You have " + client.Player.RespecAmountDOL + " Atlas ( full skill ) respecs available.");
+					DisplayMessage(client, "You have " + client.Player.RespecAmountDOL + " DOL ( full skill ) respecs available.");
 					DisplayMessage(client, "Target any trainer and use /respec all");
 				}
 				DisplayMessage(client, "Use /respec buy to buy an single-line respec.");

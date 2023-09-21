@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
 		 new [] { "&advt" },
 		ePrivLevel.GM,
 		// Displays next to the command when '/cmd' is entered
-		"Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel as Atlas.")]
+		"Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel as STAFF.")]
 	public class AdviceTeamCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
 				if ((playerClient.Player.Realm == client.Player.Realm ||
 				     playerClient.Account.PrivLevel > 1) && !playerClient.Player.IsIgnoring(client.Player))
 				{
-					var name = "Atlas";
+					var name = "STAFF";
 					// Message: [ADVICE {0}] {1}: {2}
 					ChatUtil.SendAdviceMessage(playerClient, "Social.SendAdvice.Msg.Channel", getRealmString(client.Player.Realm), name, msg);
 				}

@@ -27,7 +27,6 @@ namespace DOL.GS.Scripts
 		public override bool AddToWorld()
 		{
 			Name = "Free Levels";
-            GuildName = "Atlas Alpha";
             Model = 1198;
             Size = 70;
 			Flags |= eFlags.PEACE;

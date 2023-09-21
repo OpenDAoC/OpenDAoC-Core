@@ -1,6 +1,5 @@
 ﻿# Admin (plvl 3) Commands
 AdminCommands.Command.SyntaxDesc:                           Use the following syntax for this command:
-AdminCommands.Command.SyntaxCRUD:                           If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:
 
 # Admin Command Headers/Dividers
 AdminCommands.Header.Syntax.Account:                    <----- '/account' Commands (plvl 3) ----->
@@ -14,15 +13,11 @@ AdminCommands.Header.Syntax.Serverprop:                 <----- '/serverpropertie
 AdminCommands.Header.Syntax.Shutdown:                   <----- '/shutdown' Commands (plvl 3) ----->
 
 # '/account' Commands
-AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:
-AdminCommands.Account.Comm.Desc1:                       For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Account.Comm.Desc2:                       It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts.
+AdminCommands.Account.Description:					    Creates new, manages existing, and controls character assignment for accounts.
 AdminCommands.Account.Syntax.AccountName:               /account accountname <characterName>
 AdminCommands.Account.Usage.AccountName:			    Identifies the account associated with the character. This may be used on offline characters.
 AdminCommands.Account.Syntax.ChangePassword:            /account changepassword <accountName> <newPassword>
 AdminCommands.Account.Usage.ChangePassword:			    Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account.
-AdminCommands.Account.Syntax.Comm:                      /account command
-AdminCommands.Account.Usage.Comm:			            Provides additional information regarding the '/account' command type.
 AdminCommands.Account.Syntax.Create:                    /account create <accountName> <password>
 AdminCommands.Account.Usage.Create:					    Creates a new account with the specified login credentials.
 AdminCommands.Account.Syntax.Delete:                    /account delete <accountName>
@@ -45,7 +40,7 @@ AdminCommands.Account.Msg.AccountUnbanned:              You have successfully re
 AdminCommands.Account.Msg.CharacterDeleted:				You have successfully deleted the character {0}!
 AdminCommands.Account.Msg.CharacterMovedToAccount:		You have successfully transferred ownership of {0} to account '{1}'!
 AdminCommands.Account.Err.CharacterNotFound:			No character exists with the name '{0}'. Please make sure you entered their full first name correctly.
-AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue.
+AdminCommands.Account.Err.CharNotFromValidRealm:		{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed!
 AdminCommands.Account.Err.InvalidNamePass:              A new account could not be created! Either the account name or password is too short. These must both be a minimum of 4 characters in length.
 AdminCommands.Account.Err.NoFreeSlots:                  The destination account of '{0}' has no available character slots for that realm! The character transfer has failed.
 AdminCommands.Account.Msg.PasswordChanged:              You have successfully changed the password to account '{0}'. Share this with the account owner, if applicable.
@@ -74,7 +69,7 @@ AdminCommands.Code.CodeExecuted:					Code executed...
 # '/freeze' Commands
 
 # '/plvl' Commands
-AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts.
+AdminCommands.Plvl.Description:                         Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game.
 AdminCommands.Plvl.Syntax.Comm:                         /plvl command
 AdminCommands.Plvl.Usage.Comm:                          Provides additional information regarding the '/plvl' command type.
 AdminCommands.Plvl.Syntax.Plvl:                         /plvl <newPlvl> <playerName>
@@ -95,7 +90,6 @@ AdminCommands.Plvl.Comm.Usage2:                         You cannot be attacked b
 AdminCommands.Plvl.Comm.3:                              3 = Admin
 AdminCommands.Plvl.Comm.Usage3:                         You cannot be attacked by mobs or other players or take falling damage. Admins have access to ALL special slash commands (including GM).
 AdminCommands.Plvl.Comm.UseSingleAcct:                  These integers are used when changing your priv level ('/plvl <newPlvl> <playerName>') to test functionality or combat in-game.
-AdminCommands.Plvl.Comm.Desc:                           For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum.
 AdminCommands.Plvl.Msg.AddSinglePerm:                   You've granted {0} access to the '/{1}' command!
 AdminCommands.Plvl.Msg.GaveSinglePerm:                  {0} has given you access to the '/{1}' command! Type '/{1}' to view the command list.
 AdminCommands.Plvl.Msg.RevokeSinglePerm:                You have revoked {0}'s access to the '/{1}' command!
@@ -132,26 +126,23 @@ AdminCommands.Shutdown.Msg.CountdownMins:           A server reboot will occur i
 AdminCommands.Shutdown.Msg.CountdownSecs:           A server reboot will occur in {0} seconds!
 AdminCommands.Shutdown.Msg.CountdownMnSc:           A server reboot will occur in {0} minutes and {1} seconds!
 AdminCommands.Shutdown.Msg.CountdownLogoutSecs:     Server reboot in {0} seconds! Log out now to avoid any loss of progress!
-AdminCommands.Shutdown.Msg.ScheduledShutdown:       A server reboot has been scheduled to occur at {0}. The Atlas server will then be unavailable temporarily for maintenance.
-AdminCommands.Account.Msg.ServerClosed:             The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!
+AdminCommands.Shutdown.Msg.ScheduledShutdown:       A server reboot has been scheduled to occur at {0}. The server will then be temporarily unavailable.
+AdminCommands.Account.Msg.ServerClosed:             The server is now closed to all incoming connections! The server will shut down in {0} seconds!
 AdminCommands.Shutdown.Msg.PlanLogout:              It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost.
 AdminCommands.Shutdown.Comm.Desc1:                  The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all DOL-related activity. This should not be confused with the '/serverreboot' command (which presently does not work).
-AdminCommands.Shutdown.Comm.Desc2:                  Rebooting Atlas is a team effort. Bringing the server back online is performed manually by Clait, Fen, or Suite. Please make sure someone is prepared to run the server once the shutdown is complete. Do not use these commands unless instructed.
-AdminCommands.Shutdown.Comm.Desc3:                  For more information regarding the '/shutdown' command type, see the GM Commands Library on the Atlas Developers forum.
-AdminCommands.Shutdown.Msg.YouCancel:             You have stopped the server shutdown process!
+AdminCommands.Shutdown.Msg.YouCancel:               You have stopped the server shutdown process!
 AdminCommands.Shutdown.Msg.StaffCancel:             {0} stopped the server shutdown!
-AdminCommands.Shutdown.Msg.ShutdownEnd:             The server restart has been canceled! Please stand by for additional information from Atlas staff.
-AdminCommands.Shutdown.Msg.ServerOpen:              The Atlas server is now open and accepting incoming connections!
+AdminCommands.Shutdown.Msg.ShutdownEnd:             The server restart has been canceled! Please stand by for additional information.
+AdminCommands.Shutdown.Msg.ServerOpen:              The server is now open and accepting incoming connections!
 AdminCommands.Shutdown.Err.NoShutdown:              No server shutdown is scheduled currently!
 AdminCommands.Shutdown.Err.WrongNumber:             A server shutdown could not be initiated! Enter a value between '1' (i.e., 1 minute) and '720' (i.e., 12 hours) to start the shutdown counter. Otherwise, schedule a shutdown using '/shutdown on <HH>:<MM>'.
-AdminCommands.Shutdown.Msg.ServerShutdownMins:      The Atlas server will shut down in {0} minutes!
 AdminCommands.Shutdown.Msg.AttentionShutdown:       ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}.
-AdminCommands.Shutdown.Description:                 Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite.
+AdminCommands.Shutdown.Description:                 Initiates a total shutdown of the server.
 AdminCommands.Shutdown.Syntax.Comm:                 /shutdown command
-AdminCommands.Shutdown.Usage.Comm:                 Provides additional information regarding the '/shutdown' command type.
+AdminCommands.Shutdown.Usage.Comm:                  Provides additional information regarding the '/shutdown' command type.
 AdminCommands.Shutdown.Syntax.Secs:                 /shutdown <seconds>
 AdminCommands.Shutdown.Usage.Secs:                  Schedules a manual shutdown of the server, counting down from the specified number of seconds.
 AdminCommands.Shutdown.Syntax.HrMin:                /shutdown on <HH>:<MM>
-AdminCommands.Shutdown.Usage.HrMin:                  Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT.
+AdminCommands.Shutdown.Usage.HrMin:                 Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format).
 AdminCommands.Shutdown.Syntax.Stop:                 /shutdown stop
 AdminCommands.Shutdown.Usage.Stop:                  Cancels a scheduled server shutdown. Use this if a shutdown was triggered accidentally, is no longer needed, or lacks a qualified staff member to start the server again.

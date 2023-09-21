@@ -1,9 +1,4 @@
-﻿/*
-*
-* Atlas - Shows battleground CK owner Realm 
-*
-*/
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.Language;

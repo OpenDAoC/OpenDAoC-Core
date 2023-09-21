@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 		{
 			if (client.Player.IsMuted)
 			{
-				// Message: You have been muted by Atlas staff and are not allowed to speak in this channel.
+				// Message: You have been muted and are not allowed to speak in this channel.
 				ChatUtil.SendGMMessage(client, "GMCommands.Mute.Err.NoSpeakChannel", null);
 				return;
 			}

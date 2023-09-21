@@ -58,12 +58,8 @@ namespace DOL.GS.Commands
 		// Message: <----- '/account' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Account",
 		ePrivLevel.Admin,
-		// Message: "Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:"
+		// Message: "Creates new, manages existing, and controls character assignment for accounts."
 		"AdminCommands.Account.Description",
-		// Syntax: /account command
-		"AdminCommands.Account.Syntax.Comm",
-		// Message: "Provides additional information regarding the '/account' command type."
-		"AdminCommands.Account.Usage.Comm",
 		// Syntax: /account accountname <characterName>
 		"AdminCommands.Account.Syntax.AccountName",
 		// Message: "Identifies the account associated with the character. This may be used on offline characters."
@@ -193,8 +189,6 @@ namespace DOL.GS.Commands
 						{
 							// Syntax: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account changepassword <accountName> <newPassword>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.ChangePassword", null);
 							// Message: "Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account."
@@ -249,8 +243,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account delete <accountName>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.Delete", null);
 							// Message: "Deletes the specified account, along with any associated characters."
@@ -294,8 +286,6 @@ namespace DOL.GS.Commands
                         {
 	                        // Message: "<----- '/account' Commands (plvl 3) ----->"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-	                        // Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-	                        ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 	                        // Message: "/account deletecharacter <characterName>"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.DeleteChar", null);
 	                        // Message: "Deletes the matching character from its associated account."
@@ -387,7 +377,7 @@ namespace DOL.GS.Commands
                             default:
                             {
 	                            // If the character does not belong to any of these realms (i.e., somehow got assigned Neutral (0))
-	                            // Message: "{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue."
+	                            // Message: "{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed!"
 	                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharNotFromValidRealm", cha.Name, cha.Realm);
                                 return;
 	                        }
@@ -514,8 +504,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account unban <accountName>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.Unban", null);
 							// Message: "Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip')."
@@ -571,8 +559,6 @@ namespace DOL.GS.Commands
 	                        // Lists the command's full syntax
 	                        // Message: "<----- '/account' Commands (plvl 3) ----->"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-	                        // Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-	                        ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 	                        // Message: "/account accountname <characterName>"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.AccountName", null);
 	                        // Message: "Identifies the account associated with the character. This may be used on offline characters."
@@ -597,43 +583,6 @@ namespace DOL.GS.Commands
                         return;
                     }
                 #endregion Account Name
-				
-				#region Command
-				// Provides information about accessing the GM Command Library for more information about the '/account' command type
-				// Syntax: /account command
-				// Args:   /account args[1]
-				// See the comments above 'using' about SendMessage translation IDs
-				case "command":
-				{
-					var info = new List<string>
-					{
-						" ",
-						" ",
-						// Message: "----- Web Admin Tool -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.WebAdmin"),
-						" ",
-						// Message: "It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts."
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc2"),
-							" ",
-						// Message: "https://admin.atlasfreeshard.com"
-						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.Atlas.WebAdminTool"),
-						" ",
-						" ",
-						// Message: "----- Additional Info -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"),
-						" ",
-						// Message: "For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum."
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc1"),
-						" ",
-						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/"
-						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Main")
-					};
-
-					// Title of dialog
-					client.Out.SendCustomTextWindow("Using the '/account' Command Type", info);
-					return;
-				}
-				#endregion Command
             }
 		}
         

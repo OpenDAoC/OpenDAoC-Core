@@ -28,7 +28,6 @@ namespace DOL.GS.Scripts
 
             Level = 75;
             Name = "Free Respec Stones";
-            GuildName = "Atlas Alpha";
             Model = 136;
             Size = 80;
             TradeItems = new MerchantTradeItems("alpha_respecstones");

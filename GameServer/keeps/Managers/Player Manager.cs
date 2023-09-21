@@ -188,15 +188,15 @@ namespace DOL.GS.Keeps
 			{
 				case eRealm._FirstPlayerRealm:
 					color = 16711680;
-					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728399822860369/keep_alb.png";
+					avatarUrl = "";
 					break;
 				case eRealm._LastPlayerRealm:
 					color = 32768;
-					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728400116478073/keep_hib.png";
+					avatarUrl = "";
 					break;
 				default:
 					color = 255;
-					avatarUrl = "https://cdn.discordapp.com/attachments/919610633656369214/928728400523296768/keep_mid.png";
+					avatarUrl = "";
 					break;
 			}
 			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
@@ -204,7 +204,7 @@ namespace DOL.GS.Keeps
 			// Create your DiscordMessage with all parameters of your message.
 			var discordMessage = new DiscordMessage(
 				"",
-				username: "Atlas RvR",
+				username: "RvR",
 				avatarUrl: avatarUrl,
 				tts: false,
 				embeds: new[]

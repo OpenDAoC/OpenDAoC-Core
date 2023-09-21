@@ -48,7 +48,7 @@ PLCommands.Anonymous.Msg.On:				You are now anonymous.
 
 ## /appeal
 Scripts.Players.Appeal.NeedMoreDetail:			Your appeal has NOT been submitted. Please reenter your appeal with additional details.
-Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for the Atlas server team to address your current appeal before submitting another.
+Scripts.Players.Appeal.AlreadyActiveAppeal:		You already have an active appeal. Please wait for the server staff to address your current appeal before submitting another.
 Scripts.Players.Appeal.DoNotHaveAppeal:			You do not have an appeal to cancel, or it has already been closed for you.
 Scripts.Players.Appeal.StaffClosedYourAppeal:	{0} [TEAM] has closed your appeal.
 Scripts.Players.Appeal.PleaseBePatient:			Please be patient while we work to address your concern as quickly as possible.
@@ -61,7 +61,7 @@ Scripts.Players.Appeal.StaffChangedStatus:		{0} [TEAM] has changed the status of
 Scripts.Players.Appeal.CanceledYourAppeal:		You have canceled your appeal.
 Scripts.Players.Appeal.LoginMessage:			If you need in-game assistance from server staff (such as stuck character) please use /appeal.
 Scripts.Players.Appeal.YouHavePendingAppeal:	You have a pending appeal in the queue, please use /checkappeal to see its status or to cancel the appeal.
-Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} Atlas team members available and {1} appeals in queue.
+Scripts.Players.Appeal.CurrentStaffAvailable:	There are currently {0} staff members available and {1} appeals in queue.
 Scripts.Players.Appeal.SystemDisabled:			The appeal system is currently disabled.
 
 ## /assist

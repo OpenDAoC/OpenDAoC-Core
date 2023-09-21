@@ -1,9 +1,3 @@
-/*
- *
- * Atlas - Group Sort
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Language;

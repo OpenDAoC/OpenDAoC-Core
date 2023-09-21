@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
 		// Message: <----- '/plvl' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Plvl",
 		ePrivLevel.Admin,
-		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts."
+		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game."
 		"AdminCommands.Plvl.Description",
 		// Syntax: /plvl command
 		"AdminCommands.Plvl.Syntax.Comm",
@@ -388,8 +388,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Syntax: /plvl <newPlvl> <playerName>
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.Plvl", null);
 							// Message: "Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player."
@@ -487,12 +485,6 @@ namespace DOL.GS.Commands
 						info.Add(" ");
 						// Message: "----- Additional Info -----"
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
-						info.Add(" ");
-						// Message: "For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Desc"));
-						info.Add(" ");
-						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/post-4379"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Plvl"));
 						info.Add(" ");
 			
 						client.Out.SendCustomTextWindow("Using the '/plvl' Command Type", info);

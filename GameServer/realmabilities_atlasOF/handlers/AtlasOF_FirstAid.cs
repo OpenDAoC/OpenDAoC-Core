@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
 			// Minor % based Self Heal -  30 / lvl
 			// healAmount = ((currentLevelAbility * 30) * currentCharMaxHealth) / 100;
 			
-			// 300hp at Lv50 per ability level https://www.atlasfreeshard.com/tickets/first-aid-cost-too-low.3947/
+			// 300hp at Lv50 per ability level as per 1.65
 			// scaled to player level
 			GamePlayer player = living as GamePlayer;
 			var scaleLevel = (double)player.Level / 50;

@@ -30,8 +30,7 @@ namespace DOL.GS.Commands
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{
-			client.Out.SendMessage("Atlas", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			var an = Assembly.GetAssembly(typeof(GameServer)).GetName();
+			client.Out.SendMessage("Server information", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage("Online: " + WorldMgr.GetAllPlayingClientsCount(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			if (client.Player == null) return;
 			var uptime = DateTime.Now.Subtract(GameServer.Instance.StartupTime);

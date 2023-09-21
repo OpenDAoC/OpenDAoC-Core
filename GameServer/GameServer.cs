@@ -848,14 +848,14 @@ namespace DOL.GS
  					var message = new DiscordMessage(
  						"",
  						username: "Game Server",
- 						avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+ 						avatarUrl: "",
  						tts: false,
  						embeds: new[]
  						{
  							new DiscordMessageEmbed(
 	                            color: 3066993,
 	                            description: "Server open for connections!",
-                                thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
+                                thumbnail: new DiscordMessageEmbedThumbnail("")
                             )
  						}
  					);

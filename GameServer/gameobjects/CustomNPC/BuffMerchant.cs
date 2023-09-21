@@ -847,11 +847,11 @@ namespace DOL.GS
 				m_target = target;
 			}
 		}
-		//atlas removing annoying quest indicator while we make our script
-		//public override eQuestIndicator GetQuestIndicator(GamePlayer player)
-		//{
-		//	return eQuestIndicator.Lore ;
-		//}
+
+		public override eQuestIndicator GetQuestIndicator(GamePlayer player)
+		{
+			return eQuestIndicator.Lore;
+		}
 		#endregion
 
 		private bool isBounty;

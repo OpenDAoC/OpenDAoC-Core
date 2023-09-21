@@ -57,10 +57,10 @@ namespace DOL.GS.Commands
 	// Message: <----- '/team' Commands (plvl 2) ----->
 	"GMCommands.Header.Command.Team",
    ePrivLevel.GM,
-	"Broadcasts a message to all Atlas server team members (i.e., plvl 2+).",
+	"Broadcasts a message to all server team members (i.e., plvl 2+).",
 	// Syntax: '/team <message>' or '/te <message>'
 	"GMCommands.Team.Syntax.Team",
-	// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+	// Message: Broadcasts a message to all server team members (i.e., plvl 2+).
 	"GMCommands.Team.Usage.Team")]
 
 	public class TeamCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -76,7 +76,7 @@ namespace DOL.GS.Commands
 				ChatUtil.SendCommMessage(client, "AllCommands.Command.SyntaxDesc", null);
 				// Syntax: '/team <message>' or '/te <message>'
 				ChatUtil.SendSyntaxMessage(client, "GMCommands.Team.Syntax.Team", null);
-				// Message: Broadcasts a message to all Atlas server team members (i.e., plvl 2+).
+				// Message: Broadcasts a message to all server team members (i.e., plvl 2+).
 				ChatUtil.SendCommMessage(client, "GMCommands.Team.Usage.Team", null);	
 				return;
 			}

@@ -39,7 +39,7 @@ namespace DOL.GS.Commands
 			// If the player has had the `/mute` GM command used on them
 			if (client.Player.IsMuted)
 			{
-				// Message: You have been muted by Atlas staff and are not allowed to use this command.
+				// Message: You have been muted and are not allowed to use this command.
 				ChatUtil.SendGMMessage(client, "GMCommands.Mute.Err.NoUseCommand", null);
 				return;
 			}
@@ -126,7 +126,7 @@ namespace DOL.GS.Commands
 	                    return;
                     }
                     
-                    // Atlas staff still receive messages while `/anon`, but the player doesn't see that it delivered. This is intended as a protection against players spamming Admins/GMs.
+                    // Staff members still receive messages while `/anon`, but the player doesn't see that it delivered. This is intended as a protection against players spamming Admins/GMs.
                     if (advisorClient.Player != null && advisorClient.Player.IsAnonymous &&
                         advisorClient.Account.PrivLevel > (uint) ePrivLevel.Player)
                     {

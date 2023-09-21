@@ -60,7 +60,7 @@ namespace DOL.GS.Commands
 		// Message: <----- '/shutdown' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Shutdown",
 		ePrivLevel.Admin,
-		// Message: "Initiates a total shutdown of the Atlas server. The server must then be manually started by an authorized staff member, such as Clait, Fen, or Suite."
+		// Message: "Initiates a total shutdown of the server."
 		"AdminCommands.Shutdown.Description",
 		// Syntax: /shutdown command
 		"AdminCommands.Shutdown.Syntax.Comm",
@@ -72,7 +72,7 @@ namespace DOL.GS.Commands
 		"AdminCommands.Shutdown.Usage.Secs",
 		// Syntax: /shutdown on <HH>:<MM>
 		"AdminCommands.Shutdown.Syntax.HrMin",
-		// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT."
+		// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format)."
 		"AdminCommands.Shutdown.Usage.HrMin",
 		// Syntax: /shutdown stop
 		"AdminCommands.Shutdown.Syntax.Stop",
@@ -306,9 +306,7 @@ namespace DOL.GS.Commands
 
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
-						// Send twice for good measure
-						// Message: "The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!"
-						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
@@ -316,19 +314,18 @@ namespace DOL.GS.Commands
 				if (secs == 119 && GameServer.Instance.ServerStatus != eGameServerStatus.GSS_Closed && Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))) // 2 mins remaining
 				{
 						var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
-						// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
-					
+
 						var message = new DiscordMessage(
 							"",
-							username: "Atlas GameServer",
-							avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+							username: "Game Server",
+							avatarUrl: "",
 							tts: false,
 							embeds: new[]
 							{
 								new DiscordMessageEmbed(
 									color: 15158332,
-									description: "The server will reboot in **2 minutes** and is temporarily not accepting new incoming connections!\n Stay tuned for the patch notes.",
-									thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/893545614942564412.webp")
+									description: "The server will reboot in **2 minutes** and is temporarily not accepting new incoming connections!",
+									thumbnail: new DiscordMessageEmbedThumbnail("")
 								)
 							}
 						);
@@ -488,9 +485,7 @@ namespace DOL.GS.Commands
 
 					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 					{
-						// Send twice for good measure
-						// Message: "The Atlas server is now closed to all incoming connections! The server will shut down in {0} seconds!"
-						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
@@ -498,19 +493,18 @@ namespace DOL.GS.Commands
 				if (secs == 119 && GameServer.Instance.ServerStatus != eGameServerStatus.GSS_Closed && Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))) // 2 mins remaining
 				{
 						var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
-						// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
-					
+
 						var message = new DiscordMessage(
 							"",
-							username: "Atlas GameServer",
-							avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+							username: "Game Server",
+							avatarUrl: "",
 							tts: false,
 							embeds: new[]
 							{
 								new DiscordMessageEmbed(
 									color: 15158332,
-									description: "The server will reboot in **2 minutes** and is temporarily not accepting new incoming connections!\n Stay tuned for the patch notes.",
-									thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/893545614942564412.webp")
+									description: "The server will reboot in **2 minutes** and is temporarily not accepting new incoming connections!",
+									thumbnail: new DiscordMessageEmbedThumbnail("")
 								)
 							}
 						);
@@ -528,7 +522,7 @@ namespace DOL.GS.Commands
 			if (GameServer.Instance.IsRunning)
 			{
 				GameServer.Instance.Stop();
-				log.Info("Executed Atlas server shutdown!");
+				log.Info("Executed server shutdown!");
 				Thread.Sleep(2000);
 				Environment.Exit(0);
 			}
@@ -567,14 +561,8 @@ namespace DOL.GS.Commands
 					// Message: "The '/shutdown' command triggers a countdown timer that prevents any new incoming connections (when fewer than 2 minutes remain) and sends the exit code, stopping all DOL-related activity. This should not be confused with the '/serverreboot' command (which presently does not work)."
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc1"));
 					info.Add(" ");
-					// Message: "Rebooting Atlas is a team effort. Bringing the server back online is performed manually by Clait, Fen, or Suite. Please make sure someone is prepared to run the server once the shutdown is complete. Do not use these commands unless instructed."
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc2"));
-					info.Add(" ");
 					// Message: "----- Additional Info -----"
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
-					info.Add(" ");
-					// Message: "For more information regarding the '/shutdown' command type, see the GM Commands Library on the Atlas Developers forum."
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Comm.Desc3"));
 		
 					client.Out.SendCustomTextWindow("Using the '/shutdown' Command Type", info);
 					return;
@@ -605,7 +593,7 @@ namespace DOL.GS.Commands
 						{
 							// Message: "{0} stopped the server shutdown!"
 							ChatUtil.SendDebugMessage(playingClient, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
-							// Message: "The server restart has been canceled! Please stand by for additional information from Atlas staff."
+							// Message: "The server restart has been canceled! Please stand by for additional information."
 							ChatUtil.SendServerMessage(playingClient, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
 						}
 
@@ -614,7 +602,7 @@ namespace DOL.GS.Commands
 						{
 							// Allow incoming connections
 							GameServer.Instance.Open();
-							// Message: "The Atlas server is now open and accepting incoming connections!"
+							// Message: "The server is now open and accepting incoming connections!"
 							ChatUtil.SendDebugMessage(client, "AdminCommands.Shutdown.Msg.ServerOpen", null);
 							log.Info("Shutdown aborted. Server now accepting incoming connections!");
 						}
@@ -628,18 +616,18 @@ namespace DOL.GS.Commands
 
 							var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
 							// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
-					
+
 							var message = new DiscordMessage(
 								"",
-								username: "Atlas GameServer",
-								avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+								username: "Game Server",
+								avatarUrl: "",
 								tts: false,
 								embeds: new[]
 								{
 									new DiscordMessageEmbed(
 										color: 3066993,
-										description: "The server restart has been cancelled.\nPlease stand by for additional information from Atlas team.",
-										thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/emojis/865577034087923742.png")
+										description: "The server restart has been cancelled.",
+										thumbnail: new DiscordMessageEmbedThumbnail("")
 									)
 								}
 							);
@@ -681,7 +669,7 @@ namespace DOL.GS.Commands
 							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
 							// Syntax: /shutdown on <HH>:<MM>
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Shutdown.Syntax.HrMin", null);
-							// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT."
+							// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format)."
 							ChatUtil.SendCommMessage(client, "AdminCommands.Shutdown.Usage.HrMin", null);
 							return;
 						}
@@ -718,7 +706,7 @@ namespace DOL.GS.Commands
 						ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxDesc", null);
 						// Syntax: /shutdown on <HH>:<MM>
 						ChatUtil.SendSyntaxMessage(client, "AdminCommands.Shutdown.Syntax.HrMin", null);
-						// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format). Atlas' server time is GMT."
+						// Message: "Schedules a manual shutdown of the server at the scheduled time (based on a 24:59 format)."
 						ChatUtil.SendCommMessage(client, "AdminCommands.Shutdown.Usage.HrMin", null);
 						return;
 					}
@@ -794,7 +782,7 @@ namespace DOL.GS.Commands
 					// Message: "----- ATTENTION -----"
 					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.Attention"));
 					shutdown.Add(" ");
-					// Message: "A server reboot has been scheduled to occur at {1}. The Atlas server will then be unavailable temporarily for maintenance."
+					// A server reboot has been scheduled to occur at {0}. The server will then be temporarily unavailable.
 					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Msg.ScheduledShutdown", date.ToString("HH:mm \"GMT\" zzz")));
 					shutdown.Add(" ");
 					// Message: "It is recommended that players log out prior to the reboot to ensure RvR kills, ROG drops, and other progress is not lost."
@@ -812,19 +800,18 @@ namespace DOL.GS.Commands
 			{
 
 				var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
-				// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
-					
+
 				var message = new DiscordMessage(
 					"",
-					username: "Atlas GameServer",
-					avatarUrl: "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp",
+					username: "Game Server",
+					avatarUrl: "",
 					tts: false,
 					embeds: new[]
 					{
 						new DiscordMessageEmbed(
 							color: 15844367,
 							description: $"A server restart has been scheduled for {date:HH:mm \"GMT\" zzz}",
-							thumbnail: new DiscordMessageEmbedThumbnail("https://cdn.discordapp.com/attachments/879754382231613451/959414859932532756/unknown.png")
+							thumbnail: new DiscordMessageEmbedThumbnail("")
 						)
 					}
 				);

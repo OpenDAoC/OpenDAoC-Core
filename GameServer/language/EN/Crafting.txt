@@ -110,7 +110,7 @@ AbstractCraftingSkill.CheckRawMaterial.NoIngredients:	You do not have the ingred
 AbstractCraftingSkill.CheckRawMaterial.RawMaterial:	    Cannot find an item by the ID of {0}. Please report this!
 AbstractCraftingSkill.CheckRawMaterial.YouAreMissing:	You are missing:
 AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine:	This item can't be imbued with this tincture!
-AdvancedCraftingSkill.IsAllowedToCombine.ProblemCombine:This item needs to be configured. Please contact an Atlas staff member or report it!
+AdvancedCraftingSkill.IsAllowedToCombine.ProblemCombine:This item needs to be configured. Please submit a bug report!
 
 ## Advanced Crafting
 AdvancedCraftingSkill.CombineItems.OnlyCombine:		    You can only combine your items into one item!

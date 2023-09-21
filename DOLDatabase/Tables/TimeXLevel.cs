@@ -1,10 +1,4 @@
-﻿/*
- *
- * Atlas - Logger for max level times
- * 
- */
-
-using System;
+﻿using System;
 using DOL.Database.Attributes;
 
 namespace DOL.Database

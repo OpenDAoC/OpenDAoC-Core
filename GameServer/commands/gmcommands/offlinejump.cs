@@ -1,9 +1,4 @@
-﻿/*
- *
- * ATLAS
- *
- */
-using System;
+﻿using System;
 using DOL.GS.PacketHandler;
 using DOL.Database;
 
