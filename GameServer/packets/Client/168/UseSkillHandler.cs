@@ -140,41 +140,27 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 
 					// See what we should do depending on skill type !
-					if (sk is Specialization)
+					if (sk is Specialization specialization)
 					{
-						Specialization spec = (Specialization)sk;
-						ISpecActionHandler handler = SkillBase.GetSpecActionHandler(spec.KeyName);
-						if (handler != null)
-						{
-							handler.Execute(spec, player);
-						}
+						ISpecActionHandler handler = SkillBase.GetSpecActionHandler(specialization.KeyName);
+						handler?.Execute(specialization, player);
 					}
-					else if (sk is Ability)
+					else if (sk is Ability ability)
 					{
-						Ability ab = (Ability)sk;
-						IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ab.KeyName);
+						IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ability.KeyName);
+
 						if (handler != null)
 						{
-							handler.Execute(ab, player);
+							handler.Execute(ability, player);
 							return;
 						}
-						
-						ab.Execute(player);
-					}
-					else if (sk is Spell)
-					{
-						if (sksib != null && sksib is SpellLine)
-						{
-							
-							if (GameLoop.GameLoopTime > player.TempProperties.GetProperty<long>(sk.Name) + GameLoop.TICK_RATE)
-							{
-								//todo How to attach a spell to a player? Casting Service should in theory create spellHandler and add to the player -- not the component
-								//player.CastSpell((Spell)sk, sl);
-								player.castingComponent.RequestStartCastSpell((Spell)sk, (SpellLine)sksib);
-							}
-						}
 
-						player.TempProperties.SetProperty(sk.Name, GameLoop.GameLoopTime);
+						ability.Execute(player);
+					}
+					else if (sk is Spell spell)
+					{
+						if (sksib is SpellLine spellLine)
+							player.castingComponent.RequestStartCastSpell(spell, spellLine);
 					}
 					else if (sk is Style style)
 					{
@@ -187,20 +173,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 								player.Out.SendMessage($"You must use an anytime style as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							
+
 							player.Out.SendMessage($"You will now use {style.Name} as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							player.styleComponent.AutomaticBackupStyle = style;
 							return;
-							
+
 						}
 						player.styleComponent.ExecuteWeaponStyle(style);
 					}
 				}
 
 				if (sk == null)
-				{
 					player.Out.SendMessage("Skill is not implemented.", eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
-				}
 		}
 
 		/// <summary>
