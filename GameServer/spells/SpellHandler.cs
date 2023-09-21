@@ -198,9 +198,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public bool IsPairedSpell { get; set; }
-		public bool HasPairedSpell { get; set; }
-
 		/// <summary>
 		/// spell handler constructor
 		/// <param name="caster">living that is casting that spell</param>
@@ -449,16 +446,8 @@ namespace DOL.GS.Spells
 				{
 					if (Caster is GamePlayer playerCaster)
 					{
-						if (!IsPairedSpell)
-						{
-							// Message: You begin casting a {0} spell!
-							MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
-						}
-						else
-						{
-							// Message: You begin casting a {0} spell! (paired)
-							MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCastingPairedSpell", Spell.Name), eChatType.CT_Spell);
-						}
+						// Message: You begin casting a {0} spell!
+						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
 					}
 					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
 					{
@@ -1231,9 +1220,7 @@ namespace DOL.GS.Spells
 			{
 				case eCastState.Precast:
 				{
-					bool castPairedSpellOnFail = HasPairedSpell && !IsPairedSpell;
-
-					if (CheckBeginCast(Target, castPairedSpellOnFail))
+					if (CheckBeginCast(Target))
 					{
 						_castStartTick = currentTick;
 
@@ -1265,16 +1252,7 @@ namespace DOL.GS.Spells
 						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
 							CastState = eCastState.Interrupted;
 						else
-						{
 							CastState = eCastState.Cleanup;
-
-							if (castPairedSpellOnFail)
-							{
-								// Notify the casting component that the current spell couldn't be cast.
-								Caster.castingComponent.StartCastPairedSpell();
-								return;
-							}
-						}
 					}
 
 					break;

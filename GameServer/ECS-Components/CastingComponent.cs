@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Concurrent;
 using DOL.AI.Brain;
 using DOL.Events;
+using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
@@ -15,11 +17,6 @@ namespace DOL.GS
         public GameLiving Owner { get; private set; }
         public SpellHandler SpellHandler { get; protected set; }
         public SpellHandler QueuedSpellHandler { get; private set; }
-        public virtual PairedSpellInputStep PairedSpellCommandInputStep
-        {
-            get => PairedSpellInputStep.NONE;
-            set { }
-        }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CastingComponent, false);
         public bool IsCasting => SpellHandler != null;
 
@@ -38,30 +35,25 @@ namespace DOL.GS
 
         public void Tick(long time)
         {
-            StartCastSpellRequest startCastSpellRequest = null;
-
-            // Retrieve the first spell that was requested if we don't have a currently active spell handler, otherwise take the last one and discard the others.
-            if (SpellHandler == null)
-                _startCastSpellRequests.TryDequeue(out startCastSpellRequest);
-            else
-            {
-                while (_startCastSpellRequests.TryDequeue(out StartCastSpellRequest result))
-                {
-                    if (result != null)
-                        startCastSpellRequest = result;
-                }
-            }
-
-            if (startCastSpellRequest != null)
-                StartCastSpell(CreateSpellHandler(startCastSpellRequest));
-
             SpellHandler?.Tick(time);
+            ProcessStartCastSpellRequests();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.IsEmpty)
                 EntityManager.Remove(this);
         }
 
-        public bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        public virtual bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        {
+            if (RequestStartCastSpellInternal(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target)))
+            {
+                EntityManager.Add(this);
+                return true;
+            }
+
+            return false;
+        }
+
+        protected bool RequestStartCastSpellInternal(StartCastSpellRequest startCastSpellRequest)
         {
             if (Owner.IsStunned || Owner.IsMezzed)
                 Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
@@ -69,12 +61,17 @@ namespace DOL.GS
             if (!CanCastSpell())
                 return false;
 
-            _startCastSpellRequests.Enqueue(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target));
-            EntityManager.Add(this);
+            _startCastSpellRequests.Enqueue(startCastSpellRequest);
             return true;
         }
 
-        protected virtual SpellHandler CreateSpellHandler(StartCastSpellRequest startCastSpellRequest)
+        protected virtual void ProcessStartCastSpellRequests()
+        {
+            while (_startCastSpellRequests.TryDequeue(out StartCastSpellRequest startCastSpellRequest))
+                StartCastSpell(startCastSpellRequest);
+        }
+
+        protected SpellHandler CreateSpellHandler(StartCastSpellRequest startCastSpellRequest)
         {
             SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(Owner, startCastSpellRequest.Spell, startCastSpellRequest.SpellLine) as SpellHandler;
 
@@ -85,12 +82,13 @@ namespace DOL.GS
 
             // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
             spellHandler.Ability = startCastSpellRequest.SpellCastingAbilityHandler;
-
             return spellHandler;
         }
 
-        protected virtual void StartCastSpell(SpellHandler newSpellHandler)
+        protected virtual void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
         {
+            SpellHandler newSpellHandler = CreateSpellHandler(startCastSpellRequest);
+
             if (SpellHandler != null)
             {
                 if (SpellHandler.Spell?.IsFocus == true)
@@ -98,7 +96,10 @@ namespace DOL.GS
                     if (newSpellHandler.Spell.IsInstantCast)
                         newSpellHandler.Tick(GameLoop.GameLoopTime);
                     else
+                    {
                         SpellHandler = newSpellHandler;
+                        SpellHandler.Tick(GameLoop.GameLoopTime);
+                    }
                 }
                 else if (newSpellHandler.Spell.IsInstantCast)
                     newSpellHandler.Tick(GameLoop.GameLoopTime);
@@ -136,7 +137,10 @@ namespace DOL.GS
                 if (newSpellHandler.Spell.IsInstantCast)
                     newSpellHandler.Tick(GameLoop.GameLoopTime);
                 else
+                {
                     SpellHandler = newSpellHandler;
+                    SpellHandler.Tick(GameLoop.GameLoopTime);
+                }
             }
         }
 
@@ -211,14 +215,7 @@ namespace DOL.GS
             return !Owner.IsStunned && !Owner.IsMezzed && !Owner.IsSilenced;
         }
 
-        public virtual bool PairedSpellInputCheck(Spell spell, SpellLine spellLine)
-        {
-            return true;
-        }
-
-        public virtual void StartCastPairedSpell() { }
-
-        protected class StartCastSpellRequest
+        public class StartCastSpellRequest
         {
             public Spell Spell { get; private set; }
             public SpellLine SpellLine { get; private set ; }
@@ -234,23 +231,21 @@ namespace DOL.GS
             }
         }
 
-        public enum PairedSpellInputStep
+        public class ChainedSpell : ChainedAction<Func<StartCastSpellRequest, bool>>
         {
-            NONE,
-            FIRST,
-            SECOND,
-            CLEAR
-        }
+            private StartCastSpellRequest _startCastSpellRequest;
+            public override Skill Skill => Spell;
+            public Spell Spell => _startCastSpellRequest.Spell;
+            public SpellLine SpellLine => _startCastSpellRequest.SpellLine;
 
-        public class PairedSpell
-        {
-            public Spell Spell { get; private set; }
-            public SpellLine SpellLine { get; private set; }
-
-            public PairedSpell(Spell spell, SpellLine spellLine)
+            public ChainedSpell(StartCastSpellRequest startCastSpellRequest, GamePlayer player) : base(player.castingComponent.RequestStartCastSpellInternal)
             {
-                Spell = spell;
-                SpellLine = spellLine;
+                _startCastSpellRequest = startCastSpellRequest;
+            }
+
+            public override void Execute()
+            {
+                Handler.Invoke(_startCastSpellRequest);
             }
         }
     }

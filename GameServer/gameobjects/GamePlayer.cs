@@ -9,6 +9,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -52,6 +53,7 @@ namespace DOL.GS
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
         public long LastWorldUpdate { get; set; }
+        public ChainedActions ChainedActions { get; private set; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
@@ -15106,6 +15108,7 @@ namespace DOL.GS
             }));
 
             m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
+            ChainedActions = new(this);
         }
 
         /// <summary>

@@ -2899,8 +2899,8 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
 		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
 
-		[ServerProperty("controls_automation", "allow_paired_spells", "Allow players to pair two spells together with /pairspell. The second spell will be attempted to be cast if the first one cannot be cast.", false)] 
-		public static bool ALLOW_PAIRED_SPELLS;
+		[ServerProperty("controls_automation", "allow_chained_actions", "Allow players to chain actions with /chainactions. They will be executed consecutively.", false)] 
+		public static bool ALLOW_CHAINED_ACTIONS;
 
 		#endregion
 
