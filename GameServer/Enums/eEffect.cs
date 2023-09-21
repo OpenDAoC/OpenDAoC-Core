@@ -160,6 +160,8 @@ namespace DOL.GS
         Ichor,
         
         //Artifacts
-        Morph
+        Morph,
+        IncomingHealBonus,
+        CheatDeath
     }
 }

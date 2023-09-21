@@ -64,6 +64,12 @@ namespace DOL.GS.Spells
 					heal = maxHeal;
 				}
 
+                var healBooster = healTarget.effectListComponent.GetAllEffects().FirstOrDefault(eff => eff.EffectType == eEffect.IncomingHealBonus);
+                if (healBooster != null)
+                {
+                    heal = (int)(heal * (1 + (healBooster.Effectiveness)/100));
+                }
+
                 if (healTarget.IsDiseased)
                 {
                     MessageToCaster("Your target is diseased!", eChatType.CT_SpellResisted);
