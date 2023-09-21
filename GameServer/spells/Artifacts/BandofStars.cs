@@ -27,11 +27,6 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("StarsProc")]
     public class StarsProc : SpellHandler
     {
-        public override bool CheckBeginCast(GameLiving selectedTarget)
-        {
-            return base.CheckBeginCast(selectedTarget);
-        }
-
         public override bool StartSpell(GameLiving target)
         {
             foreach (GameLiving targ in SelectTargets(target))
@@ -116,62 +111,10 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override void OnEffectStart(GameSpellEffect effect)
-        {
-            base.OnEffectStart(effect);            
-            effect.Owner.DebuffCategory[(int)eProperty.Dexterity] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Strength] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Constitution] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Acuity] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Piety] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Empathy] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Quickness] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Intelligence] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Charisma] += (int)m_spell.Value;   
-            effect.Owner.DebuffCategory[(int)eProperty.ArmorAbsorption] += (int)m_spell.Value; 
-            effect.Owner.DebuffCategory[(int)eProperty.MagicAbsorption] += (int)m_spell.Value; 
-            
-            if(effect.Owner is GamePlayer)
-            {
-                GamePlayer player = effect.Owner as GamePlayer;  
-                if(m_spell.LifeDrainReturn>0) if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model=(ushort)m_spell.LifeDrainReturn;
-                player.Out.SendCharStatsUpdate();
-                player.UpdateEncumberance();
-                player.UpdatePlayerStatus();
-                player.Out.SendUpdatePlayer();             	
-            }
-        }
-
-        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-        {
-            effect.Owner.DebuffCategory[(int)eProperty.Dexterity] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Strength] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Constitution] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Acuity] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Piety] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Empathy] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Quickness] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Intelligence] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Charisma] -= (int)m_spell.Value;        
-            effect.Owner.DebuffCategory[(int)eProperty.ArmorAbsorption] -= (int)m_spell.Value; 
-            effect.Owner.DebuffCategory[(int)eProperty.MagicAbsorption] -= (int)m_spell.Value; 
-
-            if(effect.Owner is GamePlayer)
-            {
-                GamePlayer player = effect.Owner as GamePlayer;  
-                if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model = player.CreationModel;
-                player.Out.SendCharStatsUpdate();
-                player.UpdateEncumberance();
-                player.UpdatePlayerStatus();
-                player.Out.SendUpdatePlayer();
-            }
-
-            return base.OnEffectExpires(effect, noMessages);
-        }
-
         public override void ApplyEffectOnTarget(GameLiving target)
         {
             base.ApplyEffectOnTarget(target);
+            new BandOfStarsMorphECSEffect(new ECSGameEffectInitParams(target, Spell.Duration, 1, this));
             if (target.Realm == 0 || Caster.Realm == 0)
             {
                 target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
