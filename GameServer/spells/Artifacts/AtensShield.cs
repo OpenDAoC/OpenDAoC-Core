@@ -200,36 +200,5 @@ namespace DOL.GS.Spells
 				return m_goldenTridentofFlame;
 			}
 		}
-
-		public override void OnDirectEffect(GameLiving target)
-		{
-			base.OnDirectEffect(target);
-			GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
-		}
-
-		private static void OnPlayerLeft(DOLEvent e, object sender, EventArgs arguments)
-		{
-			if (!(sender is GamePlayer))
-				return;
-
-			GamePlayer player = sender as GamePlayer;
-			lock (player.Inventory)
-			{
-				var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-				foreach (InventoryItem invItem in items)
-				{
-					if (invItem.Id_nb.Equals("Golden_Trident_of_Flame"))
-						player.Inventory.RemoveItem(invItem);
-
-					if (invItem.Id_nb.Equals("Golden_Trident_of_FlameM"))
-						player.Inventory.RemoveItem(invItem);
-
-					if (invItem.Id_nb.Equals("Golden_Trident_of_FlameH"))
-						player.Inventory.RemoveItem(invItem);
-
-				}
-			}
-			GameEventMgr.RemoveHandler(sender, GamePlayerEvent.Quit, OnPlayerLeft);
-		}
 	}
 }
