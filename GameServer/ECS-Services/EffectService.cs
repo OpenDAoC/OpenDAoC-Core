@@ -593,6 +593,10 @@ namespace DOL.GS
                     return eEffect.RvrResurrectionIllness;
 
                 #endregion
+                
+                //Artifacts
+                case eSpellType.AlvarusMorph:
+                    return eEffect.Morph;
 
                 // Pets.
                 case eSpellType.SummonTheurgistPet:
