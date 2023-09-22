@@ -779,6 +779,18 @@ namespace DOL.GS
                 case eEffect.FatigueConsumptionDebuff:
                     list.Add(eProperty.FatigueConsumption);
                     return list;
+                case eEffect.AllStatDebuff:
+                case eEffect.AllStatPercentDebuff:
+                    list.Add(eProperty.Strength);
+                    list.Add(eProperty.Dexterity);
+                    list.Add(eProperty.Constitution);
+                    list.Add(eProperty.Acuity);
+                    list.Add(eProperty.Piety);
+                    list.Add(eProperty.Empathy);
+                    list.Add(eProperty.Quickness);
+                    list.Add(eProperty.Intelligence);
+                    list.Add(eProperty.Charisma);
+                    return list;
 
                 default:
                     //Console.WriteLine($"Unable to find property mapping for: {e}");

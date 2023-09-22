@@ -162,6 +162,8 @@ namespace DOL.GS
         //Artifacts
         Morph,
         IncomingHealBonus,
-        CheatDeath
+        CheatDeath,
+        AllStatDebuff,
+        AllStatPercentDebuff
     }
 }
