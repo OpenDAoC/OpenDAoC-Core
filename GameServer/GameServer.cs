@@ -575,8 +575,6 @@ namespace DOL.GS
 				ThreadPool.GetMinThreads(out minWorkerThreads, out minIOCThreads);
 				ThreadPool.GetMaxThreads(out maxWorkerThreads, out maxIOCThreads);
 				log.Info($"Default ThreadPoool minworkthreads {minWorkerThreads} minIOCThreads {minIOCThreads} maxworkthreads {maxWorkerThreads} maxIOCThreads {maxIOCThreads}");
-				ThreadPool.SetMinThreads(200, 200);
-				
 
 				if (log.IsDebugEnabled)
 					log.DebugFormat("Starting Server, Memory is {0}MB", GC.GetTotalMemory(false) / 1024 / 1024);

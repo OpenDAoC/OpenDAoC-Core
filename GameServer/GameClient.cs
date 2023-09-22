@@ -198,7 +198,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the time of the last ping
 		/// </summary>
-		protected long m_pingTime = DateTime.Now.Ticks; // give ping time on creation
+		protected long m_pingTime = GameLoop.GetCurrentTime(); // give ping time on creation
 
 		/// <summary>
 		/// This variable holds all info about the active player
@@ -218,8 +218,8 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the time of the last UDP ping
 		/// </summary>
-		protected long m_udpPingTime = DateTime.Now.Ticks;
-		
+		protected long m_udpPingTime = GameLoop.GetCurrentTime();
+
 		/// <summary>
 		/// Custom Account Params
 		/// </summary>
@@ -286,7 +286,7 @@ namespace DOL.GS
 				if ((oldState != eClientState.Playing && value == eClientState.Playing) ||
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
-					PingTime = DateTime.Now.Ticks;
+					PingTime = GameLoop.GetCurrentTime();
 				}
 
 				m_clientState = value;

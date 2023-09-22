@@ -16,6 +16,8 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ClientService);
+        private const int PING_TIMEOUT = 60000;
+        private const int HARD_TIMEOUT = 600000;
 
         private static List<GameClient> _clients = new();
         private static SimpleDisposableLock _lock = new();
@@ -41,32 +43,6 @@ namespace DOL.GS
                 if (client?.EntityManagerId.IsSet != true)
                     return;
 
-                GamePlayer player = client.Player;
-
-                if (player != null &&
-                    player.Client.ClientState == GameClient.eClientState.Playing &&
-                    player.ObjectState == GameObject.eObjectState.Active)
-                {
-                    try
-                    {
-                        if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
-                        {
-                            long startTick = GameLoop.GetCurrentTime();
-                            UpdateWorld(player);
-                            long stopTick = GameLoop.GetCurrentTime();
-
-                            if (stopTick - startTick > 25)
-                                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
-                        }
-
-                        player.movementComponent.Tick(GameLoop.GameLoopTime);
-                    }
-                    catch (Exception e)
-                    {
-                        ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
-                    }
-                }
-
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.Disconnected:
@@ -78,6 +54,45 @@ namespace DOL.GS
                     case GameClient.eClientState.NotConnected:
                     case GameClient.eClientState.Linkdead:
                         return;
+                    case GameClient.eClientState.CharScreen:
+                    {
+                        CheckPingTimeout(client);
+                        break;
+                    }
+                    case GameClient.eClientState.Playing:
+                    {
+                        CheckPingTimeout(client);
+                        GamePlayer player = client.Player;
+
+                        if (player?.ObjectState == GameObject.eObjectState.Active)
+                        {
+                            try
+                            {
+                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                                {
+                                    long startTick = GameLoop.GetCurrentTime();
+                                    UpdateWorld(player);
+                                    long stopTick = GameLoop.GetCurrentTime();
+
+                                    if (stopTick - startTick > 25)
+                                        log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                                }
+
+                                player.movementComponent.Tick(GameLoop.GameLoopTime);
+                            }
+                            catch (Exception e)
+                            {
+                                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                            }
+                        }
+
+                        break;
+                    }
+                    default:
+                    {
+                        CheckHardTimeout(client);
+                        break;
+                    }
                 }
 
                 try
@@ -91,7 +106,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
                 }
             });
 
@@ -494,6 +509,28 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in gameObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 CreateObjectForPlayer(player, gameObject);
+        }
+
+        private static void CheckPingTimeout(GameClient client)
+        {
+            if (client.PingTime + PING_TIMEOUT < GameLoop.GetCurrentTime())
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Ping timeout for client {client}");
+
+                GameServer.Instance.Disconnect(client);
+            }
+        }
+
+        private static void CheckHardTimeout(GameClient client)
+        {
+            if (client.PingTime + HARD_TIMEOUT < GameLoop.GetCurrentTime())
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Hard timeout for client {client}");
+
+                GameServer.Instance.Disconnect(client);
+            }
         }
 
         private static void UpdateWorld(GamePlayer player)

@@ -266,7 +266,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						playerAccount = GameServer.Database.FindObjectByKey<Account>(userName);
 
-						client.PingTime = DateTime.Now.Ticks;
+						client.PingTime = GameLoop.GetCurrentTime();
 
 						if (playerAccount == null)
 						{

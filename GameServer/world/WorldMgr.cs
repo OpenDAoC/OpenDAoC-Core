@@ -24,10 +24,6 @@ namespace DOL.GS
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
-		/// Ping timeout definition in seconds
-		/// </summary>
-		public const long PING_TIMEOUT = 60; // 1 min default ping timeout (ticks are 100 nano seconds)
-		/// <summary>
 		/// Holds the distance which player get experience from a living object
 		/// </summary>
 		public const int MAX_EXPFORKILL_DISTANCE = VISIBILITY_DISTANCE;
@@ -167,11 +163,6 @@ namespace DOL.GS
 		{
 			get { return m_zones; }
 		}
-
-		/// <summary>
-		/// Timer for ping timeout checks
-		/// </summary>
-		private static Timer m_pingCheckTimer;
 
 		/// <summary>
 		/// This constant defines the day constant
@@ -482,8 +473,6 @@ namespace DOL.GS
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
 				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
-
-				m_pingCheckTimer = new Timer(new TimerCallback(PingCheck), null, 10 * 1000, 0); // every 10s a check
 			}
 			catch (Exception e)
 			{
@@ -492,58 +481,6 @@ namespace DOL.GS
 				return false;
 			}
 			return true;
-		}
-
-		/// <summary>
-		/// perform the ping timeout check and disconnect clients that timed out
-		/// </summary>
-		/// <param name="sender"></param>
-		private static void PingCheck(object sender)
-		{
-			try
-			{
-				foreach (GameClient client in ClientService.GetClients())
-				{
-					try
-					{
-						// check ping timeout if we are in charscreen or in playing state
-						if (client.ClientState == GameClient.eClientState.CharScreen ||
-						    client.ClientState == GameClient.eClientState.Playing)
-						{
-							if (client.PingTime + PING_TIMEOUT * 1000 * 1000 * 10 < DateTime.Now.Ticks)
-							{
-								if (log.IsWarnEnabled)
-									log.Warn("Ping timeout for client " + client.Account.Name);
-								GameServer.Instance.Disconnect(client);
-							}
-						}
-						else
-						{
-							// in all other cases client gets 10min to get wether in charscreen or playing state
-							if (client.PingTime + 10 * 60 * 4000000L < DateTime.Now.Ticks)
-							{
-								if (log.IsWarnEnabled)
-									log.Warn("Hard timeout for client " + client.Account.Name + " (" + client.ClientState + ")");
-								GameServer.Instance.Disconnect(client);
-							}
-						}
-					}
-					catch (Exception ex)
-					{
-						if (log.IsErrorEnabled)
-							log.Error("PingCheck", ex);
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("PingCheck callback", e);
-			}
-			finally
-			{
-				m_pingCheckTimer.Change(10 * 1000, Timeout.Infinite);
-			}
 		}
 
 #if NETFRAMEWORK
@@ -667,12 +604,6 @@ namespace DOL.GS
 		{
 			try
 			{
-				if (m_pingCheckTimer != null)
-				{
-					m_pingCheckTimer.Dispose();
-					m_pingCheckTimer = null;
-				}
-
 				if (m_dayResetTimer != null)
 				{
 					m_dayResetTimer.Dispose();
