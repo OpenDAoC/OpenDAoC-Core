@@ -1,6 +1,8 @@
 ﻿<Project>
     <PropertyGroup>
-        <BaseIntermediateOutputPath>..\build\DOLServer\$(Configuration)\</BaseIntermediateOutputPath>
+        <BaseIntermediateOutputPath>..\build\CoreServer\$(Configuration)\</BaseIntermediateOutputPath>
+        <PackageId>CoreServer</PackageId>
+        <RootNamespace>Core.Server</RootNamespace>
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
@@ -9,10 +11,9 @@
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ApplicationIcon>icon.ico</ApplicationIcon>
-        <AssemblyName>DOLServer</AssemblyName>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
         <OutputPath>..\$(Configuration)\</OutputPath>
-        <IntermediateOutputPath>..\build\DOLServer\$(Configuration)\obj\</IntermediateOutputPath>
+        <IntermediateOutputPath>..\build\CoreServer\$(Configuration)\obj\</IntermediateOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
