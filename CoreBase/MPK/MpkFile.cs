@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.IO;
 using System.Text;
@@ -27,11 +9,11 @@ namespace DOL.MPK
 	/// <summary>
 	/// Represents a file stored in an MPK archive.
 	/// </summary>
-	public class MPKFile
+	public class MpkFile
 	{
 		private byte[] _buf;
 		private byte[] _compBuf;
-		private MPKFileHeader _hdr = new MPKFileHeader();
+		private MpkFileHeader _hdr = new MpkFileHeader();
 
 		/// <summary>
 		/// Constructs a new MPK file entry
@@ -39,7 +21,7 @@ namespace DOL.MPK
 		/// <param name="compData">The compressed data of this file entry</param>
 		/// <param name="data">The uncompressed data of this file entry</param>
 		/// <param name="hdr">The file entry header</param>
-		public MPKFile(byte[] compData, byte[] data, MPKFileHeader hdr)
+		public MpkFile(byte[] compData, byte[] data, MpkFileHeader hdr)
 		{
 			_compBuf = compData;
 			_buf = data;
@@ -50,7 +32,7 @@ namespace DOL.MPK
 		/// Creates a new MPK file entry
 		/// </summary>
 		/// <param name="fname">The file name of the MPK file entry</param>
-		public MPKFile(string fname)
+		public MpkFile(string fname)
 		{
 			Load(fname);
 		}
@@ -58,7 +40,7 @@ namespace DOL.MPK
 		/// <summary>
 		/// Gets the MPK header
 		/// </summary>
-		public MPKFileHeader Header
+		public MpkFileHeader Header
 		{
 			get { return _hdr; }
 		}
@@ -118,7 +100,7 @@ namespace DOL.MPK
 				file.Read(_buf, 0, _buf.Length);
 			}
 
-			_hdr = new MPKFileHeader { Name = fname, UncompressedSize = (uint)fi.Length, TimeStamp = (uint)DateTime.Now.ToFileTime() };
+			_hdr = new MpkFileHeader { Name = fname, UncompressedSize = (uint)fi.Length, TimeStamp = (uint)DateTime.Now.ToFileTime() };
 
 			var def = new Deflater();
 

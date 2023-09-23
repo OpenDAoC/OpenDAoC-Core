@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.IO;
 using System.Net;
@@ -25,7 +7,7 @@ namespace DOL.Config
 	/// <summary>
 	/// Base configuration for the server.
 	/// </summary>
-	public class BaseServerConfiguration
+	public class BaseServerConfig
 	{
 		/// <summary>
 		/// Whether or not to try and auto-detect the external IP of the server.
@@ -70,7 +52,7 @@ namespace DOL.Config
 		/// <summary>
 		/// Constructs a server configuration with default values.
 		/// </summary>
-		protected BaseServerConfiguration()
+		protected BaseServerConfig()
 		{
 			_port = 10300;
 			_ip = IPAddress.Any;
@@ -186,7 +168,7 @@ namespace DOL.Config
 			if (configFile == null)
 				throw new ArgumentNullException("configFile");
 
-			XMLConfigFile xmlConfig = XMLConfigFile.ParseXMLFile(configFile);
+			XmlConfigFile xmlConfig = XmlConfigFile.ParseXMLFile(configFile);
 			LoadFromConfig(xmlConfig);
 		}
 
@@ -215,7 +197,7 @@ namespace DOL.Config
 			if (configFile == null)
 				throw new ArgumentNullException("configFile");
 
-			var config = new XMLConfigFile();
+			var config = new XmlConfigFile();
 			SaveToConfig(config);
 
 			config.Save(configFile);

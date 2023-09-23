@@ -1,33 +1,13 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-
-//Written by the DotNetFTPClient team: http://www.sourceforge.net/projects/dotnetftpclient
 
 namespace DOL.FTP
 {
 	/// <summary>
 	/// Summary description for FTPAsynchronousConnection.
 	/// </summary>
-	public class FTPAsynchronousConnection : FTPConnection
+	public class FtpAsyncConnection : FtpConnection
 	{
 		private readonly Queue<string> _deleteFileQueue;
 		private readonly Queue<FileTransferStruct> _getFileTransfersQueue;
@@ -39,7 +19,7 @@ namespace DOL.FTP
 		/// <summary>
 		/// Creates a new asynchronous FTP connection
 		/// </summary>
-		public FTPAsynchronousConnection()
+		public FtpAsyncConnection()
 		{
 			_sendFileTransfersQueue = new Queue<FileTransferStruct>();
 			_getFileTransfersQueue = new Queue<FileTransferStruct>();
@@ -54,7 +34,7 @@ namespace DOL.FTP
 		/// </summary>
 		/// <param name="remoteFileName">The remote filename</param>
 		/// <param name="type">The transfer type</param>
-		public override void GetFile(string remoteFileName, FTPFileTransferType type)
+		public override void GetFile(string remoteFileName, EFtpFileTransferType type)
 		{
 			GetFile(remoteFileName, Path.GetFileName(remoteFileName), type);
 		}
@@ -65,7 +45,7 @@ namespace DOL.FTP
 		/// <param name="remoteFileName">The remote filename</param>
 		/// <param name="localFileName">The local filename</param>
 		/// <param name="type">The transfer type</param>
-		public override void GetFile(string remoteFileName, string localFileName, FTPFileTransferType type)
+		public override void GetFile(string remoteFileName, string localFileName, EFtpFileTransferType type)
 		{
 			var ftStruct = new FileTransferStruct
 			               	{
@@ -90,7 +70,7 @@ namespace DOL.FTP
 		/// </summary>
 		/// <param name="localFileName">The local filename</param>
 		/// <param name="type">The transfer type</param>
-		public override void SendFile(string localFileName, FTPFileTransferType type)
+		public override void SendFile(string localFileName, EFtpFileTransferType type)
 		{
 			SendFile(localFileName, Path.GetFileName(localFileName), type);
 		}
@@ -101,7 +81,7 @@ namespace DOL.FTP
 		/// <param name="localFileName">The local filename</param>
 		/// <param name="remoteFileName">The remote filename</param>
 		/// <param name="type">The transfer type</param>
-		public override void SendFile(string localFileName, string remoteFileName, FTPFileTransferType type)
+		public override void SendFile(string localFileName, string remoteFileName, EFtpFileTransferType type)
 		{
 			var ftStruct = new FileTransferStruct
 			               	{
@@ -191,7 +171,7 @@ namespace DOL.FTP
 		{
 			public string LocalFileName;
 			public string RemoteFileName;
-			public FTPFileTransferType Type;
+			public EFtpFileTransferType Type;
 		}
 
 		#endregion

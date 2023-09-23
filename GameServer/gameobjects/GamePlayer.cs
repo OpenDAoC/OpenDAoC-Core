@@ -7041,13 +7041,13 @@ namespace DOL.GS
                     int conpenalty = 0;
                     switch (GameServer.Instance.Configuration.ServerType)
                     {
-                        case eGameServerType.GST_Normal:
+                        case EGameServerType.GST_Normal:
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                             xpLossPercent = 0;
                             m_deathtype = eDeathType.RvR;
                             break;
 
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                             xpLossPercent = 0;
                             m_deathtype = eDeathType.PvP;
@@ -12169,7 +12169,7 @@ namespace DOL.GS
             string message = "";
             switch (GameServer.Instance.Configuration.ServerType)
             {//FIXME: Better extract this to a new function in ServerRules !!! (VaNaTiC)
-                case eGameServerType.GST_Normal:
+                case EGameServerType.GST_Normal:
                 {
                     if (Realm == player.Realm || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.RealmMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
@@ -12178,7 +12178,7 @@ namespace DOL.GS
                     break;
                 }
 
-                case eGameServerType.GST_PvP:
+                case EGameServerType.GST_PvP:
                 {
                     if (Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
@@ -13780,7 +13780,7 @@ namespace DOL.GS
         /// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
         public virtual bool StartInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
         {
-            if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+            if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                 return false;
 
             if (duration < 1)

@@ -77,7 +77,7 @@ namespace DOL.GS.GameEvents
 				else
 				{
 					string realm = "";
-					if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal)
+					if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
 					{
 						realm = "[" + GlobalConstants.RealmToName(player.Realm) + "] ";
 					}
@@ -122,7 +122,7 @@ namespace DOL.GS.GameEvents
 				else
 				{
 					string realm = "";
-					if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal)
+					if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
 					{
 						realm = "[" + GlobalConstants.RealmToName(player.Realm) + "] ";
 					}

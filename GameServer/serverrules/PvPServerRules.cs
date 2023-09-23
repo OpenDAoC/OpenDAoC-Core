@@ -31,7 +31,7 @@ namespace DOL.GS.ServerRules
 	/// <summary>
 	/// Set of rules for "PvP" server type.
 	/// </summary>
-	[ServerRules(eGameServerType.GST_PvP)]
+	[ServerRules(EGameServerType.GST_PvP)]
 	public class PvPServerRules : AbstractServerRules
 	{
 		public override string RulesDescription()
@@ -132,7 +132,7 @@ namespace DOL.GS.ServerRules
 
 			//No PVP Dungeons: http://support.darkageofcamelot.com/cgi-bin/support.cfg/php/enduser/std_adp.php?p_sid=frxnPUjg&p_lva=&p_refno=020709-000000&p_created=1026248996&p_sp=cF9ncmlkc29ydD0mcF9yb3dfY250PTE0JnBfc2VhcmNoX3RleHQ9JnBfc2VhcmNoX3R5cGU9MyZwX2NhdF9sdmwxPTI2JnBfY2F0X2x2bDI9fmFueX4mcF9zb3J0X2J5PWRmbHQmcF9wYWdlPTE*&p_li
 			21,  //Tomb of Mithra
-			129, //Nisse’s Lair (Nisee's Lair in regions.ini)
+			129, //Nisseï¿½s Lair (Nisee's Lair in regions.ini)
 			221, //Muire Tomb (Undead in regions.ini)
 
 		};

@@ -100,14 +100,14 @@ namespace DOL.Mail
 
 		public static bool Init()
 		{
-			XMLConfigFile xmlConfig = new XMLConfigFile();
+			XmlConfigFile xmlConfig = new XmlConfigFile();
 			FileInfo file = new FileInfo("./config/MailConfig.xml");
 
 			try
 			{
 				if (file.Exists)
 				{
-					xmlConfig = XMLConfigFile.ParseXMLFile(file);
+					xmlConfig = XmlConfigFile.ParseXMLFile(file);
 					m_enable = xmlConfig["Enable"].GetBoolean(false);
 					if (m_enable)
 					{

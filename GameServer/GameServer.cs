@@ -121,7 +121,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Game server status variable
 		/// </summary>
-		protected eGameServerStatus m_status;
+		protected EGameServerStatus m_status;
 
 		/// <summary>
 		/// World save timer
@@ -172,7 +172,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the server status
 		/// </summary>
-		public eGameServerStatus ServerStatus
+		public EGameServerStatus ServerStatus
 		{
 			get { return m_status; }
 		}
@@ -391,7 +391,7 @@ namespace DOL.GS
 		/// <param name="ar"></param>
 		protected void RecvFromCallback(IAsyncResult ar)
 		{
-			if (m_status != eGameServerStatus.GSS_Open)
+			if (m_status != EGameServerStatus.GSS_Open)
 				return;
 
 			if (ar == null)
@@ -600,7 +600,7 @@ namespace DOL.GS
 				if (log.IsDebugEnabled)
 					log.DebugFormat("Starting Server, Memory is {0}MB", GC.GetTotalMemory(false) / 1024 / 1024);
 
-				m_status = eGameServerStatus.GSS_Closed;
+				m_status = EGameServerStatus.GSS_Closed;
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -837,7 +837,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Open the server, players can now connect if webhook, inform Discord!
-				m_status = eGameServerStatus.GSS_Open;
+				m_status = EGameServerStatus.GSS_Open;
 				StartupTime = DateTime.Now;
 
 				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
@@ -1251,12 +1251,12 @@ namespace DOL.GS
 
 		public void Close()
 		{
-			m_status = eGameServerStatus.GSS_Closed;
+			m_status = EGameServerStatus.GSS_Closed;
 		}
 
 		public void Open()
 		{
-			m_status = eGameServerStatus.GSS_Open;
+			m_status = EGameServerStatus.GSS_Open;
 		}
 
 		/// <summary>
@@ -1265,7 +1265,7 @@ namespace DOL.GS
 		public override void Stop()
 		{
 			//Stop new clients from logging in
-			m_status = eGameServerStatus.GSS_Closed;
+			m_status = EGameServerStatus.GSS_Closed;
 
 			log.Info("GameServer.Stop() - enter method");
 

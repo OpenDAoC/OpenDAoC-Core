@@ -31,7 +31,7 @@ namespace DOL.GS
 	/// <summary>
 	/// This is the game server configuration
 	/// </summary>
-	public class GameServerConfiguration : BaseServerConfiguration
+	public class GameServerConfiguration : BaseServerConfig
 	{
 		#region Server
 
@@ -68,7 +68,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The game server type
 		/// </summary>
-		protected eGameServerType m_serverType;
+		protected EGameServerType m_serverType;
 
 		/// <summary>
 		/// The game server name
@@ -165,25 +165,25 @@ namespace DOL.GS
 			switch (serverType.ToLower())
 			{
 				case "normal":
-					m_serverType = eGameServerType.GST_Normal;
+					m_serverType = EGameServerType.GST_Normal;
 					break;
 				case "casual":
-					m_serverType = eGameServerType.GST_Casual;
+					m_serverType = EGameServerType.GST_Casual;
 					break;
 				case "roleplay":
-					m_serverType = eGameServerType.GST_Roleplay;
+					m_serverType = EGameServerType.GST_Roleplay;
 					break;
 				case "pve":
-					m_serverType = eGameServerType.GST_PvE;
+					m_serverType = EGameServerType.GST_PvE;
 					break;
 				case "pvp":
-					m_serverType = eGameServerType.GST_PvP;
+					m_serverType = EGameServerType.GST_PvP;
 					break;
 				case "test":
-					m_serverType = eGameServerType.GST_Test;
+					m_serverType = EGameServerType.GST_Test;
 					break;
 				default:
-					m_serverType = eGameServerType.GST_Normal;
+					m_serverType = EGameServerType.GST_Normal;
 					break;
 			}
 
@@ -268,22 +268,22 @@ namespace DOL.GS
 
 			switch (m_serverType)
 			{
-				case eGameServerType.GST_Normal:
+				case EGameServerType.GST_Normal:
 					serverType = "Normal";
 					break;
-				case eGameServerType.GST_Casual:
+				case EGameServerType.GST_Casual:
 					serverType = "Casual";
 					break;
-				case eGameServerType.GST_Roleplay:
+				case EGameServerType.GST_Roleplay:
 					serverType = "Roleplay";
 					break;
-				case eGameServerType.GST_PvE:
+				case EGameServerType.GST_PvE:
 					serverType = "PvE";
 					break;
-				case eGameServerType.GST_PvP:
+				case EGameServerType.GST_PvP:
 					serverType = "PvP";
 					break;
-				case eGameServerType.GST_Test:
+				case EGameServerType.GST_Test:
 					serverType = "Test";
 					break;
 				default:
@@ -357,7 +357,7 @@ namespace DOL.GS
 			m_scriptAssemblies = " ";
 			m_enableCompilation = true;
 			m_autoAccountCreation = true;
-			m_serverType = eGameServerType.GST_Normal;
+			m_serverType = EGameServerType.GST_Normal;
 
 			m_cheatLoggerName = "cheats";
 			m_dualIPLoggerName = "dualip";
@@ -466,7 +466,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the server type
 		/// </summary>
-		public eGameServerType ServerType
+		public EGameServerType ServerType
 		{
 			get { return m_serverType; }
 			set { m_serverType = value; }

@@ -107,7 +107,7 @@ namespace DOL.DOLServer.Actions
 			GameServer.CreateInstance(config);
 			StartServer();
 
-			if (crashOnFail && GameServer.Instance.ServerStatus == eGameServerStatus.GSS_Closed)
+			if (crashOnFail && GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
 			{
 				throw new ApplicationException("Server did not start properly.");
 			}

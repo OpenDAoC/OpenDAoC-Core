@@ -1,6 +1,8 @@
 ﻿<Project>
     <PropertyGroup>
-        <BaseIntermediateOutputPath>..\build\DOLBase\$(Configuration)\</BaseIntermediateOutputPath>
+        <BaseIntermediateOutputPath>..\build\CoreBase\$(Configuration)\</BaseIntermediateOutputPath>
+        <PackageId>CoreBase</PackageId>
+        <RootNamespace>Core.Base</RootNamespace>
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
@@ -8,9 +10,8 @@
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <OutputType>Library</OutputType>
-        <AssemblyName>DOLBase</AssemblyName>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-        <IntermediateOutputPath>..\build\DOLBase\$(Configuration)\obj\</IntermediateOutputPath>
+        <IntermediateOutputPath>..\build\CoreBase\$(Configuration)\obj\</IntermediateOutputPath>
         <OutputPath>..\$(Configuration)\lib\</OutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>

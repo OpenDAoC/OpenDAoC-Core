@@ -1463,7 +1463,7 @@ namespace DOL.GS.ServerRules
 					byte bonus = 0;
 					if (keep.Guild != null && keep.Guild == player.Guild)
 						bonus = 20;
-					else if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal &&
+					else if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal &&
 					         keep.Realm == living.Realm)
 						bonus = 10;
 
@@ -2017,7 +2017,7 @@ namespace DOL.GS.ServerRules
 						byte bonus = 0;
 						if (keep.Guild != null && keep.Guild == (living as GamePlayer).Guild)
 							bonus = 20;
-						else if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal &&
+						else if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal &&
 								 keep.Realm == living.Realm)
 							bonus = 10;
 
@@ -2138,7 +2138,7 @@ namespace DOL.GS.ServerRules
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                 
-                if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvP)
+                if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
                 {
 	                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
                 }

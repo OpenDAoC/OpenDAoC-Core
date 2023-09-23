@@ -118,8 +118,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 							return;
 						}
 
-						if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP ||
-                            GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+						if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP ||
+                            GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
 						{
 							if (door.Realm != 0)
 							{

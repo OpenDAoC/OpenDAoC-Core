@@ -26,7 +26,7 @@ namespace DOL.GS.ServerRules
 	/// <summary>
 	/// Set of rules for "PvE" server type.
 	/// </summary>
-	[ServerRules(eGameServerType.GST_PvE)]
+	[ServerRules(EGameServerType.GST_PvE)]
 	public class PvEServerRules : AbstractServerRules
 	{
 		public override string RulesDescription()

@@ -63,7 +63,7 @@ namespace DOL.GS.Commands
                     switch(GameServer.Instance.Configuration.ServerType)
                     {
                             #region Normal rules
-                        case eGameServerType.GST_Normal:
+                        case EGameServerType.GST_Normal:
                             {
                                 //We cannot assist players of an enemy realm.
                                 if (!SameRealm(client, assistPlayer, false))
@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
                             }
                             #endregion
                             #region PvE rules
-                        case eGameServerType.GST_PvE:
+                        case EGameServerType.GST_PvE:
                             {
                                 //We cannot assist our target when it has no target.
                                 if (!HasTarget(client, assistPlayer))
@@ -89,7 +89,7 @@ namespace DOL.GS.Commands
                             }
                             #endregion
                             #region PvP rules
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             {
                                 //Note:
                                 //I absolutely don't have experience with pvp servers - change it when something is wrong.
@@ -196,7 +196,7 @@ namespace DOL.GS.Commands
                     switch(GameServer.Instance.Configuration.ServerType)
                     {
                         #region Normal rules
-						case eGameServerType.GST_Normal:
+						case EGameServerType.GST_Normal:
 						{
 							GameLiving targetLiving = (GameLiving)client.Player.TargetObject;
 							//We cannot assist npc's or players of an enemy realm.
@@ -212,7 +212,7 @@ namespace DOL.GS.Commands
 						}
 						#endregion
                         #region PvE rules
-                        case eGameServerType.GST_PvE:
+                        case EGameServerType.GST_PvE:
                             {
                                 if(client.Player.TargetObject is GamePlayer)
                                 {
@@ -241,7 +241,7 @@ namespace DOL.GS.Commands
                             } break;
                         #endregion
                         #region PvP rules
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             {
                                 //Note:
                                 //I absolutely don't have experience with pvp servers - change it when something is wrong.

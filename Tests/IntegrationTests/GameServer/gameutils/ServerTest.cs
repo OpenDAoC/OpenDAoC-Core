@@ -36,7 +36,7 @@ namespace DOL.Tests.Integration.Server
 			Console.WriteLine("Test GameServer Startup...");
 			Assert.NotNull(GameServer.Instance);
 			Assert.IsTrue(GameServer.Instance.IsRunning);
-			Assert.AreEqual(GameServer.Instance.ServerStatus, eGameServerStatus.GSS_Open);
+			Assert.AreEqual(GameServer.Instance.ServerStatus, EGameServerStatus.GSS_Open);
 		}
 	}
 }

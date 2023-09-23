@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +10,7 @@ namespace DOL.MPK
 	/// <summary>
 	/// Handles the reading and writing to MPK files.
 	/// </summary>
-	public class MPK
+	public class MpkHandler
 	{
 		/// <summary>
 		/// The magic at the top of the file
@@ -38,7 +20,7 @@ namespace DOL.MPK
 		/// <summary>
 		/// Holds all of the files in the MPK
 		/// </summary>
-		private readonly Dictionary<string, MPKFile> _files = new Dictionary<string, MPKFile>();
+		private readonly Dictionary<string, MpkFile> _files = new Dictionary<string, MpkFile>();
 
 		/// <summary>
 		/// Name of the archive
@@ -65,7 +47,7 @@ namespace DOL.MPK
 		/// </summary>
 		/// <param name="fname">The filename</param>
 		/// <param name="create">if true, creates the file, else parses an existing file</param>
-		public MPK(string fname, bool create)
+		public MpkHandler(string fname, bool create)
 		{
 			if (!create)
 			{
@@ -80,7 +62,7 @@ namespace DOL.MPK
 		/// <summary>
 		/// Creates a new MPK file
 		/// </summary>
-		public MPK()
+		public MpkHandler()
 		{
 		}
 
@@ -114,7 +96,7 @@ namespace DOL.MPK
 		/// <summary>
 		/// Gets a specific MPK file from this MPK
 		/// </summary>
-		public MPKFile this[string fname]
+		public MpkFile this[string fname]
 		{
 			get
 			{
@@ -136,7 +118,7 @@ namespace DOL.MPK
 		/// Gets a list of all the files inside this MPK
 		/// </summary>
 		/// <returns>An IDictionaryEnumerator containing entries as filename, MPKFile pairs</returns>
-		public IEnumerator<KeyValuePair<string, MPKFile>> GetEnumerator()
+		public IEnumerator<KeyValuePair<string, MpkFile>> GetEnumerator()
 		{
 			return _files.GetEnumerator();
 		}
@@ -146,7 +128,7 @@ namespace DOL.MPK
 		/// </summary>
 		/// <param name="file">The file to add</param>
 		/// <returns>true if successfull, false if the file is already contained</returns>
-		public bool AddFile(MPKFile file)
+		public bool AddFile(MpkFile file)
 		{
 			if (!_files.ContainsKey(file.Header.Name))
 			{
@@ -178,7 +160,7 @@ namespace DOL.MPK
 		/// </summary>
 		/// <param name="file">The file to remove</param>
 		/// <returns>true if the file was successfully removed, false if it wasn't in the MPK</returns>
-		public bool RemoveFile(MPKFile file)
+		public bool RemoveFile(MpkFile file)
 		{
 			return RemoveFile(file.Header.Name);
 		}
@@ -199,15 +181,15 @@ namespace DOL.MPK
 		{
 			Deflater def;
 			byte[] buf, dir, name;
-			var files = new MPKFile[_files.Count];
+			var files = new MpkFile[_files.Count];
 
-			using (var dirmem = new MemoryStream(_files.Count*MPKFileHeader.MaxSize))
+			using (var dirmem = new MemoryStream(_files.Count*MpkFileHeader.MaxSize))
 			{
 				int index = 0;
 				uint offset = 0;
 				uint diroffset = 0;
 
-				foreach (MPKFile file in _files.Values)
+				foreach (MpkFile file in _files.Values)
 				{
 					file.Header.DirectoryOffset = diroffset;
 					file.Header.Offset = offset;
@@ -276,7 +258,7 @@ namespace DOL.MPK
 					wrtr.Write(name, 0, _sizeName);
 					wrtr.Write(dir, 0, _sizeDir);
 
-					foreach (MPKFile file in files)
+					foreach (MpkFile file in files)
 					{
 						wrtr.Write(file.CompressedData);
 					}
@@ -311,7 +293,7 @@ namespace DOL.MPK
 				dirname += Path.DirectorySeparatorChar;
 			}
 
-			foreach (MPKFile file in _files.Values)
+			foreach (MpkFile file in _files.Values)
 			{
 				file.Save(dirname);
 			}
@@ -403,16 +385,16 @@ namespace DOL.MPK
 					{
 						crc.Reset();
 
-						buf = new byte[MPKFileHeader.MaxSize];
-						directory.Read(buf, 0, MPKFileHeader.MaxSize);
+						buf = new byte[MpkFileHeader.MaxSize];
+						directory.Read(buf, 0, MpkFileHeader.MaxSize);
 
-						MPKFileHeader hdr;
+						MpkFileHeader hdr;
 
 						using (var hdrStream = new MemoryStream(buf))
 						{
 							using (var hdrRdr = new BinaryReader(hdrStream, Encoding.UTF8))
 							{
-								hdr = new MPKFileHeader(hdrRdr);
+								hdr = new MpkFileHeader(hdrRdr);
 							}
 						}
 
@@ -426,7 +408,7 @@ namespace DOL.MPK
 						buf = new byte[hdr.UncompressedSize];
 						inf.Inflate(buf, 0, buf.Length);
 
-						var file = new MPKFile(compbuf, buf, hdr);
+						var file = new MpkFile(compbuf, buf, hdr);
 
 						if (crc.Value != hdr.CRCValue)
 						{
@@ -490,13 +472,13 @@ namespace DOL.MPK
 			Console.WriteLine("{0} files", _numFiles);
 			Console.WriteLine("{0} actual files", _files.Count);
 			Console.WriteLine("**************************************************************************");
-			foreach (MPKFile file in _files.Values)
+			foreach (MpkFile file in _files.Values)
 			{
 				file.Display();
 			}
 		}
 
-		private void OnInvalidFile(MPKFile file)
+		private void OnInvalidFile(MpkFile file)
 		{
 			if (InvalidFile != null)
 			{

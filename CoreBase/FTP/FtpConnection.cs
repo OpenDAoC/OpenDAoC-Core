@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,14 +7,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-//Written by the DotNetFTPClient team: http://www.sourceforge.net/projects/dotnetftpclient
-
 namespace DOL.FTP
 {
 	/// <summary>
 	/// Summary description for FTPConnection.
 	/// </summary>
-	public class FTPConnection
+	public class FtpConnection
 	{
 		private const int BlockSize = 512;
 		private const int DataPortRangeFrom = 1500;
@@ -42,7 +22,7 @@ namespace DOL.FTP
 
 		private bool _logMessages;
 		private List<string> _messageList = new List<string>();
-		private FTPMode _mode;
+		private EFtpMode _mode;
 		private string _remoteHost;
 		private int _remotePort;
 		private TcpClient _tcpClient;
@@ -50,10 +30,10 @@ namespace DOL.FTP
 		/// <summary>
 		/// Creates a new ftp connection
 		/// </summary>
-		public FTPConnection()
+		public FtpConnection()
 		{
 			_activeConnectionsCount = 0;
-			_mode = FTPMode.Active;
+			_mode = EFtpMode.Active;
 			_logMessages = false;
 		}
 
@@ -91,7 +71,7 @@ namespace DOL.FTP
 		/// <param name="password">The remote password</param>
 		public virtual void Open(string remoteHost, string user, string password)
 		{
-			Open(remoteHost, DefaultRemotePort, user, password, FTPMode.Active);
+			Open(remoteHost, DefaultRemotePort, user, password, EFtpMode.Active);
 		}
 
 		/// <summary>
@@ -101,7 +81,7 @@ namespace DOL.FTP
 		/// <param name="user">The remote user</param>
 		/// <param name="password">The remote password</param>
 		/// <param name="mode">The ftp mode</param>
-		public virtual void Open(string remoteHost, string user, string password, FTPMode mode)
+		public virtual void Open(string remoteHost, string user, string password, EFtpMode mode)
 		{
 			Open(remoteHost, DefaultRemotePort, user, password, mode);
 		}
@@ -115,7 +95,7 @@ namespace DOL.FTP
 		/// <param name="password">The remote password</param>
 		public virtual void Open(string remoteHost, int remotePort, string user, string password)
 		{
-			Open(remoteHost, remotePort, user, password, FTPMode.Active);
+			Open(remoteHost, remotePort, user, password, EFtpMode.Active);
 		}
 
 		/// <summary>
@@ -126,7 +106,7 @@ namespace DOL.FTP
 		/// <param name="user">The remote user</param>
 		/// <param name="password">The remote password</param>
 		/// <param name="mode">The ftp mode</param>
-		public virtual void Open(string remoteHost, int remotePort, string user, string password, FTPMode mode)
+		public virtual void Open(string remoteHost, int remotePort, string user, string password, EFtpMode mode)
 		{
 			var tempMessageList = new List<string>();
 			int returnValue;
@@ -232,9 +212,9 @@ namespace DOL.FTP
 
 			lock (_tcpClient)
 			{
-				SetTransferType(FTPFileTransferType.ASCII);
+				SetTransferType(EFtpFileTransferType.ASCII);
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener = CreateDataListener();
 					listener.Start();
@@ -251,7 +231,7 @@ namespace DOL.FTP
 					throw new Exception(tempMessageList[0]);
 				}
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					client = listener.AcceptTcpClient();
 				}
@@ -279,7 +259,7 @@ namespace DOL.FTP
 				networkStream.Close();
 				client.Close();
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener.Stop();
 				}
@@ -294,7 +274,7 @@ namespace DOL.FTP
 		/// <param name="stream">The stream to send</param>
 		/// <param name="remoteFileName">The remote file name</param>
 		/// <param name="type">The transfer type</param>
-		public void SendStream(Stream stream, string remoteFileName, FTPFileTransferType type)
+		public void SendStream(Stream stream, string remoteFileName, EFtpFileTransferType type)
 		{
 			TcpListener listener = null;
 			TcpClient client = null;
@@ -307,7 +287,7 @@ namespace DOL.FTP
 			{
 				SetTransferType(type);
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener = CreateDataListener();
 					listener.Start();
@@ -324,7 +304,7 @@ namespace DOL.FTP
 					throw new Exception(tempMessageList[0]);
 				}
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					client = listener.AcceptTcpClient();
 				}
@@ -347,7 +327,7 @@ namespace DOL.FTP
 				networkStream.Close();
 				client.Close();
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener.Stop();
 				}
@@ -376,7 +356,7 @@ namespace DOL.FTP
 		/// </summary>
 		/// <param name="localFileName">The local filename</param>
 		/// <param name="type">The transfer type</param>
-		public virtual void SendFile(string localFileName, FTPFileTransferType type)
+		public virtual void SendFile(string localFileName, EFtpFileTransferType type)
 		{
 			SendFile(localFileName, Path.GetFileName(localFileName), type);
 		}
@@ -387,7 +367,7 @@ namespace DOL.FTP
 		/// <param name="localFileName">The local filename</param>
 		/// <param name="remoteFileName">The remote filename</param>
 		/// <param name="type">The transfer type</param>
-		public virtual void SendFile(string localFileName, string remoteFileName, FTPFileTransferType type)
+		public virtual void SendFile(string localFileName, string remoteFileName, EFtpFileTransferType type)
 		{
 			using (var file = new FileStream(localFileName, FileMode.Open))
 			{
@@ -401,7 +381,7 @@ namespace DOL.FTP
 		/// <param name="remoteFileName">The remote file name</param>
 		/// <param name="stream">The stream to connect to the remote file</param>
 		/// <param name="type">The transfer type</param>
-		public void GetStream(string remoteFileName, Stream stream, FTPFileTransferType type)
+		public void GetStream(string remoteFileName, Stream stream, EFtpFileTransferType type)
 		{
 			TcpListener listener = null;
 			TcpClient client = null;
@@ -414,7 +394,7 @@ namespace DOL.FTP
 			{
 				SetTransferType(type);
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener = CreateDataListener();
 					listener.Start();
@@ -431,7 +411,7 @@ namespace DOL.FTP
 					throw new Exception(tempMessageList[0]);
 				}
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					client = listener.AcceptTcpClient();
 				}
@@ -458,7 +438,7 @@ namespace DOL.FTP
 				networkStream.Close();
 				client.Close();
 
-				if (_mode == FTPMode.Active)
+				if (_mode == EFtpMode.Active)
 				{
 					listener.Stop();
 				}
@@ -487,7 +467,7 @@ namespace DOL.FTP
 		/// </summary>
 		/// <param name="remoteFileName">The remote file name</param>
 		/// <param name="type">The transfer type</param>
-		public virtual void GetFile(string remoteFileName, FTPFileTransferType type)
+		public virtual void GetFile(string remoteFileName, EFtpFileTransferType type)
 		{
 			GetFile(remoteFileName, Path.GetFileName(remoteFileName), type);
 		}
@@ -498,7 +478,7 @@ namespace DOL.FTP
 		/// <param name="remoteFileName">The remote file name</param>
 		/// <param name="localFileName">The local file name</param>
 		/// <param name="type">The transfer type</param>
-		public virtual void GetFile(string remoteFileName, string localFileName, FTPFileTransferType type)
+		public virtual void GetFile(string remoteFileName, string localFileName, EFtpFileTransferType type)
 		{
 			GetStream(remoteFileName, new FileStream(localFileName, FileMode.Create), type);
 		}
@@ -543,14 +523,14 @@ namespace DOL.FTP
 			}
 		}
 
-		private void SetTransferType(FTPFileTransferType type)
+		private void SetTransferType(EFtpFileTransferType type)
 		{
 			switch (type)
 			{
-				case FTPFileTransferType.ASCII:
+				case EFtpFileTransferType.ASCII:
 					SetMode("TYPE A");
 					break;
-				case FTPFileTransferType.Binary:
+				case EFtpFileTransferType.Binary:
 					SetMode("TYPE I");
 					break;
 				default:
@@ -748,11 +728,11 @@ namespace DOL.FTP
 			{
 				switch (_mode)
 				{
-					case FTPMode.Active:
+					case EFtpMode.Active:
 						var rnd = new Random((int) DateTime.Now.Ticks);
 						port = DataPortRangeFrom + rnd.Next(DataPortRangeTo - DataPortRangeFrom);
 						break;
-					case FTPMode.Passive:
+					case EFtpMode.Passive:
 						var tempMessageList = new List<string>();
 						int returnValue = 0;
 

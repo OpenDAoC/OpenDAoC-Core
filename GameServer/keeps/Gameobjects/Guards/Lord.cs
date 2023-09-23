@@ -28,7 +28,7 @@ namespace DOL.GS.Keeps
             get
             {
                 // PvE Lords drop stacks of dreaded seals instead of giving RP directly
-                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
                 long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
@@ -54,7 +54,7 @@ namespace DOL.GS.Keeps
             get
             {
                 // PvE Lords drop stacks of dreaded seals instead of giving RP directly
-                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
                 long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
@@ -377,8 +377,8 @@ namespace DOL.GS.Keeps
             }
             else
             {
-                if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE
-                    || GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+                if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE
+                    || GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
                 {
                     // In PvE & PvP servers, lords are really just mobs farmed for seals.
                     int iVariance = 1000 * Math.Abs(Properties.GUARD_RESPAWN_VARIANCE);

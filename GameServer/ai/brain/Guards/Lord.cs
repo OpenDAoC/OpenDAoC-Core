@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
 		/// <param name="trigger">The entity which triggered the BAF.</param>
 		protected override void BringFriends(GameLiving trigger)
 		{
-			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
 			{
 				GuardLord lord = Body as GuardLord;
 				long currenttime = DateTime.UtcNow.Ticks;

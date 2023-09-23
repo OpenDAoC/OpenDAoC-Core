@@ -283,8 +283,8 @@ namespace DOL.GS.Keeps
 
 		protected override void SetRespawnTime()
 		{
-			if (Realm == eRealm.None && (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE ||
-			GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP))
+			if (Realm == eRealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
+			GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 			{
 				// In PvE & PvP servers, lords are really just mobs farmed for seals.
 				int iVariance = 1000 * Math.Abs(ServerProperties.Properties.GUARD_RESPAWN_VARIANCE);

@@ -95,7 +95,7 @@ namespace DOL.GS
             Flag = dbDoor.Flags;
 
             // Open mile gates on PVE and PVP server types.
-            if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType is eGameServerType.GST_PvE or eGameServerType.GST_PvP))
+            if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_PvE or EGameServerType.GST_PvP))
                 State = eDoorState.Open;
 
             AddToWorld();

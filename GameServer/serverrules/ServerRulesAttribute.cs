@@ -26,14 +26,14 @@ namespace DOL.GS.ServerRules
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class ServerRulesAttribute : Attribute
 	{
-		protected eGameServerType m_serverType;
+		protected EGameServerType m_serverType;
 
-		public eGameServerType ServerType
+		public EGameServerType ServerType
 		{
 			get { return m_serverType; }
 		}
 
-		public ServerRulesAttribute(eGameServerType serverType)
+		public ServerRulesAttribute(EGameServerType serverType)
 		{
 			m_serverType = serverType;
 		}

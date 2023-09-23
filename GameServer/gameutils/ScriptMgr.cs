@@ -458,7 +458,7 @@ namespace DOL.GS
 
 					try
 					{
-						XMLConfigFile config = XMLConfigFile.ParseXMLFile(configFile);
+						XmlConfigFile config = XmlConfigFile.ParseXMLFile(configFile);
 
 						//Assume no scripts changed
 						recompileRequired = false;
@@ -539,7 +539,7 @@ namespace DOL.GS
 			//now notify our callbacks
 			if (!compilationSuccessful) return false;
 
-			var newconfig = new XMLConfigFile();
+			var newconfig = new XmlConfigFile();
 			foreach (var finfo in files)
 			{
 				newconfig[finfo.FullName]["size"].Set(finfo.Length);
@@ -970,7 +970,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="serverType">server type used to look for rules handler</param>
         /// <returns>server rules handler or normal server type handler if errors</returns>
-        public static IServerRules CreateServerRules(eGameServerType serverType)
+        public static IServerRules CreateServerRules(EGameServerType serverType)
 		{
 			Type rules = null;
 

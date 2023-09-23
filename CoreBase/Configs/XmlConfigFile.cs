@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.IO;
 using System.Text;
@@ -26,12 +8,12 @@ namespace DOL.Config
 	/// <summary>
 	/// Reads and writes an XML configuration file.
 	/// </summary>
-	public class XMLConfigFile : ConfigElement
+	public class XmlConfigFile : ConfigElement
 	{
 		/// <summary>
 		/// Constructs a new XML config file.
 		/// </summary>
-		public XMLConfigFile()
+		public XmlConfigFile()
 			: base(null)
 		{
 		}
@@ -146,12 +128,12 @@ namespace DOL.Config
 		/// </summary>
 		/// <param name="configFile">The config file</param>
 		/// <returns>The parsed config</returns>
-		public static XMLConfigFile ParseXMLFile(FileInfo configFile)
+		public static XmlConfigFile ParseXMLFile(FileInfo configFile)
 		{
 			if (configFile == null)
 				throw new ArgumentNullException("configFile");
 
-			var root = new XMLConfigFile();
+			var root = new XmlConfigFile();
 
 			if (!configFile.Exists)
 				return root;
