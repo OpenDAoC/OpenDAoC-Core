@@ -261,7 +261,7 @@ Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-serve
 
 ## Building Your OpenDAoC Server Locally
 
-This section provides the commands necessary for both building and running am OpenDAoC server locally.
+This section provides the commands necessary for both building and running an OpenDAoC server locally.
 
 1. Launch the Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the OpenDAoC server on your machine. <!-- This may take several minutes to complete. -->
 2. If the build was successful, now enter the command `dotnet run --project CoreServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
