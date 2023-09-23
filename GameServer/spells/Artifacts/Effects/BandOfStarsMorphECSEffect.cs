@@ -4,6 +4,7 @@ public class BandOfStarsMorphECSEffect : MorphECSEffect
 {
     public BandOfStarsMorphECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
     {
+        EffectType = eEffect.Morph;
     }
 
     public override void OnStartEffect()

@@ -2,20 +2,27 @@ using System;
 using System.Linq;
 using DOL.GS;
 using DOL.GS.Spells;
+using Microsoft.Win32.SafeHandles;
 
 public class MorphECSEffect : StatBuffECSEffect
 {
+    private ushort originalModel;
     public override void OnStartEffect()
     {
         TryCastProc();
+        originalModel = Owner.Model;
+        Owner.Model = (ushort)SpellHandler.Spell.LifeDrainReturn;    
         if(Owner is GamePlayer p)
         {
-            p.Model = (ushort)SpellHandler.Spell.LifeDrainReturn;     
             p.Out.SendUpdatePlayer();  
             p.Out.SendCharStatsUpdate();
             p.UpdateEncumberance();
             p.UpdatePlayerStatus();
             p.Out.SendUpdatePlayer(); 
+        }
+        else
+        {
+            Owner.BroadcastLivingEquipmentUpdate();
         }       	
     }
 
@@ -34,7 +41,12 @@ public class MorphECSEffect : StatBuffECSEffect
             p.UpdateEncumberance();
             p.UpdatePlayerStatus();
             p.Out.SendUpdatePlayer(); 
-        }                       
+        }
+        else
+        {
+            Owner.Model = originalModel;
+            Owner.BroadcastLivingEquipmentUpdate();
+        }
     }
 
     public MorphECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
@@ -44,6 +56,7 @@ public class MorphECSEffect : StatBuffECSEffect
     public void TryCastProc()
     {
         var subspell = SkillBase.GetSpellByID((int) SpellHandler.Spell.SubSpellID);
+        if (subspell == null) return;
         var subspellHandler = ScriptMgr.CreateSpellHandler(Owner, subspell, SkillBase.GetSpellLine(subspell.SpellType.ToString())) as SpellHandler;
         
         if (subspellHandler != null)

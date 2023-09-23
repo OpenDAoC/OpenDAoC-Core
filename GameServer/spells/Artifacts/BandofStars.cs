@@ -113,7 +113,6 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.ApplyEffectOnTarget(target);
             new BandOfStarsMorphECSEffect(new ECSGameEffectInitParams(target, Spell.Duration, 1, this));
             if (target.Realm == 0 || Caster.Realm == 0)
             {
