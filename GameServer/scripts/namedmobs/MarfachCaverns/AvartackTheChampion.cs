@@ -1,10 +1,11 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
+
 namespace DOL.GS
 {
     public class Avartack : GameEpicBoss
@@ -233,7 +234,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.Name = "Avartack's Force";
                     spell.SpellID = 11786;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -246,5 +247,3 @@ namespace DOL.AI.Brain
         }
     }
 }
-
-

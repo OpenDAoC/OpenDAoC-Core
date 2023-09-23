@@ -1381,10 +1381,10 @@ namespace DOL.GS
 						}
 
 						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, procSpell, spellLine);
-												
+
 						if (spellHandler != null)
 						{
-							bool rangeCheck = spellHandler.Spell.Target.ToLower().Equals("enemy") && spellHandler.Spell.Range > 0;
+							bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
 
 							if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spellHandler.CalculateSpellRange()))
 								spellHandler.StartSpell(ad.Target, weapon);
@@ -2244,7 +2244,7 @@ namespace DOL.GS
 						continue;
 
 					var spellEffect = effects[i];
-					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == "Pet")
+					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == eSpellTarget.PET)
 					{
 						if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
 							or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
@@ -2268,7 +2268,7 @@ namespace DOL.GS
 
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
-					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != "Self")
+					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
 						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
 				}				
             }

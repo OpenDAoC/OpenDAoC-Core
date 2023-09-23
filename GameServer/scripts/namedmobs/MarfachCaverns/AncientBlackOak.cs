@@ -2,6 +2,7 @@
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+
 namespace DOL.GS
 {
     public class AncientBlackOak : GameEpicBoss
@@ -143,7 +144,7 @@ namespace DOL.GS
                     spell.Value = 60;
                     spell.Radius = 800;
                     spell.SpellID = 11790;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -203,6 +204,3 @@ namespace DOL.AI.Brain
         }
     }
 }
-
-
-

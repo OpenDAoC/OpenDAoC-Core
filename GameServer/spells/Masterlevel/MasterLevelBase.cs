@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -58,6 +39,143 @@ namespace DOL.GS.Spells
         }
 
         #region Targets
+
+        public static IList<GameLiving> SelectTargets(SpellHandler spellHandler, GameLiving target)
+        {
+            var list = new List<GameLiving>(8);
+            Spell spell = spellHandler.Spell;
+            GameLiving caster = spellHandler.Caster;
+
+            switch (spell.Target)
+            {
+                //GTAoE
+                case eSpellTarget.AREA:
+                {
+                    if (spell.Radius > 0)
+                    {
+                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(caster.CurrentRegionID, caster.GroundTarget.X, caster.GroundTarget.Y, caster.GroundTarget.Z, (ushort) spell.Radius))
+                        {
+                            if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true))
+                                list.Add(player);
+                        }
+                    }
+
+                    break;
+                }
+                case eSpellTarget.PET:
+                {
+                    if (caster is GamePlayer player)
+                    {
+                        IControlledBrain npc = player.ControlledBrain;
+
+                        if (npc != null)
+                            list.Add(npc.Body);
+                    }
+
+                    break;
+                }
+                case eSpellTarget.ENEMY:
+                {
+                    if (spell.Radius > 0)
+                    {
+                        target = caster;
+                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort) spell.Radius))
+                        {
+                            if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true))
+                                list.Add(player);
+                        }
+                    }
+                    else
+                    {
+                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(caster, target, true))
+                            list.Add(target);
+                    }
+
+                    break;
+                }
+                case eSpellTarget.REALM:
+                {
+                    if (spell.Radius > 0)
+                    {
+                        if (target == null || spell.Range == 0)
+                            target = caster;
+
+                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort) spell.Radius))
+                        {
+                            if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true) == false)
+                                list.Add(player);
+                        }
+                    }
+                    else
+                    {
+                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(caster, target, true) == false)
+                            list.Add(target);
+                    }
+
+                    break;
+                }
+                case eSpellTarget.SELF:
+                {
+                    if (spell.Radius > 0)
+                    {
+                        if (target == null || spell.Range == 0)
+                            target = caster;
+
+                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort) spell.Radius))
+                        {
+                            if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true) == false)
+                                list.Add(player);
+                        }
+                    }
+                    else
+                        list.Add(caster);
+
+                    break;
+                }
+                case eSpellTarget.GROUP:
+                {
+                    Group group = caster.Group;
+                    int spellRange = spellHandler.CalculateSpellRange();
+
+                    if (spellRange == 0)
+                        spellRange = spell.Radius;
+
+                    if (group == null)
+                    {
+                        list.Add(caster);
+                        IControlledBrain npc = caster.ControlledBrain;
+
+                        if (npc != null)
+                        {
+                            if (caster.IsWithinRadius(npc.Body, spellRange))
+                                list.Add(npc.Body);
+                        }
+                    }
+                    else
+                    {
+                        foreach (GameLiving living in group.GetMembersInTheGroup())
+                        {
+                            // only players in range
+                            if (caster.IsWithinRadius(living, spellRange))
+                                list.Add(living);
+
+                            IControlledBrain npc = living.ControlledBrain;
+
+                            if (npc != null)
+                            {
+                                if (living.IsWithinRadius(npc.Body, spellRange))
+                                    list.Add(npc.Body);
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Select all targets for this spell
         /// </summary>
@@ -65,129 +183,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            var list = new List<GameLiving>(8);
-            GameLiving target = castTarget as GameLiving;
-
-            switch (Spell.Target.ToLower())
-            {
-                //GTAoE
-                case "area":
-                    if (Spell.Radius > 0)
-                    {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    break;
-
-                case "pet":
-                    if (Caster is GamePlayer)
-                    {
-                        IControlledBrain npc = ((GamePlayer)Caster).ControlledBrain;
-                        if (npc != null)
-                            list.Add(npc.Body);
-                    }
-                    break;
-
-                case "enemy":
-                    if (Spell.Radius > 0)
-                    {
-                        target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-                            list.Add(target);
-                    }
-                    break;
-
-                case "realm":
-                    if (Spell.Radius > 0)
-                    {
-                        if (target == null || Spell.Range == 0)
-                            target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-                            list.Add(target);
-                    }
-                    break;
-
-                case "self":
-                    {
-                        if (Spell.Radius > 0)
-                        {
-                            if (target == null || Spell.Range == 0)
-                                target = Caster;
-                            foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                            {
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                                {
-                                    list.Add(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            list.Add(Caster);
-                        }
-                        break;
-                    }
-				case "group":
-					{
-						Group group = m_caster.Group;
-						int spellRange = CalculateSpellRange();
-						if (spellRange == 0)
-							spellRange = m_spell.Radius;
-						if (group == null)
-						{
-							list.Add(m_caster);
-							IControlledBrain npc = m_caster.ControlledBrain;
-							if (npc != null)
-							{
-								if (m_caster.IsWithinRadius(npc.Body, spellRange))
-									list.Add(npc.Body);
-							}
-						}
-						else
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-									list.Add(living);
-
-								IControlledBrain npc = living.ControlledBrain;
-								if (npc != null)
-								{
-									if (living.IsWithinRadius(npc.Body, spellRange))
-										list.Add(npc.Body);
-								}
-							}
-						}
-						break;
-					}
-            }
-            return list;
+            return SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -208,14 +204,13 @@ namespace DOL.GS.Spells
     }
     #endregion
 
-	#region Stylhandler
-	[SpellHandlerAttribute("MLStyleHandler")]
-	public class MLStyleHandler : MasterlevelHandling
-	{
-		public MLStyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-	}
-	#endregion
-
+    #region Stylhandler
+    [SpellHandlerAttribute("MLStyleHandler")]
+    public class MLStyleHandler : MasterlevelHandling
+    {
+        public MLStyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+    }
+    #endregion
 
     #region MasterlevelDebuff
     /// <summary>
@@ -260,141 +255,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            var list = new List<GameLiving>(8);
-            GameLiving target = castTarget as GameLiving;
-
-            switch (Spell.Target.ToLower())
-            {
-                //GTAoE
-                case "area":
-                    if (Spell.Radius > 0)
-                    {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                        foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
-                            {
-                                list.Add(npc);
-                            }
-                        }
-                    }
-                    break;
-
-                case "corpse":
-                    if (target != null && !target.IsAlive)
-                        list.Add(target);
-                    break;
-
-                case "pet":
-                    if (Caster is GamePlayer)
-                    {
-                        IControlledBrain npc = ((GamePlayer)Caster).ControlledBrain;
-                        if (npc != null)
-                            list.Add(npc.Body);
-                    }
-                    break;
-
-                case "enemy":
-                    if (Spell.Radius > 0)
-                    {
-                        target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-                            list.Add(target);
-                    }
-                    break;
-
-                case "realm":
-                    if (Spell.Radius > 0)
-                    {
-                        if (target == null || Spell.Range == 0)
-                            target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-                            list.Add(target);
-                    }
-                    break;
-
-                case "self":
-                    {
-                        if (Spell.Radius > 0)
-                        {
-                            if (target == null || Spell.Range == 0)
-                                target = Caster;
-                            foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                            {
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                                {
-                                    list.Add(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            list.Add(Caster);
-                        }
-                        break;
-                    }
-				case "group":
-					{
-						Group group = m_caster.Group;
-						int spellRange = CalculateSpellRange();
-						if (spellRange == 0)
-							spellRange = m_spell.Radius;
-						if (group == null)
-						{
-							list.Add(m_caster);
-							IControlledBrain npc = m_caster.ControlledBrain;
-							if (npc != null)
-							{
-								if (m_caster.IsWithinRadius(npc.Body, spellRange))
-									list.Add(npc.Body);
-							}
-						}
-						else
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-									list.Add(living);
-
-								IControlledBrain npc = living.ControlledBrain;
-								if (npc != null)
-								{
-									if (m_caster.IsWithinRadius(npc.Body, spellRange))
-										list.Add(npc.Body);
-								}
-							}
-						}
-						break;
-					}
-            }
-            return list;
+            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -443,147 +304,12 @@ namespace DOL.GS.Spells
         #region Targets
         /// <summary>
         /// Select all targets for this spell
-		/// This code is repeated how many times?  - Tolakram
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            var list = new List<GameLiving>(8);
-            GameLiving target = castTarget as GameLiving;
-
-            switch (Spell.Target.ToLower())
-            {
-                //GTAoE
-                case "area":
-                    if (Spell.Radius > 0)
-                    {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                        foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
-                            {
-                                list.Add(npc);
-                            }
-                        }
-                    }
-                    break;
-
-                case "corpse":
-                    if (target != null && !target.IsAlive)
-                        list.Add(target);
-                    break;
-
-                case "pet":
-                    if (Caster is GamePlayer)
-                    {
-                        IControlledBrain npc = ((GamePlayer)Caster).ControlledBrain;
-                        if (npc != null)
-                            list.Add(npc.Body);
-                    }
-                    break;
-
-                case "enemy":
-                    if (Spell.Radius > 0)
-                    {
-                        target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-                            list.Add(target);
-                    }
-                    break;
-
-                case "realm":
-                    if (Spell.Radius > 0)
-                    {
-                        if (target == null || Spell.Range == 0)
-                            target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-                            list.Add(target);
-                    }
-                    break;
-
-                case "self":
-                    {
-                        if (Spell.Radius > 0)
-                        {
-                            if (target == null || Spell.Range == 0)
-                                target = Caster;
-                            foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                            {
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                                {
-                                    list.Add(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            list.Add(Caster);
-                        }
-                        break;
-                    }
-                case "group":
-                    {
-						Group group = m_caster.Group;
-						int spellRange = CalculateSpellRange();
-						if (spellRange == 0)
-							spellRange = m_spell.Radius;
-						if (group == null)
-						{
-							list.Add(m_caster);
-							IControlledBrain npc = m_caster.ControlledBrain;
-							if (npc != null)
-							{
-								if (m_caster.IsWithinRadius(npc.Body, spellRange))
-									list.Add(npc.Body);
-							}
-						}
-						else
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-									list.Add(living);
-
-								IControlledBrain npc = living.ControlledBrain;
-								if (npc != null)
-								{
-									if (living.IsWithinRadius(npc.Body, spellRange))
-										list.Add(npc.Body);
-								}
-							}
-						}
-                        break;
-                    }
-            }
-            return list;
+            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -638,141 +364,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            var list = new List<GameLiving>(8);
-            GameLiving target = castTarget as GameLiving;
-
-            switch (Spell.Target.ToLower())
-            {
-                //GTAoE
-                case "area":
-                    if (Spell.Radius > 0)
-                    {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                        foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
-                            {
-                                list.Add(npc);
-                            }
-                        }
-                    }
-                    break;
-
-                case "corpse":
-                    if (target != null && !target.IsAlive)
-                        list.Add(target);
-                    break;
-
-                case "pet":
-                    if (Caster is GamePlayer)
-                    {
-                        IControlledBrain npc = ((GamePlayer)Caster).ControlledBrain;
-                        if (npc != null)
-                            list.Add(npc.Body);
-                    }
-                    break;
-
-                case "enemy":
-                    if (Spell.Radius > 0)
-                    {
-                        target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-                            list.Add(target);
-                    }
-                    break;
-
-                case "realm":
-                    if (Spell.Radius > 0)
-                    {
-                        if (target == null || Spell.Range == 0)
-                            target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-                            list.Add(target);
-                    }
-                    break;
-
-                case "self":
-                    {
-                        if (Spell.Radius > 0)
-                        {
-                            if (target == null || Spell.Range == 0)
-                                target = Caster;
-                            foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                            {
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                                {
-                                    list.Add(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            list.Add(Caster);
-                        }
-                        break;
-                    }
-                case "group":
-                    {
-						Group group = m_caster.Group;
-						int spellRange = CalculateSpellRange();
-						if (spellRange == 0)
-							spellRange = m_spell.Radius;
-						if (group == null)
-						{
-							list.Add(m_caster);
-							IControlledBrain npc = m_caster.ControlledBrain;
-							if (npc != null)
-							{
-								if (m_caster.IsWithinRadius(npc.Body, spellRange))
-									list.Add(npc.Body);
-							}
-						}
-						else
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-									list.Add(living);
-
-								IControlledBrain npc = living.ControlledBrain;
-								if (npc != null)
-								{
-									if (living.IsWithinRadius(npc.Body, spellRange))
-										list.Add(npc.Body);
-								}
-							}
-						}
-                        break;
-                    }
-            }
-            return list;
+            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -850,141 +442,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            var list = new List<GameLiving>(8);
-            GameLiving target = castTarget as GameLiving;
-
-            switch (Spell.Target.ToLower())
-            {
-                //GTAoE
-                case "area":
-                    if (Spell.Radius > 0)
-                    {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                        foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
-                            {
-                                list.Add(npc);
-                            }
-                        }
-                    }
-                    break;
-
-                case "corpse":
-                    if (target != null && !target.IsAlive)
-                        list.Add(target);
-                    break;
-
-                case "pet":
-                    if (Caster is GamePlayer)
-                    {
-                        IControlledBrain npc = ((GamePlayer)Caster).ControlledBrain;
-                        if (npc != null)
-                            list.Add(npc.Body);
-                    }
-                    break;
-
-                case "enemy":
-                    if (Spell.Radius > 0)
-                    {
-                        target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-                            if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
-                            list.Add(target);
-                    }
-                    break;
-
-                case "realm":
-                    if (Spell.Radius > 0)
-                    {
-                        if (target == null || Spell.Range == 0)
-                            target = Caster;
-                        foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                        {
-							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                            {
-                                list.Add(player);
-                            }
-                        }
-                    }
-                    else
-                    {
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true) == false)
-                            list.Add(target);
-                    }
-                    break;
-
-                case "self":
-                    {
-                        if (Spell.Radius > 0)
-                        {
-                            if (target == null || Spell.Range == 0)
-                                target = Caster;
-                            foreach (GamePlayer player in target.GetPlayersInRadius((ushort)Spell.Radius))
-                            {
-								if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true) == false)
-                                {
-                                    list.Add(player);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            list.Add(Caster);
-                        }
-                        break;
-                    }
-                case "group":
-                    {
-						Group group = m_caster.Group;
-						int spellRange = CalculateSpellRange();
-						if (spellRange == 0)
-							spellRange = m_spell.Radius;
-						if (group == null)
-						{
-							list.Add(m_caster);
-							IControlledBrain npc = m_caster.ControlledBrain;
-							if (npc != null)
-							{
-								if (m_caster.IsWithinRadius(npc.Body, spellRange))
-									list.Add(npc.Body);
-							}
-						}
-						else
-						{
-							foreach (GameLiving living in group.GetMembersInTheGroup())
-							{
-								// only players in range
-								if (m_caster.IsWithinRadius(living, spellRange))
-									list.Add(living);
-
-								IControlledBrain npc = living.ControlledBrain;
-								if (npc != null)
-								{
-									if (living.IsWithinRadius(npc.Body, spellRange))
-										list.Add(npc.Body);
-								}
-							}
-						}
-                        break;
-                    }
-            }
-            return list;
+            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -1027,10 +485,10 @@ namespace DOL.GS.Spells
         {
             GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             if(font != null)
-			{
-				font.AddToWorld();
-				neweffect.Start(font);
-			}
+            {
+                font.AddToWorld();
+                neweffect.Start(font);
+            }
         }
 
         public override void OnEffectPulse(GameSpellEffect effect)
@@ -1372,7 +830,7 @@ namespace DOL.GS
             this.Realm = 0;
             this.Level = 1;
             this.Health = this.MaxHealth;
-			this.MaxSpeedBase = 0;
+            this.MaxSpeedBase = 0;
         }
 
         private GamePlayer m_owner;
@@ -1420,7 +878,7 @@ namespace DOL.GS
             this.Model = 3457;
             this.Name = "Storm";
             this.Flags |= GameNPC.eFlags.DONTSHOWNAME;
-			this.Flags |= GameNPC.eFlags.CANTTARGET;
+            this.Flags |= GameNPC.eFlags.CANTTARGET;
             this.Movable = true;
         }
 

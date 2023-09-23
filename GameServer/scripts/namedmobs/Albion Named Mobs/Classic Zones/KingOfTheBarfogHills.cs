@@ -109,7 +109,7 @@ namespace DOL.GS
 					spell.Range = 350;
 					spell.Radius = 800;
 					spell.SpellID = 11896;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

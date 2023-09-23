@@ -1,26 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -54,7 +35,7 @@ namespace DOL.GS
 		protected int m_spawnregion;
 		protected int m_relicSpellID;
 		protected Spell m_relicSpell;
-		protected string m_relicTarget;
+		protected eSpellTarget m_relicTarget;
 		protected double m_xp;
 		protected GamePlayer m_owner;
 		protected int m_effect;
@@ -120,7 +101,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the RelicTarget
 		/// </summary>
-		public string RelicTarget
+		public eSpellTarget RelicTarget
 		{
 			get { return m_relicTarget; }
 			set { m_relicTarget = value; }
@@ -189,7 +170,7 @@ namespace DOL.GS
 
 			RelicSpellID = m_dbRelic.relicSpell;
 			RelicSpell = SkillBase.GetSpellByID(m_dbRelic.relicSpell);
-			RelicTarget = m_dbRelic.relicTarget;
+			RelicTarget = Enum.Parse<eSpellTarget>(m_dbRelic.relicTarget, true);
 
 			Name = m_dbRelic.Name;
 			Model = m_dbRelic.Model;
@@ -315,12 +296,15 @@ namespace DOL.GS
 
 			if (m_owner != null)
 			{
-				switch (RelicTarget.ToLower())
+				switch (RelicTarget)
 				{
-					case "self":
+					case eSpellTarget.SELF:
+					{
 						newPlayerlist.Add(m_owner);
 						break;
-					case "group":
+					}
+					case eSpellTarget.GROUP:
+					{
 						if (m_owner.Group == null)
 						{
 							newPlayerlist.Add(m_owner);
@@ -329,17 +313,24 @@ namespace DOL.GS
 						else
 						{
 							foreach (GamePlayer plr in m_owner.Group.GetPlayersInTheGroup())
+							{
 								if (plr != null && !newPlayerlist.Contains(plr) && m_owner.IsWithinRadius( plr, WorldMgr.VISIBILITY_DISTANCE ))
 									newPlayerlist.Add(plr);
+							}
 						}
+
 						break;
-					case "realm":
+					}
+					case eSpellTarget.REALM:
+					{
 						foreach (GamePlayer plr in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
 							if (plr != null && GameServer.ServerRules.IsAllowedToAttack(m_owner, plr, true) == false && !newPlayerlist.Contains(plr))
 								newPlayerlist.Add(plr);
 						}
+
 						break;
+					}
 				}
 			}
 			lock (Playerlist)
@@ -625,7 +616,7 @@ namespace DOL.GS
 						return;
 					}
 				}
-				if (RelicTarget.ToLower() != "self") return;
+				if (RelicTarget != eSpellTarget.SELF) return;
 			}
 			PlayerLoosesRelic(player, false);
 		}

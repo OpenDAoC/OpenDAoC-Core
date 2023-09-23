@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -154,7 +153,7 @@ namespace DOL.GS
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11918;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DexterityQuicknessDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -358,7 +357,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11915;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

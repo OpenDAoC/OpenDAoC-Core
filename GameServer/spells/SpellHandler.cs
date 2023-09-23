@@ -337,21 +337,6 @@ namespace DOL.GS.Spells
 
 		#endregion
 
-		/// <summary>
-		/// Sets the target of the spell to the caster for beneficial effects when not selecting a valid target
-		///		ie. You're in the middle of a fight with a mob and want to heal yourself.  Rather than having to switch
-		///		targets to yourself to healm and then back to the target, you can just heal yourself
-		/// </summary>
-		/// <param name="target">The current target of the spell, changed to the player if appropriate</param>
-		protected virtual void AutoSelectCaster(ref GameLiving target)
-		{
-			GameNPC npc = target as GameNPC;
-			if (Spell.Target.ToUpper() == "REALM" && Caster is GamePlayer &&
-				(npc == null || npc.Realm != Caster.Realm || (npc.Flags & GameNPC.eFlags.PEACE) != 0))
-				target = Caster;
-		}
-
-
 		public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			// Base function should be empty once all effects are moved to their own effect class.
@@ -364,7 +349,6 @@ namespace DOL.GS.Spells
 
 			new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
 		}
-
 
 		/// <summary>
 		/// Is called when the caster moves
@@ -479,28 +463,39 @@ namespace DOL.GS.Spells
 
 			Target = selectedTarget;
 
-			if (Spell.Target == "Self")
-				// Self spells should ignore whatever we actually have selected.
-				Target = Caster;
-			else if (Spell.Target == "Pet")
+			switch (Spell.Target)
 			{
-				// Get the current target if we don't have one already.
-				if (Target == null)
-					Target = Caster?.TargetObject as GameLiving;
+				case eSpellTarget.SELF:
+				{
+					// Self spells should ignore whatever we actually have selected.
+					Target = Caster;
+					break;
+				}
+				case eSpellTarget.PET:
+				{
+					// Get the current target if we don't have one already.
+					if (Target == null)
+						Target = Caster?.TargetObject as GameLiving;
 
-				// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
-				if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
-					Target = Caster.ControlledBrain.Body;
-			}
-			else
-			{
-				// Get the current target if we don't have one already.
-				if (Target == null)
-					Target = Caster?.TargetObject as GameLiving;
+					// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
+					if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
+						Target = Caster.ControlledBrain.Body;
 
-				if (Target == null && Caster is NecromancerPet nPet)
-					Target = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
+					break;
+				}
+				default:
+				{
+					// Get the current target if we don't have one already.
+					if (Target == null)
+						Target = Caster?.TargetObject as GameLiving;
+
+					if (Target == null && Caster is NecromancerPet nPet)
+						Target = (nPet.Brain as NecromancerPetBrain).GetSpellTarget();
+
+					break;
+				}
 			}
+
 
 			// Initial LoS state.
 			HasLos = Caster.TargetInView;
@@ -666,129 +661,144 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			string targetType = m_spell.Target.ToLower();
-
-			if (targetType == "pet")
+			switch (Spell.Target)
 			{
-				if (Target == null || ((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
+				case eSpellTarget.PET:
 				{
-					if (!quiet)
-						MessageToCaster("You must cast this spell on a creature you are controlling.", eChatType.CT_System);
+					if (Target == null || ((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
+					{
+						if (!quiet)
+							MessageToCaster("You must cast this spell on a creature you are controlling.", eChatType.CT_System);
 
-					return false;
+						return false;
+					}
+
+					break;
 				}
-			}
-			else if (targetType == "area")
-			{
-				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+				case eSpellTarget.AREA:
 				{
-					if (!quiet)
-						MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
+					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+					{
+						if (!quiet)
+							MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
 
-					return false;
+						return false;
+					}
+
+					break;
 				}
-			}
-			else if (targetType != "self" && targetType != "group" && targetType != "cone" && m_spell.Range > 0)
-			{
-				// All spells that need a target.
-
-				if (Target == null || Target.ObjectState != GameObject.eObjectState.Active)
+				case eSpellTarget.REALM:
+				case eSpellTarget.ENEMY:
+				case eSpellTarget.CORPSE:
 				{
-					if (!quiet)
-						MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
+					if (m_spell.Range <= 0)
+						break;
 
-					return false;
-				}
+					// All spells that need a target.
+					if (Target == null || Target.ObjectState != GameObject.eObjectState.Active)
+					{
+						if (!quiet)
+							MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
 
-				if (!m_caster.IsWithinRadius(Target, CalculateSpellRange()))
-				{
-					if (Caster is GamePlayer && !quiet)
-						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+						return false;
+					}
 
-					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
+					if (!m_caster.IsWithinRadius(Target, CalculateSpellRange()))
+					{
+						if (Caster is GamePlayer && !quiet)
+							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 
-					if (Caster is GameNPC npc)
-						npc.Follow(Target, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
-					return false;
-				}
+						if (Caster is GameNPC npc)
+							npc.Follow(Target, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
 
-				switch (m_spell.Target.ToLower())
-				{
-					case "enemy":
-						if (Target == m_caster)
+						return false;
+					}
+
+					switch (m_spell.Target)
+					{
+						case eSpellTarget.ENEMY:
 						{
-							if (!quiet)
-								MessageToCaster("You can't attack yourself! ", eChatType.CT_System);
+							if (Target == m_caster)
+							{
+								if (!quiet)
+									MessageToCaster("You can't attack yourself! ", eChatType.CT_System);
 
-							return false;
-						}
+								return false;
+							}
 
-						if (FindStaticEffectOnTarget(Target, typeof(NecromancerShadeEffect)) != null)
-						{
-							if (!quiet)
-								MessageToCaster("Invalid target.", eChatType.CT_System);
+							if (FindStaticEffectOnTarget(Target, typeof(NecromancerShadeEffect)) != null)
+							{
+								if (!quiet)
+									MessageToCaster("Invalid target.", eChatType.CT_System);
 
-							return false;
-						}
+								return false;
+							}
 
-						if (m_spell.SpellType == eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
+							if (m_spell.SpellType == eSpellType.Charm && m_spell.CastTime == 0 && m_spell.Pulse != 0)
+								break;
+
+							if (Caster is TurretPet)
+								return true;
+
+							// Pet spells (shade) don't require the target to be in front.
+							if (!HasLos || m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180))
+							{
+								if (!quiet)
+									MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
+
+								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+								return false;
+							}
+
+							if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, quiet))
+								return false;
+
 							break;
-
-						if (Caster is TurretPet)
-							return true;
-
-						// Pet spells (shade) don't require the target to be in front.
-						if (!HasLos || (m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180)))
-						{
-							if (!quiet)
-								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
-
-							Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-							return false;
 						}
-
-						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, quiet))
-							return false;
-
-						break;
-
-					case "corpse":
-						if (Target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, Target, true))
+						case eSpellTarget.CORPSE:
 						{
-							if (!quiet)
-								MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
+							if (Target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, Target, true))
+							{
+								if (!quiet)
+									MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
 
-							return false;
+								return false;
+							}
+
+							break;
 						}
+						case eSpellTarget.REALM:
+						{
+							if (!GameServer.ServerRules.IsSameRealm(Caster, Target, true))
+								return false;
 
-						break;
+							break;
+						}
+					}
 
-					case "realm":
-						if (!GameServer.ServerRules.IsSameRealm(Caster, Target, true))
-							return false;
+					if (!HasLos)
+					{
+						if (!quiet)
+							MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 
-						break;
-				}
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						return false;
+					}
 
-				if (!HasLos && m_spell.Target.ToLower() != "pet")
-				{
-					if (!quiet)
-						MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
+					if (m_spell.Target != eSpellTarget.CORPSE && !Target.IsAlive)
+					{
+						if (!quiet)
+							MessageToCaster(Target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
 
-					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-					return false;
-				}
+						return false;
+					}
 
-				if (m_spell.Target.ToLower() != "corpse" && !Target.IsAlive)
-				{
-					if (!quiet)
-						MessageToCaster(Target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
-
-					return false;
+					break;
 				}
 			}
-			
+
 			//Ryan: don't want mobs to have reductions in mana
 			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(Target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
 			{
@@ -905,7 +915,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_spell.Target.ToLower() == "area")
+			if (m_spell.Target == eSpellTarget.AREA)
 			{
 				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 				{
@@ -913,9 +923,9 @@ namespace DOL.GS.Spells
 					return false;
 				}
 			}
-			else if (m_spell.Target.ToLower() != "self" && m_spell.Target.ToLower() != "group" && m_spell.Target.ToLower() != "cone" && m_spell.Range > 0)
+			else if (m_spell.Target != eSpellTarget.SELF && m_spell.Target != eSpellTarget.GROUP && m_spell.Target != eSpellTarget.CONE && m_spell.Range > 0)
 			{
-				if (m_spell.Target.ToLower() != "pet")
+				if (m_spell.Target != eSpellTarget.PET)
 				{
 					// All other spells that need a target.
 					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
@@ -937,7 +947,8 @@ namespace DOL.GS.Spells
 
 				switch (m_spell.Target)
 				{
-					case "Enemy":
+					case eSpellTarget.ENEMY:
+					{
 						if (m_spell.SpellType == eSpellType.Charm)
 							break;
 
@@ -967,8 +978,9 @@ namespace DOL.GS.Spells
 							return false;
 
 						break;
-
-					case "Corpse":
+					}
+					case eSpellTarget.CORPSE:
+					{
 						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
 							MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
@@ -976,8 +988,9 @@ namespace DOL.GS.Spells
 						}
 
 						break;
-
-					case "Pet":
+					}
+					case eSpellTarget.PET:
+					{
 						if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
 						{
 							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
@@ -985,6 +998,7 @@ namespace DOL.GS.Spells
 						}
 
 						break;
+					}
 				}
 			}
 
@@ -1068,7 +1082,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_spell.Target.ToLower() == "area")
+			if (m_spell.Target == eSpellTarget.AREA)
 			{
 				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 				{
@@ -1078,9 +1092,9 @@ namespace DOL.GS.Spells
 					return false;
 				}
 			}
-			else if (m_spell.Target.ToLower() != "self" && m_spell.Target.ToLower() != "group" && m_spell.Target.ToLower() != "cone" && m_spell.Range > 0)
+			else if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE && m_spell.Range > 0)
 			{
-				if (m_spell.Target.ToLower() != "pet")
+				if (m_spell.Target != eSpellTarget.PET)
 				{
 					//all other spells that need a target
 					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
@@ -1102,15 +1116,17 @@ namespace DOL.GS.Spells
 					}
 				}
 
-				switch (m_spell.Target.ToLower())
+				switch (m_spell.Target)
 				{
-					case "enemy":
+					case eSpellTarget.ENEMY:
+					{
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, quiet))
 							return false;
 
 						break;
-
-					case "corpse":
+					}
+					case eSpellTarget.CORPSE:
+					{
 						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, quiet))
 						{
 							if (!quiet)
@@ -1120,6 +1136,7 @@ namespace DOL.GS.Spells
 						}
 
 						break;
+					}
 				}
 			}
 
@@ -1622,15 +1639,15 @@ namespace DOL.GS.Spells
 		{
 			List<GameLiving> list = new(8);
 			GameLiving target = castTarget as GameLiving;
-			string modifiedTarget = Spell.Target.ToLower();
+			eSpellTarget modifiedTarget = Spell.Target;
 			ushort modifiedRadius = (ushort) Spell.Radius;
 
-			if (modifiedTarget == "pet" && !HasPositiveEffect)
-				modifiedTarget = "enemy";
+			if (modifiedTarget == eSpellTarget.PET && !HasPositiveEffect)
+				modifiedTarget = eSpellTarget.ENEMY;
 
 			switch (modifiedTarget)
 			{
-				case "area":
+				case eSpellTarget.AREA:
 				{
 					//Dinberg - fix for animists turrets, where before a radius of zero meant that no targets were ever selected!
 					if (Spell.SpellType == eSpellType.SummonAnimistPet || Spell.SpellType == eSpellType.SummonAnimistFnF)
@@ -1680,14 +1697,14 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "corpse":
+				case eSpellTarget.CORPSE:
 				{
 					if (target != null && !target.IsAlive)
 						list.Add(target);
 
 					break;
 				}
-				case "pet":
+				case eSpellTarget.PET:
 				{
 					// PBAE spells.
 					if (modifiedRadius > 0 && Spell.Range == 0)
@@ -1754,31 +1771,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "bdsubpet":
-				{ 
-					var player = Caster as GamePlayer;
-					if (player == null)
-						return null;
-					var petBody = player.ControlledBrain?.Body;
-					if (petBody != null)
-					{
-						foreach (var pet in petBody.GetNPCsInRadius(modifiedRadius))
-						{
-							if (pet is not BDSubPet {Brain: IControlledBrain brain} subpet ||
-								brain.GetPlayerOwner() != player) continue;
-							if (!Spell.IsHealing)
-								list.Add(subpet);
-						}
-
-						if (list.Count < 1)
-						{
-							player.Out.SendMessage("You don't have any subpet to cast this spell on!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-						}
-					}
-
-					break;
-				}
-				case "enemy":
+				case eSpellTarget.ENEMY:
 				{
 					if (modifiedRadius > 0)
 					{
@@ -1854,7 +1847,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "realm":
+				case eSpellTarget.REALM:
 				{
 					if (modifiedRadius > 0)
 					{
@@ -1914,7 +1907,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "self":
+				case eSpellTarget.SELF:
 				{
 					if (modifiedRadius > 0)
 					{
@@ -1945,7 +1938,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "group":
+				case eSpellTarget.GROUP:
 				{
 					Group group = m_caster.Group;
 						
@@ -2039,7 +2032,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case "cone":
+				case eSpellTarget.CONE:
 				{
 					target = Caster;
 
@@ -2187,7 +2180,7 @@ namespace DOL.GS.Spells
 			}
 
 			IList<GameLiving> targets;
-			if (Spell.Target == "Realm"
+			if (Spell.Target == eSpellTarget.REALM
 				&& (Target == Caster || Caster is NecromancerPet nPet && Target == nPet.Owner)
 				&& !Spell.IsConcentration
 				&& !Spell.IsHealing
@@ -2247,9 +2240,9 @@ namespace DOL.GS.Spells
 					ApplyEffectOnTarget(targetInList);
 				else
 				{
-					if (Spell.Target.ToLower() == "area")
+					if (Spell.Target == eSpellTarget.AREA)
 						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster.GroundTarget), Spell.Radius);
-					else if (Spell.Target.ToLower() == "cone")
+					else if (Spell.Target == eSpellTarget.CONE)
 						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.Range);
 					else
 						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Target), Spell.Radius);
@@ -2259,12 +2252,6 @@ namespace DOL.GS.Spells
 
 				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
 					npcBrain.AddBuffedTarget(Target);
-			}
-
-			if (Spell.Target.ToLower() == "ground")
-			{
-				Effectiveness = 1;
-				ApplyEffectOnTarget(null);
 			}
 
 			CastSubSpells(Target);
@@ -2380,7 +2367,7 @@ namespace DOL.GS.Spells
 			if (Effectiveness <= 0)
 				return;
 
-			if ((Spell.Duration > 0 && Spell.Target.ToLower() != "area") || Spell.Concentration > 0)
+			if ((Spell.Duration > 0 && Spell.Target != eSpellTarget.AREA) || Spell.Concentration > 0)
 				OnDurationEffectApply(target);
 			else
 				OnDirectEffect(target);
@@ -4294,41 +4281,30 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		protected virtual int GetSpellTargetType()
 		{
-			switch (Spell.Target)
+			return Spell.Target switch
 			{
-				case "Realm":
-					return 7;
-				case "Self":
-					return 0;
-				case "Enemy":
-					return 1;
-				case "Pet":
-					return 6;
-				case "Group":
-					return 3;
-				case "Area":
-					return 0; // TODO
-				default:
-					return 0;
-			}
+				eSpellTarget.REALM => 7,
+				eSpellTarget.SELF => 0,
+				eSpellTarget.ENEMY => 1,
+				eSpellTarget.PET => 6,
+				eSpellTarget.GROUP => 3,
+				eSpellTarget.AREA => 0,// TODO
+				_ => 0
+			};
 		}
 
 		protected virtual int GetDurationType()
 		{
-			//2-seconds,4-conc,5-focus
-			if (Spell.Duration>0)
-			{
+			//2-seconds, 4-conc, 5-focus
+			if (Spell.Duration > 0)
 				return 2;
-			}
-			if (Spell.IsConcentration)
-			{
-				return 4;
-			}
 
+			if (Spell.IsConcentration)
+				return 4;
 
 			return 0;
 		}
-		#endregion
 
+		#endregion
 	}
 }

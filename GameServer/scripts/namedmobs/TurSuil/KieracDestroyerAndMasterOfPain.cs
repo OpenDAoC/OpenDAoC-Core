@@ -1,9 +1,9 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.Events;
 
 namespace DOL.GS
 {
@@ -374,7 +374,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11793;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

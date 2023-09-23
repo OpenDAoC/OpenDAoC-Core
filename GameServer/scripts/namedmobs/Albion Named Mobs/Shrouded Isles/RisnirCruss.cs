@@ -208,7 +208,7 @@ namespace DOL.AI.Brain
 					spell.Range = 500;
 					spell.Radius = 1000;
 					spell.SpellID = 11898;
-					spell.Target = eSpellTarget.Area.ToString();
+					spell.Target = eSpellTarget.AREA.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

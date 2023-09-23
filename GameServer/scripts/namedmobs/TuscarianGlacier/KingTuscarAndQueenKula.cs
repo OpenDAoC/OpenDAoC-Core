@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
 using DOL.GS.ServerProperties;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -243,7 +243,7 @@ namespace DOL.GS
                     spell.Name = "Thor's Might";
                     spell.Range = 2500;
                     spell.SpellID = 11892;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -485,7 +485,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.SpellID = 11750;
                     spell.Duration = 80;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -516,7 +516,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.SpellID = 11751;
                     spell.Duration = 80;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.SpeedDecrease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -762,7 +762,7 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11752;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -792,7 +792,7 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11753;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -822,7 +822,7 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11890;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -852,7 +852,7 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11891;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -886,7 +886,7 @@ namespace DOL.GS
                     spell.Frequency = 30;
                     spell.Range = 350;
                     spell.SpellID = 11754;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.StyleBleeding.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

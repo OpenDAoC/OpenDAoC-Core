@@ -1,10 +1,10 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
 using System.Collections;
 using System.Collections.Generic;
+using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 
 namespace DOL.GS
 {
@@ -384,7 +384,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Plague Bolt";
 					spell.Range = 2500;
 					spell.SpellID = 11830;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

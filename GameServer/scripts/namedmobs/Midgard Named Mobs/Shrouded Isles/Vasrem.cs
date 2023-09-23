@@ -226,7 +226,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11888;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DexterityQuicknessDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -239,4 +239,3 @@ namespace DOL.AI.Brain
 		#endregion
 	}
 }
-

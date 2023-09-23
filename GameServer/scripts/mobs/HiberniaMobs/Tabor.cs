@@ -1,7 +1,6 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -71,7 +70,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class TaborBrain : StandardMobBrain
+    public class TaborBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TaborBrain() : base()
@@ -115,7 +114,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Earth Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11931;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
@@ -144,7 +143,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11932;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
@@ -236,7 +235,7 @@ namespace DOL.AI.Brain
 #region Ghost of Tabor
 namespace DOL.GS
 {
-	public class TaborGhost : GameNPC
+    public class TaborGhost : GameNPC
 	{
 		public TaborGhost() : base() { }
 		public void BroadcastMessage(String message)
@@ -285,7 +284,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class TaborGhostBrain : StandardMobBrain
+    public class TaborGhostBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TaborGhostBrain() : base()
@@ -330,7 +329,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Earth Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11938;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
@@ -359,7 +358,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11937;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
@@ -451,7 +450,7 @@ namespace DOL.AI.Brain
 #region Swirl of Dirt
 namespace DOL.GS
 {
-	public class SwirlDirt : GameNPC
+    public class SwirlDirt : GameNPC
 	{
 		public SwirlDirt() : base() { }
 
@@ -520,7 +519,7 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class SwirlDirtBrain : StandardMobBrain
+    public class SwirlDirtBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SwirlDirtBrain() : base()

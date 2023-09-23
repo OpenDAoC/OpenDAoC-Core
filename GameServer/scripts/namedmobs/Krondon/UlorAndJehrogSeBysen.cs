@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 200;
 					spell.SpellID = 11886;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_Ulor_DD = new Spell(spell, 70);
@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
 					spell.Message4 = "{0}'s physical vulnerability fades.";
 					spell.Range = 1500;
 					spell.SpellID = 11888;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.BodyResistDebuff.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_Ulor_DebuffBody = new Spell(spell, 70);
@@ -258,7 +258,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11887;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Ulor_aoedot = new Spell(spell, 70);

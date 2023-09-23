@@ -8020,7 +8020,7 @@ namespace DOL.GS
                                                     if (spellHandler is AllRegenBuff)
                                                         target = this;
 
-                                                    if (spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase))
+                                                    if (spell.Target == eSpellTarget.ENEMY)
                                                     {
                                                         if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
                                                         {

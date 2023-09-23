@@ -471,32 +471,33 @@ namespace DOL.GS.ServerRules
 			{
 				bool isAllowed = false;
 
-				switch (spell.Target.ToLower())
+				switch (spell.Target)
 				{
-					case "self":
-					case "group":
-					case "pet":
-					case "controlled":
-					case "realm":
-					case "area":
+					case eSpellTarget.SELF:
+					case eSpellTarget.GROUP:
+					case eSpellTarget.PET:
+					case eSpellTarget.CONTROLLED:
+					case eSpellTarget.REALM:
+					case eSpellTarget.AREA:
+					{
 						isAllowed = true;
 						break;
-
-					case "enemy":
-
+					}
+					case eSpellTarget.ENEMY:
+					{
 						if (spell.Radius == 0)
 						{
 							switch (spell.SpellType)
 							{
-                                case eSpellType.Archery:
+								case eSpellType.Archery:
 								case eSpellType.Bolt:
 								case eSpellType.Bomber:
-                                case eSpellType.DamageSpeedDecrease:
-                                case eSpellType.DirectDamage:
-                                case eSpellType.MagicalStrike:
-                                case eSpellType.SiegeArrow:
-                                case eSpellType.SummonTheurgistPet:
-                                case eSpellType.DirectDamageWithDebuff:
+								case eSpellType.DamageSpeedDecrease:
+								case eSpellType.DirectDamage:
+								case eSpellType.MagicalStrike:
+								case eSpellType.SiegeArrow:
+								case eSpellType.SummonTheurgistPet:
+								case eSpellType.DirectDamageWithDebuff:
 									isAllowed = true;
 									break;
 							}
@@ -509,15 +510,14 @@ namespace DOL.GS.ServerRules
 						}
 
 						break;
+					}
 				}
 
-				if (!isAllowed && caster is GamePlayer)
-					(caster as GamePlayer).Client.Out.SendMessage("You can't cast this spell on the " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (!isAllowed && caster is GamePlayer playerCaster)
+					playerCaster.Client.Out.SendMessage("You can't cast this spell on the " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				return isAllowed;
 			}
-
-
 
 			return true;
 		}

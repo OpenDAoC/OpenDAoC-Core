@@ -124,7 +124,7 @@ namespace DOL.GS
 					spell.Name = "Lifedrain";
 					spell.Range = 350;
 					spell.SpellID = 11897;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

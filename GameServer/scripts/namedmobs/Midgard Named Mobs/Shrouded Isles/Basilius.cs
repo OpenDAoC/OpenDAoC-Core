@@ -140,7 +140,7 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 350;
 					spell.SpellID = 11892;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StyleBleeding.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -186,4 +186,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-

@@ -264,7 +264,7 @@ namespace DOL.GS
 					spell.Range = 1500;
 					spell.Radius = 700;
 					spell.SpellID = 11890;
-					spell.Target = eSpellTarget.Area.ToString();
+					spell.Target = eSpellTarget.AREA.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Matter;
 					m_KrevoAddBomb = new Spell(spell, 70);

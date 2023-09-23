@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -635,8 +616,6 @@ namespace DOL.AI.Brain
                 case eSpellType.DamageShield:
                 case eSpellType.Bladeturn:
                     {
-						string target = spell.Target.ToUpper();
-
 						// Buff self
 						if (!LivingHasEffect(Body, spell))
 						{
@@ -644,7 +623,7 @@ namespace DOL.AI.Brain
 							break;
 						}
 						
-						if (target is "REALM" or "GROUP")
+						if (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP)
 						{
 							owner = (this as IControlledBrain).Owner;
 
@@ -775,7 +754,6 @@ namespace DOL.AI.Brain
                 case eSpellType.OmniHeal:
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
-					String spellTarget = spell.Target.ToUpper();
 					int bodyPercent = Body.HealthPercent;
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
 					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
@@ -785,7 +763,7 @@ namespace DOL.AI.Brain
 						healThreshold = this.Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
 					}
 
-					if (spellTarget == "SELF")
+					if (spell.Target == eSpellTarget.SELF)
 					{
 						if (bodyPercent < healThreshold && !LivingHasEffect(Body, spell))
 							Body.TargetObject = Body;
@@ -816,7 +794,7 @@ namespace DOL.AI.Brain
 					// Heal group
 					player = GetPlayerOwner();
 					ICollection<GamePlayer> playerGroup = null;
-					if (player.Group != null && (spellTarget == "REALM" || spellTarget == "GROUP"))
+					if (player.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
 					{
 						playerGroup = player.Group.GetPlayersInTheGroup();
 
@@ -833,7 +811,7 @@ namespace DOL.AI.Brain
 
 					// Now check for targets which aren't seriously injured
 
-					if (spellTarget == "SELF")
+					if (spell.Target == eSpellTarget.SELF)
 					{
 						// if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
 						if (bodyPercent < healThreshold

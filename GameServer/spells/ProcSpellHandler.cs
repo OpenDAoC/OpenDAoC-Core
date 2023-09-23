@@ -1,31 +1,11 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using DOL.Database;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-
 using log4net;
 
 namespace DOL.GS.Spells
@@ -327,61 +307,7 @@ namespace DOL.GS.Spells
         ///// <param name="sender"></param>
         ///// <param name="arguments"></param>
         protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
-		//{
-		//	AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
-			
-		//	if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
-		//		return;
-			
-		//	AttackData ad = args.AttackData;
-		//	if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
-		//		return;
 
-		//	int baseChance = Spell.Frequency / 100;
-
-		//	if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-		//		baseChance /= 2;
-
-		//	if (baseChance < 1)
-		//		baseChance = 1;
-			
-		//	if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
-		//	{
-		//		Spell baseSpell = null;
-							
-		//		GameNPC pet = ad.Attacker as GameNPC;
-		//		var procSpells = new List<Spell>();
-		//		foreach (Spell spell in pet.Spells)
-		//		{
-		//			if (pet.GetSkillDisabledDuration(spell) == 0)
-		//			{
-		//				if (spell.SpellType == eSpellType.OffensiveProc)
-		//					procSpells.Add(spell);
-		//			}
-		//		}
-		//		if (procSpells.Count > 0)
-		//		{
-		//			baseSpell = procSpells[Util.Random((procSpells.Count - 1))];					
-		//		}
-		//		m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
-		//	}
-		//	if (Util.Chance(baseChance))
-		//	{
-		//		ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
-		//		if (handler != null)
-		//		{
-		//			switch(m_procSpell.Target.ToLower())
-		//			{
-		//				case "enemy":
-		//					handler.StartSpell(ad.Target);
-		//					break;
-		//				default:
-		//					handler.StartSpell(ad.Attacker);
-		//					break;
-		//			}
-		//		}
-		//	}
-		//}
         public  void EventHandler(AttackData ad)
         {
             //AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
@@ -401,41 +327,26 @@ namespace DOL.GS.Spells
             if (baseChance < 1)
                 baseChance = 1;
 
-            //if (ad.Attacker == ad.Attacker as GameNPC) // Add support for multiple procs - Unty
-            //{
-            //    Spell baseSpell = null;
-				
-            //    GameNPC pet = ad.Attacker as GameNPC;
-            //    var procSpells = new List<Spell>();
-            //    foreach (Spell spell in pet.Spells)
-            //    {
-            //        if (pet.GetSkillDisabledDuration(spell) == 0)
-            //        {
-            //            if (spell.SpellType == eSpellType.OffensiveProc)
-            //                procSpells.Add(spell);
-            //        }
-            //    }
-            //    if (procSpells.Count > 0)
-            //    {
-            //        baseSpell = procSpells[Util.Random((procSpells.Count - 1))];
-            //    }
-            //    m_procSpell = SkillBase.GetSpellByID((int)baseSpell.Value);
-            //}
             if (Util.Chance(baseChance))
             {
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Attacker, m_procSpell, m_procSpellLine);
                 
                 if (handler != null)
                 {
-					handler.Spell.Level = this.Spell.Level;
-					switch (m_procSpell.Target.ToLower())
+                    handler.Spell.Level = Spell.Level;
+
+                    switch (m_procSpell.Target)
                     {
-                        case "enemy":
+                        case eSpellTarget.ENEMY:
+                        {
                             handler.StartSpell(ad.Target);
                             break;
+                        }
                         default:
+                        {
                             handler.StartSpell(ad.Attacker);
                             break;
+                        }
                     }
                 }
             }
@@ -474,40 +385,7 @@ namespace DOL.GS.Spells
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
 		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
-		//{
-		//	AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
-		//	if (args == null || args.AttackData == null || args.AttackData.AttackType == AttackData.eAttackType.Spell)
-		//		return;
 
-		//	AttackData ad = args.AttackData;
-		//	if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
-		//		return;
-
-		//	int baseChance = Spell.Frequency / 100;
-
-		//	if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-		//		baseChance /= 2;
-
-		//	if (baseChance < 1)
-		//		baseChance = 1;			
-
-		//	if (Util.Chance(baseChance))
-		//	{
-		//		ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
-		//		if (handler != null)
-		//		{
-		//			switch(m_procSpell.Target.ToLower())
-		//			{
-		//				case "enemy":
-		//					handler.StartSpell(ad.Attacker);
-		//					break;
-		//				default:
-		//					handler.StartSpell(ad.Target);
-		//					break;
-		//			}
-		//		}
-		//	}
-		//}
 		public void EventHandler(AttackData ad)
 		{
 			//AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
@@ -528,17 +406,22 @@ namespace DOL.GS.Spells
 
 			if (Util.Chance(baseChance))
 			{
-				ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)ad.Target, m_procSpell, m_procSpellLine);
+				ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Target, m_procSpell, m_procSpellLine);
+
 				if (handler != null)
 				{
-					switch (m_procSpell.Target.ToLower())
+					switch (m_procSpell.Target)
 					{
-						case "enemy":
+						case eSpellTarget.ENEMY:
+						{
 							handler.StartSpell(ad.Attacker);
 							break;
+						}
 						default:
+						{
 							handler.StartSpell(ad.Target);
 							break;
+						}
 					}
 				}
 			}

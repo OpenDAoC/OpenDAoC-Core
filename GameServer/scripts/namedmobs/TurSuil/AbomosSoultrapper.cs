@@ -1,9 +1,9 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.Events;
 
 namespace DOL.GS
 {
@@ -144,7 +144,7 @@ namespace DOL.GS
 					spell.Damage = 150;
 					spell.Range = 350;
 					spell.SpellID = 11793;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Lifedrain.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

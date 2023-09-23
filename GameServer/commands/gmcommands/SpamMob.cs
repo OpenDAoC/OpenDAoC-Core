@@ -242,9 +242,11 @@ namespace DOL.GS.SpamMob
                 {
                     foreach (Spell spell in Body.Spells)
                     {
-                        if (Body.GetSkillDisabledDuration(spell) > 0) continue;
-                        if (spell.Target.ToLower() == "enemy" || spell.Target.ToLower() == "area" ||
-                            spell.Target.ToLower() == "cone") continue;
+                        if (Body.GetSkillDisabledDuration(spell) > 0)
+                            continue;
+
+                        if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
+                            continue;
 
                         if (spell.Uninterruptible && CheckDefensiveSpells(spell))
                             casted = true;
@@ -260,8 +262,8 @@ namespace DOL.GS.SpamMob
                         {
                             if (spell.CastTime > 0)
                             {
-                                if (spell.Target.ToLower() == "enemy" || spell.Target.ToLower() == "area" ||
-                                    spell.Target.ToLower() == "cone")
+                                if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
+
                                     spell_rec.Add(spell);
                             }
                         }
@@ -355,12 +357,12 @@ namespace DOL.GS.SpamMob
                     {
                         // Buff self, if not in melee, but not each and every mob
                         // at the same time, because it looks silly.
-                        if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
+                        if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target != eSpellTarget.PET)
                         {
                             Body.TargetObject = Body;
                             break;
                         }
-                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target.ToLower() != "self")
+                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target != eSpellTarget.SELF)
                         {
                             Body.TargetObject = Body.ControlledBrain.Body;
                             break;
@@ -377,7 +379,7 @@ namespace DOL.GS.SpamMob
                         break;
                     }
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.ControlledBrain.Body.IsDiseased
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -390,7 +392,7 @@ namespace DOL.GS.SpamMob
                         break;
                     }
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && LivingIsPoisoned(Body.ControlledBrain.Body)
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -429,10 +431,10 @@ namespace DOL.GS.SpamMob
                 case eSpellType.OmniHeal:
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
-                    if (spell.Target.ToLower() == "self")
+                    if (spell.Target == eSpellTarget.SELF)
                     {
                         // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
-                        if (Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+                        if (Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD)
                         {
                             Body.TargetObject = Body;
                         }
@@ -440,8 +442,8 @@ namespace DOL.GS.SpamMob
                     }
 
                     // Chance to heal self when dropping below 30%, do NOT spam it.
-                    if (Body.HealthPercent < (DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2.0)
-                        && Util.Chance(10) && spell.Target.ToLower() != "pet")
+                    if (Body.HealthPercent < (ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2.0)
+                        && Util.Chance(10) && spell.Target != eSpellTarget.PET)
                     {
                         Body.TargetObject = Body;
                         break;
@@ -449,8 +451,8 @@ namespace DOL.GS.SpamMob
 
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
                         && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
-                        && Body.ControlledBrain.Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
-                        && spell.Target.ToLower() != "self")
+                        && Body.ControlledBrain.Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD
+                        && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;

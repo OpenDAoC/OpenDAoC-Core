@@ -268,7 +268,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Smite";
 					spell.Range = 1800;
 					spell.SpellID = 11913;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -282,4 +282,3 @@ namespace DOL.AI.Brain
 		#endregion
 	}
 }
-

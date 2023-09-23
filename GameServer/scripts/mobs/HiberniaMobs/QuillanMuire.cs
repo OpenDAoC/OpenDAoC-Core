@@ -1,5 +1,4 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 
@@ -88,7 +87,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Energy Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11948;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -117,7 +116,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Energy Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11949;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

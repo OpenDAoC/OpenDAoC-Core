@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -89,7 +70,7 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target.ToLower() == "cone") //  || (Spell.Target == "Enemy" && Spell.IsPBAoE)  <-- pbaoe skips los per 1.65
+			if (Spell.Target == eSpellTarget.CONE) //  || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE)  <-- pbaoe skips los per 1.65
 			{
 				GamePlayer checkPlayer = null;
 				if (target is GamePlayer)
@@ -150,7 +131,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				if (Spell.Target.ToLower() == "enemy" && Spell.Radius == 0 && Spell.Range != 0)
+				if (Spell.Target == eSpellTarget.ENEMY && Spell.Radius == 0 && Spell.Range != 0)
 				{
 					m_castFailed = true;
 					MessageToCaster("You can't see your target!", eChatType.CT_SpellResisted);

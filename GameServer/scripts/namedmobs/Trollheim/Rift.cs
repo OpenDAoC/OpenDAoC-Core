@@ -1,8 +1,8 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS;
 using DOL.Events;
+using DOL.GS;
 
 namespace DOL.GS
 {
@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 300;
 					spell.Range = 1500;
 					spell.SpellID = 11852;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

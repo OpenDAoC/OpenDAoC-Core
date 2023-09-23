@@ -1,38 +1,15 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text;
 using DOL.Database;
-using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public class Spell : Skill, ICustomParamsValuable
 	{
 		protected readonly string m_description = "";
-		protected readonly string m_target = "";
+		protected readonly eSpellTarget m_target = eSpellTarget.NONE;
         protected readonly eSpellType m_spelltype;// = "-";
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
@@ -135,7 +112,7 @@ namespace DOL.GS
             get { return m_sharedtimergroup; }
         }
 
-		public virtual string Target
+		public virtual eSpellTarget Target
 		{
 			get { return m_target; }
 		}
@@ -308,73 +285,45 @@ namespace DOL.GS
 			set { m_isShearable = value; }
 		}
 
-        /// <summary>
-        /// Is this spell harmful?
-        /// </summary>
-        public bool IsHarmful
-        {
-            get
-            {
-				switch (Target.ToUpper())
-				{
-					case "ENEMY":						
-					case "AREA":
-					case "CONE":
-						if (SpellType == eSpellType.Charm)
-							return false;
-						else
-							return true;
-					default:
-						return false;
-				}
-            }
-        }
+		/// <summary>
+		/// Is this spell harmful?
+		/// </summary>
+		public bool IsHarmful => Target switch
+		{
+			eSpellTarget.ENEMY or
+			eSpellTarget.AREA or
+			eSpellTarget.CONE => SpellType != eSpellType.Charm,
+			_ => false
+		};
 
 		/// <summary>
 		/// Is this spell Helpful?
 		/// </summary>
-		public bool IsHelpful
-		{
-			get { return !IsHarmful; }
-		}
+		public bool IsHelpful => !IsHarmful;
 
 		/// <summary>
 		/// Is this a buff spell?
 		/// </summary>
-		public bool IsBuff
-		{
-			get
-			{
-				return (IsHelpful && (Duration > 0 || Concentration > 0));
-			}
-		}
+		public bool IsBuff => IsHelpful && (Duration > 0 || Concentration > 0);
 
 		/// <summary>
 		/// Is this a healing spell?
 		/// </summary>
-		public bool IsHealing
+		public bool IsHealing => SpellType switch
 		{
-			get
-			{
-				switch (SpellType)//.ToUpper())
-				{
-                    case eSpellType.CurePoison: 
-                    case eSpellType.CureDisease:
-                    case eSpellType.CombatHeal:
-                    case eSpellType.Heal:
-                    case eSpellType.HealOverTime:
-                    case eSpellType.HealthRegenBuff:
-                    case eSpellType.MercHeal:
-                    case eSpellType.OmniHeal:
-                    case eSpellType.PBAoEHeal:
-                    case eSpellType.SpreadHeal:
-                    case eSpellType.SummonHealingElemental: 
-						return true;
-					default:
-						return false;
-				}
-			}
-		}
+			eSpellType.CurePoison or
+			eSpellType.CureDisease or
+			eSpellType.CombatHeal or
+			eSpellType.Heal or
+			eSpellType.HealOverTime or
+			eSpellType.HealthRegenBuff or
+			eSpellType.MercHeal or
+			eSpellType.OmniHeal or
+			eSpellType.PBAoEHeal or
+			eSpellType.SpreadHeal or
+			eSpellType.SummonHealingElemental => true,
+			_ => false,
+		};
 
 		#endregion
 
@@ -400,20 +349,20 @@ namespace DOL.GS
 			: base(dbspell.Name, dbspell.SpellID, (ushort)dbspell.Icon, requiredLevel, dbspell.TooltipId)
 		{
 			m_description = dbspell.Description;
-			m_target = dbspell.Target;
-            m_spelltype = Enum.Parse<eSpellType>(dbspell.Type);
+			m_target = Enum.Parse<eSpellTarget>(dbspell.Target, true);
+            m_spelltype = Enum.Parse<eSpellType>(dbspell.Type, true);
 			m_range = dbspell.Range;
 			m_radius = dbspell.Radius;
 			m_value = dbspell.Value;
 			m_damage = dbspell.Damage;
-			m_damageType = (eDamageType)dbspell.DamageType;
-			m_concentration = (byte)dbspell.Concentration;
+			m_damageType = (eDamageType) dbspell.DamageType;
+			m_concentration = (byte) dbspell.Concentration;
 			m_duration = dbspell.Duration * 1000;
 			m_frequency = dbspell.Frequency * 100;
 			m_pulse = dbspell.Pulse;
 			m_pulse_power = dbspell.PulsePower;
 			m_power = dbspell.Power;
-			m_casttime = (int)(dbspell.CastTime * 1000);
+			m_casttime = (int) (dbspell.CastTime * 1000);
 			m_recastdelay = dbspell.RecastDelay * 1000;
 			m_reshealth = dbspell.ResurrectHealth;
 			m_resmana = dbspell.ResurrectMana;
@@ -423,7 +372,7 @@ namespace DOL.GS
 			m_message2 = dbspell.Message2;
 			m_message3 = dbspell.Message3;
 			m_message4 = dbspell.Message4;
-			m_effectID = (ushort)dbspell.ClientEffect;
+			m_effectID = (ushort) dbspell.ClientEffect;
 			m_instrumentRequirement = dbspell.InstrumentRequirement;
 			m_spellGroup = dbspell.SpellGroup;
 			m_effectGroup = dbspell.EffectGroup;
@@ -435,10 +384,10 @@ namespace DOL.GS
 			m_isprimary = dbspell.IsPrimary;
 			m_issecondary = dbspell.IsSecondary;
 			m_allowbolt = dbspell.AllowBolt;
-            m_sharedtimergroup = dbspell.SharedTimerGroup;
-            m_minotaurspell = minotaur;
-            // Params
-            this.InitFromCollection<DBSpellXCustomValues>(dbspell.CustomValues, param => param.KeyName, param => param.Value);
+			m_sharedtimergroup = dbspell.SharedTimerGroup;
+			m_minotaurspell = minotaur;
+			// Params
+			this.InitFromCollection(dbspell.CustomValues, param => param.KeyName, param => param.Value);
 		}
 
 		/// <summary>
@@ -511,9 +460,9 @@ namespace DOL.GS
 		/// Fill in spell delve information.
 		/// </summary>
 		/// <param name="delve"></param>
-		public virtual void Delve(List<String> delve)
+		public virtual void Delve(List<string> delve)
 		{
-			delve.Add(String.Format("Function: {0}", Name));
+			delve.Add($"Function: {Name}");
 			delve.Add("");
 			delve.Add(Description);
 			delve.Add("");
@@ -521,42 +470,43 @@ namespace DOL.GS
 			DelveTarget(delve);
 
 			if (Range > 0)
-				delve.Add(String.Format("Range: {0}", Range));
+				delve.Add(string.Format("Range: {0}", Range));
 
-			if (Duration > 0 && Duration < 65535)
-				delve.Add(String.Format("Duration: {0}", 
-					(Duration >= 60000) 
-					? String.Format("{0}:{1} min", (int) (Duration / 60000), Duration % 60000)
-					: String.Format("{0} sec", Duration / 1000)));
+			if (Duration is > 0 and < 65535)
+				delve.Add(string.Format("Duration: {0}", Duration >= 60000 ? $"{Duration / 60000}:{Duration % 6000} min" : $"{Duration / 100} sec"));
 
-			delve.Add(String.Format("Casting time: {0}",
-				(CastTime == 0) ? "instant" : String.Format("{0} sec", CastTime)));
+			delve.Add(string.Format("Casting time: {0}", CastTime == 0 ? "instant" : $"{CastTime} sec"));
 
-			if (Target.ToLower() == "enemy" || Target.ToLower() == "area" || Target.ToLower() == "cone")
-				delve.Add(String.Format("Damage: {0}", 
-					GlobalConstants.DamageTypeToName((eDamageType)DamageType)));
+			if (Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
+				delve.Add(string.Format("Damage: {0}", GlobalConstants.DamageTypeToName(DamageType)));
 
 			delve.Add("");
 		}
 
-		private void DelveEffect(List<String> delve)
+		private void DelveEffect(List<string> delve)
 		{
 		}
 
-		private void DelveTarget(List<String> delve)
+		private void DelveTarget(List<string> delve)
 		{
-			String target;
+			string target;
+
 			switch (Target)
 			{
-				case "Enemy":
-					target = "Targetted";
+				case eSpellTarget.ENEMY:
+				{
+					target = "Targeted";
 					break;
+				}
 				default:
-					target = Target;
+				{
+					target = Target.ToString();
+					target = target[0] + target[1..].ToLower();
 					break;
+				}
 			}
 
-			delve.Add(String.Format("Target: {0}", target));
+			delve.Add($"Target: {target}");
 		}
 
 		#region Spell Helpers

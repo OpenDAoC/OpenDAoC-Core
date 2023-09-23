@@ -690,7 +690,7 @@ namespace DOL.GS.Spells
 			x = Caster.X;
 			y = Caster.Y;
 			z = Caster.Z;
-			if (Spell.Target.ToLower() == "area")
+			if (Spell.Target == eSpellTarget.AREA)
 			{
 				if (Caster.GroundTargetInView && Caster.GroundTarget != null)
 				{

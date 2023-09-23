@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
-using System.Collections.Generic;
 using DOL.GS.PacketHandler;
-using System.Collections;
 
 namespace DOL.GS
 {
@@ -246,7 +244,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Frost Sphere";
                     spell.Range = 1800;
                     spell.SpellID = 11921;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.Bolt.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

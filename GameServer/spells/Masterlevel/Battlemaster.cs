@@ -218,32 +218,43 @@ namespace DOL.GS.Spells
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
                 if (handler != null)
                 {
-                    if (m_procSpell.Target.ToLower() == "enemy")
-                        handler.StartSpell(ad.Target);
-                    else if (m_procSpell.Target.ToLower() == "self")
-                        handler.StartSpell(ad.Attacker);
-                    else if (m_procSpell.Target.ToLower() == "group")
+                    switch (m_procSpell.Target)
                     {
-                        GamePlayer player = Caster as GamePlayer;
-                        if (Caster is GamePlayer)
+                        case eSpellTarget.ENEMY:
                         {
-                            if (player.Group != null)
+                            handler.StartSpell(ad.Target);
+                            break;
+                        }
+                        case eSpellTarget.SELF:
+                        {
+                            handler.StartSpell(ad.Attacker);
+                            break;
+                        }
+                        case eSpellTarget.GROUP:
+                        {
+                            if (Caster is GamePlayer player)
                             {
-                                foreach (GameLiving groupPlayer in player.Group.GetMembersInTheGroup())
+                                if (player.Group != null)
                                 {
-                                    if (player.IsWithinRadius(groupPlayer, m_procSpell.Range))
+                                    foreach (GameLiving groupPlayer in player.Group.GetMembersInTheGroup())
                                     {
-                                        handler.StartSpell(groupPlayer);
+                                        if (player.IsWithinRadius(groupPlayer, m_procSpell.Range))
+                                        {
+                                            handler.StartSpell(groupPlayer);
+                                        }
                                     }
                                 }
+                                else
+                                    handler.StartSpell(player);
                             }
-                            else
-                                handler.StartSpell(player);
+
+                            break;
                         }
-                    }
-                    else
-                    {
-                        log.Warn("Skipping " + m_procSpell.Target + " proc " + m_procSpell.Name + " on " + ad.Target.Name + "; Realm = " + ad.Target.Realm);
+                        default:
+                        {
+                            log.Warn("Skipping " + m_procSpell.Target + " proc " + m_procSpell.Name + " on " + ad.Target.Name + "; Realm = " + ad.Target.Realm);
+                            break;
+                        }
                     }
                 }
             }

@@ -115,7 +115,7 @@ namespace DOL.GS
 					spell.Name = "Heat Proc";
 					spell.Range = 350;
 					spell.SpellID = 11906;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
