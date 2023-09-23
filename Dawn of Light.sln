@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DOLDatabase", "DOLDatabase\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{ACB92917-3D42-4F40-97F9-EA904A41DE36}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DOLServer", "DOLServer\DOLServer.csproj", "{6DDF274A-91A3-4EAF-B0E3-30FD559ABD51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreServer", "CoreServer\CoreServer.csproj", "{6DDF274A-91A3-4EAF-B0E3-30FD559ABD51}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{564E8F20-3834-4F3D-B5F3-2981C1FC8300}"
 EndProject

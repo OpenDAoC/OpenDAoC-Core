@@ -37,7 +37,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
         <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="DOLBase" />
         <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
-        <ProjectReference Include="..\DOLServer\DOLServer.csproj" Name="DOLServer" />
+        <ProjectReference Include="..\CoreServer\CoreServer.csproj" Name="DOLServer" />
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
     </ItemGroup>
     <ItemGroup>
